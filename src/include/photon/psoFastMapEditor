@@ -37,7 +37,7 @@ class PHOTON_EXPORT psoFastMapEditor: public psoFastMap
 {
 public:
 
-   psoFastMapEditor( psoSession &session );
+   psoFastMapEditor( psoSession & session );
 
    virtual ~psoFastMapEditor();
 
@@ -130,7 +130,7 @@ public:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* PSO_FAST_MAP_EDITOR_H_CPP */
+#endif // PSO_FAST_MAP_EDITOR_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

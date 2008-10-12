@@ -733,11 +733,11 @@ void CleanupPreviousRun( psoSession & session )
    
    try {
       folder.Open( foldername );
-      ok = folder.GetFirst( &entry );
+      ok = folder.GetFirst( entry );
       while ( ok == 0 ) {
          s = foldername + "/" + entry.name;
          session.DestroyObject( s );
-         ok = folder.GetNext( &entry );
+         ok = folder.GetNext( entry );
       }
       session.Commit();
    }

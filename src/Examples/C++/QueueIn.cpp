@@ -140,7 +140,7 @@ void waitForFriends()
    do {
       try {
          control.Get( workProcessKey, strlen(workProcessKey), 
-                      &controlData, sizeof(int), &length );
+                      &controlData, sizeof(int), length );
       }
       catch(...) {}
 
@@ -155,7 +155,7 @@ void waitForFriends()
    do {
       try {
          control.Get( outProcessKey, strlen(outProcessKey), 
-                      &controlData, sizeof(int), &length );
+                      &controlData, sizeof(int), length );
       }
       catch(...) {}
 

@@ -1,4 +1,4 @@
-.TH "psoCommon.h" 3 "10 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoCommon.h" 3 "11 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -63,6 +63,7 @@ psoCommon.h \-
 .ti -1c
 .RI "#define \fBPSO_FIELD_MAX_PRECISION\fP   30"
 .br
+.RI "\fIMaximum size of a decimal field. \fP"
 .in -1c
 .SS "Typedefs"
 
@@ -124,7 +125,9 @@ Uses to tell the VC++ compiler to export/import a function or variable on Window
 Definition at line 38 of file psoCommon.h.
 .SS "#define PSO_FIELD_MAX_PRECISION   30"
 .PP
-Definition at line 83 of file psoCommon.h.
+Maximum size of a decimal field. 
+.PP
+Definition at line 86 of file psoCommon.h.
 .SS "#define PSO_MAX_FIELD_LENGTH   32"
 .PP
 Maximum number of bytes of the name of a field of a pso object. 
@@ -156,28 +159,28 @@ PSO_HANDLE is an opaque data type used by the C API to reference objects created
 Definition at line 53 of file psoCommon.h.
 .SS "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
 .PP
-Definition at line 175 of file psoCommon.h.
+Definition at line 202 of file psoCommon.h.
 .SS "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
 .PP
-Definition at line 221 of file psoCommon.h.
+Definition at line 250 of file psoCommon.h.
 .SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .PP
-Definition at line 311 of file psoCommon.h.
+Definition at line 340 of file psoCommon.h.
 .SS "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
 .PP
-Definition at line 108 of file psoCommon.h.
+Definition at line 111 of file psoCommon.h.
 .SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .PP
-Definition at line 153 of file psoCommon.h.
+Definition at line 167 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .PP
-Definition at line 193 of file psoCommon.h.
+Definition at line 222 of file psoCommon.h.
 .SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
 .PP
-Definition at line 100 of file psoCommon.h.
+Definition at line 103 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
-Definition at line 256 of file psoCommon.h.
+Definition at line 285 of file psoCommon.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBpsoFieldType\fP"
@@ -194,8 +197,12 @@ Photon supported data types.
 \fB\fIPSO_STRING \fP\fP
 .TP
 \fB\fIPSO_DECIMAL \fP\fP
+The decimal type should be mapped to an array of bytes of length precision + 2 (optional sign and the decimal separator). 
 .TP
 \fB\fIPSO_BOOLEAN \fP\fP
+The boolean type should be mapped to a single byte in a C struct. 
+.PP
+
 .TP
 \fB\fIPSO_VAR_BINARY \fP\fP
 Only valid for the last field of the data definition. 
@@ -203,7 +210,7 @@ Only valid for the last field of the data definition.
 \fB\fIPSO_VAR_STRING \fP\fP
 Only valid for the last field of the data definition. 
 .PP
-Definition at line 115 of file psoCommon.h.
+Definition at line 118 of file psoCommon.h.
 .SS "enum \fBpsoIteratorType\fP"
 .PP
 \fBEnumerator: \fP
@@ -214,7 +221,7 @@ Definition at line 115 of file psoCommon.h.
 \fB\fIPSO_NEXT \fP\fP
 
 .PP
-Definition at line 102 of file psoCommon.h.
+Definition at line 105 of file psoCommon.h.
 .SS "enum \fBpsoKeyType\fP"
 .PP
 Photon supported data types for keys. 
@@ -234,7 +241,7 @@ Only valid for the last field of the data definition.
 \fB\fIPSO_KEY_VAR_STRING \fP\fP
 Only valid for the last field of the data definition. 
 .PP
-Definition at line 131 of file psoCommon.h.
+Definition at line 138 of file psoCommon.h.
 .SS "enum \fBpsoObjectType\fP"
 .PP
 The object type as seen from the API. 
@@ -255,7 +262,7 @@ The object type as seen from the API.
 \fB\fIPSO_LAST_OBJECT_TYPE \fP\fP
 
 .PP
-Definition at line 90 of file psoCommon.h.
+Definition at line 93 of file psoCommon.h.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Photon Software from the source code.

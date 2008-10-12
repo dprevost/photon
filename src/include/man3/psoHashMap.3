@@ -1,4 +1,4 @@
-.TH "psoHashMap" 3 "10 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoHashMap" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -31,15 +31,15 @@ Definition at line 36 of file psoHashMap.
 .br
 .RI "\fIRemove the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "void \fBGet\fP (const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "void \fBGet\fP (const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t &returnedLength)"
 .br
 .RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "int \fBGetFirst\fP (void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.RI "int \fBGetFirst\fP (void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t &retKeyLength, size_t &retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "int \fBGetNext\fP (void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.RI "int \fBGetNext\fP (void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t &retKeyLength, size_t &retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
@@ -59,7 +59,7 @@ Definition at line 36 of file psoHashMap.
 .br
 .RI "\fIReplace a data element in the hash map. \fP"
 .ti -1c
-.RI "void \fBStatus\fP (psoObjStatus *pStatus)"
+.RI "void \fBStatus\fP (psoObjStatus &status)"
 .br
 .RI "\fIReturn the status of the hash map. \fP"
 .in -1c
@@ -141,7 +141,7 @@ The removals only become permanent after a call to psoSession::Commit.
 .RE
 .PP
 
-.SS "void psoHashMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "void psoHashMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Retrieve the data item identified by the given key from the hash map. 
 .PP
@@ -166,7 +166,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "int psoHashMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "int psoHashMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & retKeyLength, size_t & retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -200,7 +200,7 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "int psoHashMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "int psoHashMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & retKeyLength, size_t & retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -314,13 +314,13 @@ The replacements only become permanent after a call to psoSession::Commit.
 .RE
 .PP
 
-.SS "void psoHashMap::Status (psoObjStatus * pStatus)"
+.SS "void psoHashMap::Status (psoObjStatus & status)"
 .PP
 Return the status of the hash map. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpStatus\fP A pointer to the status structure.
+\fIstatus\fP A reference to the status structure.
 .RE
 .PP
 \fBExceptions:\fP

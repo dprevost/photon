@@ -1,4 +1,4 @@
-.TH "psoFieldDefinition" 3 "10 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFieldDefinition" 3 "11 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,55 +16,82 @@ This structure is aligned in such a way that you can do:
 .PP
 malloc( offsetof(psoObjectDefinition, fields) + numFields * sizeof(psoFieldDefinition) ); 
 .PP
-Definition at line 164 of file psoCommon.h.
+Definition at line 178 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
 .ti -1c
 .RI "char \fBname\fP [PSO_MAX_FIELD_LENGTH]"
 .br
+.RI "\fIThe name of the field. \fP"
 .ti -1c
 .RI "enum \fBpsoFieldType\fP \fBtype\fP"
 .br
+.RI "\fIThe data type of the field/. \fP"
 .ti -1c
 .RI "size_t \fBlength\fP"
 .br
+.RI "\fIFor fixed-length data types. \fP"
 .ti -1c
 .RI "size_t \fBminLength\fP"
 .br
+.RI "\fIFor variable-length data types. \fP"
 .ti -1c
 .RI "size_t \fBmaxLength\fP"
 .br
+.RI "\fIFor variable-length data types. \fP"
 .ti -1c
 .RI "size_t \fBprecision\fP"
 .br
+.RI "\fITotal number of digits in the decimal field. \fP"
 .ti -1c
 .RI "size_t \fBscale\fP"
 .br
+.RI "\fINumber of digits following the decimal separator. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
 .SS "char \fBpsoFieldDefinition::name\fP[PSO_MAX_FIELD_LENGTH]"
 .PP
-Definition at line 166 of file psoCommon.h.
+The name of the field. 
+.PP
+
+.PP
+Definition at line 181 of file psoCommon.h.
 .SS "enum \fBpsoFieldType\fP \fBpsoFieldDefinition::type\fP"
 .PP
-Definition at line 167 of file psoCommon.h.
+The data type of the field/. 
+.PP
+Definition at line 184 of file psoCommon.h.
 .SS "size_t \fBpsoFieldDefinition::length\fP"
 .PP
-Definition at line 168 of file psoCommon.h.
+For fixed-length data types. 
+.PP
+Definition at line 187 of file psoCommon.h.
 .SS "size_t \fBpsoFieldDefinition::minLength\fP"
 .PP
-Definition at line 169 of file psoCommon.h.
+For variable-length data types. 
+.PP
+Definition at line 190 of file psoCommon.h.
 .SS "size_t \fBpsoFieldDefinition::maxLength\fP"
 .PP
-Definition at line 170 of file psoCommon.h.
+For variable-length data types. 
+.PP
+Definition at line 193 of file psoCommon.h.
 .SS "size_t \fBpsoFieldDefinition::precision\fP"
 .PP
-Definition at line 171 of file psoCommon.h.
+Total number of digits in the decimal field. 
+.PP
+
+.PP
+Definition at line 196 of file psoCommon.h.
 .SS "size_t \fBpsoFieldDefinition::scale\fP"
 .PP
-Definition at line 172 of file psoCommon.h.
+Number of digits following the decimal separator. 
+.PP
+
+.PP
+Definition at line 199 of file psoCommon.h.
 
 .SH "Author"
 .PP 

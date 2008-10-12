@@ -59,11 +59,14 @@ public:
    
 private:
 
+   /// The error message, if any.
    std::string msg;
    
+   /// The last error code seen by the API.
    int errcode;
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* PSO_EXCEPTION */
+#endif // PSO_EXCEPTION 
+

@@ -67,24 +67,9 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Invalid arguments to tested function.
-
-   try {
-      queue.Status( NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
    // End of invalid args. This call should succeed.
    try {
-      queue.Status( &status );
+      queue.Status( status );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

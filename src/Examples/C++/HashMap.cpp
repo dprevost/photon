@@ -122,7 +122,7 @@ int main( int argc, char *argv[] )
 
    // The data is inserted but not committed yet - failure is expected
    rc = 0;
-   try { map2.Get("FM", 2, description, 80, &length ); }
+   try { map2.Get("FM", 2, description, 80, length ); }
    catch( psoException exc ) {
       rc = exc.ErrorCode();
       cerr << "Code = " << exc.ErrorCode() << endl;
@@ -138,10 +138,10 @@ int main( int argc, char *argv[] )
    
    try {
       session1.Commit();
-      map2.Status( &status );
+      map2.Status( status );
       cout << "Number of countries in the hash map = " << status.numDataItem << endl;
       memset( description, 0, 80 );
-      map2.Get( "FM", 2, description, 80, &length );
+      map2.Get( "FM", 2, description, 80, length );
       cout << "Country code: FM, country: " << description << endl;
    }
    catch( psoException exc ) {

@@ -148,9 +148,9 @@ void psoSession::GetDefinition( const std::string    & objectName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::GetInfo( psoInfo * pInfo )
+void psoSession::GetInfo( psoInfo & info )
 {
-   int rc = psoGetInfo( m_sessionHandle, pInfo );
+   int rc = psoGetInfo( m_sessionHandle, &info );
 
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoSession::GetInfo" );
@@ -160,12 +160,12 @@ void psoSession::GetInfo( psoInfo * pInfo )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void psoSession::GetStatus( const std::string & objectName,
-                            psoObjStatus      * pStatus )
+                            psoObjStatus      & status )
 {
    int rc = psoGetStatus( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length(),
-                          pStatus );
+                          &status );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoSession::GetStatus" );
    }
@@ -175,12 +175,12 @@ void psoSession::GetStatus( const std::string & objectName,
 
 void psoSession::GetStatus( const char   * objectName,
                             size_t         nameLengthInBytes,
-                            psoObjStatus * pStatus )
+                            psoObjStatus & status )
 {
    int rc = psoGetStatus( m_sessionHandle,
                           objectName,
                           nameLengthInBytes,
-                          pStatus );
+                          &status );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoSession::GetStatus" );
    }

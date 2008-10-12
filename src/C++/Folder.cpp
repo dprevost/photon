@@ -142,9 +142,9 @@ void psoFolder::DestroyObject( const char * objectName,
 /*
  * Iterate through the folder - no data items are removed from the 
  * folder by this function.*/
-int psoFolder::GetFirst( psoFolderEntry * pEntry )
+int psoFolder::GetFirst( psoFolderEntry & entry )
 {
-   int rc = psoFolderGetFirst( m_objectHandle, pEntry );
+   int rc = psoFolderGetFirst( m_objectHandle, &entry );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
       throw psoException( rc, m_sessionHandle, "psoFolder::GetFirst" );
    }
@@ -153,9 +153,9 @@ int psoFolder::GetFirst( psoFolderEntry * pEntry )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoFolder::GetNext( psoFolderEntry * pEntry )
+int psoFolder::GetNext( psoFolderEntry & entry )
 {
-   int rc = psoFolderGetNext( m_objectHandle, pEntry );
+   int rc = psoFolderGetNext( m_objectHandle, &entry );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
       throw psoException( rc, m_sessionHandle, "psoFolder::GetNext" );
    }
@@ -193,9 +193,9 @@ void psoFolder::Open( const char * folderName,
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::Status( psoObjStatus * pStatus )
+void psoFolder::Status( psoObjStatus & status )
 {
-   int rc = psoFolderStatus( m_objectHandle, pStatus );
+   int rc = psoFolderStatus( m_objectHandle, &status );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoFolder::Status" );
    }

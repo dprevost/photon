@@ -56,7 +56,7 @@ bool timetoShutdown()
    
    try {
       control.Get( shutdownKey, strlen(shutdownKey), 
-                   &controlData, sizeof(int), &length );
+                   &controlData, sizeof(int), length );
    }
    catch(...) { return false; }
 
@@ -108,7 +108,7 @@ int main( int argc, char *argv[] )
 
    try {
       while( 1 ) {
-         rc = outQueue.Pop( &outStruct, sizeof(outStruct), &length );
+         rc = outQueue.Pop( &outStruct, sizeof(outStruct), length );
          if ( rc != PSO_OK ) {
             // Nothing to do - might as well commit
             session.Commit();

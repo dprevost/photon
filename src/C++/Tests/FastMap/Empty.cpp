@@ -87,7 +87,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from second session.
     */
    try { 
-      map1.Get( key, 6, buffer, 20, &length );
+      map1.Get( key, 6, buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -100,7 +100,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map2.Get( key, 6, buffer, 20, &length );
+      map2.Get( key, 6, buffer, 20, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -108,7 +108,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map2.GetFirst( keyBuff, 20, buffer, 20, &keyLength, &length );
+      map2.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = map1.GetFirst( keyBuff, 20, buffer, 20, &keyLength, &length );
+      rc = map1.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -138,7 +138,7 @@ int main( int argc, char * argv[] )
    
    // No refresh yet - still using the old hash map
    try { 
-      map2.Get( key, 6, buffer, 20, &length );
+      map2.Get( key, 6, buffer, 20, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -154,7 +154,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      map2.Get( key, 6, buffer, 20, &length );
+      map2.Get( key, 6, buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

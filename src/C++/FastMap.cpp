@@ -69,14 +69,14 @@ void psoFastMap::Get( const void * key,
                       size_t       keyLength,
                       void       * buffer,
                       size_t       bufferLength,
-                      size_t     * returnedLength )
+                      size_t     & returnedLength )
 {
    int rc = psoFastMapGet( m_objectHandle,
                            key,
                            keyLength,
                            buffer,
                            bufferLength,
-                           returnedLength );
+                           &returnedLength );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoFastMap::Get" );
    }
@@ -88,16 +88,16 @@ int psoFastMap::GetFirst( void       * key,
                           size_t       keyLength,
                           void       * buffer,
                           size_t       bufferLength,
-                          size_t     * retKeyLength,
-                          size_t     * retDataLength )
+                          size_t     & retKeyLength,
+                          size_t     & retDataLength )
 {
    int rc = psoFastMapGetFirst( m_objectHandle,
                                 key,
                                 keyLength,
                                 buffer,
                                 bufferLength,
-                                retKeyLength,
-                                retDataLength );
+                                &retKeyLength,
+                                &retDataLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
       throw psoException( rc, m_sessionHandle, "psoFastMap::GetFirst" );
    }
@@ -111,16 +111,16 @@ int psoFastMap::GetNext( void       * key,
                          size_t       keyLength,
                          void       * buffer,
                          size_t       bufferLength,
-                         size_t     * retKeyLength,
-                         size_t     * retDataLength )
+                         size_t     & retKeyLength,
+                         size_t     & retDataLength )
 {
    int rc = psoFastMapGetNext( m_objectHandle,
                                key,
                                keyLength,
                                buffer,
                                bufferLength,
-                               retKeyLength,
-                               retDataLength );
+                               &retKeyLength,
+                               &retDataLength );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
       throw psoException( rc, m_sessionHandle, "psoFastMap::GetNext" );
    }
@@ -158,9 +158,9 @@ void psoFastMap::Open( const char * hashMapName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Status( psoObjStatus * pStatus )
+void psoFastMap::Status( psoObjStatus & status )
 {
-   int rc = psoFastMapStatus( m_objectHandle, pStatus );
+   int rc = psoFastMapStatus( m_objectHandle, &status );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoFastMap::Status" );
    }

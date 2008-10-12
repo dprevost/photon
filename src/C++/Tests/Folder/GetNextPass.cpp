@@ -60,7 +60,7 @@ int main( int argc, char * argv[] )
 
    // No GetFirst
    try {
-      folder.GetNext( &entry );
+      folder.GetNext( entry );
    }
    catch( psoException exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_ITERATOR ) {
@@ -70,28 +70,16 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.GetFirst( &entry );
+      folder.GetFirst( entry );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   // Invalid arguments to tested function.
-
-   try {
-      folder.GetNext( NULL );
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
    // End of invalid args. This call should succeed.
    try {
-      rc = folder.GetNext( &entry );
+      rc = folder.GetNext( entry );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -103,7 +91,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = folder.GetNext( &entry );
+      rc = folder.GetNext( entry );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

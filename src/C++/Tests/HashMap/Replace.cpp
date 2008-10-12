@@ -162,7 +162,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from any session.
     */
    try {
-      map1.Get( key, 6, buffer, 50, &length );
+      map1.Get( key, 6, buffer, 50, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -178,7 +178,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      map2.Get( key, 6, buffer, 50, &length );
+      map2.Get( key, 6, buffer, 50, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

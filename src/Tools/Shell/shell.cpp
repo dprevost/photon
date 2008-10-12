@@ -264,7 +264,7 @@ void psoShell::Cat()
    
    // Must check if object exists (and its type)
    try {
-      session.GetStatus( objectName, &status );
+      session.GetStatus( objectName, status );
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
@@ -315,7 +315,7 @@ void psoShell::Cat()
             memset( buffer, 0, status.maxDataLength );
             rc = hashMap.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
-                                   &keyLength, &dataLength );
+                                   keyLength, dataLength );
             while ( rc == 0 ) {
                string keyStr, dataStr;
                
@@ -333,7 +333,7 @@ void psoShell::Cat()
                memset( buffer, 0, status.maxDataLength );
                rc = hashMap.GetNext( key, status.maxKeyLength, 
                                      buffer, status.maxDataLength,
-                                     &keyLength, &dataLength );
+                                     keyLength, dataLength );
             }
             hashMap.Close();
          }
@@ -348,7 +348,7 @@ void psoShell::Cat()
             memset( buffer, 0, status.maxDataLength );
             rc = hashMap.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
-                                   &keyLength, &dataLength );
+                                   keyLength, dataLength );
             while ( rc == 0 ) {
                string keyStr, dataStr;
                
@@ -366,7 +366,7 @@ void psoShell::Cat()
                memset( buffer, 0, status.maxDataLength );
                rc = hashMap.GetNext( key, status.maxKeyLength, 
                                      buffer, status.maxDataLength,
-                                     &keyLength, &dataLength );
+                                     keyLength, dataLength );
             }
             hashMap.Close();
          }
@@ -377,7 +377,7 @@ void psoShell::Cat()
             queue.Open( objectName );
          
             memset( buffer, 0, status.maxDataLength );
-            rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
+            rc = queue.GetFirst( buffer, status.maxDataLength, dataLength );
             while ( rc == 0 ) {
                string dataStr;
                
@@ -387,7 +387,7 @@ void psoShell::Cat()
                                dataLength );
                cout << dataStr << endl;
                memset( buffer, 0, status.maxDataLength );
-               rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
+               rc = queue.GetNext( buffer, status.maxDataLength, dataLength );
             }
             queue.Close();
          }
@@ -398,7 +398,7 @@ void psoShell::Cat()
             queue.Open( objectName );
          
             memset( buffer, 0, status.maxDataLength );
-            rc = queue.GetFirst( buffer, status.maxDataLength, &dataLength );
+            rc = queue.GetFirst( buffer, status.maxDataLength, dataLength );
             while ( rc == 0 ) {
                string dataStr;
                
@@ -408,7 +408,7 @@ void psoShell::Cat()
                                dataLength );
                cout << dataStr << endl;
                memset( buffer, 0, status.maxDataLength );
-               rc = queue.GetNext( buffer, status.maxDataLength, &dataLength );
+               rc = queue.GetNext( buffer, status.maxDataLength, dataLength );
             }
             queue.Close();
          }
@@ -448,7 +448,7 @@ void psoShell::Cd()
    
    // Must check if folder exists
    try {
-      session.GetStatus( newLoc, &status );
+      session.GetStatus( newLoc, status );
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
@@ -491,7 +491,7 @@ void psoShell::Cp()
    
    // Must check if source object exists
    try {
-      session.GetStatus( srcName, &status );
+      session.GetStatus( srcName, status );
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
@@ -522,12 +522,12 @@ void psoShell::Cp()
          
             rc = srcHash.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
-                                   &keyLength, &dataLength );
+                                   keyLength, dataLength );
             while ( rc == 0 ) {
                destHash.Insert( key, keyLength, buffer, dataLength );
                rc = srcHash.GetNext( key, status.maxKeyLength, 
                                      buffer, status.maxDataLength,
-                                     &keyLength, &dataLength );
+                                     keyLength, dataLength );
             }
             srcHash.Close();
             destHash.Close();
@@ -539,10 +539,10 @@ void psoShell::Cp()
             srcQueue.Open( srcName );
             destQueue.Open( destName );
          
-            rc = srcQueue.GetFirst( buffer, status.maxDataLength, &dataLength );
+            rc = srcQueue.GetFirst( buffer, status.maxDataLength, dataLength );
             while ( rc == 0 ) {               
                destQueue.Push( buffer, dataLength );
-               rc = srcQueue.GetNext( buffer, status.maxDataLength, &dataLength );
+               rc = srcQueue.GetNext( buffer, status.maxDataLength, dataLength );
             }
             srcQueue.Close();
             destQueue.Close();
@@ -592,7 +592,7 @@ void psoShell::Echo()
    
    // Must check if object exists (and its type)
    try {
-      session.GetStatus( objectName, &status );
+      session.GetStatus( objectName, status );
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
@@ -705,7 +705,7 @@ void psoShell::Free()
    psoInfo info;
    
    try {
-      session.GetInfo( &info );
+      session.GetInfo( info );
    }
    catch( psoException exc ) {
       cerr << "psosh: free: " << exc.Message() << endl;
@@ -744,11 +744,11 @@ void psoShell::Ls()
    try {
       folder.Open( folderName );
       
-      rc = folder.GetFirst( &entry );
+      rc = folder.GetFirst( entry );
       cout << constants.TypeHeader() << " " << constants.StatusHeader() << " Name" << endl;
       while ( rc == 0 ) {
          cout << constants.Type(entry.type) << " " << constants.Status(entry.status) << " " << entry.name << endl;
-         rc = folder.GetNext( &entry );
+         rc = folder.GetNext( entry );
       }
       folder.Close();
    }
@@ -847,7 +847,7 @@ void psoShell::Rm()
    
    // Must check if object exists
    try {
-      session.GetStatus( objectName, &status );
+      session.GetStatus( objectName, status );
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
@@ -886,7 +886,7 @@ void psoShell::Rmdir()
    
    // Must check if folder exists
    try {
-      session.GetStatus( folderName, &status );
+      session.GetStatus( folderName, status );
    }
    catch ( psoException exc ) {
       exc = exc; // Avoid a warning
@@ -924,7 +924,7 @@ void psoShell::Stat()
    }
    
    try {
-      session.GetStatus( objectName, &status );
+      session.GetStatus( objectName, status );
    }
    catch ( psoException exc ) {
       cerr << "psosh: stat: " << objectName << ": " << exc.Message() << endl;

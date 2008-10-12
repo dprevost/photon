@@ -28,7 +28,6 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 // Forward declarations
-//class psoQueueItem;
 class psoSession;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -37,7 +36,7 @@ class PHOTON_EXPORT psoFastMap
 {
 public:
 
-   psoFastMap( psoSession &session );
+   psoFastMap( psoSession & session );
 
    virtual ~psoFastMap();
 
@@ -61,7 +60,8 @@ public:
     *
     * \warning This function allocates a buffer to hold the definition (using 
     * malloc()). You must free it (with free()) when you no longer need the
-    * definition.
+    * definition. This will be modified soon! (most likely, a new class will
+    * encapsulate this).
     *
     * \param[out]  definition The buffer allocated by the API to hold the content 
     *              of the object definition. Freeing the memory (with free())
@@ -92,7 +92,7 @@ public:
              size_t       keyLength,
              void       * buffer,
              size_t       bufferLength,
-             size_t     * returnedLength );
+             size_t     & returnedLength );
 
    /** 
     * Iterate through the hash map.
@@ -122,8 +122,8 @@ public:
                  size_t       keyLength,
                  void       * buffer,
                  size_t       bufferLength,
-                 size_t     * retKeyLength,
-                 size_t     * retDataLength );
+                 size_t     & retKeyLength,
+                 size_t     & retDataLength );
 
    /** 
     * Iterate through the hash map.
@@ -159,8 +159,8 @@ public:
                 size_t       keyLength,
                 void       * buffer,
                 size_t       bufferLength,
-                size_t     * retKeyLength,
-                size_t     * retDataLength );
+                size_t     & retKeyLength,
+                size_t     & retDataLength );
 
    /** 
     * Open an existing read-only hash map (see psoSession::CreateObject to 
@@ -188,11 +188,11 @@ public:
    /**
     * Return the status of the hash map.
     *
-    * \param[out] pStatus      A pointer to the status structure.
+    * \param[out] status A reference to the status structure.
     *
     * \exception psoException An abnormal error occured.
     */
-   void Status( psoObjStatus * pStatus );
+   void Status( psoObjStatus & status );
 
 protected:
 
@@ -206,7 +206,7 @@ protected:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* PSO_FAST_MAP_H_CPP */
+#endif // PSO_FAST_MAP_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

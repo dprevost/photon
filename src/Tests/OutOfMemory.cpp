@@ -81,7 +81,7 @@ int main()
       session.CreateObject( folderName, &folderDef );
       session.CreateObject( queueName1, &queueDef );
       session.CreateObject( queueName2, &queueDef );
-      session.GetInfo( &info1 );
+      session.GetInfo( info1 );
    }
    catch( psoException exc ) {
       cerr << "Init Photon failed, error = " << exc.Message() << endl;
@@ -127,11 +127,11 @@ int main()
    
    try {
       do {
-         errcode = q1.Pop( dataOut, 50, &length );
+         errcode = q1.Pop( dataOut, 50, length );
          if ( errcode == 0 ) countOut++;
       } while ( errcode == 0 );
       do {
-         errcode = q2.Pop( dataOut, 50, &length );
+         errcode = q2.Pop( dataOut, 50, length );
          if ( errcode == 0 ) countOut++;
       } while ( errcode == 0 );
    }
@@ -151,18 +151,18 @@ int main()
    }
    
   
-   session.GetInfo( &info1 );
+   session.GetInfo( info1 );
    cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
    cerr << info1.totalSizeInBytes << endl;
  
    psoObjStatus status;
 
-   q1.Status( &status );
+   q1.Status( status );
    cout << status.numBlocks << endl;
    cout << status.numBlockGroup << endl;
    cout << status.numDataItem << endl;
    cout << status.freeBytes << endl;
-   q2.Status( &status );
+   q2.Status( status );
    cout << status.numBlocks << endl;
    cout << status.numBlockGroup << endl;
    cout << status.numDataItem << endl;

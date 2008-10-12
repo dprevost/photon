@@ -178,22 +178,22 @@ public:
     * The fetched information is mainly about the current status of the memory 
     * allocator.
     *
-    * \param[out] pInfo      A pointer to the ::psoInfo structure.
+    * \param[out] info A reference to the ::psoInfo structure.
     *
     * \exception psoException An abnormal error occured.
     */
-   void GetInfo( psoInfo * pInfo );
+   void GetInfo( psoInfo & info );
 
    /**
     * Return the status of the named object.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[out] pStatus A pointer to the psoObjStatus structure.
+    * \param[out] status A reference to the psoObjStatus structure.
     *
     * \exception psoException An abnormal error occured.
     */
    void GetStatus( const std::string & objectName,
-                   psoObjStatus      * pStatus );
+                   psoObjStatus      & status );
 
    /**
     * Return the status of the named object.
@@ -201,13 +201,13 @@ public:
     * \param[in]  objectName The fully qualified name of the object. 
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
-    * \param[out] pStatus A pointer to the psoObjStatus structure.
+    * \param[out] status A reference to the psoObjStatus structure.
     *
     * \exception psoException An abnormal error occured.
     */
    void GetStatus( const char   * objectName,
                    size_t         nameLengthInBytes,
-                   psoObjStatus * pStatus );
+                   psoObjStatus & status );
 
    /**
     * This function initializes a session. 

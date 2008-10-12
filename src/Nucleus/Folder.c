@@ -936,14 +936,14 @@ bool psonFolderGetFirst( psonFolder         * pFolder,
                                   firstItemOffset,
                                   &firstItemOffset );
       }
-   }
-   else {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
+      
+      psonUnlock( &pFolder->memObject, pContext );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
+
       return false;
    }
-   
-   psonUnlock( &pFolder->memObject, pContext );
-   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
+
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
 
    return false;
 }

@@ -111,7 +111,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from first session.
     */
    try {
-      queue2.GetFirst( buffer, 50, &length );
+      queue2.GetFirst( buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -124,7 +124,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      queue1.GetFirst( buffer, 50, &length );
+      queue1.GetFirst( buffer, 50, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -132,7 +132,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = queue1.Pop( buffer, 50, &length );
+      rc = queue1.Pop( buffer, 50, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

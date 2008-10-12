@@ -27,11 +27,12 @@
 #include <photon/psoSession.h>
 #include <photon/psoFolder.h>
 /*
- * Hash maps and maps implements the same data container but differs with 
- * respect to transactions. 
+ * Hash maps and fast maps implements the same data container but differs 
+ * with respect to transactions. 
  * 
  * Hash maps are read-write and locks are used to insure data integrity.
- * Maps are read-only (with an update procedure) and no locks are required.
+ * Fast maps are read-only (with an update procedure) and no locks are 
+ * required.
  */
 #include <photon/psoHashMap.h>
 #include <photon/psoFastMap.h>

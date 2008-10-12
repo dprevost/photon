@@ -50,7 +50,7 @@ extern "C" {
  * PSO_HANDLE is an opaque data type used by the C API to reference 
  * objects created in the API module.
  */
-typedef void* PSO_HANDLE;
+typedef void * PSO_HANDLE;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -80,6 +80,9 @@ typedef void* PSO_HANDLE;
  */
 #define PSO_MAX_FIELDS 65535
 
+/**
+ * Maximum size of a decimal field.
+ */
 #define PSO_FIELD_MAX_PRECISION 30
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -117,7 +120,11 @@ enum psoFieldType
    PSO_INTEGER = 1,
    PSO_BINARY,
    PSO_STRING,
+   /** The decimal type should be mapped to an array of bytes of length
+    *  precision + 2 (optional sign and the decimal separator).
+    */
    PSO_DECIMAL,
+   /** The boolean type should be mapped to a single byte in a C struct. */
    PSO_BOOLEAN,
    /** Only valid for the last field of the data definition */
    PSO_VAR_BINARY,
@@ -144,9 +151,16 @@ enum psoKeyType
  */
 struct psoKeyDefinition
 {
+   /** The data type of the key. */
    enum psoKeyType type;
+
+   /** For fixed-length data types */
    size_t length;
+
+   /** For variable-length data types */
    size_t minLength;
+
+   /** For variable-length data types */
    size_t maxLength;
 };
 
@@ -163,12 +177,25 @@ typedef struct psoKeyDefinition psoKeyDefinition;
  */
 struct psoFieldDefinition
 {
+   /** The name of the field. */
    char name[PSO_MAX_FIELD_LENGTH];
+   
+   /** The data type of the field/ */
    enum psoFieldType type;
+   
+   /** For fixed-length data types */
    size_t length;
+
+   /** For variable-length data types */
    size_t minLength;
+
+   /** For variable-length data types */
    size_t maxLength;
+
+   /** Total number of digits in the decimal field. */
    size_t precision;
+
+   /** Number of digits following the decimal separator. */
    size_t scale;
 };
 
@@ -179,11 +206,13 @@ typedef struct psoFieldDefinition psoFieldDefinition;
  */
 struct psoObjectDefinition
 {
+   /** The object type. */
    enum psoObjectType type;
 
+   /** The number of fields in the definition. */
    unsigned int numFields;
    
-   /** The data definition of the key (hash map only) */
+   /** The data definition of the key (hash map/fast map only) */
    psoKeyDefinition key;
 
    /** The data definition of the fields */
@@ -195,7 +224,7 @@ typedef struct psoObjectDefinition psoObjectDefinition;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \ingroup Folder
+ * \ingroup psoFolder_c
  *
  * This data structure is used to iterate throught all objects in a folder.
  *
@@ -208,10 +237,10 @@ struct psoFolderEntry
    /** The object type */
    psoObjectType type;
    
-   /** Status (created but not committed, etc.) - not used in version 0.1 */
+   /** Status (created but not committed, etc.). */
    int status;
    
-   /** The actual length of the name of the object. */
+   /** The actual length (in bytes)of the name of the object. */
    size_t nameLengthInBytes;
    
    /** The name of the object. */
@@ -230,7 +259,7 @@ struct psoObjStatus
    /** The object type. */
    psoObjectType type;
 
-   /** Status (created but not committed, etc.) - not used in version 0.1 */
+   /** Status (created but not committed, etc.). */
    int status;
 
    /** The number of blocks allocated to this object. */
@@ -283,28 +312,28 @@ struct psoInfo
    /** Largest contiguous group of free blocks. */
    size_t largestFreeInBytes;
    
-   /** VDS version */
+   /** Shared-memory version. */
    int memoryVersion;
 
-   /** Endianess (0 for little endian, 1 for big endian) */
+   /** Endianess (0 for little endian, 1 for big endian). */
    int bigEndian;
    
-   /** Compiler name */
+   /** Compiler name. */
    char compiler[20];
 
-   /** Compiler version (if available) */
+   /** Compiler version (if available). */
    char compilerVersion[10];
    
-   /** Platform */
+   /** Platform. */
    char platform[20];
    
-   /** Shared lib version */
+   /** Shared lib version. */
    char dllVersion[10];
    
-   /** The watchdog version (of the pso creator) */
+   /** The watchdog version (of the pso creator). */
    char watchdogVersion[10];
    
-   /** Timestamp of creation of VDS */
+   /** Timestamp of creation of the shared memory. */
    char creationTime[30];
 };
 

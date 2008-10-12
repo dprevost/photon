@@ -37,7 +37,7 @@ class PHOTON_EXPORT psoHashMap
 {
 public:
 
-   psoHashMap( psoSession &session );
+   psoHashMap( psoSession & session );
 
    virtual ~psoHashMap();
 
@@ -109,7 +109,7 @@ public:
              size_t       keyLength,
              void       * buffer,
              size_t       bufferLength,
-             size_t     * returnedLength );
+             size_t     & returnedLength );
 
    /** 
     * Iterate through the hash map.
@@ -139,8 +139,8 @@ public:
                  size_t       keyLength,
                  void       * buffer,
                  size_t       bufferLength,
-                 size_t     * retKeyLength,
-                 size_t     * retDataLength );
+                 size_t     & retKeyLength,
+                 size_t     & retDataLength );
 
    /** 
     * Iterate through the hash map.
@@ -176,8 +176,8 @@ public:
                 size_t       keyLength,
                 void       * buffer,
                 size_t       bufferLength,
-                size_t     * retKeyLength,
-                size_t     * retDataLength );
+                size_t     & retKeyLength,
+                size_t     & retDataLength );
 
    /**
     * Insert a data element in the hash map.
@@ -239,11 +239,11 @@ public:
    /**
     * Return the status of the hash map.
     *
-    * \param[out] pStatus      A pointer to the status structure.
+    * \param[out] status A reference to the status structure.
     *
     * \exception psoException An abnormal error occured.
     */
-   void Status( psoObjStatus * pStatus );
+   void Status( psoObjStatus & status );
 
 private:
 
@@ -257,7 +257,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* PSO_HASH_MAP_H_CPP */
+#endif // PSO_HASH_MAP_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -1,4 +1,4 @@
-.TH "psoSession" 3 "10 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoSession" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -52,15 +52,15 @@ Definition at line 30 of file psoSession.
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
-.RI "void \fBGetInfo\fP (psoInfo *pInfo)"
+.RI "void \fBGetInfo\fP (psoInfo &info)"
 .br
 .RI "\fIReturn information on the current status of the shared memory. \fP"
 .ti -1c
-.RI "void \fBGetStatus\fP (const std::string &objectName, psoObjStatus *pStatus)"
+.RI "void \fBGetStatus\fP (const std::string &objectName, psoObjStatus &status)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
-.RI "void \fBGetStatus\fP (const char *objectName, size_t nameLengthInBytes, psoObjStatus *pStatus)"
+.RI "void \fBGetStatus\fP (const char *objectName, size_t nameLengthInBytes, psoObjStatus &status)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
@@ -264,7 +264,7 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .RE
 .PP
 
-.SS "void psoSession::GetInfo (psoInfo * pInfo)"
+.SS "void psoSession::GetInfo (psoInfo & info)"
 .PP
 Return information on the current status of the shared memory. 
 .PP
@@ -272,7 +272,7 @@ The fetched information is mainly about the current status of the memory allocat
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpInfo\fP A pointer to the psoInfo structure.
+\fIinfo\fP A reference to the psoInfo structure.
 .RE
 .PP
 \fBExceptions:\fP
@@ -281,7 +281,7 @@ The fetched information is mainly about the current status of the memory allocat
 .RE
 .PP
 
-.SS "void psoSession::GetStatus (const std::string & objectName, psoObjStatus * pStatus)"
+.SS "void psoSession::GetStatus (const std::string & objectName, psoObjStatus & status)"
 .PP
 Return the status of the named object. 
 .PP
@@ -289,7 +289,7 @@ Return the status of the named object.
 .RS 4
 \fIobjectName\fP The fully qualified name of the object. 
 .br
-\fIpStatus\fP A pointer to the psoObjStatus structure.
+\fIstatus\fP A reference to the psoObjStatus structure.
 .RE
 .PP
 \fBExceptions:\fP
@@ -298,7 +298,7 @@ Return the status of the named object.
 .RE
 .PP
 
-.SS "void psoSession::GetStatus (const char * objectName, size_t nameLengthInBytes, psoObjStatus * pStatus)"
+.SS "void psoSession::GetStatus (const char * objectName, size_t nameLengthInBytes, psoObjStatus & status)"
 .PP
 Return the status of the named object. 
 .PP
@@ -308,7 +308,7 @@ Return the status of the named object.
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
 .br
-\fIpStatus\fP A pointer to the psoObjStatus structure.
+\fIstatus\fP A reference to the psoObjStatus structure.
 .RE
 .PP
 \fBExceptions:\fP

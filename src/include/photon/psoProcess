@@ -62,8 +62,8 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-   void Init( const char* wdAddress,
-              bool        protectionNeeded = false );
+   void Init( const char * wdAddress,
+              bool         protectionNeeded = false );
 
    /**
     * The destructor terminates all access to shared memory. This function 

@@ -82,14 +82,14 @@ void psoHashMap::Get( const void * key,
                       size_t       keyLength,
                       void       * buffer,
                       size_t       bufferLength,
-                      size_t     * returnedLength )
+                      size_t     & returnedLength )
 {
    int rc = psoHashMapGet( m_objectHandle,
                            key,
                            keyLength,
                            buffer,
                            bufferLength,
-                           returnedLength );
+                           &returnedLength );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoHashMap::Get" );
    }
@@ -97,20 +97,20 @@ void psoHashMap::Get( const void * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoHashMap::GetFirst( void       * key,
-                          size_t       keyLength,
-                          void       * buffer,
-                          size_t       bufferLength,
-                          size_t     * retKeyLength,
-                          size_t     * retDataLength )
+int psoHashMap::GetFirst( void   * key,
+                          size_t   keyLength,
+                          void   * buffer,
+                          size_t   bufferLength,
+                          size_t & retKeyLength,
+                          size_t & retDataLength )
 {
    int rc = psoHashMapGetFirst( m_objectHandle,
                                 key,
                                 keyLength,
                                 buffer,
                                 bufferLength,
-                                retKeyLength,
-                                retDataLength );
+                                &retKeyLength,
+                                &retDataLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
       throw psoException( rc, m_sessionHandle, "psoHashMap::GetFirst" );
    }
@@ -120,20 +120,20 @@ int psoHashMap::GetFirst( void       * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoHashMap::GetNext( void       * key,
-                         size_t       keyLength,
-                         void       * buffer,
-                         size_t       bufferLength,
-                         size_t     * retKeyLength,
-                         size_t     * retDataLength )
+int psoHashMap::GetNext( void   * key,
+                         size_t   keyLength,
+                         void   * buffer,
+                         size_t   bufferLength,
+                         size_t & retKeyLength,
+                         size_t & retDataLength )
 {
    int rc = psoHashMapGetNext( m_objectHandle,
                                key,
                                keyLength,
                                buffer,
                                bufferLength,
-                               retKeyLength,
-                               retDataLength );
+                               &retKeyLength,
+                               &retDataLength );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
       throw psoException( rc, m_sessionHandle, "psoHashMap::GetNext" );
    }
@@ -205,9 +205,9 @@ void psoHashMap::Replace( const void * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoHashMap::Status( psoObjStatus * pStatus )
+void psoHashMap::Status( psoObjStatus & status )
 {
-   int rc = psoHashMapStatus( m_objectHandle, pStatus );
+   int rc = psoHashMapStatus( m_objectHandle, &status );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoHashMap::Status" );
    }

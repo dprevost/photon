@@ -83,7 +83,7 @@ int main( int argc, char * argv[] )
    
    // Try to use the folder object. 
    try {
-      folder->Status( &status );
+      folder->Status( status );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

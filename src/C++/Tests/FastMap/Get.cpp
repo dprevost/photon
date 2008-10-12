@@ -73,7 +73,7 @@ int main( int argc, char * argv[] )
 
    try { 
       // No commit yet.
-      hashmap.Get( key, strlen(key), buffer, 50, &length );
+      hashmap.Get( key, strlen(key), buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -95,7 +95,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( NULL, strlen(key), buffer, 50, &length );
+      hashmap.Get( NULL, strlen(key), buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -108,7 +108,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( key, 0, buffer, 50, &length );
+      hashmap.Get( key, 0, buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -121,7 +121,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( key, strlen(key), NULL, 50, &length );
+      hashmap.Get( key, strlen(key), NULL, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -134,26 +134,13 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( key, strlen(key), buffer, 2, &length );
+      hashmap.Get( key, strlen(key), buffer, 2, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
    catch( psoException exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try { 
-      hashmap.Get( key, strlen(key), buffer, 50, NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -161,7 +148,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try { 
-      hashmap.Get( key, strlen(key), buffer, 50, &length );
+      hashmap.Get( key, strlen(key), buffer, 50, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

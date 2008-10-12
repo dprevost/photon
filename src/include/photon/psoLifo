@@ -90,7 +90,7 @@ public:
     */
    int GetFirst( void   * buffer,
                  size_t   bufferLength,
-                 size_t * returnedLength );
+                 size_t & returnedLength );
 
    /** 
     * Iterate through the queue - no data items are removed from the queue
@@ -118,7 +118,7 @@ public:
     */
    int GetNext( void   * buffer,
                 size_t   bufferLength,
-                size_t * returnedLength );
+                size_t & returnedLength );
 
    /** 
     * Open an existing LIFO queue (see Session::CreateObject to create a new 
@@ -166,7 +166,7 @@ public:
     */
    int Pop( void   * buffer,
             size_t   bufferLength,
-            size_t * returnedLength );
+            size_t & returnedLength );
 
    /**
     * Insert a data element at the end of the LIFO queue.
@@ -184,11 +184,11 @@ public:
    /**
     * Return the status of the queue.
     *
-    * \param[out] pStatus      A pointer to the status structure.
+    * \param[out] status A reference to the status structure.
     *
     * \exception psoException An abnormal error occured.
     */
-   void Status( psoObjStatus * pStatus );
+   void Status( psoObjStatus & status );
 
 private:
 

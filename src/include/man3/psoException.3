@@ -1,4 +1,4 @@
-.TH "psoException" 3 "10 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoException" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -38,9 +38,11 @@ Definition at line 39 of file psoException.
 .ti -1c
 .RI "std::string \fBmsg\fP"
 .br
+.RI "\fIThe error message, if any. \fP"
 .ti -1c
 .RI "int \fBerrcode\fP"
 .br
+.RI "\fIThe last error code seen by the API. \fP"
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
@@ -70,10 +72,14 @@ Definition at line 58 of file psoException.
 .PP 
 .SS "std::string \fBpsoException::msg\fP\fC [private]\fP"
 .PP
-Definition at line 62 of file psoException.
+The error message, if any. 
+.PP
+Definition at line 63 of file psoException.
 .SS "int \fBpsoException::errcode\fP\fC [private]\fP"
 .PP
-Definition at line 64 of file psoException.
+The last error code seen by the API. 
+.PP
+Definition at line 66 of file psoException.
 
 .SH "Author"
 .PP 

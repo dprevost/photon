@@ -1,4 +1,4 @@
-.TH "API functions for Photon sessions." 3 "10 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon sessions." 3 "11 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -58,7 +58,7 @@ API functions for Photon sessions. \-
 .PP
 Commit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. 
 .PP
-Insertions and deletions subjected to this call include both data items inserted and deleted from data containers (maps, etc.) and objects themselves created with psoCreateObj and/or destroyed with psoDestroyObj.
+Insertions and deletions subjected to this call include both data items inserted and deleted from data containers (maps, etc.) and objects themselves created with \fBpsoCreateObject\fP and/or destroyed with \fBpsoDestroyObject\fP.
 .PP
 Note: the internal calls executed by the engine to satisfy this request cannot fail. As such, you cannot find yourself with an ugly situation where some operations were committed and others not. If an error is returned by this function, nothing was committed.
 .PP

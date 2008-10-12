@@ -138,7 +138,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from first session.
     */
    try {
-      map2.Get( key, strlen(key), buffer, 20, &length );
+      map2.Get( key, strlen(key), buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -151,7 +151,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Get( key, strlen(key), buffer, 20, &length );
+      map1.Get( key, strlen(key), buffer, 20, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -172,7 +172,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = map1.GetFirst( keyBuff, 20, buffer, 20, &keyLength, &length );
+      rc = map1.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -184,7 +184,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = map2.GetFirst( keyBuff, 20, buffer, 20, &keyLength, &length );
+      rc = map2.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

@@ -114,7 +114,7 @@ int main( int argc, char *argv[] )
 
    try {
       rc = theMap.GetFirst( countryCode, 2, description, 80, 
-                            &keyLength, &dataLength );
+                            keyLength, dataLength );
       while ( rc == PSO_OK ) {
          countryCode[keyLength] = 0;
          description[dataLength] = 0;
@@ -122,7 +122,7 @@ int main( int argc, char *argv[] )
             description << endl;
 
          rc = theMap.GetNext( countryCode, 2, description, 80, 
-                              &keyLength, &dataLength );
+                              keyLength, dataLength );
       }
       if ( rc != PSO_REACHED_THE_END ) {
          cerr << "At line " << __LINE__ << ", Hash Map loop abnormal error: " <<

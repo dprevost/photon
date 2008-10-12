@@ -66,7 +66,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      queue.GetFirst( NULL, 50, &length );
+      queue.GetFirst( NULL, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      queue.GetFirst( buffer, 2, &length );
+      queue.GetFirst( buffer, 2, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -91,22 +91,9 @@ int main( int argc, char * argv[] )
       }
    }
 
-   try {
-      queue.GetFirst( buffer, 50, NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
    // End of invalid args. This call should succeed.
    try {
-      queue.GetFirst( buffer, 50, &length );
+      queue.GetFirst( buffer, 50, length );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

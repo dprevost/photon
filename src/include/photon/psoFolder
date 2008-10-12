@@ -34,7 +34,7 @@ class PHOTON_EXPORT psoFolder
 {
 public:
 
-   psoFolder( psoSession &session );
+   psoFolder( psoSession & session );
 
    virtual ~psoFolder();
 
@@ -85,7 +85,7 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-   void CreateObject( const char    *       objectName,
+   void CreateObject( const char          * objectName,
                       size_t                nameLengthInBytes,
                       psoObjectDefinition * pDefinition );
 
@@ -161,7 +161,7 @@ public:
     * committed will not be seen by the iterator. Likewise, destroyed 
     * data items (even if not yet committed) are invisible.
     *
-    * \param[out] pEntry The data structure provided by the user to 
+    * \param[out] entry The data structure provided by the user to 
     *             hold the content of each item in the folder. Memory 
     *             allocation for this buffer is the responsability of 
     *             the caller.
@@ -170,7 +170,7 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-   int GetFirst( psoFolderEntry * pEntry );
+   int GetFirst( psoFolderEntry & entry );
 
    /** 
     * Iterate through the folder.
@@ -181,7 +181,7 @@ public:
     *
     * Evidently, you must call psoFolder::GetFirst to initialize the iterator. 
     *
-    * \param[out] pEntry The data structure provided by the user to 
+    * \param[out] entry The data structure provided by the user to 
     *             hold the content of each item in the folder. Memory 
     *             allocation for this buffer is the responsability of 
     *             the caller.
@@ -191,7 +191,7 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-   int GetNext( psoFolderEntry * pEntry );
+   int GetNext( psoFolderEntry & entry );
 
    /** 
     * Open an existing folder (see psoSession::CreateObject to create a new 
@@ -219,11 +219,11 @@ public:
    /**
     * Return the status of the folder.
     *
-    * \param[out] pStatus      A pointer to the status structure.
+    * \param[out] status A pointer to the status structure.
     *
     * \exception psoException An abnormal error occured.
     */
-   void Status( psoObjStatus * pStatus );
+   void Status( psoObjStatus & status );
 
 private:
 
@@ -237,5 +237,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* PSO_FOLDER_H_CPP */
+#endif // PSO_FOLDER_H_CPP
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

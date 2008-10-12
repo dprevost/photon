@@ -36,6 +36,7 @@ int psoFolderClose( PSO_HANDLE objectHandle )
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
    int errcode = PSO_OK;
+   bool ok;
    
    pFolder = (psoaFolder *) objectHandle;
    if ( pFolder == NULL ) return PSO_NULL_HANDLE;
@@ -51,9 +52,11 @@ int psoFolderClose( PSO_HANDLE objectHandle )
 
          /* Reinitialize the iterator, if needed */
          if ( pFolder->iterator.pHashItem != NULL ) {
-            if ( psonFolderRelease( pMemFolder,
+            ok = psonFolderRelease( pMemFolder,
                                     &pFolder->iterator,
-                                    &pFolder->object.pSession->context ) == 0 ) {
+                                    &pFolder->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+            if ( ok ) {
                memset( &pFolder->iterator, 0, sizeof(psonFolderItem) );
             }
             else {

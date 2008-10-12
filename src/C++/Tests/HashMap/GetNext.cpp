@@ -71,7 +71,7 @@ int main( int argc, char * argv[] )
 
    // No GetFirst...
    try { 
-      hashmap.GetNext( buffKey, 50, buffer, 50, &keyLength, &dataLength );
+      hashmap.GetNext( buffKey, 50, buffer, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -84,7 +84,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetFirst( buffKey, 50, buffer, 50, &keyLength, &dataLength );
+      hashmap.GetFirst( buffKey, 50, buffer, 50, keyLength, dataLength );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -94,7 +94,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try { 
-      hashmap.GetNext( NULL, 50, buffer, 50, &keyLength, &dataLength );
+      hashmap.GetNext( NULL, 50, buffer, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -107,7 +107,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetNext( buffKey, 2, buffer, 50, &keyLength, &dataLength );
+      hashmap.GetNext( buffKey, 2, buffer, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -120,7 +120,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetNext( buffKey, 50, NULL, 50, &keyLength, &dataLength );
+      hashmap.GetNext( buffKey, 50, NULL, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -133,39 +133,13 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetNext( buffKey, 50, buffer, 2, &keyLength, &dataLength );
+      hashmap.GetNext( buffKey, 50, buffer, 2, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
    catch( psoException exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try { 
-      hashmap.GetNext( buffKey, 50, buffer, 50, NULL, &dataLength );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try { 
-      hashmap.GetNext( buffKey, 50, buffer, 50, &keyLength, NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -173,7 +147,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try { 
-      hashmap.GetNext( buffKey, 50, buffer, 50, &keyLength, &dataLength );
+      hashmap.GetNext( buffKey, 50, buffer, 50, keyLength, dataLength );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

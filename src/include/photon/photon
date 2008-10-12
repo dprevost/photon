@@ -15,12 +15,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #ifndef PSO_H_CPP
 #define PSO_H_CPP
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include <photon/psoErrors.h>
 #include <photon/psoCommon.h>
@@ -28,6 +28,15 @@
 #include <photon/psoProcess>
 #include <photon/psoSession>
 #include <photon/psoFolder>
+/*
+ * Hash maps and fast maps implements the same data container but differs 
+ * with respect to transactions. 
+ * 
+ * Hash maps are read-write and locks are used to insure data integrity.
+ * Fast maps are read-only (with an update procedure using the class
+ * psoFastMapEditor) and no locks are required.
+ */
+
 #include <photon/psoHashMap>
 #include <photon/psoFastMap>
 #include <photon/psoFastMapEditor>
@@ -35,9 +44,9 @@
 #include <photon/psoQueue>
 #include <photon/psoException>
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif /* PSO_H_CPP */
+#endif // PSO_H_CPP
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

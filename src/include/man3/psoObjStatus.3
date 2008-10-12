@@ -1,4 +1,4 @@
-.TH "psoObjStatus" 3 "10 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoObjStatus" 3 "11 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ psoObjStatus \-
 .PP 
 This data structure is used to retrieve the status of objects. 
 .PP
-Definition at line 228 of file psoCommon.h.
+Definition at line 257 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -57,54 +57,54 @@ The object type.
 .PP
 
 .PP
-Definition at line 231 of file psoCommon.h.
+Definition at line 260 of file psoCommon.h.
 .SS "int \fBpsoObjStatus::status\fP"
 .PP
 Status (created but not committed, etc. 
 .PP
-) - not used in version 0.1 
+). 
 .PP
-Definition at line 234 of file psoCommon.h.
+Definition at line 263 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numBlocks\fP"
 .PP
 The number of blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 237 of file psoCommon.h.
+Definition at line 266 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numBlockGroup\fP"
 .PP
 The number of groups of blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 240 of file psoCommon.h.
+Definition at line 269 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numDataItem\fP"
 .PP
 The number of data items in thisa object. 
 .PP
 
 .PP
-Definition at line 243 of file psoCommon.h.
+Definition at line 272 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::freeBytes\fP"
 .PP
 The amount of free space available in the blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 246 of file psoCommon.h.
+Definition at line 275 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::maxDataLength\fP"
 .PP
 Maximum data length (in bytes). 
 .PP
 
 .PP
-Definition at line 249 of file psoCommon.h.
+Definition at line 278 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::maxKeyLength\fP"
 .PP
 Maximum key length (in bytes) if keys are supported - zero otherwise. 
 .PP
-Definition at line 252 of file psoCommon.h.
+Definition at line 281 of file psoCommon.h.
 
 .SH "Author"
 .PP 

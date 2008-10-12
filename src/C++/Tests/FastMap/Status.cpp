@@ -73,24 +73,12 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Invalid arguments to tested function.
+   // Since we use a reference, there are no invalid arguments to this
+   // tested function.
 
-   try {
-      hashmap.Status( NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
    // End of invalid args. This call should succeed.
    try {
-      hashmap.Status( &status );
+      hashmap.Status( status );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

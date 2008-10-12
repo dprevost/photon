@@ -1,4 +1,4 @@
-.TH "psoFolder" 3 "10 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoFolder" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -47,11 +47,11 @@ Definition at line 33 of file psoFolder.
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
-.RI "int \fBGetFirst\fP (psoFolderEntry *pEntry)"
+.RI "int \fBGetFirst\fP (psoFolderEntry &entry)"
 .br
 .RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
 .ti -1c
-.RI "int \fBGetNext\fP (psoFolderEntry *pEntry)"
+.RI "int \fBGetNext\fP (psoFolderEntry &entry)"
 .br
 .RI "\fIIterate through the folder. \fP"
 .ti -1c
@@ -63,7 +63,7 @@ Definition at line 33 of file psoFolder.
 .br
 .RI "\fIOpen an existing folder (see psoSession::CreateObject to create a new folder). \fP"
 .ti -1c
-.RI "void \fBStatus\fP (psoObjStatus *pStatus)"
+.RI "void \fBStatus\fP (psoObjStatus &status)"
 .br
 .RI "\fIReturn the status of the folder. \fP"
 .in -1c
@@ -219,7 +219,7 @@ The destruction of the object only becomes permanent after a call to psoSession:
 .RE
 .PP
 
-.SS "int psoFolder::GetFirst (psoFolderEntry * pEntry)"
+.SS "int psoFolder::GetFirst (psoFolderEntry & entry)"
 .PP
 Iterate through the folder - no data items are removed from the folder by this function. 
 .PP
@@ -227,7 +227,7 @@ Data items which were added by another session and are not yet committed will no
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+\fIentry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP
@@ -241,7 +241,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "int psoFolder::GetNext (psoFolderEntry * pEntry)"
+.SS "int psoFolder::GetNext (psoFolderEntry & entry)"
 .PP
 Iterate through the folder. 
 .PP
@@ -251,7 +251,7 @@ Evidently, you must call \fBpsoFolder::GetFirst\fP to initialize the iterator.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+\fIentry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
 .RE
 .PP
 \fBReturns:\fP
@@ -297,13 +297,13 @@ Open an existing folder (see psoSession::CreateObject to create a new folder).
 .RE
 .PP
 
-.SS "void psoFolder::Status (psoObjStatus * pStatus)"
+.SS "void psoFolder::Status (psoObjStatus & status)"
 .PP
 Return the status of the folder. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpStatus\fP A pointer to the status structure.
+\fIstatus\fP A pointer to the status structure.
 .RE
 .PP
 \fBExceptions:\fP

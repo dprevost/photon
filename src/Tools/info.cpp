@@ -40,7 +40,7 @@ int main()
    }
 
    try {
-      session.GetInfo( &info );
+      session.GetInfo( info );
    }
    catch( psoException exc ) {
       cerr << exc.Message( msg ) << endl; 

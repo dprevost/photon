@@ -1,4 +1,4 @@
-.TH "psoQueue" 3 "10 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoQueue" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -27,11 +27,11 @@ Definition at line 35 of file psoQueue.
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
-.RI "int \fBGetFirst\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "int \fBGetFirst\fP (void *buffer, size_t bufferLength, size_t &returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
-.RI "int \fBGetNext\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "int \fBGetNext\fP (void *buffer, size_t bufferLength, size_t &returnedLength)"
 .br
 .RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
@@ -43,7 +43,7 @@ Definition at line 35 of file psoQueue.
 .br
 .RI "\fIOpen an existing FIFO queue (see Session::CreateObject to create a new queue). \fP"
 .ti -1c
-.RI "int \fBPop\fP (void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "int \fBPop\fP (void *buffer, size_t bufferLength, size_t &returnedLength)"
 .br
 .RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
 .ti -1c
@@ -55,7 +55,7 @@ Definition at line 35 of file psoQueue.
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
-.RI "void \fBStatus\fP (psoObjStatus *pStatus)"
+.RI "void \fBStatus\fP (psoObjStatus &status)"
 .br
 .RI "\fIReturn the status of the queue. \fP"
 .in -1c
@@ -116,7 +116,7 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .RE
 .PP
 
-.SS "int psoQueue::GetFirst (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "int psoQueue::GetFirst (void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -142,7 +142,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "int psoQueue::GetNext (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "int psoQueue::GetNext (void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -202,7 +202,7 @@ Open an existing FIFO queue (see Session::CreateObject to create a new queue).
 .RE
 .PP
 
-.SS "int psoQueue::Pop (void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "int psoQueue::Pop (void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Remove the first item from the beginning of a FIFO queue and return it to the caller. 
 .PP
@@ -268,13 +268,13 @@ The additions become permanent immediately, not after a call to psoSession::Comm
 .RE
 .PP
 
-.SS "void psoQueue::Status (psoObjStatus * pStatus)"
+.SS "void psoQueue::Status (psoObjStatus & status)"
 .PP
 Return the status of the queue. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fIpStatus\fP A pointer to the status structure.
+\fIstatus\fP A reference to the status structure.
 .RE
 .PP
 \fBExceptions:\fP

@@ -33,7 +33,8 @@ int main( int argc, char * argv[] )
    string subname = name + "/f1";
    psoFolderEntry entry;
    psoObjectDefinition def; 
-
+   int rc;
+   
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;
    
@@ -55,24 +56,36 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Invalid arguments to tested function.
+   // There are no invalid args to this tested function.
 
-   try {
-      folder.GetFirst( NULL );
-   }
-   catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
    // End of invalid args. This call should succeed.
    try {
-      folder.GetFirst( &entry );
+      folder.GetFirst( entry );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   try {
+      folder.Close();
+      folder.Open( subname );
+   }
+   catch( psoException exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   try {
+      rc = folder.GetFirst( entry );
+   }
+   catch( psoException exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   
+   if ( rc != PSO_IS_EMPTY ) {
+      cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
 

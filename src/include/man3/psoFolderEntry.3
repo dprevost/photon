@@ -1,4 +1,4 @@
-.TH "psoFolderEntry" 3 "10 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFolderEntry" 3 "11 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -14,7 +14,7 @@ This data structure is used to iterate throught all objects in a folder.
 
 Note: the actual name of an object (and the length of this name) might vary if you are using different locales (internally, names are stored as wide characters (4 bytes)). 
 .PP
-Definition at line 206 of file psoCommon.h.
+Definition at line 235 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -29,7 +29,7 @@ Definition at line 206 of file psoCommon.h.
 .ti -1c
 .RI "size_t \fBnameLengthInBytes\fP"
 .br
-.RI "\fIThe actual length of the name of the object. \fP"
+.RI "\fIThe actual length (in bytes)of the name of the object. \fP"
 .ti -1c
 .RI "char \fBname\fP [PSO_MAX_NAME_LENGTH]"
 .br
@@ -41,28 +41,28 @@ Definition at line 206 of file psoCommon.h.
 .PP
 The object type. 
 .PP
-Definition at line 209 of file psoCommon.h.
+Definition at line 238 of file psoCommon.h.
 .SS "int \fBpsoFolderEntry::status\fP"
 .PP
 Status (created but not committed, etc. 
 .PP
-) - not used in version 0.1 
+). 
 .PP
-Definition at line 212 of file psoCommon.h.
+Definition at line 241 of file psoCommon.h.
 .SS "size_t \fBpsoFolderEntry::nameLengthInBytes\fP"
 .PP
-The actual length of the name of the object. 
+The actual length (in bytes)of the name of the object. 
 .PP
 
 .PP
-Definition at line 215 of file psoCommon.h.
+Definition at line 244 of file psoCommon.h.
 .SS "char \fBpsoFolderEntry::name\fP[PSO_MAX_NAME_LENGTH]"
 .PP
 The name of the object. 
 .PP
 
 .PP
-Definition at line 218 of file psoCommon.h.
+Definition at line 247 of file psoCommon.h.
 
 .SH "Author"
 .PP 

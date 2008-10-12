@@ -67,12 +67,12 @@ void psoLifo::Definition( psoObjectDefinition ** definition )
 
 int psoLifo::GetFirst( void   * buffer,
                        size_t   bufferLength,
-                       size_t * returnedLength )
+                       size_t & returnedLength )
 {
    int rc = psoLifoGetFirst( m_objectHandle,
                              buffer,
                              bufferLength,
-                             returnedLength );
+                             &returnedLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
       throw psoException( rc, m_sessionHandle, "psoLifo::GetFirst" );
    }
@@ -83,12 +83,12 @@ int psoLifo::GetFirst( void   * buffer,
 
 int psoLifo::GetNext( void   * buffer,
                       size_t   bufferLength,
-                      size_t * returnedLength )
+                      size_t & returnedLength )
 {
    int rc = psoLifoGetNext( m_objectHandle,
                             buffer,
                             bufferLength,
-                            returnedLength );
+                            &returnedLength );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
       throw psoException( rc, m_sessionHandle, "psoLifo::GetNext" );
    }
@@ -126,12 +126,12 @@ void psoLifo::Open( const char * queueName,
 
 int psoLifo::Pop( void   * buffer,
                   size_t   bufferLength,
-                  size_t * returnedLength )
+                  size_t & returnedLength )
 {
    int rc = psoLifoPop( m_objectHandle,
                         buffer,
                         bufferLength,
-                        returnedLength );
+                        &returnedLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY && rc != PSO_ITEM_IS_IN_USE ) {
       throw psoException( rc, m_sessionHandle, "psoLifo::Pop" );
    }
@@ -153,10 +153,10 @@ void psoLifo::Push( const void * pItem,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoLifo::Status( psoObjStatus * pStatus )
+void psoLifo::Status( psoObjStatus & status )
 {
    int rc = psoLifoStatus( m_objectHandle,
-                           pStatus );
+                           &status );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoLifo::Status" );
    }
