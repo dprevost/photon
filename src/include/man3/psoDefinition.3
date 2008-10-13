@@ -1,0 +1,136 @@
+.TH "psoDefinition" 3 "13 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoDefinition \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 39 of file psoDefinition.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBpsoDefinition\fP (size_t numberOfFields)"
+.br
+.RI "\fIConstruct a data-container definition. \fP"
+.ti -1c
+.RI "virtual \fB~psoDefinition\fP ()"
+.br
+.ti -1c
+.RI "void \fBAddKey\fP (psoKeyType type, size_t length, size_t minLength, size_t maxLength)"
+.br
+.RI "\fIAdd a key to the definition. \fP"
+.ti -1c
+.RI "void \fBAddField\fP (std::string &name, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
+.br
+.ti -1c
+.RI "void \fBAddField\fP (const char *name, size_t nameLength, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
+.br
+.ti -1c
+.RI "void \fBObjectType\fP (psoObjectType type)"
+.br
+.ti -1c
+.RI "void \fBReset\fP (size_t numberOfFields)"
+.br
+.RI "\fIReset the object to be reused for another data container. \fP"
+.ti -1c
+.RI "const psoObjectDefinition & \fBGetDef\fP ()"
+.br
+.RI "\fIReturns a reference to the definition. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "psoObjectDefinition * \fBpDefinition\fP"
+.br
+.RI "\fIThe definition itself. \fP"
+.ti -1c
+.RI "size_t \fBcurrentField\fP"
+.br
+.RI "\fIIterator. \fP"
+.ti -1c
+.RI "bool \fBkeyAdded\fP"
+.br
+.RI "\fIwas the key added? \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "psoDefinition::psoDefinition (size_t numberOfFields)"
+.PP
+Construct a data-container definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInumberOfFields\fP The number of data fields.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual psoDefinition::~psoDefinition ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void psoDefinition::AddKey (psoKeyType type, size_t length, size_t minLength, size_t maxLength)"
+.PP
+Add a key to the definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItype\fP The data type of the key. 
+.br
+\fIlength\fP The length of the key for fixed-length data types. 
+.br
+\fIminLength\fP The minimal length of the key for variable-length data types. 
+.br
+\fImaxLength\fP The maximal length of the key for variable-length data types. A value of zero indicates an infinite value (limited by the amount of shared memory, evidently).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoDefinition::AddField (std::string & name, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
+.PP
+.SS "void psoDefinition::AddField (const char * name, size_t nameLength, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
+.PP
+.SS "void psoDefinition::ObjectType (psoObjectType type)"
+.PP
+.SS "void psoDefinition::Reset (size_t numberOfFields)"
+.PP
+Reset the object to be reused for another data container. 
+.PP
+.SS "const psoObjectDefinition& psoDefinition::GetDef ()"
+.PP
+Returns a reference to the definition. 
+.PP
+.SH "Member Data Documentation"
+.PP 
+.SS "psoObjectDefinition* \fBpsoDefinition::pDefinition\fP\fC [private]\fP"
+.PP
+The definition itself. 
+.PP
+Definition at line 102 of file psoDefinition.
+.SS "size_t \fBpsoDefinition::currentField\fP\fC [private]\fP"
+.PP
+Iterator. 
+.PP
+Definition at line 105 of file psoDefinition.
+.SS "bool \fBpsoDefinition::keyAdded\fP\fC [private]\fP"
+.PP
+was the key added? 
+.PP
+Definition at line 108 of file psoDefinition.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.

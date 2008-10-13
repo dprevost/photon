@@ -107,24 +107,27 @@ man_MANS =                  \
         man3/psoQueue.3     \
         man3/psoSession.3   
 
-EXTRA_DIST =                  \
-        doxyfile.pso_c        \
-        $(PSO_C_FILES)        \
-        Doxyfile.psoException \
-        Doxyfile.psoFolder    \
-        Doxyfile.psoHashMap   \
-        Doxyfile.psoProcess   \
-        Doxyfile.psoQueue     \
-        Doxyfile.psoSession   \
-        man3/psoException.3   \
-        man3/psoFolder.3      \
-        man3/psoHashMap.3     \
-        man3/psoProcess.3     \
-        man3/psoQueue.3       \
-        man3/psoSession.3     
+EXTRA_DIST =                   \
+        doxyfile.pso_c         \
+        $(PSO_C_FILES)         \
+        Doxyfile.psoDefinition \
+        Doxyfile.psoException  \
+        Doxyfile.psoFolder     \
+        Doxyfile.psoHashMap    \
+        Doxyfile.psoProcess    \
+        Doxyfile.psoQueue      \
+        Doxyfile.psoSession    \
+        man3/psoDefinition.3   \
+        man3/psoException.3    \
+        man3/psoFolder.3       \
+        man3/psoHashMap.3      \
+        man3/psoProcess.3      \
+        man3/psoQueue.3        \
+        man3/psoSession.3      
 
 nobase_include_HEADERS =        \
         photon/psoCommon.h      \
+        photon/psoDefinition    \
         photon/psoErrors.h      \
         photon/psoFastMap.h     \
         photon/psoFolder.h      \
@@ -149,6 +152,11 @@ nobase_include_HEADERS =        \
 # Only rebuild the man pages if doxygen is present.
 #
 if COND_USE_DOXYGEN
+
+man3/psoDefinition.3: photon/psoDefinition
+	doxygen $(top_srcdir)/src/include/Doxyfile.psoDefinition
+	cp dummy/man/man3/psoDefinition.3 man3/psoDefinition.3
+	-rm -rf dummy
 
 man3/psoException.3: photon/psoException
 	doxygen $(top_srcdir)/src/include/Doxyfile.psoException

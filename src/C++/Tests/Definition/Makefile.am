@@ -23,8 +23,11 @@ check_PROGRAMS =   \
         ObjectType \
         Reset      
 
-AddField_SOURCE      = AddField.cpp
-Construct_SOURCES    = Construct.cpp
+AddKey_SOURCES     = AddKey.cpp
+AddField_SOURCES   = AddField.cpp
+Construct_SOURCES  = Construct.cpp
+ObjectType_SOURCES = ObjectType.cpp
+Reset_SOURCES      = Reset.cpp
 
 EXTRA_DIST =           \
         Makefile.win32 \
