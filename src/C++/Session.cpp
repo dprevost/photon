@@ -50,13 +50,13 @@ void psoSession::Commit()
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::CreateObject( const std::string   & objectName,
-                               psoObjectDefinition * pDefinition )
+void psoSession::CreateObject( const std::string         & objectName,
+                               const psoObjectDefinition & definition )
 {
    int rc = psoCreateObject( m_sessionHandle,
                              objectName.c_str(),
                              objectName.length(),
-                             pDefinition );
+                             (psoObjectDefinition*)&definition );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoSession::CreateObject" );
    }
@@ -64,14 +64,14 @@ void psoSession::CreateObject( const std::string   & objectName,
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::CreateObject( const char          * objectName,
-                               size_t                nameLengthInBytes,
-                               psoObjectDefinition * pDefinition )
+void psoSession::CreateObject( const char                * objectName,
+                               size_t                      nameLengthInBytes,
+                               const psoObjectDefinition & definition )
 {
    int rc = psoCreateObject( m_sessionHandle,
                              objectName,
                              nameLengthInBytes,
-                             pDefinition );
+                             (psoObjectDefinition*)&definition );
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoSession::CreateObject" );
    }

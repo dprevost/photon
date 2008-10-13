@@ -505,7 +505,7 @@ void psoShell::Cp()
    
    try {
       definition.type = status.type;
-      session.CreateObject( destName, &definition );
+      session.CreateObject( destName, definition );
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
          
@@ -821,7 +821,7 @@ void psoShell::Mkdir()
    
    try {
       definition.type = PSO_FOLDER;
-      session.CreateObject( folderName, &definition );
+      session.CreateObject( folderName, definition );
       session.Commit();
    }
    catch ( psoException exc ) {
@@ -1004,7 +1004,7 @@ void psoShell::Touch()
       }
    
       try {
-         session.CreateObject( objectName, &definition );
+         session.CreateObject( objectName, definition );
          session.Commit();
       }
       catch ( psoException exc ) {

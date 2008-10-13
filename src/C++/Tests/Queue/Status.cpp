@@ -54,8 +54,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, &folderDef );
-      session.CreateObject( qname, &queueDef );
+      session.CreateObject( fname, folderDef );
+      session.CreateObject( qname, queueDef );
       queue.Open( qname );
       queue.Push( data1, strlen(data1) );
       queue.Push( data2, strlen(data2) );

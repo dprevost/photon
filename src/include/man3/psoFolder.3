@@ -1,4 +1,4 @@
-.TH "psoFolder" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoFolder" 3 "12 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,11 +23,11 @@ Definition at line 33 of file psoFolder.
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition *pDefinition)"
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition &definition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "void \fBCreateObject\fP (const char *objectName, size_t nameLengthInBytes, psoObjectDefinition *pDefinition)"
+.RI "void \fBCreateObject\fP (const char *objectName, size_t nameLengthInBytes, psoObjectDefinition &definition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
@@ -99,7 +99,7 @@ This function terminates the current access to the folder in shared memory (the 
 .RE
 .PP
 
-.SS "void psoFolder::CreateObject (const std::string & objectName, psoObjectDefinition * pDefinition)"
+.SS "void psoFolder::CreateObject (const std::string & objectName, psoObjectDefinition & definition)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
@@ -111,7 +111,7 @@ This function does not provide a handle or an object to the newly created shared
 .RS 4
 \fIobjectName\fP The name of the object. 
 .br
-\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the 'optional' definition.
+\fIdefinition\fP The type of object to create (folder, queue, etc.) and the definition.
 .RE
 .PP
 \fBExceptions:\fP
@@ -120,7 +120,7 @@ This function does not provide a handle or an object to the newly created shared
 .RE
 .PP
 
-.SS "void psoFolder::CreateObject (const char * objectName, size_t nameLengthInBytes, psoObjectDefinition * pDefinition)"
+.SS "void psoFolder::CreateObject (const char * objectName, size_t nameLengthInBytes, psoObjectDefinition & definition)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
@@ -134,7 +134,7 @@ This function does not provide a handle or an object to the newly created shared
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
 .br
-\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the 'optional' definition.
+\fIdefinition\fP The type of object to create (folder, queue, etc.) and the definition.
 .RE
 .PP
 \fBExceptions:\fP

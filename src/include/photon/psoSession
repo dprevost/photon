@@ -65,13 +65,13 @@ public:
     * ::Commit.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
-    *             and the optional definitions (as needed).
+    * \param[in]  definition The type of object to create (folder, queue, etc.)
+    *             and the definitions (as needed).
     *
     * \exception psoException An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition * pDefinition );
+   void CreateObject( const std::string         & objectName,
+                      const psoObjectDefinition & definition );
    
    /**
     * Create a new object in shared memory.
@@ -82,14 +82,14 @@ public:
     * \param[in]  objectName The fully qualified name of the object. 
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
-    * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
-    *             and the optional definitions (as needed).
+    * \param[in]  definition The type of object to create (folder, queue, etc.)
+    *             and the definitions (as needed).
     *
     * \exception psoException An abnormal error occured.
     */
-   void CreateObject( const char          * objectName,
-                      size_t                nameLengthInBytes,
-                      psoObjectDefinition * pDefinition );
+   void CreateObject( const char                * objectName,
+                      size_t                      nameLengthInBytes,
+                      const psoObjectDefinition & definition );
    
    /**
     * Destroy an existing object in shared memory.

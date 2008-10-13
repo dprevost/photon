@@ -59,8 +59,8 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session2.CreateObject( fname, &folderDef );
-      session2.CreateObject( hname, &mapDef );
+      session2.CreateObject( fname, folderDef );
+      session2.CreateObject( hname, mapDef );
       session2.Commit();
       hashmap.Open( hname );
       editor.Open( hname );

@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      session1.CreateObject( name, &folderDef );
+      session1.CreateObject( name, folderDef );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -203,7 +203,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session1.CreateObject( name, &queueDef );
+      session1.CreateObject( name, queueDef );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

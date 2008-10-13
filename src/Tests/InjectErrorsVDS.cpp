@@ -762,7 +762,7 @@ void PopulateHashMaps( psoSession & session, vector<myMap> & h )
    };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      session.CreateObject( h[i].name, &mapDef );
+      session.CreateObject( h[i].name, mapDef );
       h[i].map.Open( h[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -793,7 +793,7 @@ void PopulateLifos( psoSession & session, vector<myLifo> & l )
    };
    
    for ( i = 0; i < NUM_LIFOS; ++i ) {
-      session.CreateObject( l[i].name, &queueDef );
+      session.CreateObject( l[i].name, queueDef );
       l[i].queue.Open( l[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -824,7 +824,7 @@ void PopulateQueues( psoSession & session, vector<myQueue> & q )
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
       cout << " i = " << i << ", " << q[i].name << ", " << &session << endl;
-      session.CreateObject( q[i].name, &queueDef );
+      session.CreateObject( q[i].name, queueDef );
       q[i].queue.Open( q[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -854,7 +854,7 @@ int main()
    try {
       process.Init( "10701" );
       session.Init();
-      session.CreateObject( foldername, &folderDef );
+      session.CreateObject( foldername, folderDef );
    }
    catch( psoException exc ) {
       rc = exc.ErrorCode();

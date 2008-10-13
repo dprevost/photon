@@ -61,7 +61,7 @@ int main( int argc, char * argv[] )
    allocSpace = info.allocatedSizeInBytes;
 
    try {
-      session.CreateObject( name, &folderDef );
+      session.CreateObject( name, folderDef );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

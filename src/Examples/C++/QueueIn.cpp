@@ -58,7 +58,6 @@ void cleanup()
 void initObjects()
 {
    int controlData;
-   size_t len;
    
    psoObjectDefinition defFolder;
    memset( &defFolder, 0, sizeof(psoObjectDefinition) );
@@ -70,22 +69,14 @@ void initObjects()
       { PSO_KEY_VAR_STRING, 0, 1, 20}, 
       { { "Status", PSO_INTEGER, 4, 0, 0, 0, 0} } 
    };
-   psoObjectDefinition * pDefQueue = NULL;
+   /*
+    *
+    */
+   psoDefinition defQueue(2);
 
-   len = offsetof( psoObjectDefinition, fields ) + 
-      2 * sizeof(psoFieldDefinition);
-   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
-   pDefQueue->type = PSO_QUEUE;
-   pDefQueue->numFields = 2;
-   pDefQueue->fields[0].type = PSO_STRING;
-   pDefQueue->fields[1].type = PSO_VAR_STRING;
-
-   pDefQueue->fields[0].length = 2;
-   pDefQueue->fields[1].minLength = 1;
-   pDefQueue->fields[1].maxLength = 80;
-
-   strcpy( pDefQueue->fields[0].name, "Countrycode" );
-   strcpy( pDefQueue->fields[1].name, "CountryName" );
+   defQueue.ObjectType( PSO_QUEUE );
+   defQueue.AddField( "CountryCode", 11, PSO_STRING,     2, 0,  0, 0, 0 );
+   defQueue.AddField( "CountryName", 11, PSO_VAR_STRING, 0, 1, 80, 0, 0 );
 
    // If the objects already exist, we remove them.
    try {
@@ -101,10 +92,10 @@ void initObjects()
    catch(...) {} 
    
    // Create the folder first, evidently
-   session.CreateObject( folderName, &defFolder );
-   session.CreateObject( controlName, &defMap );
-   session.CreateObject( inQueueName, pDefQueue );
-   session.CreateObject( outQueueName, pDefQueue );
+   session.CreateObject( folderName,   defFolder );
+   session.CreateObject( controlName,  defMap );
+   session.CreateObject( inQueueName,  defQueue.GetDef() );
+   session.CreateObject( outQueueName, defQueue.GetDef() );
 
    control.Open( controlName );
    // Initialize the control object

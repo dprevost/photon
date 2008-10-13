@@ -1,4 +1,4 @@
-This is quasar.info, produced by makeinfo version 4.8 from quasar.texi.
+This is quasar.info, produced by makeinfo version 4.11 from quasar.texi.
 
 START-INFO-DIR-ENTRY
 * quasar: (quasar).             starts the Photon server
@@ -15,7 +15,7 @@ quasar
 Name
 ****
 
-quasar a^€” starts the Photon server
+quasar -- starts the Photon server
 
 
 
@@ -158,22 +158,27 @@ Report bugs to <dprevost@photonsoftware.org>.
 COPYRIGHT
 *********
 
-Copyright (C) 2008 Daniel Pre'vost.
+Copyright (C) 2008 Daniel Prévost.
 
 
 
 Tag Table:
-Node: Top171
-Ref: name231
-Ref: synopsis282
-Ref: Testing the configuration file [and exit];303
-Ref: Verifying the shared memory [and exit];444
-Ref: Getting [minimal] help;581
-Ref: Running normally;655
-Ref: DESCRIPTION750
-Ref: OPTIONS949
-Ref: CONFIGURATION1473
-Ref: REPORTING BUGS3614
-Ref: COPYRIGHT3693
+Node: Top172
+Ref: name232
+Ref: synopsis281
+Ref: Testing the configuration file [and exit];302
+Ref: Verifying the shared memory [and exit];443
+Ref: Getting [minimal] help;580
+Ref: Running normally;654
+Ref: DESCRIPTION749
+Ref: OPTIONS948
+Ref: CONFIGURATION1472
+Ref: REPORTING BUGS3613
+Ref: COPYRIGHT3692
 
 End Tag Table
+
+
+Local Variables:
+coding: iso-8859-1
+End:

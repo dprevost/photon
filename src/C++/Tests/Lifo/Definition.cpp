@@ -46,34 +46,25 @@ int main( int argc, char * argv[] )
    struct dummy data;
    size_t len;
    psoObjectDefinition * pDef = NULL;
-   psoObjectDefinition * pDefQueue = NULL;
    psoObjectDefinition folderDef;
+   psoDefinition queueDef(5);
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
    
-   len = offsetof( psoObjectDefinition, fields ) + 
-      5 * sizeof(psoFieldDefinition);
-   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
-   pDefQueue->type = PSO_LIFO;
-   pDefQueue->numFields = 5;
-   pDefQueue->fields[0].type = PSO_INTEGER;
-   pDefQueue->fields[1].type = PSO_INTEGER;
-   pDefQueue->fields[2].type = PSO_STRING;
-   pDefQueue->fields[3].type = PSO_INTEGER;
-   pDefQueue->fields[4].type = PSO_VAR_BINARY;
+   try {
+      queueDef.ObjectType( PSO_LIFO );
+      queueDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
+      queueDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
+      queueDef.AddField( "field3", 6, PSO_STRING,    30, 0, 0, 0, 0 );
+      queueDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
+      queueDef.AddField( "field5", 6, PSO_VAR_BINARY, 0, 0, 0, 0, 0 );
+   }
+   catch( psoException exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
 
-   pDefQueue->fields[0].length = 1;
-   pDefQueue->fields[1].length = 4;
-   pDefQueue->fields[2].length = 30;
-   pDefQueue->fields[3].length = 2;
-
-   strcpy( pDefQueue->fields[0].name, "field1" );
-   strcpy( pDefQueue->fields[1].name, "field2" );
-   strcpy( pDefQueue->fields[2].name, "field3" );
-   strcpy( pDefQueue->fields[3].name, "field4" );
-   strcpy( pDefQueue->fields[4].name, "field5" );
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -82,8 +73,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, &folderDef );
-      session.CreateObject( hname, pDefQueue );
+      session.CreateObject( fname, folderDef );
+      session.CreateObject( hname, queueDef.GetDef() );
       queue.Open( hname );
       queue.Push( &data, sizeof(data) );
    }
@@ -117,7 +108,8 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   if ( memcmp( pDefQueue, pDef, len ) != 0 ) {
+   len = offsetof( psoObjectDefinition, fields ) + 5 * sizeof(psoFieldDefinition);
+   if ( memcmp( &queueDef.GetDef(), pDef, len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

@@ -45,7 +45,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session2.Init();
-      session.CreateObject( name, &def );
+      session.CreateObject( name, def );
       folder.Open( name );
    }
    catch( psoException exc ) {
@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      folder.CreateObject( subname, &def );
+      folder.CreateObject( subname, def );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

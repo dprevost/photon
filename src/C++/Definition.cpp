@@ -84,10 +84,88 @@ void psoDefinition::AddField( const char   * name,
                               size_t         precision,
                               size_t         scale )
 {
-      throw psoException( PSO_INVALID_KEY_DEF, 
+   if ( currentField >= pDefinition->numFields ) {
+      throw psoException( PSO_INVALID_NUM_FIELDS, 
                           NULL, 
                           "psoDefinition::AddField" );
+   }
+   
+   if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
+      throw psoException( PSO_INVALID_FIELD_NAME, 
+                          NULL, 
+                          "psoDefinition::AddField" );
+   }
+   memcpy( pDefinition->fields[currentField].name, name, nameLength );
+   
+   switch ( type ) {
+   case PSO_INTEGER:
+      if ( length != 1 && length != 2 && length != 4 && length != 8 ) {
+      throw psoException( PSO_INVALID_FIELD_LENGTH_INT, 
+                          NULL, 
+                          "psoDefinition::AddField" );
+      }
+      pDefinition->fields[currentField].type = type;
+      pDefinition->fields[currentField].length = length;
+      currentField++;
+      break;
 
+   case PSO_BINARY:
+   case PSO_STRING:
+      if ( length == 0 ) {
+         throw psoException( PSO_INVALID_FIELD_LENGTH, 
+                             NULL, 
+                             "psoDefinition::AddField" );
+      }
+      pDefinition->fields[currentField].type = type;
+      pDefinition->fields[currentField].length = length;
+      currentField++;
+      break;
+
+   case PSO_VAR_BINARY:
+   case PSO_VAR_STRING:
+      if ( currentField != pDefinition->numFields-1 ) {
+         throw psoException( PSO_INVALID_FIELD_TYPE, 
+                             NULL, 
+                             "psoDefinition::AddField" );
+      }
+      if ( maxLength != 0 && maxLength < minLength ) {
+         throw psoException( PSO_INVALID_FIELD_LENGTH, 
+                             NULL, 
+                             "psoDefinition::AddField" );
+      }
+      pDefinition->fields[currentField].type = type;
+      pDefinition->fields[currentField].minLength = minLength;
+      pDefinition->fields[currentField].maxLength = maxLength;
+      currentField++;
+      break;
+
+   case PSO_BOOLEAN:
+      pDefinition->fields[currentField].type = type;
+      currentField++;
+      break;
+
+   case PSO_DECIMAL:
+      if ( precision == 0 || precision > PSO_FIELD_MAX_PRECISION ) {
+         throw psoException( PSO_INVALID_PRECISION, 
+                             NULL, 
+                             "psoDefinition::AddField" );
+      }
+      if ( scale > precision ) {
+         throw psoException( PSO_INVALID_SCALE, 
+                             NULL, 
+                             "psoDefinition::AddField" );
+      }
+      pDefinition->fields[currentField].type = type;
+      pDefinition->fields[currentField].precision = precision;
+      pDefinition->fields[currentField].scale = scale;
+      currentField++;
+      break;
+
+   default:
+      throw psoException( PSO_INVALID_FIELD_TYPE, 
+                          NULL, 
+                          "psoDefinition::AddField" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -105,38 +183,41 @@ void psoDefinition::AddKey( psoKeyType type,
 
    switch ( type ) {
    case PSO_KEY_INTEGER:
-      if ( length == 1 || length == 2 || length == 4 || length == 8 ) {
-         pDefinition->key.type = type;
-         pDefinition->key.length = length;
-         keyAdded = true;
-         break;
+      if ( length != 1 && length != 2 && length != 4 && length != 8 ) {
+         throw psoException( PSO_INVALID_KEY_DEF, 
+                             NULL, 
+                             "psoDefinition::AddKey" );
       }
-      throw psoException( PSO_INVALID_KEY_DEF, 
-                          NULL, 
-                          "psoDefinition::AddKey" );
+      pDefinition->key.type = type;
+      pDefinition->key.length = length;
+      keyAdded = true;
+      break;
+
    case PSO_KEY_BINARY:
    case PSO_KEY_STRING:
-      if ( length > 0 ) {
-         pDefinition->key.type = type;
-         pDefinition->key.length = length;
-         keyAdded = true;
-         break;
+      if ( length == 0 ) {
+         throw psoException( PSO_INVALID_KEY_DEF, 
+                             NULL, 
+                             "psoDefinition::AddKey" );
       }
-      throw psoException( PSO_INVALID_KEY_DEF, 
-                          NULL, 
-                          "psoDefinition::AddKey" );
+      pDefinition->key.type = type;
+      pDefinition->key.length = length;
+      keyAdded = true;
+      break;
+
    case PSO_KEY_VAR_BINARY:
    case PSO_KEY_VAR_STRING:
-      if ( maxLength == 0 || maxLength >= minLength ) {
-         pDefinition->key.type = type;
-         pDefinition->key.minLength = minLength;
-         pDefinition->key.maxLength = maxLength;
-         keyAdded = true;
-         break;
+      if ( maxLength != 0 && maxLength < minLength ) {
+         throw psoException( PSO_INVALID_KEY_DEF, 
+                             NULL, 
+                             "psoDefinition::AddKey" );
       }
-      throw psoException( PSO_INVALID_KEY_DEF, 
-                          NULL, 
-                          "psoDefinition::AddKey" );
+      pDefinition->key.type = type;
+      pDefinition->key.minLength = minLength;
+      pDefinition->key.maxLength = maxLength;
+      keyAdded = true;
+      break;
+
    default:
       throw psoException( PSO_INVALID_KEY_DEF, 
                           NULL, 

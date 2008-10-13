@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, &folderDef );
-      session1.CreateObject( hname, &mapDef );
+      session1.CreateObject( fname, folderDef );
+      session1.CreateObject( hname, mapDef );
    }
    catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

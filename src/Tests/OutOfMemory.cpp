@@ -78,9 +78,9 @@ int main()
       }
       catch ( psoException exc ) {}
 
-      session.CreateObject( folderName, &folderDef );
-      session.CreateObject( queueName1, &queueDef );
-      session.CreateObject( queueName2, &queueDef );
+      session.CreateObject( folderName, folderDef );
+      session.CreateObject( queueName1, queueDef );
+      session.CreateObject( queueName2, queueDef );
       session.GetInfo( info1 );
    }
    catch( psoException exc ) {

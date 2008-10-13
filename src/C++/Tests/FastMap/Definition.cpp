@@ -45,37 +45,32 @@ int main( int argc, char * argv[] )
 
    size_t len;
    psoObjectDefinition * pDef = NULL;
-   psoObjectDefinition * pDefHashMap = NULL;
    psoObjectDefinition folderDef;
+   psoDefinition mapDef(5);
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
    
-   len = offsetof( psoObjectDefinition, fields ) + 
-      5 * sizeof(psoFieldDefinition);
-   pDefHashMap = (psoObjectDefinition *)calloc( len, 1 );
-   pDefHashMap->type = PSO_FAST_MAP;
-   pDefHashMap->numFields = 5;
-   pDefHashMap->fields[0].type = PSO_INTEGER;
-   pDefHashMap->fields[1].type = PSO_INTEGER;
-   pDefHashMap->fields[2].type = PSO_STRING;
-   pDefHashMap->fields[3].type = PSO_INTEGER;
-   pDefHashMap->fields[4].type = PSO_VAR_BINARY;
+   try {
+      mapDef.AddKey( PSO_KEY_VAR_STRING, 0, 1, 0 );
+   }
+   catch( psoException exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
 
-   pDefHashMap->fields[0].length = 1;
-   pDefHashMap->fields[1].length = 4;
-   pDefHashMap->fields[2].length = 30;
-   pDefHashMap->fields[3].length = 2;
-
-   strcpy( pDefHashMap->fields[0].name, "field1" );
-   strcpy( pDefHashMap->fields[1].name, "field2" );
-   strcpy( pDefHashMap->fields[2].name, "field3" );
-   strcpy( pDefHashMap->fields[3].name, "field4" );
-   strcpy( pDefHashMap->fields[4].name, "field5" );
-   
-   pDefHashMap->key.type = PSO_KEY_VAR_STRING;
-   pDefHashMap->key.minLength = 1;
-   pDefHashMap->key.maxLength = 0;
+   try {
+      mapDef.ObjectType( PSO_FAST_MAP );
+      mapDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
+      mapDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
+      mapDef.AddField( "field3", 6, PSO_STRING,    30, 0, 0, 0, 0 );
+      mapDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
+      mapDef.AddField( "field5", 6, PSO_VAR_BINARY, 0, 0, 0, 0, 0 );
+   }
+   catch( psoException exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
    
    try {
       if ( argc > 1 ) {
@@ -85,8 +80,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, &folderDef );
-      session.CreateObject( hname, pDefHashMap );
+      session.CreateObject( fname, folderDef );
+      session.CreateObject( hname, mapDef.GetDef() );
       hashmap.Open( hname );
    }
    catch( psoException exc ) {
@@ -118,8 +113,9 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
-
-   if ( memcmp( pDefHashMap, pDef, len ) != 0 ) {
+   
+   len = offsetof( psoObjectDefinition, fields ) + 5 * sizeof(psoFieldDefinition);
+   if ( memcmp( &mapDef.GetDef(), pDef, len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-quasar @^a€” starts the Photon server
+quasar --- starts the Photon server
 
 @noindent
 @anchor{synopsis}

@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
       folder = new psoFolder(*session);
       
       session->Init();
-      session->CreateObject( name, &folderDef );
+      session->CreateObject( name, folderDef );
       folder->Open( name );
       
       delete session;

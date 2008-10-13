@@ -106,6 +106,28 @@ int main()
       }
    }
 
+   try {
+      def.AddKey( PSO_KEY_VAR_STRING, 0, 10, 20 );
+   }
+   catch( psoException exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   // The key is already defined - must failed.
+   try {
+      def.AddKey( PSO_KEY_VAR_STRING, 0, 10, 20 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_KEY_DEF ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
    return 0;
 }
 

@@ -57,7 +57,7 @@ int createMap()
    }
 
    try { 
-      session.CreateObject( mapName, &def );
+      session.CreateObject( mapName, def );
       session.Commit();
       theMap.Open( mapName );
       /*

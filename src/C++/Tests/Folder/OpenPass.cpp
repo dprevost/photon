@@ -45,7 +45,7 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( name, &def );
+      session1.CreateObject( name, def );
    }
    catch( psoException exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

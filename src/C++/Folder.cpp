@@ -55,12 +55,12 @@ void psoFolder::Close()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void psoFolder::CreateObject( const std::string   & objectName,
-                              psoObjectDefinition * pDefinition )
+                              psoObjectDefinition & definition )
 {
    int rc = psoFolderCreateObject( m_objectHandle,
                                    objectName.c_str(),
                                    objectName.length(),
-                                   pDefinition );
+                                   &definition );
 
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoFolder::CreateObject" );
@@ -69,14 +69,14 @@ void psoFolder::CreateObject( const std::string   & objectName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::CreateObject( const char    *       objectName,
+void psoFolder::CreateObject( const char          * objectName,
                               size_t                nameLengthInBytes,
-                              psoObjectDefinition * pDefinition )
+                              psoObjectDefinition & definition )
 {
    int rc = psoFolderCreateObject( m_objectHandle,
                                    objectName,
                                    nameLengthInBytes,
-                                   pDefinition );
+                                   &definition );
 
    if ( rc != 0 ) {
       throw psoException( rc, m_sessionHandle, "psoFolder::CreateObject" );
