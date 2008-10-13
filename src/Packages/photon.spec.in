@@ -57,6 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/include/photon/psoQueue.h
 /usr/local/include/photon/psoSession.h
 /usr/local/include/photon/photon
+/usr/local/include/photon/psoDefinition
 /usr/local/include/photon/psoException
 /usr/local/include/photon/psoFastMap
 /usr/local/include/photon/psoFastMapEditor
@@ -82,6 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoCommit.3
 /usr/local/share/man/man3/psoCommon.h.3
 /usr/local/share/man/man3/psoCreateObject.3
+/usr/local/share/man/man3/psoDefinition.3
 /usr/local/share/man/man3/psoDestroyObject.3
 /usr/local/share/man/man3/psoErrorMsg.3
 /usr/local/share/man/man3/psoErrors.3
