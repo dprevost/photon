@@ -148,6 +148,21 @@ void psoSession::GetDefinition( const std::string    & objectName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void psoSession::GetDefinition( const char           * objectName,
+                                size_t                 nameLengthInBytes,
+                                psoObjectDefinition ** ppDefinition )
+{
+   int rc = psoGetDefinition( m_sessionHandle,
+                              objectName,
+                              nameLengthInBytes,
+                              ppDefinition );
+   if ( rc != 0 ) {
+      throw psoException( rc, m_sessionHandle, "psoSession::GetDefinition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void psoSession::GetInfo( psoInfo & info )
 {
    int rc = psoGetInfo( m_sessionHandle, &info );

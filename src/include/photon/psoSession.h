@@ -84,7 +84,7 @@ int psoCommit( PSO_HANDLE sessionHandle );
  */
 PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
-                     const char    *       objectName,
+                     const char          * objectName,
                      size_t                nameLengthInBytes,
                      psoObjectDefinition * pDefinition );
 
@@ -160,9 +160,9 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoErrorMsg( PSO_HANDLE sessionHandle,
-                 char *     message,
-                 size_t     msgLengthInBytes );
+int psoErrorMsg( PSO_HANDLE   sessionHandle,
+                 char       * message,
+                 size_t       msgLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -241,7 +241,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
 
 PHOTON_EXPORT
 int psoGetStatus(  PSO_HANDLE     sessionHandle,
-                   const char *   objectName,
+                   const char   * objectName,
                    size_t         nameLengthInBytes,
                    psoObjStatus * pStatus );
 
@@ -265,7 +265,7 @@ int psoGetStatus(  PSO_HANDLE     sessionHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoInitSession( PSO_HANDLE* sessionHandle );
+int psoInitSession( PSO_HANDLE * sessionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -121,6 +121,21 @@ public:
    /**
     * Return the error message associated with the last error(s).
     *
+    * Caveat, some basic errors cannot be captured, if the provided handles
+    * (session handles or object handles) are incorrect (NULL, for example).
+    * Without a proper handle, the code cannot know where to store
+    * the error...
+    *
+    * \param[out]  message Buffer for the error message. Memory allocation for 
+    *              this buffer is the responsability of the caller.
+    *
+    * \exception psoException An abnormal error occured.
+    */   
+   std::string & ErrorMsg( std::string & message );
+
+   /**
+    * Return the error message associated with the last error(s).
+    *
     * If the length of the error message is greater than the length of the
     * provided buffer, the error message will be truncated to fit in the
     * provided buffer.
@@ -141,19 +156,21 @@ public:
                   size_t   msgLengthInBytes );
 
    /**
-    * Return the error message associated with the last error(s).
+    * \brief Retrieve the data definition of the named object.
     *
-    * Caveat, some basic errors cannot be captured, if the provided handles
-    * (session handles or object handles) are incorrect (NULL, for example).
-    * Without a proper handle, the code cannot know where to store
-    * the error...
+    * \warning This function allocates a buffer to hold the definition (using 
+    * malloc()). You must free it (with free()) when you no longer need the
+    * definition.
     *
-    * \param[out]  message Buffer for the error message. Memory allocation for 
-    *              this buffer is the responsability of the caller.
+    * \param[in]   objectName The fully qualified name of the object. 
+    * \param[out]  definition The buffer allocated by the API to hold the content 
+    *              of the object definition. Freeing the memory (with free())
+    *              is the responsability of the caller.
     *
     * \exception psoException An abnormal error occured.
-    */   
-   std::string & ErrorMsg( std::string & message );
+    */
+   void GetDefinition( const std::string    & objectName,
+                       psoObjectDefinition ** definition );
 
    /**
     * \brief Retrieve the data definition of the named object.
@@ -163,13 +180,16 @@ public:
     * definition.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[out]  definition The buffer allocated by the API to hold the content 
-    *              of the object definition. Freeing the memory (with free())
-    *              is the responsability of the caller.
+    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+    *             counting the null terminator.
+    * \param[out] definition The buffer allocated by the API to hold the content 
+    *             of the object definition. Freeing the memory (with free())
+    *             is the responsability of the caller.
     *
     * \exception psoException An abnormal error occured.
     */
-   void GetDefinition( const std::string & objectName,
+   void GetDefinition( const char           * objectName,
+                       size_t                 nameLengthInBytes,
                        psoObjectDefinition ** definition );
 
    /**

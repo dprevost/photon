@@ -172,12 +172,12 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-   int GetNext( void       * key,
-                size_t       keyLength,
-                void       * buffer,
-                size_t       bufferLength,
-                size_t     & retKeyLength,
-                size_t     & retDataLength );
+   int GetNext( void    * key,
+                size_t    keyLength,
+                void    * buffer,
+                size_t    bufferLength,
+                size_t  & retKeyLength,
+                size_t  & retDataLength );
 
    /**
     * Insert a data element in the hash map.

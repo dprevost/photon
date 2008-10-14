@@ -70,7 +70,8 @@ public:
                 size_t     length,
                 size_t     minLength,
                 size_t     maxLength );
-   
+
+add comments   
    void AddField( std::string  & name,
                   psoFieldType   type,
                   size_t         length,

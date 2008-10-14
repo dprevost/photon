@@ -75,7 +75,7 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  */
 PHOTON_EXPORT
 int psoFolderCreateObject( PSO_HANDLE            folderHandle,
-                           const char    *       objectName,
+                           const char          * objectName,
                            size_t                nameLengthInBytes,
                            psoObjectDefinition * pDefinition );
 

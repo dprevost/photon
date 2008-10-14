@@ -79,8 +79,8 @@ void psoExit();
 
  */
 PHOTON_EXPORT
-int psoInit( const char* wdAddress,
-             int         protectionNeeded );
+int psoInit( const char * wdAddress,
+             int          protectionNeeded );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
