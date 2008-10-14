@@ -457,7 +457,6 @@ fi
 AC_CONFIG_FILES([
    doc/doxyfile.photon_c
    doc/doxyfile.photon_cpp
-   src/include/doxyfile.pso_c
    src/include/Doxygen/pso_c
    src/include/Doxygen/psoDefinition
    src/include/Doxygen/psoException
