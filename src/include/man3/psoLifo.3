@@ -1,27 +1,27 @@
-.TH "psoQueue" 3 "14 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
+.TH "psoLifo" 3 "14 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoQueue \- 
+psoLifo \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 35 of file psoQueue.
+Definition at line 35 of file psoLifo.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBpsoQueue\fP (psoSession &session)"
+.RI "\fBpsoLifo\fP (psoSession &session)"
 .br
 .ti -1c
-.RI "virtual \fB~psoQueue\fP ()"
+.RI "virtual \fB~psoLifo\fP ()"
 .br
 .ti -1c
 .RI "void \fBClose\fP ()"
 .br
-.RI "\fIClose a FIFO queue. \fP"
+.RI "\fIClose a LIFO queue. \fP"
 .ti -1c
 .RI "void \fBDefinition\fP (psoObjectDefinition **definition)"
 .br
@@ -37,23 +37,19 @@ Definition at line 35 of file psoQueue.
 .ti -1c
 .RI "void \fBOpen\fP (const std::string &queueName)"
 .br
-.RI "\fIOpen an existing FIFO queue (see Session::CreateObject to create a new queue). \fP"
+.RI "\fIOpen an existing LIFO queue (see Session::CreateObject to create a new queue). \fP"
 .ti -1c
 .RI "void \fBOpen\fP (const char *queueName, size_t nameLengthInBytes)"
 .br
-.RI "\fIOpen an existing FIFO queue (see Session::CreateObject to create a new queue). \fP"
+.RI "\fIOpen an existing LIFO queue (see Session::CreateObject to create a new queue). \fP"
 .ti -1c
 .RI "int \fBPop\fP (void *buffer, size_t bufferLength, size_t &returnedLength)"
 .br
-.RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
+.RI "\fIRemove the first item from the end of a LIFO queue and return it to the caller. \fP"
 .ti -1c
 .RI "void \fBPush\fP (const void *pItem, size_t length)"
 .br
-.RI "\fIInsert a data element at the end of the FIFO queue. \fP"
-.ti -1c
-.RI "void \fBPushNow\fP (const void *pItem, size_t length)"
-.br
-.RI "\fIInsert a data element at the end of the FIFO queue. \fP"
+.RI "\fIInsert a data element at the end of the LIFO queue. \fP"
 .ti -1c
 .RI "void \fBStatus\fP (psoObjStatus &status)"
 .br
@@ -65,7 +61,7 @@ Definition at line 35 of file psoQueue.
 .ti -1c
 .RI "PSO_HANDLE \fBm_objectHandle\fP"
 .br
-.RI "\fIPointer to the psoaQueue struct. \fP"
+.RI "\fIPointer to the psoaLifo struct. \fP"
 .ti -1c
 .RI "PSO_HANDLE & \fBm_sessionHandle\fP"
 .br
@@ -73,15 +69,15 @@ Definition at line 35 of file psoQueue.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "psoQueue::psoQueue (psoSession & session)"
+.SS "psoLifo::psoLifo (psoSession & session)"
 .PP
-.SS "virtual psoQueue::~psoQueue ()\fC [virtual]\fP"
+.SS "virtual psoLifo::~psoLifo ()\fC [virtual]\fP"
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "void psoQueue::Close ()"
+.SS "void psoLifo::Close ()"
 .PP
-Close a FIFO queue. 
+Close a LIFO queue. 
 .PP
 This function terminates the current access to the queue in shared memory (the queue itself, in shared memory is untouched).
 .PP
@@ -96,7 +92,7 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "void psoQueue::Definition (psoObjectDefinition ** definition)"
+.SS "void psoLifo::Definition (psoObjectDefinition ** definition)"
 .PP
 Retrieve the data definition of the queue. 
 .PP
@@ -116,7 +112,7 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .RE
 .PP
 
-.SS "int psoQueue::GetFirst (void * buffer, size_t bufferLength, size_t & returnedLength)"
+.SS "int psoLifo::GetFirst (void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -142,7 +138,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "int psoQueue::GetNext (void * buffer, size_t bufferLength, size_t & returnedLength)"
+.SS "int psoLifo::GetNext (void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Iterate through the queue - no data items are removed from the queue by this function. 
 .PP
@@ -170,9 +166,9 @@ Evidently, you must call GetFirst to initialize the iterator. Not so evident - c
 .RE
 .PP
 
-.SS "void psoQueue::Open (const std::string & queueName)"
+.SS "void psoLifo::Open (const std::string & queueName)"
 .PP
-Open an existing FIFO queue (see Session::CreateObject to create a new queue). 
+Open an existing LIFO queue (see Session::CreateObject to create a new queue). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -185,9 +181,9 @@ Open an existing FIFO queue (see Session::CreateObject to create a new queue).
 .RE
 .PP
 
-.SS "void psoQueue::Open (const char * queueName, size_t nameLengthInBytes)"
+.SS "void psoLifo::Open (const char * queueName, size_t nameLengthInBytes)"
 .PP
-Open an existing FIFO queue (see Session::CreateObject to create a new queue). 
+Open an existing LIFO queue (see Session::CreateObject to create a new queue). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -202,9 +198,9 @@ Open an existing FIFO queue (see Session::CreateObject to create a new queue).
 .RE
 .PP
 
-.SS "int psoQueue::Pop (void * buffer, size_t bufferLength, size_t & returnedLength)"
+.SS "int psoLifo::Pop (void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
-Remove the first item from the beginning of a FIFO queue and return it to the caller. 
+Remove the first item from the end of a LIFO queue and return it to the caller. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
@@ -230,9 +226,9 @@ The removals only become permanent after a call to psoSession::Commit.
 .RE
 .PP
 
-.SS "void psoQueue::Push (const void * pItem, size_t length)"
+.SS "void psoLifo::Push (const void * pItem, size_t length)"
 .PP
-Insert a data element at the end of the FIFO queue. 
+Insert a data element at the end of the LIFO queue. 
 .PP
 The additions only become permanent after a call to psoSession::Commit.
 .PP
@@ -249,26 +245,7 @@ The additions only become permanent after a call to psoSession::Commit.
 .RE
 .PP
 
-.SS "void psoQueue::PushNow (const void * pItem, size_t length)"
-.PP
-Insert a data element at the end of the FIFO queue. 
-.PP
-The additions become permanent immediately, not after a call to psoSession::Commit (in other words, you cannot easily undo these insertions).
-.PP
-\fBParameters:\fP
-.RS 4
-\fIpItem\fP The data item to be inserted. 
-.br
-\fIlength\fP The length of \fIpItem\fP (in bytes).
-.RE
-.PP
-\fBExceptions:\fP
-.RS 4
-\fIpsoException\fP An abnormal error occured. 
-.RE
-.PP
-
-.SS "void psoQueue::Status (psoObjStatus & status)"
+.SS "void psoLifo::Status (psoObjStatus & status)"
 .PP
 Return the status of the queue. 
 .PP
@@ -285,16 +262,16 @@ Return the status of the queue.
 
 .SH "Member Data Documentation"
 .PP 
-.SS "PSO_HANDLE \fBpsoQueue::m_objectHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpsoLifo::m_objectHandle\fP\fC [private]\fP"
 .PP
-Pointer to the psoaQueue struct. 
+Pointer to the psoaLifo struct. 
 .PP
-Definition at line 211 of file psoQueue.
-.SS "PSO_HANDLE& \fBpsoQueue::m_sessionHandle\fP\fC [private]\fP"
+Definition at line 196 of file psoLifo.
+.SS "PSO_HANDLE& \fBpsoLifo::m_sessionHandle\fP\fC [private]\fP"
 .PP
 Reference to the psoaSession struct (we belong to). 
 .PP
-Definition at line 214 of file psoQueue.
+Definition at line 199 of file psoLifo.
 
 .SH "Author"
 .PP 

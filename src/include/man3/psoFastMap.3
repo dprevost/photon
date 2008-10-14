@@ -1,22 +1,22 @@
-.TH "psoHashMap" 3 "14 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
+.TH "psoFastMap" 3 "14 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoHashMap \- 
+psoFastMap \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-Definition at line 36 of file psoHashMap.
+Definition at line 35 of file psoFastMap.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBpsoHashMap\fP (psoSession &session)"
+.RI "\fBpsoFastMap\fP (psoSession &session)"
 .br
 .ti -1c
-.RI "virtual \fB~psoHashMap\fP ()"
+.RI "virtual \fB~psoFastMap\fP ()"
 .br
 .ti -1c
 .RI "void \fBClose\fP ()"
@@ -26,10 +26,6 @@ Definition at line 36 of file psoHashMap.
 .RI "void \fBDefinition\fP (psoObjectDefinition **definition)"
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
-.ti -1c
-.RI "void \fBDelete\fP (const void *key, size_t keyLength)"
-.br
-.RI "\fIRemove the data item identified by the given key from the hash map. \fP"
 .ti -1c
 .RI "void \fBGet\fP (const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t &returnedLength)"
 .br
@@ -43,33 +39,25 @@ Definition at line 36 of file psoHashMap.
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "void \fBInsert\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
-.br
-.RI "\fIInsert a data element in the hash map. \fP"
-.ti -1c
 .RI "void \fBOpen\fP (const std::string &hashMapName)"
 .br
-.RI "\fIOpen an existing hash map (see psoSession::CreateObject to create a new object). \fP"
+.RI "\fIOpen an existing read-only hash map (see psoSession::CreateObject to create a new object). \fP"
 .ti -1c
 .RI "void \fBOpen\fP (const char *hashMapName, size_t nameLengthInBytes)"
 .br
-.RI "\fIOpen an existing hash map (see psoSession::CreateObject to create a new object). \fP"
-.ti -1c
-.RI "void \fBReplace\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
-.br
-.RI "\fIReplace a data element in the hash map. \fP"
+.RI "\fIOpen an existing read-only hash map (see psoSession::CreateObject to create a new object). \fP"
 .ti -1c
 .RI "void \fBStatus\fP (psoObjStatus &status)"
 .br
 .RI "\fIReturn the status of the hash map. \fP"
 .in -1c
-.SS "Private Attributes"
+.SS "Protected Attributes"
 
 .in +1c
 .ti -1c
 .RI "PSO_HANDLE \fBm_objectHandle\fP"
 .br
-.RI "\fIPointer to the psoaHashMap struct. \fP"
+.RI "\fIPointer to the psoaFastMap struct. \fP"
 .ti -1c
 .RI "PSO_HANDLE & \fBm_sessionHandle\fP"
 .br
@@ -77,13 +65,13 @@ Definition at line 36 of file psoHashMap.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "psoHashMap::psoHashMap (psoSession & session)"
+.SS "psoFastMap::psoFastMap (psoSession & session)"
 .PP
-.SS "virtual psoHashMap::~psoHashMap ()\fC [virtual]\fP"
+.SS "virtual psoFastMap::~psoFastMap ()\fC [virtual]\fP"
 .PP
 .SH "Member Function Documentation"
 .PP 
-.SS "void psoHashMap::Close ()"
+.SS "void psoFastMap::Close ()"
 .PP
 Close a hash map. 
 .PP
@@ -100,13 +88,13 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "void psoHashMap::Definition (psoObjectDefinition ** definition)"
+.SS "void psoFastMap::Definition (psoObjectDefinition ** definition)"
 .PP
 Retrieve the data definition of the hash map. 
 .PP
 \fBWarning:\fP
 .RS 4
-This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition.
+This function allocates a buffer to hold the definition (using malloc()). You must free it (with free()) when you no longer need the definition. This will be modified soon! (most likely, a new class will encapsulate this).
 .RE
 .PP
 \fBParameters:\fP
@@ -120,28 +108,7 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .RE
 .PP
 
-.SS "void psoHashMap::Delete (const void * key, size_t keyLength)"
-.PP
-Remove the data item identified by the given key from the hash map. 
-.PP
-Data items which were added by another session and are not yet committed will not be seen by this function and cannot be removed. Likewise, destroyed data items (even if not yet committed) are invisible.
-.PP
-The removals only become permanent after a call to psoSession::Commit.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIkey\fP The key of the item to be removed. 
-.br
-\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes).
-.RE
-.PP
-\fBExceptions:\fP
-.RS 4
-\fIpsoException\fP An abnormal error occured. 
-.RE
-.PP
-
-.SS "void psoHashMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & returnedLength)"
+.SS "void psoFastMap::Get (const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & returnedLength)"
 .PP
 Retrieve the data item identified by the given key from the hash map. 
 .PP
@@ -166,7 +133,7 @@ Data items which were added by another session and are not yet committed will no
 .RE
 .PP
 
-.SS "int psoHashMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & retKeyLength, size_t & retDataLength)"
+.SS "int psoFastMap::GetFirst (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & retKeyLength, size_t & retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -200,13 +167,13 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "int psoHashMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & retKeyLength, size_t & retDataLength)"
+.SS "int psoFastMap::GetNext (void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t & retKeyLength, size_t & retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
-Evidently, you must call \fBpsoHashMap::GetFirst\fP to initialize the iterator. Not so evident - calling \fBpsoHashMap::Get\fP will reset the iteration to the data item retrieved by this function (they use the same internal storage). If this cause a problem, please let us know.
+Evidently, you must call psoHashMap::GetFirst to initialize the iterator. Not so evident - calling psoHashMap::Get will reset the iteration to the data item retrieved by this function (they use the same internal storage). If this cause a problem, please let us know.
 .PP
 Data items retrieved this way will not be sorted.
 .PP
@@ -236,32 +203,9 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "void psoHashMap::Insert (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "void psoFastMap::Open (const std::string & hashMapName)"
 .PP
-Insert a data element in the hash map. 
-.PP
-The additions only become permanent after a call to psoSession::Commit.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIkey\fP The key of the item to be inserted. 
-.br
-\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
-.br
-\fIdata\fP The data item to be inserted. 
-.br
-\fIdataLength\fP The length of \fIdata\fP (in bytes).
-.RE
-.PP
-\fBExceptions:\fP
-.RS 4
-\fIpsoException\fP An abnormal error occured. 
-.RE
-.PP
-
-.SS "void psoHashMap::Open (const std::string & hashMapName)"
-.PP
-Open an existing hash map (see psoSession::CreateObject to create a new object). 
+Open an existing read-only hash map (see psoSession::CreateObject to create a new object). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -274,9 +218,9 @@ Open an existing hash map (see psoSession::CreateObject to create a new object).
 .RE
 .PP
 
-.SS "void psoHashMap::Open (const char * hashMapName, size_t nameLengthInBytes)"
+.SS "void psoFastMap::Open (const char * hashMapName, size_t nameLengthInBytes)"
 .PP
-Open an existing hash map (see psoSession::CreateObject to create a new object). 
+Open an existing read-only hash map (see psoSession::CreateObject to create a new object). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -291,30 +235,7 @@ Open an existing hash map (see psoSession::CreateObject to create a new object).
 .RE
 .PP
 
-.SS "void psoHashMap::Replace (const void * key, size_t keyLength, const void * data, size_t dataLength)"
-.PP
-Replace a data element in the hash map. 
-.PP
-The replacements only become permanent after a call to psoSession::Commit.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIkey\fP The key of the item to be replaced. 
-.br
-\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
-.br
-\fIdata\fP The new data item that will replace the previous data. 
-.br
-\fIdataLength\fP The length of \fIdata\fP (in bytes).
-.RE
-.PP
-\fBExceptions:\fP
-.RS 4
-\fIpsoException\fP An abnormal error occured. 
-.RE
-.PP
-
-.SS "void psoHashMap::Status (psoObjStatus & status)"
+.SS "void psoFastMap::Status (psoObjStatus & status)"
 .PP
 Return the status of the hash map. 
 .PP
@@ -331,16 +252,16 @@ Return the status of the hash map.
 
 .SH "Member Data Documentation"
 .PP 
-.SS "PSO_HANDLE \fBpsoHashMap::m_objectHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpsoFastMap::m_objectHandle\fP\fC [protected]\fP"
 .PP
-Pointer to the psoaHashMap struct. 
+Pointer to the psoaFastMap struct. 
 .PP
-Definition at line 251 of file psoHashMap.
-.SS "PSO_HANDLE& \fBpsoHashMap::m_sessionHandle\fP\fC [private]\fP"
+Definition at line 200 of file psoFastMap.
+.SS "PSO_HANDLE& \fBpsoFastMap::m_sessionHandle\fP\fC [protected]\fP"
 .PP
 Reference to the psoaSession struct (we belong to). 
 .PP
-Definition at line 254 of file psoHashMap.
+Definition at line 203 of file psoFastMap.
 
 .SH "Author"
 .PP 

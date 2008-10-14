@@ -1,0 +1,172 @@
+.TH "psoFastMapEditor" 3 "14 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoFastMapEditor \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+Definition at line 36 of file psoFastMapEditor.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBpsoFastMapEditor\fP (psoSession &session)"
+.br
+.ti -1c
+.RI "virtual \fB~psoFastMapEditor\fP ()"
+.br
+.ti -1c
+.RI "void \fBDelete\fP (const void *key, size_t keyLength)"
+.br
+.RI "\fIRemove the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "void \fBEmpty\fP ()"
+.br
+.RI "\fIRemove all data items from the map. \fP"
+.ti -1c
+.RI "void \fBInsert\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIInsert a data element in the hash map. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const std::string &hashMapName)"
+.br
+.RI "\fIOpen an existing read-only hash map for editing. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (const char *hashMapName, size_t nameLengthInBytes)"
+.br
+.RI "\fIOpen an existing read-only hash map for editing. \fP"
+.ti -1c
+.RI "void \fBReplace\fP (const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.br
+.RI "\fIReplace a data element in the hash map. \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "psoFastMapEditor::psoFastMapEditor (psoSession & session)"
+.PP
+.SS "virtual psoFastMapEditor::~psoFastMapEditor ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void psoFastMapEditor::Delete (const void * key, size_t keyLength)"
+.PP
+Remove the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function and cannot be removed. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+The removals only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be removed. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoFastMapEditor::Empty ()"
+.PP
+Remove all data items from the map. 
+.PP
+The removals only become permanent after a call to psoSession::Commit.
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoFastMapEditor::Insert (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+Insert a data element in the hash map. 
+.PP
+The additions only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be inserted. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The data item to be inserted. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoFastMapEditor::Open (const std::string & hashMapName)"
+.PP
+Open an existing read-only hash map for editing. 
+.PP
+Updates are done using a temporary copy and this copy becomes the latest version of the map only after a call to psoSession::Commit().
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhashMapName\fP The fully qualified name of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoFastMapEditor::Open (const char * hashMapName, size_t nameLengthInBytes)"
+.PP
+Open an existing read-only hash map for editing. 
+.PP
+Updates are done using a temporary copy and this copy becomes the latest version of the map only after a call to psoSession::Commit().
+.PP
+\fBParameters:\fP
+.RS 4
+\fIhashMapName\fP The fully qualified name of the hash map. 
+.br
+\fInameLengthInBytes\fP The length of \fIhashMapName\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoFastMapEditor::Replace (const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.PP
+Replace a data element in the hash map. 
+.PP
+The replacements only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be replaced. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The new data item that will replace the previous data. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.

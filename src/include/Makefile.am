@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-CLEANFILES = *~ photon/*~
+CLEANFILES = *~ photon/*~ Doxygen/*~
 
 HEADER_FILES =                                        \
         $(top_srcdir)/src/include/photon/photon.h     \
@@ -20,6 +20,24 @@ HEADER_FILES =                                        \
         $(top_srcdir)/src/include/photon/psoQueue.h   \
         $(top_srcdir)/src/include/photon/psoProcess.h \
         $(top_srcdir)/src/include/photon/psoSession.h 
+
+CPP_BASE_HEADER_FILES =  \
+        psoDefinition    \
+        psoException     \
+        psoFastMap       \
+        psoFastMapEditor \
+        psoFolder        \
+        psoHashMap       \
+        psoLifo          \
+        psoProcess       \
+        psoQueue         \
+        psoSession       
+
+CPP_HEADER_FILES = $(subst pso,$(top_srcdir)/src/include/photon/pso,$(CPP_BASE_HEADER_FILES))
+CPP_MAN_PAGES = $(addsuffix .3,$(subst pso,man3/pso,$(CPP_BASE_HEADER_FILES)))
+CPP_INSTALLED_FILES = $(subst pso,photon/pso,$(CPP_BASE_HEADER_FILES))
+CPP_DOXY_FILES = $(subst pso,$(top_srcdir)/src/include/photon/Doxygen/pso,$(CPP_BASE_HEADER_FILES))
+ZZ = $(CPP_DOXY_FILES)
 
 PSO_C_FILES =                       \
         man3/psoCommit.3            \
@@ -54,7 +72,7 @@ PSO_C_FILES =                       \
         man3/psoFolderStatus.3      \
         man3/psoGetInfo.3           \
         man3/psoGetStatus.3         \
-        man3/photon.h.3                \
+        man3/photon.h.3             \
         man3/psoHashMap_c.3         \
         man3/psoHashMapClose.3      \
         man3/psoHashMapDelete.3     \
@@ -98,17 +116,12 @@ PSO_C_FILES =                       \
         man3/psoSession_c.3         \
         man3/psoSession.h.3         
 
-man_MANS =                  \
-        $(PSO_C_FILES)      \
-        man3/psoException.3 \
-        man3/psoFolder.3    \
-        man3/psoHashMap.3   \
-        man3/psoProcess.3   \
-        man3/psoQueue.3     \
-        man3/psoSession.3   
+man_MANS =               \
+        $(PSO_C_FILES)   \
+        $(CPP_MAN_PAGES) 
 
 EXTRA_DIST =                   \
-        doxyfile.pso_c         \
+        Doxygen/pso_c.in       \
         $(PSO_C_FILES)         \
         Doxyfile.psoDefinition \
         Doxyfile.psoException  \
@@ -117,75 +130,33 @@ EXTRA_DIST =                   \
         Doxyfile.psoProcess    \
         Doxyfile.psoQueue      \
         Doxyfile.psoSession    \
-        man3/psoDefinition.3   \
-        man3/psoException.3    \
-        man3/psoFolder.3       \
-        man3/psoHashMap.3      \
-        man3/psoProcess.3      \
-        man3/psoQueue.3        \
-        man3/psoSession.3      
+        $(CPP_MAN_PAGES)
 
-nobase_include_HEADERS =        \
-        photon/psoCommon.h      \
-        photon/psoDefinition    \
-        photon/psoErrors.h      \
-        photon/psoFastMap.h     \
-        photon/psoFolder.h      \
-        photon/psoHashMap.h     \
-        photon/psoLifo.h        \
-        photon/psoProcess.h     \
-        photon/psoQueue.h       \
-        photon/psoSession.h     \
-        photon/photon.h         \
-        photon/photon           \
-        photon/psoException     \
-        photon/psoFastMap       \
-        photon/psoFastMapEditor \
-        photon/psoFolder        \
-        photon/psoHashMap       \
-        photon/psoLifo          \
-        photon/psoProcess       \
-        photon/psoQueue         \
-        photon/psoSession       
+nobase_include_HEADERS =       \
+        photon/psoCommon.h     \
+        photon/psoDefinition   \
+        photon/psoErrors.h     \
+        photon/psoFastMap.h    \
+        photon/psoFolder.h     \
+        photon/psoHashMap.h    \
+        photon/psoLifo.h       \
+        photon/psoProcess.h    \
+        photon/psoQueue.h      \
+        photon/psoSession.h    \
+        photon/photon.h        \
+        photon/photon          \
+        $(CPP_INSTALLED_FILES) 
 
 #
 # Only rebuild the man pages if doxygen is present.
 #
 if COND_USE_DOXYGEN
 
-man3/psoDefinition.3: photon/psoDefinition
-	doxygen $(top_srcdir)/src/include/Doxyfile.psoDefinition
-	cp dummy/man/man3/psoDefinition.3 man3/psoDefinition.3
-	-rm -rf dummy
-
-man3/psoException.3: photon/psoException
-	doxygen $(top_srcdir)/src/include/Doxyfile.psoException
-	cp dummy/man/man3/psoException.3 man3/psoException.3
-	-rm -rf dummy
-
-man3/psoFolder.3: photon/psoFolder
-	doxygen $(top_srcdir)/src/include/Doxyfile.psoFolder
-	cp dummy/man/man3/psoFolder.3 man3/psoFolder.3
-	-rm -rf dummy
-
-man3/psoHashMap.3: photon/psoHashMap
-	doxygen $(top_srcdir)/src/include/Doxyfile.psoHashMap
-	cp dummy/man/man3/psoHashMap.3 man3/psoHashMap.3
-	-rm -rf dummy
-
-man3/psoProcess.3: photon/psoProcess
-	doxygen Doxyfile.psoProcess
-	cp dummy/man/man3/psoProcess.3 man3/psoProcess.3
-	-rm -rf dummy
-
-man3/psoQueue.3: photon/psoQueue
-	doxygen Doxyfile.psoQueue
-	cp dummy/man/man3/psoQueue.3 man3/psoQueue.3
-	-rm -rf dummy
-
-man3/psoSession.3: photon/psoSession
-	doxygen Doxyfile.psoSession
-	cp dummy/man/man3/psoSession.3 man3/psoSession.3
+$(CPP_MAN_PAGES): $(CPP_INSTALLED_FILES) photon/photon
+	@for f in $(CPP_BASE_HEADER_FILES); do           \
+      doxygen $(top_srcdir)/src/include/Doxygen/$$f; \
+      cp dummy/man/man3/$$f.3 man3/$$f.3; \
+   done
 	-rm -rf dummy
 
 # Warning: this doxygen run creates many more files which we do
@@ -193,7 +164,7 @@ man3/psoSession.3: photon/psoSession
 # data field in the data structures, etc.). All these files are links
 # to the "meat" we are keeping anyway!
 $(PSO_C_FILES): $(HEADER_FILES)
-	doxygen doxyfile.pso_c
+	doxygen Doxygen/pso_c
 	cp dummy/man/man3/pso*.3 man3/
 	cp dummy/man/man3/photon*.3 man3/
 	-rm -rf dummy

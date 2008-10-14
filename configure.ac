@@ -458,6 +458,17 @@ AC_CONFIG_FILES([
    doc/doxyfile.photon_c
    doc/doxyfile.photon_cpp
    src/include/doxyfile.pso_c
+   src/include/Doxygen/pso_c
+   src/include/Doxygen/psoDefinition
+   src/include/Doxygen/psoException
+   src/include/Doxygen/psoFastMapEditor
+   src/include/Doxygen/psoFastMap
+   src/include/Doxygen/psoFolder
+   src/include/Doxygen/psoHashMap
+   src/include/Doxygen/psoLifo
+   src/include/Doxygen/psoProcess
+   src/include/Doxygen/psoQueue
+   src/include/Doxygen/psoSession
    src/Packages/buildDeb.sh
    src/Packages/control
    src/Packages/photon.spec
