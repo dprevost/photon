@@ -1,4 +1,4 @@
-.TH "psoException" 3 "11 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoException" 3 "14 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -50,6 +50,15 @@ Definition at line 39 of file psoException.
 .PP
 Construct a Photon exception using the return code from the C function and the name of the function throwing it. 
 .PP
+\fBParameters:\fP
+.RS 4
+\fItheErrorCode\fP The returned code from the C function (or something equivalent) 
+.br
+\fIsessionHandle\fP The handle of the current session. This parameter can be NULL. 
+.br
+\fIfunctionName\fP The name of the function throwing the exception. 
+.RE
+.PP
 
 .SS "virtual psoException::~psoException ()\fC [virtual]\fP"
 .PP
@@ -59,27 +68,51 @@ Construct a Photon exception using the return code from the C function and the n
 .PP
 Return the error message. 
 .PP
+\fBParameters:\fP
+.RS 4
+\fIerrorMessage\fP The error message
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A reference to the error message. 
+.RE
+.PP
+
 .SS "std::string& psoException::Message ()"
 .PP
 Return the error message. 
 .PP
+\fBReturns:\fP
+.RS 4
+A reference to the error message. 
+.RE
+.PP
+
 .SS "int psoException::ErrorCode ()\fC [inline]\fP"
 .PP
 Return the error code associated with the exception. 
 .PP
-Definition at line 58 of file psoException.
+\fBReturns:\fP
+.RS 4
+The error code. 
+.RE
+.PP
+
+.PP
+Definition at line 80 of file psoException.
 .SH "Member Data Documentation"
 .PP 
 .SS "std::string \fBpsoException::msg\fP\fC [private]\fP"
 .PP
 The error message, if any. 
 .PP
-Definition at line 63 of file psoException.
+Definition at line 85 of file psoException.
 .SS "int \fBpsoException::errcode\fP\fC [private]\fP"
 .PP
 The last error code seen by the API. 
 .PP
-Definition at line 66 of file psoException.
+Definition at line 88 of file psoException.
 
 .SH "Author"
 .PP 

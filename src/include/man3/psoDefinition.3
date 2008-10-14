@@ -1,4 +1,4 @@
-.TH "psoDefinition" 3 "13 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
+.TH "psoDefinition" 3 "14 Oct 2008" "Version 0.3" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,20 +26,23 @@ Definition at line 39 of file psoDefinition.
 .ti -1c
 .RI "void \fBAddField\fP (std::string &name, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
 .br
+.RI "\fIAdd a field to the definition. \fP"
 .ti -1c
 .RI "void \fBAddField\fP (const char *name, size_t nameLength, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
 .br
+.RI "\fIAdd a field to the definition. \fP"
 .ti -1c
 .RI "void \fBObjectType\fP (psoObjectType type)"
 .br
+.RI "\fISet the type of the object. \fP"
 .ti -1c
 .RI "void \fBReset\fP (size_t numberOfFields)"
 .br
-.RI "\fIReset the object to be reused for another data container. \fP"
+.RI "\fIReset the object to be reused for the definition of another data container. \fP"
 .ti -1c
 .RI "const psoObjectDefinition & \fBGetDef\fP ()"
 .br
-.RI "\fIReturns a reference to the definition. \fP"
+.RI "\fIReturns a reference to the C struct definition. \fP"
 .in -1c
 .SS "Private Attributes"
 
@@ -47,7 +50,7 @@ Definition at line 39 of file psoDefinition.
 .ti -1c
 .RI "psoObjectDefinition * \fBpDefinition\fP"
 .br
-.RI "\fIThe definition itself. \fP"
+.RI "\fIThe C struct holding the definition itself. \fP"
 .ti -1c
 .RI "size_t \fBcurrentField\fP"
 .br
@@ -101,35 +104,116 @@ Add a key to the definition.
 
 .SS "void psoDefinition::AddField (std::string & name, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
 .PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP The name of the field 
+.br
+\fItype\fP The data type of the field. 
+.br
+\fIlength\fP The length of the field for fixed-length data types. 
+.br
+\fIminLength\fP The minimal length of the field for variable-length data types. 
+.br
+\fImaxLength\fP The maximal length of the field for variable-length data types. A value of zero indicates an infinite value (limited by the amount of shared memory, evidently). 
+.br
+\fIprecision\fP The number of digits of a decimal field (not counting the separator or the sign). 
+.br
+\fIscale\fP The number of digits after the separator of a decimal field.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
 .SS "void psoDefinition::AddField (const char * name, size_t nameLength, psoFieldType type, size_t length, size_t minLength, size_t maxLength, size_t precision, size_t scale)"
 .PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP The name of the field 
+.br
+\fInameLength\fP The length of the name (in bytes). 
+.br
+\fItype\fP The data type of the field. 
+.br
+\fIlength\fP The length of the field for fixed-length data types. 
+.br
+\fIminLength\fP The minimal length of the field for variable-length data types. 
+.br
+\fImaxLength\fP The maximal length of the field for variable-length data types. A value of zero indicates an infinite value (limited by the amount of shared memory, evidently). 
+.br
+\fIprecision\fP The number of digits of a decimal field (not counting the separator or the sign). 
+.br
+\fIscale\fP The number of digits after the separator of a decimal field.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
 .SS "void psoDefinition::ObjectType (psoObjectType type)"
 .PP
+Set the type of the object. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fItype\fP The type of the object.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
 .SS "void psoDefinition::Reset (size_t numberOfFields)"
 .PP
-Reset the object to be reused for another data container. 
+Reset the object to be reused for the definition of another data container. 
 .PP
+\fBParameters:\fP
+.RS 4
+\fInumberOfFields\fP The number of data fields of the new data container.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
 .SS "const psoObjectDefinition& psoDefinition::GetDef ()"
 .PP
-Returns a reference to the definition. 
+Returns a reference to the C struct definition. 
 .PP
+
 .SH "Member Data Documentation"
 .PP 
 .SS "psoObjectDefinition* \fBpsoDefinition::pDefinition\fP\fC [private]\fP"
 .PP
-The definition itself. 
+The C struct holding the definition itself. 
 .PP
-Definition at line 102 of file psoDefinition.
+Definition at line 155 of file psoDefinition.
 .SS "size_t \fBpsoDefinition::currentField\fP\fC [private]\fP"
 .PP
 Iterator. 
 .PP
-Definition at line 105 of file psoDefinition.
+Definition at line 158 of file psoDefinition.
 .SS "bool \fBpsoDefinition::keyAdded\fP\fC [private]\fP"
 .PP
 was the key added? 
 .PP
-Definition at line 108 of file psoDefinition.
+Definition at line 161 of file psoDefinition.
 
 .SH "Author"
 .PP 

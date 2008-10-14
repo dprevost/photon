@@ -40,22 +40,43 @@ class PHOTON_EXPORT psoException
 {
 public:
 
-   needs proper doxy comments
-   /// Construct a Photon exception using the return code from the C function
-   /// and the name of the function throwing it.
+   /**
+    * Construct a Photon exception using the return code from the C function
+    * and the name of the function throwing it.
+    *
+    * \param[in]  theErrorCode The returned code from the C function (or 
+    *             something equivalent)
+    * \param[in]  sessionHandle The handle of the current session. This 
+    *             parameter can be NULL.
+    * \param[in]  functionName The name of the function throwing the exception.
+    */
    psoException( int          theErrorCode, 
                  PSO_HANDLE   sessionHandle, 
                  const char * functionName );
    
    virtual ~psoException();
 
-   /// Return the error message.
+   /**
+    * Return the error message.
+    *
+    * \param[out]  errorMessage The error message
+    *
+    * \return A reference to the error message.
+    */
    std::string & Message( std::string & errorMessage );
 
-   /// Return the error message.
+   /**
+    * Return the error message.
+    *
+    * \return A reference to the error message.
+    */
    std::string & Message();
    
-   /// Return the error code associated with the exception.
+   /**
+    * Return the error code associated with the exception.
+    *
+    * \return The error code.
+    */
    int ErrorCode() { return errcode; }
    
 private:

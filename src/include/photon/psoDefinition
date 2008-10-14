@@ -47,7 +47,6 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-    
    psoDefinition( size_t numberOfFields );
    
    virtual ~psoDefinition();
@@ -71,7 +70,25 @@ public:
                 size_t     minLength,
                 size_t     maxLength );
 
-add comments   
+   /**
+    * Add a field to the definition. Fields must be added in order.
+    *
+    * \param[in]  name The name of the field
+    * \param[in]  type The data type of the field. 
+    * \param[in]  length The length of the field for fixed-length data types.
+    * \param[in]  minLength The minimal length of the field for 
+    *             variable-length data types.
+    * \param[in]  maxLength The maximal length of the field for 
+    *             variable-length data types. A value of zero indicates an
+    *             infinite value (limited by the amount of shared memory, 
+    *             evidently).
+    * \param[in]  precision The number of digits of a decimal field (not 
+    *             counting the separator or the sign).
+    * \param[in]  scale The number of digits after the separator of a decimal
+    *             field.
+    *
+    * \exception psoException An abnormal error occured.
+    */
    void AddField( std::string  & name,
                   psoFieldType   type,
                   size_t         length,
@@ -80,6 +97,26 @@ add comments
                   size_t         precision,
                   size_t         scale );
 
+   /**
+    * Add a field to the definition. Fields must be added in order.
+    *
+    * \param[in]  name The name of the field
+    * \param[in]  nameLength The length of the name (in bytes).
+    * \param[in]  type The data type of the field. 
+    * \param[in]  length The length of the field for fixed-length data types.
+    * \param[in]  minLength The minimal length of the field for 
+    *             variable-length data types.
+    * \param[in]  maxLength The maximal length of the field for 
+    *             variable-length data types. A value of zero indicates an
+    *             infinite value (limited by the amount of shared memory, 
+    *             evidently).
+    * \param[in]  precision The number of digits of a decimal field (not 
+    *             counting the separator or the sign).
+    * \param[in]  scale The number of digits after the separator of a decimal
+    *             field.
+    *
+    * \exception psoException An abnormal error occured.
+    */
    void AddField( const char   * name,
                   size_t         nameLength,
                   psoFieldType   type,
@@ -89,17 +126,32 @@ add comments
                   size_t         precision,
                   size_t         scale );
 
+   /**
+    * Set the type of the object.
+    *
+    * \param[in]  type The type of the object.
+    *
+    * \exception psoException An abnormal error occured.
+    */
    void ObjectType( psoObjectType type );
    
-   /// Reset the object to be reused for another data container
+   /**
+    * Reset the object to be reused for the definition of another data 
+    * container.
+    *
+    * \param[in] numberOfFields The number of data fields of the new data
+    *            container.
+    *
+    * \exception psoException An abnormal error occured.
+    */
    void Reset( size_t numberOfFields );
    
-   /// Returns a reference to the definition 
+   /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();
    
 private:
 
-   /// The definition itself
+   /// The C struct holding the definition itself
    psoObjectDefinition * pDefinition;
    
    /// Iterator
@@ -112,4 +164,6 @@ private:
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #endif // PSO_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
