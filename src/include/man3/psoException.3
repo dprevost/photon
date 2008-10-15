@@ -1,4 +1,4 @@
-.TH "psoException" 3 "14 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
+.TH "psoException" 3 "15 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,7 +13,11 @@ Definition at line 39 of file psoException.
 
 .in +1c
 .ti -1c
-.RI "\fBpsoException\fP (int theErrorCode, PSO_HANDLE sessionHandle, const char *functionName)"
+.RI "\fBpsoException\fP (PSO_HANDLE sessionHandle, const char *functionName)"
+.br
+.RI "\fIConstruct a Photon exception using the last error of the session and the name of the function throwing it. \fP"
+.ti -1c
+.RI "\fBpsoException\fP (const char *functionName, int theErrorCode)"
 .br
 .RI "\fIConstruct a Photon exception using the return code from the C function and the name of the function throwing it. \fP"
 .ti -1c
@@ -46,17 +50,29 @@ Definition at line 39 of file psoException.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "psoException::psoException (int theErrorCode, PSO_HANDLE sessionHandle, const char * functionName)"
+.SS "psoException::psoException (PSO_HANDLE sessionHandle, const char * functionName)"
 .PP
-Construct a Photon exception using the return code from the C function and the name of the function throwing it. 
+Construct a Photon exception using the last error of the session and the name of the function throwing it. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fItheErrorCode\fP The returned code from the C function (or something equivalent) 
-.br
 \fIsessionHandle\fP The handle of the current session. This parameter can be NULL. 
 .br
 \fIfunctionName\fP The name of the function throwing the exception. 
+.RE
+.PP
+
+.SS "psoException::psoException (const char * functionName, int theErrorCode)"
+.PP
+Construct a Photon exception using the return code from the C function and the name of the function throwing it. 
+.PP
+This constructor should be used when you cannot access the saved error from the session (with NULL handles, for example).
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfunctionName\fP The name of the function throwing the exception. 
+.br
+\fItheErrorCode\fP The returned code from the C function (or something equivalent) 
 .RE
 .PP
 
@@ -100,19 +116,19 @@ The error code.
 .PP
 
 .PP
-Definition at line 80 of file psoException.
+Definition at line 92 of file psoException.
 .SH "Member Data Documentation"
 .PP 
 .SS "std::string \fBpsoException::msg\fP\fC [private]\fP"
 .PP
 The error message, if any. 
 .PP
-Definition at line 85 of file psoException.
+Definition at line 97 of file psoException.
 .SS "int \fBpsoException::errcode\fP\fC [private]\fP"
 .PP
 The last error code seen by the API. 
 .PP
-Definition at line 88 of file psoException.
+Definition at line 100 of file psoException.
 
 .SH "Author"
 .PP 

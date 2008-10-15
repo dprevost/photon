@@ -176,9 +176,26 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
    int errcode = PSO_OK;
    char * objectName = NULL;
    size_t nameLengthInBytes = 0;
+
+   psoaFolder * pFolder;
+   psoaSession* pSession;
    
-   if ( xmlBuffer == NULL ) return PSO_NULL_POINTER;
-   if ( lengthInBytes == 0 ) return PSO_INVALID_LENGTH;
+   pFolder = (psoaFolder *) objectHandle;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pFolder->object.type != PSOA_FOLDER ) {
+      return PSO_WRONG_TYPE_HANDLE;
+   }
+   pSession = pFolder->object.pSession;
+   
+   if ( xmlBuffer == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( lengthInBytes == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
    
    errcode = psoaXmlToDefinition( xmlBuffer,
                                   lengthInBytes,
@@ -195,6 +212,9 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
    if ( pDefinition != NULL ) free(pDefinition);
    if ( objectName != NULL )  free(objectName);
    
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+   }
    return errcode;
 }
 

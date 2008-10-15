@@ -27,36 +27,47 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoException::psoException( int          theErrorCode,
-                            PSO_HANDLE   sessionHandle, 
+psoException::psoException( PSO_HANDLE   sessionHandle, 
                             const char * functionName )
-   : errcode( theErrorCode )
+   : errcode( 0 )
 {
    char s[1024];
    int rc = 1;
+   ostringstream oss;
+   
+   rc = psoErrorMsg( sessionHandle, s, 1024 );
+   errcode = psoLastError( sessionHandle );
+   msg = functionName;
+   msg += " exception: ";
+   msg += s;
+   
+   if ( rc != 0 ) {
+      // We build our own message
+      oss << functionName << " exception: ";
+      oss << "Cannot retrieve the error message ";
+      msg = oss.str();
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+psoException::psoException( const char * functionName,
+                            int          theErrorCode )
+   : errcode( theErrorCode )
+{
    const char * str;
    ostringstream oss;
    
-   if ( sessionHandle != NULL &&
-      psoLastError(sessionHandle) == theErrorCode ) {
-      rc = psoErrorMsg( sessionHandle, s, 1024 );
-      msg = functionName;
-      msg += " exception: ";
-      msg += s;
+   str = pson_ErrorMessage( theErrorCode );
+   if ( str != NULL ) {
+      oss << functionName << " exception: " << str;
    }
-   
-   if ( rc != 0 ) {
-      str = pson_ErrorMessage( theErrorCode );
-      if ( str != NULL ) {
-         oss << functionName << " exception: " << str;
-      }
-      else {
-         // We build our own message
-         oss << functionName << " exception: ";
-         oss << "Cannot retrieve the error message - the error code is " << theErrorCode;
-      }
-      msg = oss.str();
+   else {
+      // We build our own message
+      oss << functionName << " exception: ";
+      oss << "Cannot retrieve the error message - the error code is " << theErrorCode;
    }
+   msg = oss.str();
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

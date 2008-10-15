@@ -35,7 +35,7 @@ void psoProcess::Init( const char* wdAddress,
    int rc = psoInit( wdAddress,
                      protectionNeeded );
    if ( rc != 0 ) {
-      throw psoException( rc, NULL, "psoProcess::Init" );
+      throw psoException( "psoProcess::Init", rc );
    }
 }
 

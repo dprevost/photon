@@ -40,20 +40,32 @@ class PHOTON_EXPORT psoException
 {
 public:
 
+   
    /**
-    * Construct a Photon exception using the return code from the C function
-    * and the name of the function throwing it.
+    * Construct a Photon exception using the last error of the session and 
+    * the name of the function throwing it.
     *
-    * \param[in]  theErrorCode The returned code from the C function (or 
-    *             something equivalent)
     * \param[in]  sessionHandle The handle of the current session. This 
     *             parameter can be NULL.
     * \param[in]  functionName The name of the function throwing the exception.
     */
-   psoException( int          theErrorCode, 
-                 PSO_HANDLE   sessionHandle, 
+   psoException( PSO_HANDLE   sessionHandle, 
                  const char * functionName );
-   
+
+   /**
+    * Construct a Photon exception using the return code from the C function
+    * and the name of the function throwing it.
+    *
+    * This constructor should be used when you cannot access the saved
+    * error from the session (with NULL handles, for example).
+    *
+    * \param[in]  functionName The name of the function throwing the exception.
+    * \param[in]  theErrorCode The returned code from the C function (or 
+    *             something equivalent)
+    */
+   psoException( const char * functionName,
+                 int          theErrorCode );
+
    virtual ~psoException();
 
    /**

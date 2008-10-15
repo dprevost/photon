@@ -89,7 +89,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
    catch( psoException exc ) {
-      if ( exc.ErrorCode() != PSO_SESSION_IS_TERMINATED ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }

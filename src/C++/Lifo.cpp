@@ -44,9 +44,15 @@ psoLifo::~psoLifo()
 
 void psoLifo::Close()
 {
-   int rc = psoLifoClose( m_objectHandle );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Close", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoClose( m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Close" );
+      throw psoException( m_sessionHandle, "psoLifo::Close" );
    }
    
    m_objectHandle = NULL;   
@@ -56,10 +62,16 @@ void psoLifo::Close()
 
 void psoLifo::Definition( psoObjectDefinition ** definition )
 {
-   int rc = psoLifoDefinition( m_objectHandle, definition );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Definition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoDefinition( m_objectHandle, definition );
    
    if ( rc != 0 ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Definition" );
+      throw psoException( m_sessionHandle, "psoLifo::Definition" );
    }
 }
 
@@ -69,13 +81,20 @@ int psoLifo::GetFirst( void   * buffer,
                        size_t   bufferLength,
                        size_t & returnedLength )
 {
-   int rc = psoLifoGetFirst( m_objectHandle,
-                             buffer,
-                             bufferLength,
-                             &returnedLength );
-   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::GetFirst" );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::GetFirst", PSO_NULL_HANDLE );
    }
+
+   rc = psoLifoGetFirst( m_objectHandle,
+                         buffer,
+                         bufferLength,
+                         &returnedLength );
+   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
+      throw psoException( m_sessionHandle, "psoLifo::GetFirst" );
+   }
+
    return rc;
 }
 
@@ -85,13 +104,20 @@ int psoLifo::GetNext( void   * buffer,
                       size_t   bufferLength,
                       size_t & returnedLength )
 {
-   int rc = psoLifoGetNext( m_objectHandle,
-                            buffer,
-                            bufferLength,
-                            &returnedLength );
-   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::GetNext" );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::GetNext", PSO_NULL_HANDLE );
    }
+
+   rc = psoLifoGetNext( m_objectHandle,
+                        buffer,
+                        bufferLength,
+                        &returnedLength );
+   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
+      throw psoException( m_sessionHandle, "psoLifo::GetNext" );
+   }
+
    return rc;
 }
 
@@ -99,12 +125,18 @@ int psoLifo::GetNext( void   * buffer,
 
 void psoLifo::Open( const std::string & queueName )
 {
-   int rc = psoLifoOpen( m_sessionHandle,
-                         queueName.c_str(),
-                         queueName.length(),
-                         &m_objectHandle );
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Open", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoOpen( m_sessionHandle,
+                     queueName.c_str(),
+                     queueName.length(),
+                     &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Open" );
+      throw psoException( m_sessionHandle, "psoLifo::Open" );
    }
 }
 
@@ -113,12 +145,18 @@ void psoLifo::Open( const std::string & queueName )
 void psoLifo::Open( const char * queueName,
                     size_t       nameLengthInBytes )
 {
-   int rc = psoLifoOpen( m_sessionHandle,
-                         queueName,
-                         nameLengthInBytes,
-                         &m_objectHandle );
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Open", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoOpen( m_sessionHandle,
+                     queueName,
+                     nameLengthInBytes,
+                     &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Open" );
+      throw psoException( m_sessionHandle, "psoLifo::Open" );
    }
 }
 
@@ -128,13 +166,20 @@ int psoLifo::Pop( void   * buffer,
                   size_t   bufferLength,
                   size_t & returnedLength )
 {
-   int rc = psoLifoPop( m_objectHandle,
-                        buffer,
-                        bufferLength,
-                        &returnedLength );
-   if ( rc != 0 && rc != PSO_IS_EMPTY && rc != PSO_ITEM_IS_IN_USE ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Pop" );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Pop", PSO_NULL_HANDLE );
    }
+
+   rc = psoLifoPop( m_objectHandle,
+                    buffer,
+                    bufferLength,
+                    &returnedLength );
+   if ( rc != 0 && rc != PSO_IS_EMPTY && rc != PSO_ITEM_IS_IN_USE ) {
+      throw psoException( m_sessionHandle, "psoLifo::Pop" );
+   }
+
    return rc;
 }
 
@@ -143,11 +188,17 @@ int psoLifo::Pop( void   * buffer,
 void psoLifo::Push( const void * pItem, 
                     size_t       length )
 {
-   int rc = psoLifoPush( m_objectHandle, 
-                         pItem, 
-                         length );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Push", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoPush( m_objectHandle, 
+                     pItem, 
+                     length );
    if ( rc != 0 ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Push" );
+      throw psoException( m_sessionHandle, "psoLifo::Push" );
    }
 }
 
@@ -155,10 +206,16 @@ void psoLifo::Push( const void * pItem,
 
 void psoLifo::Status( psoObjStatus & status )
 {
-   int rc = psoLifoStatus( m_objectHandle,
-                           &status );
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw psoException( "psoLifo::Status", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoStatus( m_objectHandle,
+                       &status );
    if ( rc != 0 ) {
-      throw psoException( rc, m_sessionHandle, "psoLifo::Status" );
+      throw psoException( m_sessionHandle, "psoLifo::Status" );
    }
 }
 
