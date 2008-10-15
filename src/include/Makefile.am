@@ -157,6 +157,7 @@ EXTRA_DIST =              \
 nobase_include_HEADERS =       \
         photon/photon          \
         photon/photon.h        \
+        photon/psoErrors.h     \
         $(C_INSTALLED_FILES)   \
         $(CPP_INSTALLED_FILES) 
 
