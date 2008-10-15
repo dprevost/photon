@@ -13,7 +13,7 @@ Definition at line 39 of file psoDefinition.
 
 .in +1c
 .ti -1c
-.RI "\fBpsoDefinition\fP (size_t numberOfFields)"
+.RI "\fBpsoDefinition\fP (size_t numberOfFields, enum psoObjectType type)"
 .br
 .RI "\fIConstruct a data-container definition. \fP"
 .ti -1c
@@ -32,11 +32,15 @@ Definition at line 39 of file psoDefinition.
 .br
 .RI "\fIAdd a field to the definition. \fP"
 .ti -1c
-.RI "void \fBObjectType\fP (psoObjectType type)"
+.RI "void \fBObjectType\fP (enum psoObjectType type)"
 .br
 .RI "\fISet the type of the object. \fP"
 .ti -1c
-.RI "void \fBReset\fP (size_t numberOfFields)"
+.RI "enum psoObjectType \fBObjectType\fP ()"
+.br
+.RI "\fIRetrieve the type of the object. \fP"
+.ti -1c
+.RI "void \fBReset\fP (size_t numberOfFields, enum psoObjectType type)"
 .br
 .RI "\fIReset the object to be reused for the definition of another data container. \fP"
 .ti -1c
@@ -62,13 +66,15 @@ Definition at line 39 of file psoDefinition.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "psoDefinition::psoDefinition (size_t numberOfFields)"
+.SS "psoDefinition::psoDefinition (size_t numberOfFields, enum psoObjectType type)"
 .PP
 Construct a data-container definition. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fInumberOfFields\fP The number of data fields.
+\fInumberOfFields\fP The number of data fields. 
+.br
+\fItype\fP The type of the object.
 .RE
 .PP
 \fBExceptions:\fP
@@ -162,7 +168,7 @@ Fields must be added in order.
 .RE
 .PP
 
-.SS "void psoDefinition::ObjectType (psoObjectType type)"
+.SS "void psoDefinition::ObjectType (enum psoObjectType type)"
 .PP
 Set the type of the object. 
 .PP
@@ -177,13 +183,30 @@ Set the type of the object.
 .RE
 .PP
 
-.SS "void psoDefinition::Reset (size_t numberOfFields)"
+.SS "enum psoObjectType psoDefinition::ObjectType ()"
+.PP
+Retrieve the type of the object. 
+.PP
+\fBReturns:\fP
+.RS 4
+The type of the object.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpsoException\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void psoDefinition::Reset (size_t numberOfFields, enum psoObjectType type)"
 .PP
 Reset the object to be reused for the definition of another data container. 
 .PP
 \fBParameters:\fP
 .RS 4
-\fInumberOfFields\fP The number of data fields of the new data container.
+\fInumberOfFields\fP The number of data fields of the new data container. 
+.br
+\fItype\fP The type of the object.
 .RE
 .PP
 \fBExceptions:\fP
@@ -203,17 +226,17 @@ Returns a reference to the C struct definition.
 .PP
 The C struct holding the definition itself. 
 .PP
-Definition at line 155 of file psoDefinition.
+Definition at line 166 of file psoDefinition.
 .SS "size_t \fBpsoDefinition::currentField\fP\fC [private]\fP"
 .PP
 Iterator. 
 .PP
-Definition at line 158 of file psoDefinition.
+Definition at line 169 of file psoDefinition.
 .SS "bool \fBpsoDefinition::keyAdded\fP\fC [private]\fP"
 .PP
 was the key added? 
 .PP
-Definition at line 161 of file psoDefinition.
+Definition at line 172 of file psoDefinition.
 
 .SH "Author"
 .PP 

@@ -26,7 +26,7 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   psoDefinition def( 6 );
+   psoDefinition def( 6, PSO_QUEUE );
    string name;
    
    try {

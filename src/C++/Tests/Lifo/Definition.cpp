@@ -47,13 +47,12 @@ int main( int argc, char * argv[] )
    size_t len;
    psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   psoDefinition queueDef(5);
+   psoDefinition queueDef( 5, PSO_LIFO );
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
    
    try {
-      queueDef.ObjectType( PSO_LIFO );
       queueDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
       queueDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
       queueDef.AddField( "field3", 6, PSO_STRING,    30, 0, 0, 0, 0 );

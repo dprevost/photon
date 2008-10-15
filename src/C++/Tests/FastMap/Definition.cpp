@@ -46,7 +46,7 @@ int main( int argc, char * argv[] )
    size_t len;
    psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   psoDefinition mapDef(5);
+   psoDefinition mapDef( 5, PSO_FAST_MAP );
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
@@ -60,7 +60,6 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      mapDef.ObjectType( PSO_FAST_MAP );
       mapDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
       mapDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
       mapDef.AddField( "field3", 6, PSO_STRING,    30, 0, 0, 0, 0 );

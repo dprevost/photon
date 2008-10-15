@@ -44,10 +44,11 @@ public:
     * Construct a data-container definition.
     *
     * \param[in] numberOfFields The number of data fields.
+    * \param[in] type The type of the object.
     *
     * \exception psoException An abnormal error occured.
     */
-   psoDefinition( size_t numberOfFields );
+   psoDefinition( size_t numberOfFields, enum psoObjectType type );
    
    virtual ~psoDefinition();
 
@@ -133,18 +134,28 @@ public:
     *
     * \exception psoException An abnormal error occured.
     */
-   void ObjectType( psoObjectType type );
-   
+   void ObjectType( enum psoObjectType type );
+
+   /**
+    * Retrieve the type of the object.
+    *
+    * \return The type of the object.
+    *
+    * \exception psoException An abnormal error occured.
+    */
+   enum psoObjectType ObjectType();
+     
    /**
     * Reset the object to be reused for the definition of another data 
     * container.
     *
     * \param[in] numberOfFields The number of data fields of the new data
     *            container.
+    * \param[in] type The type of the object.
     *
     * \exception psoException An abnormal error occured.
     */
-   void Reset( size_t numberOfFields );
+   void Reset( size_t numberOfFields, enum psoObjectType type );
    
    /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();

@@ -26,7 +26,7 @@ using namespace std;
 
 int main()
 {
-   psoDefinition def( 5 );
+   psoDefinition def( 5, PSO_HASH_MAP );
 
    try {
       def.AddKey( (psoKeyType)0, 4, 0, 0 );

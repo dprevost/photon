@@ -25,10 +25,10 @@ using namespace std;
 
 int main( int argc, char * argv[] )
 {
-   psoDefinition def( 5 );
+   psoDefinition def( 5, PSO_QUEUE );
 
    try {
-      def.Reset( 0 );
+      def.Reset( 0, PSO_QUEUE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -41,7 +41,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      def.Reset( PSO_MAX_FIELDS + 1 );
+      def.Reset( PSO_MAX_FIELDS + 1, PSO_QUEUE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -54,7 +54,33 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      def.Reset( 1 );
+      def.Reset( 5, (psoObjectType)0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
+   try {
+      def.Reset( 5, PSO_LAST_OBJECT_TYPE );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( psoException exc ) {
+      if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+   
+   try {
+      def.Reset( 1, PSO_QUEUE );
    }
    catch( psoException exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

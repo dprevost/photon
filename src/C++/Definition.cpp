@@ -22,7 +22,7 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoDefinition::psoDefinition( size_t numberOfFields )
+psoDefinition::psoDefinition( size_t numberOfFields, enum psoObjectType type )
    : pDefinition  ( NULL ),
      currentField ( 0 ),
      keyAdded     ( false )
@@ -30,6 +30,10 @@ psoDefinition::psoDefinition( size_t numberOfFields )
    if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
       throw psoException( "psoDefinition::psoDefinition",
                           PSO_INVALID_NUM_FIELDS );
+   }
+   if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
+      throw psoException( "psoDefinition::ObjectType",
+                          PSO_WRONG_OBJECT_TYPE );
    }
    
    // using calloc - being lazy...
@@ -41,6 +45,7 @@ psoDefinition::psoDefinition( size_t numberOfFields )
                           PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
    pDefinition->numFields = numberOfFields;
+   pDefinition->type = type;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -82,6 +87,10 @@ void psoDefinition::AddField( const char   * name,
                               size_t         precision,
                               size_t         scale )
 {
+   if ( pDefinition == NULL ) {
+      throw psoException( "psoDefinition::AddField", PSO_NULL_POINTER );
+   }
+
    if ( currentField >= pDefinition->numFields ) {
       throw psoException( "psoDefinition::AddField",
                           PSO_INVALID_NUM_FIELDS );
@@ -164,6 +173,10 @@ void psoDefinition::AddKey( psoKeyType type,
                             size_t     minLength,
                             size_t     maxLength )
 {
+   if ( pDefinition == NULL ) {
+      throw psoException( "psoDefinition::AddKey", PSO_NULL_POINTER );
+   }
+
    if ( keyAdded ) {
       throw psoException( "psoDefinition::AddKey",
                           PSO_INVALID_KEY_DEF );
@@ -211,25 +224,43 @@ void psoDefinition::AddKey( psoKeyType type,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::ObjectType( psoObjectType type )
+void psoDefinition::ObjectType( enum psoObjectType type )
 {
    if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
       throw psoException( "psoDefinition::ObjectType",
                           PSO_WRONG_OBJECT_TYPE );
    }
-   
+
+   if ( pDefinition == NULL ) {
+      throw psoException( "psoDefinition::ObjectType", PSO_NULL_POINTER );
+   }
    pDefinition->type = type;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::Reset( size_t numberOfFields )
+enum psoObjectType psoDefinition::ObjectType()
+{
+   if ( pDefinition == NULL ) {
+      throw psoException( "psoDefinition::ObjectType", PSO_NULL_POINTER );
+   }
+
+   return pDefinition->type;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void psoDefinition::Reset( size_t numberOfFields, enum psoObjectType type )
 {
    psoObjectDefinition * tmp;
    
    if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
       throw psoException( "psoDefinition::psoDefinition",
                           PSO_INVALID_NUM_FIELDS );
+   }
+   if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
+      throw psoException( "psoDefinition::ObjectType",
+                          PSO_WRONG_OBJECT_TYPE );
    }
    currentField = numberOfFields;
    
@@ -241,10 +272,11 @@ void psoDefinition::Reset( size_t numberOfFields )
       throw psoException( "psoDefinition::Reset",
                           PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
-   free( pDefinition );
+   if ( pDefinition != NULL ) free( pDefinition );
    pDefinition = tmp;
    
    pDefinition->numFields = numberOfFields;
+   pDefinition->type = type;
    currentField = 0;
    keyAdded = false;
 }

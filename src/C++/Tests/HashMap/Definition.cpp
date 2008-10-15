@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
    size_t len;
    psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   psoDefinition mapDef(5);
+   psoDefinition mapDef( 5, PSO_HASH_MAP );
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
