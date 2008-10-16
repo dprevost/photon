@@ -31,12 +31,14 @@
 
 #include <photon/psoCommon.h>
 
-// Forward declaration
-class psoSession;
-
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoException
+namespace pso {
+
+// Forward declaration
+class Session;
+
+class PHOTON_EXPORT Exception
 {
 public:
 
@@ -49,8 +51,8 @@ public:
     *             parameter can be NULL.
     * \param[in]  functionName The name of the function throwing the exception.
     */
-   psoException( PSO_HANDLE   sessionHandle, 
-                 const char * functionName );
+   Exception( PSO_HANDLE   sessionHandle, 
+              const char * functionName );
 
    /**
     * Construct a Photon exception using the return code from the C function
@@ -63,10 +65,10 @@ public:
     * \param[in]  theErrorCode The returned code from the C function (or 
     *             something equivalent)
     */
-   psoException( const char * functionName,
-                 int          theErrorCode );
+   Exception( const char * functionName,
+              int          theErrorCode );
 
-   virtual ~psoException();
+   virtual ~Exception();
 
    /**
     * Return the error message.
@@ -99,6 +101,8 @@ private:
    /// The last error code seen by the API.
    int errcode;
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

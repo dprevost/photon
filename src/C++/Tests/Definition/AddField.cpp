@@ -21,12 +21,13 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoDefinition def( 6, PSO_QUEUE );
+   Definition def( 6, PSO_QUEUE );
    string name;
    
    try {
@@ -35,7 +36,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_NAME ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -48,7 +49,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_NAME ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -64,7 +65,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_NAME ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -79,7 +80,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_LENGTH_INT ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -92,7 +93,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_LENGTH_INT ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -102,7 +103,7 @@ int main( int argc, char * argv[] )
    try {
       def.AddField( name, PSO_INTEGER, 8, 0, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -115,7 +116,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -125,7 +126,7 @@ int main( int argc, char * argv[] )
    try {
       def.AddField( name, PSO_STRING, 12, 0, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -138,7 +139,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -148,7 +149,7 @@ int main( int argc, char * argv[] )
    try {
       def.AddField( name, PSO_BINARY, 12, 0, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -161,7 +162,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_TYPE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -174,7 +175,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_TYPE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -185,7 +186,7 @@ int main( int argc, char * argv[] )
    try {
       def.AddField( name, PSO_BOOLEAN, 0, 0, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -198,7 +199,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_PRECISION ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -211,7 +212,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_SCALE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -221,7 +222,7 @@ int main( int argc, char * argv[] )
    try {
       def.AddField( name, PSO_DECIMAL, 0, 0, 0, PSO_FIELD_MAX_PRECISION, PSO_FIELD_MAX_PRECISION );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -234,7 +235,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_FIELD_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -244,7 +245,7 @@ int main( int argc, char * argv[] )
    try {
       def.AddField( name, PSO_VAR_BINARY, 0, 20, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

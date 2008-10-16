@@ -20,14 +20,15 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session1, session2;
-   psoQueue queue1(session1), queue2(session2);
+   Process process;
+   Session session1, session2;
+   Queue queue1(session1), queue2(session2);
    string fname = "/cpp_queue_pushnow";
    string qname = fname + "/test";
 
@@ -61,7 +62,7 @@ int main( int argc, char * argv[] )
       queue1.Open( qname );
       queue2.Open( qname );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -75,7 +76,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -88,7 +89,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -99,7 +100,7 @@ int main( int argc, char * argv[] )
    try {
       queue1.PushNow( data1, strlen(data1) );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -114,7 +115,7 @@ int main( int argc, char * argv[] )
       queue2.GetFirst( buffer, 50, length );
       // Should never come here
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -122,7 +123,7 @@ int main( int argc, char * argv[] )
    try {
       queue1.GetFirst( buffer, 50, length );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -130,7 +131,7 @@ int main( int argc, char * argv[] )
    try {
       rc = queue1.Pop( buffer, 50, length );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

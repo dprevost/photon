@@ -27,18 +27,20 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+namespace pso {
+
 // Forward declarations
-class psoSession;
+class Session;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoLifo
+class PHOTON_EXPORT Lifo
 {
 public:
 
-   psoLifo( psoSession &session );
+   Lifo( Session &session );
 
-   virtual ~psoLifo();
+   virtual ~Lifo();
 
    /**
     * \brief Close a LIFO queue.
@@ -51,7 +53,7 @@ public:
     * psoSession::Commit or psoSession::Rollback to end the current unit of 
     * work.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Close();
    
@@ -66,7 +68,7 @@ public:
     *              of the object definition. Freeing the memory (with free())
     *              is the responsability of the caller.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Definition( psoObjectDefinition ** definition );
 
@@ -86,7 +88,7 @@ public:
     *
     * \return 0 on success or PSO_IS_EMPTY if the queue is empty.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int GetFirst( void   * buffer,
                  size_t   bufferLength,
@@ -114,7 +116,7 @@ public:
     * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the queue.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int GetNext( void   * buffer,
                 size_t   bufferLength,
@@ -126,7 +128,7 @@ public:
     *
     * \param[in]  queueName The fully qualified name of the queue. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const std::string & queueName );
 
@@ -138,7 +140,7 @@ public:
     * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
     *             counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * queueName,
               size_t       nameLengthInBytes );
@@ -162,7 +164,7 @@ public:
     * \return 0 on success or PSO_IS_EMPTY if the queue is empty or
     *           PSO_ITEM_IS_IN_USE if all existing items are "invisible".
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int Pop( void   * buffer,
             size_t   bufferLength,
@@ -176,7 +178,7 @@ public:
     * \param[in]  pItem  The data item to be inserted.
     * \param[in]  length The length of \em pItem (in bytes).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Push( const void * pItem, 
               size_t       length );
@@ -186,7 +188,7 @@ public:
     *
     * \param[out] status A reference to the status structure.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Status( psoObjStatus & status );
 
@@ -199,6 +201,8 @@ private:
    PSO_HANDLE & m_sessionHandle;
 
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

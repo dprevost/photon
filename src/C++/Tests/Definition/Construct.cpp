@@ -21,18 +21,19 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
    try {
-      psoDefinition def( 0, PSO_QUEUE );
+      Definition def( 0, PSO_QUEUE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_NUM_FIELDS ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -40,12 +41,12 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      psoDefinition def( PSO_MAX_FIELDS + 1, PSO_QUEUE );
+      Definition def( PSO_MAX_FIELDS + 1, PSO_QUEUE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_NUM_FIELDS ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -53,12 +54,12 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      psoDefinition def( 5, (psoObjectType)0 );
+      Definition def( 5, (psoObjectType)0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -66,12 +67,12 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      psoDefinition def( 5, PSO_LAST_OBJECT_TYPE );
+      Definition def( 5, PSO_LAST_OBJECT_TYPE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -79,9 +80,9 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      psoDefinition def( 1, PSO_QUEUE );
+      Definition def( 1, PSO_QUEUE );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

@@ -22,16 +22,18 @@
 #include "API/Session.h"
 #include <photon/psoException>
 
+using namespace pso;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoSession::psoSession()
+Session::Session()
    : m_sessionHandle ( NULL )
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoSession::~psoSession()
+Session::~Session()
 {
    psoExitSession( m_sessionHandle );
    m_sessionHandle = NULL;
@@ -39,29 +41,29 @@ psoSession::~psoSession()
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::Commit()
+void Session::Commit()
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::Commit", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::Commit", PSO_NULL_HANDLE );
    }
 
    rc = psoCommit( m_sessionHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::Commit" );
+      throw pso::Exception( m_sessionHandle, "Session::Commit" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::CreateObject( const std::string         & objectName,
-                               const psoObjectDefinition & definition )
+void Session::CreateObject( const std::string         & objectName,
+                            const psoObjectDefinition & definition )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
 
    rc = psoCreateObject( m_sessionHandle,
@@ -69,20 +71,20 @@ void psoSession::CreateObject( const std::string         & objectName,
                          objectName.length(),
                          (psoObjectDefinition*)&definition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::CreateObject( const char                * objectName,
-                               size_t                      nameLengthInBytes,
-                               const psoObjectDefinition & definition )
+void Session::CreateObject( const char                * objectName,
+                            size_t                      nameLengthInBytes,
+                            const psoObjectDefinition & definition )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
 
    rc = psoCreateObject( m_sessionHandle,
@@ -90,64 +92,64 @@ void psoSession::CreateObject( const char                * objectName,
                          nameLengthInBytes,
                          (psoObjectDefinition*)&definition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::DestroyObject( const std::string & objectName )
+void Session::DestroyObject( const std::string & objectName )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::DestroyObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::DestroyObject", PSO_NULL_HANDLE );
    }
 
    rc = psoDestroyObject( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length() );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::DestroyObject" );
+      throw pso::Exception( m_sessionHandle, "Session::DestroyObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::DestroyObject( const char * objectName,
-                                size_t       nameLengthInBytes )
+void Session::DestroyObject( const char * objectName,
+                             size_t       nameLengthInBytes )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::DestroyObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::DestroyObject", PSO_NULL_HANDLE );
    }
 
    rc = psoDestroyObject( m_sessionHandle,
                           objectName,
                           nameLengthInBytes );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::DestroyObject" );
+      throw pso::Exception( m_sessionHandle, "Session::DestroyObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 std::string & 
-psoSession::ErrorMsg( std::string & message )
+Session::ErrorMsg( std::string & message )
 {
    char msg[1024];
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::ErrorMsg", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::ErrorMsg", PSO_NULL_HANDLE );
    }
 
    rc = psoErrorMsg( m_sessionHandle,
                      msg,
                      1024 );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::ErrorMsg" );
+      throw pso::Exception( m_sessionHandle, "Session::ErrorMsg" );
    }
    message = msg;
 
@@ -156,32 +158,32 @@ psoSession::ErrorMsg( std::string & message )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::ErrorMsg( char   * message,
-                           size_t   msgLengthInBytes )
+void Session::ErrorMsg( char   * message,
+                        size_t   msgLengthInBytes )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::ErrorMsg", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::ErrorMsg", PSO_NULL_HANDLE );
    }
 
    rc = psoErrorMsg( m_sessionHandle,
                      message,
                      msgLengthInBytes );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::ErrorMsg" );
+      throw pso::Exception( m_sessionHandle, "Session::ErrorMsg" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::GetDefinition( const std::string    & objectName,
-                                psoObjectDefinition ** ppDefinition )
+void Session::GetDefinition( const std::string    & objectName,
+                             psoObjectDefinition ** ppDefinition )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::GetDefinition", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::GetDefinition", PSO_NULL_HANDLE );
    }
 
    rc = psoGetDefinition( m_sessionHandle,
@@ -189,20 +191,20 @@ void psoSession::GetDefinition( const std::string    & objectName,
                           objectName.length(),
                           ppDefinition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::GetDefinition" );
+      throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::GetDefinition( const char           * objectName,
-                                size_t                 nameLengthInBytes,
-                                psoObjectDefinition ** ppDefinition )
+void Session::GetDefinition( const char           * objectName,
+                             size_t                 nameLengthInBytes,
+                             psoObjectDefinition ** ppDefinition )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::GetDefinition", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::GetDefinition", PSO_NULL_HANDLE );
    }
 
    rc = psoGetDefinition( m_sessionHandle,
@@ -210,35 +212,35 @@ void psoSession::GetDefinition( const char           * objectName,
                           nameLengthInBytes,
                           ppDefinition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::GetDefinition" );
+      throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::GetInfo( psoInfo & info )
+void Session::GetInfo( psoInfo & info )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::GetInfo", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::GetInfo", PSO_NULL_HANDLE );
    }
 
    rc = psoGetInfo( m_sessionHandle, &info );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::GetInfo" );
+      throw pso::Exception( m_sessionHandle, "Session::GetInfo" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::GetStatus( const std::string & objectName,
-                            psoObjStatus      & status )
+void Session::GetStatus( const std::string & objectName,
+                         psoObjStatus      & status )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::GetStatus", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::GetStatus", PSO_NULL_HANDLE );
    }
 
    rc = psoGetStatus( m_sessionHandle,
@@ -246,20 +248,20 @@ void psoSession::GetStatus( const std::string & objectName,
                       objectName.length(),
                       &status );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::GetStatus" );
+      throw pso::Exception( m_sessionHandle, "Session::GetStatus" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::GetStatus( const char   * objectName,
-                            size_t         nameLengthInBytes,
-                            psoObjStatus & status )
+void Session::GetStatus( const char   * objectName,
+                         size_t         nameLengthInBytes,
+                         psoObjStatus & status )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::GetStatus", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::GetStatus", PSO_NULL_HANDLE );
    }
 
    rc = psoGetStatus( m_sessionHandle,
@@ -267,24 +269,24 @@ void psoSession::GetStatus( const char   * objectName,
                       nameLengthInBytes,
                       &status );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::GetStatus" );
+      throw pso::Exception( m_sessionHandle, "Session::GetStatus" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::Init()
+void Session::Init()
 {
    int rc = psoInitSession( &m_sessionHandle );
 
    if ( rc != 0 ) {
-      throw psoException( "psoSession::Init", rc );
+      throw pso::Exception( "Session::Init", rc );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoSession::LastError()
+int Session::LastError()
 {
    psoaSession* pSession;
    int rc = 0;
@@ -309,7 +311,7 @@ int psoSession::LastError()
    }
    
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::ErrorMsg" );
+      throw pso::Exception( m_sessionHandle, "Session::ErrorMsg" );
    }
    
    return lastErr;
@@ -317,17 +319,17 @@ int psoSession::LastError()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoSession::Rollback()
+void Session::Rollback()
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoSession::Rollback", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::Rollback", PSO_NULL_HANDLE );
    }
 
    rc = psoRollback( m_sessionHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoSession::Rollback" );
+      throw pso::Exception( m_sessionHandle, "Session::Rollback" );
    }
 }
 

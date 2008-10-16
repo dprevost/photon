@@ -1,4 +1,4 @@
-.TH "psoException" 3 "15 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
+.TH "psoException" 3 "16 Oct 2008" "Version 0.3.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,130 +6,27 @@ psoException \-
 .SH SYNOPSIS
 .br
 .PP
-.SH "Detailed Description"
-.PP 
-Definition at line 39 of file psoException.
-.SS "Public Member Functions"
+\fC#include <stdlib.h>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <photon/psoCommon.h>\fP
+.br
+
+.SS "Namespaces"
 
 .in +1c
 .ti -1c
-.RI "\fBpsoException\fP (PSO_HANDLE sessionHandle, const char *functionName)"
+.RI "namespace \fBpso\fP"
 .br
-.RI "\fIConstruct a Photon exception using the last error of the session and the name of the function throwing it. \fP"
-.ti -1c
-.RI "\fBpsoException\fP (const char *functionName, int theErrorCode)"
-.br
-.RI "\fIConstruct a Photon exception using the return code from the C function and the name of the function throwing it. \fP"
-.ti -1c
-.RI "virtual \fB~psoException\fP ()"
-.br
-.ti -1c
-.RI "std::string & \fBMessage\fP (std::string &errorMessage)"
-.br
-.RI "\fIReturn the error message. \fP"
-.ti -1c
-.RI "std::string & \fBMessage\fP ()"
-.br
-.RI "\fIReturn the error message. \fP"
-.ti -1c
-.RI "int \fBErrorCode\fP ()"
-.br
-.RI "\fIReturn the error code associated with the exception. \fP"
 .in -1c
-.SS "Private Attributes"
+.SS "Classes"
 
 .in +1c
 .ti -1c
-.RI "std::string \fBmsg\fP"
+.RI "class \fBpso::Exception\fP"
 .br
-.RI "\fIThe error message, if any. \fP"
-.ti -1c
-.RI "int \fBerrcode\fP"
-.br
-.RI "\fIThe last error code seen by the API. \fP"
 .in -1c
-.SH "Constructor & Destructor Documentation"
-.PP 
-.SS "psoException::psoException (PSO_HANDLE sessionHandle, const char * functionName)"
-.PP
-Construct a Photon exception using the last error of the session and the name of the function throwing it. 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIsessionHandle\fP The handle of the current session. This parameter can be NULL. 
-.br
-\fIfunctionName\fP The name of the function throwing the exception. 
-.RE
-.PP
-
-.SS "psoException::psoException (const char * functionName, int theErrorCode)"
-.PP
-Construct a Photon exception using the return code from the C function and the name of the function throwing it. 
-.PP
-This constructor should be used when you cannot access the saved error from the session (with NULL handles, for example).
-.PP
-\fBParameters:\fP
-.RS 4
-\fIfunctionName\fP The name of the function throwing the exception. 
-.br
-\fItheErrorCode\fP The returned code from the C function (or something equivalent) 
-.RE
-.PP
-
-.SS "virtual psoException::~psoException ()\fC [virtual]\fP"
-.PP
-.SH "Member Function Documentation"
-.PP 
-.SS "std::string& psoException::Message (std::string & errorMessage)"
-.PP
-Return the error message. 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIerrorMessage\fP The error message
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-A reference to the error message. 
-.RE
-.PP
-
-.SS "std::string& psoException::Message ()"
-.PP
-Return the error message. 
-.PP
-\fBReturns:\fP
-.RS 4
-A reference to the error message. 
-.RE
-.PP
-
-.SS "int psoException::ErrorCode ()\fC [inline]\fP"
-.PP
-Return the error code associated with the exception. 
-.PP
-\fBReturns:\fP
-.RS 4
-The error code. 
-.RE
-.PP
-
-.PP
-Definition at line 92 of file psoException.
-.SH "Member Data Documentation"
-.PP 
-.SS "std::string \fBpsoException::msg\fP\fC [private]\fP"
-.PP
-The error message, if any. 
-.PP
-Definition at line 97 of file psoException.
-.SS "int \fBpsoException::errcode\fP\fC [private]\fP"
-.PP
-The last error code seen by the API. 
-.PP
-Definition at line 100 of file psoException.
-
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Photon C++ API from the source code.

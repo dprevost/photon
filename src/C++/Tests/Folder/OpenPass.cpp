@@ -21,14 +21,15 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session1, session2;
-   psoFolder folder1(session1), folder2(session2);
+   Process process;
+   Session session1, session2;
+   Folder folder1(session1), folder2(session2);
    string name = "/cpp_folder_open";
    const char * c_name = "/cpp_folder_open";
    psoObjectDefinition def; 
@@ -47,7 +48,7 @@ int main( int argc, char * argv[] )
       session2.Init();
       session1.CreateObject( name, def );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -58,7 +59,7 @@ int main( int argc, char * argv[] )
    try {
       folder1.Open( NULL, strlen(c_name) );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -68,7 +69,7 @@ int main( int argc, char * argv[] )
    try {
       folder1.Open( c_name, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -79,7 +80,7 @@ int main( int argc, char * argv[] )
    try {
       folder1.Open( name );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -87,7 +88,7 @@ int main( int argc, char * argv[] )
    try {
       folder2.Open( name );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_OBJECT_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;

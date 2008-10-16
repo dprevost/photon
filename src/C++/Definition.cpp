@@ -19,21 +19,22 @@
 #include <photon/photon>
 
 using namespace std;
+using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoDefinition::psoDefinition( size_t numberOfFields, enum psoObjectType type )
+Definition::Definition( size_t numberOfFields, enum psoObjectType type )
    : pDefinition  ( NULL ),
      currentField ( 0 ),
      keyAdded     ( false )
 {
    if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
-      throw psoException( "psoDefinition::psoDefinition",
-                          PSO_INVALID_NUM_FIELDS );
+      throw pso::Exception( "psoDefinition::psoDefinition",
+                            PSO_INVALID_NUM_FIELDS );
    }
    if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
-      throw psoException( "psoDefinition::ObjectType",
-                          PSO_WRONG_OBJECT_TYPE );
+      throw pso::Exception( "psoDefinition::ObjectType",
+                            PSO_WRONG_OBJECT_TYPE );
    }
    
    // using calloc - being lazy...
@@ -41,8 +42,8 @@ psoDefinition::psoDefinition( size_t numberOfFields, enum psoObjectType type )
       numberOfFields * sizeof(psoFieldDefinition);
    pDefinition = (psoObjectDefinition *)calloc( len, 1 );
    if ( pDefinition == NULL ) {
-      throw psoException( "psoDefinition::psoDefinition",
-                          PSO_NOT_ENOUGH_HEAP_MEMORY );
+      throw pso::Exception( "psoDefinition::psoDefinition",
+                            PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
    pDefinition->numFields = numberOfFields;
    pDefinition->type = type;
@@ -50,7 +51,7 @@ psoDefinition::psoDefinition( size_t numberOfFields, enum psoObjectType type )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoDefinition::~psoDefinition()
+Definition::~Definition()
 {
    if ( pDefinition ) free( pDefinition );
    pDefinition = NULL;
@@ -58,13 +59,13 @@ psoDefinition::~psoDefinition()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::AddField( std::string  & name,
-                              psoFieldType   type,
-                              size_t         length,
-                              size_t         minLength,
-                              size_t         maxLength,
-                              size_t         precision,
-                              size_t         scale )
+void Definition::AddField( std::string  & name,
+                           psoFieldType   type,
+                           size_t         length,
+                           size_t         minLength,
+                           size_t         maxLength,
+                           size_t         precision,
+                           size_t         scale )
 {
    AddField( name.c_str(),
              name.length(),
@@ -78,35 +79,35 @@ void psoDefinition::AddField( std::string  & name,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::AddField( const char   * name,
-                              size_t         nameLength,
-                              psoFieldType   type,
-                              size_t         length,
-                              size_t         minLength,
-                              size_t         maxLength,
-                              size_t         precision,
-                              size_t         scale )
+void Definition::AddField( const char   * name,
+                           size_t         nameLength,
+                           psoFieldType   type,
+                           size_t         length,
+                           size_t         minLength,
+                           size_t         maxLength,
+                           size_t         precision,
+                           size_t         scale )
 {
    if ( pDefinition == NULL ) {
-      throw psoException( "psoDefinition::AddField", PSO_NULL_POINTER );
+      throw pso::Exception( "psoDefinition::AddField", PSO_NULL_POINTER );
    }
 
    if ( currentField >= pDefinition->numFields ) {
-      throw psoException( "psoDefinition::AddField",
-                          PSO_INVALID_NUM_FIELDS );
+      throw pso::Exception( "psoDefinition::AddField",
+                            PSO_INVALID_NUM_FIELDS );
    }
    
    if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
-      throw psoException( "psoDefinition::AddField",
-                          PSO_INVALID_FIELD_NAME );
+      throw pso::Exception( "psoDefinition::AddField",
+                            PSO_INVALID_FIELD_NAME );
    }
    memcpy( pDefinition->fields[currentField].name, name, nameLength );
    
    switch ( type ) {
    case PSO_INTEGER:
       if ( length != 1 && length != 2 && length != 4 && length != 8 ) {
-      throw psoException( "psoDefinition::AddField",
-                          PSO_INVALID_FIELD_LENGTH_INT );
+      throw pso::Exception( "psoDefinition::AddField",
+                            PSO_INVALID_FIELD_LENGTH_INT );
       }
       pDefinition->fields[currentField].type = type;
       pDefinition->fields[currentField].length = length;
@@ -116,8 +117,8 @@ void psoDefinition::AddField( const char   * name,
    case PSO_BINARY:
    case PSO_STRING:
       if ( length == 0 ) {
-         throw psoException( "psoDefinition::AddField",
-                             PSO_INVALID_FIELD_LENGTH );
+         throw pso::Exception( "psoDefinition::AddField",
+                               PSO_INVALID_FIELD_LENGTH );
       }
       pDefinition->fields[currentField].type = type;
       pDefinition->fields[currentField].length = length;
@@ -127,12 +128,12 @@ void psoDefinition::AddField( const char   * name,
    case PSO_VAR_BINARY:
    case PSO_VAR_STRING:
       if ( currentField != pDefinition->numFields-1 ) {
-         throw psoException( "psoDefinition::AddField",
-                             PSO_INVALID_FIELD_TYPE );
+         throw pso::Exception( "psoDefinition::AddField",
+                               PSO_INVALID_FIELD_TYPE );
       }
       if ( maxLength != 0 && maxLength < minLength ) {
-         throw psoException( "psoDefinition::AddField",
-                             PSO_INVALID_FIELD_LENGTH );
+         throw pso::Exception( "psoDefinition::AddField",
+                               PSO_INVALID_FIELD_LENGTH );
       }
       pDefinition->fields[currentField].type = type;
       pDefinition->fields[currentField].minLength = minLength;
@@ -147,12 +148,12 @@ void psoDefinition::AddField( const char   * name,
 
    case PSO_DECIMAL:
       if ( precision == 0 || precision > PSO_FIELD_MAX_PRECISION ) {
-         throw psoException( "psoDefinition::AddField",
-                             PSO_INVALID_PRECISION );
+         throw pso::Exception( "psoDefinition::AddField",
+                               PSO_INVALID_PRECISION );
       }
       if ( scale > precision ) {
-         throw psoException( "psoDefinition::AddField",
-                             PSO_INVALID_SCALE );
+         throw pso::Exception( "psoDefinition::AddField",
+                               PSO_INVALID_SCALE );
       }
       pDefinition->fields[currentField].type = type;
       pDefinition->fields[currentField].precision = precision;
@@ -161,32 +162,32 @@ void psoDefinition::AddField( const char   * name,
       break;
 
    default:
-      throw psoException( "psoDefinition::AddField",
-                          PSO_INVALID_FIELD_TYPE );
+      throw pso::Exception( "psoDefinition::AddField",
+                            PSO_INVALID_FIELD_TYPE );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::AddKey( psoKeyType type,
-                            size_t     length,
-                            size_t     minLength,
-                            size_t     maxLength )
+void Definition::AddKey( psoKeyType type,
+                         size_t     length,
+                         size_t     minLength,
+                         size_t     maxLength )
 {
    if ( pDefinition == NULL ) {
-      throw psoException( "psoDefinition::AddKey", PSO_NULL_POINTER );
+      throw pso::Exception( "psoDefinition::AddKey", PSO_NULL_POINTER );
    }
 
    if ( keyAdded ) {
-      throw psoException( "psoDefinition::AddKey",
-                          PSO_INVALID_KEY_DEF );
+      throw pso::Exception( "psoDefinition::AddKey",
+                            PSO_INVALID_KEY_DEF );
    }
 
    switch ( type ) {
    case PSO_KEY_INTEGER:
       if ( length != 1 && length != 2 && length != 4 && length != 8 ) {
-         throw psoException( "psoDefinition::AddKey",
-                             PSO_INVALID_KEY_DEF );
+         throw pso::Exception( "psoDefinition::AddKey",
+                               PSO_INVALID_KEY_DEF );
       }
       pDefinition->key.type = type;
       pDefinition->key.length = length;
@@ -196,8 +197,8 @@ void psoDefinition::AddKey( psoKeyType type,
    case PSO_KEY_BINARY:
    case PSO_KEY_STRING:
       if ( length == 0 ) {
-         throw psoException( "psoDefinition::AddKey",
-                             PSO_INVALID_KEY_DEF );
+         throw pso::Exception( "psoDefinition::AddKey",
+                               PSO_INVALID_KEY_DEF );
       }
       pDefinition->key.type = type;
       pDefinition->key.length = length;
@@ -207,8 +208,8 @@ void psoDefinition::AddKey( psoKeyType type,
    case PSO_KEY_VAR_BINARY:
    case PSO_KEY_VAR_STRING:
       if ( maxLength != 0 && maxLength < minLength ) {
-         throw psoException( "psoDefinition::AddKey",
-                             PSO_INVALID_KEY_DEF );
+         throw pso::Exception( "psoDefinition::AddKey",
+                               PSO_INVALID_KEY_DEF );
       }
       pDefinition->key.type = type;
       pDefinition->key.minLength = minLength;
@@ -217,32 +218,32 @@ void psoDefinition::AddKey( psoKeyType type,
       break;
 
    default:
-      throw psoException( "psoDefinition::AddKey",
-                          PSO_INVALID_KEY_DEF );
+      throw pso::Exception( "psoDefinition::AddKey",
+                            PSO_INVALID_KEY_DEF );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::ObjectType( enum psoObjectType type )
+void Definition::ObjectType( enum psoObjectType type )
 {
    if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
-      throw psoException( "psoDefinition::ObjectType",
-                          PSO_WRONG_OBJECT_TYPE );
+      throw pso::Exception( "psoDefinition::ObjectType",
+                            PSO_WRONG_OBJECT_TYPE );
    }
 
    if ( pDefinition == NULL ) {
-      throw psoException( "psoDefinition::ObjectType", PSO_NULL_POINTER );
+      throw pso::Exception( "psoDefinition::ObjectType", PSO_NULL_POINTER );
    }
    pDefinition->type = type;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-enum psoObjectType psoDefinition::ObjectType()
+enum psoObjectType Definition::ObjectType()
 {
    if ( pDefinition == NULL ) {
-      throw psoException( "psoDefinition::ObjectType", PSO_NULL_POINTER );
+      throw pso::Exception( "psoDefinition::ObjectType", PSO_NULL_POINTER );
    }
 
    return pDefinition->type;
@@ -250,17 +251,17 @@ enum psoObjectType psoDefinition::ObjectType()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoDefinition::Reset( size_t numberOfFields, enum psoObjectType type )
+void Definition::Reset( size_t numberOfFields, enum psoObjectType type )
 {
    psoObjectDefinition * tmp;
    
    if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
-      throw psoException( "psoDefinition::psoDefinition",
-                          PSO_INVALID_NUM_FIELDS );
+      throw pso::Exception( "psoDefinition::psoDefinition",
+                            PSO_INVALID_NUM_FIELDS );
    }
    if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
-      throw psoException( "psoDefinition::ObjectType",
-                          PSO_WRONG_OBJECT_TYPE );
+      throw pso::Exception( "psoDefinition::ObjectType",
+                            PSO_WRONG_OBJECT_TYPE );
    }
    currentField = numberOfFields;
    
@@ -269,8 +270,8 @@ void psoDefinition::Reset( size_t numberOfFields, enum psoObjectType type )
       numberOfFields * sizeof(psoFieldDefinition);
    tmp = (psoObjectDefinition *)calloc( len, 1 );
    if ( tmp == NULL ) {
-      throw psoException( "psoDefinition::Reset",
-                          PSO_NOT_ENOUGH_HEAP_MEMORY );
+      throw pso::Exception( "psoDefinition::Reset",
+                            PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
    if ( pDefinition != NULL ) free( pDefinition );
    pDefinition = tmp;
@@ -283,9 +284,10 @@ void psoDefinition::Reset( size_t numberOfFields, enum psoObjectType type )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-const psoObjectDefinition & psoDefinition::GetDef()
+const psoObjectDefinition & Definition::GetDef()
 {
    return * pDefinition;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

@@ -22,65 +22,67 @@
 #include <photon/psoErrors.h>
 #include <photon/psoException>
 
+using namespace pso;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoFastMapEditor::psoFastMapEditor( psoSession &session )
-   : psoFastMap( session )
+FastMapEditor::FastMapEditor( Session &session )
+   : FastMap( session )
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoFastMapEditor::~psoFastMapEditor()
+FastMapEditor::~FastMapEditor()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMapEditor::Delete( const void * key,
-                               size_t       keyLength )
+void FastMapEditor::Delete( const void * key,
+                            size_t       keyLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMapEditor::Delete", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMapEditor::Delete", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapDelete( m_objectHandle,
                           key,
                           keyLength );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMapEditor::Delete" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Delete" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMapEditor::Empty()
+void FastMapEditor::Empty()
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMapEditor::Empty", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMapEditor::Empty", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapEmpty( m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMapEditor::Empty" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Empty" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMapEditor::Insert( const void * key,
-                               size_t       keyLength,
-                               const void * data,
-                               size_t       dataLength )
+void FastMapEditor::Insert( const void * key,
+                            size_t       keyLength,
+                            const void * data,
+                            size_t       dataLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMapEditor::Insert", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMapEditor::Insert", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapInsert( m_objectHandle,
@@ -89,18 +91,18 @@ void psoFastMapEditor::Insert( const void * key,
                           data,
                           dataLength );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMapEditor::Insert" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Insert" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMapEditor::Open( const std::string & hashMapName )
+void FastMapEditor::Open( const std::string & hashMapName )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMapEditor::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMapEditor::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapEdit( m_sessionHandle,
@@ -108,19 +110,19 @@ void psoFastMapEditor::Open( const std::string & hashMapName )
                         hashMapName.length(),
                         &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMapEditor::Open" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMapEditor::Open( const char * hashMapName,
-                             size_t       nameLengthInBytes )
+void FastMapEditor::Open( const char * hashMapName,
+                          size_t       nameLengthInBytes )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMapEditor::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMapEditor::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapEdit( m_sessionHandle,
@@ -128,21 +130,21 @@ void psoFastMapEditor::Open( const char * hashMapName,
                         nameLengthInBytes,
                         &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMapEditor::Open" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMapEditor::Replace( const void * key,
-                                size_t       keyLength,
-                                const void * data,
-                                size_t       dataLength )
+void FastMapEditor::Replace( const void * key,
+                             size_t       keyLength,
+                             const void * data,
+                             size_t       dataLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMapEditor::Replace", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMapEditor::Replace", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapReplace( m_objectHandle,
@@ -151,7 +153,7 @@ void psoFastMapEditor::Replace( const void * key,
                            data,
                            dataLength );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMapEditor::Replace" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Replace" );
    }
 }
 

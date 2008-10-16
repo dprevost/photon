@@ -20,6 +20,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,16 +38,16 @@ struct dummy {
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session;
-   psoFastMap hashmap(session);
+   Process process;
+   Session session;
+   FastMap hashmap(session);
    string fname = "/cpp_fastmap_definition";
    string hname = fname + "/test";
 
    size_t len;
    psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   psoDefinition mapDef( 5, PSO_FAST_MAP );
+   Definition mapDef( 5, PSO_FAST_MAP );
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
@@ -54,7 +55,7 @@ int main( int argc, char * argv[] )
    try {
       mapDef.AddKey( PSO_KEY_VAR_STRING, 0, 1, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -66,7 +67,7 @@ int main( int argc, char * argv[] )
       mapDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
       mapDef.AddField( "field5", 6, PSO_VAR_BINARY, 0, 0, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -83,7 +84,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( hname, mapDef.GetDef() );
       hashmap.Open( hname );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -97,7 +98,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -108,7 +109,7 @@ int main( int argc, char * argv[] )
    try {
       hashmap.Definition( &pDef );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

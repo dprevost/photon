@@ -25,18 +25,20 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+namespace pso {
+
 // Forward declarations
-class psoSession;
+class Session;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoFolder
+class PHOTON_EXPORT Folder
 {
 public:
 
-   psoFolder( psoSession & session );
+   Folder( Session & session );
 
-   virtual ~psoFolder();
+   virtual ~Folder();
 
    /**
     * \brief Close a folder.
@@ -44,7 +46,7 @@ public:
     * This function terminates the current access to the folder in shared memory
     * (the folder itself is untouched).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Close();
 
@@ -52,7 +54,7 @@ public:
     * Create a new object in shared memory as a child of the current folder.
     *
     * The creation of the object only becomes permanent after a call to 
-    * psoSession::psoCommit.
+    * Session::Commit.
     *
     * This function does not provide a handle or an object to the newly 
     * created shared-memory object. Use psoQueue::Open and similar functions 
@@ -62,7 +64,7 @@ public:
     * \param[in] definition The type of object to create (folder, queue, etc.)
     *            and the definition.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string   & objectName,
                       psoObjectDefinition & definition );
@@ -71,7 +73,7 @@ public:
     * Create a new object in shared memory as a child of the current folder.
     *
     * The creation of the object only becomes permanent after a call to 
-    * psoSession::psoCommit.
+    * Session::Commit.
     *
     * This function does not provide a handle or an object to the newly 
     * created shared-memory object. Use psoQueue::Open and similar functions 
@@ -83,7 +85,7 @@ public:
     * \param[in] definition The type of object to create (folder, queue, etc.)
     *            and the definition.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const char          * objectName,
                       size_t                nameLengthInBytes,
@@ -93,16 +95,16 @@ public:
     * Create a new object in shared memory as a child of the current folder.
     *
     * The creation of the object only becomes permanent after a call to 
-    * psoSession::psoCommit.
+    * Session::Commit.
     *
     * This function does not provide a handle or an object to the newly 
-    * created shared-memory object. Use psoQueue::Open and similar functions 
+    * created shared-memory object. Use Queue::Open and similar functions 
     * to access them.
     *
     * \param[in] xmlBuffer    The XML buffer containing all the required
     *                         information. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void CreateObjectXML( const std::string & xmlBuffer );
 
@@ -110,7 +112,7 @@ public:
     * Create a new object in shared memory as a child of the current folder.
     *
     * The creation of the object only becomes permanent after a call to 
-    * psoSession::psoCommit.
+    * Session::Commit.
     *
     * This function does not provide a handle or an object to the newly 
     * created shared-memory object. Use psoQueue::Open and similar functions 
@@ -121,7 +123,7 @@ public:
     * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
     *                          counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void CreateObjectXML( const char * xmlBuffer,
                          size_t       lengthInBytes );
@@ -130,11 +132,11 @@ public:
     * Destroy an object, child of the current folder, in shared memory.
     *
     * The destruction of the object only becomes permanent after a call to 
-    * psoSession::psoCommit.
+    * Session::Commit.
     *
     * \param[in]  objectName The name of the object. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const std::string & objectName );
 
@@ -142,13 +144,13 @@ public:
     * Destroy an object, child of the current folder, in shared memory.
     *
     * The destruction of the object only becomes permanent after a call to 
-    * psoSession::psoCommit.
+    * Session::Commit.
     *
     * \param[in]  objectName The name of the object. 
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const char * objectName,
                        size_t       nameLengthInBytes );
@@ -168,7 +170,7 @@ public:
     *
     * \return 0 on success or PSO_IS_EMPTY if the folder is empty.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int GetFirst( psoFolderEntry & entry );
 
@@ -179,7 +181,7 @@ public:
     * committed will not be seen by the iterator. Likewise, destroyed 
     * data items (even if not yet committed) are invisible.
     *
-    * Evidently, you must call psoFolder::GetFirst to initialize the iterator. 
+    * Evidently, you must call Folder::GetFirst to initialize the iterator. 
     *
     * \param[out] entry The data structure provided by the user to 
     *             hold the content of each item in the folder. Memory 
@@ -189,29 +191,29 @@ public:
     * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the folder.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int GetNext( psoFolderEntry & entry );
 
    /** 
-    * Open an existing folder (see psoSession::CreateObject to create a new 
+    * Open an existing folder (see Session::CreateObject to create a new 
     * folder).
     *
     * \param[in]  folderName The fully qualified name of the folder. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const std::string & folderName );
 
    /** 
-    * Open an existing folder (see psoSession::CreateObject to create a new 
+    * Open an existing folder (see Session::CreateObject to create a new 
     * folder).
     *
     * \param[in]  folderName The fully qualified name of the folder. 
     * \param[in]  nameLengthInBytes The length of \em folderName (in bytes) not
     *             counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * folderName,
               size_t       nameLengthInBytes );
@@ -221,7 +223,7 @@ public:
     *
     * \param[out] status A pointer to the status structure.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Status( psoObjStatus & status );
 
@@ -234,6 +236,8 @@ private:
    PSO_HANDLE & m_sessionHandle;
 
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -28,18 +28,20 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+namespace pso {
+
 // Forward declarations
-class psoSession;
+class pso::Session;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoFastMapEditor: public psoFastMap
+class PHOTON_EXPORT FastMapEditor: public FastMap
 {
 public:
 
-   psoFastMapEditor( psoSession & session );
+   FastMapEditor( Session & session );
 
-   virtual ~psoFastMapEditor();
+   virtual ~FastMapEditor();
 
    /** 
     * Remove the data item identified by the given key from the hash map.
@@ -53,7 +55,7 @@ public:
     * \param[in]  key The key of the item to be removed.
     * \param[in]  keyLength The length of the \em key buffer (in bytes).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Delete( const void * key,
                 size_t       keyLength );
@@ -63,7 +65,7 @@ public:
     *
     * The removals only become permanent after a call to psoSession::Commit.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Empty();
    
@@ -77,7 +79,7 @@ public:
     * \param[in]  data  The data item to be inserted.
     * \param[in]  dataLength The length of \em data (in bytes).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Insert( const void * key,
                 size_t       keyLength,
@@ -91,7 +93,7 @@ public:
     *
     * \param[in]  hashMapName The fully qualified name of the hash map. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const std::string & hashMapName );
    
@@ -104,7 +106,7 @@ public:
     * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
     *             not counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * hashMapName,
               size_t       nameLengthInBytes );
@@ -119,7 +121,7 @@ public:
     * \param[in]  data  The new data item that will replace the previous data.
     * \param[in]  dataLength The length of \em data (in bytes).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Replace( const void * key,
                  size_t       keyLength,
@@ -127,7 +129,9 @@ public:
                  size_t       dataLength );
 
 };
-
+ 
+} // End of namespace
+ 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #endif // PSO_FAST_MAP_EDITOR_H_CPP

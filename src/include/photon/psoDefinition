@@ -31,12 +31,11 @@
 
 #include <photon/psoCommon.h>
 
-// Forward declaration
-class psoSession;
-
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoDefinition
+namespace pso {
+
+class PHOTON_EXPORT Definition
 {
 public:
 
@@ -46,11 +45,11 @@ public:
     * \param[in] numberOfFields The number of data fields.
     * \param[in] type The type of the object.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
-   psoDefinition( size_t numberOfFields, enum psoObjectType type );
+   Definition( size_t numberOfFields, enum psoObjectType type );
    
-   virtual ~psoDefinition();
+   virtual ~Definition();
 
    /**
     * Add a key to the definition.
@@ -64,7 +63,7 @@ public:
     *             infinite value (limited by the amount of shared memory, 
     *             evidently).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void AddKey( psoKeyType type,
                 size_t     length,
@@ -88,7 +87,7 @@ public:
     * \param[in]  scale The number of digits after the separator of a decimal
     *             field.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void AddField( std::string  & name,
                   psoFieldType   type,
@@ -116,7 +115,7 @@ public:
     * \param[in]  scale The number of digits after the separator of a decimal
     *             field.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void AddField( const char   * name,
                   size_t         nameLength,
@@ -132,7 +131,7 @@ public:
     *
     * \param[in]  type The type of the object.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void ObjectType( enum psoObjectType type );
 
@@ -141,7 +140,7 @@ public:
     *
     * \return The type of the object.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    enum psoObjectType ObjectType();
      
@@ -153,7 +152,7 @@ public:
     *            container.
     * \param[in] type The type of the object.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Reset( size_t numberOfFields, enum psoObjectType type );
    
@@ -171,6 +170,8 @@ private:
    /// was the key added?
    bool keyAdded;
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

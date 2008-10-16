@@ -21,27 +21,28 @@
 #include <photon/psoErrors.h>
 #include <photon/psoException>
 
+using namespace pso;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoProcess::psoProcess()
+Process::Process()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoProcess::Init( const char* wdAddress,
-                       bool        protectionNeeded )
+void Process::Init( const char * wdAddress,
+                    bool         protectionNeeded )
 {
-   int rc = psoInit( wdAddress,
-                     protectionNeeded );
+   int rc = psoInit( wdAddress, protectionNeeded );
    if ( rc != 0 ) {
-      throw psoException( "psoProcess::Init", rc );
+      throw pso::Exception( "Process::Init", rc );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoProcess::~psoProcess()
+Process::~Process()
 {
    psoExit();
 }

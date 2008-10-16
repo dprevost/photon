@@ -20,14 +20,15 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session1, session2;
-   psoHashMap map1(session1), map2(session2);
+   Process process;
+   Session session1, session2;
+   HashMap map1(session1), map2(session2);
    string fname = "/cpp_hashmap_insert";
    string hname = fname + "/test";
 
@@ -62,7 +63,7 @@ int main( int argc, char * argv[] )
       map1.Open( hname );
       map2.Open( hname );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -76,7 +77,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -89,7 +90,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -102,7 +103,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -115,7 +116,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -126,7 +127,7 @@ int main( int argc, char * argv[] )
    try {
       map1.Insert( key, 6, data, strlen(data) );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -143,7 +144,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_ITEM_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -153,7 +154,7 @@ int main( int argc, char * argv[] )
    try {
       map1.Get( key, strlen(key), buffer, 20, length );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -164,7 +165,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_ITEM_IS_IN_USE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -174,7 +175,7 @@ int main( int argc, char * argv[] )
    try {
       rc = map1.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -186,7 +187,7 @@ int main( int argc, char * argv[] )
    try {
       rc = map2.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

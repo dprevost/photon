@@ -22,14 +22,15 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main( int argc, char *argv[] )
 {
    int errcode = 0;
-   psoProcess process;
-   psoSession session;
+   Process process;
+   Session session;
    psoShell   sh(session);
    bool ok;
    
@@ -61,7 +62,7 @@ int main( int argc, char *argv[] )
       process.Init( optArgument );
       session.Init();
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "Init Photon failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;

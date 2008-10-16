@@ -20,14 +20,15 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session;
-   psoQueue queue(session);
+   Process process;
+   Session session;
+   Queue queue(session);
    string fname = "/cpp_queue_close";
    string qname = fname + "/test";
    psoObjectDefinition folderDef;
@@ -52,7 +53,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( fname, folderDef );
       session.CreateObject( qname, queueDef );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -65,7 +66,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -75,7 +76,7 @@ int main( int argc, char * argv[] )
    try {
       queue.Open( qname );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -83,7 +84,7 @@ int main( int argc, char * argv[] )
    try {
       queue.Close();
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

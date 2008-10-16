@@ -27,18 +27,20 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+namespace pso {
+
 // Forward declarations
-class psoSession;
+class Session;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoFastMap
+class PHOTON_EXPORT FastMap
 {
 public:
 
-   psoFastMap( psoSession & session );
+   FastMap( Session & session );
 
-   virtual ~psoFastMap();
+   virtual ~FastMap();
 
    /**
     * \brief Close a hash map.
@@ -51,7 +53,7 @@ public:
     * psoSession::Commit or psoSession::Rollback to end the current unit of 
     * work.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Close();
    
@@ -67,7 +69,7 @@ public:
     *              of the object definition. Freeing the memory (with free())
     *              is the responsability of the caller.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Definition( psoObjectDefinition ** definition );
 
@@ -86,7 +88,7 @@ public:
     * \param[in]  bufferLength The length of \em buffer (in bytes).
     * \param[out] returnedLength The actual number of bytes in the data item.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Get( const void * key,
              size_t       keyLength,
@@ -116,7 +118,7 @@ public:
     *
     * \return 0 on success or PSO_IS_EMPTY if the hash map is empty.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int GetFirst( void    * key,
                  size_t    keyLength,
@@ -153,7 +155,7 @@ public:
     * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the hash map.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int GetNext( void    * key,
                 size_t    keyLength,
@@ -168,7 +170,7 @@ public:
     *
     * \param[in]  hashMapName The fully qualified name of the hash map. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const std::string & hashMapName );
    
@@ -180,7 +182,7 @@ public:
     * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
     *             not counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * hashMapName,
               size_t       nameLengthInBytes );
@@ -190,7 +192,7 @@ public:
     *
     * \param[out] status A reference to the status structure.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Status( psoObjStatus & status );
 
@@ -203,6 +205,8 @@ protected:
    PSO_HANDLE & m_sessionHandle;
    
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

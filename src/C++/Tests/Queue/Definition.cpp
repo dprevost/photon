@@ -20,6 +20,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,9 +38,9 @@ struct dummy {
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session;
-   psoQueue queue(session);
+   Process process;
+   Session session;
+   Queue queue(session);
    string fname = "/cpp_queue_definition";
    string hname = fname + "/test";
 
@@ -47,7 +48,7 @@ int main( int argc, char * argv[] )
    size_t len;
    psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   psoDefinition queueDef( 5, PSO_QUEUE );
+   Definition queueDef( 5, PSO_QUEUE );
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
@@ -59,7 +60,7 @@ int main( int argc, char * argv[] )
       queueDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
       queueDef.AddField( "field5", 6, PSO_VAR_BINARY, 0, 0, 0, 0, 0 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -77,7 +78,7 @@ int main( int argc, char * argv[] )
       queue.Open( hname );
       queue.Push( &data, sizeof(data) );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -91,7 +92,7 @@ int main( int argc, char * argv[] )
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
@@ -102,7 +103,7 @@ int main( int argc, char * argv[] )
    try {
       queue.Definition( &pDef );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

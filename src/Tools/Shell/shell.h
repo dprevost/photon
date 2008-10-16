@@ -29,13 +29,14 @@
 #include "Tools/Shell/constants.h"
 
 using namespace std;
+using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 class psoShell
 {
 public:
-   psoShell(psoSession & s);
+   psoShell(Session & s);
    ~psoShell();
 
    void Run();
@@ -43,7 +44,7 @@ public:
 private:
 
    string currentLocation;
-   psoSession & session;
+   Session & session;
    vector<string> tokens;
    psoConstants constants;
    

@@ -27,18 +27,20 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class PHOTON_EXPORT psoSession
+namespace pso {
+
+class PHOTON_EXPORT Session
 {
 public:
    
-   psoSession();
+   Session();
 
    /**
     * Terminate the current session and destroy this object.
     *
     * An implicit call to ::Rollback is executed by this destructor.
     */
-   virtual ~psoSession();
+   virtual ~Session();
    
    /**
     * Commit all insertions and deletions (of the current session) executed 
@@ -54,7 +56,7 @@ public:
     * where some operations were committed and others not. If this function 
     * thows an exception, nothing was committed.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Commit();
    
@@ -68,7 +70,7 @@ public:
     * \param[in]  definition The type of object to create (folder, queue, etc.)
     *             and the definitions (as needed).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string         & objectName,
                       const psoObjectDefinition & definition );
@@ -85,7 +87,7 @@ public:
     * \param[in]  definition The type of object to create (folder, queue, etc.)
     *             and the definitions (as needed).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const char                * objectName,
                       size_t                      nameLengthInBytes,
@@ -99,7 +101,7 @@ public:
     *
     * \param[in]  objectName The fully qualified name of the object. 
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const std::string & objectName );
 
@@ -113,7 +115,7 @@ public:
     * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
     *             counting the null terminator.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const char * objectName,
                        size_t       nameLengthInBytes );
@@ -129,7 +131,7 @@ public:
     * \param[out]  message Buffer for the error message. Memory allocation for 
     *              this buffer is the responsability of the caller.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */   
    std::string & ErrorMsg( std::string & message );
 
@@ -150,7 +152,7 @@ public:
     * \param[in]   msgLengthInBytes The length of \em message (in bytes). Must
     *              be at least 32 bytes.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */   
    void ErrorMsg( char   * message,
                   size_t   msgLengthInBytes );
@@ -167,7 +169,7 @@ public:
     *              of the object definition. Freeing the memory (with free())
     *              is the responsability of the caller.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void GetDefinition( const std::string    & objectName,
                        psoObjectDefinition ** definition );
@@ -186,7 +188,7 @@ public:
     *             of the object definition. Freeing the memory (with free())
     *             is the responsability of the caller.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void GetDefinition( const char           * objectName,
                        size_t                 nameLengthInBytes,
@@ -200,7 +202,7 @@ public:
     *
     * \param[out] info A reference to the ::psoInfo structure.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void GetInfo( psoInfo & info );
 
@@ -210,7 +212,7 @@ public:
     * \param[in]  objectName The fully qualified name of the object. 
     * \param[out] status A reference to the psoObjStatus structure.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void GetStatus( const std::string & objectName,
                    psoObjStatus      & status );
@@ -223,7 +225,7 @@ public:
     *             counting the null terminator.
     * \param[out] status A reference to the psoObjStatus structure.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void GetStatus( const char   * objectName,
                    size_t         nameLengthInBytes,
@@ -237,14 +239,14 @@ public:
     * Upon normal termination, the current transaction is rolled back. You
     * MUST explicitly call Commit to save your changes.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Init();
    
    /**
     * Return the last error seen in previous calls (of the current session).
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    int LastError();
 
@@ -262,7 +264,7 @@ public:
     * where some operations were rollbacked and others not. If this function 
     * thows an exception, nothing was rollbacked.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Rollback();
    
@@ -271,12 +273,14 @@ private:
    /// Pointer to the psoaSession struct
    PSO_HANDLE m_sessionHandle;
    
-   friend class psoFastMap;
-   friend class psoFolder;
-   friend class psoHashMap;
-   friend class psoLifo;
-   friend class psoQueue;
+   friend class FastMap;
+   friend class Folder;
+   friend class HashMap;
+   friend class Lifo;
+   friend class Queue;
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

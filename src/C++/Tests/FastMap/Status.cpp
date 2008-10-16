@@ -21,15 +21,16 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session;
-   psoFastMap hashmap(session);
-   psoFastMapEditor editor(session);
+   Process process;
+   Session session;
+   FastMap hashmap(session);
+   FastMapEditor editor(session);
    string fname = "/cpp_fastmap_status";
    string hname = fname + "/test";
 
@@ -67,7 +68,7 @@ int main( int argc, char * argv[] )
       session.Commit();
       hashmap.Open( hname );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -80,7 +81,7 @@ int main( int argc, char * argv[] )
    try {
       hashmap.Status( status );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }

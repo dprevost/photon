@@ -27,16 +27,13 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-// Forward declaration
-class psoSession;
+namespace pso {
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-class PHOTON_EXPORT psoProcess
+class PHOTON_EXPORT Process
 {
 public:
 
-   psoProcess();
+   Process();
    
    /**
     * This function initializes access to a VDS. It takes 2 input 
@@ -60,7 +57,7 @@ public:
     * \param[in] protectionNeeded A boolean value indicating if multi-threaded
     *            locks are needed or not.
     *
-    * \exception psoException An abnormal error occured.
+    * \exception pso::Exception An abnormal error occured.
     */
    void Init( const char * wdAddress,
               bool         protectionNeeded = false );
@@ -70,9 +67,11 @@ public:
     * will also close all sessions and terminate all accesses to 
     * the different objects.
     */
-   virtual ~psoProcess();
+   virtual ~Process();
 
 };
+
+} // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

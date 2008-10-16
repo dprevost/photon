@@ -19,13 +19,14 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int main()
 {
-   psoProcess process;
-   psoSession session;
+   Process process;
+   Session session;
    psoInfo info;
    string msg;
    
@@ -33,7 +34,7 @@ int main()
       process.Init( "10701" );
       session.Init();
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "Init of Photon failed, error = " << exc.Message( msg ) << endl;
       cerr << "Is quasar running?" << endl;
       return 1;
@@ -42,7 +43,7 @@ int main()
    try {
       session.GetInfo( info );
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << exc.Message( msg ) << endl; 
       return 1;
    }

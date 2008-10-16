@@ -26,7 +26,7 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoShell::psoShell(psoSession & s)
+psoShell::psoShell(Session & s)
    : currentLocation( "/" ),
      session        ( s )
 {
@@ -266,7 +266,7 @@ void psoShell::Cat()
    try {
       session.GetStatus( objectName, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       exc = exc; // Avoid a warning
       cerr << "psosh: cat: " << objectName << ": Invalid object name" << endl;
       return;
@@ -279,7 +279,7 @@ void psoShell::Cat()
    try {
       session.GetDefinition( objectName, &pDefinition );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "psosh: cat: " << exc.Message() << endl;
       return;
    }
@@ -305,7 +305,7 @@ void psoShell::Cat()
          buffer = new unsigned char[status.maxDataLength];
 
          if ( status.type == PSO_HASH_MAP ) {
-            psoHashMap hashMap(session);
+            HashMap hashMap(session);
          
             key = new unsigned char[status.maxKeyLength];
          
@@ -338,7 +338,7 @@ void psoShell::Cat()
             hashMap.Close();
          }
          else if ( status.type == PSO_FAST_MAP ) {
-            psoFastMap hashMap(session);
+            FastMap hashMap(session);
          
             key = new unsigned char[status.maxKeyLength];
          
@@ -372,7 +372,7 @@ void psoShell::Cat()
          }
          else if ( status.type == PSO_QUEUE ) {
 
-            psoQueue queue(session);
+            Queue queue(session);
          
             queue.Open( objectName );
          
@@ -393,7 +393,7 @@ void psoShell::Cat()
          }
          else if ( status.type == PSO_LIFO ) {
 
-            psoLifo queue(session);
+            Lifo queue(session);
          
             queue.Open( objectName );
          
@@ -414,7 +414,7 @@ void psoShell::Cat()
          }
       }
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       if ( pDefinition != NULL ) free(pDefinition);
       cerr << "psosh: cat: " << exc.Message() << endl;
       return;
@@ -450,7 +450,7 @@ void psoShell::Cd()
    try {
       session.GetStatus( newLoc, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       exc = exc; // Avoid a warning
       cerr << "psosh: cd: " << newLoc << ": Invalid folder name" << endl;
       return;
@@ -493,7 +493,7 @@ void psoShell::Cp()
    try {
       session.GetStatus( srcName, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       exc = exc; // Avoid a warning
       cerr << "psosh: cp: " << srcName << ": Invalid object name" << endl;
       return;
@@ -513,7 +513,7 @@ void psoShell::Cp()
 
          if ( status.type == PSO_HASH_MAP ) {
          
-            psoHashMap srcHash(session), destHash(session);
+            HashMap srcHash(session), destHash(session);
          
             key = new unsigned char[status.maxKeyLength];
          
@@ -534,7 +534,7 @@ void psoShell::Cp()
          }
          else if ( status.type == PSO_QUEUE ) {
 
-            psoQueue srcQueue(session), destQueue(session);
+            Queue srcQueue(session), destQueue(session);
          
             srcQueue.Open( srcName );
             destQueue.Open( destName );
@@ -550,7 +550,7 @@ void psoShell::Cp()
       }
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "psosh: cp: " << exc.Message() << endl;
    }
@@ -594,7 +594,7 @@ void psoShell::Echo()
    try {
       session.GetStatus( objectName, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       exc = exc; // Avoid a warning
       cerr << "psosh: echo: " << objectName << ": Invalid object name" << endl;
       return;
@@ -614,7 +614,7 @@ void psoShell::Echo()
    try {
       session.GetDefinition( objectName, &pDefinition );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "psosh: echo: " << exc.Message() << endl;
       return;
    }
@@ -650,14 +650,14 @@ void psoShell::Echo()
    try {
       if ( status.type == PSO_HASH_MAP ) {
    
-         psoHashMap hashMap(session);
+         HashMap hashMap(session);
          
          hashMap.Open( objectName );
          
          try {
             hashMap.Insert( key, keyLength, buffer, dataLength );
          }
-         catch( psoException exc ) {
+         catch( Exception exc ) {
             // we try a replace instead if the error code is "already present"
             if ( exc.ErrorCode() == PSO_ITEM_ALREADY_PRESENT) {
                hashMap.Replace( key, keyLength, buffer, dataLength );
@@ -667,7 +667,7 @@ void psoShell::Echo()
          hashMap.Close();
       }
       else if ( status.type == PSO_QUEUE ) {
-         psoQueue queue(session);
+         Queue queue(session);
          
          queue.Open( objectName );
          
@@ -676,7 +676,7 @@ void psoShell::Echo()
          queue.Close();
       }
       else if ( status.type == PSO_LIFO ) {
-         psoLifo queue(session);
+         Lifo queue(session);
          
          queue.Open( objectName );
          
@@ -685,7 +685,7 @@ void psoShell::Echo()
          queue.Close();
       }
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       if ( pDefinition != NULL ) free(pDefinition);
       cerr << "psosh: cat: " << exc.Message() << endl;
       if ( key    != NULL ) delete [] key;
@@ -707,7 +707,7 @@ void psoShell::Free()
    try {
       session.GetInfo( info );
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "psosh: free: " << exc.Message() << endl;
       return;
    }
@@ -726,7 +726,7 @@ void psoShell::Free()
 
 void psoShell::Ls()
 {
-   psoFolder folder( session );
+   Folder folder( session );
    int rc;
    psoFolderEntry entry;
    string folderName = currentLocation;
@@ -752,7 +752,7 @@ void psoShell::Ls()
       }
       folder.Close();
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       if ( exc.ErrorCode() == PSO_NO_SUCH_OBJECT || 
          exc.ErrorCode() == PSO_NO_SUCH_FOLDER ) {
          cerr << "psosh: " << tokens[0] << ": " << "No such file or directory" << endl;
@@ -824,7 +824,7 @@ void psoShell::Mkdir()
       session.CreateObject( folderName, definition );
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "psosh: mkdir: " << exc.Message() << endl;
    }
@@ -849,7 +849,7 @@ void psoShell::Rm()
    try {
       session.GetStatus( objectName, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       exc = exc; // Avoid a warning
       cerr << "psosh: rm: " << objectName << ": Invalid object name" << endl;
       return;
@@ -863,7 +863,7 @@ void psoShell::Rm()
       session.DestroyObject( objectName );
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "psosh: rm: " << exc.Message() << endl;
    }
@@ -888,7 +888,7 @@ void psoShell::Rmdir()
    try {
       session.GetStatus( folderName, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       exc = exc; // Avoid a warning
       cerr << "psosh: rmdir: " << folderName << ": Invalid folder name" << endl;
       return;
@@ -902,7 +902,7 @@ void psoShell::Rmdir()
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       session.Rollback();  // just in case it's the Commit that fails
       cerr << "psosh: rmdir: " << exc.Message() << endl;
    }
@@ -926,7 +926,7 @@ void psoShell::Stat()
    try {
       session.GetStatus( objectName, status );
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "psosh: stat: " << objectName << ": " << exc.Message() << endl;
       return;
    }
@@ -948,7 +948,7 @@ void psoShell::Touch()
    string option, filename;
    psoObjectDefinition definition;
    bool useXML = false;
-   psoFolder folder( session );
+   Folder folder( session );
    
    definition.type = PSO_LAST_OBJECT_TYPE;
    
@@ -988,7 +988,7 @@ void psoShell::Touch()
          folder.Close();
          session.Commit();
       }
-      catch ( psoException exc ) {
+      catch ( Exception exc ) {
          session.Rollback();  // just in case it's the Commit that fails
          cerr << "psosh: touch: " << exc.Message() << endl;
       }
@@ -1007,7 +1007,7 @@ void psoShell::Touch()
          session.CreateObject( objectName, definition );
          session.Commit();
       }
-      catch ( psoException exc ) {
+      catch ( Exception exc ) {
          session.Rollback();  // just in case it's the Commit that fails
          cerr << "psosh: touch: " << exc.Message() << endl;
       }

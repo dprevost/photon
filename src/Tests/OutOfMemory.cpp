@@ -20,6 +20,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -29,7 +30,7 @@ string queueName2("Out_Folder/Queue_2");
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Cleanup( psoSession & session )
+void Cleanup( Session & session )
 {
    try {
       session.DestroyObject( queueName1 );
@@ -37,7 +38,7 @@ void Cleanup( psoSession & session )
       session.DestroyObject( folderName );
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( pso::Exception exc ) {
       cerr << "Cleanup failed, error = " << exc.Message() << endl;
    }
 }
@@ -46,14 +47,14 @@ void Cleanup( psoSession & session )
 
 int main()
 {
-   psoProcess process;
-   psoSession session;
+   Process process;
+   Session session;
    psoInfo info1; 
    const char * dataIn = "1234567890123456789012345";
    char dataOut[50];
    size_t length;
    int countIn = 0, countOut = 0, errcode;
-   psoQueue q1(session), q2(session);
+   Queue q1(session), q2(session);
 
    psoObjectDefinition queueDef = { 
       PSO_QUEUE,
@@ -76,14 +77,14 @@ int main()
          session.DestroyObject( folderName );
          session.Commit();
       }
-      catch ( psoException exc ) {}
+      catch ( Exception exc ) {}
 
       session.CreateObject( folderName, folderDef );
       session.CreateObject( queueName1, queueDef );
       session.CreateObject( queueName2, queueDef );
       session.GetInfo( info1 );
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "Init Photon failed, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -95,7 +96,7 @@ int main()
       q1.Open( queueName1 );
       q2.Open( queueName2 );
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "Error opening queues, error = " << exc.Message() << endl;
       return 1;
    }
@@ -108,7 +109,7 @@ int main()
          countIn++;
       }
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       if ( exc.ErrorCode() == PSO_NOT_ENOUGH_PSO_MEMORY ) {
          cout << "Number of inserted records: " << countIn << endl;
       }
@@ -121,7 +122,7 @@ int main()
    try {
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "Commit error = " << exc.Message() << endl;
    }
    
@@ -135,7 +136,7 @@ int main()
          if ( errcode == 0 ) countOut++;
       } while ( errcode == 0 );
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "Error retrieving data, error = " << exc.Message() << endl;
       return 1;
    }
@@ -146,7 +147,7 @@ int main()
    try {
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "Commit error = " << exc.Message() << endl;
    }
    

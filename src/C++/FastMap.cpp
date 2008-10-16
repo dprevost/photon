@@ -22,9 +22,11 @@
 #include <photon/psoErrors.h>
 #include <photon/psoException>
 
+using namespace pso;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoFastMap::psoFastMap( psoSession &session )
+FastMap::FastMap( Session &session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,7 +34,7 @@ psoFastMap::psoFastMap( psoSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoFastMap::~psoFastMap()
+FastMap::~FastMap()
 {
    if ( m_objectHandle != NULL ) {
       psoFastMapClose( m_objectHandle );
@@ -42,49 +44,49 @@ psoFastMap::~psoFastMap()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Close()
+void FastMap::Close()
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::Close", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::Close", PSO_NULL_HANDLE );
    }
    
    rc = psoFastMapClose( m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMap::Close" );
+      throw pso::Exception( m_sessionHandle, "FastMap::Close" );
    }
    m_objectHandle = NULL;   
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Definition( psoObjectDefinition ** definition )
+void FastMap::Definition( psoObjectDefinition ** definition )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::Definition", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::Definition", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapDefinition( m_objectHandle, definition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMap::Definition" );
+      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Get( const void * key,
-                      size_t       keyLength,
-                      void       * buffer,
-                      size_t       bufferLength,
-                      size_t     & returnedLength )
+void FastMap::Get( const void * key,
+                   size_t       keyLength,
+                   void       * buffer,
+                   size_t       bufferLength,
+                   size_t     & returnedLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::Get", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::Get", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapGet( m_objectHandle,
@@ -94,23 +96,23 @@ void psoFastMap::Get( const void * key,
                        bufferLength,
                        &returnedLength );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMap::Get" );
+      throw pso::Exception( m_sessionHandle, "FastMap::Get" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoFastMap::GetFirst( void       * key,
-                          size_t       keyLength,
-                          void       * buffer,
-                          size_t       bufferLength,
-                          size_t     & retKeyLength,
-                          size_t     & retDataLength )
+int FastMap::GetFirst( void       * key,
+                       size_t       keyLength,
+                       void       * buffer,
+                       size_t       bufferLength,
+                       size_t     & retKeyLength,
+                       size_t     & retDataLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::GetFirst", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::GetFirst", PSO_NULL_HANDLE );
    }
    
    rc = psoFastMapGetFirst( m_objectHandle,
@@ -121,7 +123,7 @@ int psoFastMap::GetFirst( void       * key,
                             &retKeyLength,
                             &retDataLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
-      throw psoException( m_sessionHandle, "psoFastMap::GetFirst" );
+      throw pso::Exception( m_sessionHandle, "FastMap::GetFirst" );
    }
    
    return rc;
@@ -129,17 +131,17 @@ int psoFastMap::GetFirst( void       * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoFastMap::GetNext( void       * key,
-                         size_t       keyLength,
-                         void       * buffer,
-                         size_t       bufferLength,
-                         size_t     & retKeyLength,
-                         size_t     & retDataLength )
+int FastMap::GetNext( void       * key,
+                      size_t       keyLength,
+                      void       * buffer,
+                      size_t       bufferLength,
+                      size_t     & retKeyLength,
+                      size_t     & retDataLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::GetNext", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::GetNext", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapGetNext( m_objectHandle,
@@ -150,19 +152,19 @@ int psoFastMap::GetNext( void       * key,
                            &retKeyLength,
                            &retDataLength );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
-      throw psoException( m_sessionHandle, "psoFastMap::GetNext" );
+      throw pso::Exception( m_sessionHandle, "FastMap::GetNext" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Open( const std::string & hashMapName )
+void FastMap::Open( const std::string & hashMapName )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapOpen( m_sessionHandle,
@@ -171,19 +173,19 @@ void psoFastMap::Open( const std::string & hashMapName )
                         &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMap::Open" );
+      throw pso::Exception( m_sessionHandle, "FastMap::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Open( const char * hashMapName,
-                       size_t       nameLengthInBytes )
+void FastMap::Open( const char * hashMapName,
+                    size_t       nameLengthInBytes )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapOpen( m_sessionHandle,
@@ -192,23 +194,23 @@ void psoFastMap::Open( const char * hashMapName,
                         &m_objectHandle );
 
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMap::Open" );
+      throw pso::Exception( m_sessionHandle, "FastMap::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFastMap::Status( psoObjStatus & status )
+void FastMap::Status( psoObjStatus & status )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFastMap::Status", PSO_NULL_HANDLE );
+      throw pso::Exception( "FastMap::Status", PSO_NULL_HANDLE );
    }
 
    rc = psoFastMapStatus( m_objectHandle, &status );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFastMap::Status" );
+      throw pso::Exception( m_sessionHandle, "FastMap::Status" );
    }
 }
 

@@ -26,6 +26,7 @@
 #include "API/Lifo.h"
 
 using namespace std;
+using namespace pso;
 
 #define NUM_MAPS    8
 #define NUM_QUEUES 10
@@ -35,11 +36,11 @@ using namespace std;
 
 struct myQueue
 {
-   myQueue( psoSession & session )
+   myQueue( Session & session )
       : queue ( session ),
         name  ( "TestFolder/Queue" ) {}
 
-   psoQueue queue;
+   Queue queue;
    string   name;
 };
 
@@ -47,11 +48,11 @@ struct myQueue
 
 struct myMap
 {
-   myMap( psoSession & session )
+   myMap( Session & session )
       : map  ( session ),
         name ( "TestFolder/HashMap" ) {}
 
-   psoHashMap map;
+   HashMap map;
    string     name;
 };
 
@@ -59,11 +60,11 @@ struct myMap
 
 struct myLifo
 {
-   myLifo( psoSession & session )
+   myLifo( Session & session )
       : queue ( session ),
         name  ( "TestFolder/Lifo" ) {}
 
-   psoLifo queue;
+   Lifo queue;
    string  name;
 };
 
@@ -91,7 +92,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
 
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table (true for g++)
-   for ( i = 0; i < sizeof(psoHashMap)/sizeof(void*); ++i, apiObj++ ) {
+   for ( i = 0; i < sizeof(HashMap)/sizeof(void*); ++i, apiObj++ ) {
       if ( **apiObj == PSOA_HASH_MAP ) {
          api_offset = i * sizeof(void*);
          break;
@@ -264,7 +265,7 @@ int AddDefectsLifos( vector<myLifo> & l )
    apiObj = (unsigned long **) ( (void *) &l[0].queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
-   for ( i = 0; i < sizeof(psoQueue)/sizeof(void*); ++i, apiObj++ ) {
+   for ( i = 0; i < sizeof(Lifo)/sizeof(void*); ++i, apiObj++ ) {
       if ( **apiObj == PSOA_LIFO ) {
          api_offset = i * sizeof(void*);
          break;
@@ -502,7 +503,7 @@ int AddDefectsQueues( vector<myQueue> & q )
    apiObj = (unsigned long **) ( (void *) &q[0].queue );
    // We have to go around the additional data member inserted by the
    // compiler for the virtual table
-   for ( i = 0; i < sizeof(psoQueue)/sizeof(void*); ++i, apiObj++ ) {
+   for ( i = 0; i < sizeof(Queue)/sizeof(void*); ++i, apiObj++ ) {
       if ( **apiObj == PSOA_QUEUE ) {
          api_offset = i * sizeof(void*);
          break;
@@ -724,9 +725,9 @@ int AddDefectsQueues( vector<myQueue> & q )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void CleanupPreviousRun( psoSession & session )
+void CleanupPreviousRun( Session & session )
 {
-   psoFolder folder( session );
+   Folder folder( session );
    psoFolderEntry entry;
    int ok;
    string s;
@@ -741,7 +742,7 @@ void CleanupPreviousRun( psoSession & session )
       }
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( pso::Exception exc ) {
       cerr << "Cleanup of previous session failed, error = " << exc.Message() << endl;
       exit(1);
    }
@@ -749,7 +750,7 @@ void CleanupPreviousRun( psoSession & session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateHashMaps( psoSession & session, vector<myMap> & h )
+void PopulateHashMaps( Session & session, vector<myMap> & h )
 {
    int i, j;
    string data, key;
@@ -780,7 +781,7 @@ void PopulateHashMaps( psoSession & session, vector<myMap> & h )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateLifos( psoSession & session, vector<myLifo> & l )
+void PopulateLifos( Session & session, vector<myLifo> & l )
 {
    int i, j;
    string data;
@@ -810,7 +811,7 @@ void PopulateLifos( psoSession & session, vector<myLifo> & l )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void PopulateQueues( psoSession & session, vector<myQueue> & q )
+void PopulateQueues( Session & session, vector<myQueue> & q )
 {
    int i, j;
    string data;
@@ -843,8 +844,8 @@ void PopulateQueues( psoSession & session, vector<myQueue> & q )
 
 int main()
 {
-   psoProcess process;
-   psoSession session;
+   Process process;
+   Session session;
    int i, rc;
    psoObjectDefinition folderDef;
 
@@ -856,7 +857,7 @@ int main()
       session.Init();
       session.CreateObject( foldername, folderDef );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       rc = exc.ErrorCode();
       if ( rc == PSO_OBJECT_ALREADY_PRESENT ) {
          CleanupPreviousRun( session );
@@ -894,7 +895,7 @@ int main()
       PopulateHashMaps( session, h );
       PopulateLifos( session, l );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Creating and populating the objects failed, error = " << exc.Message() << endl;
       return 1;
    }

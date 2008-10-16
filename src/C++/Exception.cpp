@@ -27,8 +27,8 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoException::psoException( PSO_HANDLE   sessionHandle, 
-                            const char * functionName )
+pso::Exception::Exception( PSO_HANDLE   sessionHandle, 
+                           const char * functionName )
    : errcode( 0 )
 {
    char s[1024];
@@ -51,8 +51,8 @@ psoException::psoException( PSO_HANDLE   sessionHandle,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoException::psoException( const char * functionName,
-                            int          theErrorCode )
+pso::Exception::Exception( const char * functionName,
+                           int          theErrorCode )
    : errcode( theErrorCode )
 {
    const char * str;
@@ -72,13 +72,13 @@ psoException::psoException( const char * functionName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoException::~psoException()
+pso::Exception::~Exception()
 {
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string & psoException::Message( string & errorMessage )
+string & pso::Exception::Message( string & errorMessage )
 {
    errorMessage = msg;
    return errorMessage;
@@ -86,7 +86,7 @@ string & psoException::Message( string & errorMessage )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string & psoException::Message()
+string & pso::Exception::Message()
 {
    return msg;
 }

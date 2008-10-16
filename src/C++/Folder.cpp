@@ -22,9 +22,11 @@
 #include <photon/psoErrors.h>
 #include <photon/psoException>
 
+using namespace pso;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoFolder::psoFolder( psoSession &session )
+Folder::Folder( Session &session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,7 +34,7 @@ psoFolder::psoFolder( psoSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoFolder::~psoFolder()
+Folder::~Folder()
 {
    if ( m_objectHandle != NULL ) {
       psoFolderClose( m_objectHandle );
@@ -42,31 +44,31 @@ psoFolder::~psoFolder()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::Close()
+void Folder::Close()
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::Close", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::Close", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderClose( m_objectHandle );
    m_objectHandle = NULL;
    
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::Close" );
+      throw pso::Exception( m_sessionHandle, "Folder::Close" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::CreateObject( const std::string   & objectName,
-                              psoObjectDefinition & definition )
+void Folder::CreateObject( const std::string   & objectName,
+                           psoObjectDefinition & definition )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderCreateObject( m_objectHandle,
@@ -74,20 +76,20 @@ void psoFolder::CreateObject( const std::string   & objectName,
                                objectName.length(),
                                &definition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::CreateObject( const char          * objectName,
-                              size_t                nameLengthInBytes,
-                              psoObjectDefinition & definition )
+void Folder::CreateObject( const char          * objectName,
+                           size_t                nameLengthInBytes,
+                           psoObjectDefinition & definition )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderCreateObject( m_objectHandle,
@@ -95,81 +97,81 @@ void psoFolder::CreateObject( const char          * objectName,
                                nameLengthInBytes,
                                &definition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::CreateObjectXML( const std::string & xmlBuffer )
+void Folder::CreateObjectXML( const std::string & xmlBuffer )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::CreateObjectXML", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateObjectXML", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderCreateObjectXML( m_objectHandle,
                                   xmlBuffer.c_str(),
                                   xmlBuffer.length() );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::CreateObjectXML" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObjectXML" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::CreateObjectXML( const char * xmlBuffer,
-                                 size_t       lengthInBytes )
+void Folder::CreateObjectXML( const char * xmlBuffer,
+                              size_t       lengthInBytes )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::CreateObjectXML", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateObjectXML", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderCreateObjectXML( m_objectHandle,
                                   xmlBuffer,
                                   lengthInBytes );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::CreateObjectXML" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObjectXML" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::DestroyObject( const std::string & objectName )
+void Folder::DestroyObject( const std::string & objectName )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::DestroyObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::DestroyObject", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderDestroyObject( m_objectHandle,
                                 objectName.c_str(),
                                 objectName.length() );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::DestroyObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::DestroyObject" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::DestroyObject( const char * objectName,
-                               size_t       nameLengthInBytes )
+void Folder::DestroyObject( const char * objectName,
+                            size_t       nameLengthInBytes )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::DestroyObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::DestroyObject", PSO_NULL_HANDLE );
    }
    rc = psoFolderDestroyObject( m_objectHandle,
                                 objectName,
                                 nameLengthInBytes );
 
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::DestroyObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::DestroyObject" );
    }
 }
 
@@ -178,17 +180,17 @@ void psoFolder::DestroyObject( const char * objectName,
 /*
  * Iterate through the folder - no data items are removed from the 
  * folder by this function.*/
-int psoFolder::GetFirst( psoFolderEntry & entry )
+int Folder::GetFirst( psoFolderEntry & entry )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::GetFirst", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::GetFirst", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderGetFirst( m_objectHandle, &entry );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
-      throw psoException( m_sessionHandle, "psoFolder::GetFirst" );
+      throw pso::Exception( m_sessionHandle, "Folder::GetFirst" );
    }
    
    return rc;
@@ -196,17 +198,17 @@ int psoFolder::GetFirst( psoFolderEntry & entry )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoFolder::GetNext( psoFolderEntry & entry )
+int Folder::GetNext( psoFolderEntry & entry )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::GetNext", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::GetNext", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderGetNext( m_objectHandle, &entry );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
-      throw psoException( m_sessionHandle, "psoFolder::GetNext" );
+      throw pso::Exception( m_sessionHandle, "Folder::GetNext" );
    }
 
    return rc;
@@ -214,12 +216,12 @@ int psoFolder::GetNext( psoFolderEntry & entry )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::Open( const std::string & folderName )
+void Folder::Open( const std::string & folderName )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderOpen( m_sessionHandle,
@@ -227,19 +229,19 @@ void psoFolder::Open( const std::string & folderName )
                        folderName.length(),
                        &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::Open" );
+      throw pso::Exception( m_sessionHandle, "Folder::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::Open( const char * folderName,
-                      size_t       nameLengthInBytes )
+void Folder::Open( const char * folderName,
+                   size_t       nameLengthInBytes )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderOpen( m_sessionHandle,
@@ -247,23 +249,23 @@ void psoFolder::Open( const char * folderName,
                        nameLengthInBytes,
                        &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::Open" );
+      throw pso::Exception( m_sessionHandle, "Folder::Open" );
    }
 }
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoFolder::Status( psoObjStatus & status )
+void Folder::Status( psoObjStatus & status )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoFolder::Status", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::Status", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderStatus( m_objectHandle, &status );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoFolder::Status" );
+      throw pso::Exception( m_sessionHandle, "Folder::Status" );
    }
 }
 

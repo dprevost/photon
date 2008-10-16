@@ -22,9 +22,11 @@
 #include <photon/psoErrors.h>
 #include <photon/psoException>
 
+using namespace pso;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoQueue::psoQueue( psoSession &session )
+Queue::Queue( Session & session )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
 {
@@ -32,7 +34,7 @@ psoQueue::psoQueue( psoSession &session )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-psoQueue::~psoQueue()
+Queue::~Queue()
 {
    if ( m_objectHandle != NULL ) {
       psoQueueClose( m_objectHandle );
@@ -42,17 +44,17 @@ psoQueue::~psoQueue()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::Close()
+void Queue::Close()
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Close", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Close", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueClose( m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::Close" );
+      throw pso::Exception( m_sessionHandle, "Queue::Close" );
    }
    
    m_objectHandle = NULL;   
@@ -60,30 +62,30 @@ void psoQueue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::Definition( psoObjectDefinition ** definition )
+void Queue::Definition( psoObjectDefinition ** definition )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Definition", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Definition", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueDefinition( m_objectHandle, definition );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::Definition" );
+      throw pso::Exception( m_sessionHandle, "Queue::Definition" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoQueue::GetFirst( void   * buffer,
-                        size_t   bufferLength,
-                        size_t & returnedLength )
+int Queue::GetFirst( void   * buffer,
+                     size_t   bufferLength,
+                     size_t & returnedLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::GetFirst", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::GetFirst", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueGetFirst( m_objectHandle,
@@ -91,7 +93,7 @@ int psoQueue::GetFirst( void   * buffer,
                           bufferLength,
                           &returnedLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY ) {
-      throw psoException( m_sessionHandle, "psoQueue::GetFirst" );
+      throw pso::Exception( m_sessionHandle, "Queue::GetFirst" );
    }
 
    return rc;
@@ -99,14 +101,14 @@ int psoQueue::GetFirst( void   * buffer,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoQueue::GetNext( void   * buffer,
-                       size_t   bufferLength,
-                       size_t & returnedLength )
+int Queue::GetNext( void   * buffer,
+                    size_t   bufferLength,
+                    size_t & returnedLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::GetNext", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::GetNext", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueGetNext( m_objectHandle,
@@ -114,7 +116,7 @@ int psoQueue::GetNext( void   * buffer,
                          bufferLength,
                          &returnedLength );
    if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
-      throw psoException( m_sessionHandle, "psoQueue::GetNext" );
+      throw pso::Exception( m_sessionHandle, "Queue::GetNext" );
    }
 
    return rc;
@@ -122,12 +124,12 @@ int psoQueue::GetNext( void   * buffer,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::Open( const std::string & queueName )
+void Queue::Open( const std::string & queueName )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueOpen( m_sessionHandle,
@@ -135,19 +137,19 @@ void psoQueue::Open( const std::string & queueName )
                       queueName.length(),
                       &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::Open" );
+      throw pso::Exception( m_sessionHandle, "Queue::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::Open( const char * queueName,
-                     size_t       nameLengthInBytes )
+void Queue::Open( const char * queueName,
+                  size_t       nameLengthInBytes )
 {
    int rc;
    
    if ( m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Open", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Open", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueOpen( m_sessionHandle,
@@ -155,20 +157,20 @@ void psoQueue::Open( const char * queueName,
                       nameLengthInBytes,
                       &m_objectHandle );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::Open" );
+      throw pso::Exception( m_sessionHandle, "Queue::Open" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int psoQueue::Pop( void   * buffer,
-                   size_t   bufferLength,
-                   size_t & returnedLength )
+int Queue::Pop( void   * buffer,
+                size_t   bufferLength,
+                size_t & returnedLength )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Pop", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Pop", PSO_NULL_HANDLE );
    }
 
    rc = psoQueuePop( m_objectHandle,
@@ -176,63 +178,63 @@ int psoQueue::Pop( void   * buffer,
                      bufferLength,
                      &returnedLength );
    if ( rc != 0 && rc != PSO_IS_EMPTY && rc != PSO_ITEM_IS_IN_USE ) {
-      throw psoException( m_sessionHandle, "psoQueue::Pop" );
+      throw pso::Exception( m_sessionHandle, "Queue::Pop" );
    }
    return rc;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::Push( const void * pItem, 
-                     size_t       length )
+void Queue::Push( const void * pItem, 
+                  size_t       length )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Push", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Push", PSO_NULL_HANDLE );
    }
 
    rc = psoQueuePush( m_objectHandle, 
                       pItem, 
                       length );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::Push" );
+      throw pso::Exception( m_sessionHandle, "Queue::Push" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::PushNow( const void * pItem, 
-                        size_t       length )
+void Queue::PushNow( const void * pItem, 
+                     size_t       length )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::PushNow", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::PushNow", PSO_NULL_HANDLE );
    }
 
    rc = psoQueuePushNow( m_objectHandle, 
                          pItem, 
                          length );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::PushNow" );
+      throw pso::Exception( m_sessionHandle, "Queue::PushNow" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoQueue::Status( psoObjStatus & status )
+void Queue::Status( psoObjStatus & status )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw psoException( "psoQueue::Status", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::Status", PSO_NULL_HANDLE );
    }
 
    rc = psoQueueStatus( m_objectHandle,
                             &status );
    if ( rc != 0 ) {
-      throw psoException( m_sessionHandle, "psoQueue::Status" );
+      throw pso::Exception( m_sessionHandle, "Queue::Status" );
    }
 }
 

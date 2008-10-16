@@ -20,13 +20,14 @@
 #include <iostream>
 
 using namespace std;
+using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   psoProcess process;
-   psoSession session;
+   Process process;
+   Session session;
    string name = "/cpp_session_getinfo", msg;
    psoInfo info, info2;
    size_t allocSpace;
@@ -45,7 +46,7 @@ int main( int argc, char * argv[] )
       session.Init();
       
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the watchdog running?" << endl;
       return 1;
@@ -54,7 +55,7 @@ int main( int argc, char * argv[] )
    try {
       session.GetInfo( info );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -63,7 +64,7 @@ int main( int argc, char * argv[] )
    try {
       session.CreateObject( name, folderDef );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -71,7 +72,7 @@ int main( int argc, char * argv[] )
    try {
       session.GetInfo( info2 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -102,7 +103,7 @@ int main( int argc, char * argv[] )
       session.DestroyObject( name );
       session.GetInfo( info );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
@@ -132,7 +133,7 @@ int main( int argc, char * argv[] )
       session.Commit();
       session.GetInfo( info2 );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
