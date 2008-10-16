@@ -24,10 +24,10 @@ const std::string outQueueName = "QueueExample\\OutputQueue";
 const std::string folderName   = "QueueExample";
 const std::string controlName  = "QueueExample/QueueControl";
 
-psoProcess process;
-psoSession session;
-psoQueue   inQueue(session), outQueue(session);
-psoHashMap control(session);
+pso::Process process;
+pso::Session session;
+pso::Queue   inQueue(session), outQueue(session);
+pso::HashMap control(session);
 
 // Keys for the control
 const char * workProcessKey = "Work Queue";

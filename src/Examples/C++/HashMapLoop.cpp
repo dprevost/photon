@@ -20,9 +20,9 @@
 // Some globals to make our life simpler. 
 // Note: the destructor of these objects will cleanup/close so no need
 // for explicit calls to terminate our access.
-psoProcess process;
-psoSession session;
-psoHashMap theMap( session );
+Process process;
+Session session;
+HashMap theMap( session );
 string mapName = "MyHashMapLoop";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -49,7 +49,7 @@ int createMap()
       session.DestroyObject( mapName );
       session.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       if ( exc.ErrorCode() != PSO_NO_SUCH_OBJECT ) {
          cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
          return 1;
@@ -72,7 +72,7 @@ int createMap()
          rc = readData( countryCode, description );
       }
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -102,7 +102,7 @@ int main( int argc, char *argv[] )
       process.Init( argv[2] );
       session.Init();
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -130,7 +130,7 @@ int main( int argc, char *argv[] )
          return 1;
       }
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }

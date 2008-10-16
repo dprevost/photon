@@ -21,9 +21,9 @@
 // Some globals to make our life simpler
 // Note: the destructor of these objects will cleanup/close so no need
 // for explicit calls to terminate our access.
-psoProcess process;
-psoSession session1, session2;
-psoHashMap map1( session1 ), map2( session2 );
+Process process;
+Session session1, session2;
+HashMap map1( session1 ), map2( session2 );
 string mapName = "MyHashMap";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -50,7 +50,7 @@ int createMap()
       session1.DestroyObject( mapName );
       session1.Commit();
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       if ( exc.ErrorCode() != PSO_NO_SUCH_OBJECT ) {
          cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
          return 1;
@@ -73,7 +73,7 @@ int createMap()
          rc = readData( countryCode, description );
       }
    }
-   catch ( psoException exc ) {
+   catch ( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -104,7 +104,7 @@ int main( int argc, char *argv[] )
       session1.Init();
       session2.Init();
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -115,7 +115,7 @@ int main( int argc, char *argv[] )
    cout << "Map created" << endl;
    
    try { map2.Open( mapName ); }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -123,7 +123,7 @@ int main( int argc, char *argv[] )
    // The data is inserted but not committed yet - failure is expected
    rc = 0;
    try { map2.Get("FM", 2, description, 80, length ); }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       rc = exc.ErrorCode();
       cerr << "Code = " << exc.ErrorCode() << endl;
       if ( rc != PSO_ITEM_IS_IN_USE ) {
@@ -144,7 +144,7 @@ int main( int argc, char *argv[] )
       map2.Get( "FM", 2, description, 80, length );
       cout << "Country code: FM, country: " << description << endl;
    }
-   catch( psoException exc ) {
+   catch( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }

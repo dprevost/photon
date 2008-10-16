@@ -30,6 +30,8 @@ using namespace std;
 
 #include <photon/photon>
 
+using namespace pso;
+
 FILE * fp = NULL;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

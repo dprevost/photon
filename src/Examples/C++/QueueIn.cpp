@@ -48,7 +48,7 @@ void cleanup()
       control.Close();
       inQueue.Close();
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
    }
 }
@@ -72,9 +72,8 @@ void initObjects()
    /*
     *
     */
-   psoDefinition defQueue(2);
+   pso::Definition defQueue( 2, PSO_QUEUE );
 
-   defQueue.ObjectType( PSO_QUEUE );
    defQueue.AddField( "CountryCode", 11, PSO_STRING,     2, 0,  0, 0, 0 );
    defQueue.AddField( "CountryName", 11, PSO_VAR_STRING, 0, 1, 80, 0, 0 );
 
@@ -187,7 +186,7 @@ int main( int argc, char *argv[] )
       process.Init( argv[2] );
       session.Init();
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -197,7 +196,7 @@ int main( int argc, char *argv[] )
       initObjects();
       inQueue.Open( inQueueName );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;
@@ -255,7 +254,7 @@ int main( int argc, char *argv[] )
       }
       session.Commit();
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;

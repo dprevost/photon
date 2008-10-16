@@ -28,7 +28,7 @@ void cleanup()
       control.Close();
       outQueue.Close();
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
    }
 }
@@ -90,7 +90,7 @@ int main( int argc, char *argv[] )
       process.Init( argv[1] );
       session.Init();
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;
    }
@@ -100,7 +100,7 @@ int main( int argc, char *argv[] )
       initObjects();
       outQueue.Open( outQueueName );
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;
@@ -132,7 +132,7 @@ int main( int argc, char *argv[] )
          loop++;
       }
    }
-   catch( psoException exc ) {
+   catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       cleanup();
       return 1;
