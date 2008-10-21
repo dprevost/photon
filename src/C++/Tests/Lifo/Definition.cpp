@@ -46,9 +46,9 @@ int main( int argc, char * argv[] )
 
    struct dummy data;
    size_t len;
-   psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   Definition queueDef( 5, PSO_LIFO );
+   ObjDefinition queueDef( 5, PSO_LIFO );
+   ObjDefinition returnedDef;
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
@@ -84,24 +84,8 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Invalid arguments to tested function.
-
    try {
-      queue.Definition( NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   // End of invalid args. This call should succeed.
-   try {
-      queue.Definition( &pDef );
+      queue.Definition( returnedDef );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -109,7 +93,7 @@ int main( int argc, char * argv[] )
    }
 
    len = offsetof( psoObjectDefinition, fields ) + 5 * sizeof(psoFieldDefinition);
-   if ( memcmp( &queueDef.GetDef(), pDef, len ) != 0 ) {
+   if ( memcmp( &queueDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

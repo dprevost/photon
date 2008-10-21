@@ -45,9 +45,9 @@ int main( int argc, char * argv[] )
    string hname = fname + "/test";
 
    size_t len;
-   psoObjectDefinition * pDef = NULL;
    psoObjectDefinition folderDef;
-   Definition mapDef( 5, PSO_FAST_MAP );
+   ObjDefinition mapDef( 5, PSO_FAST_MAP );
+   ObjDefinition returnedDef;
    
    memset( &folderDef, 0, sizeof(folderDef) );
    folderDef.type = PSO_FOLDER;
@@ -90,24 +90,8 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Invalid arguments to tested function.
-
    try {
-      hashmap.Definition( NULL );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   // End of invalid args. This call should succeed.
-   try {
-      hashmap.Definition( &pDef );
+      hashmap.Definition( returnedDef );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -115,7 +99,7 @@ int main( int argc, char * argv[] )
    }
    
    len = offsetof( psoObjectDefinition, fields ) + 5 * sizeof(psoFieldDefinition);
-   if ( memcmp( &mapDef.GetDef(), pDef, len ) != 0 ) {
+   if ( memcmp( &mapDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

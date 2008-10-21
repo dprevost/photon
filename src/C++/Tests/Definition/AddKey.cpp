@@ -27,7 +27,7 @@ using namespace pso;
 
 int main()
 {
-   Definition def( 5, PSO_HASH_MAP );
+   ObjDefinition def( 5, PSO_HASH_MAP );
 
    try {
       def.AddKey( (psoKeyType)0, 4, 0, 0 );

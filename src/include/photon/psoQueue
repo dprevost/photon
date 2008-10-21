@@ -31,6 +31,7 @@ namespace pso {
 
 // Forward declarations
 class Session;
+class ObjDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -60,17 +61,12 @@ public:
    /**
     * \brief Retrieve the data definition of the queue.
     *
-    * \warning This function allocates a buffer to hold the definition (using 
-    * malloc()). You must free it (with free()) when you no longer need the
-    * definition.
-    *
-    * \param[out]  definition The buffer allocated by the API to hold the content 
-    *              of the object definition. Freeing the memory (with free())
-    *              is the responsability of the caller.
+    * \param[out]  definition The definition object holding the 
+    *              definition itself.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Definition( psoObjectDefinition ** definition );
+   void Definition( ObjDefinition & definition );
 
    /** 
     * Iterate through the queue - no data items are removed from the queue

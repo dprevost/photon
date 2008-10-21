@@ -72,7 +72,7 @@ void initObjects()
    /*
     *
     */
-   pso::Definition defQueue( 2, PSO_QUEUE );
+   pso::ObjDefinition defQueue( 2, PSO_QUEUE );
 
    defQueue.AddField( "CountryCode", 11, PSO_STRING,     2, 0,  0, 0, 0 );
    defQueue.AddField( "CountryName", 11, PSO_VAR_STRING, 0, 1, 80, 0, 0 );

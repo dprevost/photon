@@ -35,9 +35,18 @@
 
 namespace pso {
 
-class PHOTON_EXPORT Definition
+class PHOTON_EXPORT ObjDefinition
 {
 public:
+
+   /**
+    * Construct a data-container definition.
+    *
+    * This constructor is useful to query existing definitions but the
+    * new object cannot be used to create new data containers (without 
+    * calling ::Reset() - which is equivalent to the other constructor).
+    */
+   ObjDefinition();
 
    /**
     * Construct a data-container definition.
@@ -47,9 +56,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   Definition( size_t numberOfFields, enum psoObjectType type );
+   ObjDefinition( size_t numberOfFields, enum psoObjectType type );
    
-   virtual ~Definition();
+   virtual ~ObjDefinition();
 
    /**
     * Add a key to the definition.
@@ -155,6 +164,19 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Reset( size_t numberOfFields, enum psoObjectType type );
+
+   /**
+    * Reset the object to be reused for the definition of another data 
+    * container.
+    *
+    * This version of reset is used internally by the C++ API to populate
+    * the C++ class from the C struct.
+    *
+    * \param[in] definition The definition C struct
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Reset( psoObjectDefinition & definition );
    
    /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();

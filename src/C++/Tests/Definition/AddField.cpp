@@ -27,7 +27,7 @@ using namespace pso;
 
 int main( int argc, char * argv[] )
 {
-   Definition def( 6, PSO_QUEUE );
+   ObjDefinition def( 6, PSO_QUEUE );
    string name;
    
    try {

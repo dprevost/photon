@@ -27,7 +27,7 @@ using namespace pso;
 
 int main( int argc, char * argv[] )
 {
-   Definition def( 5, PSO_QUEUE );
+   ObjDefinition def( 5, PSO_QUEUE );
 
    try {
       def.ObjectType( (psoObjectType)0 );

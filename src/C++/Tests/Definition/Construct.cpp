@@ -28,7 +28,7 @@ using namespace pso;
 int main( int argc, char * argv[] )
 {
    try {
-      Definition def( 0, PSO_QUEUE );
+      ObjDefinition def( 0, PSO_QUEUE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -41,7 +41,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      Definition def( PSO_MAX_FIELDS + 1, PSO_QUEUE );
+      ObjDefinition def( PSO_MAX_FIELDS + 1, PSO_QUEUE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      Definition def( 5, (psoObjectType)0 );
+      ObjDefinition def( 5, (psoObjectType)0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -67,7 +67,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      Definition def( 5, PSO_LAST_OBJECT_TYPE );
+      ObjDefinition def( 5, PSO_LAST_OBJECT_TYPE );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      Definition def( 1, PSO_QUEUE );
+      ObjDefinition def( 1, PSO_QUEUE );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
