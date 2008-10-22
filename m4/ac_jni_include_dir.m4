@@ -34,7 +34,7 @@ dnl @license AllPermissive
 dnl
 dnl ------------------------------------------
 dnl 
-dnl Changes made for vdsf: 
+dnl Changes made for Photon: 
 dnl   - added [$PATH:$JAVA_HOME/bin] to AC_PATH_PROG 
 dnl
 AC_DEFUN([AC_JNI_INCLUDE_DIR],[

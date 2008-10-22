@@ -19,7 +19,7 @@ Some notes specific to Photon:
  * Here is the list of configure options that you might want to use to 
    tailor the package to your needs:
 
-    * --enable-set-block-size=some_value Sets the size of vdsf blocks 
+    * --enable-set-block-size=some_value Sets the size of Photon blocks 
         (blocks are the basic unit of memory allocation just like pages 
         are for operating systems - the name is different to avoid 
         confusion). Legal values for blocks size are 1k, 2k, 4k, 8k or 
@@ -38,8 +38,8 @@ Some notes specific to Photon:
 
 ************************************************************************
 *
-* Generic instructions written by the FSF to build vdsf (or any other 
-* packages) follow:
+* Generic instructions written by the FSF to build software packages, 
+* including Photon, follow:
 *
 ************************************************************************
 

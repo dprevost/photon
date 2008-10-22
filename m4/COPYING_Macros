@@ -19,5 +19,5 @@ http://www.gnu.org/software/ac-archive/htmldoc/COPYING-Exception.html)
   special exception to the GPL to apply to your modified version as well."
 
 This exception covers all the m4 macros in this directory, whether they
-are taken from the gnu autoconf archive or written by the vdsf team.
+are taken from the gnu autoconf archive or written for Photon.
 
