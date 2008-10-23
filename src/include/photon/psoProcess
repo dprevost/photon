@@ -36,8 +36,9 @@ public:
    Process();
    
    /**
-    * This function initializes access to a VDS. It takes 2 input 
-    * arguments, the address of the watchdog and a boolean value. 
+    * This function initializes access to the shared-memory of Photon.
+    * It takes 2 input arguments, the address of Quasar, the Photon server,
+    * and a boolean value. 
     * This last one indicates if sessions and 
     * other objects (Queues, etc) are shared amongst threads (in the 
     * current process) and must be protected. Recommendation: always 
@@ -52,14 +53,14 @@ public:
     * is already done in shared memory and it is best to avoid to 
     * synchronize these proxy objects.]
     * 
-    * \param[in] wdAddress The address of the watchdog. Currently a string with 
+    * \param[in] quasarAddress The address of Quasar. Currently a string with 
     *            the port number ("12345").
     * \param[in] protectionNeeded A boolean value indicating if multi-threaded
     *            locks are needed or not.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Init( const char * wdAddress,
+   void Init( const char * quasarAddress,
               bool         protectionNeeded = false );
 
    /**

@@ -51,12 +51,13 @@ void psoExit();
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * This function initializes access to a VDS. It takes 2 input 
- * arguments, the address of the watchdog and an integer (used as 
- * a boolean, 0 for false, 1 for true) to indicate if sessions and 
- * other objects (Queues, etc) are shared amongst threads (in the 
- * current process) and must be protected. Recommendation: always 
- * set protectionNeeded to 0 (false) unless you cannot do otherwise. 
+ * This function initializes access to the shared-memory of Photon.
+ * It takes 2 input arguments, the address of Quasar, the Photon server,
+ * and an integer (used as a boolean, 0 for false, 1 for true) to 
+ * indicate if sessions and other objects (Queues, etc) are shared 
+ * amongst threads (in the current process) and must be protected. 
+ * Recommendation: always set protectionNeeded to 0 (false) unless you 
+ * cannot do otherwise. 
  * In other words it is recommended to use one session handle for
  * each thread. Also if the same queue needs to be accessed by two 
  * threads it is more efficient to have two different handles instead
@@ -70,7 +71,7 @@ void psoExit();
  * Upon successful completion, the process handle is set. Otherwise 
  * the error code is returned.
  *
- * \param[in] wdAddress The address of the watchdog. Currently a string with 
+ * \param[in] quasarAddress The address of Quasar. Currently a string with 
  *            the port number ("12345").
  * \param[in] protectionNeeded A boolean value indicating if multi-threaded
  *            locks are needed or not.
@@ -79,7 +80,7 @@ void psoExit();
 
  */
 PHOTON_EXPORT
-int psoInit( const char * wdAddress,
+int psoInit( const char * quasarAddress,
              int          protectionNeeded );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

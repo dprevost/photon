@@ -38,6 +38,9 @@ namespace pso {
 // Forward declaration
 class Session;
 
+/**
+ * Exceptions thrown by the C++ API (based on the psoErrors error code).
+ */
 class PHOTON_EXPORT Exception
 {
 public:

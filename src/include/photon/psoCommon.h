@@ -227,20 +227,20 @@ typedef struct psoObjectDefinition psoObjectDefinition;
  * \ingroup psoFolder_c
  *
  * This data structure is used to iterate throught all objects in a folder.
- *
- * Note: the actual name of an object (and the length of this name) might 
- * vary if you are using different locales (internally, names are stored as
- * wide characters (4 bytes)).
  */
 struct psoFolderEntry
 {
    /** The object type */
    psoObjectType type;
    
-   /** Status (created but not committed, etc.). */
+   /**
+    * Status of the object.
+    *
+    * For example, created but not committed, etc.
+    */
    int status;
    
-   /** The actual length (in bytes)of the name of the object. */
+   /** The actual length (in bytes) of the name of the object. */
    size_t nameLengthInBytes;
    
    /** The name of the object. */
@@ -259,7 +259,11 @@ struct psoObjStatus
    /** The object type. */
    psoObjectType type;
 
-   /** Status (created but not committed, etc.). */
+   /**
+    * Status of the object.
+    *
+    * For example, created but not committed, etc.
+    */
    int status;
 
    /** The number of blocks allocated to this object. */
@@ -287,7 +291,7 @@ typedef struct psoObjStatus psoObjStatus;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * This data structure is used to retrieve the status of the virtual data space.
+ * This data structure is used to retrieve the status of the Photon shared memory.
  */
 struct psoInfo
 {

@@ -5,7 +5,7 @@ AppVerName=Photon Software version 0.3.0
 AppVersion=0.3.0
 AppSupportURL=http://photonsoftware.org/
 AppId=VDSF_V0
-LicenseFile=COPYING
+InfoBeforeFile=COPYING
 DefaultDirName={pf}\Photonsoftware
 DefaultGroupName=Photon Software
 SourceDir=..\..
@@ -34,6 +34,7 @@ Source: src\include\photon\photon; DestDir: {app}\include
 Source: src\include\photon\psoDefinition; DestDir: {app}\include
 Source: src\include\photon\psoException; DestDir: {app}\include
 Source: src\include\photon\psoFastMap; DestDir: {app}\include
+Source: src\include\photon\psoFastMapEditor; DestDir: {app}\include
 Source: src\include\photon\psoFolder; DestDir: {app}\include
 Source: src\include\photon\psoHashMap; DestDir: {app}\include
 Source: src\include\photon\psoLifo; DestDir: {app}\include
@@ -44,9 +45,12 @@ Source: src\Release\photon.lib; DestDir: {app}\lib
 Source: src\Release\photoncpp.lib; DestDir: {app}\lib
 Source: doc\refman_c.pdf; DestDir: {app}
 Source: doc\refman_c++.pdf; DestDir: {app}
+Source: doc\Photon_C_API.chm; DestDir: {app}
+Source: doc\Photon_C++_API.chm; DestDir: {app}
 Source: COPYING; DestDir: {app}; DestName: License.txt
 Source: src\Examples\iso_3166.tab; DestDir: {app}\Examples
-Source: src\Examples\quasar-config.example; DestDir: {app}\Examples
+Source: src\Examples\quasar-config.example.xml; DestDir: {app}\Examples
+Source: src\Examples\quasar_config.xsd; DestDir: {app}\Examples
 Source: src\Examples\README.txt; DestDir: {app}\Examples
 Source: src\Examples\C\Examples.dsw; DestDir: {app}\Examples\C
 Source: src\Examples\C\HashMap.c; DestDir: {app}\Examples\C
@@ -81,11 +85,17 @@ Source: src\Examples\C++\Project_Files\QueueIn.dsp; DestDir: {app}\Examples\C++\
 Source: src\Examples\C++\Project_Files\QueueOut.dsp; DestDir: {app}\Examples\C++\Project_Files
 Source: src\Examples\C++\Project_Files\QueueWork.dsp; DestDir: {app}\Examples\C++\Project_Files
 ;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
+Source: src\Packages\SetEnv.exe; DestDir: {app}\bin
+Source: C:\Program Files\libxml2\bin\iconv.dll; DestDir: {app}\bin; Components: libxml2
+Source: C:\Program Files\libxml2\bin\iconv.exe; DestDir: {app}\bin; Components: libxml2
+Source: C:\Program Files\libxml2\bin\libxml2.dll; DestDir: {app}\bin; Components: libxml2
+Source: C:\Program Files\libxml2\bin\xmlcatalog.exe; DestDir: {app}\bin; Components: libxml2
+Source: C:\Program Files\libxml2\bin\zlib1.dll; DestDir: {app}\bin; Components: libxml2
 
 [Icons]
 ;Name: "{group}\Watchdog"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
-Name: {group}\Ref. Manual C API; Filename: {app}\refman_c.pdf
-Name: {group}\Ref. Manual C++ API; Filename: {app}\refman_c++.pdf
+Name: {group}\Ref. Manual C API; Filename: {app}\Photon_C_API.chm
+Name: {group}\Ref. Manual C++ API; Filename: {app}\Photon_C++_API.chm
 Name: {group}\Uninstall My Program; Filename: {uninstallexe}
 
 [Registry]
@@ -95,11 +105,11 @@ Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.e
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueData: {app}\bin\quasar.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
-Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueData: {app}\bin\vdssh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psosh.exe; ValueType: string; ValueData: {app}\bin\psosh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psosh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
-Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueData: {app}\bin\vdssh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
-Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\vdssh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psosh.exe; ValueType: string; ValueData: {app}\bin\psosh.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psosh.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
 
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psoinfo.exe; ValueType: string; ValueData: {app}\bin\psoinfo.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\psoinfo.exe; ValueType: string; ValueName: Path; ValueData: {app}\bin; Flags: uninsdeletekeyifempty uninsdeletevalue
@@ -164,3 +174,14 @@ begin
     end;
   end;
 end;
+[Components]
+Name: libxml2; Description: The libxml2 library; Types: with_libxml2
+[Types]
+Name: with_libxml2; Description: Install everything including libxml2 (run-time)
+Name: without_libxml2; Description: Install everything except libxml2
+[Tasks]
+Name: setenv; Description: "Add Error Parser to your ""path"""; Flags: unchecked; Components: 
+[Run]
+Filename: {app}\bin\SetEnv.exe; Parameters: "-ua Path %""{app}\bin"""; Flags: runminimized skipifnotsilent; Components: ; Tasks: " setenv"
+[UninstallRun]
+Filename: {app}\bin\SetEnv.exe; Parameters: "-ud Path %""{app}\bin"""; Flags: runminimized; Components: ; Tasks: 

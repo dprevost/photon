@@ -35,6 +35,18 @@ class pso::Session;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+/**
+ * Updater/editor for the read-only maps (FastMap).
+ *
+ * This class creates a working copy of the map in shared memory. This
+ * working copy canthen be updated (no locks since only the updater can 
+ * access the working copy). 
+ *
+ * When the session is committed, the working version becomes the latest 
+ * version and can be open/accessed by readers.
+ *
+ * If the session is rollbacked, the working copy is removed.
+ */
 class PHOTON_EXPORT FastMapEditor: public FastMap
 {
 public:

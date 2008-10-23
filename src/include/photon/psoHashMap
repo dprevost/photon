@@ -36,6 +36,11 @@ class ObjDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+/**
+ * Photon standard hash maps.
+ *
+ * Hash maps use unique keys - the data items are not sorted.
+ */
 class PHOTON_EXPORT HashMap
 {
 public:

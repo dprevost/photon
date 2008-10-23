@@ -45,6 +45,12 @@
 #include <photon/psoQueue>
 #include <photon/psoException>
 
+/**
+ *
+ * \namespace pso The default namespace for Photon (pso is the acronym of
+ * photonsoftware.org, the Photon website).
+ */
+ 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #endif // PSO_H_CPP

@@ -35,6 +35,9 @@ class ObjDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+/**
+ * Photon LIFO queues (Last In, First Out - also known as stacks).
+ */
 class PHOTON_EXPORT Lifo
 {
 public:

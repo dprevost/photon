@@ -35,6 +35,10 @@ class ObjDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+/**
+ * Photon FIFO queues (First In, First Out).
+ */
+
 class PHOTON_EXPORT Queue
 {
 public:
