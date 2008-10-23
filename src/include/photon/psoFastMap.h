@@ -32,59 +32,73 @@ extern "C" {
  * \file
  * This file provides the API needed to access read-only Photon hash maps.
  *
- * The features are very similar to the standard hash maps except that
- * no locks are required to access the data and special procedures are 
- * implemented for the occasional updates:
+ * The features of fast maps are very similar to the features of standard 
+ * hash maps with one major exception - no locks are required to access 
+ * the data and special procedures are implemented for the occasional 
+ * updates:.
  *
- *    1) when a map is open in read-only mode (psoFastMapOpen(), the 
- *       end-of-this-unit-of-work calls (psoCommit/psoRollback) will check 
- *       if a new version of the map exits and if indeed this is the case, 
- *       the new version will be use instead of the old one.
+ * <ol>
+ *   <li>
+ *     when a map is open in read-only mode (::psoFastMapOpen), the 
+ *     end-of-this-unit-of-work calls (::psoCommit, ::psoRollback) will 
+ *     check if a new version of the map exist and if indeed this is 
+ *     the case, the new version will be use instead of the old one.
+ *   </li>
  *
- *    2) when a map is open for editing a working copy of the map is created
- *       in shared memory and the map can be updated (no locks again since
- *       only the updater can access the working copy). When the session is
- *       committed, the working version becomes the latest version and can
- *       be open/accessed by readers. And, of course, the same procedure 
- *       applies if you have a set of maps that must be changed together.
+ *   <li>
+ *     when a map is open for editing (::psoFastMapEdit) a working copy 
+ *     of the map is created in shared memory and the map can be updated
+ *     (no locks again since only the updater can access the working copy). 
+ *     When the session is committed, the working version becomes the 
+ *     latest version and can be open/accessed by readers. And, of course, 
+ *     the same procedure applies if you have a set of maps that must be 
+ *     changed together.
  *
- *       If psoRollback is called, all changes done to the working copy 
- *       are erased.
- *
- * Note: the old versions are removed from memory when all readers have
- *       updated their versions. Even if a program is only doing read access
- *       to shared memory data, it is important to add psoCommit() once in 
- *       a while to refresh the "handles" if the program is running for a 
- *       while. 
+ *     If ::psoRollback is called, all changes done to the working copy 
+ *     are erased.
+ *   </li>
+ * </ol>
+ * 
+ * Note: the old versions are removed from memory when all readers have 
+ * updated their versions. Even if a program is only doing read access to 
+ * shared-memory data, it is important to add ::psoCommit once in a while 
+ * to refresh the "handles" periodically.
  */
 
 /**
  * \defgroup psoFastMap_c API functions for Photon read-only hash maps.
  *
- * The features of fast maps are very similar to the features of standard
- * hash maps with one major exception - no locks are required to access the 
- * data and special procedures are implemented for the occasional updates:
+ * The features of fast maps are very similar to the features of standard 
+ * hash maps with one major exception - no locks are required to access 
+ * the data and special procedures are implemented for the occasional 
+ * updates:.
  *
- *    1) when a map is open in read-only mode (psoFastMapOpen(), the 
- *       end-of-this-unit-of-work calls (psoCommit/psoRollback) will check 
- *       if a new version of the map exits and if indeed this is the case, 
- *       the new version will be use instead of the old one.
+ * <ol>
+ *   <li>
+ *     when a map is open in read-only mode (::psoFastMapOpen), the 
+ *     end-of-this-unit-of-work calls (::psoCommit, ::psoRollback) will 
+ *     check if a new version of the map exist and if indeed this is 
+ *     the case, the new version will be use instead of the old one.
+ *   </li>
  *
- *    2) when a map is open for editing a working copy of the map is created
- *       in shared memory and the map can be updated (no locks again since
- *       only the updater can access the working copy). When the session is
- *       committed, the working version becomes the latest version and can
- *       be open/accessed by readers. And, of course, the same procedure 
- *       applies if you have a set of maps that must be changed together.
+ *   <li>
+ *     when a map is open for editing (::psoFastMapEdit) a working copy 
+ *     of the map is created in shared memory and the map can be updated
+ *     (no locks again since only the updater can access the working copy). 
+ *     When the session is committed, the working version becomes the 
+ *     latest version and can be open/accessed by readers. And, of course, 
+ *     the same procedure applies if you have a set of maps that must be 
+ *     changed together.
  *
- *       If psoRollback is called, all changes done to the working copy 
- *       are erased.
- *
- * Note: the old versions are removed from memory when all readers have
- *       updated their versions. Even if a program is only doing read access
- *       to shared memory data, it is important to add psoCommit() once in 
- *       a while to refresh the "handles" if the program is running for a 
- *       while. 
+ *     If ::psoRollback is called, all changes done to the working copy 
+ *     are erased.
+ *   </li>
+ * </ol>
+ * 
+ * Note: the old versions are removed from memory when all readers have 
+ * updated their versions. Even if a program is only doing read access to 
+ * shared-memory data, it is important to add ::psoCommit once in a while 
+ * to refresh the "handles" periodically.
  */
 /*@{*/
 

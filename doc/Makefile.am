@@ -26,23 +26,30 @@ if COND_USE_LATEX
 
 all-local: refman_c.pdf refman_c++.pdf
 
-HEADER_FILES =                                      \
-        $(top_srcdir)/src/include/photon/photon.h        \
+HEADER_FILES =                                        \
+        $(top_srcdir)/src/include/photon/photon.h     \
         $(top_srcdir)/src/include/photon/psoCommon.h  \
+        $(top_srcdir)/src/include/photon/psoErrors.h  \
+        $(top_srcdir)/src/include/photon/psoFastMap.h \
         $(top_srcdir)/src/include/photon/psoFolder.h  \
         $(top_srcdir)/src/include/photon/psoHashMap.h \
+        $(top_srcdir)/src/include/photon/psoLifo.h    \
         $(top_srcdir)/src/include/photon/psoQueue.h   \
         $(top_srcdir)/src/include/photon/psoProcess.h \
         $(top_srcdir)/src/include/photon/psoSession.h 
 
-CPP_HEADER_FILES =                                  \
-        $(top_srcdir)/src/include/photon/photon          \
-        $(top_srcdir)/src/include/photon/psoException \
-        $(top_srcdir)/src/include/photon/psoFolder    \
-        $(top_srcdir)/src/include/photon/psoHashMap   \
-        $(top_srcdir)/src/include/photon/psoQueue     \
-        $(top_srcdir)/src/include/photon/psoProcess   \
-        $(top_srcdir)/src/include/photon/psoSession   
+CPP_HEADER_FILES =                                        \
+        $(top_srcdir)/src/include/photon/photon           \
+        $(top_srcdir)/src/include/photon/psoDefinition    \
+        $(top_srcdir)/src/include/photon/psoException     \
+        $(top_srcdir)/src/include/photon/psoFastMap       \
+        $(top_srcdir)/src/include/photon/psoFastMapEditor \
+        $(top_srcdir)/src/include/photon/psoFolder        \
+        $(top_srcdir)/src/include/photon/psoHashMap       \
+        $(top_srcdir)/src/include/photon/psoLifo          \
+        $(top_srcdir)/src/include/photon/psoQueue         \
+        $(top_srcdir)/src/include/photon/psoProcess       \
+        $(top_srcdir)/src/include/photon/psoSession       
 
 refman_c.pdf: $(HEADER_FILES)
 	-rm -rf c

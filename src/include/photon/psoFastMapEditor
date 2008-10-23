@@ -36,10 +36,10 @@ class pso::Session;
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /**
- * Updater/editor for the read-only maps (FastMap).
+ * Updater/editor for the read-only maps (pso::FastMap).
  *
  * This class creates a working copy of the map in shared memory. This
- * working copy canthen be updated (no locks since only the updater can 
+ * working copy can then be updated (no locks since only the updater can 
  * access the working copy). 
  *
  * When the session is committed, the working version becomes the latest 
