@@ -31,6 +31,39 @@ extern "C" {
 /**
  * \file
  * This file provides the API needed to create and use a session.
+ *
+ * Sessions exist mainly to support multi-threaded (MT) programs. 
+ *
+ * Best practices:
+ * <ul>
+ *   <li>
+ *     Each thread of an MT program should have its own session, making it
+ *     independent of the other threads.
+ *   </li>
+ *
+ *   <li>
+ *     If you need to open the same Photon object in multiple threads,
+ *     simply open it multiple times, for each thread. The overhead of 
+ *     having multiple handles to the same shared-memory data container 
+ *     is minimal and increases the overall performance of the framework.
+ *   </li>
+ *
+ *   <li>
+ *     Signal handlers (and similar calls): you should not call ::psoExit or
+ *     ::psoExitSession (or similar) from a signal handler. 
+ *     Instead, some global flags should be set that will allow each session 
+ *     to terminate in an orderly fashion.
+ *   </li>
+ * </ul>
+ *
+ * If you cannot follow these guidelines for whatever reasons, you should set
+ * the parameter \em protectionNeeded of ::psoInit to 1. This will introduce
+ * additional multi-threaded protection (locking) for your applications.
+ *
+ * Additional note: API objects (or C handles) are just proxies for the real 
+ * objects sitting in shared memory. Proper synchronization is already done 
+ * in shared memory and it is best to avoid the additional synchronization 
+ * of these proxy objects.
  */
 /**
  * \defgroup psoSession_c API functions for Photon sessions.

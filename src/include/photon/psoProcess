@@ -38,14 +38,19 @@ public:
    /**
     * This function initializes access to the shared-memory of Photon.
     * It takes 2 input arguments, the address of Quasar, the Photon server,
-    * and a boolean value. 
-    * This last one indicates if sessions and 
+    * and a boolean value.
+    *
+    * This last argument indicates if sessions and 
     * other objects (Queues, etc) are shared amongst threads (in the 
     * current process) and must be protected. Recommendation: always 
-    * set protectionNeeded to false unless you cannot do otherwise. 
+    * set protectionNeeded to false unless you cannot do otherwise (for
+    * example if you need to call the destructor of the Process object
+    * in asignal handler).
+    *
     * In other words it is recommended to use one session object for
-    * each thread. Also if the same queue needs to be accessed by two 
-    * threads it is more efficient to have two different objects instead
+    * each thread. If the same queue (or map or...) needs to be accessed by 
+    * more than one thread it is more efficient to have multiple API
+    * objects pointing to the same shared-memory object instead
     * of sharing a single one.
     * 
     * [Additional note: API objects (or C handles) are just proxies for 
@@ -55,8 +60,8 @@ public:
     * 
     * \param[in] quasarAddress The address of Quasar. Currently a string with 
     *            the port number ("12345").
-    * \param[in] protectionNeeded A boolean value indicating if multi-threaded
-    *            locks are needed or not.
+    * \param[in] protectionNeeded A boolean value indicating if additional 
+    *            multi-threaded locks are needed or not.
     *
     * \exception pso::Exception An abnormal error occured.
     */

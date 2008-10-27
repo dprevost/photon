@@ -29,6 +29,40 @@
 
 namespace pso {
 
+/**
+ * Sessions exist mainly to support multi-threaded (MT) programs. 
+ *
+ * Best practices:
+ * <ul>
+ *   <li>
+ *     Each thread of an MT program should have its own session, making it
+ *     independent of the other threads.
+ *   </li>
+ *
+ *   <li>
+ *     If you need to open the same Photon object in multiple threads,
+ *     simply open it multiple times, for each thread. The overhead of 
+ *     having multiple objects to the same shared-memory data container 
+ *     is minimal and increases the overall performance of the framework.
+ *   </li>
+ *
+ *   <li>
+ *     Signal handlers (and similar calls): you should not call the destructors
+ *     of the Process or the Session from a signal handler. 
+ *     Instead, some global flags should be set that will allow each session 
+ *     to terminate in an orderly fashion.
+ *   </li>
+ * </ul>
+ *
+ * If you cannot follow these guidelines for whatever reasons, you should set
+ * the parameter \em protectionNeeded of Process::Init to true. This will introduce
+ * additional multi-threaded protection (locking) for your applications.
+ *
+ * Additional note: API objects (or C handles) are just proxies for the real 
+ * objects sitting in shared memory. Proper synchronization is already done 
+ * in shared memory and it is best to avoid the additional synchronization 
+ * of these proxy objects.
+ */
 class PHOTON_EXPORT Session
 {
 public:
