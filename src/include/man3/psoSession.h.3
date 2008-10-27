@@ -1,4 +1,4 @@
-.TH "psoSession.h" 3 "14 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoSession.h" 3 "27 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,7 +7,26 @@ psoSession.h \-
 .PP 
 This file provides the API needed to create and use a session. 
 
+Sessions exist mainly to support multi-threaded (MT) programs.
+.PP
+Best practices: 
+.PD 0
 
+.IP "\(bu" 2
+Each thread of an MT program should have its own session, making it independent of the other threads. 
+.PP
+
+.IP "\(bu" 2
+If you need to open the same Photon object in multiple threads, simply open it multiple times, for each thread. The overhead of having multiple handles to the same shared-memory data container is minimal and increases the overall performance of the framework. 
+.PP
+
+.IP "\(bu" 2
+Signal handlers (and similar calls): you should not call \fBpsoExit\fP or \fBpsoExitSession\fP (or similar) from a signal handler. Instead, some global flags should be set that will allow each session to terminate in an orderly fashion.  
+.PP
+.PP
+If you cannot follow these guidelines for whatever reasons, you should set the parameter \fIprotectionNeeded\fP of \fBpsoInit\fP to 1. This will introduce additional multi-threaded protection (locking) for your applications.
+.PP
+Additional note: API objects (or C handles) are just proxies for the real objects sitting in shared memory. Proper synchronization is already done in shared memory and it is best to avoid the additional synchronization of these proxy objects. 
 .PP
 Definition in file \fBpsoSession.h\fP.
 .SH SYNOPSIS

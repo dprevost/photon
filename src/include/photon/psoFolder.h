@@ -33,6 +33,11 @@ extern "C" {
 /**
  * \defgroup psoFolder_c API functions for Photon folders.
  *
+ * Folders allow the organization of the data containers in a tree-like
+ * structure (similar to a filesystem).
+ *
+ * If a flat structure is preferred, simply make all your data containers
+ * children of the top folder ("\") - for example, "/MyQueue", "/MyMap", etc.
  * 
  */
 /*@{*/

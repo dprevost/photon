@@ -1,4 +1,4 @@
-.TH "psoFastMap.h" 3 "14 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFastMap.h" 3 "27 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -7,15 +7,20 @@ psoFastMap.h \-
 .PP 
 This file provides the API needed to access read-only Photon hash maps. 
 
-The features are very similar to the ordinary hash maps except that no locks are require to access the data and special procedures are implemented for the occasional updates:
+The features of fast maps are very similar to the features of standard hash maps with one major exception - no locks are required to access the data and special procedures are implemented for the occasional updates:.
 .PP
-1) when a map is open in read-only mode (\fBpsoFastMapOpen()\fP, the end-of-this-unit-of-work calls (psoCommit/psoRollback) will check if a new version of the map exits and if indeed this is the case, the new version will be use instead of the old one.
+.PD 0
+.IP "1." 4
+when a map is open in read-only mode (\fBpsoFastMapOpen\fP), the end-of-this-unit-of-work calls (\fBpsoCommit\fP, \fBpsoRollback\fP) will check if a new version of the map exist and if indeed this is the case, the new version will be use instead of the old one. 
 .PP
-2) when a map is open for editing a working copy of the map is created in shared memory and the map can be updated (no locks again since only the updater can access the working copy). When the session is committed, the working version becomes the latest version and can be open/accessed by readers. And, of course, the same procedure applies if you have a set of maps that must be changed together.
+
+.IP "2." 4
+when a map is open for editing (\fBpsoFastMapEdit\fP) a working copy of the map is created in shared memory and the map can be updated (no locks again since only the updater can access the working copy). When the session is committed, the working version becomes the latest version and can be open/accessed by readers. And, of course, the same procedure applies if you have a set of maps that must be changed together.
 .PP
-If psoRollback is called, all changes done to the working copy are erased.
+If \fBpsoRollback\fP is called, all changes done to the working copy are erased.  
 .PP
-Note: the old versions are removed from memory when all readers have updated their versions. Even if a program is only doing read access to shared memory data, it is important to add \fBpsoCommit()\fP once in a while to refresh the 'handles' if the program is running for a while. 
+.PP
+Note: the old versions are removed from memory when all readers have updated their versions. Even if a program is only doing read access to shared-memory data, it is important to add \fBpsoCommit\fP once in a while to refresh the 'handles' periodically. 
 .PP
 Definition in file \fBpsoFastMap.h\fP.
 .SH SYNOPSIS

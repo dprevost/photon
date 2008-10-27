@@ -1,4 +1,4 @@
-.TH "psoObjStatus" 3 "14 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoObjStatus" 3 "27 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -23,7 +23,7 @@ Definition at line 257 of file psoCommon.h.
 .ti -1c
 .RI "int \fBstatus\fP"
 .br
-.RI "\fIStatus (created but not committed, etc. \fP"
+.RI "\fIStatus of the object. \fP"
 .ti -1c
 .RI "size_t \fBnumBlocks\fP"
 .br
@@ -60,51 +60,51 @@ The object type.
 Definition at line 260 of file psoCommon.h.
 .SS "int \fBpsoObjStatus::status\fP"
 .PP
-Status (created but not committed, etc. 
+Status of the object. 
 .PP
-). 
+For example, created but not committed, etc. 
 .PP
-Definition at line 263 of file psoCommon.h.
+Definition at line 267 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numBlocks\fP"
 .PP
 The number of blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 266 of file psoCommon.h.
+Definition at line 270 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numBlockGroup\fP"
 .PP
 The number of groups of blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 269 of file psoCommon.h.
+Definition at line 273 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numDataItem\fP"
 .PP
 The number of data items in thisa object. 
 .PP
 
 .PP
-Definition at line 272 of file psoCommon.h.
+Definition at line 276 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::freeBytes\fP"
 .PP
 The amount of free space available in the blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 275 of file psoCommon.h.
+Definition at line 279 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::maxDataLength\fP"
 .PP
 Maximum data length (in bytes). 
 .PP
 
 .PP
-Definition at line 278 of file psoCommon.h.
+Definition at line 282 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::maxKeyLength\fP"
 .PP
 Maximum key length (in bytes) if keys are supported - zero otherwise. 
 .PP
-Definition at line 281 of file psoCommon.h.
+Definition at line 285 of file psoCommon.h.
 
 .SH "Author"
 .PP 

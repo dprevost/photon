@@ -1,4 +1,4 @@
-.TH "psoInfo" 3 "14 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
+.TH "psoInfo" 3 "27 Oct 2008" "Version 0.3.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,9 +10,9 @@ psoInfo \-
 .PP
 .SH "Detailed Description"
 .PP 
-This data structure is used to retrieve the status of the virtual data space. 
+This data structure is used to retrieve the status of the Photon shared memory. 
 .PP
-Definition at line 292 of file psoCommon.h.
+Definition at line 296 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -85,105 +85,105 @@ Total size of the virtual data space.
 .PP
 
 .PP
-Definition at line 295 of file psoCommon.h.
+Definition at line 299 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::allocatedSizeInBytes\fP"
 .PP
 Total size of the allocated blocks. 
 .PP
 
 .PP
-Definition at line 298 of file psoCommon.h.
+Definition at line 302 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numObjects\fP"
 .PP
 Number of API objects in the pso (internal objects are not counted). 
 .PP
 
 .PP
-Definition at line 301 of file psoCommon.h.
+Definition at line 305 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numGroups\fP"
 .PP
 Total number of groups of blocks. 
 .PP
 
 .PP
-Definition at line 304 of file psoCommon.h.
+Definition at line 308 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numMallocs\fP"
 .PP
 Number of calls to allocate groups of blocks. 
 .PP
 
 .PP
-Definition at line 307 of file psoCommon.h.
+Definition at line 311 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numFrees\fP"
 .PP
 Number of calls to free groups of blocks. 
 .PP
 
 .PP
-Definition at line 310 of file psoCommon.h.
+Definition at line 314 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::largestFreeInBytes\fP"
 .PP
 Largest contiguous group of free blocks. 
 .PP
 
 .PP
-Definition at line 313 of file psoCommon.h.
+Definition at line 317 of file psoCommon.h.
 .SS "int \fBpsoInfo::memoryVersion\fP"
 .PP
 Shared-memory version. 
 .PP
 
 .PP
-Definition at line 316 of file psoCommon.h.
+Definition at line 320 of file psoCommon.h.
 .SS "int \fBpsoInfo::bigEndian\fP"
 .PP
 Endianess (0 for little endian, 1 for big endian). 
 .PP
 
 .PP
-Definition at line 319 of file psoCommon.h.
+Definition at line 323 of file psoCommon.h.
 .SS "char \fBpsoInfo::compiler\fP[20]"
 .PP
 Compiler name. 
 .PP
 
 .PP
-Definition at line 322 of file psoCommon.h.
+Definition at line 326 of file psoCommon.h.
 .SS "char \fBpsoInfo::compilerVersion\fP[10]"
 .PP
 Compiler version (if available). 
 .PP
 
 .PP
-Definition at line 325 of file psoCommon.h.
+Definition at line 329 of file psoCommon.h.
 .SS "char \fBpsoInfo::platform\fP[20]"
 .PP
 Platform. 
 .PP
 
 .PP
-Definition at line 328 of file psoCommon.h.
+Definition at line 332 of file psoCommon.h.
 .SS "char \fBpsoInfo::dllVersion\fP[10]"
 .PP
 Shared lib version. 
 .PP
 
 .PP
-Definition at line 331 of file psoCommon.h.
+Definition at line 335 of file psoCommon.h.
 .SS "char \fBpsoInfo::watchdogVersion\fP[10]"
 .PP
 The watchdog version (of the pso creator). 
 .PP
 
 .PP
-Definition at line 334 of file psoCommon.h.
+Definition at line 338 of file psoCommon.h.
 .SS "char \fBpsoInfo::creationTime\fP[30]"
 .PP
 Timestamp of creation of the shared memory. 
 .PP
 
 .PP
-Definition at line 337 of file psoCommon.h.
+Definition at line 341 of file psoCommon.h.
 
 .SH "Author"
 .PP 
