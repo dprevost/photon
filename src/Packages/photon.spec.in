@@ -164,5 +164,21 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoLifoPush.3
 /usr/local/share/man/man3/psoLifoStatus.3
 /usr/local/share/man/man3/psoLifo_c.3
+/usr/local/share/man/man3/psoFastMap.3
+/usr/local/share/man/man3/psoFastMapEditor.3
+/usr/local/share/man/man3/psoFastMapEmpty.3
+/usr/local/share/man/man3/psoFieldDefinition.3
+/usr/local/share/man/man3/psoFieldType.3
+/usr/local/share/man/man3/psoFolderCreateObject.3
+/usr/local/share/man/man3/psoFolderCreateObjectXML.3
+/usr/local/share/man/man3/psoFolderDestroyObject.3
+/usr/local/share/man/man3/psoGetDefinition.3
+/usr/local/share/man/man3/psoHashMapDefinition.3
+/usr/local/share/man/man3/psoKeyDefinition.3
+/usr/local/share/man/man3/psoKeyType.3
+/usr/local/share/man/man3/psoLifo.3
+/usr/local/share/man/man3/psoObjectDefinition.3
+/usr/local/share/man/man3/psoQueueDefinition.3
+/usr/local/share/man/man3/psoQueuePushNow.3
 
 %changelog
