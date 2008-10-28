@@ -96,7 +96,7 @@ Source: C:\Program Files\libxml2\bin\zlib1.dll; DestDir: {app}\bin; Components: 
 ;Name: "{group}\Watchdog"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
 Name: {group}\Ref. Manual C API; Filename: {app}\Photon_C_API.chm
 Name: {group}\Ref. Manual C++ API; Filename: {app}\Photon_C++_API.chm
-Name: {group}\Uninstall My Program; Filename: {uninstallexe}
+Name: {group}\Uninstall Photon; Filename: {uninstallexe}
 
 [Registry]
 Root: HKCU; Subkey: SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\quasar.exe; ValueType: string; ValueData: {app}\bin\quasar.exe; Flags: uninsdeletekeyifempty uninsdeletevalue
@@ -180,7 +180,7 @@ Name: libxml2; Description: The libxml2 library; Types: with_libxml2
 Name: with_libxml2; Description: Install everything including libxml2 (run-time)
 Name: without_libxml2; Description: Install everything except libxml2
 [Tasks]
-Name: setenv; Description: "Add Error Parser to your ""path"""; Flags: unchecked; Components: 
+Name: setenv; Description: "Add Photon to your ""path"""; Flags: unchecked; Components: 
 [Run]
 Filename: {app}\bin\SetEnv.exe; Parameters: "-ua Path %""{app}\bin"""; Flags: runminimized skipifnotsilent; Components: ; Tasks: " setenv"
 [UninstallRun]
