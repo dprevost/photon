@@ -103,6 +103,9 @@ bool psonLock( psonMemObject      * pMemObj,
                                    pContext->pidLocker,
                                    PSON_LOCK_TIMEOUT );
    PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
+      psonSessionRemoveLock( pContext, SET_OFFSET( pMemObj ) );
+   }
    
    return ok;
 }
