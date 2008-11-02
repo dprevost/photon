@@ -35,7 +35,8 @@ check_PROGRAMS =          \
         MallocZeroBytes   \
         StatusNullMemObj  \
         StatusNullStatus  \
-        StatusPass        
+        StatusPass        \
+        Ticket13
 
 COMMON_HEADER = MemObjTest.h
 
@@ -60,6 +61,7 @@ MallocZeroBytes_SOURCES   = $(COMMON_HEADER) MallocZeroBytes.c
 StatusNullMemObj_SOURCES  = $(COMMON_HEADER) StatusNullMemObj.c
 StatusNullStatus_SOURCES  = $(COMMON_HEADER) StatusNullStatus.c
 StatusPass_SOURCES        = $(COMMON_HEADER) StatusPass.c
+Ticket13_SOURCES          = $(COMMON_HEADER) Ticket13.c
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -92,7 +94,8 @@ TESTS =                   \
         MallocZeroBytes   \
         StatusNullMemObj  \
         StatusNullStatus  \
-        StatusPass        
+        StatusPass        \
+        Ticket13
 
 XFAIL_TESTS =             \
         FiniNullContext   \

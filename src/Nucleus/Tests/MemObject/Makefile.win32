@@ -33,7 +33,8 @@ check_PROGRAMS =                        \
         .\Release\MallocZeroBytes.exe   \
         .\Release\StatusNullMemObj.exe  \
         .\Release\StatusNullStatus.exe  \
-        .\Release\StatusPass.exe        
+        .\Release\StatusPass.exe        \
+        .\Release\Ticket13.exe          
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
