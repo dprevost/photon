@@ -39,6 +39,9 @@ BEGIN_C_DECLS
  * an object. This way, the identifier is always at the top of a block and it
  * should help debug, recover from crashes, etc. 
  *
+ * Furthermore, some of the code (transactions, for example) depend on this
+ * struct being first.
+ *
  * The psonBlockGroup struct is NOT included in this struct since it
  * contains a variable array size. The psonBlockGroup struct should be
  * put at the end of the container that owns a psonMemObject.
@@ -121,7 +124,7 @@ void psonLockNoFailure( psonMemObject      * pMemObj,
       psonSessionAddLock( pContext, SET_OFFSET( pMemObj ) );
    }
    
-   psocAcquireProcessLock ( &pMemObj->lock, PSON_LOCK_TIMEOUT );
+   psocAcquireProcessLock ( &pMemObj->lock, pContext->pidLocker );
 }
 
 PHOTON_ENGINE_EXPORT

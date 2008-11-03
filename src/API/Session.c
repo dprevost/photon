@@ -58,7 +58,8 @@ int psoCommit( PSO_HANDLE sessionHandle )
 {
    int errcode = PSO_OK;
    psoaSession* pSession;
-
+   bool ok;
+   
    pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    
@@ -72,9 +73,11 @@ int psoCommit( PSO_HANDLE sessionHandle )
    
    if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
-         psonTxCommit( (psonTx*)pSession->context.pTransaction, 
-                            &pSession->context );
-         psoaResetReaders( pSession );
+         ok = psonTxCommit( (psonTx*)pSession->context.pTransaction, 
+                             &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) psoaResetReaders( pSession );
+         else errcode = PSO_ENGINE_BUSY;
       }
       else {
          errcode = PSO_SESSION_IS_TERMINATED;

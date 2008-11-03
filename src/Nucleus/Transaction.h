@@ -81,6 +81,9 @@ struct psonTx
    /** Linked list of all ops of the current transaction */   
    psonLinkedList listOfOps;
 
+   /** Linked list of all locks of the current transaction */   
+   psonLinkedList listOfLocks;
+
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;
 
@@ -112,7 +115,7 @@ void psonTxFini( psonTx             * pTx,
                  psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psonTxCommit( psonTx             * pTx,
+bool psonTxCommit( psonTx             * pTx,
                    psonSessionContext * pContext );
                   
 PHOTON_ENGINE_EXPORT
