@@ -25,7 +25,7 @@
 #include "Nucleus/MemoryObject.h"
 #include "Nucleus/TreeNode.h"
 #include "Nucleus/BlockGroup.h"
-#include "Nucleus/Hash.h"
+#include "Nucleus/HashTx.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,7 +35,7 @@ BEGIN_C_DECLS
 
 struct psonHashMapItem
 {
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
 
    ptrdiff_t   itemOffset;
 
@@ -53,7 +53,7 @@ struct psonHashMap
    /** Basic info for all leaves and branches of our tree. */
    struct psonTreeNode  nodeObject;
 
-   struct psonHash      hashObj;
+   struct psonHashTx      hashObj;
 
    struct psoKeyDefinition keyDef;
    
@@ -95,7 +95,7 @@ PHOTON_ENGINE_EXPORT
 bool psonHashMapGet( psonHashMap        * pHashMap,
                      const void         * pKey,
                      size_t               keyLength, 
-                     psonHashItem      ** ppItem,
+                     psonHashTxItem      ** ppItem,
                      size_t               bufferLength,
                      psonSessionContext * pContext );
 
@@ -135,7 +135,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
 
 PHOTON_ENGINE_EXPORT
 bool psonHashMapRelease( psonHashMap        * pHashMap,
-                         psonHashItem       * pHashItem,
+                         psonHashTxItem       * pHashItem,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT

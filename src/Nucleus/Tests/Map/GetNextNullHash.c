@@ -32,7 +32,7 @@ int main()
    char * key2  = "my key2";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   psonHashMapItem item;
+   psonFashMapItem item;
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 

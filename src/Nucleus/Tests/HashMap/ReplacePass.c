@@ -30,7 +30,7 @@ int main()
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   psonHashItem * pItem;
+   psonHashTxItem * pItem;
    char * ptr;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 

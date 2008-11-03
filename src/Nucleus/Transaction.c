@@ -156,7 +156,7 @@ void psonTxCommit( psonTx             * pTx,
    psonHashMap   * pHashMap;
    psonQueue     * pQueue;
    int pOps_invalid_type = 0;
-   psonHashItem  * pHashItem;
+   psonHashTxItem  * pHashItem;
    psonObjectDescriptor * pDesc;
    
    PSO_PRE_CONDITION( pTx      != NULL );
@@ -230,7 +230,7 @@ void psonTxCommit( psonTx             * pTx,
          PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          pChildStatus = &pHashItem->txStatus;
@@ -254,7 +254,7 @@ void psonTxCommit( psonTx             * pTx,
          PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          
          psonLockNoFailure( &parentFolder->memObject, pContext );
@@ -276,7 +276,7 @@ void psonTxCommit( psonTx             * pTx,
          PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          GET_PTR( pChildNode, pDesc->nodeOffset, psonTreeNode );
@@ -374,7 +374,7 @@ void psonTxRollback( psonTx             * pTx,
    psonTxStatus  * pChildStatus;
    psonHashMap   * pHashMap;
    psonQueue     * pQueue;
-   psonHashItem  * pHashItem;
+   psonHashTxItem  * pHashItem;
    psonObjectDescriptor * pDesc;
    int pOps_invalid_type = 0;
 
@@ -450,7 +450,7 @@ void psonTxRollback( psonTx             * pTx,
          PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          GET_PTR( pChildNode, pDesc->nodeOffset, psonTreeNode );
@@ -500,7 +500,7 @@ void psonTxRollback( psonTx             * pTx,
          PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          
          psonLockNoFailure( &parentFolder->memObject, pContext );
@@ -522,7 +522,7 @@ void psonTxRollback( psonTx             * pTx,
          PSO_POST_CONDITION( pOps->parentType == PSON_IDENT_FOLDER );
 
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          pChildStatus = &pHashItem->txStatus;

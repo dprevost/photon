@@ -22,7 +22,7 @@
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/TreeNode.h"
-#include "Nucleus/Hash.h"
+#include "Nucleus/HashTx.h"
 
 BEGIN_C_DECLS
 
@@ -67,7 +67,7 @@ struct psonMemoryHeader
    char     watchdogVersion[10];
    char     creationTime[30];
    
-   psonHashItem topHashItem;
+   psonHashTxItem topHashItem;
    psonObjectDescriptor topDescriptor;
    
 };

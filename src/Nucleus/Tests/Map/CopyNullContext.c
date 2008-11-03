@@ -37,7 +37,7 @@ int main()
       { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
       { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
    };
-   psonHashItem   hashItem;
+   psonHashTxItem   hashItem;
    
    initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );
 

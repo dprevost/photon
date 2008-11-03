@@ -26,7 +26,7 @@
 
 static
 void psonHashMapReleaseNoLock( psonHashMap        * pHashMap,
-                               psonHashItem       * pHashItem,
+                               psonHashTxItem       * pHashItem,
                                psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -35,14 +35,14 @@ void psonHashMapCommitAdd( psonHashMap        * pHashMap,
                            ptrdiff_t            itemOffset,
                            psonSessionContext * pContext  )
 {
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
    psonTxStatus * txHashMapStatus;
    
    PSO_PRE_CONDITION( pHashMap   != NULL );
    PSO_PRE_CONDITION( pContext   != NULL );
    PSO_PRE_CONDITION( itemOffset != PSON_NULL_OFFSET );
 
-   GET_PTR( pHashItem, itemOffset, psonHashItem );
+   GET_PTR( pHashItem, itemOffset, psonHashTxItem );
 
    pHashItem->txStatus.txOffset = PSON_NULL_OFFSET;
    pHashItem->txStatus.status = PSON_TXS_OK;
@@ -56,7 +56,7 @@ void psonHashMapCommitAdd( psonHashMap        * pHashMap,
     *   - nodeObject.txCounter: offset to some of our data is part of a
     *                           transaction.
     *
-    * Note: we do not check the return value of psonHashResize since the
+    * Note: we do not check the return value of psonHashTxResize since the
     *       current function returns void. Let's someone else find that 
     *       we are getting low on memory...
     */
@@ -64,7 +64,7 @@ void psonHashMapCommitAdd( psonHashMap        * pHashMap,
    if ( (txHashMapStatus->usageCounter == 0) &&
                    (pHashMap->nodeObject.txCounter == 0 ) ) {
       if ( pHashMap->hashObj.enumResize != PSON_HASH_NO_RESIZE ) { 
-         psonHashResize( &pHashMap->hashObj, pContext );
+         psonHashTxResize( &pHashMap->hashObj, pContext );
       }
    }
 }
@@ -75,7 +75,7 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
                               ptrdiff_t            itemOffset,
                               psonSessionContext * pContext )
 {
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
    psonTxStatus * txItemStatus;
    psonTxStatus * txHashMapStatus;
    
@@ -83,7 +83,7 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
    PSO_PRE_CONDITION( pContext   != NULL );
    PSO_PRE_CONDITION( itemOffset != PSON_NULL_OFFSET );
 
-   GET_PTR( pHashItem, itemOffset, psonHashItem );
+   GET_PTR( pHashItem, itemOffset, psonHashTxItem );
    txItemStatus = &pHashItem->txStatus;
    /* 
     * If someone is using it, the usageCounter will be greater than zero.
@@ -91,7 +91,7 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
     * we mark it as a committed remove
     */
    if ( txItemStatus->usageCounter == 0 ) {
-      psonHashDelWithItem( &pHashMap->hashObj, 
+      psonHashTxDelWithItem( &pHashMap->hashObj, 
                            pHashItem,
                            pContext );
       pHashMap->nodeObject.txCounter--;
@@ -104,7 +104,7 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
        *   - nodeObject.txCounter: offset to some of our data is part of a
        *                           transaction.
        *
-       * Note: we do not check the return value of psonHashResize since the
+       * Note: we do not check the return value of psonHashTxResize since the
        *       current function returns void. Let's someone else find that 
        *       we are getting low on memory...
        */
@@ -112,7 +112,7 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
          GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
          if ( (txHashMapStatus->usageCounter == 0) &&
             (pHashMap->nodeObject.txCounter == 0 ) ) {
-            psonHashResize( &pHashMap->hashObj, pContext );
+            psonHashTxResize( &pHashMap->hashObj, pContext );
          }
       }
    }
@@ -129,7 +129,7 @@ bool psonHashMapDelete( psonHashMap        * pHashMap,
                         psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   psonHashItem* pHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL;
    psonTxStatus * txItemStatus, * txHashMapStatus;
    size_t bucket;
    bool found, ok;
@@ -152,7 +152,7 @@ bool psonHashMapDelete( psonHashMap        * pHashMap,
       /*
        * The first step is to retrieve the item.
        */
-      found = psonHashGet( &pHashMap->hashObj, 
+      found = psonHashTxGet( &pHashMap->hashObj, 
                            (unsigned char *)pKey,
                            keyLength,
                            &pHashItem,
@@ -163,7 +163,7 @@ bool psonHashMapDelete( psonHashMap        * pHashMap,
          goto the_exit;
       }
       while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-         GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+         GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
       }
       
       txItemStatus = &pHashItem->txStatus;
@@ -226,7 +226,7 @@ void psonHashMapFini( psonHashMap        * pHashMap,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pHashMap->memObject.objType == PSON_IDENT_HASH_MAP );
 
-   psonHashFini( &pHashMap->hashObj );
+   psonHashTxFini( &pHashMap->hashObj );
    psonTreeNodeFini( &pHashMap->nodeObject );
    
    /* 
@@ -241,11 +241,11 @@ void psonHashMapFini( psonHashMap        * pHashMap,
 bool psonHashMapGet( psonHashMap        * pHashMap,
                      const void         * pKey,
                      size_t               keyLength, 
-                     psonHashItem      ** ppHashItem,
+                     psonHashTxItem      ** ppHashItem,
                      size_t               bufferLength,
                      psonSessionContext * pContext )
 {
-   psonHashItem* pHashItem = NULL, * previousItem = NULL;
+   psonHashTxItem* pHashItem = NULL, * previousItem = NULL;
    psoErrors errcode;
    psonTxStatus * txItemStatus, * txHashMapStatus;
    size_t bucket;
@@ -267,7 +267,7 @@ bool psonHashMapGet( psonHashMap        * pHashMap,
          goto the_exit;
       }
 
-      found = psonHashGet( &pHashMap->hashObj, 
+      found = psonHashTxGet( &pHashMap->hashObj, 
                            (unsigned char *)pKey, 
                            keyLength,
                            &pHashItem,
@@ -279,7 +279,7 @@ bool psonHashMapGet( psonHashMap        * pHashMap,
       }
       while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
          previousItem = pHashItem;
-         GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+         GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
       }
 
       /*
@@ -368,7 +368,7 @@ bool psonHashMapGetFirst( psonHashMap        * pHashMap,
                           size_t               bufferLength,
                           psonSessionContext * pContext )
 {
-   psonHashItem* pHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL;
    psonTxStatus * txItemStatus;
    psonTxStatus * txHashMapStatus;
    ptrdiff_t  firstItemOffset;
@@ -382,10 +382,10 @@ bool psonHashMapGetFirst( psonHashMap        * pHashMap,
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
 
    if ( psonLock( &pHashMap->memObject, pContext ) ) {
-      found = psonHashGetFirst( &pHashMap->hashObj, 
+      found = psonHashTxGetFirst( &pHashMap->hashObj, 
                                 &firstItemOffset );
       while ( found ) {
-         GET_PTR( pHashItem, firstItemOffset, psonHashItem );
+         GET_PTR( pHashItem, firstItemOffset, psonHashTxItem );
          txItemStatus = &pHashItem->txStatus;
 
          /* 
@@ -443,7 +443,7 @@ bool psonHashMapGetFirst( psonHashMap        * pHashMap,
             return true;
          }
   
-         found = psonHashGetNext( &pHashMap->hashObj, 
+         found = psonHashTxGetNext( &pHashMap->hashObj, 
                                   firstItemOffset,
                                   &firstItemOffset );
       }
@@ -467,8 +467,8 @@ bool psonHashMapGetNext( psonHashMap        * pHashMap,
                          size_t               bufferLength,
                          psonSessionContext * pContext )
 {
-   psonHashItem * pHashItem = NULL;
-   psonHashItem * previousHashItem = NULL;
+   psonHashTxItem * pHashItem = NULL;
+   psonHashTxItem * previousHashItem = NULL;
    psonTxStatus * txItemStatus;
    psonTxStatus * txHashMapStatus;
    ptrdiff_t  itemOffset;
@@ -487,11 +487,11 @@ bool psonHashMapGetNext( psonHashMap        * pHashMap,
    previousHashItem = pItem->pHashItem;
    
    if ( psonLock( &pHashMap->memObject, pContext ) ) {
-      found = psonHashGetNext( &pHashMap->hashObj, 
+      found = psonHashTxGetNext( &pHashMap->hashObj, 
                                  itemOffset,
                                  &itemOffset );
       while ( found ) {
-         GET_PTR( pHashItem, itemOffset, psonHashItem );
+         GET_PTR( pHashItem, itemOffset, psonHashTxItem );
          txItemStatus = &pHashItem->txStatus;
 
          /* 
@@ -550,7 +550,7 @@ bool psonHashMapGetNext( psonHashMap        * pHashMap,
             return true;
          }
   
-         found = psonHashGetNext( &pHashMap->hashObj, 
+         found = psonHashTxGetNext( &pHashMap->hashObj, 
                                   itemOffset,
                                   &itemOffset );
       }
@@ -622,7 +622,7 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                      parentOffset,
                      hashItemOffset );
 
-   errcode = psonHashInit( &pHashMap->hashObj, 
+   errcode = psonHashTxInit( &pHashMap->hashObj, 
                            SET_OFFSET(&pHashMap->memObject),
                            expectedNumOfItems, 
                            pContext );
@@ -681,7 +681,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
                         size_t               itemLength,
                         psonSessionContext * pContext )
 {
-   psonHashItem* pHashItem = NULL, * previousHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL, * previousHashItem = NULL;
    psoErrors errcode = PSO_OK;
    psonTxStatus * txItemStatus, * txHashMapStatus;
    size_t bucket;
@@ -704,7 +704,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
          goto the_exit;
       }
    
-      found = psonHashGet( &pHashMap->hashObj, 
+      found = psonHashTxGet( &pHashMap->hashObj, 
                            (unsigned char *)pKey, 
                            keyLength,
                            &previousHashItem,
@@ -713,7 +713,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
       if ( found ) {
          /* Find the last one in the chain of items with same key */
          while ( previousHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-            GET_PTR( previousHashItem, previousHashItem->nextSameKey, psonHashItem );
+            GET_PTR( previousHashItem, previousHashItem->nextSameKey, psonHashTxItem );
          }
 
          /* 
@@ -727,7 +727,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
          }
       }
       
-      errcode = psonHashInsertAt( &pHashMap->hashObj,
+      errcode = psonHashTxInsertAt( &pHashMap->hashObj,
                                   bucket,
                                   (unsigned char *)pKey, 
                                   keyLength, 
@@ -746,7 +746,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashDelWithItem( &pHashMap->hashObj,
+         psonHashTxDelWithItem( &pHashMap->hashObj,
                               pHashItem,
                               pContext );
          goto the_exit;
@@ -786,7 +786,7 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonHashMapRelease( psonHashMap        * pHashMap,
-                         psonHashItem       * pHashItem,
+                         psonHashTxItem       * pHashItem,
                          psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pHashMap  != NULL );
@@ -819,7 +819,7 @@ bool psonHashMapRelease( psonHashMap        * pHashMap,
  */
 static
 void psonHashMapReleaseNoLock( psonHashMap        * pHashMap,
-                               psonHashItem       * pHashItem,
+                               psonHashTxItem       * pHashItem,
                                psonSessionContext * pContext )
 {
    psonTxStatus * txItemStatus, * txHashMapStatus;
@@ -839,7 +839,7 @@ void psonHashMapReleaseNoLock( psonHashMap        * pHashMap,
    if ( (txItemStatus->usageCounter == 0) && 
       txItemStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
       /* Time to really delete the record! */
-      psonHashDelWithItem( &pHashMap->hashObj, 
+      psonHashTxDelWithItem( &pHashMap->hashObj, 
                            pHashItem,
                            pContext );
       pHashMap->nodeObject.txCounter--;
@@ -853,14 +853,14 @@ void psonHashMapReleaseNoLock( psonHashMap        * pHashMap,
     *   - nodeObject.txCounter: offset to some of our data is part of a
     *                           transaction.
     *
-    * Note: we do not check the return value of psonHashResize since the
+    * Note: we do not check the return value of psonHashTxResize since the
     *       current function returns void. Let's someone else find that 
     *       we are getting low on memory...
     */
    if ( (txHashMapStatus->usageCounter == 0) &&
       (pHashMap->nodeObject.txCounter == 0 ) ) {
       if ( pHashMap->hashObj.enumResize != PSON_HASH_NO_RESIZE ) {
-         psonHashResize( &pHashMap->hashObj, pContext );
+         psonHashTxResize( &pHashMap->hashObj, pContext );
       }
    }
 }
@@ -874,7 +874,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          size_t               itemLength,
                          psonSessionContext * pContext )
 {
-   psonHashItem * pHashItem, * pNewHashItem;
+   psonHashTxItem * pHashItem, * pNewHashItem;
    psoErrors errcode = PSO_OK;
    psonTxStatus * txItemStatus, * txHashMapStatus;
    size_t bucket;
@@ -897,7 +897,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
          goto the_exit;
       }
 
-      found = psonHashGet( &pHashMap->hashObj, 
+      found = psonHashTxGet( &pHashMap->hashObj, 
                            (unsigned char *)pKey, 
                            keyLength,
                            &pHashItem,
@@ -908,7 +908,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
          goto the_exit;
       }
       while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-         GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+         GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
       }
 
       txItemStatus = &pHashItem->txStatus;
@@ -917,7 +917,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
          goto the_exit;
       }
       
-      errcode = psonHashInsertAt( &pHashMap->hashObj,
+      errcode = psonHashTxInsertAt( &pHashMap->hashObj,
                                   bucket,
                                   (unsigned char *)pKey, 
                                   keyLength, 
@@ -936,7 +936,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashDelWithItem( &pHashMap->hashObj, 
+         psonHashTxDelWithItem( &pHashMap->hashObj, 
                               pNewHashItem,
                               pContext );
          goto the_exit;
@@ -950,7 +950,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashDelWithItem( &pHashMap->hashObj, 
+         psonHashTxDelWithItem( &pHashMap->hashObj, 
                               pNewHashItem,
                               pContext );
          psonTxRemoveLastOps( (psonTx*)pContext->pTransaction, pContext );
@@ -997,14 +997,14 @@ void psonHashMapRollbackAdd( psonHashMap        * pHashMap,
                              ptrdiff_t            itemOffset,
                              psonSessionContext * pContext )
 {
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
    psonTxStatus * txItemStatus, * txHashMapStatus;
    
    PSO_PRE_CONDITION( pHashMap   != NULL );
    PSO_PRE_CONDITION( pContext   != NULL );
    PSO_PRE_CONDITION( itemOffset != PSON_NULL_OFFSET );
 
-   GET_PTR( pHashItem, itemOffset, psonHashItem );
+   GET_PTR( pHashItem, itemOffset, psonHashTxItem );
    txItemStatus = &pHashItem->txStatus;
    /* 
     * A new entry that isn't yet committed cannot be accessed by some
@@ -1014,7 +1014,7 @@ void psonHashMapRollbackAdd( psonHashMap        * pHashMap,
     * the memory object).
     */
    if ( txItemStatus->usageCounter == 0 ) {
-      psonHashDelWithItem( &pHashMap->hashObj, 
+      psonHashTxDelWithItem( &pHashMap->hashObj, 
                            pHashItem,
                            pContext );
       pHashMap->nodeObject.txCounter--;
@@ -1027,7 +1027,7 @@ void psonHashMapRollbackAdd( psonHashMap        * pHashMap,
        *   - nodeObject.txCounter: offset to some of our data is part of a
        *                           transaction.
        *
-       * Note: we do not check the return value of psonHashResize since the
+       * Note: we do not check the return value of psonHashTxResize since the
        *       current function returns void. Let's someone else find that 
        *       we are getting low on memory...
        */
@@ -1035,7 +1035,7 @@ void psonHashMapRollbackAdd( psonHashMap        * pHashMap,
       if ( (txHashMapStatus->usageCounter == 0) &&
                      (pHashMap->nodeObject.txCounter == 0 ) ) {
          if ( pHashMap->hashObj.enumResize != PSON_HASH_NO_RESIZE ) {
-            psonHashResize( &pHashMap->hashObj, pContext );
+            psonHashTxResize( &pHashMap->hashObj, pContext );
          }
       }
    }
@@ -1050,14 +1050,14 @@ void psonHashMapRollbackRemove( psonHashMap        * pHashMap,
                                 ptrdiff_t            itemOffset,
                                 psonSessionContext * pContext  )
 {
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
    psonTxStatus * txItemStatus, * txHashMapStatus;
    
    PSO_PRE_CONDITION( pHashMap   != NULL );
    PSO_PRE_CONDITION( pContext   != NULL );
    PSO_PRE_CONDITION( itemOffset != PSON_NULL_OFFSET );
 
-   GET_PTR( pHashItem, itemOffset, psonHashItem );
+   GET_PTR( pHashItem, itemOffset, psonHashTxItem );
    txItemStatus = &pHashItem->txStatus;
 
    /*
@@ -1075,7 +1075,7 @@ void psonHashMapRollbackRemove( psonHashMap        * pHashMap,
     *   - nodeObject.txCounter: offset to some of our data is part of a
     *                           transaction.
     *
-    * Note: we do not check the return value of psonHashResize since the
+    * Note: we do not check the return value of psonHashTxResize since the
     *       current function returns void. Let's someone else find that 
     *       we are getting low on memory...
     */
@@ -1083,7 +1083,7 @@ void psonHashMapRollbackRemove( psonHashMap        * pHashMap,
    if ( (txHashMapStatus->usageCounter == 0) &&
       (pHashMap->nodeObject.txCounter == 0 ) ) {
       if ( pHashMap->hashObj.enumResize != PSON_HASH_NO_RESIZE ) {
-         psonHashResize( &pHashMap->hashObj, pContext );
+         psonHashTxResize( &pHashMap->hashObj, pContext );
       }
    }
 }
@@ -1093,7 +1093,7 @@ void psonHashMapRollbackRemove( psonHashMap        * pHashMap,
 void psonHashMapStatus( psonHashMap  * pHashMap,
                         psoObjStatus * pStatus )
 {
-   psonHashItem* pHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL;
    ptrdiff_t  firstItemOffset;
    psonTxStatus  * txStatus;
    bool found;
@@ -1110,10 +1110,10 @@ void psonHashMapStatus( psonHashMap  * pHashMap,
    pStatus->maxKeyLength  = 0;
    if ( pStatus->numDataItem == 0 ) return;
 
-   found = psonHashGetFirst( &pHashMap->hashObj, 
+   found = psonHashTxGetFirst( &pHashMap->hashObj, 
                                &firstItemOffset );
    while ( found ) {
-      GET_PTR( pHashItem, firstItemOffset, psonHashItem );
+      GET_PTR( pHashItem, firstItemOffset, psonHashTxItem );
       if ( pHashItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pHashItem->dataLength;
       }
@@ -1121,7 +1121,7 @@ void psonHashMapStatus( psonHashMap  * pHashMap,
          pStatus->maxKeyLength = pHashItem->keyLength;
       }
 
-      found = psonHashGetNext( &pHashMap->hashObj, 
+      found = psonHashTxGetNext( &pHashMap->hashObj, 
                                firstItemOffset,
                                &firstItemOffset );
    }

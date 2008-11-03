@@ -52,7 +52,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
             if ( psonMapRelease( pMemHashMap,
                                  pHashMap->iterator.pHashItem,
                                  &pHashMap->object.pSession->context ) ) {
-               memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+               memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
             }
             else {
                errcode = PSO_OBJECT_CANNOT_GET_LOCK;
@@ -331,7 +331,7 @@ int psoFastMapEmpty( PSO_HANDLE objectHandle )
 
       if ( ! ok ) goto error_handler_unlock;
       
-      memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
    }
 
    psonMapEmpty( pMemHashMap, &pHashMap->object.pSession->context );
@@ -407,7 +407,7 @@ int psoFastMapGet( PSO_HANDLE   objectHandle,
 
       if ( ! ok ) goto error_handler_unlock;
       
-      memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
    }
 
    ok = psonMapGet( pMemHashMap,
@@ -496,7 +496,7 @@ int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
 
       if ( ! ok ) goto error_handler_unlock;
 
-      memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
    }
 
    ok = psonMapGetFirst( pMemHashMap,
@@ -933,7 +933,7 @@ int psoaMapFirst( psoaMap          * pHashMap,
       
       if ( ! ok ) goto error_handler_unlock;
 
-      memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
    }
 
    ok = psonMapGetFirst( pMemHashMap,
@@ -1038,11 +1038,11 @@ void psoaMapResetReader( void * map )
    psoaMap * pHashMap = map;
    psonMap * pMemHashMap, * pMapLatest;
 
-   psonHashItem * pHashItemLatest;
+   psonHash2Item * pHashItemLatest;
    psonObjectDescriptor * pDesc;
 
    pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
-   pHashItemLatest = GET_PTR_FAST( pMemHashMap->latestVersion, psonHashItem );
+   pHashItemLatest = GET_PTR_FAST( pMemHashMap->latestVersion, psonHash2Item );
    pDesc = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                          psonObjectDescriptor );
    pMapLatest = GET_PTR_FAST( pDesc->offset, psonMap );
@@ -1051,7 +1051,7 @@ void psoaMapResetReader( void * map )
          psonMapRelease( pMemHashMap,
                          pHashMap->iterator.pHashItem,
                          &pHashMap->object.pSession->context );
-         memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+         memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
       }
       pHashMap->object.pMyMemObject = pMapLatest;
    }
@@ -1067,7 +1067,7 @@ int psoaMapRetrieve( psoaMap       * pHashMap,
    psonMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
-   psonHashItem * pHashItem;
+   psonHash2Item * pHashItem;
    
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( key      != NULL );
@@ -1095,7 +1095,7 @@ int psoaMapRetrieve( psoaMap       * pHashMap,
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
-      memset( &pHashMap->iterator, 0, sizeof(psonHashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
    }
 
    ok = psonMapGet( pMemHashMap,

@@ -29,7 +29,7 @@ int main()
    psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psonHashItem * pItem;
+   psonHashTxItem * pItem;
    psonTxStatus * txItemStatus;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 

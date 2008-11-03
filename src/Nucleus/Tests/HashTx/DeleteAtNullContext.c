@@ -16,28 +16,27 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Nucleus/Hash.h"
-#include "Nucleus/Tests/Hash/HashTest.h"
+#include "Nucleus/Tests/HashTx/HashTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
+#if defined(USE_DBC)
    psonSessionContext context;
-   psonHash* pHash;
+   psonHashTx * pHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
-   char* data2 = "My Data 2";
-   psonHashItem* pNewItem;
+   psonHashTxItem * pNewItem;
    size_t bucket;
-   psonHashItem* pItem = NULL;
-   bool ok;
+   bool found;
    
    pHash = initHashTest( expectedToPass, &context );
    
-   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
+   errcode = psonHashTxInit( pHash, g_memObjOffset, 100, &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -47,26 +46,26 @@ int main()
     * InsertAt() depends on this as you cannot insert in an empty
     * bucket.
     */
-   errcode = psonHashInsert( pHash,
+   errcode = psonHashTxInsert( pHash,
                              (unsigned char*)key1,
                              strlen(key1),
-                             data2,
-                             strlen(data2),
+                             data1,
+                             strlen(data1),
                              &pNewItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   ok = psonHashGet( pHash,
-                     (unsigned char*)key1,
-                     strlen(key1),
-                     &pNewItem,
-                     &bucket,
-                     &context );
-   if ( ! ok ) {
+   found = psonHashTxGet( pHash,
+                          (unsigned char*)key1,
+                          strlen(key1),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( ! found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = psonHashInsertAt( pHash,
+   errcode = psonHashTxInsertAt( pHash,
                                bucket,
                                (unsigned char*)key1,
                                strlen(key1),
@@ -78,22 +77,12 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonHashDelWithItem( pHash,
-                           pNewItem,
-                           &context );
-   
-   ok = psonHashGet( pHash,
-                     (unsigned char*)key1,
-                     strlen(key1),
-                     &pItem,
-                     &bucket,
-                     &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   return 0;
+   psonHashTxDelWithItem( pHash, pNewItem, NULL );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

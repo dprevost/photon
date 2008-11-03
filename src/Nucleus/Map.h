@@ -34,6 +34,17 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+struct psonFashMapItem
+{
+   psonHashItem * pHashItem;
+
+   ptrdiff_t   itemOffset;
+};
+
+typedef struct psonFashMapItem psonFashMapItem;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 struct psonMap
 {
    /** Always first */
@@ -67,7 +78,7 @@ typedef struct psonMap psonMap;
 PHOTON_ENGINE_EXPORT
 bool psonMapCopy( psonMap            * pHashMap, 
                   psonMap            * pNewMap,
-                  psonHashItem       * pHashItem,
+                  psonHashTxItem     * pHashItem,
                   const char         * origName,
                   psonSessionContext * pContext );
 
@@ -95,14 +106,14 @@ bool psonMapGet( psonMap            * pHashMap,
 
 PHOTON_ENGINE_EXPORT
 bool psonMapGetFirst( psonMap            * pHashMap,
-                      psonHashMapItem    * pItem,
+                      psonFashMapItem    * pItem,
                       size_t               keyLength,
                       size_t               bufferLength,
                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonMapGetNext( psonMap            * pHashMap,
-                     psonHashMapItem    * pItem,
+                     psonFashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
                      psonSessionContext * pContext );

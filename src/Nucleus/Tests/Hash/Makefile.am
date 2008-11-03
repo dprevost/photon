@@ -29,10 +29,6 @@ check_PROGRAMS =               \
         CopyNullOldHash        \
         CopyPass               \
         CopyPassSameLength     \
-        DeleteAtNullContext    \
-        DeleteAtNullHash       \
-        DeleteAtNullItem       \
-        DeleteAtPass           \
         DeleteNullContext      \
         DeleteNullHash         \
         DeleteNullKey          \
@@ -95,10 +91,6 @@ CopyNullNewHash_SOURCES        = $(COMMON_HEADER) CopyNullNewHash.c
 CopyNullOldHash_SOURCES        = $(COMMON_HEADER) CopyNullOldHash.c
 CopyPass_SOURCES               = $(COMMON_HEADER) CopyPass.c
 CopyPassSameLength_SOURCES     = $(COMMON_HEADER) CopyPassSameLength.c
-DeleteAtNullContext_SOURCES    = $(COMMON_HEADER) DeleteAtNullContext.c
-DeleteAtNullHash_SOURCES       = $(COMMON_HEADER) DeleteAtNullHash.c
-DeleteAtNullItem_SOURCES       = $(COMMON_HEADER) DeleteAtNullItem.c
-DeleteAtPass_SOURCES           = $(COMMON_HEADER) DeleteAtPass.c
 DeleteNullContext_SOURCES      = $(COMMON_HEADER) DeleteNullContext.c
 DeleteNullHash_SOURCES         = $(COMMON_HEADER) DeleteNullHash.c
 DeleteNullKey_SOURCES          = $(COMMON_HEADER) DeleteNullKey.c
@@ -170,10 +162,6 @@ TESTS =                        \
         CopyNullOldHash        \
         CopyPass               \
         CopyPassSameLength     \
-        DeleteAtNullContext    \
-        DeleteAtNullHash       \
-        DeleteAtNullItem       \
-        DeleteAtPass           \
         DeleteNullContext      \
         DeleteNullHash         \
         DeleteNullKey          \
@@ -233,9 +221,6 @@ XFAIL_TESTS =                  \
         CopyNullContext        \
         CopyNullNewHash        \
         CopyNullOldHash        \
-        DeleteAtNullContext    \
-        DeleteAtNullHash       \
-        DeleteAtNullItem       \
         DeleteNullContext      \
         DeleteNullHash         \
         DeleteNullKey          \

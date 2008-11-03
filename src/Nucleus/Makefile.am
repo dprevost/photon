@@ -35,6 +35,8 @@ libNucleus_la_SOURCES =   \
         Folder.h          \
         Hash.c            \
         Hash.h            \
+        HashTx.c          \
+        HashTx.h          \
         hash_fnv.c        \
         hash_fnv.h        \
         HashMap.c         \

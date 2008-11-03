@@ -355,58 +355,6 @@ enum psoErrors psonHashCopy( psonHash           * pOldHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonHashDelWithItem( psonHash           * pHash,
-                          psonHashItem       * pItem,
-                          psonSessionContext * pContext )
-{
-   ptrdiff_t * pArray;
-   psonHashItem * pNewItem = NULL, * previousItem = NULL;
-   ptrdiff_t nextOffset;
-   psonMemObject * pMemObject;
-   size_t bucket;
-   
-   PSO_PRE_CONDITION( pHash    != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pItem    != NULL );
-   PSO_INV_CONDITION( pHash->initialized == PSON_HASH_SIGNATURE );
-   
-   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   PSO_INV_CONDITION( pArray != NULL );
-
-   GET_PTR( pMemObject, pHash->memObjOffset, psonMemObject );
-   bucket = pItem->bucket;
-   
-   nextOffset = pArray[bucket];
-   while ( nextOffset != PSON_NULL_OFFSET ) {
-      previousItem = pNewItem;
-      GET_PTR( pNewItem, nextOffset, psonHashItem );
-      if ( pNewItem == pItem ) break;
-      nextOffset = pNewItem->nextItem;
-   }
-   PSO_INV_CONDITION( pNewItem == pItem );
-
-   nextOffset = pItem->nextItem;
-      
-   pHash->totalDataSizeInBytes -= pItem->dataLength;
-   psonFree( pMemObject, 
-             (unsigned char*)pItem, 
-             calculateItemLength(pItem->keyLength,pItem->dataLength),
-             pContext );
-                
-   if ( previousItem == NULL ) {
-      pArray[bucket] = nextOffset;
-   }
-   else {
-      previousItem->nextItem = nextOffset;
-   }
-   
-   pHash->numberOfItems--;
-
-   pHash->enumResize = isItTimeToResize( pHash );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /*
  * Note: there is no "same key" here since this function is used for doing
  * changes to a temp. copy of read-only objects - no transaction.

@@ -30,7 +30,7 @@ int main()
    psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psonHashMapItem item;
+   psonFashMapItem item;
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 

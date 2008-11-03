@@ -26,6 +26,7 @@ SUBDIRS =              \
         BlockGroup     \
         MemObject      \
         Hash           \
+        HashTx         \
         Transaction    \
         ProcessManager \
         Process        \

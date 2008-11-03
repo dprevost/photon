@@ -859,7 +859,7 @@ int psoaHashMapRetrieve( psoaHashMap   * pHashMap,
    psonHashMap * pMemHashMap;
    int errcode = 0;
    bool ok = true;
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
    
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( key      != NULL );

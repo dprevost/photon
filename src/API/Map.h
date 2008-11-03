@@ -38,7 +38,7 @@ typedef struct psoaMap
     * This struct holds both the result of the iteration (the pointer to
     * the current psonHashItem) and the values needed to get the next item.
     */
-   psonHashMapItem iterator;
+   psonFashMapItem iterator;
 
    /** A pointer to the data definition of the queue. */
    psonFieldDef * pDefinition;

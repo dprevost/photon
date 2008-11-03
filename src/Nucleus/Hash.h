@@ -20,9 +20,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Nucleus/Engine.h"
-#include "Nucleus/SessionContext.h"
-#include "Nucleus/TxStatus.h"
+#include "Nucleus/HashCommon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -30,7 +28,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define PSON_HASH_SIGNATURE  ((unsigned int)0x2026fe02)
+#define PSON_HASH_SIGNATURE  ((unsigned int)0xa126fec4)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -43,8 +41,6 @@ BEGIN_C_DECLS
  */
 struct psonHashItem
 {
-   psonTxStatus  txStatus;
-   
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
    /** Next item with same key (for replace, etc.) */
@@ -59,18 +55,6 @@ struct psonHashItem
 };
 
 typedef struct psonHashItem psonHashItem;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-enum psonHashResizeEnum
-{
-   PSON_HASH_NO_RESIZE,
-   PSON_HASH_TIME_TO_GROW,
-   PSON_HASH_TIME_TO_SHRINK
-   
-};
-
-typedef enum psonHashResizeEnum psonHashResizeEnum;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -158,7 +142,7 @@ bool psonHashGet( psonHash            * pHash,
                   psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT 
-bool psonHashGetFirst( psonHash  * pHash,
+bool psonHashGetFirst( psonHash * pHash,
                        ptrdiff_t * pFirstItemOffset );
 
 PHOTON_ENGINE_EXPORT
@@ -243,7 +227,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSON_HASH_MAP_H */
+#endif /* PSON_HASH_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

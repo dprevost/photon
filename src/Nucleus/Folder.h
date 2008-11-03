@@ -26,6 +26,7 @@
 #include "Nucleus/TreeNode.h"
 #include "Nucleus/BlockGroup.h"
 #include "Nucleus/Hash.h"
+#include "Nucleus/HashTx.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,7 +36,7 @@ BEGIN_C_DECLS
 
 struct psonFolderItem
 {
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
 
    ptrdiff_t   itemOffset;
 
@@ -59,7 +60,7 @@ struct psonFolder
    /** Basic info for all leaves and branches of our tree. */
    struct psonTreeNode  nodeObject;
 
-   struct psonHash      hashObj;
+   struct psonHashTx      hashObj;
 
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;
@@ -72,7 +73,7 @@ typedef struct psonFolder psonFolder;
 
 PHOTON_ENGINE_EXPORT
 void psonFolderCommitEdit( psonFolder          * pFolder,
-                           psonHashItem        * pHashItem, 
+                           psonHashTxItem        * pHashItem, 
                            enum psoObjectType    objectType,
                            psonSessionContext  * pContext );
 
@@ -188,7 +189,7 @@ bool psonFolderRelease( psonFolder         * pFolder,
  */
 PHOTON_ENGINE_EXPORT
 void psonFolderRemoveObject( psonFolder         * pFolder,
-                             psonHashItem       * pHashItem,
+                             psonHashTxItem       * pHashItem,
                              psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -198,7 +199,7 @@ void psonFolderResize( psonFolder         * pFolder,
 
 PHOTON_ENGINE_EXPORT
 void psonFolderRollbackEdit( psonFolder          * pFolder,
-                             psonHashItem        * pHashItem, 
+                             psonHashTxItem        * pHashItem, 
                              enum psoObjectType    objectType,
                              psonSessionContext  * pContext );
 

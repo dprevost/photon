@@ -33,7 +33,7 @@ void psonMapReleaseNoLock( psonMap            * pHashMap,
 
 bool psonMapCopy( psonMap            * pOldMap, 
                   psonMap            * pNewMap,
-                  psonHashItem       * pHashItem,
+                  psonHashTxItem     * pHashItem,
                   const char         * origName,
                   psonSessionContext * pContext )
 {
@@ -254,7 +254,7 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonMapGetFirst( psonMap            * pHashMap,
-                      psonHashMapItem    * pItem,
+                      psonFashMapItem    * pItem,
                       size_t               keyLength,
                       size_t               bufferLength,
                       psonSessionContext * pContext )
@@ -312,7 +312,7 @@ bool psonMapGetFirst( psonMap            * pHashMap,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonMapGetNext( psonMap            * pHashMap,
-                     psonHashMapItem    * pItem,
+                     psonFashMapItem    * pItem,
                      size_t               keyLength,
                      size_t               bufferLength,
                      psonSessionContext * pContext )

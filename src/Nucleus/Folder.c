@@ -27,7 +27,7 @@
 
 static
 void psonFolderReleaseNoLock( psonFolder         * pFolder,
-                              psonHashItem       * pHashItemItem,
+                              psonHashTxItem       * pHashItemItem,
                               psonSessionContext * pContext );
 
 static 
@@ -39,13 +39,13 @@ psoErrors psonValidateString( const char * objectName,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psonFolderCommitEdit( psonFolder         * pFolder,
-                           psonHashItem       * pHashItem, 
+                           psonHashTxItem       * pHashItem, 
                            enum psoObjectType   objectType,
                            psonSessionContext * pContext )
 {
    psonObjectDescriptor * pDesc, * pDescLatest;
    psonMap * pMapLatest, * pMapEdit;
-   psonHashItem * pHashItemLatest;
+   psonHashTxItem * pHashItemLatest;
    psonTreeNode * node;
    psonTxStatus * tx;
    
@@ -60,7 +60,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
    
    PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
-   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashItem );
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashTxItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                                psonObjectDescriptor );
    pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonMap );
@@ -182,7 +182,7 @@ bool psonFolderDeletable( psonFolder         * pFolder,
                           psonSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   psonHashItem * pItem;
+   psonHashTxItem * pItem;
    ptrdiff_t txOffset = SET_OFFSET( pContext->pTransaction );
    bool found;
    
@@ -196,9 +196,9 @@ bool psonFolderDeletable( psonFolder         * pFolder,
     * - or the end (we return true)
     */
    
-   found = psonHashGetFirst( &pFolder->hashObj, &offset );
+   found = psonHashTxGetFirst( &pFolder->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, psonHashItem );
+      GET_PTR( pItem, offset, psonHashTxItem );
       if ( pItem->txStatus.txOffset != txOffset ) return false;
       if ( ! psonTxStatusIsMarkedAsDestroyed( &pItem->txStatus ) ) {
          return false;
@@ -206,7 +206,7 @@ bool psonFolderDeletable( psonFolder         * pFolder,
       
       previousOffset = offset;
       
-      found = psonHashGetNext( &pFolder->hashObj,
+      found = psonHashTxGetNext( &pFolder->hashObj,
                                previousOffset,
                                &offset );
    }
@@ -225,7 +225,7 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
    size_t partialLength = 0;
    psoErrors errcode = PSO_OK;
    psonObjectDescriptor* pDesc = NULL;
-   psonHashItem* pHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL;
    psonTxStatus* txStatus;
    psonFolder * pNextFolder, *pDeletedFolder;
    psonMemObject * pMemObj;
@@ -244,7 +244,7 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != PSO_OK ) goto the_exit;
 
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char),
                         &pHashItem,
@@ -260,7 +260,7 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
       goto the_exit;
    }
    while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
    }
 
    txStatus = &pHashItem->txStatus;
@@ -464,7 +464,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0, bucket = 0, descLength;
    psonObjectDescriptor * pDescOld = NULL, * pDescNew = NULL;
-   psonHashItem * pHashItemOld = NULL, * pHashItemNew = NULL;
+   psonHashTxItem * pHashItemOld = NULL, * pHashItemNew = NULL;
    psoErrors errcode;
    psonTxStatus * txStatus, * newTxStatus;
    psonTxStatus * txFolderStatus;
@@ -489,7 +489,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != PSO_OK ) goto the_exit;
    
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItemOld,
@@ -505,7 +505,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
       goto the_exit;
    }
    while ( pHashItemOld->nextSameKey != PSON_NULL_OFFSET ) {
-      GET_PTR( pHashItemOld, pHashItemOld->nextSameKey, psonHashItem );
+      GET_PTR( pHashItemOld, pHashItemOld->nextSameKey, psonHashTxItem );
    }
 
    txStatus = &pHashItemOld->txStatus;
@@ -590,7 +590,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
       memcpy( pDescNew, pDescOld, descLength );
       pDescNew->offset = SET_OFFSET( ptr );
 
-      errcode = psonHashInsertAt( &pFolder->hashObj, 
+      errcode = psonHashTxInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -618,7 +618,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashDelWithItem( &pFolder->hashObj, 
+         psonHashTxDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
                               pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
@@ -651,7 +651,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
 
       if ( ! ok ) {
          psonTxRemoveLastOps( (psonTx*)pContext->pTransaction, pContext );
-         psonHashDelWithItem( &pFolder->hashObj, 
+         psonHashTxDelWithItem( &pFolder->hashObj, 
                               pHashItemNew,
                               pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
@@ -726,7 +726,7 @@ void psonFolderFini( psonFolder         * pFolder,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
 
-   psonHashFini( &pFolder->hashObj );
+   psonHashTxFini( &pFolder->hashObj );
    psonTreeNodeFini( &pFolder->nodeObject );
    
    /* This call must be last - put a barrier here ? */ 
@@ -745,7 +745,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    psonObjectDescriptor * pDesc = NULL;
-   psonHashItem * pHashItem = NULL;
+   psonHashTxItem * pHashItem = NULL;
    psoErrors errcode;
    psonTxStatus * txStatus;
    psonFolder * pNextFolder;
@@ -768,7 +768,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                                  &lastIteration );
    if ( errcode != PSO_OK ) goto the_exit;
    
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -784,7 +784,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
       goto the_exit;
    }
    while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
    }
 
    txStatus = &pHashItem->txStatus;
@@ -894,7 +894,7 @@ bool psonFolderGetFirst( psonFolder         * pFolder,
                          psonFolderItem     * pItem,
                          psonSessionContext * pContext )
 {
-   psonHashItem* pHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL;
    psonTxStatus * txItemStatus;
    psonTxStatus * txFolderStatus;
    ptrdiff_t  firstItemOffset;
@@ -913,9 +913,9 @@ bool psonFolderGetFirst( psonFolder         * pFolder,
        * current session (its transaction field equal to zero or to our 
        * transaction) AND is not marked as destroyed.
        */
-      found = psonHashGetFirst( &pFolder->hashObj, &firstItemOffset );
+      found = psonHashTxGetFirst( &pFolder->hashObj, &firstItemOffset );
       while ( found ) {
-         GET_PTR( pHashItem, firstItemOffset, psonHashItem );
+         GET_PTR( pHashItem, firstItemOffset, psonHashTxItem );
          txItemStatus = &pHashItem->txStatus;
 
         if ( psonTxTestObjectStatus( txItemStatus, 
@@ -932,7 +932,7 @@ bool psonFolderGetFirst( psonFolder         * pFolder,
             return true;
          }
   
-         found = psonHashGetNext( &pFolder->hashObj, 
+         found = psonHashTxGetNext( &pFolder->hashObj, 
                                   firstItemOffset,
                                   &firstItemOffset );
       }
@@ -954,8 +954,8 @@ bool psonFolderGetNext( psonFolder         * pFolder,
                         psonFolderItem     * pItem,
                         psonSessionContext * pContext )
 {
-   psonHashItem * pHashItem = NULL;
-   psonHashItem * previousHashItem = NULL;
+   psonHashTxItem * pHashItem = NULL;
+   psonHashTxItem * previousHashItem = NULL;
    psonTxStatus * txItemStatus;
    psonTxStatus * txFolderStatus;
    ptrdiff_t  itemOffset;
@@ -979,11 +979,11 @@ bool psonFolderGetNext( psonFolder         * pFolder,
        * current session (its transaction field equal to zero or to our 
        * transaction) AND is not marked as destroyed.
        */
-      found = psonHashGetNext( &pFolder->hashObj, 
+      found = psonHashTxGetNext( &pFolder->hashObj, 
                                itemOffset,
                                &itemOffset );
       while ( found ) {
-         GET_PTR( pHashItem, itemOffset, psonHashItem );
+         GET_PTR( pHashItem, itemOffset, psonHashTxItem );
          txItemStatus = &pHashItem->txStatus;
 
          if ( psonTxTestObjectStatus( txItemStatus, 
@@ -1002,7 +1002,7 @@ bool psonFolderGetNext( psonFolder         * pFolder,
             return true;
          }
   
-         found = psonHashGetNext( &pFolder->hashObj, 
+         found = psonHashTxGetNext( &pFolder->hashObj, 
                                   itemOffset,
                                   &itemOffset );
       }
@@ -1040,7 +1040,7 @@ bool psonFolderGetObject( psonFolder         * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    psonObjectDescriptor* pDesc = NULL;
-   psonHashItem* pHashItem = NULL;
+   psonHashTxItem* pHashItem = NULL;
    psoErrors errcode;
    psonTxStatus * txStatus;
    psonTxStatus * txFolderStatus;
@@ -1062,7 +1062,7 @@ bool psonFolderGetObject( psonFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != PSO_OK ) goto the_exit;
    
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -1078,7 +1078,7 @@ bool psonFolderGetObject( psonFolder         * pFolder,
       goto the_exit;
    }
    while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
    }
 
    txStatus = &pHashItem->txStatus;
@@ -1162,7 +1162,7 @@ bool psonFolderGetStatus( psonFolder         * pFolder,
    bool lastIteration = true;
    size_t partialLength = 0;
    psonObjectDescriptor * pDesc = NULL;
-   psonHashItem * pHashItem = NULL;
+   psonHashTxItem * pHashItem = NULL;
    psoErrors errcode;
    psonTxStatus * txStatus;
    psonFolder * pNextFolder;
@@ -1184,7 +1184,7 @@ bool psonFolderGetStatus( psonFolder         * pFolder,
                                  &lastIteration );
    if ( errcode != PSO_OK ) goto the_exit;
    
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -1200,7 +1200,7 @@ bool psonFolderGetStatus( psonFolder         * pFolder,
       goto the_exit;
    }
    while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
    }
 
    txStatus = &pHashItem->txStatus;
@@ -1337,7 +1337,7 @@ bool psonFolderInit( psonFolder         * pFolder,
                      parentOffset,
                      hashItemOffset );
 
-   errcode = psonHashInit( &pFolder->hashObj,
+   errcode = psonHashTxInit( &pFolder->hashObj,
                            SET_OFFSET(&pFolder->memObject),
                            expectedNumOfChilds, 
                            pContext );
@@ -1364,7 +1364,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
 {
    bool lastIteration = true;
    size_t partialLength = 0;
-   psonHashItem * pHashItem, * previousHashItem = NULL;
+   psonHashTxItem * pHashItem, * previousHashItem = NULL;
    psoErrors errcode = PSO_OK;
    psonObjectDescriptor* pDesc = NULL;
    size_t descLength;
@@ -1407,7 +1407,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
        * once we have many types of objects
        */
 
-      found = psonHashGet( &pFolder->hashObj, 
+      found = psonHashTxGet( &pFolder->hashObj, 
                            (unsigned char *)objectName, 
                            partialLength * sizeof(char), 
                            &previousHashItem,
@@ -1415,7 +1415,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                            pContext );
       if ( found ) {
          while ( previousHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-            GET_PTR( previousHashItem, previousHashItem->nextSameKey, psonHashItem );
+            GET_PTR( previousHashItem, previousHashItem->nextSameKey, psonHashTxItem );
          }
          objTxStatus = &previousHashItem->txStatus;
          if ( ! (objTxStatus->status & PSON_TXS_DESTROYED_COMMITTED) ) {
@@ -1447,7 +1447,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
       pDesc->nameLengthInBytes = partialLength * sizeof(char);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
 
-      errcode = psonHashInsertAt( &pFolder->hashObj, 
+      errcode = psonHashTxInsertAt( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -1491,7 +1491,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
       free( pDesc ); 
       pDesc = NULL;
       if ( ! ok ) {
-         psonHashDelWithItem( &pFolder->hashObj, 
+         psonHashTxDelWithItem( &pFolder->hashObj, 
                               pHashItem,
                               pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
@@ -1573,7 +1573,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
 
       if ( ! ok ) {
          psonTxRemoveLastOps( (psonTx*)pContext->pTransaction, pContext );
-         psonHashDelWithItem( &pFolder->hashObj,
+         psonHashTxDelWithItem( &pFolder->hashObj,
                               pHashItem,
                               pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
@@ -1590,7 +1590,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
    }
    
    /* If we come here, this was not the last iteration, so we continue */
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         (unsigned char *)objectName, 
                         partialLength * sizeof(char), 
                         &pHashItem,
@@ -1601,7 +1601,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
       goto the_exit;
    }
    while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
-      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashItem );
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
    }
    
    /* This is not the last node. This node must be a folder, otherwise... */
@@ -1707,7 +1707,7 @@ bool psonFolderRelease( psonFolder         * pFolder,
 
 static
 void psonFolderReleaseNoLock( psonFolder         * pFolder,
-                              psonHashItem       * pHashItem,
+                              psonHashTxItem       * pHashItem,
                               psonSessionContext * pContext )
 {
    psonTxStatus * txItemStatus, * txFolderStatus;
@@ -1747,10 +1747,10 @@ void psonFolderReleaseNoLock( psonFolder         * pFolder,
  * lock on the folder is the responsability of the caller.
  */
 void psonFolderRemoveObject( psonFolder         * pFolder,
-                             psonHashItem       * pHashItem,
+                             psonHashTxItem       * pHashItem,
                              psonSessionContext * pContext )
 {
-   psonHashItem * previousItem = NULL;
+   psonHashTxItem * previousItem = NULL;
    psonObjectDescriptor * pDesc;
    void * ptrObject;
    size_t bucket;
@@ -1765,7 +1765,7 @@ void psonFolderRemoveObject( psonFolder         * pFolder,
    GET_PTR( ptrObject, pDesc->offset, void );
 
    /* We search for the bucket */
-   found = psonHashGet( &pFolder->hashObj, 
+   found = psonHashTxGet( &pFolder->hashObj, 
                         pHashItem->key, 
                         pHashItem->keyLength, 
                         &previousItem,
@@ -1778,7 +1778,7 @@ void psonFolderRemoveObject( psonFolder         * pFolder,
     *
     * Note: the hash array will release the memory of the hash item.
     */
-   psonHashDelWithItem( &pFolder->hashObj, 
+   psonHashTxDelWithItem( &pFolder->hashObj, 
                         pHashItem,
                         pContext );
 
@@ -1833,20 +1833,20 @@ void psonFolderResize( psonFolder         * pFolder,
    if ( (txFolderStatus->usageCounter == 0) &&
       (pFolder->nodeObject.txCounter == 0 ) ) {
       if ( pFolder->hashObj.enumResize != PSON_HASH_NO_RESIZE )
-         psonHashResize( &pFolder->hashObj, pContext );
+         psonHashTxResize( &pFolder->hashObj, pContext );
    }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psonFolderRollbackEdit( psonFolder         * pFolder,
-                             psonHashItem       * pHashItem, 
+                             psonHashTxItem       * pHashItem, 
                              enum psoObjectType   objectType,
                              psonSessionContext * pContext )
 {
    psonObjectDescriptor * pDesc, * pDescLatest;
    psonMap * pMapLatest, * pMapEdit;
-   psonHashItem * pHashItemLatest;
+   psonHashTxItem * pHashItemLatest;
    psonTreeNode * tree;
    psonTxStatus * tx;
    
@@ -1861,7 +1861,7 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
    
    PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
-   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashItem );
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashTxItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                                psonObjectDescriptor );
    pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonMap );
@@ -1874,7 +1874,7 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
     * remove the map entirely (if it was destroyed - not open and the
     * current edit session was the only thing standing in the way
     */
-   psonHashDelWithItem( &pFolder->hashObj, pHashItem, pContext );
+   psonHashTxDelWithItem( &pFolder->hashObj, pHashItem, pContext );
    /* If needed */
    psonFolderResize( pFolder, pContext );
 

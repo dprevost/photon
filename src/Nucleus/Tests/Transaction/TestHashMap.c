@@ -38,7 +38,7 @@ int main()
    char * data1 = "My data1";
    char * data2 = "My data2";
    char * data3 = "My data3";
-   psonHashItem * pHashItem;
+   psonHashTxItem * pHashItem;
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
       1, 

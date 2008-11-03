@@ -132,10 +132,10 @@ psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
    pFolder->nodeObject.txStatusOffset = SET_OFFSET(&objTxStatus);
    pFolder->nodeObject.myParentOffset = PSON_NULL_OFFSET;
 
-   errcode = psonHashInit( &pFolder->hashObj, 
-                           SET_OFFSET(&pFolder->memObject),
-                           25, 
-                           pContext );
+   errcode = psonHashTxInit( &pFolder->hashObj, 
+                             SET_OFFSET(&pFolder->memObject),
+                             25, 
+                             pContext );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
       if ( testIsExpectedToSucceed ) exit(1);
