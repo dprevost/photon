@@ -1038,11 +1038,11 @@ void psoaMapResetReader( void * map )
    psoaMap * pHashMap = map;
    psonMap * pMemHashMap, * pMapLatest;
 
-   psonHashItem * pHashItemLatest;
+   psonHashTxItem * pHashItemLatest;
    psonObjectDescriptor * pDesc;
 
    pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
-   pHashItemLatest = GET_PTR_FAST( pMemHashMap->latestVersion, psonHashItem );
+   pHashItemLatest = GET_PTR_FAST( pMemHashMap->latestVersion, psonHashTxItem );
    pDesc = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                          psonObjectDescriptor );
    pMapLatest = GET_PTR_FAST( pDesc->offset, psonMap );

@@ -137,7 +137,7 @@ size_t psonGetBitmapLengthBytes( size_t length, size_t allocationUnit )
    
    /* We "align" it to a multiple of allocationUnit */
    length = ((length - 1) / allocationUnit + 1 ) * allocationUnit;
-//   fprintf( stderr, "l = %u %u\n", length, ( (length/allocationUnit - 1) >> 3 ) + 1 );
+
    return ( (length/allocationUnit - 1) >> 3 ) + 1;
 }
 

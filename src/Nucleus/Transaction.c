@@ -64,7 +64,6 @@ bool psonLockTx( psonTx             * pTx,
       ok = psocTryAcquireProcessLock ( &pMemObj->lock,
                                        pContext->pidLocker,
                                        PSON_LOCK_TIMEOUT );
-//      fprintf( stderr, "acq %p\n", pMemObj );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
          ok = psonAddLockTx( pTx, pMemObj, pContext );
@@ -89,12 +88,9 @@ void psonClearLocks( psonTx             * pTx,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
    
-//fprintf( stderr, " clearlocks %d\n",  pTx->listOfLocks.numberOfItems );
    ok = txHashGetFirst( pTx, &rowNumber, &pMemObj );
    while ( ok ) {
-//      fprintf( stderr, "before rel %p %d\n", pMemObj, pMemObj->lock.lock );
       psocReleaseProcessLock( &pMemObj->lock );
-//      fprintf( stderr, "after rel %p %d\n", pMemObj, pMemObj->lock.lock );
 
       ok = txHashGetNext( pTx, rowNumber, &rowNumber, &pMemObj );
    }
@@ -286,11 +282,9 @@ bool psonTxCommit( psonTx             * pTx,
 
       /* We always lock the parent */
       GET_PTR( parentMemObject, pOps->parentOffset, psonMemObject );
-//      fprintf( stderr, "parent: %p %d\n", parentMemObject, pOps->transType );
       okLock = psonLockTx( pTx, parentMemObject, pContext );
       PSO_POST_CONDITION( okLock == true || okLock == false );
       if ( ! okLock ) {
-//         fprintf(stderr, "Transaction::Commit err1 \n" );
          psonClearLocks( pTx, pContext );
          return false;
       }
@@ -302,12 +296,10 @@ bool psonTxCommit( psonTx             * pTx,
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          
-  //       fprintf( stderr, "child: %p\n", pChildMemObject );
          okLock = psonLockTx( pTx, pChildMemObject, pContext );
          PSO_POST_CONDITION( okLock == true || okLock == false );
          if ( ! okLock ) {
             psonClearLocks( pTx, pContext );
- //           fprintf(stderr, "Transaction::Commit err3 \n" );
             return false;
          }
       }
@@ -397,7 +389,6 @@ bool psonTxCommit( psonTx             * pTx,
              * return code (which would tell us if the lock was taken or not).
              */
             txHashDelete( pTx, pChildMemObject, pContext );
-//            fprintf( stderr, "Edit %p\n", pChildMemObject );
          }
          
          parentFolder->nodeObject.txCounter--;
@@ -437,7 +428,6 @@ bool psonTxCommit( psonTx             * pTx,
                                     pContext );
 
             okDelete = txHashDelete( pTx, pChildMemObject, pContext );
-//            fprintf( stderr, "Delete: %p %d\n", pChildMemObject, okDelete );
          }
 
          break;
@@ -524,7 +514,7 @@ void psonTxRollback( psonTx             * pTx,
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
       if ( errcode != PSO_OK ) {
-         fprintf(stderr, "Transaction::Rollback err1 \n" );
+//         fprintf(stderr, "Transaction::Rollback err1 \n" );
          return;
       }
    }

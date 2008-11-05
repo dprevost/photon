@@ -87,11 +87,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
                             pHashItemLatest,
                             &isRemoved,
                             pContext );
-   if ( isRemoved ) {
-      *ppOldMemObj = &pMapLatest->memObject; /* The old copy */
-fprintf( stderr, " oh oh\n" );
-   }
-   fprintf( stderr, "%d %d\n", pMapEdit->editVersion, pMapEdit->latestVersion );
+   if ( isRemoved ) *ppOldMemObj = &pMapLatest->memObject; /* The old copy */
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
