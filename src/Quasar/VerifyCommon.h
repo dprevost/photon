@@ -33,6 +33,8 @@ extern bool g_bTestAllocator;
 struct psonLinkedList;
 struct psonFolder;
 struct psonHashMap;
+struct psonHash;
+struct psonHashTx;
 struct psonMap;
 struct psonQueue;
 struct psonMemObject;
@@ -122,6 +124,11 @@ enum psoqRecoverError
 psoqVerifyHash( psoqVerifyStruct * pVerify,
                 struct psonHash  * pHash,
                 ptrdiff_t          memObjOffset );
+
+enum psoqRecoverError
+psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
+                  struct psonHashTx * pHash,
+                  ptrdiff_t           memObjOffset );
 
 enum psoqRecoverError
 psoqVerifyList( psoqVerifyStruct      * pVerify,

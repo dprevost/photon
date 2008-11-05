@@ -30,7 +30,6 @@ int main()
    enum psoErrors errcode;
    char key[20];
    char data[20];
-   psonHashItem* pNewItem;
    int i;
    
    pHash = initHashTest( expectedToPass, &context );
@@ -49,7 +48,6 @@ int main()
                                 strlen(key),
                                 data,
                                 strlen(data),
-                                &pNewItem,
                                 &context );
       if ( errcode != PSO_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );

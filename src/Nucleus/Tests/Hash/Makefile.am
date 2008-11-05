@@ -57,19 +57,10 @@ check_PROGRAMS =               \
         InitNullHash           \
         InitNullOffset         \
         InitPass               \
-        InsertAtNullContext    \
-        InsertAtNullData       \
-        InsertAtNullHash       \
-        InsertAtNullKey        \
-        InsertAtNullNewItem    \
-        InsertAtPass           \
-        InsertAtZeroDataLength \
-        InsertAtZeroKeyLength  \
         InsertNullContext      \
         InsertNullData         \
         InsertNullHash         \
         InsertNullKey          \
-        InsertNullNewItem      \
         InsertPass             \
         InsertZeroDataLength   \
         InsertZeroKeyLength    \
@@ -119,19 +110,10 @@ InitNullContext_SOURCES        = $(COMMON_HEADER) InitNullContext.c
 InitNullHash_SOURCES           = $(COMMON_HEADER) InitNullHash.c
 InitNullOffset_SOURCES         = $(COMMON_HEADER) InitNullOffset.c
 InitPass_SOURCES               = $(COMMON_HEADER) InitPass.c
-InsertAtNullContext_SOURCES    = $(COMMON_HEADER) InsertAtNullContext.c
-InsertAtNullData_SOURCES       = $(COMMON_HEADER) InsertAtNullData.c
-InsertAtNullHash_SOURCES       = $(COMMON_HEADER) InsertAtNullHash.c
-InsertAtNullKey_SOURCES        = $(COMMON_HEADER) InsertAtNullKey.c
-InsertAtNullNewItem_SOURCES    = $(COMMON_HEADER) InsertAtNullNewItem.c
-InsertAtPass_SOURCES           = $(COMMON_HEADER) InsertAtPass.c
-InsertAtZeroDataLength_SOURCES = $(COMMON_HEADER) InsertAtZeroDataLength.c
-InsertAtZeroKeyLength_SOURCES  = $(COMMON_HEADER) InsertAtZeroKeyLength.c
 InsertNullContext_SOURCES      = $(COMMON_HEADER) InsertNullContext.c
 InsertNullData_SOURCES         = $(COMMON_HEADER) InsertNullData.c
 InsertNullHash_SOURCES         = $(COMMON_HEADER) InsertNullHash.c
 InsertNullKey_SOURCES          = $(COMMON_HEADER) InsertNullKey.c
-InsertNullNewItem_SOURCES      = $(COMMON_HEADER) InsertNullNewItem.c
 InsertPass_SOURCES             = $(COMMON_HEADER) InsertPass.c
 InsertZeroDataLength_SOURCES   = $(COMMON_HEADER) InsertZeroDataLength.c
 InsertZeroKeyLength_SOURCES    = $(COMMON_HEADER) InsertZeroKeyLength.c
@@ -190,19 +172,10 @@ TESTS =                        \
         InitNullHash           \
         InitNullOffset         \
         InitPass               \
-        InsertAtNullContext    \
-        InsertAtNullData       \
-        InsertAtNullHash       \
-        InsertAtNullKey        \
-        InsertAtNullNewItem    \
-        InsertAtPass           \
-        InsertAtZeroDataLength \
-        InsertAtZeroKeyLength  \
         InsertNullContext      \
         InsertNullData         \
         InsertNullHash         \
         InsertNullKey          \
-        InsertNullNewItem      \
         InsertPass             \
         InsertZeroDataLength   \
         InsertZeroKeyLength    \
@@ -242,18 +215,10 @@ XFAIL_TESTS =                  \
         InitNullContext        \
         InitNullHash           \
         InitNullOffset         \
-        InsertAtNullContext    \
-        InsertAtNullData       \
-        InsertAtNullHash       \
-        InsertAtNullKey        \
-        InsertAtNullNewItem    \
-        InsertAtZeroDataLength \
-        InsertAtZeroKeyLength  \
         InsertNullContext      \
         InsertNullData         \
         InsertNullHash         \
         InsertNullKey          \
-        InsertNullNewItem      \
         InsertZeroDataLength   \
         InsertZeroKeyLength    \
         ResizeNullContext      \

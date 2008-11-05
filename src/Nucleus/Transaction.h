@@ -20,11 +20,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Engine.h"
-#include "LinkedList.h"
-#include "SessionContext.h"
-#include "MemoryObject.h"
-#include "BlockGroup.h"
+#include "Nucleus/Engine.h"
+#include "Nucleus/LinkedList.h"
+#include "Nucleus/SessionContext.h"
+#include "Nucleus/MemoryObject.h"
+#include "Nucleus/BlockGroup.h"
+#include "Nucleus/Hash.h"
 
 #define PSON_TX_SIGNATURE 0xabc6c981
 
@@ -39,7 +40,6 @@ enum psonTxType
    /* ops on data */
    PSON_TX_ADD_DATA = 1,
    PSON_TX_REMOVE_DATA,
-/*   PSON_TX_REPLACE_DATA, */
 
    /* ops on objects */
    PSON_TX_ADD_OBJECT = 0x81,
@@ -81,8 +81,28 @@ struct psonTx
    /** Linked list of all ops of the current transaction */   
    psonLinkedList listOfOps;
 
-   /** Linked list of all locks of the current transaction */   
-   psonLinkedList listOfLocks;
+   /**
+    * Internal hash array for locks held by the transactions.
+    */
+   struct psonTxMyHash
+   {
+      /** Offset to an array of offsets to psonTxMyHashItem objects */
+      ptrdiff_t    arrayOffset; 
+   
+      /** Number of items stored in this hash map. */
+      size_t       numberOfItems;
+   
+      /** The index into the array of lengths (aka the number of buckets). */
+      int lengthIndex;
+
+      /** The mimimum shrinking factor that we can tolerate to accommodate
+       *  the reservedSize argument of psonHashInit() ) */
+      int lengthIndexMinimum;
+
+      /** Indicator of the current status of the array. */
+      psonHashResizeEnum enumResize;
+   
+   } listOfLocks;
 
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;

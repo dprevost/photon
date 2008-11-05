@@ -66,8 +66,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonTxCommit( pTx, &context );
-   
+   ok = psonTxCommit( pTx, &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+fprintf(stderr, "commit 1\n" );   
    ok = psonFolderGetObject( pFolder,
                              "test2",
                              5,
@@ -154,7 +157,11 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   psonTxCommit( pTx, &context );
+   ok = psonTxCommit( pTx, &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+fprintf(stderr, "commit 2\n" );   
    if ( pQueue->nodeObject.txCounter != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

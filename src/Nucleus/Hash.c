@@ -507,15 +507,15 @@ bool psonHashGet( psonHash            * pHash,
 #  pragma warning(disable:4702) 
 #endif
 
-bool psonHashGetFirst( psonHash  * pHash,
-                       ptrdiff_t * pFirstItemOffset )
+bool psonHashGetFirst( psonHash      * pHash,
+                       psonHashItem ** ppItem )
 {
-   ptrdiff_t* pArray, currentOffset;
+   ptrdiff_t * pArray, currentOffset;
    bool SHOULD_NOT_REACHED_THIS = true;
    size_t i;
    
    PSO_PRE_CONDITION( pHash != NULL );
-   PSO_PRE_CONDITION( pFirstItemOffset != NULL );
+   PSO_PRE_CONDITION( ppItem != NULL );
    
    PSO_INV_CONDITION( pHash->initialized == PSON_HASH_SIGNATURE );
    
@@ -532,7 +532,7 @@ bool psonHashGetFirst( psonHash  * pHash,
       currentOffset = pArray[i];
       
       if (currentOffset != PSON_NULL_OFFSET ) {
-         *pFirstItemOffset = currentOffset;
+         GET_PTR( *ppItem, currentOffset, psonHashItem );
          return true;
       }
    }
@@ -548,26 +548,24 @@ bool psonHashGetFirst( psonHash  * pHash,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonHashGetNext( psonHash  * pHash,
-                      ptrdiff_t   previousOffset,
-                      ptrdiff_t * pNextItemOffset )
+bool psonHashGetNext( psonHash      * pHash,
+                      psonHashItem  * previousItem,
+                      psonHashItem ** nextItem )
 {
    ptrdiff_t* pArray, currentOffset;
    size_t i;
-   psonHashItem* pItem;
    
-   PSO_PRE_CONDITION( pHash != NULL );
-   PSO_PRE_CONDITION( pNextItemOffset != NULL );
-   PSO_PRE_CONDITION( previousOffset != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pHash        != NULL );
+   PSO_PRE_CONDITION( previousItem != NULL );
+   PSO_PRE_CONDITION( nextItem     != NULL );
    PSO_INV_CONDITION( pHash->initialized == PSON_HASH_SIGNATURE );
    
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
    PSO_INV_CONDITION( pArray != NULL );
 
-   GET_PTR( pItem, previousOffset, psonHashItem );
-   if ( pItem->nextItem != PSON_NULL_OFFSET ) {
+   if ( previousItem->nextItem != PSON_NULL_OFFSET ) {
       /* We found the next one in the linked list. */
-      *pNextItemOffset = pItem->nextItem;
+      GET_PTR( *nextItem, previousItem->nextItem, psonHashItem );
       return true;
    }
    
@@ -575,11 +573,11 @@ bool psonHashGetNext( psonHash  * pHash,
     * Note: the next item has to be the first non-empty pArray[i] beyond
     * the current bucket (previousBucket). 
     */
-   for ( i = pItem->bucket+1; i < g_psonArrayLengths[pHash->lengthIndex]; ++i ) {
+   for ( i = previousItem->bucket+1; i < g_psonArrayLengths[pHash->lengthIndex]; ++i ) {
       currentOffset = pArray[i];
       
       if (currentOffset != PSON_NULL_OFFSET ) {
-         *pNextItemOffset = currentOffset;
+         GET_PTR( *nextItem, currentOffset, psonHashItem );
          return true;
       }
    }
@@ -653,7 +651,6 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               psonHashItem       ** ppNewItem,
                                psonSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
@@ -667,7 +664,6 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
    PSO_PRE_CONDITION( pContext  != NULL );
    PSO_PRE_CONDITION( pKey      != NULL );
    PSO_PRE_CONDITION( pData     != NULL );
-   PSO_PRE_CONDITION( ppNewItem != NULL );
    PSO_PRE_CONDITION( keyLength  > 0 );
    PSO_PRE_CONDITION( dataLength > 0 );
 
@@ -698,7 +694,7 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
    pItem->nextSameKey = PSON_NULL_OFFSET;
    
-   memcpy( pItem->key,     pKey, keyLength );
+   memcpy( pItem->key, pKey, keyLength );
    memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
 
    pHash->totalDataSizeInBytes += dataLength;
@@ -713,82 +709,6 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
       previousItem->nextItem = SET_OFFSET(pItem);
    }
    
-   *ppNewItem = pItem;
-
-   return PSO_OK;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-enum psoErrors psonHashInsertAt( psonHash            * pHash,
-                                 size_t                bucket,
-                                 const unsigned char * pKey,
-                                 size_t                keyLength,
-                                 const void          * pData,
-                                 size_t                dataLength,
-                                 psonHashItem       ** ppNewItem,
-                                 psonSessionContext  * pContext )
-{
-   ptrdiff_t* pArray;   
-   psonHashItem* pItem, *previousItem = NULL;
-   size_t itemLength;
-   psonMemObject * pMemObject;
-   ptrdiff_t currentOffset;
-   
-   PSO_PRE_CONDITION( pHash     != NULL );
-   PSO_PRE_CONDITION( pContext  != NULL );
-   PSO_PRE_CONDITION( pKey      != NULL );
-   PSO_PRE_CONDITION( pData     != NULL );
-   PSO_PRE_CONDITION( ppNewItem != NULL );
-   PSO_PRE_CONDITION( keyLength  > 0 );
-   PSO_PRE_CONDITION( dataLength > 0 );
-   PSO_PRE_CONDITION( bucket < g_psonArrayLengths[pHash->lengthIndex] );
-
-   PSO_INV_CONDITION( pHash->initialized == PSON_HASH_SIGNATURE );
-   
-   GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
-   PSO_INV_CONDITION( pArray != NULL );
-
-   currentOffset = pArray[bucket];
-
-   while ( currentOffset != PSON_NULL_OFFSET ) {
-      GET_PTR( previousItem, currentOffset, psonHashItem );
-      currentOffset = previousItem->nextItem;     
-   }
-
-   GET_PTR( pMemObject, pHash->memObjOffset, psonMemObject );
-   
-   /* The whole item is allocated in one step, header+data, to minimize */
-   /* overheads of the memory allocator */
-   itemLength = calculateItemLength( keyLength, dataLength );
-   pItem = (psonHashItem*) psonMalloc( pMemObject, itemLength, pContext );
-   if ( pItem == NULL ) return PSO_NOT_ENOUGH_PSO_MEMORY;
-   
-   pItem->nextItem = PSON_NULL_OFFSET;
-   pItem->bucket = bucket;
-   
-   /* keyLength must be set before calling getData() */   
-   pItem->keyLength = keyLength;
-   pItem->dataLength = dataLength;
-   pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
-   pItem->nextSameKey = PSON_NULL_OFFSET;
-    
-   memcpy( pItem->key,     pKey, keyLength );
-   memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
-
-   pHash->totalDataSizeInBytes += dataLength;
-   pHash->numberOfItems++;
-   pHash->enumResize = isItTimeToResize( pHash );
-
-   if ( previousItem == NULL ) {
-      pArray[bucket] = SET_OFFSET(pItem);
-   }
-   else {
-      previousItem->nextItem = SET_OFFSET(pItem);
-   }
-   
-   *ppNewItem = pItem;
-
    return PSO_OK;
 }
 

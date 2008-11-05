@@ -160,14 +160,14 @@ bool psoqCreateVDS( psoqMemoryManager  * pManager,
       SET_OFFSET( &pManager->pHeader->topHashItem.txStatus );
    pFolder->nodeObject.myParentOffset = PSON_NULL_OFFSET;
 
-   errcode = psonHashInit( &pFolder->hashObj, 
-                      SET_OFFSET(&pFolder->memObject),
-                      25, 
-                      pContext );
+   errcode = psonHashTxInit( &pFolder->hashObj, 
+                             SET_OFFSET(&pFolder->memObject),
+                             25, 
+                             pContext );
    if ( errcode != PSO_OK ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
-   }   
+   }
    (*ppHeader)->treeMgrOffset = SET_OFFSET( ptr );
    (*ppHeader)->topHashItem.dataOffset = SET_OFFSET(&(*ppHeader)->topDescriptor);
    (*ppHeader)->topDescriptor.offset = SET_OFFSET( ptr );

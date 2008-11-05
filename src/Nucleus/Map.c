@@ -259,9 +259,8 @@ bool psonMapGetFirst( psonMap            * pHashMap,
                       size_t               bufferLength,
                       psonSessionContext * pContext )
 {
-   psonHashItem* pHashItem = NULL;
+   psonHashItem * pHashItem = NULL;
    psonTxStatus * txHashMapStatus;
-   ptrdiff_t  firstItemOffset;
    bool found;
    
    PSO_PRE_CONDITION( pHashMap != NULL );
@@ -278,14 +277,12 @@ bool psonMapGetFirst( psonMap            * pHashMap,
    }
    
    found = psonHashGetFirst( &pHashMap->hashObj, 
-                             &firstItemOffset );
+                             &pHashItem );
    if ( ! found ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
       return false;
    }
    
-   GET_PTR( pHashItem, firstItemOffset, psonHashItem );
-
    /*
     * These tests cannot be done in the API (before calling the 
     * current function) since we do not know the item size. They 
@@ -304,7 +301,7 @@ bool psonMapGetFirst( psonMap            * pHashMap,
 
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
-   pItem->itemOffset = firstItemOffset;
+//   pItem->itemOffset = firstItemOffset;
 
    return true;
 }
@@ -320,7 +317,6 @@ bool psonMapGetNext( psonMap            * pHashMap,
    psonHashItem * pHashItem = NULL;
    psonHashItem * previousHashItem = NULL;
    psonTxStatus * txHashMapStatus;
-   ptrdiff_t  itemOffset;
    bool found;
    
    PSO_PRE_CONDITION( pHashMap != NULL );
@@ -328,7 +324,6 @@ bool psonMapGetNext( psonMap            * pHashMap,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pHashMap->memObject.objType == PSON_IDENT_MAP );
    PSO_PRE_CONDITION( pItem->pHashItem  != NULL );
-   PSO_PRE_CONDITION( pItem->itemOffset != PSON_NULL_OFFSET );
    
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
 
@@ -338,12 +333,11 @@ bool psonMapGetNext( psonMap            * pHashMap,
       return false;
    }
    
-   itemOffset       = pItem->itemOffset;
    previousHashItem = pItem->pHashItem;
    
    found = psonHashGetNext( &pHashMap->hashObj, 
-                            itemOffset,
-                            &itemOffset );
+                            previousHashItem,
+                            &pHashItem );
    if ( ! found ) {
       /* 
        * If we come here, there are no additional data items to retrieve. As 
@@ -352,14 +346,11 @@ bool psonMapGetNext( psonMap            * pHashMap,
        * at this point.
        */
       pItem->pHashItem = NULL;
-      pItem->itemOffset = PSON_NULL_OFFSET;
       psonMapReleaseNoLock( pHashMap, previousHashItem, pContext );
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
       return false;
    }
    
-   GET_PTR( pHashItem, itemOffset, psonHashItem );
-
    /*
     * These tests cannot be done in the API (before calling the 
     * current function) since we do not know the item size. They 
@@ -378,7 +369,6 @@ bool psonMapGetNext( psonMap            * pHashMap,
 
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
-   pItem->itemOffset = itemOffset;
    psonMapReleaseNoLock( pHashMap, previousHashItem, pContext );
 
    return true;
@@ -492,7 +482,6 @@ bool psonMapInsert( psonMap            * pHashMap,
                     size_t               itemLength,
                     psonSessionContext * pContext )
 {
-   psonHashItem* pHashItem = NULL;
    psoErrors errcode;
    
    PSO_PRE_CONDITION( pHashMap != NULL );
@@ -508,7 +497,6 @@ bool psonMapInsert( psonMap            * pHashMap,
                              keyLength,
                              pItem, 
                              itemLength,
-                             &pHashItem,
                              pContext );
    if ( errcode != PSO_OK ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
@@ -614,8 +602,7 @@ bool psonMapReplace( psonMap            * pHashMap,
 void psonMapStatus( psonMap      * pHashMap,
                     psoObjStatus * pStatus )
 {
-   psonHashItem* pHashItem = NULL;
-   ptrdiff_t  firstItemOffset;
+   psonHashItem * pHashItem = NULL;
    psonTxStatus  * txStatus;
    bool found;
    
@@ -631,9 +618,8 @@ void psonMapStatus( psonMap      * pHashMap,
    pStatus->maxKeyLength  = 0;
    if ( pStatus->numDataItem == 0 ) return;
 
-   found = psonHashGetFirst( &pHashMap->hashObj, &firstItemOffset );
+   found = psonHashGetFirst( &pHashMap->hashObj, &pHashItem );
    while ( found ) {
-      GET_PTR( pHashItem, firstItemOffset, psonHashItem );
       if ( pHashItem->dataLength > pStatus->maxDataLength ) {
          pStatus->maxDataLength = pHashItem->dataLength;
       }
@@ -642,8 +628,8 @@ void psonMapStatus( psonMap      * pHashMap,
       }
 
       found = psonHashGetNext( &pHashMap->hashObj, 
-                               firstItemOffset,
-                               &firstItemOffset );
+                               pHashItem,
+                               &pHashItem );
    }
 }
 

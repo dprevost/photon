@@ -31,7 +31,6 @@ int main()
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    char* data3 = "This data is much longer than data1";
-   psonHashItem* pNewItem;
    size_t bucket;
    psonHashItem* pItem = NULL;
    bool found;
@@ -48,7 +47,6 @@ int main()
                              strlen(key1),
                              data1,
                              strlen(data1),
-                             &pNewItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

@@ -25,9 +25,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/* isRemoved can be NULL */
 static
 void psonFolderReleaseNoLock( psonFolder         * pFolder,
-                              psonHashTxItem       * pHashItemItem,
+                              psonHashTxItem     * pHashItemItem,
+                              bool               * isRemoved,
                               psonSessionContext * pContext );
 
 static 
@@ -39,8 +41,9 @@ psoErrors psonValidateString( const char * objectName,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psonFolderCommitEdit( psonFolder         * pFolder,
-                           psonHashTxItem       * pHashItem, 
+                           psonHashTxItem     * pHashItem, 
                            enum psoObjectType   objectType,
+                           psonMemObject     ** ppOldMemObj,
                            psonSessionContext * pContext )
 {
    psonObjectDescriptor * pDesc, * pDescLatest;
@@ -48,7 +51,8 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
    psonHashTxItem * pHashItemLatest;
    psonTreeNode * node;
    psonTxStatus * tx;
-   
+   bool isRemoved = false;
+
    PSO_PRE_CONDITION( pFolder   != NULL );
    PSO_PRE_CONDITION( pHashItem != NULL );
    PSO_PRE_CONDITION( pContext  != NULL );
@@ -56,6 +60,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
 
    GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
 
+   /* The edit version which is about to become the latest */
    pMapEdit = GET_PTR_FAST( pDesc->offset, psonMap );
    
    PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
@@ -63,6 +68,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
    pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashTxItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                                psonObjectDescriptor );
+   /* The current latest which is about to become old. */
    pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonMap );
 
    pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
@@ -79,7 +85,13 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
    /* Reminder: pHashItemLatest is now the old version */
    psonFolderReleaseNoLock( pFolder,
                             pHashItemLatest,
+                            &isRemoved,
                             pContext );
+   if ( isRemoved ) {
+      *ppOldMemObj = &pMapLatest->memObject; /* The old copy */
+fprintf( stderr, " oh oh\n" );
+   }
+   fprintf( stderr, "%d %d\n", pMapEdit->editVersion, pMapEdit->latestVersion );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -750,9 +762,11 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
    psonTxStatus * txStatus;
    psonFolder * pNextFolder;
    psonMemObject * pMemObject;
-   int pDesc_invalid_api_type = 0;
    size_t bucket;
    bool found, ok;
+#ifdef USE_DBC
+   int pDesc_invalid_api_type = 0;
+#endif
    
    PSO_PRE_CONDITION( pFolder       != NULL );
    PSO_PRE_CONDITION( objectName    != NULL )
@@ -995,7 +1009,7 @@ bool psonFolderGetNext( psonFolder         * pFolder,
             pItem->itemOffset = itemOffset;
             pItem->status = txItemStatus->status;
 
-            psonFolderReleaseNoLock( pFolder, previousHashItem, pContext );
+            psonFolderReleaseNoLock( pFolder, previousHashItem, NULL, pContext );
 
             psonUnlock( &pFolder->memObject, pContext );
             
@@ -1020,7 +1034,7 @@ bool psonFolderGetNext( psonFolder         * pFolder,
     */
    pItem->pHashItem = NULL;
    pItem->itemOffset = PSON_NULL_OFFSET;
-   psonFolderReleaseNoLock( pFolder, previousHashItem, pContext );
+   psonFolderReleaseNoLock( pFolder, previousHashItem, NULL, pContext );
     
    psonUnlock( &pFolder->memObject, pContext );
    psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
@@ -1167,10 +1181,12 @@ bool psonFolderGetStatus( psonFolder         * pFolder,
    psonTxStatus * txStatus;
    psonFolder * pNextFolder;
    psonMemObject * pMemObject;
-   int pDesc_invalid_api_type = 0;
    size_t bucket;
    bool found, ok;
-   
+#ifdef USE_DBC
+   int pDesc_invalid_api_type = 0;
+#endif
+
    PSO_PRE_CONDITION( pFolder    != NULL );
    PSO_PRE_CONDITION( objectName != NULL )
    PSO_PRE_CONDITION( pStatus    != NULL );
@@ -1372,10 +1388,12 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
    psonFolder* pNextFolder;
    psonTxStatus* objTxStatus;  /* txStatus of the created object */
    psonMemObjIdent memObjType = PSON_IDENT_LAST;
-   int invalid_object_type = 0;
    size_t bucket;
    bool found, ok;
-   
+#ifdef USE_DBC
+   int invalid_object_type = 0;
+#endif
+
    PSO_PRE_CONDITION( pFolder      != NULL );
    PSO_PRE_CONDITION( objectName   != NULL )
    PSO_PRE_CONDITION( originalName != NULL )
@@ -1691,6 +1709,7 @@ bool psonFolderRelease( psonFolder         * pFolder,
    if ( psonLock( &pFolder->memObject, pContext ) ) {
       psonFolderReleaseNoLock( pFolder,
                                pFolderItem->pHashItem,
+                               NULL,
                                pContext );
 
       psonUnlock( &pFolder->memObject, pContext );
@@ -1707,7 +1726,8 @@ bool psonFolderRelease( psonFolder         * pFolder,
 
 static
 void psonFolderReleaseNoLock( psonFolder         * pFolder,
-                              psonHashTxItem       * pHashItem,
+                              psonHashTxItem     * pHashItem,
+                              bool               * isRemoved,
                               psonSessionContext * pContext )
 {
    psonTxStatus * txItemStatus, * txFolderStatus;
@@ -1737,6 +1757,7 @@ void psonFolderReleaseNoLock( psonFolder         * pFolder,
          psonFolderRemoveObject( pFolder,
                                  pHashItem,
                                  pContext );
+         if ( isRemoved ) *isRemoved = true;
       }
    }
 }
@@ -1840,8 +1861,9 @@ void psonFolderResize( psonFolder         * pFolder,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psonFolderRollbackEdit( psonFolder         * pFolder,
-                             psonHashTxItem       * pHashItem, 
+                             psonHashTxItem     * pHashItem, 
                              enum psoObjectType   objectType,
+                             bool               * isRemoved,
                              psonSessionContext * pContext )
 {
    psonObjectDescriptor * pDesc, * pDescLatest;
@@ -1886,6 +1908,7 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
 
    psonFolderReleaseNoLock( pFolder,
                             pHashItemLatest,
+                            isRemoved,
                             pContext );
 }
 

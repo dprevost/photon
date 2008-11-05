@@ -31,7 +31,6 @@ int main()
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   psonHashItem* pNewItem;
    size_t bucket;
    psonHashItem* pItem = NULL;
    bool ok;
@@ -48,7 +47,6 @@ int main()
                              strlen(key1),
                              data1,
                              strlen(data1),
-                             &pNewItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -59,7 +57,6 @@ int main()
                              strlen(key2),
                              data2,
                              strlen(data2),
-                             &pNewItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

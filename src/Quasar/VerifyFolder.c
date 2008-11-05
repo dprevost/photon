@@ -29,7 +29,7 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
                         psonSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   psonHashItem * pItem;
+   psonHashTxItem * pItem;
    psonObjectDescriptor* pDesc = NULL;
    void * pObject;
    int pDesc_invalid_api_type = 0;
@@ -40,9 +40,9 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
    /* The easy case */
    if ( pFolder->hashObj.numberOfItems == 0 ) return rc;
 
-   found = psonHashGetFirst( &pFolder->hashObj, &offset );
+   found = psonHashTxGetFirst( &pFolder->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, psonHashItem );
+      GET_PTR( pItem, offset, psonHashTxItem );
       GET_PTR( pDesc, pItem->dataOffset, psonObjectDescriptor );
       GET_PTR( pObject, pDesc->offset, void );
       
@@ -77,7 +77,7 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      found = psonHashGetNext( &pFolder->hashObj,
+      found = psonHashTxGetNext( &pFolder->hashObj,
                                previousOffset,
                                &offset );
 
@@ -115,7 +115,7 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
             default:
                PSO_INV_CONDITION( pDesc_invalid_api_type );
          }
-         psonHashDelWithItem( &pFolder->hashObj,
+         psonHashTxDelWithItem( &pFolder->hashObj,
                               pItem,
                               pContext );
       }
@@ -213,9 +213,9 @@ psoqVerifyFolder( psoqVerifyStruct   * pVerify,
    }
 
    if ( bTestObject ) {
-      rc2 = psoqVerifyHash( pVerify, 
-                            &pFolder->hashObj, 
-                            SET_OFFSET(&pFolder->memObject) );
+      rc2 = psoqVerifyHashTx( pVerify, 
+                              &pFolder->hashObj, 
+                              SET_OFFSET(&pFolder->memObject) );
       if ( rc2 > PSOQ_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;

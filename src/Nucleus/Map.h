@@ -38,7 +38,7 @@ struct psonFashMapItem
 {
    psonHashItem * pHashItem;
 
-   ptrdiff_t   itemOffset;
+//   ptrdiff_t   itemOffset;
 };
 
 typedef struct psonFashMapItem psonFashMapItem;

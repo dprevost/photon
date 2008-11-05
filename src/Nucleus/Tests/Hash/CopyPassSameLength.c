@@ -43,7 +43,6 @@ int main()
                              strlen(key1),
                              data1,
                              strlen(data1),
-                             &pNewItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -54,7 +53,6 @@ int main()
                              strlen(key2),
                              data2,
                              strlen(data2),
-                             &pNewItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

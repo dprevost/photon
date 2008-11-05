@@ -78,6 +78,7 @@ libVerifyVDS_a_SOURCES = \
         VerifyFastMap.c  \
         VerifyFolder.c   \
         VerifyHash.c     \
+        VerifyHashTx.c   \
         VerifyHashMap.c  \
         VerifyList.c     \
         VerifyMemObj.c   \

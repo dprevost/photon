@@ -89,8 +89,8 @@ int main()
       cerr << "Is the watchdog running?" << endl;
       return 1;
    }
-   cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
-   cerr << "                        " << info1.totalSizeInBytes << endl;
+   cerr << "Total allocated in memory: " << info1.allocatedSizeInBytes << endl;
+   cerr << "Total memory size:         " << info1.totalSizeInBytes << endl;
 
    try {
       q1.Open( queueName1 );
@@ -102,7 +102,7 @@ int main()
    }
    
    try {
-      while ( true ) {
+      while ( countIn < 100000 /* true */) {
          q1.Push( dataIn, strlen(dataIn) );
          countIn++;
          q2.Push( dataIn, strlen(dataIn) );

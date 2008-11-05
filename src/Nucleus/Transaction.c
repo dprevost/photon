@@ -20,17 +20,7 @@
 #include "Folder.h"
 #include "HashMap.h"
 #include "Queue.h"
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-struct psonTxLock
-{
-   psonMemObject * pMemObj;
-
-   psonLinkNode node;
-};
-
-typedef struct psonTxLock psonTxLock;
+#include "Nucleus/TransactionHash.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -39,30 +29,27 @@ bool psonAddLockTx( psonTx             * pTx,
                     psonMemObject      * pMemObj,
                     psonSessionContext * pContext )
 {
-   psonTxLock * pLock;
-   
+   bool ok;
+      
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pMemObj  != NULL );
 
-   pLock = (psonTxLock *) psonMalloc( &pTx->memObject,
-                                      sizeof(psonTxLock), 
-                                      pContext );
-   if ( pLock != NULL ) {
-      pLock->pMemObj = pMemObj;
-
-      psonLinkNodeInit(  &pLock->node );
-      psonLinkedListPutLast( &pTx->listOfLocks, &pLock->node );
-
-      return true;
+   ok = txHashInsert( pTx, pMemObj, pContext );
+   if ( !ok ) {
+      psocSetError( &pContext->errorHandler, 
+                    g_psoErrorHandle, 
+                    PSO_NOT_ENOUGH_PSO_MEMORY );
    }
 
-   psocSetError( &pContext->errorHandler, 
-                 g_psoErrorHandle, 
-                 PSO_NOT_ENOUGH_PSO_MEMORY );
+   return ok;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psonLockTx( psonMemObject      * pMemObj,
+bool psonLockTx( psonTx             * pTx,
+                 psonMemObject      * pMemObj,
                  psonSessionContext * pContext )
 {
    bool ok;
@@ -77,27 +64,15 @@ bool psonLockTx( psonMemObject      * pMemObj,
       ok = psocTryAcquireProcessLock ( &pMemObj->lock,
                                        pContext->pidLocker,
                                        PSON_LOCK_TIMEOUT );
+//      fprintf( stderr, "acq %p\n", pMemObj );
       PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) {
+         ok = psonAddLockTx( pTx, pMemObj, pContext );
+         PSO_POST_CONDITION( ok == true || ok == false );
+      }
    }
    
    return ok;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static inline
-void psonUnlockTx( psonMemObject      * pMemObj,
-                   psonSessionContext * pContext )
-{
-   bool ok;
-   
-   PSO_PRE_CONDITION( pMemObj  != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
-
-   ok = psocTestLockPidValue( &pMemObj->lock, pContext->pidLocker );
-   PSO_POST_CONDITION( ok == true || ok == false );
-
-  if ( ok ) psocReleaseProcessLock( &pMemObj->lock );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -106,43 +81,25 @@ static
 void psonClearLocks( psonTx             * pTx,
                      psonSessionContext * pContext )
 {
-   
-   psonTxOps     * pOps = NULL;
-   psonLinkNode  * pLinkNode = NULL;
-   psonMemObject * pChildMemObject, * parentMemObject;
-   psonHashItem  * pHashItem;
-   psonObjectDescriptor * pDesc;
+   psonMemObject * pMemObj;
    bool ok;
+   size_t rowNumber;
    
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
-      
-   ok = psonLinkedListPeakFirst( &pTx->listOfOps, &pLinkNode );
-   PSO_POST_CONDITION( ok == true || ok == false );
+   
+//fprintf( stderr, " clearlocks %d\n",  pTx->listOfLocks.numberOfItems );
+   ok = txHashGetFirst( pTx, &rowNumber, &pMemObj );
    while ( ok ) {
-      pChildMemObject = parentMemObject = NULL;
-      
-      pOps = (psonTxOps*) ((char*)pLinkNode - offsetof( psonTxOps, node ));
+//      fprintf( stderr, "before rel %p %d\n", pMemObj, pMemObj->lock.lock );
+      psocReleaseProcessLock( &pMemObj->lock );
+//      fprintf( stderr, "after rel %p %d\n", pMemObj, pMemObj->lock.lock );
 
-      /* We always unlock the parent */
-      GET_PTR( parentMemObject, pOps->parentOffset, psonMemObject );
-      psonUnlockTx( parentMemObject, pContext );
-
-      /* We only unlock the child for these two ops */
-      if ( pOps->transType ==  PSON_TX_ADD_OBJECT || 
-         pOps->transType == PSON_TX_REMOVE_OBJECT ) {
-
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
-         GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
-         GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
-         
-         psonUnlockTx( pChildMemObject, pContext );
-      }
-
-      ok = psonLinkedListPeakNext( &pTx->listOfOps, pLinkNode, &pLinkNode );
-      PSO_POST_CONDITION( ok == true || ok == false );
+      ok = txHashGetNext( pTx, rowNumber, &rowNumber, &pMemObj );
    }
+   
+   txHashEmpty( pTx, pContext );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -152,6 +109,7 @@ bool psonTxInit( psonTx             * pTx,
                  psonSessionContext * pContext )
 {
    psoErrors errcode;
+   bool ok;
    
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
@@ -167,7 +125,9 @@ bool psonTxInit( psonTx             * pTx,
    }
 
    psonLinkedListInit( &pTx->listOfOps );
-
+   ok = txHashInit( pTx, 100, pContext );
+   if ( !ok ) return false;
+   
    pTx->signature = PSON_TX_SIGNATURE;
    
    return true;
@@ -279,11 +239,13 @@ bool psonTxCommit( psonTx             * pTx,
    psonTxStatus  * pChildStatus;
    psonHashMap   * pHashMap;
    psonQueue     * pQueue;
-   int pOps_invalid_type = 0;
    psonHashTxItem  * pHashItem;
    psonObjectDescriptor * pDesc;
-   bool ok, okLock;
-   
+   bool ok, okLock, okDelete;
+#ifdef USE_DBC
+   int pOps_invalid_type = 0;
+#endif
+
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
@@ -300,7 +262,7 @@ bool psonTxCommit( psonTx             * pTx,
                                     SET_OFFSET(pTx), 
                                     &pContext->errorHandler );
       if ( errcode != PSO_OK ) {
-         fprintf(stderr, "Transaction::Commit err1 \n" );
+//         fprintf(stderr, "Transaction::Commit err1 \n" );
          return -1;
       }
    }
@@ -324,9 +286,11 @@ bool psonTxCommit( psonTx             * pTx,
 
       /* We always lock the parent */
       GET_PTR( parentMemObject, pOps->parentOffset, psonMemObject );
-      okLock = psonLockTx( parentMemObject, pContext );
+//      fprintf( stderr, "parent: %p %d\n", parentMemObject, pOps->transType );
+      okLock = psonLockTx( pTx, parentMemObject, pContext );
       PSO_POST_CONDITION( okLock == true || okLock == false );
       if ( ! okLock ) {
+//         fprintf(stderr, "Transaction::Commit err1 \n" );
          psonClearLocks( pTx, pContext );
          return false;
       }
@@ -334,14 +298,16 @@ bool psonTxCommit( psonTx             * pTx,
       if ( pOps->transType ==  PSON_TX_ADD_OBJECT || 
          pOps->transType == PSON_TX_REMOVE_OBJECT ) {
 
-         GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
+         GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
          GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
          
-         okLock = psonLockTx( pChildMemObject, pContext );
+  //       fprintf( stderr, "child: %p\n", pChildMemObject );
+         okLock = psonLockTx( pTx, pChildMemObject, pContext );
          PSO_POST_CONDITION( okLock == true || okLock == false );
          if ( ! okLock ) {
             psonClearLocks( pTx, pContext );
+ //           fprintf(stderr, "Transaction::Commit err3 \n" );
             return false;
          }
       }
@@ -415,9 +381,24 @@ bool psonTxCommit( psonTx             * pTx,
          GET_PTR( parentFolder, pOps->parentOffset, psonFolder );
          GET_PTR( pHashItem, pOps->childOffset, psonHashTxItem );
          GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
-         
-         psonFolderCommitEdit( parentFolder, 
-                               pHashItem, pOps->childType, pContext );
+
+         pChildMemObject = NULL;
+         psonFolderCommitEdit( parentFolder, pHashItem, pOps->childType, 
+                               &pChildMemObject, pContext );
+         /*
+          * If the oldest version of the map is deleted from memory (no current
+          * access), its pointer is returned in pChildMemObject so that we
+          * can avoid trying to unlocking it, if we hold the lock.
+          */
+         if ( pChildMemObject ) {
+            /*
+             * Note: the old version might be locked by this transaction or
+             * it might not. We clear it just in case and do not check the
+             * return code (which would tell us if the lock was taken or not).
+             */
+            txHashDelete( pTx, pChildMemObject, pContext );
+//            fprintf( stderr, "Edit %p\n", pChildMemObject );
+         }
          
          parentFolder->nodeObject.txCounter--;
 
@@ -454,8 +435,9 @@ bool psonTxCommit( psonTx             * pTx,
             psonFolderRemoveObject( parentFolder, 
                                     pHashItem,
                                     pContext );
-            /* We set this so that we don't try to unlock the object */
-            pOps->childOffset = PSON_NULL_OFFSET;
+
+            okDelete = txHashDelete( pTx, pChildMemObject, pContext );
+//            fprintf( stderr, "Delete: %p %d\n", pChildMemObject, okDelete );
          }
 
          break;
@@ -495,37 +477,10 @@ bool psonTxCommit( psonTx             * pTx,
     * Third pass: we unlock everything and release the memory of the
     * transaction list.
     */
+   psonClearLocks( pTx, pContext );
+
    while ( psonLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
-
       pOps = (psonTxOps*) ((char*)pLinkNode - offsetof( psonTxOps, node ));
-
-      pChildMemObject = parentMemObject = NULL;
-      
-      pOps = (psonTxOps*) ((char*)pLinkNode - offsetof( psonTxOps, node ));
-      
-      /* We only unlock the child for these two ops */
-      if ( pOps->transType ==  PSON_TX_ADD_OBJECT || 
-         pOps->transType == PSON_TX_REMOVE_OBJECT ) {
-
-         /* 
-          * If the object was removed (and not just marked as removed),
-          * its memory is already back to the global allocator. We cannot
-          * unlock it, evidently (and there is no reason to do so).
-          */
-         if ( pOps->childOffset != PSON_NULL_OFFSET ) {
-            GET_PTR( pHashItem, pOps->childOffset, psonHashItem );
-            GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
-            GET_PTR( pChildMemObject, pDesc->memOffset, psonMemObject );
-         
-            psonUnlockTx( pChildMemObject, pContext );
-         }
-      }
-
-      /* We always unlock the parent */
-      GET_PTR( parentMemObject, pOps->parentOffset, psonMemObject );
-      psonUnlockTx( parentMemObject, pContext );
-
-         
       psonFree( &pTx->memObject, (unsigned char*) pOps, sizeof(psonTxOps), 
                 pContext );
    }
@@ -549,8 +504,11 @@ void psonTxRollback( psonTx             * pTx,
    psonQueue     * pQueue;
    psonHashTxItem  * pHashItem;
    psonObjectDescriptor * pDesc;
+   bool isRemoved;
+#ifdef USE_DBC
    int pOps_invalid_type = 0;
-
+#endif
+   
    PSO_PRE_CONDITION( pTx      != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
@@ -678,8 +636,8 @@ void psonTxRollback( psonTx             * pTx,
          
          psonLockNoFailure( &parentFolder->memObject, pContext );
 
-         psonFolderRollbackEdit( parentFolder, 
-                                 pHashItem, pOps->childType, pContext );
+         psonFolderRollbackEdit( parentFolder, pHashItem, pOps->childType, 
+                                 &isRemoved, pContext );
          
          parentFolder->nodeObject.txCounter--;
 

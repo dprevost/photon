@@ -27,6 +27,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
+   psonMemObject * pOldMemObj = NULL;
    psonFolderItem folderItem;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
@@ -69,6 +70,7 @@ int main()
    psonFolderCommitEdit( NULL,
                          folderItem.pHashItem, 
                          PSON_IDENT_MAP,
+                         &pOldMemObj,
                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

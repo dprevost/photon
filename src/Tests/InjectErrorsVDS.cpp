@@ -82,7 +82,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
    psonTxStatus * txItemStatus, * txHashMapStatus;
    unsigned long i, ** apiObj;
    ptrdiff_t offset, previousOffset;
-   psonHashItem * pItem;
+   psonHashTxItem * pItem;
    ptrdiff_t* pArray;   
    bool ok;
    
@@ -112,13 +112,13 @@ int AddDefectsHashMaps( vector<myMap> & h )
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
    txHashMapStatus->usageCounter++;
 
-   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashTxGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = psonHashGetNext( &pHashMap->hashObj,
-                            previousOffset,
-                            &offset );
+      ok = psonHashTxGetNext( &pHashMap->hashObj,
+                              previousOffset,
+                              &offset );
       i++;
       if ( i >= 6 ) break;
    }
@@ -126,7 +126,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[1].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, psonHashItem );
+   GET_PTR( pItem, offset, psonHashTxItem );
    txItemStatus = &pItem->txStatus;
    txItemStatus->usageCounter++;
 
@@ -143,10 +143,10 @@ int AddDefectsHashMaps( vector<myMap> & h )
    apiHashMap = (psoaHashMap **) ( (unsigned char *) &h[3].map + api_offset );
    pHashMap = (psonHashMap *) (*apiHashMap)->object.pMyMemObject;
 
-   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashTxGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {      
-      GET_PTR( pItem, offset, psonHashItem );
+      GET_PTR( pItem, offset, psonHashTxItem );
       txItemStatus = &pItem->txStatus;
 
       if ( i < 5 ) { /* removed committed */
@@ -163,9 +163,9 @@ int AddDefectsHashMaps( vector<myMap> & h )
       }
 
       previousOffset = offset;
-      ok = psonHashGetNext( &pHashMap->hashObj,
-                            previousOffset,
-                            &offset );
+      ok = psonHashTxGetNext( &pHashMap->hashObj,
+                              previousOffset,
+                              &offset );
       i++;
 
    }
@@ -203,13 +203,13 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashTxGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = psonHashGetNext( &pHashMap->hashObj,
-                            previousOffset,
-                            &offset );
+      ok = psonHashTxGetNext( &pHashMap->hashObj,
+                              previousOffset,
+                              &offset );
       i++;
       if ( i >= 6 ) break;
    }
@@ -217,7 +217,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[6].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, psonHashItem );
+   GET_PTR( pItem, offset, psonHashTxItem );
    pItem->keyLength = 0;
    
    cout << "Defect for " << h[7].name << ": item - invalid data offset" << endl;
@@ -227,13 +227,13 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Error - cannot lock the object" << endl;
       return -1;
    }
-   ok = psonHashGetFirst( &pHashMap->hashObj, &offset );
+   ok = psonHashTxGetFirst( &pHashMap->hashObj, &offset );
    i = 0;
    while ( ok ) {
       previousOffset = offset;
-      ok = psonHashGetNext( &pHashMap->hashObj,
-                            previousOffset,
-                            &offset );
+      ok = psonHashTxGetNext( &pHashMap->hashObj,
+                              previousOffset,
+                              &offset );
       i++;
       if ( i >= 6 ) break;
    }
@@ -241,7 +241,7 @@ int AddDefectsHashMaps( vector<myMap> & h )
       cerr << "Iteration error in " << h[7].name << endl;
       return -1;
    }
-   GET_PTR( pItem, offset, psonHashItem );
+   GET_PTR( pItem, offset, psonHashTxItem );
    pItem->dataOffset = 0;
 
    return 0;

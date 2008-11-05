@@ -142,13 +142,13 @@ bool psonHashGet( psonHash            * pHash,
                   psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT 
-bool psonHashGetFirst( psonHash * pHash,
-                       ptrdiff_t * pFirstItemOffset );
+bool psonHashGetFirst( psonHash      * pHash,
+                       psonHashItem ** ppItem );
 
 PHOTON_ENGINE_EXPORT
-bool psonHashGetNext( psonHash  * pHash,
-                      ptrdiff_t   previousOffset,
-                      ptrdiff_t * pNextItemOffset );
+bool psonHashGetNext( psonHash      * pHash,
+                      psonHashItem  * previousItem,
+                      psonHashItem ** nextItem );
 
 PHOTON_ENGINE_EXPORT 
 enum psoErrors psonHashInit( psonHash           * pHash,
@@ -166,23 +166,7 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
                                size_t                keyLength,
                                const void          * pData,
                                size_t                dataLength,
-                               psonHashItem       ** ppNewItem,
                                psonSessionContext  * pContext );
-
-/*
- * Insert at is used to insert an item in a given bucket, at the end
- * of the linked list. This is used for adding a replacement item, 
- * before the change is committed.
- */
-PHOTON_ENGINE_EXPORT 
-enum psoErrors psonHashInsertAt( psonHash            * pHash,
-                                 size_t                bucket,
-                                 const unsigned char * pKey,
-                                 size_t                keyLength,
-                                 const void          * pData,
-                                 size_t                dataLength,
-                                 psonHashItem       ** ppNewItem,
-                                 psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
 enum psoErrors psonHashResize( psonHash           * pHash,

@@ -26,82 +26,10 @@ psoqCheckFastMapContent( psoqVerifyStruct   * pVerify,
                          psonMap            * pHashMap, 
                          psonSessionContext * pContext )
 {
-   ptrdiff_t offset, previousOffset;
-   psonHashItem * pItem, * pDeletedItem = NULL;
-   psonTxStatus * txItemStatus;
    enum psoqRecoverError rc = PSOQ_REC_OK;
-   bool found;
    
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
-   
-   found = psonHashGetFirst( &pHashMap->hashObj, &offset );
-   while ( found ) {
-      GET_PTR( pItem, offset, psonHashItem );
-      txItemStatus = &pItem->txStatus;
-
-      if ( txItemStatus->txOffset != PSON_NULL_OFFSET ) {
-         /*
-          * So we have an interrupted transaction. What kind? 
-          *   FLAG                      ACTION          
-          *   TXS_ADDED                 remove item
-          *   TXS_REPLACED              remove item (the older item is also reset)
-          *   TXS_DESTROYED             reset txStatus  
-          *   TXS_DESTROYED_COMMITTED   remove item
-          *
-          * Action is the equivalent of what a rollback would do.
-          */
-         if ( txItemStatus->status & PSON_TXS_ADDED ) {
-            psoqEcho( pVerify, "Hash item added but not committed" );
-            pDeletedItem = pItem;
-         }         
-         else if ( txItemStatus->status & PSON_TXS_REPLACED ) {
-            psoqEcho( pVerify, "Hash item replaced but not committed" );
-            pDeletedItem = pItem;
-         }
-         else if ( txItemStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
-            psoqEcho( pVerify, "Hash item deleted and committed" );
-            pDeletedItem = pItem;
-         }
-         else if ( txItemStatus->status & PSON_TXS_DESTROYED ) {
-            psoqEcho( pVerify, "Hash item deleted but not committed" );
-         }
-         
-         if ( pDeletedItem == NULL && pVerify->doRepair ) {
-            txItemStatus->txOffset = PSON_NULL_OFFSET;
-            txItemStatus->status = PSON_TXS_OK;
-            psoqEcho( pVerify, "Hash item status fields reset to zero" );
-         }
-         rc = PSOQ_REC_CHANGES;
-      }
-      
-      if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 ) {
-         rc = PSOQ_REC_CHANGES;
-         psoqEcho( pVerify, "Hash item usage counter is not zero" );
-         if (pVerify->doRepair) {
-            txItemStatus->usageCounter = 0;
-            psoqEcho( pVerify, "Hash item usage counter set to zero" );
-         }
-      }
-      
-      previousOffset = offset;
-      found = psonHashGetNext( &pHashMap->hashObj,
-                               previousOffset,
-                               &offset );
-
-      /*
-       * We need the old item to be able to get to the next item. That's
-       * why we save the item to be deleted and delete it until after we
-       * retrieve the next item.
-       */
-      if ( pDeletedItem != NULL && pVerify->doRepair ) {
-         psonHashDelWithItem( &pHashMap->hashObj,
-                              pDeletedItem,
-                              pContext );
-         psoqEcho( pVerify, "Hash item removed from shared memory" );
-      }
-      pDeletedItem = NULL;
-   }
    
    return rc;
 }

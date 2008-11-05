@@ -30,7 +30,6 @@ int main()
    enum psoErrors errcode;
    char* key = "My Key";
    char* data1 = "My Data 1";
-   psonHashItem* pNewItem;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -44,7 +43,6 @@ int main()
                              strlen(key),
                              NULL,
                              strlen(data1),
-                             &pNewItem,
                              &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

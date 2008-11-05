@@ -71,11 +71,16 @@ typedef struct psonFolder psonFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * if ppOldMemObj is non-NULL and the object is actually removed, the ptr
+ * is set so that the transaction does not try to lock the object.
+ */
 PHOTON_ENGINE_EXPORT
-void psonFolderCommitEdit( psonFolder          * pFolder,
-                           psonHashTxItem        * pHashItem, 
-                           enum psoObjectType    objectType,
-                           psonSessionContext  * pContext );
+void psonFolderCommitEdit( psonFolder         * pFolder,
+                           psonHashTxItem     * pHashItem, 
+                           enum psoObjectType   objectType,
+                           psonMemObject     ** ppOldMemObj,
+                           psonSessionContext * pContext );
 
 /**
  * Creates an immediate child of the folder.
@@ -198,10 +203,11 @@ void psonFolderResize( psonFolder         * pFolder,
 
 
 PHOTON_ENGINE_EXPORT
-void psonFolderRollbackEdit( psonFolder          * pFolder,
-                             psonHashTxItem        * pHashItem, 
-                             enum psoObjectType    objectType,
-                             psonSessionContext  * pContext );
+void psonFolderRollbackEdit( psonFolder         * pFolder,
+                             psonHashTxItem     * pHashItem, 
+                             enum psoObjectType   objectType,
+                             bool               * isRemoved,
+                             psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -27,7 +27,7 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
                          psonSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
-   psonHashItem * pItem, * pDeletedItem = NULL;
+   psonHashTxItem * pItem, * pDeletedItem = NULL;
    psonTxStatus * txItemStatus;
    enum psoqRecoverError rc = PSOQ_REC_OK;
    bool found;
@@ -35,9 +35,9 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
    /* The easy case */
    if ( pHashMap->hashObj.numberOfItems == 0 ) return rc;
    
-   found = psonHashGetFirst( &pHashMap->hashObj, &offset );
+   found = psonHashTxGetFirst( &pHashMap->hashObj, &offset );
    while ( found ) {
-      GET_PTR( pItem, offset, psonHashItem );
+      GET_PTR( pItem, offset, psonHashTxItem );
       txItemStatus = &pItem->txStatus;
 
       if ( txItemStatus->txOffset != PSON_NULL_OFFSET ) {
@@ -85,7 +85,7 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
       }
       
       previousOffset = offset;
-      found = psonHashGetNext( &pHashMap->hashObj,
+      found = psonHashTxGetNext( &pHashMap->hashObj,
                                previousOffset,
                                &offset );
 
@@ -95,7 +95,7 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
        * retrieve the next item.
        */
       if ( pDeletedItem != NULL && pVerify->doRepair ) {
-         psonHashDelWithItem( &pHashMap->hashObj,
+         psonHashTxDelWithItem( &pHashMap->hashObj,
                               pDeletedItem,
                               pContext );
          psoqEcho( pVerify, "Hash item removed from shared memory" );
@@ -199,9 +199,9 @@ psoqVerifyHashMap( psoqVerifyStruct   * pVerify,
    }
 
    if ( bTestObject ) {
-      rc2 = psoqVerifyHash( pVerify, 
-                           &pHashMap->hashObj, 
-                           SET_OFFSET(&pHashMap->memObject) );
+      rc2 = psoqVerifyHashTx( pVerify, 
+                              &pHashMap->hashObj, 
+                              SET_OFFSET(&pHashMap->memObject) );
       if ( rc2 > PSOQ_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;
