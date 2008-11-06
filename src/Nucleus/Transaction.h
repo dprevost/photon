@@ -139,7 +139,7 @@ bool psonTxCommit( psonTx             * pTx,
                    psonSessionContext * pContext );
                   
 PHOTON_ENGINE_EXPORT
-void psonTxRollback( psonTx             * pTx,
+bool psonTxRollback( psonTx             * pTx,
                      psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
