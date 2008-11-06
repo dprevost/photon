@@ -34,7 +34,7 @@ int main()
    unsigned char * pData;
    psonHashTxItem * pItem = NULL;
    size_t bucket;
-   bool ok;
+   bool ok, found;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -47,13 +47,23 @@ int main()
    for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
+      found = psonHashTxGet( pHash,
+                             (unsigned char*)key,
+                             strlen(key),
+                             &pNewItem,
+                             &bucket,
+                             &context );
+      if ( found ) {
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
       errcode = psonHashTxInsert( pHash,
-                                (unsigned char*)key,
-                                strlen(key),
-                                data,
-                                strlen(data),
-                                &pNewItem,
-                                &context );
+                                  bucket,
+                                  (unsigned char*)key,
+                                  strlen(key),
+                                  data,
+                                  strlen(data),
+                                  &pNewItem,
+                                  &context );
       if ( errcode != PSO_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -81,11 +91,11 @@ int main()
       sprintf( data, "My Data %d", i );
       
       ok = psonHashTxGet( pHash,
-                        (unsigned char*)key,
-                        strlen(key),
-                        &pItem,
-                        &bucket,
-                        &context );
+                          (unsigned char*)key,
+                          strlen(key),
+                          &pItem,
+                          &bucket,
+                          &context );
       if ( ! ok ) {
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
       }
@@ -97,13 +107,9 @@ int main()
          ERROR_EXIT( expectedToPass, NULL, ; );
       }
       
-      ok = psonHashTxDelWithKey( pHash,
-                               (unsigned char*)key,
-                               strlen(key),
-                               &context );
-      if ( ! ok ) {
-         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-      }
+      psonHashTxDelete( pHash,
+                        pItem,
+                        &context );
       
       if ( pHash->enumResize == PSON_HASH_TIME_TO_SHRINK ) {
          errcode = psonHashTxResize( pHash, &context );
@@ -111,7 +117,7 @@ int main()
             ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
          }
          else {
-            fprintf( stderr, "Resize (shrink ok %d\n", i );
+            fprintf( stderr, "Resize (shrink ok %d)\n", 500-i );
          }
          if ( pHash->enumResize == PSON_HASH_TIME_TO_SHRINK ) {
             ERROR_EXIT( expectedToPass, NULL, ; );

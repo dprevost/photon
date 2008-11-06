@@ -41,32 +41,17 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   /*
-    * We first insert an item and retrieve to get the exact bucket.
-    * InsertAt() depends on this as you cannot insert in an empty
-    * bucket.
-    */
-   errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key,
-                             strlen(key),
-                             data1,
-                             strlen(data1),
-                             &pNewItem,
-                             &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    found = psonHashTxGet( pHash,
                         (unsigned char*)key,
                         strlen(key),
                         &pNewItem,
                         &bucket,
                         &context );
-   if ( ! found ) {
+   if ( found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psonHashTxInsertAt( pHash,
+   errcode = psonHashTxInsert( pHash,
                                bucket,
                                (unsigned char*)key,
                                strlen(key),

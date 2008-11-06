@@ -598,7 +598,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
       memcpy( pDescNew, pDescOld, descLength );
       pDescNew->offset = SET_OFFSET( ptr );
 
-      errcode = psonHashTxInsertAt( &pFolder->hashObj, 
+      errcode = psonHashTxInsert( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -626,9 +626,9 @@ bool psonFolderEditObject( psonFolder         * pFolder,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashTxDelWithItem( &pFolder->hashObj, 
-                              pHashItemNew,
-                              pContext );
+         psonHashTxDelete( &pFolder->hashObj, 
+                           pHashItemNew,
+                           pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
@@ -659,9 +659,9 @@ bool psonFolderEditObject( psonFolder         * pFolder,
 
       if ( ! ok ) {
          psonTxRemoveLastOps( (psonTx*)pContext->pTransaction, pContext );
-         psonHashTxDelWithItem( &pFolder->hashObj, 
-                              pHashItemNew,
-                              pContext );
+         psonHashTxDelete( &pFolder->hashObj, 
+                           pHashItemNew,
+                           pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
                          ptr, pMemObject->totalBlocks, pContext );
          goto the_exit;
@@ -1461,7 +1461,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
       pDesc->nameLengthInBytes = partialLength * sizeof(char);
       memcpy( pDesc->originalName, originalName, pDesc->nameLengthInBytes );
 
-      errcode = psonHashTxInsertAt( &pFolder->hashObj, 
+      errcode = psonHashTxInsert( &pFolder->hashObj, 
                                   bucket,
                                   (unsigned char *)objectName, 
                                   partialLength * sizeof(char), 
@@ -1505,9 +1505,9 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
       free( pDesc ); 
       pDesc = NULL;
       if ( ! ok ) {
-         psonHashTxDelWithItem( &pFolder->hashObj, 
-                              pHashItem,
-                              pContext );
+         psonHashTxDelete( &pFolder->hashObj, 
+                           pHashItem,
+                           pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          goto the_exit;
@@ -1587,9 +1587,9 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
 
       if ( ! ok ) {
          psonTxRemoveLastOps( (psonTx*)pContext->pTransaction, pContext );
-         psonHashTxDelWithItem( &pFolder->hashObj,
-                              pHashItem,
-                              pContext );
+         psonHashTxDelete( &pFolder->hashObj,
+                           pHashItem,
+                           pContext );
          psonFreeBlocks( pContext->pAllocator, PSON_ALLOC_API_OBJ,
                          ptr, numBlocks, pContext );
          goto the_exit;
@@ -1795,9 +1795,9 @@ void psonFolderRemoveObject( psonFolder         * pFolder,
     *
     * Note: the hash array will release the memory of the hash item.
     */
-   psonHashTxDelWithItem( &pFolder->hashObj, 
-                        pHashItem,
-                        pContext );
+   psonHashTxDelete( &pFolder->hashObj, 
+                     pHashItem,
+                     pContext );
 
    pFolder->nodeObject.txCounter--;
 
@@ -1892,7 +1892,7 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
     * remove the map entirely (if it was destroyed - not open and the
     * current edit session was the only thing standing in the way
     */
-   psonHashTxDelWithItem( &pFolder->hashObj, pHashItem, pContext );
+   psonHashTxDelete( &pFolder->hashObj, pHashItem, pContext );
    /* If needed */
    psonFolderResize( pFolder, pContext );
 

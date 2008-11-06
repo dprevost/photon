@@ -24,23 +24,10 @@ CLEANFILES = *~ core
 AM_CFLAGS = -Wall
 
 check_PROGRAMS =               \
-        CopyNullContext        \
-        CopyNullNewHash        \
-        CopyNullOldHash        \
-        CopyPass               \
-        CopyPassSameLength     \
         DeleteAtNullContext    \
         DeleteAtNullHash       \
         DeleteAtNullItem       \
         DeleteAtPass           \
-        DeleteNullContext      \
-        DeleteNullHash         \
-        DeleteNullKey          \
-        DeletePass             \
-        DeleteZeroLength       \
-        EmptyNullContext       \
-        EmptyNullHash          \
-        EmptyPass              \
         FiniNullHash           \
         FiniPass               \
         GetFirstNullHash       \
@@ -69,44 +56,16 @@ check_PROGRAMS =               \
         InsertAtPass           \
         InsertAtZeroDataLength \
         InsertAtZeroKeyLength  \
-        InsertNullContext      \
-        InsertNullData         \
-        InsertNullHash         \
-        InsertNullKey          \
-        InsertNullNewItem      \
-        InsertPass             \
-        InsertZeroDataLength   \
-        InsertZeroKeyLength    \
         ResizeNullContext      \
         ResizeNullHash         \
-        ResizePass             \
-        UpdateNullContext      \
-        UpdateNullData         \
-        UpdateNullHash         \
-        UpdateNullKey          \
-        UpdatePass             \
-        UpdateZeroDataLength   \
-        UpdateZeroKeyLength    
+        ResizePass             
 
 COMMON_HEADER = HashTest.h
 
-CopyNullContext_SOURCES        = $(COMMON_HEADER) CopyNullContext.c
-CopyNullNewHash_SOURCES        = $(COMMON_HEADER) CopyNullNewHash.c
-CopyNullOldHash_SOURCES        = $(COMMON_HEADER) CopyNullOldHash.c
-CopyPass_SOURCES               = $(COMMON_HEADER) CopyPass.c
-CopyPassSameLength_SOURCES     = $(COMMON_HEADER) CopyPassSameLength.c
 DeleteAtNullContext_SOURCES    = $(COMMON_HEADER) DeleteAtNullContext.c
 DeleteAtNullHash_SOURCES       = $(COMMON_HEADER) DeleteAtNullHash.c
 DeleteAtNullItem_SOURCES       = $(COMMON_HEADER) DeleteAtNullItem.c
 DeleteAtPass_SOURCES           = $(COMMON_HEADER) DeleteAtPass.c
-DeleteNullContext_SOURCES      = $(COMMON_HEADER) DeleteNullContext.c
-DeleteNullHash_SOURCES         = $(COMMON_HEADER) DeleteNullHash.c
-DeleteNullKey_SOURCES          = $(COMMON_HEADER) DeleteNullKey.c
-DeletePass_SOURCES             = $(COMMON_HEADER) DeletePass.c
-DeleteZeroLength_SOURCES       = $(COMMON_HEADER) DeleteZeroLength.c
-EmptyNullContext_SOURCES       = $(COMMON_HEADER) EmptyNullContext.c
-EmptyNullHash_SOURCES          = $(COMMON_HEADER) EmptyNullHash.c
-EmptyPass_SOURCES              = $(COMMON_HEADER) EmptyPass.c
 FiniNullHash_SOURCES           = $(COMMON_HEADER) FiniNullHash.c
 FiniPass_SOURCES               = $(COMMON_HEADER) FiniPass.c
 GetFirstNullHash_SOURCES       = $(COMMON_HEADER) GetFirstNullHash.c
@@ -135,24 +94,9 @@ InsertAtNullNewItem_SOURCES    = $(COMMON_HEADER) InsertAtNullNewItem.c
 InsertAtPass_SOURCES           = $(COMMON_HEADER) InsertAtPass.c
 InsertAtZeroDataLength_SOURCES = $(COMMON_HEADER) InsertAtZeroDataLength.c
 InsertAtZeroKeyLength_SOURCES  = $(COMMON_HEADER) InsertAtZeroKeyLength.c
-InsertNullContext_SOURCES      = $(COMMON_HEADER) InsertNullContext.c
-InsertNullData_SOURCES         = $(COMMON_HEADER) InsertNullData.c
-InsertNullHash_SOURCES         = $(COMMON_HEADER) InsertNullHash.c
-InsertNullKey_SOURCES          = $(COMMON_HEADER) InsertNullKey.c
-InsertNullNewItem_SOURCES      = $(COMMON_HEADER) InsertNullNewItem.c
-InsertPass_SOURCES             = $(COMMON_HEADER) InsertPass.c
-InsertZeroDataLength_SOURCES   = $(COMMON_HEADER) InsertZeroDataLength.c
-InsertZeroKeyLength_SOURCES    = $(COMMON_HEADER) InsertZeroKeyLength.c
 ResizeNullContext_SOURCES      = $(COMMON_HEADER) ResizeNullContext.c
 ResizeNullHash_SOURCES         = $(COMMON_HEADER) ResizeNullHash.c
 ResizePass_SOURCES             = $(COMMON_HEADER) ResizePass.c
-UpdateNullContext_SOURCES      = $(COMMON_HEADER) UpdateNullContext.c
-UpdateNullData_SOURCES         = $(COMMON_HEADER) UpdateNullData.c
-UpdateNullHash_SOURCES         = $(COMMON_HEADER) UpdateNullHash.c
-UpdateNullKey_SOURCES          = $(COMMON_HEADER) UpdateNullKey.c
-UpdatePass_SOURCES             = $(COMMON_HEADER) UpdatePass.c
-UpdateZeroDataLength_SOURCES   = $(COMMON_HEADER) UpdateZeroDataLength.c
-UpdateZeroKeyLength_SOURCES    = $(COMMON_HEADER) UpdateZeroKeyLength.c
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -165,23 +109,10 @@ TESTS_ENVIRONMENT =                  \
         PYTHON=$(PYTHON)             
 
 TESTS =                        \
-        CopyNullContext        \
-        CopyNullNewHash        \
-        CopyNullOldHash        \
-        CopyPass               \
-        CopyPassSameLength     \
         DeleteAtNullContext    \
         DeleteAtNullHash       \
         DeleteAtNullItem       \
         DeleteAtPass           \
-        DeleteNullContext      \
-        DeleteNullHash         \
-        DeleteNullKey          \
-        DeletePass             \
-        DeleteZeroLength       \
-        EmptyNullContext       \
-        EmptyNullHash          \
-        EmptyPass              \
         FiniNullHash           \
         FiniPass               \
         GetFirstNullHash       \
@@ -210,38 +141,14 @@ TESTS =                        \
         InsertAtPass           \
         InsertAtZeroDataLength \
         InsertAtZeroKeyLength  \
-        InsertNullContext      \
-        InsertNullData         \
-        InsertNullHash         \
-        InsertNullKey          \
-        InsertNullNewItem      \
-        InsertPass             \
-        InsertZeroDataLength   \
-        InsertZeroKeyLength    \
         ResizeNullContext      \
         ResizeNullHash         \
-        ResizePass             \
-        UpdateNullContext      \
-        UpdateNullData         \
-        UpdateNullHash         \
-        UpdateNullKey          \
-        UpdatePass             \
-        UpdateZeroDataLength   \
-        UpdateZeroKeyLength    
+        ResizePass             
 
 XFAIL_TESTS =                  \
-        CopyNullContext        \
-        CopyNullNewHash        \
-        CopyNullOldHash        \
         DeleteAtNullContext    \
         DeleteAtNullHash       \
         DeleteAtNullItem       \
-        DeleteNullContext      \
-        DeleteNullHash         \
-        DeleteNullKey          \
-        DeleteZeroLength       \
-        EmptyNullContext       \
-        EmptyNullHash          \
         FiniNullHash           \
         GetFirstNullHash       \
         GetFirstNullOffset     \
@@ -264,21 +171,8 @@ XFAIL_TESTS =                  \
         InsertAtNullNewItem    \
         InsertAtZeroDataLength \
         InsertAtZeroKeyLength  \
-        InsertNullContext      \
-        InsertNullData         \
-        InsertNullHash         \
-        InsertNullKey          \
-        InsertNullNewItem      \
-        InsertZeroDataLength   \
-        InsertZeroKeyLength    \
         ResizeNullContext      \
-        ResizeNullHash         \
-        UpdateNullContext      \
-        UpdateNullData         \
-        UpdateNullHash         \
-        UpdateNullKey          \
-        UpdateZeroDataLength   \
-        UpdateZeroKeyLength    
+        ResizeNullHash         
 
 LDADD = $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la

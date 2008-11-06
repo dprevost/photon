@@ -91,9 +91,9 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
     * we mark it as a committed remove
     */
    if ( txItemStatus->usageCounter == 0 ) {
-      psonHashTxDelWithItem( &pHashMap->hashObj, 
-                           pHashItem,
-                           pContext );
+      psonHashTxDelete( &pHashMap->hashObj, 
+                        pHashItem,
+                        pContext );
       pHashMap->nodeObject.txCounter--;
 
       /*
@@ -727,7 +727,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
          }
       }
       
-      errcode = psonHashTxInsertAt( &pHashMap->hashObj,
+      errcode = psonHashTxInsert( &pHashMap->hashObj,
                                   bucket,
                                   (unsigned char *)pKey, 
                                   keyLength, 
@@ -746,9 +746,9 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashTxDelWithItem( &pHashMap->hashObj,
-                              pHashItem,
-                              pContext );
+         psonHashTxDelete( &pHashMap->hashObj,
+                           pHashItem,
+                           pContext );
          goto the_exit;
       }
       
@@ -839,9 +839,9 @@ void psonHashMapReleaseNoLock( psonHashMap        * pHashMap,
    if ( (txItemStatus->usageCounter == 0) && 
       txItemStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
       /* Time to really delete the record! */
-      psonHashTxDelWithItem( &pHashMap->hashObj, 
-                           pHashItem,
-                           pContext );
+      psonHashTxDelete( &pHashMap->hashObj, 
+                        pHashItem,
+                        pContext );
       pHashMap->nodeObject.txCounter--;
    }
    
@@ -917,7 +917,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
          goto the_exit;
       }
       
-      errcode = psonHashTxInsertAt( &pHashMap->hashObj,
+      errcode = psonHashTxInsert( &pHashMap->hashObj,
                                   bucket,
                                   (unsigned char *)pKey, 
                                   keyLength, 
@@ -936,9 +936,9 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashTxDelWithItem( &pHashMap->hashObj, 
-                              pNewHashItem,
-                              pContext );
+         psonHashTxDelete( &pHashMap->hashObj, 
+                           pNewHashItem,
+                           pContext );
          goto the_exit;
       }
       ok = psonTxAddOps( (psonTx*)pContext->pTransaction,
@@ -950,9 +950,9 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          pContext );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         psonHashTxDelWithItem( &pHashMap->hashObj, 
-                              pNewHashItem,
-                              pContext );
+         psonHashTxDelete( &pHashMap->hashObj, 
+                           pNewHashItem,
+                           pContext );
          psonTxRemoveLastOps( (psonTx*)pContext->pTransaction, pContext );
          goto the_exit;
       }
@@ -1014,9 +1014,9 @@ void psonHashMapRollbackAdd( psonHashMap        * pHashMap,
     * the memory object).
     */
    if ( txItemStatus->usageCounter == 0 ) {
-      psonHashTxDelWithItem( &pHashMap->hashObj, 
-                           pHashItem,
-                           pContext );
+      psonHashTxDelete( &pHashMap->hashObj, 
+                        pHashItem,
+                        pContext );
       pHashMap->nodeObject.txCounter--;
    
       /*

@@ -41,31 +41,16 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   /*
-    * We first insert an item and retrieve to get the exact bucket.
-    * InsertAt() depends on this as you cannot insert in an empty
-    * bucket.
-    */
-   errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key1,
-                             strlen(key1),
-                             data1,
-                             strlen(data1),
-                             &pNewItem,
-                             &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    found = psonHashTxGet( pHash,
-                        (unsigned char*)key1,
-                        strlen(key1),
-                        &pNewItem,
-                        &bucket,
-                        &context );
-   if ( ! found ) {
+                          (unsigned char*)key1,
+                          strlen(key1),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   errcode = psonHashTxInsertAt( pHash,
+   errcode = psonHashTxInsert( pHash,
                                bucket,
                                (unsigned char*)key1,
                                strlen(key1),
@@ -77,7 +62,18 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonHashTxDelWithItem( NULL, pNewItem, &context );
+   /* Consistency check */
+   found = psonHashTxGet( pHash,
+                          (unsigned char*)key1,
+                          strlen(key1),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( ! found ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+
+   psonHashTxDelete( NULL, pNewItem, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

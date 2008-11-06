@@ -44,34 +44,54 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
+   found = psonHashTxGet( pHash,
+                          (unsigned char*)key1,
+                          strlen(key1),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( found ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key1,
-                             strlen(key1),
-                             data1,
-                             strlen(data1),
-                             &pNewItem,
-                             &context );
+                               bucket,
+                               (unsigned char*)key1,
+                               strlen(key1),
+                               data1,
+                               strlen(data1),
+                               &pNewItem,
+                               &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   
+
+   found = psonHashTxGet( pHash,
+                          (unsigned char*)key2,
+                          strlen(key2),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( found ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key2,
-                             strlen(key2),
-                             data2,
-                             strlen(data2),
-                             &pNewItem,
-                             &context );
+                               bucket,
+                               (unsigned char*)key2,
+                               strlen(key2),
+                               data2,
+                               strlen(data2),
+                               &pNewItem,
+                               &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    found = psonHashTxGet( pHash,
-                        (unsigned char*)key2,
-                        strlen(key2),
-                        &pItem,
-                        &bucket,
-                        &context );
+                          (unsigned char*)key2,
+                          strlen(key2),
+                          &pItem,
+                          &bucket,
+                          &context );
    if ( ! found ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -87,11 +107,11 @@ int main()
    }
    
    found = psonHashTxGet( pHash,
-                        (unsigned char*)"My Key 3",
-                        strlen("My Key 3"),
-                        &pItem,
-                        &bucket,
-                        &context );
+                          (unsigned char*)"My Key 3",
+                          strlen("My Key 3"),
+                          &pItem,
+                          &bucket,
+                          &context );
    if ( found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

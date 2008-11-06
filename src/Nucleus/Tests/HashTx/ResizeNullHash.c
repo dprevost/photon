@@ -32,6 +32,8 @@ int main()
    char data[20];
    psonHashTxItem * pNewItem;
    int i;
+   bool found;
+   size_t bucket;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -44,13 +46,23 @@ int main()
    for ( i = 0; i < 500; ++i ) {
       sprintf( key,  "My Key %d", i );
       sprintf( data, "My Data %d", i );
+      found = psonHashTxGet( pHash,
+                             (unsigned char*)key,
+                             strlen(key),
+                             &pNewItem,
+                             &bucket,
+                             &context );
+      if ( found ) {
+         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+      }
       errcode = psonHashTxInsert( pHash,
-                                (unsigned char*)key,
-                                strlen(key),
-                                data,
-                                strlen(data),
-                                &pNewItem,
-                                &context );
+                                  bucket,
+                                  (unsigned char*)key,
+                                  strlen(key),
+                                  data,
+                                  strlen(data),
+                                  &pNewItem,
+                                  &context );
       if ( errcode != PSO_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );
          ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

@@ -95,9 +95,9 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
        * retrieve the next item.
        */
       if ( pDeletedItem != NULL && pVerify->doRepair ) {
-         psonHashTxDelWithItem( &pHashMap->hashObj,
-                              pDeletedItem,
-                              pContext );
+         psonHashTxDelete( &pHashMap->hashObj,
+                           pDeletedItem,
+                           pContext );
          psoqEcho( pVerify, "Hash item removed from shared memory" );
       }
       pDeletedItem = NULL;

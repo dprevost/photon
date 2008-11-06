@@ -34,6 +34,8 @@ int main()
    char* data2 = "My Data 2";
    ptrdiff_t offsetFirstItem;
    psonHashTxItem * pNewItem;
+   bool found;
+   size_t bucket;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -42,28 +44,48 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
+   found = psonHashTxGet( pHash,
+                          (unsigned char*)key1,
+                          strlen(key1),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( found ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key1,
-                             strlen(key1),
-                             data1,
-                             strlen(data1),
-                             &pNewItem,
-                             &context );
+                               bucket,
+                               (unsigned char*)key1,
+                               strlen(key1),
+                               data1,
+                               strlen(data1),
+                               &pNewItem,
+                               &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   
+
+   found = psonHashTxGet( pHash,
+                          (unsigned char*)key2,
+                          strlen(key2),
+                          &pNewItem,
+                          &bucket,
+                          &context );
+   if ( found ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
    errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key2,
-                             strlen(key2),
-                             data2,
-                             strlen(data2),
-                             &pNewItem,
-                             &context );
+                               bucket,
+                               (unsigned char*)key2,
+                               strlen(key2),
+                               data2,
+                               strlen(data2),
+                               &pNewItem,
+                               &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   
+
    psonHashTxGetFirst( NULL, &offsetFirstItem );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

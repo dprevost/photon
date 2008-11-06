@@ -115,9 +115,9 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
             default:
                PSO_INV_CONDITION( pDesc_invalid_api_type );
          }
-         psonHashTxDelWithItem( &pFolder->hashObj,
-                              pItem,
-                              pContext );
+         psonHashTxDelete( &pFolder->hashObj,
+                           pItem,
+                           pContext );
       }
    }
 

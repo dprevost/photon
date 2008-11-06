@@ -106,32 +106,13 @@ typedef struct psonHashTx psonHashTx;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Used to create a copy of a read-only hash map for editing (updates)
- */
-PHOTON_ENGINE_EXPORT
-enum psoErrors psonHashTxCopy( psonHashTx         * pOldHash,
-                               psonHashTx         * pNewHash,
-                               psonSessionContext * pContext );
-
-/*
  * Used to delete an hash item when you know its exact position
  * (through the psonHashTxItem) 
  */
 PHOTON_ENGINE_EXPORT 
-void psonHashTxDelWithItem( psonHashTx         * pHash,
-                            psonHashTxItem     * pItem,
-                            psonSessionContext * pContext );
-
-/* Direct delete using the key and nothing else. */
-PHOTON_ENGINE_EXPORT 
-bool psonHashTxDelWithKey( psonHashTx          * pHash,
-                           const unsigned char * pKey, 
-                           size_t                keyLength,
-                           psonSessionContext  * pContext );
-
-PHOTON_ENGINE_EXPORT 
-void psonHashTxEmpty( psonHashTx         * pHash,
-                      psonSessionContext * pContext );
+void psonHashTxDelete( psonHashTx         * pHash,
+                       psonHashTxItem     * pItem,
+                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 void psonHashTxFini( psonHashTx * pHash );
@@ -160,11 +141,16 @@ enum psoErrors psonHashTxInit( psonHashTx         * pHash,
                                psonSessionContext * pContext );
 
 /*
- * ppNewItem is used to access the original name of 
- * objects and the psonTxStatus by the objects themselves 
+ * Insert always insert the item in a given bucket, at the end of the 
+ * linked list.
+ * Because of transactions, Insert() is always preceded with a Get().
+ * If a record with the same key exists, its transaction status is checked 
+ * to see if the new record can be inserted or not (the call to Get() gives
+ * us the bucket needed by Insert()).
  */
 PHOTON_ENGINE_EXPORT 
 enum psoErrors psonHashTxInsert( psonHashTx          * pHash,
+                                 size_t                bucket,
                                  const unsigned char * pKey,
                                  size_t                keyLength,
                                  const void          * pData,
@@ -172,32 +158,9 @@ enum psoErrors psonHashTxInsert( psonHashTx          * pHash,
                                  psonHashTxItem     ** ppNewItem,
                                  psonSessionContext  * pContext );
 
-/*
- * Insert at is used to insert an item in a given bucket, at the end
- * of the linked list. This is used for adding a replacement item, 
- * before the change is committed.
- */
-PHOTON_ENGINE_EXPORT 
-enum psoErrors psonHashTxInsertAt( psonHashTx          * pHash,
-                                   size_t                bucket,
-                                   const unsigned char * pKey,
-                                   size_t                keyLength,
-                                   const void          * pData,
-                                   size_t                dataLength,
-                                   psonHashTxItem     ** ppNewItem,
-                                   psonSessionContext  * pContext );
-
 PHOTON_ENGINE_EXPORT
 enum psoErrors psonHashTxResize( psonHashTx         * pHash,
                                  psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-enum psoErrors psonHashTxUpdate( psonHashTx          * pHash,
-                                 const unsigned char * pKey,
-                                 size_t                keyLength,
-                                 const void          * pData,
-                                 size_t                dataLength,
-                                 psonSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -43,28 +43,6 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key1,
-                             strlen(key1),
-                             data1,
-                             strlen(data1),
-                             &pNewItem,
-                             &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   errcode = psonHashTxInsert( pHash,
-                             (unsigned char*)key2,
-                             strlen(key2),
-                             data2,
-                             strlen(data2),
-                             &pNewItem,
-                             &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
    psonHashTxGet( NULL,
                 (unsigned char*)key2,
                 strlen(key2),
