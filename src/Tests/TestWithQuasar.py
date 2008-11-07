@@ -26,7 +26,7 @@
 #
 # For example:
 #
-# python TestWithWatchdog.py /home/dprevost/photon/ home/dprevost/photon \
+# python TestWithQuasar.py /home/dprevost/photon/ home/dprevost/photon \
 #        src/API/Tests/Api InitPass 10701 /tmp/photon_InitPass
 #
 # (the build directory will usually be the top directory unless you're

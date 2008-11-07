@@ -66,9 +66,9 @@ fi
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
-   $PYTHON $src_dir/src/Tests/TestWithWatchdog.py $src_dir $top_build_dir $test_dir $test_name $port $errcode $BASE_DIR
+   $PYTHON $src_dir/src/Tests/TestWithQuasar.py $src_dir $top_build_dir $test_dir $test_name $port $errcode $BASE_DIR
 else
-   $PYTHON $src_dir/src/Tests/TestWithWatchdog.py $src_dir $top_build_dir $test_dir $test_name $port $errcode $BASE_DIR >/dev/null 2>&1
+   $PYTHON $src_dir/src/Tests/TestWithQuasar.py $src_dir $top_build_dir $test_dir $test_name $port $errcode $BASE_DIR >/dev/null 2>&1
 fi
 if [ "$?" != 0 ] ; then
    rm -rf $BASE_DIR

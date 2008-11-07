@@ -21,8 +21,8 @@ EXTRA_DIST =                  \
         PrintError.h          \
         OutOfMemory.sh        \
         RunTests.vbs          \
-        TestWithWatchdog.py   \
-        TestWithWatchdog.sh   \
+        TestWithQuasar.py   \
+        TestWithQuasar.sh   \
         TransactionHashMap.sh \
         TransactionQueue.sh   
 

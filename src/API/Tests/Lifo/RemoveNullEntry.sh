@@ -53,9 +53,9 @@ fi
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
-   $top_srcdir/src/Tests/TestWithWatchdog.sh $top_srcdir $top_builddir $test_dir $test_name $tcp_port $errcode
+   $top_srcdir/src/Tests/TestWithQuasar.sh $top_srcdir $top_builddir $test_dir $test_name $tcp_port $errcode
 else
-   $top_srcdir/src/Tests/TestWithWatchdog.sh $top_srcdir $top_builddir $test_dir $test_name $tcp_port $errcode >/dev/null 2>&1
+   $top_srcdir/src/Tests/TestWithQuasar.sh $top_srcdir $top_builddir $test_dir $test_name $tcp_port $errcode >/dev/null 2>&1
 fi
 if [ "$?" != 0 ] ; then
    if [ $verbose = 1 ] ; then
