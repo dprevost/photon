@@ -18,10 +18,6 @@ check_PROGRAMS =                             \
         .\Release\CopyNullOldHash.exe        \
         .\Release\CopyPass.exe               \
         .\Release\CopyPassSameLength.exe     \
-        .\Release\DeleteAtNullContext.exe    \
-        .\Release\DeleteAtNullHash.exe       \
-        .\Release\DeleteAtNullItem.exe       \
-        .\Release\DeleteAtPass.exe           \
         .\Release\DeleteNullContext.exe      \
         .\Release\DeleteNullHash.exe         \
         .\Release\DeleteNullKey.exe          \
@@ -50,19 +46,10 @@ check_PROGRAMS =                             \
         .\Release\InitNullHash.exe           \
         .\Release\InitNullOffset.exe         \
         .\Release\InitPass.exe               \
-        .\Release\InsertAtNullContext.exe    \
-        .\Release\InsertAtNullData.exe       \
-        .\Release\InsertAtNullHash.exe       \
-        .\Release\InsertAtNullKey.exe        \
-        .\Release\InsertAtNullNewItem.exe    \
-        .\Release\InsertAtPass.exe           \
-        .\Release\InsertAtZeroDataLength.exe \
-        .\Release\InsertAtZeroKeyLength.exe  \
         .\Release\InsertNullContext.exe      \
         .\Release\InsertNullData.exe         \
         .\Release\InsertNullHash.exe         \
         .\Release\InsertNullKey.exe          \
-        .\Release\InsertNullNewItem.exe      \
         .\Release\InsertPass.exe             \
         .\Release\InsertZeroDataLength.exe   \
         .\Release\InsertZeroKeyLength.exe    \

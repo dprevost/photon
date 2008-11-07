@@ -38,6 +38,7 @@ check: $(OUTDIR) $(check_PROGRAMS)
 	cd BlockGroup     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemObject      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Hash           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd HashTx         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Transaction    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd ProcessManager && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -56,6 +57,7 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	cd BlockGroup     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemObject      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Hash           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd HashTx         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Transaction    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd ProcessManager && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -73,6 +75,7 @@ clean:
 	cd MemObject      && nmake -f Makefile.win32 clean && cd ..
 	cd BlockGroup     && nmake -f Makefile.win32 clean && cd ..
 	cd Hash           && nmake -f Makefile.win32 clean && cd ..
+	cd HashTx         && nmake -f Makefile.win32 clean && cd ..
 	cd Transaction    && nmake -f Makefile.win32 clean && cd ..
 	cd ProcessManager && nmake -f Makefile.win32 clean && cd ..
 	cd Process        && nmake -f Makefile.win32 clean && cd ..

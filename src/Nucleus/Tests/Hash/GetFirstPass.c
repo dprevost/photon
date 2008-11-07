@@ -31,7 +31,7 @@ int main()
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   ptrdiff_t offsetFirstItem = PSON_NULL_OFFSET;
+   psonHashItem * firstItem = NULL;
    bool found;
    
    pHash = initHashTest( expectedToPass, &context );
@@ -60,11 +60,11 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   found = psonHashGetFirst( pHash, &offsetFirstItem );
+   found = psonHashGetFirst( pHash, &firstItem );
    if ( ! found ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( offsetFirstItem == PSON_NULL_OFFSET ) {
+   if ( firstItem == NULL ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

@@ -77,15 +77,13 @@ bool psonLockTx( psonTx             * pTx,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-void psonClearLocks( psonTx             * pTx,
-                     psonSessionContext * pContext )
+void psonClearLocks( psonTx * pTx )
 {
-   psonMemObject * pMemObj;
+   psonMemObject * pMemObj = NULL;
    bool ok;
-   size_t rowNumber;
+   size_t rowNumber = 0;
    
    PSO_PRE_CONDITION( pTx      != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pTx->signature == PSON_TX_SIGNATURE );
    
    ok = txHashGetFirst( pTx, &rowNumber, &pMemObj );
@@ -95,7 +93,7 @@ void psonClearLocks( psonTx             * pTx,
       ok = txHashGetNext( pTx, rowNumber, &rowNumber, &pMemObj );
    }
    
-   txHashEmpty( pTx, pContext );
+   txHashEmpty( pTx );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -285,7 +283,7 @@ bool psonTxCommit( psonTx             * pTx,
       okLock = psonLockTx( pTx, parentMemObject, pContext );
       PSO_POST_CONDITION( okLock == true || okLock == false );
       if ( ! okLock ) {
-         psonClearLocks( pTx, pContext );
+         psonClearLocks( pTx );
          return false;
       }
       /* We only lock the child for these two ops */
@@ -299,7 +297,7 @@ bool psonTxCommit( psonTx             * pTx,
          okLock = psonLockTx( pTx, pChildMemObject, pContext );
          PSO_POST_CONDITION( okLock == true || okLock == false );
          if ( ! okLock ) {
-            psonClearLocks( pTx, pContext );
+            psonClearLocks( pTx );
             return false;
          }
       }
@@ -388,7 +386,7 @@ bool psonTxCommit( psonTx             * pTx,
              * it might not. We clear it just in case and do not check the
              * return code (which would tell us if the lock was taken or not).
              */
-            txHashDelete( pTx, pChildMemObject, pContext );
+            txHashDelete( pTx, pChildMemObject );
          }
          
          parentFolder->nodeObject.txCounter--;
@@ -427,7 +425,7 @@ bool psonTxCommit( psonTx             * pTx,
                                     pHashItem,
                                     pContext );
 
-            okDelete = txHashDelete( pTx, pChildMemObject, pContext );
+            okDelete = txHashDelete( pTx, pChildMemObject );
          }
 
          break;
@@ -467,7 +465,7 @@ bool psonTxCommit( psonTx             * pTx,
     * Third pass: we unlock everything and release the memory of the
     * transaction list.
     */
-   psonClearLocks( pTx, pContext );
+   psonClearLocks( pTx );
 
    while ( psonLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
       pOps = (psonTxOps*) ((char*)pLinkNode - offsetof( psonTxOps, node ));
@@ -540,7 +538,7 @@ bool psonTxRollback( psonTx             * pTx,
       okLock = psonLockTx( pTx, parentMemObject, pContext );
       PSO_POST_CONDITION( okLock == true || okLock == false );
       if ( ! okLock ) {
-         psonClearLocks( pTx, pContext );
+         psonClearLocks( pTx );
          return false;
       }
       /* We only lock the child for these two ops */
@@ -554,7 +552,7 @@ bool psonTxRollback( psonTx             * pTx,
          okLock = psonLockTx( pTx, pChildMemObject, pContext );
          PSO_POST_CONDITION( okLock == true || okLock == false );
          if ( ! okLock ) {
-            psonClearLocks( pTx, pContext );
+            psonClearLocks( pTx );
             return false;
          }
       }
@@ -644,7 +642,7 @@ bool psonTxRollback( psonTx             * pTx,
             psonFolderRemoveObject( parentFolder,
                                     pHashItem,
                                     pContext );
-            okDelete = txHashDelete( pTx, pChildMemObject, pContext );
+            okDelete = txHashDelete( pTx, pChildMemObject );
          }
 
          break;
@@ -719,7 +717,7 @@ bool psonTxRollback( psonTx             * pTx,
     * Third pass: we unlock everything and release the memory of the
     * transaction list.
     */
-   psonClearLocks( pTx, pContext );
+   psonClearLocks( pTx );
 
    while ( psonLinkedListGetFirst( &pTx->listOfOps, &pLinkNode ) ) {
       pOps = (psonTxOps*) ((char*)pLinkNode - offsetof( psonTxOps, node ));

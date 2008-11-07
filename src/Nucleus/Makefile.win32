@@ -37,6 +37,7 @@ OBJS_RELEASE=                                   \
         "$(INTDIR_RELEASE)\BlockGroup.obj"      \
         "$(INTDIR_RELEASE)\Folder.obj"          \
         "$(INTDIR_RELEASE)\Hash.obj"            \
+        "$(INTDIR_RELEASE)\HashTx.obj"          \
         "$(INTDIR_RELEASE)\hash_fnv.obj"        \
         "$(INTDIR_RELEASE)\HashMap.obj"         \
         "$(INTDIR_RELEASE)\InitEngine.obj"      \

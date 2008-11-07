@@ -49,16 +49,14 @@ static unsigned int g_highDensity = 50;
 bool txHashResize( psonTx             * pTx,
                    psonSessionContext * pContext );
 
-bool txHashFindKey( psonTx             * pTx,
-                    psonMemObject     ** pArray,
-                    psonMemObject     ** pkey,
-                    size_t             * pRowNumber,
-                    psonSessionContext * pContext );
+bool txHashFindKey( psonTx         * pTx,
+                    psonMemObject ** pArray,
+                    psonMemObject ** pkey,
+                    size_t         * pRowNumber );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void txHashEmpty( psonTx             * pTx,
-                  psonSessionContext * pContext )
+void txHashEmpty( psonTx * pTx )
 {
    psonMemObject ** pArray;
    
@@ -182,7 +180,7 @@ bool txHashInsert( psonTx             * pTx,
 
    GET_PTR( pArray, pTx->listOfLocks.arrayOffset, psonMemObject * );
    
-   keyFound = txHashFindKey( pTx, pArray, &key, &rowNumber, pContext );
+   keyFound = txHashFindKey( pTx, pArray, &key, &rowNumber );
 
    if ( keyFound ) return true;
 
@@ -229,21 +227,15 @@ hash_it( psonMemObject ** key, size_t len )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool txHashFindKey( psonTx             * pTx,
-                    psonMemObject     ** pArray,
-                    psonMemObject     ** key, 
-                    size_t             * pRowNumber,
-                    psonSessionContext * pContext )
+bool txHashFindKey( psonTx         * pTx,
+                    psonMemObject ** pArray,
+                    psonMemObject ** key, 
+                    size_t         * pRowNumber )
 {
    size_t rowNumber = hash_it( key, sizeof(void *) ) % 
                              g_psonArrayLengths[pTx->listOfLocks.lengthIndex];
 
-   while (true) {
-
-      if ( pArray[rowNumber] == NULL ) {
-         *pRowNumber = rowNumber;
-         return false;
-      }
+   while (pArray[rowNumber] != NULL ) {
 
       if ( pArray[rowNumber] == *key ) {
          *pRowNumber = rowNumber;
@@ -258,13 +250,15 @@ bool txHashFindKey( psonTx             * pTx,
       if ( rowNumber == g_psonArrayLengths[pTx->listOfLocks.lengthIndex] )
          rowNumber = 0;
    }
+
+   *pRowNumber = rowNumber;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool txHashDelete( psonTx             * pTx,
-                   psonMemObject      * key, 
-                   psonSessionContext * pContext  )
+bool txHashDelete( psonTx        * pTx,
+                   psonMemObject * key )
 {
    size_t rowNumber = 0;
    psonMemObject ** pArray;
@@ -272,9 +266,13 @@ bool txHashDelete( psonTx             * pTx,
    
    GET_PTR( pArray, pTx->listOfLocks.arrayOffset, psonMemObject * );
    
-   keyFound = txHashFindKey( pTx, pArray, &key, &rowNumber, pContext );
+   keyFound = txHashFindKey( pTx, pArray, &key, &rowNumber );
 
    if ( keyFound ) {
+
+      size_t curr; /* Current entry we are checking */
+      size_t hole; /* Location of the hole */
+      size_t hashValue; /* Hash value for current entry */
 
       pArray[rowNumber] = NULL;
       pTx->listOfLocks.numberOfItems--;
@@ -299,13 +297,9 @@ bool txHashDelete( psonTx             * pTx,
        * the array (as in, 101, 102, 0, 1 if the array has 103 entries).
        */
 
-      size_t curr; /* Current entry we are checking */
-      size_t hole; /* Location of the hole */
-      size_t hashValue; /* Hash value for current entry */
-
       curr = rowNumber;
 
-      while( true ) {
+      while ( true ) {
          pArray[curr] = NULL;
          hole = curr;
 
@@ -391,16 +385,12 @@ bool txHashResize( psonTx             * pTx,
          
          rowNumber =  hash_it( &pArray[i], sizeof(void *) ) % newSize;
          
-         while (1) {
-            if ( ptr[rowNumber] == NULL ) {
-               /* We found a valid spot */
-               ptr[rowNumber] = pArray[i];
-               break;
-            }
+         while (ptr[rowNumber] != NULL) {
             ++rowNumber;
-            
             if ( rowNumber == newSize ) rowNumber = 0;
          }
+         /* We found a valid spot */
+         ptr[rowNumber] = pArray[i];
       }
    }
 
