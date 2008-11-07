@@ -25,7 +25,7 @@
 #############################################################################
 
 AC_INIT([Photon Software],
-        [0.3.0],
+        [0.4.0],
         [Daniel Prevost <dprevost@photonsoftware.org>],
         [photon])
 

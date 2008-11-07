@@ -33,6 +33,7 @@ libNucleus_la_SOURCES =   \
         Engine.h          \
         Folder.c          \
         Folder.h          \
+        HashCommon.h      \
         Hash.c            \
         Hash.h            \
         HashTx.c          \
@@ -70,6 +71,7 @@ libNucleus_la_SOURCES =   \
         Session.h         \
         Transaction.c     \
         Transaction.h     \
+        TransactionHash.h \
         TreeNode.h        \
         TxStatus.h        
    

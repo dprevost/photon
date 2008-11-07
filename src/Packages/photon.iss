@@ -1,8 +1,8 @@
 [Setup]
 MinVersion=0,4.0
 AppName=Photon
-AppVerName=Photon Software version 0.3.0
-AppVersion=0.3.0
+AppVerName=Photon Software version 0.4.0
+AppVersion=0.4.0
 AppSupportURL=http://photonsoftware.org/
 AppId=VDSF_V0
 InfoBeforeFile=COPYING
@@ -10,7 +10,7 @@ DefaultDirName={pf}\Photonsoftware
 DefaultGroupName=Photon Software
 SourceDir=..\..
 OutputDir=src\Packages\Output
-OutputBaseFilename=photon-0.3.0
+OutputBaseFilename=photon-0.4.0
 
 [Files]
 Source: src\Release\photon.dll; DestDir: {app}\bin
