@@ -53,6 +53,7 @@ libphoton_la_SOURCES =   \
         Queue.h          \
         Session.c        \
         Session.h        \
+        Standalone.c     \
         WatchdogCommon.h 
 
 libphoton_la_LIBADD =                             \

@@ -60,9 +60,16 @@ typedef struct psoaProcess
    /** The name of the directory for log files (used by transactions). */
    char logDirName[PATH_MAX];
 
-   /** This object encapsulates the task of talking with the watchdog. */
+   /** This object encapsulates the task of talking with quasar. */
    psoaConnector connector;
    
+   /** If true, we are not using the server (quasar). */
+   bool standalone;
+   
+   /** 
+    * Encapsulates access to the shared memory file (and the differences
+    * in how it is accessed between Windows and Posix systems).
+    */
    psocMemoryFile memoryFile;
    
 } psoaProcess;

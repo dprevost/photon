@@ -45,17 +45,17 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- *  This object enables the client application to connect to the watchdog
+ *  This object enables the client application to connect to quasar
  *  and to request the information it need to access the shared memory.
  *
  *  This object encapsulates the IPC mechanism uses between the apps and
- *  the watchdog. I've looked at different possibilities, for example 
+ *  quasar. I've looked at different possibilities, for example 
  *  named pipes but in the end, sockets are more universal than other 
  *  mechanisms so the choice was not difficult to make.
  *
  *  However, to maintain the possibility of using a different mechanism,
  *  the interface must be "universal" (using a char* as the address of 
- *  the watchdog instead of something more specific like an unsigned short 
+ *  the server instead of something more specific like an unsigned short 
  *  (port number)).
  *
  */
@@ -75,27 +75,27 @@ typedef struct psoaConnector
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Establish a connection between the client and the watchdog.
+ * Establish a connection between the client and the server.
  * 
  * This method also retrieves the information necessary for 
  * establishing a link to the shared memory (file name, etc.).
  *
- * \param address The address of the watchdog (currently this is just
+ * \param address The address of quasar (currently this is just
  *                the tcp/ip port formatted as a string).
  * \param pAnswer A pointer to a structure containing all relevant
  *               information needed to establish a link to the shared memory.
  * \return A Photon error code.
  */
-int psoaConnect( psoaConnector     * pConnector,
-                const char       * address,
-                struct WDOutput  * pAnswer,
-                psocErrorHandler * errorHandler );
+int psoaConnect( psoaConnector    * pConnector,
+                 const char       * address,
+                 struct WDOutput  * pAnswer,
+                 psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** Break the connection with the watchdog. */
-void psoaDisconnect( psoaConnector     * pConnector,
-                    psocErrorHandler * errorHandler );
+/** Break the connection with quasar. */
+void psoaDisconnect( psoaConnector    * pConnector,
+                     psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

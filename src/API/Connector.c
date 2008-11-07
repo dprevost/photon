@@ -28,22 +28,22 @@
 
 /** Send data on the socket. */
 static int Send( psoaConnector    * pConnector,
-                 void            * ptr, 
-                 size_t            length,
+                 void             * ptr, 
+                 size_t             length,
                  psocErrorHandler * errorHandler);   
 
 /** Receive data from the socket. */
 static int Receive( psoaConnector    * pConnector,
-                    void            * ptr, 
-                    size_t            length,
+                    void             * ptr, 
+                    size_t             length,
                     psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaConnect( psoaConnector     * pConnector,
-                const char       * address,
-                struct WDOutput  * pAnswer,
-                psocErrorHandler * errorHandler )
+int psoaConnect( psoaConnector    * pConnector,
+                 const char       * address,
+                 struct WDOutput  * pAnswer,
+                 psocErrorHandler * errorHandler )
 {
    int errcode = 0;
    unsigned short port;
@@ -121,8 +121,8 @@ int psoaConnect( psoaConnector     * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaDisconnect( psoaConnector     * pConnector,
-                    psocErrorHandler * errorHandler )
+void psoaDisconnect( psoaConnector    * pConnector,
+                     psocErrorHandler * errorHandler )
 {
    int errcode = 0;
 
@@ -169,7 +169,7 @@ void psoaDisconnect( psoaConnector     * pConnector,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int Receive( psoaConnector     * pConnector,
-             void             * ptr, 
+             void              * ptr, 
              size_t             length,
              psocErrorHandler * errorHandler )
 {
@@ -206,7 +206,7 @@ int Receive( psoaConnector     * pConnector,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int Send( psoaConnector     * pConnector,
-          void             * ptr, 
+          void              * ptr, 
           size_t             length,
           psocErrorHandler * errorHandler )
 {

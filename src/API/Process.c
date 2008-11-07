@@ -33,7 +33,12 @@ psocThreadLock   g_ProcessMutex;
  * Set to true if the program is multithreaded.
  */
 bool             g_protectionIsNeeded = false;
-                          
+
+int psoaStandalone( const char       * address,
+                    char             * path,
+                    size_t           * memorySizekb,
+                    psocErrorHandler * errorHandler );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool AreWeTerminated()
@@ -59,6 +64,7 @@ int psoaProcessInit( psoaProcess * process, const char * wdAddress )
    psonSessionContext context;
    psonProcMgr* pCleanupManager;
    bool ok;
+   size_t memorySizekb = 0;
    
    PSO_PRE_CONDITION( process   != NULL );
    PSO_PRE_CONDITION( wdAddress != NULL );
@@ -83,19 +89,33 @@ int psoaProcessInit( psoaProcess * process, const char * wdAddress )
       goto the_exit;
    }
    
-   errcode = psoaConnect( &process->connector, 
-                          wdAddress, 
-                          &answer, 
-                          &context.errorHandler );
+   process->standalone = false;
+   if ( (strlen(wdAddress) > strlen("file:")) && 
+      (strncmp(wdAddress, "file:", strlen("file:")) == 0) ) {
+      process->standalone = true;
+      errcode = psoaStandalone( wdAddress,
+                                path,
+                                &memorySizekb,
+                                &context.errorHandler );
+   }
+   else {
+      errcode = psoaConnect( &process->connector, 
+                             wdAddress, 
+                             &answer, 
+                             &context.errorHandler );
+   }
    if ( errcode != PSO_OK ) goto the_exit;
    
-   /* The watchdog already tested that there is no buffer overflow here. */
-   sprintf( path, "%s%s%s", answer.pathname, PSO_DIR_SEPARATOR,
-            PSO_MEMFILE_NAME );
-
+   if ( ! process->standalone ) {
+      /* The server already tested that there is no buffer overflow here. */
+      sprintf( path, "%s%s%s", answer.pathname, PSO_DIR_SEPARATOR,
+               PSO_MEMFILE_NAME );
+      memorySizekb = answer.memorySizekb;
+   }
+   
    errcode = psoaOpenMemory( process,
                              path,
-                             answer.memorySizekb,
+                             memorySizekb,
                              &context );
    if ( errcode != PSO_OK ) goto the_exit;
 
@@ -144,7 +164,9 @@ void psoaProcessFini()
     * was not called from the C API and somehow failed.
     */
    if ( process->pHeader == NULL ) {
-      psoaDisconnect( &process->connector, &context.errorHandler );
+      if ( ! process->standalone ) {
+         psoaDisconnect( &process->connector, &context.errorHandler );
+      }
       return;
    }
    
@@ -204,8 +226,10 @@ void psoaProcessFini()
    
 error_handler:
 
-   psoaDisconnect( &process->connector, &context.errorHandler );
-
+   if ( ! process->standalone ) {
+      psoaDisconnect( &process->connector, &context.errorHandler );
+   }
+   
    if ( g_protectionIsNeeded ) {
       psocReleaseThreadLock( &g_ProcessMutex );
    }
