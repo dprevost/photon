@@ -12,9 +12,9 @@ include ..\Makefile.inc.Win32
 
 all: 
 
-check_PROGRAMS =                        \
-        .\Release\DisplayBigVDSSize.exe \
-        .\Release\InitBigVDS.exe        
+check_PROGRAMS =                          \
+        .\Release\DisplayBigShMemSize.exe \
+        .\Release\InitBigShMem.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
 
