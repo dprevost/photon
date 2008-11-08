@@ -28,11 +28,7 @@ int main()
    psonSessionContext context;
    psonHashTx * pHash;
    enum psoErrors errcode;
-   char* key1 = "My Key 1";
    char* key2 = "My Key 2";
-   char* data1 = "My Data 1";
-   char* data2 = "My Data 2";
-   psonHashTxItem * pNewItem;
    psonHashTxItem * pItem = NULL;
    size_t bucket;
    
@@ -44,11 +40,11 @@ int main()
    }
    
    psonHashTxGet( pHash,
-                NULL,
-                strlen(key2),
-                &pItem,
-                &bucket,
-                &context );
+                  NULL,
+                  strlen(key2),
+                  &pItem,
+                  &bucket,
+                  &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

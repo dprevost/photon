@@ -43,8 +43,6 @@ struct psonHashItem
 {
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
-   /** Next item with same key (for replace, etc.) */
-   ptrdiff_t     nextSameKey;
    
    size_t        keyLength;
    ptrdiff_t     dataOffset;

@@ -115,15 +115,6 @@ qsrVerifyHash( qsrVerifyStruct * pVerify,
          }
          else {
             /* test the hash item itself */
-            if ( pItem->nextSameKey != PSON_NULL_OFFSET ) {
-               if ( ! qsrVerifyOffset( pVerify, pItem->nextSameKey ) ) {
-                  rc = QSR_REC_CHANGES;
-                  qsrEcho( pVerify, "HashItem::nextSameKey is invalid" );
-                  if ( pVerify->doRepair ) {
-                     pItem->nextSameKey = PSON_NULL_OFFSET;
-                  }
-               }
-            }
             if ( pItem->dataOffset == PSON_NULL_OFFSET ) {
                rc = QSR_REC_CHANGES;
                qsrEcho( pVerify, "HashItem::dataOffset is NULL" );

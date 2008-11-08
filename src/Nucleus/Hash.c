@@ -692,7 +692,6 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
    pItem->keyLength = keyLength;
    pItem->dataLength = dataLength;
    pItem->dataOffset = SET_OFFSET(pItem) + itemLength - dataLength;
-   pItem->nextSameKey = PSON_NULL_OFFSET;
    
    memcpy( pItem->key, pKey, keyLength );
    memcpy( GET_PTR_FAST(pItem->dataOffset, unsigned char), pData, dataLength );
@@ -859,7 +858,6 @@ psonHashUpdate( psonHash            * pHash,
       pNewItem->keyLength = keyLength;
       pNewItem->dataLength = dataLength;
       pNewItem->dataOffset = SET_OFFSET(pNewItem) + newItemLength - dataLength;
-      pNewItem->nextSameKey = PSON_NULL_OFFSET;
    
       memcpy( pNewItem->key, pKey, keyLength );
       memcpy( GET_PTR_FAST(pNewItem->dataOffset, unsigned char), pData, dataLength );

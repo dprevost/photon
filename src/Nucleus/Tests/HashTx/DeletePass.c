@@ -29,7 +29,6 @@ int main()
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* data1 = "My Data 1";
-   char* data2 = "My Data 2";
    psonHashTxItem * pNewItem;
    size_t bucket;
    psonHashTxItem * pItem = NULL;
@@ -45,11 +44,11 @@ int main()
    /* For this test, we will insert a duplicate. */
    
    ok = psonHashTxGet( pHash,
-                          (unsigned char*)key1,
-                          strlen(key1),
-                          &pNewItem,
-                          &bucket,
-                          &context );
+                       (unsigned char*)key1,
+                       strlen(key1),
+                       &pNewItem,
+                       &bucket,
+                       &context );
    if ( ok ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -124,11 +123,11 @@ int main()
                      &context );
    
    ok = psonHashTxGet( pHash,
-                     (unsigned char*)key1,
-                     strlen(key1),
-                     &pItem,
-                     &bucket,
-                     &context );
+                       (unsigned char*)key1,
+                       strlen(key1),
+                       &pItem,
+                       &bucket,
+                       &context );
    if ( ! ok ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
