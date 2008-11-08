@@ -28,7 +28,7 @@ int main()
    /* try something junk... */   
    errcode = psoaProcessInit( &process, "abcdef" );
 
-   if ( errcode != PSO_INVALID_WATCHDOG_ADDRESS ) {
+   if ( errcode != PSO_INVALID_QUASAR_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       return -1;
    }

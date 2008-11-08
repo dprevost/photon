@@ -29,10 +29,10 @@
  * - The number of semaphores is limited to SEM_VALUE_MAX. Not sure if 
  *   that could create a problem on some systems.
  *
- * - When (re)starting the watchdog, the semaphores should be initialized
+ * - When (re)starting the server, the semaphores should be initialized
  *   for all existing objects (with locks) in the backing store.
  *
- * - In a similar fashion, when shutting down the watchdog, all semaphores
+ * - In a similar fashion, when shutting down the server, all semaphores
  *   should be destroyed.
  *
  * - There is a race condition for setting the pid in the lock object,
@@ -40,7 +40,7 @@
  *   since we use the pid as the lock value in the atomic operation). 
  *   To be able to handle this, a special attribute in the ContextObject
  *   must be set to indicate that a lock is going to be attempted. This 
- *   way, if a process crash, the watchdog will have enough information 
+ *   way, if a process crash, the server will have enough information 
  *   to discover if an object was locked by the crashee.
  *
  */

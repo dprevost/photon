@@ -35,7 +35,7 @@ BEGIN_C_DECLS
 /**
  * The CleanupManager and associated objects are used for handling
  * crashes (process crashes, mainly). They keep track of the current status
- * and operations done by each process and by doing so enables the watchdog
+ * and operations done by each process and by doing so enables the server
  * to cleanup if a process die unexpectedly: undo the current transaction(s),
  * closed objects (->decrease access counter), unlocked objects, etc.
  *
@@ -68,7 +68,7 @@ bool psonProcMgrAddProcess( psonProcMgr        * pManager,
                             psonSessionContext * pContext );
 
 /*
- * This function is for the watchdog - to recover from crashes in
+ * This function is for the server - to recover from crashes in
  * real time.
  */
 PHOTON_ENGINE_EXPORT

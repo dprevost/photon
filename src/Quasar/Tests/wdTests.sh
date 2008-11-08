@@ -19,7 +19,7 @@
 # must provide the name of the directory where the sources are located
 # as the first argument to the script. Example:
 #
-# ./transactions.sh /home/dprevost/vdsf0.1/src
+# ./transactions.sh /home/dprevost/photon.git/src
 #
 # A second argument can be provided to indicate the build directory
 # if using the VPATH functionality of make.
@@ -57,7 +57,7 @@ mkdir $BASE_DIR
 if [ "$?" != 0 ] ; then
    exit 1
 fi
-mkdir $BASE_DIR/vds
+mkdir $BASE_DIR/mem
 if [ "$?" != 0 ] ; then
    exit 1
 fi
@@ -117,7 +117,7 @@ echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/c
 echo "<quasar_config xmlns=\"http://photonsoftware.org/quasarConfig\" " >> $BASE_DIR/cfg.xml
 echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
 echo "xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
-echo "  <mem_location>$BASE_DIR/vds</mem_location>              " >> $BASE_DIR/cfg.xml
+echo "  <mem_location>$BASE_DIR/mem</mem_location>              " >> $BASE_DIR/cfg.xml
 echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
 #echo "  <quasar_address>10701</quasar_address>              " >> $BASE_DIR/cfg.xml
 echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml
@@ -138,7 +138,7 @@ echo "<?xml version=\"1.0\"?>                                   " >> $BASE_DIR/c
 echo "<quasar_config xmlns=\"http://photonsoftware.org/quasarConfig\" " >> $BASE_DIR/cfg.xml
 echo "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"   " >> $BASE_DIR/cfg.xml
 echo "xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig $BASE_DIR/quasar_config.xsd\"> " >> $BASE_DIR/cfg.xml
-echo "  <mem_location>$BASE_DIR/vds</mem_location>              " >> $BASE_DIR/cfg.xml
+echo "  <mem_location>$BASE_DIR/mem</mem_location>              " >> $BASE_DIR/cfg.xml
 echo "  <mem_size size=\"10240\" units=\"kb\" />                " >> $BASE_DIR/cfg.xml
 echo "  <quasar_address>10701</quasar_address>              " >> $BASE_DIR/cfg.xml
 echo "  <file_access access=\"group\" />                        " >> $BASE_DIR/cfg.xml

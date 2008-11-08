@@ -21,15 +21,15 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError
-psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrCheckHashMapContent( qsrVerifyStruct   * pVerify,
                          psonHashMap        * pHashMap, 
                          psonSessionContext * pContext )
 {
    ptrdiff_t offset, previousOffset;
    psonHashTxItem * pItem, * pDeletedItem = NULL;
    psonTxStatus * txItemStatus;
-   enum psoqRecoverError rc = PSOQ_REC_OK;
+   enum qsrRecoverError rc = QSR_REC_OK;
    bool found;
    
    /* The easy case */
@@ -52,35 +52,35 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
           * Action is the equivalent of what a rollback would do.
           */
          if ( txItemStatus->status & PSON_TXS_ADDED ) {
-            psoqEcho( pVerify, "Hash item added but not committed" );
+            qsrEcho( pVerify, "Hash item added but not committed" );
             pDeletedItem = pItem;
          }         
          else if ( txItemStatus->status & PSON_TXS_REPLACED ) {
-            psoqEcho( pVerify, "Hash item replaced but not committed" );
+            qsrEcho( pVerify, "Hash item replaced but not committed" );
             pDeletedItem = pItem;
          }
          else if ( txItemStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
-            psoqEcho( pVerify, "Hash item deleted and committed" );
+            qsrEcho( pVerify, "Hash item deleted and committed" );
             pDeletedItem = pItem;
          }
          else if ( txItemStatus->status & PSON_TXS_DESTROYED ) {
-            psoqEcho( pVerify, "Hash item deleted but not committed" );
+            qsrEcho( pVerify, "Hash item deleted but not committed" );
          }
          
          if ( pDeletedItem == NULL && pVerify->doRepair ) {
             txItemStatus->txOffset = PSON_NULL_OFFSET;
             txItemStatus->status = PSON_TXS_OK;
-            psoqEcho( pVerify, "Hash item status fields reset to zero" );
+            qsrEcho( pVerify, "Hash item status fields reset to zero" );
          }
-         rc = PSOQ_REC_CHANGES;
+         rc = QSR_REC_CHANGES;
       }
       
       if ( pDeletedItem == NULL && txItemStatus->usageCounter != 0 ) {
-         rc = PSOQ_REC_CHANGES;
-         psoqEcho( pVerify, "Hash item usage counter is not zero" );
+         rc = QSR_REC_CHANGES;
+         qsrEcho( pVerify, "Hash item usage counter is not zero" );
          if (pVerify->doRepair) {
             txItemStatus->usageCounter = 0;
-            psoqEcho( pVerify, "Hash item usage counter set to zero" );
+            qsrEcho( pVerify, "Hash item usage counter set to zero" );
          }
       }
       
@@ -98,7 +98,7 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
          psonHashTxDelete( &pHashMap->hashObj,
                            pDeletedItem,
                            pContext );
-         psoqEcho( pVerify, "Hash item removed from shared memory" );
+         qsrEcho( pVerify, "Hash item removed from shared memory" );
       }
       pDeletedItem = NULL;
    }
@@ -108,30 +108,30 @@ psoqCheckHashMapContent( psoqVerifyStruct   * pVerify,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError 
-psoqVerifyHashMap( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError 
+qsrVerifyHashMap( qsrVerifyStruct   * pVerify,
                    psonHashMap        * pHashMap,
                    psonSessionContext * pContext )
 {
    psonTxStatus * txHashMapStatus;
-   enum psoqRecoverError rc = PSOQ_REC_OK, rc2;
+   enum qsrRecoverError rc = QSR_REC_OK, rc2;
    bool bTestObject = false;
       
    pVerify->spaces += 2;
 
    /* Is the object lock ? */
    if ( psocIsItLocked( &pHashMap->memObject.lock ) ) {
-      psoqEcho( pVerify, "The object is locked - it might be corrupted" );
+      qsrEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
-         psoqEcho( pVerify, "Trying to reset the lock..." );
+         qsrEcho( pVerify, "Trying to reset the lock..." );
          psocReleaseProcessLock ( &pHashMap->memObject.lock );
       }
-      rc = psoqVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
-      if ( rc > PSOQ_REC_START_ERRORS ) {
+      rc = qsrVerifyMemObject( pVerify, &pHashMap->memObject, pContext );
+      if ( rc > QSR_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc;
       }
-      rc = PSOQ_REC_CHANGES;
+      rc = QSR_REC_CHANGES;
       bTestObject = true;
    }
 
@@ -140,7 +140,7 @@ psoqVerifyHashMap( psoqVerifyStruct   * pVerify,
     * change (as it is the case for other types of objects) so populate the 
     * bitmap in all cases to be safe.
     */
-   psoqPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
+   qsrPopulateBitmap( pVerify, &pHashMap->memObject, pContext );
 
    GET_PTR( txHashMapStatus, pHashMap->nodeObject.txStatusOffset, psonTxStatus );
 
@@ -154,64 +154,64 @@ psoqVerifyHashMap( psoqVerifyStruct   * pVerify,
        * Action is the equivalent of what a rollback would do.
        */
       if ( txHashMapStatus->status & PSON_TXS_ADDED) {
-         psoqEcho( pVerify, "Object added but not committed" );
+         qsrEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return PSOQ_REC_DELETED_OBJECT;
+         return QSR_REC_DELETED_OBJECT;
       }
       if ( txHashMapStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
-         psoqEcho( pVerify, "Object deleted and committed" );
+         qsrEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return PSOQ_REC_DELETED_OBJECT;
+         return QSR_REC_DELETED_OBJECT;
       }
       
-      psoqEcho( pVerify, "Object deleted but not committed" );
-      rc = PSOQ_REC_CHANGES;
+      qsrEcho( pVerify, "Object deleted but not committed" );
+      rc = QSR_REC_CHANGES;
       if ( pVerify->doRepair) {
-         psoqEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
+         qsrEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txHashMapStatus->txOffset = PSON_NULL_OFFSET;
          txHashMapStatus->status = PSON_TXS_OK;
       }
    }
 
    if ( txHashMapStatus->usageCounter != 0 ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Usage counter is not zero" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txHashMapStatus->usageCounter = 0;
-         psoqEcho( pVerify, "Usage counter set to zero" );
+         qsrEcho( pVerify, "Usage counter set to zero" );
       }
    }
    if ( txHashMapStatus->parentCounter != 0 ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Parent counter is not zero" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txHashMapStatus->parentCounter = 0;
-         psoqEcho( pVerify, "Parent counter set to zero" );
+         qsrEcho( pVerify, "Parent counter set to zero" );
       }
    }
    if ( pHashMap->nodeObject.txCounter != 0 ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Transaction counter is not zero" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pHashMap->nodeObject.txCounter = 0;
-         psoqEcho( pVerify, "Transaction counter set to zero" );
+         qsrEcho( pVerify, "Transaction counter set to zero" );
       }
    }
 
    if ( bTestObject ) {
-      rc2 = psoqVerifyHashTx( pVerify, 
+      rc2 = qsrVerifyHashTx( pVerify, 
                               &pHashMap->hashObj, 
                               SET_OFFSET(&pHashMap->memObject) );
-      if ( rc2 > PSOQ_REC_START_ERRORS ) {
+      if ( rc2 > QSR_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;
       }
-      /* At this point rc is either 0 or PSOQ_REC_CHANGES - same for rc2 */
+      /* At this point rc is either 0 or QSR_REC_CHANGES - same for rc2 */
       if ( rc2 > rc ) rc = rc2;
    }
 
-   rc2 = psoqCheckHashMapContent( pVerify, pHashMap, pContext );
-   /* At this point rc is either 0 or PSOQ_REC_CHANGES */
+   rc2 = qsrCheckHashMapContent( pVerify, pHashMap, pContext );
+   /* At this point rc is either 0 or QSR_REC_CHANGES */
    if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;
 

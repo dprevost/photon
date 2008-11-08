@@ -88,8 +88,8 @@ struct repairKit
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError 
-psoqVerifyList( psoqVerifyStruct      * pVerify,
+enum qsrRecoverError 
+qsrVerifyList( qsrVerifyStruct      * pVerify,
                 struct psonLinkedList * pList )
 {
    psonLinkNode * next, * previous;
@@ -97,7 +97,7 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
    struct repairKit kit = { \
       NO_REPAIR, pList, 0, 0, false, false, false, NULL, NULL, NULL, NULL };
    bool foundNode;
-   enum psoqRecoverError rc = PSOQ_REC_OK;
+   enum qsrRecoverError rc = QSR_REC_OK;
    
    /*
     * Do not add a test for the size of the list here (as in 
@@ -122,12 +122,12 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
          break;
       }
       else {
-         if ( psoqVerifyOffset( pVerify, next->nextOffset ) ) {
+         if ( qsrVerifyOffset( pVerify, next->nextOffset ) ) {
             kit.forwardChainLen++;
          }
          else {
-            psoqEcho( pVerify, "Invalid offset - cannot repair" );
-            return PSOQ_REC_UNRECOVERABLE_ERROR;
+            qsrEcho( pVerify, "Invalid offset - cannot repair" );
+            return QSR_REC_UNRECOVERABLE_ERROR;
          }
       }
       previous = next;
@@ -145,12 +145,12 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
          break;
       }
       else {
-         if ( psoqVerifyOffset( pVerify, next->previousOffset ) ) {
+         if ( qsrVerifyOffset( pVerify, next->previousOffset ) ) {
             kit.backwardChainLen++;
          }
          else {
-            psoqEcho( pVerify, "Invalid offset - cannot repair" );
-            return PSOQ_REC_UNRECOVERABLE_ERROR;
+            qsrEcho( pVerify, "Invalid offset - cannot repair" );
+            return QSR_REC_UNRECOVERABLE_ERROR;
          }
       }
       previous = next;
@@ -159,38 +159,38 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
    
    // So how did it go?... we have multiple possibilities here.
    if ( kit.breakInForwardChain && kit.breakInBackwardChain ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Both chains broken" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Both chains broken" );
       if ( kit.nextBreak == kit.previousBreak ) {
          kit.mode = REPAIR_WITH_BOTH_EQUAL;
       }
       else {
-         psoqEcho( pVerify, "Chains broken at different places - cannot repair" );
-         return PSOQ_REC_UNRECOVERABLE_ERROR;
+         qsrEcho( pVerify, "Chains broken at different places - cannot repair" );
+         return QSR_REC_UNRECOVERABLE_ERROR;
       }
    }
    else if ( kit.breakInForwardChain && ! kit.breakInBackwardChain ) {
-      rc = PSOQ_REC_CHANGES;
+      rc = QSR_REC_CHANGES;
       kit.mode = REPAIR_WITH_BW_BREAK;
-      psoqEcho( pVerify, "Forward chain broken" );
+      qsrEcho( pVerify, "Forward chain broken" );
    }
    else if ( ! kit.breakInForwardChain && kit.breakInBackwardChain ) {
-      rc = PSOQ_REC_CHANGES;
+      rc = QSR_REC_CHANGES;
       kit.mode = REPAIR_WITH_FW_BREAK;
-      psoqEcho( pVerify, "Backward chain broken" );
+      qsrEcho( pVerify, "Backward chain broken" );
    }
    else {
       if ( kit.backwardChainLen == kit.forwardChainLen ) { /* all is well ! */
          if ( pList->currentSize != kit.forwardChainLen ) {
-            rc = PSOQ_REC_CHANGES;
+            rc = QSR_REC_CHANGES;
             kit.mode = REPAIR_LENGTH;
-            psoqEcho( pVerify, "Invalid number of elements in linked list");
+            qsrEcho( pVerify, "Invalid number of elements in linked list");
          }
       }
       else {
-         psoqEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
-         psoqEcho( pVerify, "          using the longest chain to rebuild" );
-         rc = PSOQ_REC_CHANGES;
+         qsrEcho( pVerify, "Warning - counts in foward and backward chains differ:" );
+         qsrEcho( pVerify, "          using the longest chain to rebuild" );
+         rc = QSR_REC_CHANGES;
          if ( kit.backwardChainLen > kit.forwardChainLen ) {
             kit.mode = REPAIR_WITH_BW_NO_BREAK;
          }
@@ -208,13 +208,13 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
       break;
       
    case REPAIR_LENGTH:
-      psoqEcho( pVerify, "Small correction in the number of elements of linked list");
+      qsrEcho( pVerify, "Small correction in the number of elements of linked list");
       pList->currentSize = kit.forwardChainLen;
       break;
          
    case REPAIR_WITH_FW_NO_BREAK:
    
-      psoqEcho( pVerify, "Repairing list using forward chain" );
+      qsrEcho( pVerify, "Repairing list using forward chain" );
       
       /*
        * We loop forward until we come back to head. We reset the bw chain
@@ -235,7 +235,7 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BW_NO_BREAK:
       
-      psoqEcho( pVerify, "Repairing list using backward chain" );
+      qsrEcho( pVerify, "Repairing list using backward chain" );
       
       /*
        * We loop backward until we come back to head. We reset the fw chain
@@ -257,7 +257,7 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
       
    case REPAIR_WITH_FW_BREAK:
    
-      psoqEcho( pVerify, "Repairing list using forward chain" );
+      qsrEcho( pVerify, "Repairing list using forward chain" );
       foundNode = false;
       
       /*
@@ -304,7 +304,7 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BW_BREAK:
       
-      psoqEcho( pVerify, "Repairing list using backward chain" );
+      qsrEcho( pVerify, "Repairing list using backward chain" );
       foundNode = false;
       
       /*
@@ -352,7 +352,7 @@ psoqVerifyList( psoqVerifyStruct      * pVerify,
       
    case REPAIR_WITH_BOTH_EQUAL:
    
-      psoqEcho( pVerify, "Repairing both chains" );
+      qsrEcho( pVerify, "Repairing both chains" );
       
       /*
        * No loop needed here - we are just missing the links of the

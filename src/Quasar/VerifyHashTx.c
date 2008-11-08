@@ -34,8 +34,8 @@
  *
  */
  
-enum psoqRecoverError
-psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
+enum qsrRecoverError
+qsrVerifyHashTx( qsrVerifyStruct  * pVerify,
                   struct psonHashTx * pHash,
                   ptrdiff_t           offset )
 {
@@ -47,39 +47,39 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
    size_t numberOfItems = 0;
    size_t totalDataSizeInBytes = 0;
    bool removeItem;
-   enum psoqRecoverError rc = PSOQ_REC_OK;
+   enum qsrRecoverError rc = QSR_REC_OK;
    
    if ( pHash->initialized != PSON_HASH_TX_SIGNATURE ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, 
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, 
          "HashTx::initialized is not PSON_HASH_TX_SIGNATURE - it might indicate a serious problem" );
       if ( pVerify->doRepair ) {
          pHash->initialized = PSON_HASH_TX_SIGNATURE;
-         psoqEcho( pVerify, "Resetting HashTx::initialized" );
+         qsrEcho( pVerify, "Resetting HashTx::initialized" );
       }
    }
    
    if ( pHash->memObjOffset != offset ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, 
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, 
          "HashTx::memObjOffset is wrong - it might indicate a serious problem" );
       if ( pVerify->doRepair ) {
          pHash->memObjOffset = offset;
-         psoqEcho( pVerify, "Resetting HashTx::memObjOffset" );
+         qsrEcho( pVerify, "Resetting HashTx::memObjOffset" );
       }
    }
 
-   if ( ! psoqVerifyOffset( pVerify, pHash->arrayOffset ) ) {
-      psoqEcho( pVerify, 
+   if ( ! qsrVerifyOffset( pVerify, pHash->arrayOffset ) ) {
+      qsrEcho( pVerify, 
          "HashTx::arrayOffset is invalid - aborting the hash verification" );
-      return PSOQ_REC_UNRECOVERABLE_ERROR;
+      return QSR_REC_UNRECOVERABLE_ERROR;
    }
    GET_PTR( pArray, pHash->arrayOffset, ptrdiff_t );
 
    if ( pHash->lengthIndex >= PSON_PRIME_NUMBER_ARRAY_LENGTH ) {
-      psoqEcho( pVerify, 
+      qsrEcho( pVerify, 
          "HashTx::lengthIndex is invalid - aborting the hash verification" );
-      return PSOQ_REC_UNRECOVERABLE_ERROR;
+      return QSR_REC_UNRECOVERABLE_ERROR;
    }
   
    for ( i = 0; i < g_psonArrayLengths[pHash->lengthIndex]; ++i ) {
@@ -89,9 +89,9 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
       while ( currentOffset != PSON_NULL_OFFSET ) {
          removeItem = false;
          
-         if ( ! psoqVerifyOffset( pVerify, currentOffset ) ) {
-            rc = PSOQ_REC_CHANGES;
-            psoqEcho( pVerify, 
+         if ( ! qsrVerifyOffset( pVerify, currentOffset ) ) {
+            rc = QSR_REC_CHANGES;
+            qsrEcho( pVerify, 
                "Hash item offset is invalid - jumping to next offset" );
             if ( pVerify->doRepair ) {
                if ( previousOffset == PSON_NULL_OFFSET ) {
@@ -109,37 +109,37 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
          nextOffset = pItem->nextItem;
          
          if ( pItem->keyLength == 0 ) {
-            rc = PSOQ_REC_CHANGES;
-            psoqEcho( pVerify, "HashItem::keyLength is invalid" );
+            rc = QSR_REC_CHANGES;
+            qsrEcho( pVerify, "HashItem::keyLength is invalid" );
             removeItem = true;
          }
          else {
             /* test the hash item itself */
             if ( pItem->nextSameKey != PSON_NULL_OFFSET ) {
-               if ( ! psoqVerifyOffset( pVerify, pItem->nextSameKey ) ) {
-                  rc = PSOQ_REC_CHANGES;
-                  psoqEcho( pVerify, "HashItem::nextSameKey is invalid" );
+               if ( ! qsrVerifyOffset( pVerify, pItem->nextSameKey ) ) {
+                  rc = QSR_REC_CHANGES;
+                  qsrEcho( pVerify, "HashItem::nextSameKey is invalid" );
                   if ( pVerify->doRepair ) {
                      pItem->nextSameKey = PSON_NULL_OFFSET;
                   }
                }
             }
             if ( pItem->dataOffset == PSON_NULL_OFFSET ) {
-               rc = PSOQ_REC_CHANGES;
-               psoqEcho( pVerify, "HashItem::dataOffset is NULL" );
+               rc = QSR_REC_CHANGES;
+               qsrEcho( pVerify, "HashItem::dataOffset is NULL" );
                removeItem = true;
             }
             else {
-               if ( ! psoqVerifyOffset( pVerify, pItem->dataOffset ) ) {
-                  rc = PSOQ_REC_CHANGES;
-                  psoqEcho( pVerify, "HashItem::dataOffset is invalid" );
+               if ( ! qsrVerifyOffset( pVerify, pItem->dataOffset ) ) {
+                  rc = QSR_REC_CHANGES;
+                  qsrEcho( pVerify, "HashItem::dataOffset is invalid" );
                   removeItem = true;
                }
                else {
-                  if ( ! psoqVerifyOffset( 
+                  if ( ! qsrVerifyOffset( 
                         pVerify, pItem->dataOffset + pItem->dataLength ) ) {
-                     rc = PSOQ_REC_CHANGES;
-                     psoqEcho( pVerify, "HashItem::dataOffset is invalid" );
+                     rc = QSR_REC_CHANGES;
+                     qsrEcho( pVerify, "HashItem::dataOffset is invalid" );
                      removeItem = true;
                   }
                }
@@ -152,8 +152,8 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
          }
          
          if ( pVerify->doRepair && removeItem ) {
-            rc = PSOQ_REC_CHANGES;
-            psoqEcho( pVerify, "HashItem is removed" );
+            rc = QSR_REC_CHANGES;
+            qsrEcho( pVerify, "HashItem is removed" );
             if ( previousOffset == PSON_NULL_OFFSET ) {
                pArray[i] = nextOffset;
             }
@@ -176,19 +176,19 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
    }
 
    if ( pHash->numberOfItems != numberOfItems ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "HashTx::numberOfItems is invalid" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "HashTx::numberOfItems is invalid" );
       if ( pVerify->doRepair ) {
          pHash->numberOfItems = numberOfItems;
-         psoqEcho( pVerify, "Resetting HashTx::numberOfItems" );
+         qsrEcho( pVerify, "Resetting HashTx::numberOfItems" );
       }
    }
    if ( pHash->totalDataSizeInBytes != totalDataSizeInBytes ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "HashTx::totalDataSizeInBytes is invalid" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "HashTx::totalDataSizeInBytes is invalid" );
       if ( pVerify->doRepair ) {
          pHash->totalDataSizeInBytes = totalDataSizeInBytes;
-         psoqEcho( pVerify, "Resetting HashTx::totalDataSizeInBytes" );
+         qsrEcho( pVerify, "Resetting HashTx::totalDataSizeInBytes" );
       }
    }
 
@@ -206,8 +206,8 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
          bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
                      g_psonArrayLengths[pHash->lengthIndex];
          if ( bucket != i ) {
-           rc = PSOQ_REC_CHANGES;
-           psoqEcho( pVerify, "Hash item - invalid bucket" );
+           rc = QSR_REC_CHANGES;
+           qsrEcho( pVerify, "Hash item - invalid bucket" );
             invalidBuckets++;
             if ( pVerify->doRepair ) {
                if ( pArray[bucket] == PSON_NULL_OFFSET ) {
@@ -243,7 +243,7 @@ psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
          bucket = fnv_buf( (void *)pItem->key, pItem->keyLength, FNV1_INIT) %
                      g_psonArrayLengths[pHash->lengthIndex];
          if ( bucket != i ) {
-            psoqEcho( pVerify, "Hash item - invalid bucket" );
+            qsrEcho( pVerify, "Hash item - invalid bucket" );
             invalidBuckets++;
             if ( pVerify->doRepair ) {
                if ( pArray[bucket] == PSON_NULL_OFFSET ) {

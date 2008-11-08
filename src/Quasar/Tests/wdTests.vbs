@@ -58,7 +58,7 @@ Set fso = CreateObject ("Scripting.FileSystemObject")
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\watchdog"
+tmpDir = tmpDir + "\quasar"
 
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 '

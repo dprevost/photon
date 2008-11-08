@@ -33,7 +33,7 @@ int main()
    
    struct psocOptStruct opts[5] = {
       { '3', "three",   1, "", "repeat the loop three times" },
-      { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
+      { 'a', "address", 0, "QUASAR_ADDRESS", "tcp/ip port number of the server" },
       { 'x', "display", 1, "DISPLAY", "X display to use" },
       { 'v', "verbose", 1, "", "try to explain what is going on" },
       { 'z', "zzz",     1, "", "go to sleep..." }

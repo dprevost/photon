@@ -236,14 +236,14 @@
 
     <error>
       <errnumber> 23 </errnumber>
-      <errname> INVALID_WATCHDOG_ADDRESS </errname>
+      <errname> INVALID_QUASAR_ADDRESS </errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            The watchdog address is invalid (empty string, NULL pointer, etc.).
+            The server address is invalid (empty string, NULL pointer, etc.).
           </errormsg>
           <errordoc>
-            The watchdog address is invalid (empty string, NULL pointer, etc.).
+            The server address is invalid (empty string, NULL pointer, etc.).
           </errordoc>
         </message>
       </message_group>
@@ -285,10 +285,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Socket error when trying to connect to the watchdog.
+            Socket error when trying to connect to the server.
           </errormsg>
           <errordoc>
-            Socket error when trying to connect to the watchdog.
+            Socket error when trying to connect to the server.
           </errordoc>
         </message>
       </message_group>
@@ -300,10 +300,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Socket error when trying to send a request to the watchdog.
+            Socket error when trying to send a request to the server.
           </errormsg>
           <errordoc>
-            Socket error when trying to send a request to the watchdog.
+            Socket error when trying to send a request to the server.
           </errordoc>
         </message>
       </message_group>
@@ -315,10 +315,10 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Socket error when trying to receive a reply from the watchdog.
+            Socket error when trying to receive a reply from the server.
           </errormsg>
           <errordoc>
-            Socket error when trying to receive a reply from the watchdog.
+            Socket error when trying to receive a reply from the server.
           </errordoc>
         </message>
       </message_group>

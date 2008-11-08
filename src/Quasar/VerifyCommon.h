@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOQ_VERIFY_COMMON_H
-#define PSOQ_VERIFY_COMMON_H
+#ifndef QSR_VERIFY_COMMON_H
+#define QSR_VERIFY_COMMON_H
 
 #include "Nucleus/MemoryHeader.h"
 #include "Nucleus/MemBitmap.h"
@@ -41,21 +41,21 @@ struct psonMemObject;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError 
+enum qsrRecoverError 
 {
-   PSOQ_REC_OK = 0,
-   PSOQ_REC_CHANGES,
-   PSOQ_REC_START_ERRORS = 100,
+   QSR_REC_OK = 0,
+   QSR_REC_CHANGES,
+   QSR_REC_START_ERRORS = 100,
    /* Object added but not committed or object deleted and committed */
-   PSOQ_REC_DELETED_OBJECT,
-   PSOQ_REC_UNHANDLED_ERROR,
-   PSOQ_REC_UNRECOVERABLE_ERROR
+   QSR_REC_DELETED_OBJECT,
+   QSR_REC_UNHANDLED_ERROR,
+   QSR_REC_UNRECOVERABLE_ERROR
 };
-typedef enum psoqRecoverError psoqRecoverError;
+typedef enum qsrRecoverError qsrRecoverError;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psoqVerifyStruct
+struct qsrVerifyStruct
 {
    bool   verbose;
    int    spaces;
@@ -67,12 +67,12 @@ struct psoqVerifyStruct
    size_t numObjectsError;
    psonMemBitmap * pBitmap;
 };
-typedef struct psoqVerifyStruct psoqVerifyStruct;
+typedef struct qsrVerifyStruct qsrVerifyStruct;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psoqEcho( psoqVerifyStruct * pVerify, char * message )
+void qsrEcho( qsrVerifyStruct * pVerify, char * message )
 {
    int i;
    
@@ -87,7 +87,7 @@ void psoqEcho( psoqVerifyStruct * pVerify, char * message )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psoqResetBitmap( psonMemBitmap * pBitmap )
+void qsrResetBitmap( psonMemBitmap * pBitmap )
 {
    size_t length;
    
@@ -98,7 +98,7 @@ void psoqResetBitmap( psonMemBitmap * pBitmap )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-bool psoqVerifyOffset( psoqVerifyStruct * pVerify, ptrdiff_t offset )
+bool qsrVerifyOffset( qsrVerifyStruct * pVerify, ptrdiff_t offset )
 {
    return psonIsBufferFree( pVerify->pBitmap, offset );
 }
@@ -106,46 +106,46 @@ bool psoqVerifyOffset( psoqVerifyStruct * pVerify, ptrdiff_t offset )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-psoqPopulateBitmap( struct psoqVerifyStruct   * pVerify,
+qsrPopulateBitmap( struct qsrVerifyStruct   * pVerify,
                     struct psonMemObject      * pMemObj,
                     struct psonSessionContext * pContext );
 
-enum psoqRecoverError
-psoqVerifyFastMap( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyFastMap( qsrVerifyStruct   * pVerify,
                    struct psonMap     * pHashMap, 
                    psonSessionContext * pContext  );
 
-enum psoqRecoverError
-psoqVerifyFolder( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyFolder( qsrVerifyStruct   * pVerify,
                   struct psonFolder  * pFolder,
                   psonSessionContext * pContext );
 
-enum psoqRecoverError
-psoqVerifyHash( psoqVerifyStruct * pVerify,
+enum qsrRecoverError
+qsrVerifyHash( qsrVerifyStruct * pVerify,
                 struct psonHash  * pHash,
                 ptrdiff_t          memObjOffset );
 
-enum psoqRecoverError
-psoqVerifyHashTx( psoqVerifyStruct  * pVerify,
+enum qsrRecoverError
+qsrVerifyHashTx( qsrVerifyStruct  * pVerify,
                   struct psonHashTx * pHash,
                   ptrdiff_t           memObjOffset );
 
-enum psoqRecoverError
-psoqVerifyList( psoqVerifyStruct      * pVerify,
+enum qsrRecoverError
+qsrVerifyList( qsrVerifyStruct      * pVerify,
                 struct psonLinkedList * pList );
 
-enum psoqRecoverError
-psoqVerifyHashMap( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyHashMap( qsrVerifyStruct   * pVerify,
                    struct psonHashMap * pHashMap, 
                    psonSessionContext * pContext  );
 
-enum psoqRecoverError
-psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyMemObject( struct qsrVerifyStruct   * pVerify,
                      struct psonMemObject      * pMemObj,
                      struct psonSessionContext * pContext );
 
-enum psoqRecoverError
-psoqVerifyQueue( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyQueue( qsrVerifyStruct   * pVerify,
                  struct psonQueue   * pQueue, 
                  psonSessionContext * pContext  );
 
@@ -155,7 +155,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSOQ_VERIFY_COMMON_H */
+#endif /* QSR_VERIFY_COMMON_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

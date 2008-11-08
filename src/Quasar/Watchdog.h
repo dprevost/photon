@@ -47,11 +47,18 @@ extern psocErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#define PSO_LOCATION  "VDSLocation"
-#define PSO_WDADDRESS "WatchdogAddress"
-#define PSO_MEMSIZE   "MemorySize"
+/*
+ * These define are still use by the win32 code (registry) but I'm not
+ * sure if this will be use when I decide to implement NT services, one
+ * of these days.
+ *
+ * They also do not always match the values of the config.
+ */
+#define PSO_LOCATION  "mem_location"
+#define PSO_WDADDRESS "quasar_address"
+#define PSO_MEMSIZE   "mem_size"
 #define PSO_USE_LOG   "LogTransaction"
-#define PSO_FILEPERMS "FilePermissions"
+#define PSO_FILEPERMS "file_access"
 #define PSO_DIRPERMS  "DirectoryPermissions"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -69,7 +76,7 @@ extern psocErrMsgHandle g_wdErrorHandle;
  *  Note: this synchronisation is not implemented yet...
  */
 
-struct psoqWatchdog
+struct qsrQuasar
 {
    
    /// Configuration parameters (as read from Windows registry or from 
@@ -83,63 +90,63 @@ struct psoqWatchdog
    // PSO_ProcessLock lock;
    
    /// Control word (or status flag) that determines the current status
-   /// of the watchdog (running, suspended, shutting down, etc. ).
+   /// of the server (running, suspended, shutting down, etc. ).
    unsigned int controlWord;
    
    /// Listen to connection requests
-   struct psoqAcceptor acceptor;
+   struct qsrAcceptor acceptor;
 
    /// Send messages to system log facility once stderr is not available
-   struct psoqLogMsg  log;
+   struct qsrLogMsg  log;
    
-   struct psoqHandler vds;
+   struct qsrHandler handler;
 
    psocErrorHandler errorHandler;
 
-   bool verifyVDSOnly;
+   bool verifyMemOnly;
    
    char errorMsg[WD_MSG_LEN];
 };
 
-typedef struct psoqWatchdog psoqWatchdog;
+typedef struct qsrQuasar qsrQuasar;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-extern psoqWatchdog * g_pWD;
+extern qsrQuasar * g_pWD;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline
-void psoqHandleAbnormalTermination( psoqWatchdog * pWatchdog,
-                                    pid_t          pid )
+void qsrHandleAbnormalTermination( qsrQuasar * pQuasar,
+                                   pid_t       pid )
 {
-   psoqHandleCrash( &g_pWD->vds, pid );
+   qsrHandleCrash( &g_pWD->handler, pid );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqWatchdogInit( psoqWatchdog * pWatchdog );
+void qsrQuasarInit( qsrQuasar * pQuasar );
 
-void psoqWatchdogFini( psoqWatchdog * pWatchdog );
+void qsrQuasarFini( qsrQuasar * pQuasar );
 
 #if defined ( WIN32 )
 
-bool psoqInstall( psoqWatchdog * pWatchdog );
+bool qsrInstall( qsrQuasar * pQuasar );
 
-void psoqUninstall( psoqWatchdog * pWatchdog );
+void qsrUninstall( qsrQuasar * pQuasar );
 
 #else
-bool psoqDaemon( psoqWatchdog * pWatchdog );
+bool qsrDaemon( qsrQuasar * pQuasar );
 #endif
 
-bool psoqWatchdogReadConfig( psoqWatchdog * pWatchdog, const char* cfgname );   
+bool qsrQuasarReadConfig( qsrQuasar * pQuasar, const char* cfgname );   
    
-void psoqHelp( const char* progName );
+void qsrHelp( const char* progName );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-int psoqLastError() {
+int qsrLastError() {
 #if defined ( WIN32 )
    return GetLastError();
 #else
@@ -160,16 +167,16 @@ int psoqLastError() {
  *  than having to search in the EventLog/syslog facility).
  */
 static inline
-bool psoqInitializeVDS( psoqWatchdog * pWatchdog ) {
-   return psoqHandlerInit( &pWatchdog->vds,
-                           &pWatchdog->params, 
-                           &pWatchdog->pMemoryAddress, 
-                           pWatchdog->verifyVDSOnly );
+bool qsrInitializeMem( qsrQuasar * pQuasar ) {
+   return qsrHandlerInit( &pQuasar->handler,
+                          &pQuasar->params, 
+                          &pQuasar->pMemoryAddress, 
+                          pQuasar->verifyMemOnly );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqRun();
+void qsrRun();
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

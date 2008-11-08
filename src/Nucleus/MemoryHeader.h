@@ -64,7 +64,7 @@ struct psonMemoryHeader
    char     compiler[20];
    char     cxxcompiler[20];
    char     compilerVersion[10];
-   char     watchdogVersion[10];
+   char     quasarVersion[10];
    char     creationTime[30];
    
    psonHashTxItem topHashItem;

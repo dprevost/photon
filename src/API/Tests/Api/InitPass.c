@@ -28,7 +28,7 @@ int main( int argc, char * argv[] )
    int errcode;
    
    errcode = psoInit( NULL, 1 );
-   if ( errcode != PSO_INVALID_WATCHDOG_ADDRESS ) {
+   if ( errcode != PSO_INVALID_QUASAR_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

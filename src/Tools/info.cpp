@@ -63,7 +63,7 @@ int main()
    cout << "Compiler version        " << info.compilerVersion << endl;
    cout << "Platform                " << info.platform << endl;
    cout << "Shared libs version     " << info.dllVersion << endl;
-   cout << "Watchdog version        " << info.watchdogVersion << endl;
+   cout << "Quasar version          " << info.quasarVersion << endl;
    cout << "Memory time of creation " << info.creationTime << endl;
 
    if ( info.bigEndian == 1 )

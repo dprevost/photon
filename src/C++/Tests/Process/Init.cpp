@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
    catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_WATCHDOG_ADDRESS ) {
+      if ( exc.ErrorCode() != PSO_INVALID_QUASAR_ADDRESS ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
@@ -77,7 +77,7 @@ int main( int argc, char * argv[] )
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      cerr << "Is the watchdog running?" << endl;
+      cerr << "Is the server running?" << endl;
       return 1;
    }
 

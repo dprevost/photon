@@ -22,7 +22,7 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
      large to accomodate a backup of the memory file). -->
 <mem_size size="10240" units="kb" />
 
-<!-- The tcp/ip port used by the API clients and the watchdog to
+<!-- The tcp/ip port used by the API clients and the server to
      communicate. The port is bind to a local address (127.0.0.1)
      and cannot be accessed from a different computer for obvious
      security reasons. The port must be between 1025 and 65535. -->
@@ -36,17 +36,17 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
      In other words, which class of users can access/use Photon?
      
      Three possible answers:
-       "user" - only the user that launched/will launch the watchdog (and 
+       "user" - only the user that launched/will launch the server (and 
                 created/will create the files).
        "group" - only users that belong to the same group of the user that 
-                 launched/will launched the watchdog...
+                 launched/will launched the server...
        "world" - no restriction - all users are allowed. Not recommended in
                  most cases.
 
-     If the user launching the watchdog belongs to more than one group,
+     If the user launching the server belongs to more than one group,
      you can specify which group should be used by using something like this:
 
-       <file_access access="group" group="vdsf"/>
+       <file_access access="group" group="photon"/>
 
      Note: this is mainly for future development, for example if you
      want the web server (or a database or...) to access shared memory,

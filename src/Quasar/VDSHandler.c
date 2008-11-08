@@ -28,10 +28,10 @@ extern psocErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqHandlerInit( psoqHandler         * pHandler,
+bool qsrHandlerInit( qsrHandler         * pHandler,
                       struct ConfigParams * pConfig,
                       psonMemoryHeader   ** ppMemoryAddress,
-                      bool                  verifyVDSOnly )
+                      bool                  verifyMemOnly )
 {
    bool ok;
    int errcode = 0;
@@ -68,22 +68,22 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
 
    pHandler->pConfig = pConfig;
 
-   pHandler->pMemManager = (psoqMemoryManager *)calloc( 
-      sizeof(psoqMemoryManager), 1 );
+   pHandler->pMemManager = (qsrMemoryManager *)calloc( 
+      sizeof(qsrMemoryManager), 1 );
    if ( pHandler->pMemManager == NULL ) {
       psocSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
-                    PSOQ_NOT_ENOUGH_HEAP_MEMORY );
+                    QSR_NOT_ENOUGH_HEAP_MEMORY );
       return false;
    }
-   psoqMemoryManagerInit( pHandler->pMemManager );
+   qsrMemoryManagerInit( pHandler->pMemManager );
    
    path_len = strlen( pConfig->wdLocation ) + strlen( PSO_DIR_SEPARATOR ) +
       strlen( PSO_MEMFILE_NAME )  + strlen( ".bak" );
    if ( path_len >= PATH_MAX ) {
       psocSetError( &pHandler->context.errorHandler,
                     g_wdErrorHandle,
-                    PSOQ_CFG_BCK_LOCATION_TOO_LONG );
+                    QSR_CFG_BCK_LOCATION_TOO_LONG );
       return false;
    }
       
@@ -94,13 +94,13 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
    psocBackStoreStatus( &memFile, &fileStatus );
 
    if ( ! fileStatus.fileExist ) {
-      if ( verifyVDSOnly ) {
+      if ( verifyMemOnly ) {
          psocSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
-                       PSOQ_NO_VERIFICATION_POSSIBLE );
+                       QSR_NO_VERIFICATION_POSSIBLE );
          return false;
       }
-      ok = psoqCreateVDS( pHandler->pMemManager,
+      ok = qsrCreateMem( pHandler->pMemManager,
                                path,
                                pConfig->memorySizekb,
                                pConfig->filePerms,
@@ -118,7 +118,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
          if ( errcode != 0 ) {
             psocSetError( &pHandler->context.errorHandler,
                           g_wdErrorHandle,
-                          PSOQ_MKDIR_FAILURE );
+                          QSR_MKDIR_FAILURE );
             return false;
          }
          (*ppMemoryAddress)->logON = true;
@@ -129,7 +129,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
          ! fileStatus.lenghtOK ) {
          psocSetError( &pHandler->context.errorHandler,
                        g_wdErrorHandle,
-                       PSOQ_FILE_NOT_ACCESSIBLE );
+                       QSR_FILE_NOT_ACCESSIBLE );
          return false;
       }
 
@@ -157,7 +157,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
                              errno );
                psocChainError( &pHandler->context.errorHandler,
                                g_wdErrorHandle,
-                               PSOQ_MKDIR_FAILURE );
+                               QSR_MKDIR_FAILURE );
                return false;
             }
          }
@@ -174,7 +174,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
       }
       if ( fp == NULL ) fp = stderr;
 
-      if ( ! verifyVDSOnly ) {
+      if ( ! verifyMemOnly ) {
          ok = psocCopyBackstore( &memFile,
                                  pConfig->filePerms,
                                  &pHandler->context.errorHandler );
@@ -182,12 +182,12 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
          if ( ! ok ) {
             psocChainError( &pHandler->context.errorHandler,
                             g_wdErrorHandle,
-                            PSOQ_COPY_BCK_FAILURE );
+                            QSR_COPY_BCK_FAILURE );
             return false;
          }
       }
       
-      ok = psoqOpenVDS( pHandler->pMemManager,
+      ok = qsrOpenMem( pHandler->pMemManager,
                         path,
                         pConfig->memorySizekb,
                         ppMemoryAddress,
@@ -196,8 +196,8 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
       if ( ! ok ) return false;
       
       fprintf( stderr, "Starting the recovery of the shared memory, please be patient\n" );
-      if ( verifyVDSOnly ) {
-         psoqVerify( *ppMemoryAddress, 
+      if ( verifyMemOnly ) {
+         qsrVerify( *ppMemoryAddress, 
                      &numObjectsOK,
                      &numObjectsRepaired,
                      &numObjectsDeleted,
@@ -206,7 +206,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
          if ( fp != stderr ) fclose( fp );
          return (numObjectsError == 0);
       }
-      psoqRepair( *ppMemoryAddress, 
+      qsrRepair( *ppMemoryAddress, 
                   &numObjectsOK,
                   &numObjectsRepaired,
                   &numObjectsDeleted,
@@ -229,7 +229,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
 #if 0
       /*
        * We validate the shared memory first since the config file can set/unset the  
-       * logging of transactions on an existing VDS.
+       * logging of transactions on an existing shared memory.
        */
       if ( pConfig->logOn ) {
          /*
@@ -270,7 +270,7 @@ bool psoqHandlerInit( psoqHandler         * pHandler,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqHandlerFini( psoqHandler * pHandler )
+void qsrHandlerFini( qsrHandler * pHandler )
 {
    PSO_PRE_CONDITION( pHandler != NULL );
 
@@ -292,7 +292,7 @@ void psoqHandlerFini( psoqHandler * pHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqHandleCrash( psoqHandler * pHandler, pid_t pid )
+void qsrHandleCrash( qsrHandler * pHandler, pid_t pid )
 {
 //   int errcode;
    PSO_PRE_CONDITION( pHandler != NULL );

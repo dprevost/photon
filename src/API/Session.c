@@ -457,7 +457,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
             memcpy( pInfo->compiler,        pHead->compiler,        20 );
             memcpy( pInfo->compilerVersion, pHead->compilerVersion, 10 );
             memcpy( pInfo->platform,        pHead->cpu_type ,       20 );
-            memcpy( pInfo->watchdogVersion, pHead->watchdogVersion, 10 );
+            memcpy( pInfo->quasarVersion,   pHead->quasarVersion, 10 );
             memcpy( pInfo->creationTime,    pHead->creationTime,    30 );
             strncpy( pInfo->dllVersion, PACKAGE_VERSION, 10 );
          }

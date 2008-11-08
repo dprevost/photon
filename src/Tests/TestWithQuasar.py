@@ -20,7 +20,7 @@
 #  - the path of the top directory of the build
 #  - the relative path of the test to be run (versus the build dir)
 #  - the name of the test to be run
-#  - the tcp/ip port for the watchdog
+#  - the tcp/ip port for the server
 #  - expected error code
 #  - the path of the directory for the shared memory
 #
@@ -67,12 +67,12 @@ cfg_name = os.path.join( vds_dir, cfg_suff )
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 #
-# Test to see if the watchdog is up and running (by trying to connect 
+# Test to see if the server is up and running (by trying to connect 
 # to the selected tcp port). 
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-def IsWatchdogRunning():
+def IsQuasarRunning():
 
    global tcp_port
 
@@ -97,7 +97,7 @@ def IsWatchdogRunning():
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 #
-# Start the watchdog 
+# Start the server 
 #
 # Note that we do not daemonize it since we would loose the pid if we 
 # did (it is possible to kill it even without the pid but it is more
@@ -105,7 +105,7 @@ def IsWatchdogRunning():
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-def StartWatchdog():
+def StartQuasar():
 
    global wd_dir, wd_name, cfg_name, wd_pid
 
@@ -113,29 +113,29 @@ def StartWatchdog():
    try:
       wd_pid = os.spawnl( os.P_NOWAIT, path, path, '--config',  cfg_name )
    except OSError, (errno, strerror):
-      print 'Error starting the watchdog'
+      print 'Error starting the server'
       print "OS error(%s): %s" % (errno, strerror)
       raise
    except:
-      print "Unexpected error in StartWatchdog():", sys.exc_info()[0]
+      print "Unexpected error in StartQuasar():", sys.exc_info()[0]
       raise
 
-   # We sleep a bit (if needed) until we know for sure that the watchdog
+   # We sleep a bit (if needed) until we know for sure that the server
    # has the necessary time to properly start. 
-   # If an exception occurs in IsWatchdogRunning() the next function
+   # If an exception occurs in IsQuasarRunning() the next function
    # on the stack will handle it.
 
    count = 0
-   while IsWatchdogRunning() == 0:
+   while IsQuasarRunning() == 0:
       time.sleep(0.1)
       count = count + 1
       if count > 10:
-         print 'The Watchdog refuses to start'
+         print 'Quasar refuses to start'
          raise os.error
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-def StopWatchdog():
+def StopQuasar():
 
    global wd_pid
 
@@ -143,16 +143,16 @@ def StopWatchdog():
       os.kill( wd_pid, signal.SIGINT )
 
    # We sleep a bit (if needed) since signals are asynch and we need to 
-   # make sure that the watchdog is stopped (since other tests might be 
+   # make sure that the server is stopped (since other tests might be 
    # run just after this one). 
   
    try:
       count = 0
-      while IsWatchdogRunning() == 1:
+      while IsQuasarRunning() == 1:
          time.sleep(1)
          count = count + 1
          if count > 5:
-#        print 'Unknown error - the Watchdog cannot be killed (still running?)'
+#        print 'Unknown error - Quasar cannot be killed (still running?)'
             raise os.error
 
    # oh oh... no way to handle this gracefully (and we are in the process of 
@@ -162,18 +162,18 @@ def StopWatchdog():
 #    time.sleep(5)
       try:
          count = 0
-         while IsWatchdogRunning() == 1:
+         while IsQuasarRunning() == 1:
             time.sleep(1)
             count = count + 1
             if count > 5:
-               print 'Unknown error - the Watchdog cannot be killed '
+               print 'Unknown error - Quasar cannot be killed '
                raise os.error
       except:
          raise
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 #
-# Write the configuration file for the watchdog
+# Write the configuration file for the server
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -246,10 +246,10 @@ def Run():
    # error occurs in the C program.
  
    try:
-      wd_present = IsWatchdogRunning()
+      wd_present = IsQuasarRunning()
       if wd_present == 0:
          WriteCfg()
-         StartWatchdog()
+         StartQuasar()
 #         time.sleep(1)
       return_code = RunTest()
    except:
@@ -259,7 +259,7 @@ def Run():
 
 Run()
 if wd_present == 0:
-   StopWatchdog()
+   StopQuasar()
 #if return_code == 0:
 #   print 'PASS:', test_name, '(Python test)'
 #else:

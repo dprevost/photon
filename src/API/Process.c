@@ -85,7 +85,7 @@ int psoaProcessInit( psoaProcess * process, const char * wdAddress )
    }
    
    if ( wdAddress == NULL ) {
-      errcode = PSO_INVALID_WATCHDOG_ADDRESS;
+      errcode = PSO_INVALID_QUASAR_ADDRESS;
       goto the_exit;
    }
    

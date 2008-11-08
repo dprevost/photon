@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOQ_LOGMSG_H
-#define PSOQ_LOGMSG_H
+#ifndef QSR_LOGMSG_H
+#define QSR_LOGMSG_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,7 +46,7 @@ enum wdMsgSeverity
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /**
- *  The psoqLogMsg class is a wrapper for the differences between different
+ *  The qsrLogMsg class is a wrapper for the differences between different
  *  platform-specific event-logging mechanisms (well... so far this means
  *  EventLog on Windows and syslog on Unix/linux).
  *
@@ -55,7 +55,7 @@ enum wdMsgSeverity
  *  for example) to disturb a production environment.
  */
 
-struct psoqLogMsg
+struct qsrLogMsg
 {
 
    /// True if we are a daemon or an NT service, false otherwise
@@ -68,18 +68,18 @@ struct psoqLogMsg
    char * name;
 };
 
-typedef struct psoqLogMsg psoqLogMsg;
+typedef struct qsrLogMsg qsrLogMsg;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoqLogMsgInit( psoqLogMsg * pLog,
+int qsrLogMsgInit( qsrLogMsg * pLog,
                     const char * progName );
    
-void psoqLogMsgFini( psoqLogMsg * pLog );
+void qsrLogMsgFini( qsrLogMsg * pLog );
    
-void psoqStartUsingLogger( psoqLogMsg * pLog );
+void qsrStartUsingLogger( qsrLogMsg * pLog );
    
-void psoqSendMessage( psoqLogMsg         * pLog,
+void qsrSendMessage( qsrLogMsg         * pLog,
                       enum wdMsgSeverity   severity,
                       const char         * format, 
                       ... );
@@ -90,12 +90,12 @@ void psoqSendMessage( psoqLogMsg         * pLog,
     *  This is not mandatory but it makes it easier to examine events
     *  using EventViewer.
     */
-int psoqLogMsgInstall( psoqLogMsg * pLog,
+int qsrLogMsgInstall( qsrLogMsg * pLog,
                        const char * progName, 
                        const char * msgPathName,
                        int          dwNum );
 
-int psoqLogMsgUninstall( psoqLogMsg * pLog,
+int qsrLogMsgUninstall( qsrLogMsg * pLog,
                          const char * progName );
 #endif
 
@@ -103,7 +103,7 @@ int psoqLogMsgUninstall( psoqLogMsg * pLog,
 
 END_C_DECLS
 
-#endif /* PSOQ_LOGMSG_H */
+#endif /* QSR_LOGMSG_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

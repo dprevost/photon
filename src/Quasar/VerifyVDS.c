@@ -33,22 +33,22 @@ FILE *             g_fp = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqValidate( psonMemoryHeader * pMemoryAddress, 
-                   size_t           * pNumObjectsOK,
-                   size_t           * pNumObjectsRepaired,
-                   size_t           * pNumObjectsDeleted,
-                   size_t           * pNumObjectsError,
-                   FILE             * fp,
-                   bool               doRepair )
+void qsrValidate( psonMemoryHeader * pMemoryAddress, 
+                  size_t           * pNumObjectsOK,
+                  size_t           * pNumObjectsRepaired,
+                  size_t           * pNumObjectsDeleted,
+                  size_t           * pNumObjectsError,
+                  FILE             * fp,
+                  bool               doRepair )
 {
    struct psonProcessManager * processMgr;
    psonFolder * topFolder;
    psonMemAlloc * memAllocator;
-   enum psoqRecoverError valid;
+   enum qsrRecoverError valid;
    psonSessionContext context;
    ptrdiff_t  lockOffsets[PSON_MAX_LOCK_DEPTH];
    int        numLocks = 0;
-   struct psoqVerifyStruct verifyStruct = { 
+   struct qsrVerifyStruct verifyStruct = { 
       1, 0, stderr, doRepair, 0, 0, 0, 0, NULL };
    char timeBuf[30];
    time_t t;
@@ -88,31 +88,31 @@ void psoqValidate( psonMemoryHeader * pMemoryAddress,
 
    // Test the lock of the allocator
    if ( psocIsItLocked( &memAllocator->memObj.lock ) ) {
-      psoqEcho( &verifyStruct, 
+      qsrEcho( &verifyStruct, 
          "Warning! The memory allocator is locked - the shared memory might be corrupted" );
       if ( doRepair ) {
-         psoqEcho( &verifyStruct, "Trying to reset it..." );
+         qsrEcho( &verifyStruct, "Trying to reset it..." );
          psocReleaseProcessLock ( &memAllocator->memObj.lock );
       }
       g_bTestAllocator = true;
    }
    
-   psoqEcho( &verifyStruct, "Object name: /" );
+   qsrEcho( &verifyStruct, "Object name: /" );
 
    psonInitSessionContext( &context );
    context.pAllocator = (void *) memAllocator;
    context.lockOffsets = lockOffsets;
    context.numLocks = &numLocks;
    
-   valid = psoqVerifyFolder( &verifyStruct, topFolder, &context );
+   valid = qsrVerifyFolder( &verifyStruct, topFolder, &context );
    switch ( valid ) {
-   case PSOQ_REC_OK:
+   case QSR_REC_OK:
       verifyStruct.numObjectsOK++;
       break;
-   case PSOQ_REC_CHANGES:
+   case QSR_REC_CHANGES:
       verifyStruct.numObjectsRepaired++;
       break;
-   case PSOQ_REC_DELETED_OBJECT:
+   case QSR_REC_DELETED_OBJECT:
       verifyStruct.numObjectsDeleted++;
       break;
    default: /* other errors */
@@ -128,42 +128,42 @@ void psoqValidate( psonMemoryHeader * pMemoryAddress,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqVerify( psonMemoryHeader * pMemoryAddress, 
-                 size_t           * pNumObjectsOK,
-                 size_t           * pNumObjectsRepaired,
-                 size_t           * pNumObjectsDeleted,
-                 size_t           * pNumObjectsError,
-                 FILE             * fp )
+void qsrVerify( psonMemoryHeader * pMemoryAddress, 
+                size_t           * pNumObjectsOK,
+                size_t           * pNumObjectsRepaired,
+                size_t           * pNumObjectsDeleted,
+                size_t           * pNumObjectsError,
+                FILE             * fp )
 {
-   fprintf( fp, "Verification of VDS (no repair) is starting\n" );
+   fprintf( fp, "Verification of sharedmemory (no repair) is starting\n" );
    
-   psoqValidate( pMemoryAddress, 
-                 pNumObjectsOK,
-                 pNumObjectsRepaired,
-                 pNumObjectsDeleted,
-                 pNumObjectsError, 
-                 fp, 
-                 false );
+   qsrValidate( pMemoryAddress, 
+                pNumObjectsOK,
+                pNumObjectsRepaired,
+                pNumObjectsDeleted,
+                pNumObjectsError, 
+                fp, 
+                false );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqRepair( psonMemoryHeader * pMemoryAddress, 
-                 size_t           * pNumObjectsOK,
-                 size_t           * pNumObjectsRepaired,
-                 size_t           * pNumObjectsDeleted,
-                 size_t           * pNumObjectsError,
-                 FILE             * fp )
+void qsrRepair( psonMemoryHeader * pMemoryAddress, 
+                size_t           * pNumObjectsOK,
+                size_t           * pNumObjectsRepaired,
+                size_t           * pNumObjectsDeleted,
+                size_t           * pNumObjectsError,
+                FILE             * fp )
 {
-   fprintf( fp, "Verification and repair (if needed) of VDS is starting\n" );
+   fprintf( fp, "Verification and repair (if needed) of shared memory is starting\n" );
    
-   psoqValidate( pMemoryAddress, 
-                 pNumObjectsOK,
-                 pNumObjectsRepaired,
-                 pNumObjectsDeleted,
-                 pNumObjectsError, 
-                 fp, 
-                 true );
+   qsrValidate( pMemoryAddress, 
+                pNumObjectsOK,
+                pNumObjectsRepaired,
+                pNumObjectsDeleted,
+                pNumObjectsError, 
+                fp, 
+                true );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

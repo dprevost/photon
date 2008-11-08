@@ -18,7 +18,7 @@
 
 <options>
   <!-- The name of the enum. If absent, #define will be generated instead. -->
-  <enumname> psoqErrors</enumname>
+  <enumname> qsrErrors</enumname>
   <!-- Name of the output dir for the error header file. If absent, the 
        current directory will be used.
        
@@ -42,10 +42,10 @@
        messages. -->
   <errmsg_c_name> quasarErrorHandler.c </errmsg_c_name>
   <!-- Prefix to be used for the error codes (enum or #define). -->
-  <prefix_error> PSOQ </prefix_error>
+  <prefix_error> QSR </prefix_error>
   <!-- Prefix to be used for all variables in the code to retrieve the 
        error messages -->
-  <prefix_variable> psoq </prefix_variable>
+  <prefix_variable> qsr </prefix_variable>
   <!-- How to handle the error message. The problem: the generated C strings
        will be use, eventually, by standard C/C++ libraries and some 
        sequence of characters could have some bad side effects, possibly

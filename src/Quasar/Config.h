@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOQ_CONFIG_H
-#define PSOQ_CONFIG_H
+#ifndef QSR_CONFIG_H
+#define QSR_CONFIG_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,9 +32,9 @@ BEGIN_C_DECLS
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \defgroup psoqConfigFile The config file module
+ * \defgroup qsrConfigFile The config file module
  *
- * Reads the config file needed to start vdsf.
+ * Reads the config file needed to start quasar.
  *
  * This module reads the configuration of the shared memory written in
  * XML.
@@ -44,15 +44,13 @@ BEGIN_C_DECLS
 
 /**
  * \file
- * Reads the config file needed to start vdsf.
+ * Reads the config file needed to start quasar.
  */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
  * This struct holds all the parameters set the config file.
- *
- * For the watchdog:
  *
  * If you modify (add/modify/remove) a parameter, you'll need to update, at 
  * a minimum, the following code:
@@ -87,7 +85,7 @@ struct ConfigParams
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*! \brief Read the configuration file from disk. */
-bool psoqReadConfig( const char          * cfgname,
+bool qsrReadConfig( const char          * cfgname,
                      struct ConfigParams * pConfig,
                      int                   debug,
                      psocErrorHandler    * pError  );
@@ -100,5 +98,5 @@ bool psoqReadConfig( const char          * cfgname,
 
 END_C_DECLS
 
-#endif /* PSOQ_CONFIG_H */
+#endif /* QSR_CONFIG_H */
 

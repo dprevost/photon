@@ -38,7 +38,7 @@ int psoInit( const char * wdAddress,
    psoaProcess * process;
    bool ok;
    
-   if ( wdAddress == NULL ) return PSO_INVALID_WATCHDOG_ADDRESS;
+   if ( wdAddress == NULL ) return PSO_INVALID_QUASAR_ADDRESS;
    
    g_protectionIsNeeded = programIsMultiThreaded;
    

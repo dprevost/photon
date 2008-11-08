@@ -49,7 +49,7 @@ int main( int argc, char * argv[] )
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
-      cerr << "Is the watchdog running?" << endl;
+      cerr << "Is the server running?" << endl;
       return 1;
    }
    

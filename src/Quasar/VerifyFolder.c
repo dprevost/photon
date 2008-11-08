@@ -23,8 +23,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError
-psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrCheckFolderContent( qsrVerifyStruct   * pVerify,
                         struct psonFolder  * pFolder, 
                         psonSessionContext * pContext )
 {
@@ -34,7 +34,7 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
    void * pObject;
    int pDesc_invalid_api_type = 0;
    char message[PSO_MAX_NAME_LENGTH*4 + 30];
-   enum psoqRecoverError rc = PSOQ_REC_OK, valid;
+   enum qsrRecoverError rc = QSR_REC_OK, valid;
    bool found;
    
    /* The easy case */
@@ -49,26 +49,26 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
       memset( message, 0, PSO_MAX_NAME_LENGTH*4+30 );
       strcpy( message, "Object name: " );
       strncat( message, pDesc->originalName, pDesc->nameLengthInBytes );
-      psoqEcho( pVerify, message );
+      qsrEcho( pVerify, message );
       switch( pDesc->apiType ) {
          case PSO_FOLDER:
-            valid = psoqVerifyFolder( pVerify,
+            valid = qsrVerifyFolder( pVerify,
                                       (psonFolder *)pObject, 
                                       pContext );
             break;
          case PSO_HASH_MAP:
-            valid = psoqVerifyHashMap( pVerify,
+            valid = qsrVerifyHashMap( pVerify,
                                        (struct psonHashMap *)pObject, 
                                        pContext );
             break;
          case PSO_QUEUE:
          case PSO_LIFO:
-            valid = psoqVerifyQueue( pVerify, 
+            valid = qsrVerifyQueue( pVerify, 
                                      (struct psonQueue *)pObject,
                                      pContext ); 
             break;
          case PSO_FAST_MAP:
-            valid = psoqVerifyFastMap( pVerify,
+            valid = qsrVerifyFastMap( pVerify,
                                        (struct psonMap *)pObject, 
                                        pContext );
             break;
@@ -82,13 +82,13 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
                                &offset );
 
       switch ( valid ) {
-      case PSOQ_REC_OK:
+      case QSR_REC_OK:
          pVerify->numObjectsOK++;
          break;
-      case PSOQ_REC_CHANGES:
+      case QSR_REC_CHANGES:
          pVerify->numObjectsRepaired++;
          break;
-      case PSOQ_REC_DELETED_OBJECT:
+      case QSR_REC_DELETED_OBJECT:
          pVerify->numObjectsDeleted++;
          break;
       default: /* other errors */
@@ -96,10 +96,10 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
          break;
       }
 
-      if ( valid == PSOQ_REC_DELETED_OBJECT && pVerify->doRepair ) {
-         rc = PSOQ_REC_CHANGES;
+      if ( valid == QSR_REC_DELETED_OBJECT && pVerify->doRepair ) {
+         rc = QSR_REC_CHANGES;
          pVerify->spaces += 2;
-         psoqEcho( pVerify, "Removing the object from shared memory" );
+         qsrEcho( pVerify, "Removing the object from shared memory" );
          pVerify->spaces -= 2;
          switch( pDesc->apiType ) {
             case PSO_FOLDER:
@@ -126,34 +126,34 @@ psoqCheckFolderContent( psoqVerifyStruct   * pVerify,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError
-psoqVerifyFolder( psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyFolder( qsrVerifyStruct   * pVerify,
                   struct psonFolder  * pFolder,
                   psonSessionContext * pContext )
 {
    psonTxStatus * txFolderStatus;
-   enum psoqRecoverError rc = PSOQ_REC_OK, rc2;
+   enum qsrRecoverError rc = QSR_REC_OK, rc2;
    bool bTestObject = false;
    
    pVerify->spaces += 2;
    
    /* Is the object lock ? */
    if ( psocIsItLocked( &pFolder->memObject.lock ) ) {
-      psoqEcho( pVerify, "The object is locked - it might be corrupted" );
+      qsrEcho( pVerify, "The object is locked - it might be corrupted" );
       if ( pVerify->doRepair ) {
-         psoqEcho( pVerify, "Trying to reset the lock..." );
+         qsrEcho( pVerify, "Trying to reset the lock..." );
          psocReleaseProcessLock ( &pFolder->memObject.lock );
       }
-      rc = psoqVerifyMemObject( pVerify, &pFolder->memObject, pContext );
-      if ( rc > PSOQ_REC_START_ERRORS ) {
+      rc = qsrVerifyMemObject( pVerify, &pFolder->memObject, pContext );
+      if ( rc > QSR_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc;
       }
-      rc = PSOQ_REC_CHANGES;
+      rc = QSR_REC_CHANGES;
       bTestObject = true;
    }
 
-   psoqPopulateBitmap( pVerify, &pFolder->memObject, pContext );
+   qsrPopulateBitmap( pVerify, &pFolder->memObject, pContext );
 
    GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
 
@@ -168,64 +168,64 @@ psoqVerifyFolder( psoqVerifyStruct   * pVerify,
        * Action is the equivalent of what a rollback would do.
        */
       if ( txFolderStatus->status & PSON_TXS_ADDED ) {
-         psoqEcho( pVerify, "Object added but not committed" );
+         qsrEcho( pVerify, "Object added but not committed" );
          pVerify->spaces -= 2;
-         return PSOQ_REC_DELETED_OBJECT;
+         return QSR_REC_DELETED_OBJECT;
       }
       if ( txFolderStatus->status & PSON_TXS_DESTROYED_COMMITTED ) {
-         psoqEcho( pVerify, "Object deleted and committed" );
+         qsrEcho( pVerify, "Object deleted and committed" );
          pVerify->spaces -= 2;
-         return PSOQ_REC_DELETED_OBJECT;
+         return QSR_REC_DELETED_OBJECT;
       }
 
-      psoqEcho( pVerify, "Object deleted but not committed" );      
-      rc = PSOQ_REC_CHANGES;
+      qsrEcho( pVerify, "Object deleted but not committed" );      
+      rc = QSR_REC_CHANGES;
       if ( pVerify->doRepair) {
-         psoqEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
+         qsrEcho( pVerify, "Object deleted but not committed - resetting the delete flags" );
          txFolderStatus->txOffset = PSON_NULL_OFFSET;
          txFolderStatus->status = PSON_TXS_OK;
       }
    }
    
    if ( txFolderStatus->usageCounter != 0 ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Usage counter is not zero" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Usage counter is not zero" );
       if (pVerify->doRepair) {
          txFolderStatus->usageCounter = 0;
-         psoqEcho( pVerify, "Usage counter set to zero" );
+         qsrEcho( pVerify, "Usage counter set to zero" );
       }
    }
    if ( txFolderStatus->parentCounter != 0 ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Parent counter is not zero" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Parent counter is not zero" );
       if (pVerify->doRepair) {
          txFolderStatus->parentCounter = 0;
-         psoqEcho( pVerify, "Parent counter set to zero" );
+         qsrEcho( pVerify, "Parent counter set to zero" );
       }
    }
    if ( pFolder->nodeObject.txCounter != 0 ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Transaction counter is not zero" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Transaction counter is not zero" );
       if (pVerify->doRepair) {
          pFolder->nodeObject.txCounter = 0;
-         psoqEcho( pVerify, "Transaction counter set to zero" );
+         qsrEcho( pVerify, "Transaction counter set to zero" );
       }
    }
 
    if ( bTestObject ) {
-      rc2 = psoqVerifyHashTx( pVerify, 
+      rc2 = qsrVerifyHashTx( pVerify, 
                               &pFolder->hashObj, 
                               SET_OFFSET(&pFolder->memObject) );
-      if ( rc2 > PSOQ_REC_START_ERRORS ) {
+      if ( rc2 > QSR_REC_START_ERRORS ) {
          pVerify->spaces -= 2;
          return rc2;
       }
-      /* At this point rc is either 0 or PSOQ_REC_CHANGES - same for rc2 */
+      /* At this point rc is either 0 or QSR_REC_CHANGES - same for rc2 */
       if ( rc2 > rc ) rc = rc2;
    }
    
-   rc2 = psoqCheckFolderContent( pVerify, pFolder, pContext );
-   /* At this point rc is either 0 or PSOQ_REC_CHANGES */
+   rc2 = qsrCheckFolderContent( pVerify, pFolder, pContext );
+   /* At this point rc is either 0 or QSR_REC_CHANGES */
    if ( rc2 > rc ) rc = rc2;
    pVerify->spaces -= 2;
 

@@ -2,8 +2,8 @@
 <!DOCTYPE errorlist PUBLIC "-//Error Parser project//DTD Error Parser XML V1.2//EN"
              "http://errorparser.sourceforge.net/xml/errorParser12.dtd"> 
 <!-- 
-    This file contains the error codes specific to the watchdog of
-    Photon.
+    This file contains the error codes specific to the server of
+    Photon, quasar.
     
     You can replace the DOCTYPE with this, if you prefer:
 <!DOCTYPE errorlist SYSTEM 
@@ -11,8 +11,8 @@
     
 -->
 
-<!-- Photon next version is 0.3 -->
-<errorlist version="0.3">
+<!-- Photon next version is 0.4 -->
+<errorlist version="0.4">
   <!-- Copyright information and any additional info that will appear at 
        the top of the generated files. This is optional. -->
   <copyright_group>
@@ -55,10 +55,12 @@
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            Not enough heap memory (non-VDS memory). 
+            Not enough heap memory.
           </errormsg>
           <errordoc>
-            Not enough heap memory (non-VDS memory).
+            The program encountered an error while trying to allocate memory
+            (outside of the shared memory itself). Usually a failure with
+            malloc() or similar functions.
           </errordoc>
         </message>
       </message_group>
@@ -178,7 +180,7 @@
           </errormsg>
           <errordoc>
             The version of the existing memory-file on disk does not match the
-            version supported by the watchdog.
+            version supported by quasar.
           </errordoc>
         </message>
       </message_group>
@@ -303,7 +305,7 @@
           <errordoc>
             The root element must have an attribute named schemaLocation (in 
             the namespace "http://www.w3.org/2001/XMLSchema-instance") to
-            point to the schema use for the watchdog configuration file.
+            point to the schema use for quasar configuration file.
           </errordoc>
         </message>
       </message_group>
@@ -466,7 +468,7 @@
 
     <error>
       <errnumber> 115 </errnumber>
-      <errname> CFG_WATCHDOG_ADDRESS_IS_MISSING</errname>
+      <errname> CFG_QUASAR_ADDRESS_IS_MISSING</errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>Config: quasar_address is missing.</errormsg>

@@ -20,7 +20,7 @@
 #
 #  - the path of the top directory of the source
 #  - the path of the top directory of the build
-#  - the tcp port for the watchdog
+#  - the tcp port for the server
 #
 # For example: 
 # 

@@ -45,10 +45,8 @@ enum  WDOpcode
 };
 
 /**
- *  This struct is used by the applications to send information to the 
- *  watchdog.
+ *  This struct is used by the applications to send information to quasar
  */
-
 struct WDInput
 {
    enum  WDOpcode opcode;
@@ -57,8 +55,8 @@ struct WDInput
 
 
 /**
- * This struct is used by the watchdog to send information back to the
- *  applications.
+ * This struct is used by quasar to send information back to the
+ * applications.
  */
 
 struct WDOutput

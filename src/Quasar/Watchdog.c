@@ -24,13 +24,13 @@
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
 
-psoqWatchdog * g_pWD = NULL;
+qsrQuasar * g_pWD = NULL;
 
 psocErrMsgHandle g_wdErrorHandle = -1;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqSetSigHandler();
+bool qsrSetSigHandler();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -65,13 +65,13 @@ RETSIGTYPE sigpipe_handler( int s )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoqGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
+int qsrGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 {
    const char * theMsg;
 
    PSO_PRE_CONDITION( msg != NULL );
 
-   theMsg = psoq_ErrorMessage( errnum );
+   theMsg = qsr_ErrorMessage( errnum );
 
    if ( theMsg == NULL ) return -1;
    if ( strlen(theMsg) >= msgLength ) return -1;
@@ -83,24 +83,24 @@ int psoqGetErrorMsg( int errnum, char *msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqWatchdogInit( psoqWatchdog * pWatchdog )
+void qsrQuasarInit( qsrQuasar * pQuasar )
 {
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
 
-   pWatchdog->pMemoryAddress = NULL;
-   pWatchdog->controlWord = 0;
-   pWatchdog->verifyVDSOnly = false;
+   pQuasar->pMemoryAddress = NULL;
+   pQuasar->controlWord = 0;
+   pQuasar->verifyMemOnly = false;
 
-   psoqLogMsgInit( &pWatchdog->log, PROG_NAME );
+   qsrLogMsgInit( &pQuasar->log, PROG_NAME );
 
-   memset( &pWatchdog->params, 0, sizeof pWatchdog->params );
+   memset( &pQuasar->params, 0, sizeof pQuasar->params );
 
    if ( ! psocInitErrorDefs() ) {
       fprintf( stderr, "Internal error in psocInitErrorDefs()\n" );
    }
-   psocInitErrorHandler( &pWatchdog->errorHandler );
+   psocInitErrorHandler( &pQuasar->errorHandler );
    
-   g_wdErrorHandle = psocAddErrorMsgHandler( "Quasar", psoqGetErrorMsg );
+   g_wdErrorHandle = psocAddErrorMsgHandler( "Quasar", qsrGetErrorMsg );
    if ( g_wdErrorHandle == PSOC_NO_ERRHANDLER ) {
       fprintf( stderr, "Error registring the error handler for Quasar errors\n" );
       fprintf( stderr, "The problem might be a lack of memory\n" );
@@ -109,11 +109,11 @@ void psoqWatchdogInit( psoqWatchdog * pWatchdog )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqWatchdogFini( psoqWatchdog * pWatchdog )
+void qsrQuasarFini( qsrQuasar * pQuasar )
 {
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
 
-   psocFiniErrorHandler( &pWatchdog->errorHandler );
+   psocFiniErrorHandler( &pQuasar->errorHandler );
    psocFiniErrorDefs();
 }
 
@@ -124,12 +124,12 @@ void psoqWatchdogFini( psoqWatchdog * pWatchdog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if !defined ( WIN32 )
-bool psoqDaemon( psoqWatchdog * pWatchdog )
+bool qsrDaemon( qsrQuasar * pQuasar )
 {
    pid_t pid = 0;
    int errcode;
    
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
 
    /*
     * Before becoming a daemon, we test the shared memory directory to make sure it
@@ -141,18 +141,18 @@ bool psoqDaemon( psoqWatchdog * pWatchdog )
     *
     * We do it in two steps to help "end-users" recover from errors.
     */
-   errcode = access( pWatchdog->params.wdLocation, F_OK );
+   errcode = access( pQuasar->params.wdLocation, F_OK );
    if ( errcode != 0 ) {
-      fprintf( stderr, "Invalid directory for VDS, error = %d\n", 
-               psoqLastError() );
+      fprintf( stderr, "Invalid directory for Photon shared memory, error = %d\n", 
+               qsrLastError() );
       return false;
    }
    
-   errcode = access( pWatchdog->params.wdLocation, R_OK | W_OK | X_OK );
+   errcode = access( pQuasar->params.wdLocation, R_OK | W_OK | X_OK );
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid file permissions on the %s%d\n", 
-               "VDS directory, error = ",
-               psoqLastError() );
+               "Photon directory, error = ",
+               qsrLastError() );
       return false;
    }
    
@@ -180,7 +180,7 @@ bool psoqDaemon( psoqWatchdog * pWatchdog )
    pid = fork();
 
    if ( pid == -1 ) {
-      fprintf( stderr, "Fork failed, error = %d\n", psoqLastError() );
+      fprintf( stderr, "Fork failed, error = %d\n", qsrLastError() );
       return false;
    }
    
@@ -189,14 +189,14 @@ bool psoqDaemon( psoqWatchdog * pWatchdog )
 
    // Set the log object to sent messages to the log facility of the OS 
    // instead of sending them to stderr.
-   psoqStartUsingLogger( &pWatchdog->log );
+   qsrStartUsingLogger( &pQuasar->log );
    
    errcode = setsid();
    if ( errcode == -1 ) {
       // The only way setsid() can fail is if we are already a group process
       // leader (our group ID == our pid). But this test does not cost 
       // anything and may detect attempts at "enhancing" the code ...
-      psoqSendMessage( &pWatchdog->log, WD_ERROR,
+      qsrSendMessage( &pQuasar->log, WD_ERROR,
                          "setsid() error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -204,7 +204,7 @@ bool psoqDaemon( psoqWatchdog * pWatchdog )
    pid = fork();
 
    if ( pid == -1 ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR,
+      qsrSendMessage( &pQuasar->log, WD_ERROR,
                          "Fork error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -213,9 +213,9 @@ bool psoqDaemon( psoqWatchdog * pWatchdog )
    // We are the parent
    if ( pid != 0 ) exit(0);
 
-   errcode = chdir( pWatchdog->params.wdLocation );
+   errcode = chdir( pQuasar->params.wdLocation );
    if ( errcode != 0 ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR,
+      qsrSendMessage( &pQuasar->log, WD_ERROR,
                          "chdir() error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -227,14 +227,14 @@ bool psoqDaemon( psoqWatchdog * pWatchdog )
    close( 1 );
    close( 2 );
    
-   psoqSendMessage( &pWatchdog->log, WD_INFO, "Photon Watchdog initialized as a daemon" );   
+   qsrSendMessage( &pQuasar->log, WD_INFO, "Photon Quasar initialized as a daemon" );   
    return true;
 }
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqHelp( const char * progName )
+void qsrHelp( const char * progName )
 {
    PSO_PRE_CONDITION( progName != NULL );
 
@@ -256,7 +256,7 @@ void psoqHelp( const char * progName )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-bool psoqInstall( psoqWatchdog * pWatchdog )
+bool qsrInstall( qsrQuasar * pQuasar )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -264,7 +264,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
    int errcode;
    HKEY hKey;
 
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
 
    memset( progPath, 0, PATH_MAX );
    if ( GetModuleFileName( NULL, progPath, PATH_MAX ) == 0 ) {
@@ -282,7 +282,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
     
    hService = CreateService( hManager,
                              "quasar",
-                             "Photon Watchdog",
+                             "Photon Quasar",
                              SERVICE_ALL_ACCESS,
                              SERVICE_WIN32_OWN_PROCESS,
                              SERVICE_DEMAND_START,
@@ -306,7 +306,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
     * Now that the service is created, we need to save into the registry
     * all pertinent information that will be needed for the proper 
     * running of this service. This include the location of the shared-memory
-    * directory, the Watchdog address (as used by client apps), etc.
+    * directory, the server address (as used by client apps), etc.
     */
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
@@ -323,8 +323,8 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
                             PSO_LOCATION,
                             0, 
                             REG_SZ,
-                            (LPBYTE)pWatchdog->params.wdLocation, 
-                            strlen(pWatchdog->params.wdLocation)+1 );
+                            (LPBYTE)pQuasar->params.wdLocation, 
+                            strlen(pQuasar->params.wdLocation)+1 );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
@@ -335,8 +335,8 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
                             PSO_WDADDRESS,
                             0, 
                             REG_SZ,
-                            (LPBYTE)pWatchdog->params.wdAddress,
-                            strlen(pWatchdog->params.wdAddress)+1 );
+                            (LPBYTE)pQuasar->params.wdAddress,
+                            strlen(pQuasar->params.wdAddress)+1 );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
@@ -347,7 +347,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
                             PSO_MEMSIZE,
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&pWatchdog->params.memorySizekb,
+                            (LPBYTE)&pQuasar->params.memorySizekb,
                             sizeof(size_t) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -359,7 +359,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
                             PSO_USE_LOG,
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&pWatchdog->params.logOn,
+                            (LPBYTE)&pQuasar->params.logOn,
                             sizeof(bool) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -371,7 +371,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
                             PSO_FILEPERMS,
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&pWatchdog->params.filePerms,
+                            (LPBYTE)&pQuasar->params.filePerms,
                             sizeof(int) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -383,7 +383,7 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
                             PSO_DIRPERMS, 
                             0, 
                             REG_DWORD, 
-                            (LPBYTE)&pWatchdog->params.dirPerms,
+                            (LPBYTE)&pQuasar->params.dirPerms,
                             sizeof(int) );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
@@ -398,24 +398,24 @@ bool psoqInstall( psoqWatchdog * pWatchdog )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqWatchdogReadConfig( psoqWatchdog * pWatchdog, const char* cfgname )
+bool qsrQuasarReadConfig( qsrQuasar * pQuasar, const char* cfgname )
 {
    int len;
    bool rc;
    
-   PSO_PRE_CONDITION( pWatchdog != NULL );
-   PSO_PRE_CONDITION( cfgname   != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
+   PSO_PRE_CONDITION( cfgname != NULL );
 
-   rc = psoqReadConfig( cfgname, &pWatchdog->params, 0, &pWatchdog->errorHandler );
+   rc = qsrReadConfig( cfgname, &pQuasar->params, 0, &pQuasar->errorHandler );
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      memset( pWatchdog->errorMsg, 0, WD_MSG_LEN );
-      sprintf( pWatchdog->errorMsg, "%s%d%s",
+      memset( pQuasar->errorMsg, 0, WD_MSG_LEN );
+      sprintf( pQuasar->errorMsg, "%s%d%s",
                   "Config error, error code = ", 
-                  psocGetLastError( &pWatchdog->errorHandler ),
+                  psocGetLastError( &pQuasar->errorHandler ),
                   ", error message = " );
-      len = strlen(pWatchdog->errorMsg);
-      psocGetErrorMsg( &pWatchdog->errorHandler, &pWatchdog->errorMsg[len], WD_MSG_LEN-len );
+      len = strlen(pQuasar->errorMsg);
+      psocGetErrorMsg( &pQuasar->errorHandler, &pQuasar->errorMsg[len], WD_MSG_LEN-len );
    }
 
    return rc;
@@ -424,13 +424,13 @@ bool psoqWatchdogReadConfig( psoqWatchdog * pWatchdog, const char* cfgname )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-bool psoqReadRegistry( psoqWatchdog * pWatchdog )
+bool qsrReadRegistry( qsrQuasar * pQuasar )
 {
    int errcode;
    HKEY hKey;
    unsigned long length;
    
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
 
    errcode = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
                            "SYSTEM\\CurrentControlSet\\Services\\quasar",
@@ -438,7 +438,7 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                            KEY_QUERY_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegOpenKeyEx error = %d", 
                          GetLastError() );
       return false;
@@ -449,10 +449,10 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                               PSO_LOCATION,
                               NULL, 
                               NULL, 
-                              (LPBYTE)pWatchdog->params.wdLocation, 
+                              (LPBYTE)pQuasar->params.wdLocation, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -463,10 +463,10 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                               PSO_MEMSIZE, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&pWatchdog->params.memorySizekb, 
+                              (LPBYTE)&pQuasar->params.memorySizekb, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -477,10 +477,10 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                               PSO_WDADDRESS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)pWatchdog->params.wdAddress,
+                              (LPBYTE)pQuasar->params.wdAddress,
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -491,10 +491,10 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                               PSO_USE_LOG, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&pWatchdog->params.logOn, 
+                              (LPBYTE)&pQuasar->params.logOn, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -505,10 +505,10 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                               PSO_FILEPERMS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&pWatchdog->params.filePerms, 
+                              (LPBYTE)&pQuasar->params.filePerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -519,10 +519,10 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
                               PSO_DIRPERMS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)&pWatchdog->params.dirPerms, 
+                              (LPBYTE)&pQuasar->params.dirPerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      psoqSendMessage( &pWatchdog->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, WD_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -534,7 +534,7 @@ bool psoqReadRegistry( psoqWatchdog * pWatchdog )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqRun()
+void qsrRun()
 {
    bool rc;
    
@@ -543,28 +543,28 @@ void psoqRun()
    if ( g_pWD == NULL ) {
       // This condition is possible if run is called by the NT SCM (Service
       // Control Manager) instead of being called from main().
-      g_pWD = (psoqWatchdog*) malloc( sizeof(psoqWatchdog) );
+      g_pWD = (qsrQuasar*) malloc( sizeof(qsrQuasar) );
 
       // A failure here is very unlikely - however since we need the 
-      // watchdog object to log errors... the only way to alert of a
+      // quasar object to log errors... the only way to alert of a
       // problem is by forcing a crash!!!
       assert( g_pWD != NULL );
 
-      psoqWatchdogInit( g_pWD );
+      qsrQuasarInit( g_pWD );
 
       deallocWD = true;
       
       // Set the log object to sent messages to the log facility of the OS 
       // instead of sending them to stderr.
-      psoqStartUsingLogger( &g_pWD->log );
+      qsrStartUsingLogger( &g_pWD->log );
          
       // We have our object but it is not properly initialized - we need
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
-      rc = psoqReadRegistry( g_pWD );
+      rc = qsrReadRegistry( g_pWD );
       PSO_POST_CONDITION( rc == true || rc == false );
       if ( ! rc ) {
-         psoqSendMessage( &g_pWD->log, WD_ERROR, 
+         qsrSendMessage( &g_pWD->log, WD_ERROR, 
                           "ReadRegistry failed - aborting..." );
          return;
       }
@@ -573,29 +573,29 @@ void psoqRun()
    
    PSO_PRE_CONDITION( g_pWD != NULL );
 
-   rc = psoqSetSigHandler();
+   rc = qsrSetSigHandler();
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      psoqSendMessage( &g_pWD->log, 
+      qsrSendMessage( &g_pWD->log, 
                        WD_ERROR,
                        "Signal Handler Installation error %d",
-                       psoqLastError() );
+                       qsrLastError() );
       return;
    }
 
-   rc = psoqPrepareConnection( &g_pWD->acceptor, g_pWD );
+   rc = qsrPrepareConnection( &g_pWD->acceptor, g_pWD );
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR,
+      qsrSendMessage( &g_pWD->log, WD_ERROR,
          "Error in PrepareConnection() - aborting..." );
       return;
    }
    
-   psoqWaitForConnections( &g_pWD->acceptor );
+   qsrWaitForConnections( &g_pWD->acceptor );
    
 #if defined ( WIN32 )
    if ( deallocWD ) {
-      psoqWatchdogFini( g_pWD );
+      qsrQuasarFini( g_pWD );
       free( g_pWD );
       g_pWD = NULL;
    }
@@ -604,7 +604,7 @@ void psoqRun()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqSetSigHandler()
+bool qsrSetSigHandler()
 {
 #if defined(WIN32)
    PSO_PRE_CONDITION( g_pWD != NULL );
@@ -627,7 +627,7 @@ bool psoqSetSigHandler()
 
    errcode = sigprocmask( SIG_BLOCK, &new_set, &old_set ); 
    if ( errcode != 0 ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return false;
    }
@@ -651,7 +651,7 @@ bool psoqSetSigHandler()
     */
    errcode = sigprocmask( SIG_SETMASK, &old_set, &new_set );
    if ( errcode != 0 ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return false;
    }
@@ -668,20 +668,20 @@ bool psoqSetSigHandler()
    action.sa_handler = sigterm_handler;
    errcode = sigaction( SIGTERM, &action, NULL );
    if ( errcode != 0 ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGTERM) error, errno = ", errno );
       return false;
    }
    errcode = sigaction( SIGINT,  &action, NULL );
    if ( errcode != 0 ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGINT) error, errno = ", errno );
       return false;
    }
    action.sa_handler = sighup_handler;
    errcode = sigaction( SIGHUP, &action, NULL );
    if ( errcode != 0 ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGHUP) error, errno = ", errno );
       return false;
    }
@@ -690,7 +690,7 @@ bool psoqSetSigHandler()
    action.sa_handler = sigpipe_handler;
    errcode = sigaction( SIGPIPE, &action, NULL );
    if ( errcode != 0 ) {
-      psoqSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
          "sigaction (SIGPIPE) error, errno = ", errno );
       return false;
    }
@@ -702,7 +702,7 @@ bool psoqSetSigHandler()
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-void psoqUninstall( psoqWatchdog * pWatchdog )
+void qsrUninstall( qsrQuasar * pQuasar )
 {
    SC_HANDLE   hService;
    SC_HANDLE   hManager;
@@ -710,7 +710,7 @@ void psoqUninstall( psoqWatchdog * pWatchdog )
    HKEY hKey;
    SERVICE_STATUS status;
    
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar != NULL );
 
    fprintf( stderr, "%s\n%s\n%s\n%s\n%s\n",
             "WARNING - Some errors while uninstalling might not be real",
@@ -774,7 +774,7 @@ void psoqUninstall( psoqWatchdog * pWatchdog )
    }
 
    hService = OpenService( hManager,
-                           "psoqc",
+                           "qsrc",
                            SERVICE_ALL_ACCESS );
    if ( hService == NULL ) {
       // Nothing more can be done at this point...

@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
    }
    catch( Exception exc ) {
       cerr << "Init Photon failed, error = " << exc.Message() << endl;
-      cerr << "Is the watchdog running?" << endl;
+      cerr << "Is Quasar running?" << endl;
       return 1;
    }
 

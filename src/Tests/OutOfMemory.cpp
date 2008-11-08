@@ -86,7 +86,7 @@ int main()
    }
    catch( Exception exc ) {
       cerr << "Init Photon failed, error = " << exc.Message() << endl;
-      cerr << "Is the watchdog running?" << endl;
+      cerr << "Is the server running?" << endl;
       return 1;
    }
    cerr << "Total allocated in memory: " << info1.allocatedSizeInBytes << endl;

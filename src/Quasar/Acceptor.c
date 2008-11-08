@@ -29,20 +29,20 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static
-bool Accept( psoqAcceptor * pAcceptor );
+bool Accept( qsrAcceptor * pAcceptor );
    
 static
-void Send( psoqAcceptor * pAcceptor, unsigned int indice );
+void Send( qsrAcceptor * pAcceptor, unsigned int indice );
    
 static
-void Receive( psoqAcceptor * pAcceptor, unsigned int indice );
+void Receive( qsrAcceptor * pAcceptor, unsigned int indice );
 
 static
-void HandleAbnormalTermination( psoqAcceptor * pAcceptor, pid_t pid );
+void HandleAbnormalTermination( qsrAcceptor * pAcceptor, pid_t pid );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqAcceptorInit( psoqAcceptor * pAcceptor )
+void qsrAcceptorInit( qsrAcceptor * pAcceptor )
 {
    PSO_PRE_CONDITION( pAcceptor != NULL );
 
@@ -54,7 +54,7 @@ void psoqAcceptorInit( psoqAcceptor * pAcceptor )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqAcceptorFini( psoqAcceptor * pAcceptor )
+void qsrAcceptorFini( qsrAcceptor * pAcceptor )
 {
    PSO_PRE_CONDITION( pAcceptor != NULL );
 
@@ -74,7 +74,7 @@ void psoqAcceptorFini( psoqAcceptor * pAcceptor )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool Accept( psoqAcceptor * pAcceptor )
+bool Accept( qsrAcceptor * pAcceptor )
 {
    PSO_SOCKET newSock = PSO_INVALID_SOCKET;
    int errcode, i;
@@ -100,7 +100,7 @@ bool Accept( psoqAcceptor * pAcceptor )
          return true;
 #endif
       // The error is more serious...
-      psoqSendMessage( &pAcceptor->pWatchdog->log,
+      qsrSendMessage( &pAcceptor->pQuasar->log,
                        WD_ERROR, 
                        "In function accept(), error = %d",
                        GetSockError() );
@@ -114,7 +114,7 @@ bool Accept( psoqAcceptor * pAcceptor )
 #if defined (WIN32)
    errcode = ioctlsocket( newSock, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log,
+      qsrSendMessage( &pAcceptor->pQuasar->log,
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );
@@ -123,7 +123,7 @@ bool Accept( psoqAcceptor * pAcceptor )
 #else
    errcode = fcntl( newSock, F_SETFL, O_NONBLOCK);
    if ( errcode < 0 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function fcntl(), error = %d",
                        GetSockError() );
@@ -144,21 +144,21 @@ bool Accept( psoqAcceptor * pAcceptor )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-HandleAbnormalTermination( psoqAcceptor * pAcceptor, pid_t pid )
+HandleAbnormalTermination( qsrAcceptor * pAcceptor, pid_t pid )
 {
-   psoqSendMessage( &pAcceptor->pWatchdog->log, 
+   qsrSendMessage( &pAcceptor->pQuasar->log, 
                     WD_ERROR, 
                     "Abnormal termination of process %d",
                     pid );
 //                                   " - attempting to recover." );
 
-   psoqHandleAbnormalTermination( pAcceptor->pWatchdog, pid );
+   qsrHandleAbnormalTermination( pAcceptor->pQuasar, pid );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
-                            psoqWatchdog * pWatchdog )
+bool qsrPrepareConnection( qsrAcceptor * pAcceptor,
+                           qsrQuasar   * pQuasar )
 {
    int errcode = 0;
    int one = 1;
@@ -172,16 +172,16 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
    struct sockaddr_in addr;
 
    PSO_PRE_CONDITION( pAcceptor != NULL );
-   PSO_PRE_CONDITION( pWatchdog != NULL );
+   PSO_PRE_CONDITION( pQuasar   != NULL );
 
-   pAcceptor->pWatchdog = pWatchdog;
+   pAcceptor->pQuasar = pQuasar;
    memset( &pAcceptor->answer, 0, sizeof pAcceptor->answer );
-   strcpy( pAcceptor->answer.pathname, pAcceptor->pWatchdog->params.wdLocation );
-   pAcceptor->answer.memorySizekb = pAcceptor->pWatchdog->params.memorySizekb;
+   strcpy( pAcceptor->answer.pathname, pAcceptor->pQuasar->params.wdLocation );
+   pAcceptor->answer.memorySizekb = pAcceptor->pQuasar->params.memorySizekb;
 
-   dummy = strtol( pAcceptor->pWatchdog->params.wdAddress, NULL, 10 );
+   dummy = strtol( pAcceptor->pQuasar->params.wdAddress, NULL, 10 );
    if ( dummy <= 0 || dummy > 65535 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, WD_ERROR, "Error getting port number" );
+      qsrSendMessage( &pAcceptor->pQuasar->log, WD_ERROR, "Error getting port number" );
       return false;
    }
    port = (unsigned short) dummy;
@@ -191,7 +191,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
  
    errcode = WSAStartup( versionRequested, &wsaData );
    if ( errcode != 0 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function WSAStartup(), error = %d",
                        errcode );
@@ -203,7 +203,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
 
    pAcceptor->socketFD = socket( PF_INET, SOCK_STREAM, 0 );
    if ( pAcceptor->socketFD == PSO_INVALID_SOCKET ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function socket(), error = %d",
                        GetSockError() );
@@ -213,7 +213,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
    errcode = setsockopt( pAcceptor->socketFD, SOL_SOCKET, SO_REUSEADDR, 
                          (const char *)&one, sizeof (one) );
    if ( errcode != 0 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function setsockopt(), error = %d",
                        GetSockError() );
@@ -225,7 +225,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
 #if defined (WIN32)
    errcode = ioctlsocket( pAcceptor->socketFD, FIONBIO, &mode );
    if ( errcode == SOCKET_ERROR ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function ioctlsocket(), error = %d",
                        GetSockError() );
@@ -234,7 +234,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
 #else
    errcode = fcntl( pAcceptor->socketFD, F_SETFL, O_NONBLOCK);
    if ( errcode < 0 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function fcntl(), error = %d",
                        GetSockError() );
@@ -252,7 +252,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
                    (struct sockaddr *) &addr,
                    sizeof(struct sockaddr_in) );
    if ( errcode != 0 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function bind(), error = %d",
                        GetSockError() );
@@ -261,7 +261,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
 
    errcode = listen( pAcceptor->socketFD, 5 );
    if ( errcode != 0 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function listen(), error = %d",
                        GetSockError() );
@@ -274,7 +274,7 @@ bool psoqPrepareConnection( psoqAcceptor * pAcceptor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void
-Receive( psoqAcceptor * pAcceptor, unsigned int indice )
+Receive( qsrAcceptor * pAcceptor, unsigned int indice )
 {
    int errcode = 0;
    struct WDInput input;
@@ -363,7 +363,7 @@ Receive( psoqAcceptor * pAcceptor, unsigned int indice )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void
-Send( psoqAcceptor * pAcceptor, unsigned int indice )
+Send( qsrAcceptor * pAcceptor, unsigned int indice )
 {
    int errcode = 0;
    char * ptr;
@@ -383,7 +383,7 @@ Send( psoqAcceptor * pAcceptor, unsigned int indice )
    } while ( errcode == -1 && errno == EINTR );
 
    if ( errcode == -1 ) {
-      psoqSendMessage( &pAcceptor->pWatchdog->log, 
+      qsrSendMessage( &pAcceptor->pQuasar->log, 
                        WD_ERROR, 
                        "In function send(), error = %d",
                        GetSockError() );
@@ -409,7 +409,7 @@ Send( psoqAcceptor * pAcceptor, unsigned int indice )
 #endif
 
       pAcceptor->dispatch[indice].socketId = PSO_INVALID_SOCKET;
-      psoqSendMessage( &pAcceptor->pWatchdog->log,
+      qsrSendMessage( &pAcceptor->pQuasar->log,
                        WD_WARNING, 
                        "Connection terminated abnormally %s%d",
                        "for process ", 
@@ -425,7 +425,7 @@ Send( psoqAcceptor * pAcceptor, unsigned int indice )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void 
-psoqWaitForConnections( psoqAcceptor * pAcceptor )
+qsrWaitForConnections( qsrAcceptor * pAcceptor )
 {
    int errcode = 0;
    fd_set readSet, writeSet;
@@ -487,7 +487,7 @@ psoqWaitForConnections( psoqAcceptor * pAcceptor )
       
 
       if ( fired == -1 ) {
-         psoqSendMessage( &pAcceptor->pWatchdog->log, 
+         qsrSendMessage( &pAcceptor->pQuasar->log, 
                           WD_ERROR, 
                           "In function select(), error = %d",
                           GetSockError() );

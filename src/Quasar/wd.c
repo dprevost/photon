@@ -23,36 +23,38 @@
 
 int main( int argc, char *argv[] )
 {
-   psoqWatchdog wDog;
+   qsrQuasar wDog;
    int errcode = 0;
-   bool ok;
+   bool ok, exitAfterOpen = false;
    
    psocOptionHandle optHandle;
    char *optArgument;
 #if defined (WIN32)
-   struct psocOptStruct opts[5] = {
+   struct psocOptStruct opts[6] = {
       { 'c', "config",    0, "filename", "Filename for the configuration options" },
       { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
+      { 'e', "exit",      1, "",         "Create/open/verify a shared memory and exit" },
       { 't', "test",      1, "",         "Test the config file and exit" },
       { 'u', "uninstall", 1, "",         "Uninstall the program as a NT service (Windows only)" },
       { 'v', "verify",    1, "",         "Verify the shared memory and exit" }
    };
 #else
-   struct psocOptStruct opts[4] = {
+   struct psocOptStruct opts[5] = {
       { 'c', "config", 0, "filename", "Filename for the configuration options" },
       { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
+      { 'e', "exit",      1, "",         "Create/open/verify a shared memory and exit" },
       { 't', "test",   1, "",         "Test the config file and exit" },
       { 'v', "verify", 1, "",         "Verify the shared memory and exit" }
    };
 #endif
 
    g_pWD = &wDog;
-   psoqWatchdogInit( g_pWD );
+   qsrQuasarInit( g_pWD );
 
 #if defined (WIN32)
-   ok = psocSetSupportedOptions( 5, opts, &optHandle );
+   ok = psocSetSupportedOptions( 6, opts, &optHandle );
 #else
-   ok = psocSetSupportedOptions( 4, opts, &optHandle );
+   ok = psocSetSupportedOptions( 5, opts, &optHandle );
 #endif
    PSO_POST_CONDITION( ok == true || ok == false );
 
@@ -73,7 +75,7 @@ int main( int argc, char *argv[] )
    }
 
    if ( psocGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
-      ok = psoqWatchdogReadConfig( &wDog, optArgument );
+      ok = qsrQuasarReadConfig( &wDog, optArgument );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
          fprintf( stderr, "%s\n", g_pWD->errorMsg );
@@ -83,38 +85,43 @@ int main( int argc, char *argv[] )
 
    // In test mode, we test the config file and exit.
    if ( psocIsShortOptPresent( optHandle, 't' ) ) return 0;
+
+   // Do we create a new shared mem and exit?
+   if ( psocIsShortOptPresent( optHandle, 'e' ) ) {
+      exitAfterOpen = true;
+   }
    
 #if defined ( WIN32 )
    if ( psocIsShortOptPresent( optHandle, 'i' ) ) {
-      ok = psoqInstall( &wDog );
+      ok = qsrInstall( &wDog );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return -1;
       return 0;
    }
    
    if ( psocIsShortOptPresent( optHandle, 'u' ) ) {
-      psoqUninstall( &wDog );
+      qsrUninstall( &wDog );
       return 0;
    }
 #endif
    if ( psocIsShortOptPresent( optHandle, 'v' ) ) {
-      wDog.verifyVDSOnly = true;
+      wDog.verifyMemOnly = true;
    }
 
-   ok = psoqInitializeVDS( &wDog );
+   ok = qsrInitializeMem( &wDog );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      psoqSendMessage( &wDog.log, 
+      qsrSendMessage( &wDog.log, 
                        WD_ERROR, 
-                       "VDS initialization error  - aborting..." );
+                       "Shared memory initialization error  - aborting..." );
       return -1;
    }
 
-   if ( wDog.verifyVDSOnly ) return 0;
+   if ( wDog.verifyMemOnly || exitAfterOpen ) return 0;
    
 #if ! defined ( WIN32 )
    if ( psocIsShortOptPresent( optHandle, 'd' ) ) {
-      ok = psoqDaemon( &wDog );
+      ok = qsrDaemon( &wDog );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return -1;
    }
@@ -124,7 +131,7 @@ int main( int argc, char *argv[] )
     * This is the main loop. If using Windows NT services, this loop
     * is called by the Service Control Manager (SCM) directly.
     */
-   psoqRun();
+   qsrRun();
    
    return 0;
 }

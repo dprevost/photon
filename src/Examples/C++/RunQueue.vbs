@@ -61,7 +61,7 @@ cycle         = objArgs(4)
 
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 '
-' Start the watchdog (the same wd for all the test in this sub-dir).
+' Start the server (reusing the same one for all the tests in this sub-dir).
 '
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

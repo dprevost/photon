@@ -16,11 +16,11 @@
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 #
 # This script is provided both as an example and as a way to easily
-# launch the watchdog for debugging purposes.
+# launch the server for debugging purposes.
 #
-# The script will accept a single argument, the path where the watchdog
-# is located. If not provided, the script assumes that the watchdog is
-# located in "../Watchdog".
+# The script will accept a single argument, the path where the server
+# is located. If not provided, the script assumes that the server is
+# located in "../Quasar".
 #
 # \todo Additional arguments (to control the location of the working
 #       files, the size of the shared memory, etc.) should be added eventually.

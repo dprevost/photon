@@ -864,7 +864,7 @@ int main()
       }
       else {
          cerr << "Init Photon failed, error = " << exc.Message() << endl;
-         if ( rc == PSO_CONNECT_ERROR ) cerr << "Is the watchdog running?" << endl;
+         if ( rc == PSO_CONNECT_ERROR ) cerr << "Is the server running?" << endl;
          return 1;
       }
    }

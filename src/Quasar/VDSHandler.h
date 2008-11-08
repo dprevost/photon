@@ -16,8 +16,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOQ_HANDLER_H
-#define PSOQ_HANDLER_H
+#ifndef QSR_HANDLER_H
+#define QSR_HANDLER_H
 
 #include "Nucleus/SessionContext.h"
 #include "Quasar/quasarErrors.h"
@@ -30,7 +30,7 @@ BEGIN_C_DECLS
 struct ConfigParams;
 struct psonMemoryHeader;
 struct psonSession;
-struct psoqMemoryManager;
+struct qsrMemoryManager;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,29 +40,29 @@ struct psoqMemoryManager;
  *    - it will open it otherwise and make sure that its content is valid
  */
 
-struct psoqHandler
+struct qsrHandler
 {
    struct ConfigParams * pConfig;
 
-   struct psoqMemoryManager * pMemManager;
+   struct qsrMemoryManager * pMemManager;
 
    struct psonMemoryHeader * pMemHeader;
    
    psonSessionContext context;
 };
 
-typedef struct psoqHandler psoqHandler;
+typedef struct qsrHandler qsrHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqHandlerInit( psoqHandler              * pHandler,
+bool qsrHandlerInit( qsrHandler              * pHandler,
                       struct ConfigParams      * pConfig,
                       struct psonMemoryHeader ** ppMemoryAddress,
-                      bool                       verifyVDSOnly );
+                      bool                       verifyMemOnly );
 
-void psoqHandlerFini( psoqHandler * pHandler );
+void qsrHandlerFini( qsrHandler * pHandler );
 
-void psoqHandleCrash( psoqHandler * pHandler, pid_t pid );
+void qsrHandleCrash( qsrHandler * pHandler, pid_t pid );
 
 #if 0
    void CleanSession( psonSession* pSession );
@@ -72,7 +72,7 @@ void psoqHandleCrash( psoqHandler * pHandler, pid_t pid );
 
 END_C_DECLS
 
-#endif /* PSOQ_HANDLER_H */
+#endif /* QSR_HANDLER_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

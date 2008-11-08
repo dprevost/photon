@@ -66,7 +66,7 @@ int psoaConnect( psoaConnector    * pConnector,
 #endif
 
    dummy = strtol( address, NULL, 10 );
-   if ( dummy <= 0 || dummy > 65535 ) return PSO_INVALID_WATCHDOG_ADDRESS;
+   if ( dummy <= 0 || dummy > 65535 ) return PSO_INVALID_QUASAR_ADDRESS;
    port = (unsigned short) dummy;
 
 #if defined (WIN32) 

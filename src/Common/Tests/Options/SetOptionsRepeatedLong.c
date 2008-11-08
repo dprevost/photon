@@ -28,7 +28,7 @@ int main()
    psocOptionHandle handle;
 
    struct psocOptStruct opts[3] = {
-      { 'a', "address", 0, "WATCHDOG_ADDRESS", "tcp/ip port number of the watchdog" },
+      { 'a', "address", 0, "QUASAR_ADDRESS", "tcp/ip port number of the server" },
       { 'v', "address", 1, "", "try to explain what is going on" },
       { 'z', "zzz",     1, "", "sleep" }
    };

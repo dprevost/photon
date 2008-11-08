@@ -334,8 +334,8 @@ struct psoInfo
    /** Shared lib version. */
    char dllVersion[10];
    
-   /** The watchdog version (of the pso creator). */
-   char watchdogVersion[10];
+   /** The server version (of the pso creator). */
+   char quasarVersion[10];
    
    /** Timestamp of creation of the shared memory. */
    char creationTime[30];

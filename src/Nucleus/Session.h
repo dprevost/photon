@@ -65,7 +65,7 @@ typedef struct psonObjectContext psonObjectContext;
 /**
  * This object is part of a group of objects which are used for handling 
  * crashes (process crashes, mainly). They keep track of the current status
- * and operations done by each process and by doing so enables the watchdog
+ * and operations done by each process and by doing so enables the server
  * to cleanup if a process die unexpectedly: undo the current transaction(s),
  * closed objects (->decrease access counter), unlocked objects, etc.
  *

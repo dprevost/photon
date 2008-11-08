@@ -22,12 +22,12 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psoqRecoverError
-psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
+enum qsrRecoverError
+qsrVerifyMemObject( struct qsrVerifyStruct   * pVerify,
                      struct psonMemObject      * pMemObj,
                      struct psonSessionContext * pContext )
 {
-   enum psoqRecoverError rc = PSOQ_REC_OK;
+   enum qsrRecoverError rc = QSR_REC_OK;
    struct psonMemAlloc * pAlloc = (psonMemAlloc *) pContext->pAllocator;
    psonLinkNode * dummy;
    psonBlockGroup * pGroup;
@@ -37,11 +37,11 @@ psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
    /*
     * Reset the bitmap and the the list of groups.
     */
-   psoqResetBitmap( pVerify->pBitmap );
+   qsrResetBitmap( pVerify->pBitmap );
    psonSetBufferFree( pVerify->pBitmap, 0, pAlloc->totalLength );
 
-   rc = psoqVerifyList( pVerify, &pMemObj->listBlockGroup );
-   if ( rc > PSOQ_REC_START_ERRORS ) return rc;
+   rc = qsrVerifyList( pVerify, &pMemObj->listBlockGroup );
+   if ( rc > QSR_REC_START_ERRORS ) return rc;
    
    /*
     * We retrieve the first node
@@ -57,11 +57,11 @@ psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
                                    &dummy );
    }
    if ( numBlocks != pMemObj->totalBlocks ) {
-      rc = PSOQ_REC_CHANGES;
-      psoqEcho( pVerify, "Number of blocks is wrong" );
+      rc = QSR_REC_CHANGES;
+      qsrEcho( pVerify, "Number of blocks is wrong" );
       if (pVerify->doRepair) {
          pMemObj->totalBlocks = numBlocks;
-         psoqEcho( pVerify, "Number of blocks set to proper value" );
+         qsrEcho( pVerify, "Number of blocks set to proper value" );
       }
    }
    
@@ -70,7 +70,7 @@ psoqVerifyMemObject( struct psoqVerifyStruct   * pVerify,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqPopulateBitmap( struct psoqVerifyStruct   * pVerify,
+void qsrPopulateBitmap( struct qsrVerifyStruct   * pVerify,
                          struct psonMemObject      * pMemObj,
                          struct psonSessionContext * pContext )
 {
@@ -82,7 +82,7 @@ void psoqPopulateBitmap( struct psoqVerifyStruct   * pVerify,
     * Reset the bitmap and populate it for validating the content of the 
     * object itself.
     */
-   psoqResetBitmap( pVerify->pBitmap );
+   qsrResetBitmap( pVerify->pBitmap );
    /*
     * We retrieve the first node
     */

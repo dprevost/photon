@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOQ_ACCEPTOR_H
-#define PSOQ_ACCEPTOR_H
+#ifndef QSR_ACCEPTOR_H
+#define QSR_ACCEPTOR_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -48,48 +48,48 @@ BEGIN_C_DECLS
 /* 
  * Not really a dispatch table but...
  */
-struct psoqDispatch
+struct qsrDispatch
 {
    PSO_SOCKET socketId;
    pid_t      pid;
    size_t     dataToBeWritten;
 };
 
-typedef struct psoqDispatch psoqDispatch;
+typedef struct qsrDispatch qsrDispatch;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration
-struct psoqWatchdog;
+struct qsrQuasar;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- *  This struct enables the watchdog to answer connection request from 
+ *  This struct enables the server to answer connection request from 
  *  applications and to send the information they need to access the shared 
  *  memory.
  *
  *  This module encapsulates the IPC mechanism uses between the apps and
- *  the watchdog. I've looked at different possibilities, for example 
+ *  quasar. I've looked at different possibilities, for example 
  *  named pipes but in the end, sockets are more universal than other 
  *  mechanisms so the choice was not difficult to make.
  *
  *  However, to maintain the possibility of using a different mechanism,
  *  the interface must be "universal" (example: using a char* as the address 
- *  of the watchdog instead of something more specific like an unsigned short 
+ *  of the server instead of something more specific like an unsigned short 
  *  (port number)).
  *
  */
 
-struct psoqAcceptor
+struct qsrAcceptor
 {
    psocErrorHandler errorHandler;
    
    PSO_SOCKET socketFD;
 
-   struct psoqWatchdog * pWatchdog;
+   struct qsrQuasar * pQuasar;
    
-   struct psoqDispatch dispatch[FD_SETSIZE];
+   struct qsrDispatch dispatch[FD_SETSIZE];
 
    struct WDOutput answer;
 
@@ -99,7 +99,7 @@ struct psoqAcceptor
 #endif
 };
 
-typedef struct psoqAcceptor psoqAcceptor;
+typedef struct qsrAcceptor qsrAcceptor;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -115,20 +115,20 @@ int GetSockError()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqAcceptorInit( psoqAcceptor * pAcceptor );
+void qsrAcceptorInit( qsrAcceptor * pAcceptor );
 
-void psoqAcceptorFini( psoqAcceptor * pAcceptor );
+void qsrAcceptorFini( qsrAcceptor * pAcceptor );
 
-bool psoqPrepareConnection( psoqAcceptor        * pAcceptor,
-                            struct psoqWatchdog * pWatchdog );
+bool qsrPrepareConnection( qsrAcceptor      * pAcceptor,
+                           struct qsrQuasar * pQuasar );
 
-void psoqWaitForConnections( psoqAcceptor * pAcceptor );
+void qsrWaitForConnections( qsrAcceptor * pAcceptor );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS
 
-#endif /* PSOQ_ACCEPTOR_H */
+#endif /* QSR_ACCEPTOR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -32,7 +32,7 @@ extern psocErrMsgHandle g_wdErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqMemoryManagerInit( psoqMemoryManager * pManager )
+void qsrMemoryManagerInit( qsrMemoryManager * pManager )
 {
    PSO_PRE_CONDITION( pManager != NULL );
 
@@ -43,7 +43,7 @@ void psoqMemoryManagerInit( psoqMemoryManager * pManager )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqMemoryManagerFini( psoqMemoryManager * pManager )
+void qsrMemoryManagerFini( qsrMemoryManager * pManager )
 {
    PSO_PRE_CONDITION( pManager != NULL );
 
@@ -54,12 +54,12 @@ void psoqMemoryManagerFini( psoqMemoryManager * pManager )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqCreateVDS( psoqMemoryManager  * pManager,
-                    const char         * memoryFileName,
-                    size_t               memorySizekb,
-                    int                  filePerms,
-                    psonMemoryHeader  ** ppHeader,
-                    psonSessionContext * pContext )
+bool qsrCreateMem( qsrMemoryManager   * pManager,
+                   const char         * memoryFileName,
+                   size_t               memorySizekb,
+                   int                  filePerms,
+                   psonMemoryHeader  ** ppHeader,
+                   psonSessionContext * pContext )
 {
    int errcode = 0;
    psocMemoryFileStatus fileStatus;
@@ -93,7 +93,7 @@ bool psoqCreateVDS( psoqMemoryManager  * pManager,
    if ( ! ok ) {
       psocChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      PSOQ_CREATE_BACKSTORE_FAILURE );
+                      QSR_CREATE_BACKSTORE_FAILURE );
       return false;
    }
 
@@ -102,7 +102,7 @@ bool psoqCreateVDS( psoqMemoryManager  * pManager,
    if ( ! ok ) {
       psocChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      PSOQ_OPEN_BACKSTORE_FAILURE );
+                      QSR_OPEN_BACKSTORE_FAILURE );
       return false;
    }
       
@@ -199,7 +199,7 @@ bool psoqCreateVDS( psoqMemoryManager  * pManager,
    /* And finish with setting up the version (and eventually some "magic */
    /* cookie" to identify the file?) */
 
-   strcpy( (*ppHeader)->cookie, "VDS" );
+   strcpy( (*ppHeader)->cookie, "PSO" );
    (*ppHeader)->version = PSON_MEMORY_VERSION;
    (*ppHeader)->totalLength = pManager->memorySizeKB*1024;
 
@@ -220,7 +220,7 @@ bool psoqCreateVDS( psoqMemoryManager  * pManager,
    strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
    strncpy( (*ppHeader)->compiler, MYCC, 19);
    strncpy( (*ppHeader)->cxxcompiler, MYCXX, 19);
-   strncpy( (*ppHeader)->watchdogVersion, PACKAGE_VERSION, 10 );
+   strncpy( (*ppHeader)->quasarVersion, PACKAGE_VERSION, 10 );
 
    t = time(NULL);
    localtime_r( &t, &formattedTime );
@@ -256,11 +256,11 @@ bool psoqCreateVDS( psoqMemoryManager  * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psoqOpenVDS( psoqMemoryManager  * pManager, 
-                  const char         * memoryFileName,
-                  size_t               memorySizekb,
-                  psonMemoryHeader  ** ppHeader,
-                  psonSessionContext * pContext )
+bool qsrOpenMem( qsrMemoryManager   * pManager, 
+                 const char         * memoryFileName,
+                 size_t               memorySizekb,
+                 psonMemoryHeader  ** ppHeader,
+                 psonSessionContext * pContext )
 {
    bool ok;
    
@@ -285,7 +285,7 @@ bool psoqOpenVDS( psoqMemoryManager  * pManager,
    if ( ! fileStatus.fileExist ) {
       psocSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
-                    PSOQ_BACKSTORE_FILE_MISSING );
+                    QSR_BACKSTORE_FILE_MISSING );
       return false;
    }
    
@@ -296,7 +296,7 @@ bool psoqOpenVDS( psoqMemoryManager  * pManager,
    if ( ! ok ) {
       psocChainError( &pContext->errorHandler,
                       g_wdErrorHandle,
-                      PSOQ_ERROR_OPENING_MEMORY );
+                      QSR_ERROR_OPENING_MEMORY );
       return false;
    }
    
@@ -306,7 +306,7 @@ bool psoqOpenVDS( psoqMemoryManager  * pManager,
       (*ppHeader) = NULL;
       psocSetError( &pContext->errorHandler,
                     g_wdErrorHandle,
-                    PSOQ_INCOMPATIBLE_VERSIONS );
+                    QSR_INCOMPATIBLE_VERSIONS );
       return false;
    }
 
@@ -318,8 +318,8 @@ bool psoqOpenVDS( psoqMemoryManager  * pManager,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqCloseVDS( psoqMemoryManager * pManager,
-                   psocErrorHandler  * pError )
+void qsrCloseMem( qsrMemoryManager * pManager,
+                  psocErrorHandler * pError )
 {
    PSO_PRE_CONDITION( pManager != NULL );
    PSO_PRE_CONDITION( pError   != NULL );

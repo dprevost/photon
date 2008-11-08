@@ -379,7 +379,7 @@ bool psocOpenMemFile( psocMemoryFile   * pMem,
     * security attr. of the 
     * shared memory object to be those of the shared memory file
     * (using GetNamedSecurityInfo(), possibly). The initial sa of the
-    * file must be initialized by the watchdog.
+    * file must be initialized by the server.
     */
 #if defined(WIN32)
    InitializeSecurityDescriptor(&pMem->sd, SECURITY_DESCRIPTOR_REVISION);

@@ -12,7 +12,7 @@ List of examples in this directory:
 
 How to run these programs:
 
-Lauch the watchdog first. 
+Lauch the server (quasar) first. 
 
 ./HashMapLoop ../iso_3166.tab 10701
 ./HashMap     ../iso_3166.tab 10701
@@ -20,7 +20,7 @@ Lauch the watchdog first.
 where
  iso_3166.tab  is the name of the file of the iso 3166 codes (use as an 
                example). It is located in the Examples directory.
- 10701         is the ip port of the watchdog
+ 10701         is the ip port of the server
 
 ./RunQueue.sh ../iso_3166.tab 10701 1000000 10 5000 
 or

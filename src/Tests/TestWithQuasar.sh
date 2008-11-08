@@ -21,7 +21,7 @@
 #  - the path of the top directory of the build
 #  - the relative path of the test to be run (versus the build dir)
 #  - the name of the test to be run
-#  - the tcp/ip port for the watchdog
+#  - the tcp/ip port for the server
 #  - expected error code
 #
 # For example: 

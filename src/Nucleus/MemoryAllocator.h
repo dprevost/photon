@@ -78,7 +78,7 @@ typedef struct psonMemAlloc psonMemAlloc;
  * Initialize the psonMemAlloc struct. The second argument is the start of
  * the shared memory itself. 
  *
- * This function should only be called by the watchdog (it might move there
+ * This function should only be called by the server (it might move there
  * eventually). Reason: when a program access shared memory, the allocator is 
  * already there, initialized and all.
  */

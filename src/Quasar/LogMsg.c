@@ -22,7 +22,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoqLogMsgInit( psoqLogMsg * pLog,
+int qsrLogMsgInit( qsrLogMsg * pLog,
                     const char * progName )
 {
    int len = strlen( progName );
@@ -44,7 +44,7 @@ int psoqLogMsgInit( psoqLogMsg * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqLogMsgFini( psoqLogMsg * pLog )
+void qsrLogMsgFini( qsrLogMsg * pLog )
 {
    PSO_PRE_CONDITION( pLog != NULL );
 
@@ -65,7 +65,7 @@ void psoqLogMsgFini( psoqLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int psoqLogMsgInstall( psoqLogMsg * pLog,
+int qsrLogMsgInstall( qsrLogMsg * pLog,
                        const char * progName, 
                        const char * msgPathName,
                        int          numCategories )
@@ -148,7 +148,7 @@ int psoqLogMsgInstall( psoqLogMsg * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqSendMessage( psoqLogMsg         * pLog,
+void qsrSendMessage( qsrLogMsg         * pLog,
                       enum wdMsgSeverity   severity,
                       const char         * format, 
                       ... )
@@ -203,7 +203,7 @@ void psoqSendMessage( psoqLogMsg         * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoqStartUsingLogger( psoqLogMsg * pLog )
+void qsrStartUsingLogger( qsrLogMsg * pLog )
 {
    PSO_PRE_CONDITION( pLog != NULL );
 
@@ -218,7 +218,7 @@ void psoqStartUsingLogger( psoqLogMsg * pLog )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined ( WIN32 )
-int psoqLogMsgUninstall( psoqLogMsg * pLog, const char * progName )
+int qsrLogMsgUninstall( qsrLogMsg * pLog, const char * progName )
 {
    HKEY hKey; 
    char buffer[MAX_PATH]; 
