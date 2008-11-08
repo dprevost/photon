@@ -42,7 +42,7 @@ static int Receive( psoaConnector    * pConnector,
 
 int psoaConnect( psoaConnector    * pConnector,
                  const char       * address,
-                 struct WDOutput  * pAnswer,
+                 struct qsrOutput * pAnswer,
                  psocErrorHandler * errorHandler )
 {
    int errcode = 0;
@@ -53,7 +53,7 @@ int psoaConnect( psoaConnector    * pConnector,
    WORD versionRequested;
    WSADATA wsaData;
 #endif
-   struct WDInput input;
+   struct qsrInput input;
 
    PSO_PRE_CONDITION( pConnector   != NULL );
    PSO_PRE_CONDITION( address      != NULL );
@@ -107,13 +107,13 @@ int psoaConnect( psoaConnector    * pConnector,
       return PSO_CONNECT_ERROR;
    }
 
-   input.opcode = WD_CONNECT;
+   input.opcode = QSR_CONNECT;
    input.processId = getpid();
 
-   errcode = Send( pConnector, &input, sizeof(struct WDInput), errorHandler );
+   errcode = Send( pConnector, &input, sizeof(struct qsrInput), errorHandler );
    if ( errcode != 0 ) return PSO_SEND_ERROR;
 
-   errcode = Receive( pConnector, pAnswer, sizeof(struct WDOutput), errorHandler );
+   errcode = Receive( pConnector, pAnswer, sizeof(struct qsrOutput), errorHandler );
    if ( errcode != 0 ) return PSO_RECEIVE_ERROR;
 
    return 0;
@@ -126,8 +126,8 @@ void psoaDisconnect( psoaConnector    * pConnector,
 {
    int errcode = 0;
 
-   struct WDInput input;
-   input.opcode = WD_DISCONNECT;
+   struct qsrInput input;
+   input.opcode = QSR_DISCONNECT;
    input.processId = getpid();
 
    PSO_PRE_CONDITION( pConnector   != NULL );
@@ -135,7 +135,7 @@ void psoaDisconnect( psoaConnector    * pConnector,
 
    if ( pConnector->socketFD != PSO_INVALID_SOCKET ) {
 
-      errcode = Send( pConnector, &input, sizeof(struct WDInput), errorHandler );
+      errcode = Send( pConnector, &input, sizeof(struct qsrInput), errorHandler );
       /**
        * \todo Remove this debug info when we are sure it is ok (?)
        * or maybe replace it with an assert? 

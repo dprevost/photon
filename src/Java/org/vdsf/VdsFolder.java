@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.vdsf;
+package org.photon;
 
-class VdsFolderEntry {
+class psoFolderEntry {
    
    private int type;
    private String name;
@@ -26,18 +26,18 @@ class VdsFolderEntry {
  * Folder class for the Photon library.
  */
 
-class VdsFolder {
+class psoFolder {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
    
-   public VdsFolder( VdsSession session, String name ) throws VdsException {
+   public psoFolder( psoSession session, String name ) throws psoException {
 
       handle = init( session.Handle(), name );
    }
 
-   private native long fini( long h, String s ) throws VdsException ;
-   private native long init( long h, String s ) throws VdsException ;
-   private native VdsFolderEntry getFirst( long h );
+   private native long fini( long h, String s ) throws psoException ;
+   private native long init( long h, String s ) throws psoException ;
+   private native psoFolderEntry getFirst( long h );
 }
 

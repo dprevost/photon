@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOA_WD_COMMON_H
-#define PSOA_WD_COMMON_H
+#ifndef PSOA_QSR_COMMON_H
+#define PSOA_QSR_COMMON_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,18 +38,18 @@ BEGIN_C_DECLS
  *  connect to request all needed parameters (file name of shared memory, 
  *  for example) and one when they disconnect.
  */
-enum  WDOpcode
+enum  qsrOpcode
 {
-   WD_CONNECT = 1,
-   WD_DISCONNECT
+   QSR_CONNECT = 1,
+   QSR_DISCONNECT
 };
 
 /**
  *  This struct is used by the applications to send information to quasar
  */
-struct WDInput
+struct qsrInput
 {
-   enum  WDOpcode opcode;
+   enum  qsrOpcode opcode;
    pid_t processId;
 };
 
@@ -59,7 +59,7 @@ struct WDInput
  * applications.
  */
 
-struct WDOutput
+struct qsrOutput
 {
    char pathname[PATH_MAX];
    size_t memorySizekb;
@@ -71,7 +71,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSOA_WD_COMMON_H */
+#endif /* PSOA_QSR_COMMON_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -49,12 +49,12 @@ libphoton_la_SOURCES =   \
         Map.h            \
         Process.c        \
         Process.h        \
+        QuasarCommon.h   \
         Queue.c          \
         Queue.h          \
         Session.c        \
         Session.h        \
-        Standalone.c     \
-        WatchdogCommon.h 
+        Standalone.c     
 
 libphoton_la_LIBADD =                             \
         $(top_builddir)/src/Nucleus/libNucleus.la \

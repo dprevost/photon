@@ -13,12 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.vdsf;
+package org.photon;
 
 /**
  * Exception class for the Photon library.
  */
 
-class VdsException extends Exception {
+class psoException extends Exception {
 
 }

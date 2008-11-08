@@ -13,23 +13,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.vdsf;
+package org.photon;
 
 /**
  * 
  */
 
-class VdsSession {
+class psoSession {
 
    /** To save the native pointer/handle. */
    private long handle;
    
-   public VdsSession() throws VdsException {
+   public psoSession() throws psoException {
 
       handle = initSession();
    }
 
-   private native long initSession() throws VdsException ;
+   private native long initSession() throws psoException ;
    
    public long Handle() {
       return handle;

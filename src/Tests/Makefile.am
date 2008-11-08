@@ -29,10 +29,10 @@ EXTRA_DIST =                  \
 check_PROGRAMS =           \
         TransactionHashMap \
         TransactionQueue   \
-        InjectErrorsVDS    \
+        InjectErrorsShMem  \
         OutOfMemory        
 
-InjectErrorsVDS_SOURCES    = InjectErrorsVDS.cpp
+InjectErrorsShMem_SOURCES  = InjectErrorsShMem.cpp
 OutOfMemory_SOURCES        = OutOfMemory.cpp
 TransactionHashMap_SOURCES = TransactionHashMap.c
 TransactionQueue_SOURCES   = TransactionQueue.c
@@ -54,6 +54,6 @@ LDADD = $(top_builddir)/src/API/libphoton.la      \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la
 
-InjectErrorsVDS_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
-OutOfMemory_LDADD     = $(top_builddir)/src/C++/libphotoncpp.la 
+InjectErrorsShMem_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
+OutOfMemory_LDADD       = $(top_builddir)/src/C++/libphotoncpp.la 
 

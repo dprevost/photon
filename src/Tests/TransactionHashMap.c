@@ -39,8 +39,8 @@ psoObjectDefinition g_folderDef = {
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /* 
- * This program tests the transaction capabilities of VDS (commit, rollback,
- * etc.).
+ * This program tests the transaction capabilities of Photon (commit, 
+ * rollback, etc.).
  *
  * Shorthand:
  *
@@ -1204,7 +1204,7 @@ int main(int argc, char *argv[])
       errcode = psoInit( "10701", 0 );
    }
    if ( errcode != PSO_OK ) {
-      printf( " Error opening VDS = %d\n", errcode );
+      printf( " Error accessing the shared memory = %d\n", errcode );
       return -1;
    }
    

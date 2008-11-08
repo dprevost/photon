@@ -92,7 +92,7 @@ extern psocThreadLock g_ProcessMutex;
 
 PHOTON_API_EXPORT
 int psoaProcessInit( psoaProcess * pProcess,
-                    const char * wdAddress );
+                     const char  * qsrAddress );
 
 PHOTON_API_EXPORT
 void psoaProcessFini();

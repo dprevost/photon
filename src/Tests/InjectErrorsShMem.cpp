@@ -870,9 +870,9 @@ int main()
    }
    
    cout << " ------- Photon defects injector ------- " << endl << endl;
-   cout << " This program will inject pseudo-random defects in a VDS." << endl << endl;
+   cout << " This program will inject pseudo-random defects in a shared memory." << endl << endl;
 
-   vector<myQueue>   q( NUM_QUEUES,   myQueue(session) );
+   vector<myQueue> q( NUM_QUEUES, myQueue(session) );
    vector<myMap>   h( NUM_MAPS,   myMap(session) );
    vector<myLifo>  l( NUM_LIFOS,  myLifo(session) );
 

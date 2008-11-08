@@ -1,8 +1,8 @@
-Some issues that need to be considered for the watchdog.
+Some issues that need to be considered for Quasar.
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-Goals of the watchdog:
+Goals of the server:
 
 1) To be able to detect application crashes and to cleanup the shared memory 
    as required.
@@ -33,7 +33,7 @@ Issues:
      - using wrapper classes with a very simple interface for both 
        client and server. 
      - use more generic parameters for the methods of this class, for 
-       example passing the address of the watchdog as a char* instead of 
+       example passing the address of the server as a char* instead of 
        something more specific like an unsigned short (a port number)).
 
 2) Should the connection be permanent?
@@ -42,12 +42,12 @@ Issues:
    to intercept crashes (using a signal handler for SIG_PIPE is a definite 
    possibility). This allows for faster recovery.
 
-   The other alternative is for the watchdog to periodically "probe" 
+   The other alternative is for the server to periodically "probe" 
    whether the processes are still alive or not (using something like 
    kill(pid,0)). The problem with this alternative would be:
     - slower response time to crashes (it would depend on the period of
       the probe).
-    - applications would likely need to reconnect to tell the watchdog that 
+    - applications would likely need to reconnect to tell the server that 
       they are leaving (so that no false positive occurs). 
 
    The main problem with a permanent connection is the problem of a 
@@ -59,28 +59,28 @@ Issues:
    point of failure issue?
 
    Yes. One way to insure that this does not cause a problem is to make
-   the watchdog itself very simple and to use another application to 
-   do the crash recovery. This application would be spawned by the wd
+   the server itself very simple and to use another application to 
+   do the crash recovery. This application would be spawned by the server
    (fork/exec on linux/unix).
 
    Not sure yet if this is a good idea as it will require additional time
    to response to a crash. I need to measure this (or find timing data 
    on the web...).
  
-4) What if a crash-recovery attempt ends up crashing the watchdog itself?
+4) What if a crash-recovery attempt ends up crashing the server itself?
 
    This problem goes away if we use the technique discuss previously for
    permanent connections.
 
    Otherwise, it might be possible to use other techniques (for example a
-   wd parent process and a wd child and use SIG_CHILD to alert signals to 
-   alert the parent of a problem with the child.
+   quasar parent process and a quasar child and use SIG_CHILD to alert  
+   the parent of a problem with the child).
 
    Of course, for both of these alternatives we are left with a damaged
-   VDS - which is unacceptable. So more thinking is needed to avoid these
-   problems.
+   shared memory - which is unacceptable. So more thinking is needed to avoid 
+   these problems.
    
-5) On Unix/linux, the watchdog will be a daemon. An NT service on Windows.
+5) On Unix/linux, the server will be a daemon. An NT service on Windows.
    Combining the two is not easy.
 
    Daemon on unix/linux is pretty easy.

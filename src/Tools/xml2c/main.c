@@ -144,7 +144,7 @@ int main( int argc, char * argv[] )
    }
 
 //   if ( xmlStrcmp( root->name, BAD_CAST "quasar_config") != 0 ) {
-//      errcode = VDSW_XML_INVALID_ROOT;
+//      errcode = PSOW_XML_INVALID_ROOT;
 //      goto cleanup;
 //   }
    
@@ -209,7 +209,7 @@ int main( int argc, char * argv[] )
       goto cleanup;
    }
 
-   if ( xmlStrcmp( root->name, BAD_CAST "vdsf" ) == 0 ) {
+   if ( xmlStrcmp( root->name, BAD_CAST "photon" ) == 0 ) {
       /* This is a topFolder and has no name */
       errcode = doFolder( root, dirname );
    }

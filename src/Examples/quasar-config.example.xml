@@ -8,10 +8,10 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
      files. The files will be created if needed.
      Note: this example use /tmp but this might not be a good idea 
      if /tmp is clean on reboot. -->
-<mem_location>\tmp/vdsf</mem_location>
+<mem_location>/tmp/photon</mem_location>
 
 <!-- MemorySize is in kbytes ("kb"), megabytes ("mb") or gigabytes ("gb"). 
-     For example a VDS of 10 Megabytes can either be written as
+     For example a shared memory of 10 Megabytes can either be written as
        <mem_size size="10240" units="kb" />
      or
        <mem_size size="10" units="mb" />.
@@ -50,7 +50,7 @@ xsi:schemaLocation="http://photonsoftware.org/quasarConfig ../XML/quasar_config.
 
      Note: this is mainly for future development, for example if you
      want the web server (or a database or...) to access shared memory,
-     you can create a group, vdsf, and add the user apache (or
+     you can create a group, photon, and add the user apache (or
      equivalent) to this group. -->
 <file_access access="group" />
 

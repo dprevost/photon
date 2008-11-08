@@ -148,10 +148,10 @@ int qsrLogMsgInstall( qsrLogMsg * pLog,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void qsrSendMessage( qsrLogMsg         * pLog,
-                      enum wdMsgSeverity   severity,
-                      const char         * format, 
-                      ... )
+void qsrSendMessage( qsrLogMsg           * pLog,
+                     enum qsrMsgSeverity   severity,
+                     const char          * format, 
+                     ... )
 {
    char message[PSO_MAX_MSG_LOG];
    va_list args;
@@ -183,13 +183,13 @@ void qsrSendMessage( qsrLogMsg         * pLog,
    }
    else {
       switch ( severity ) {
-      case WD_INFO:
+      case QSR_INFO:
          fprintf( stderr, "Severity: INFO\nMessage: %s\n", message );
          break;
-      case WD_WARNING:
+      case QSR_WARNING:
          fprintf( stderr, "Severity: WARNING\nMessage: %s\n", message );
          break;
-      case WD_ERROR:
+      case QSR_ERROR:
          fprintf( stderr, "Severity: ERROR\nMessage: %s\n", message );
          break;
       default:

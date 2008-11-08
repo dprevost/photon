@@ -43,7 +43,7 @@ OBJS_RELEASE=                                      \
         "$(INTDIR_RELEASE)\Config.obj"             \
         "$(INTDIR_RELEASE)\LogMsg.obj"             \
         "$(INTDIR_RELEASE)\MemoryManager.obj"      \
-        "$(INTDIR_RELEASE)\VDSHandler.obj"         \
+        "$(INTDIR_RELEASE)\ShMemHandler.obj"       \
         "$(INTDIR_RELEASE)\VerifyFastMap.obj"      \
         "$(INTDIR_RELEASE)\VerifyFolder.obj"       \
         "$(INTDIR_RELEASE)\VerifyHash.obj"         \
@@ -52,9 +52,9 @@ OBJS_RELEASE=                                      \
         "$(INTDIR_RELEASE)\VerifyList.obj"         \
         "$(INTDIR_RELEASE)\VerifyMemObj.obj"       \
         "$(INTDIR_RELEASE)\VerifyQueue.obj"        \
-        "$(INTDIR_RELEASE)\VerifyVDS.obj"          \
-        "$(INTDIR_RELEASE)\Watchdog.obj"           \
-        "$(INTDIR_RELEASE)\wd.obj"                 \
+        "$(INTDIR_RELEASE)\VerifyShMem.obj"        \
+        "$(INTDIR_RELEASE)\Quasar.obj"             \
+        "$(INTDIR_RELEASE)\qsrMain.obj"            \
         "$(INTDIR_RELEASE)\quasarErrorHandler.obj" 
 
 OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)

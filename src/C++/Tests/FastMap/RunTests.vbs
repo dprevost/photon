@@ -24,7 +24,7 @@ Option Explicit
 ' ***********************************************************************
 
 Dim rc, numTests, numFailed, verbose, status
-Dim objShell, objShellwd
+Dim objShell, objShellqsr
 Dim objWshScriptExec
 Dim fso
 Dim objSocket
@@ -38,7 +38,7 @@ Dim failed_tests(10)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(10)
 
-Dim exe_name, prog_path, program, wd_path, tmpDir, cmdFile, exeName
+Dim exe_name, prog_path, program, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
 Dim objArgs, strArg, i
 dim strOutput
@@ -74,11 +74,11 @@ If Right(LCase(Wscript.FullName), 11) = "wscript.exe" Then
 End If
 
 Set objShell = CreateObject("WScript.Shell")
-Set objShellwd = CreateObject("WScript.Shell")
+Set objShellqsr = CreateObject("WScript.Shell")
 verbose = False
 
 prog_path = "Release"
-wd_path = "..\..\..\Release"
+qsr_path = "..\..\..\Release"
 Set objArgs = WScript.Arguments
 
 ' ***********************************************************************
@@ -91,8 +91,8 @@ For Each strArg in objArgs
    If Left(LCase(strArg), 6) = "--path" AND Len(strArg) > 6 Then
       prog_path = Right(strArg, Len(strArg)-7)
    end if
-   If Left(LCase(strArg), 6) = "--wdpath" AND Len(strArg) > 8 Then
-      wd_path = Right(strArg, Len(strArg)-9)
+   If Left(LCase(strArg), 6) = "--qsrpath" AND Len(strArg) > 8 Then
+      qsr_path = Right(strArg, Len(strArg)-9)
    end if
    if LCase(strArg) = "--verbose" then 
       verbose = True
@@ -133,9 +133,9 @@ cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
-exeName = wd_path + "\quasar.exe -c " + tmpDir + "\cfg.xml"
+exeName = qsr_path + "\quasar.exe -c " + tmpDir + "\cfg.xml"
 
-objShellwd.Run "%comspec% /c title quasar | " & exeName, 2, false
+objShellqsr.Run "%comspec% /c title quasar | " & exeName, 2, false
 
 'Turn on error handling
 On Error Resume Next
@@ -197,10 +197,10 @@ Next
 dim z
 z = false
 while z <> true 
-   z = objShellwd.AppActivate( "quasar" )
+   z = objShellqsr.AppActivate( "quasar" )
    Wscript.Sleep 100
 wend
-objShellwd.SendKeys "^C"
+objShellqsr.SendKeys "^C"
 
 if consoleMode then
    WScript.StdOut.Write vbcrlf & "Total number of tests: " & numTests & vbcrlf

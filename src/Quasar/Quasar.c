@@ -17,16 +17,16 @@
 
 #include "Common/Common.h"
 #include <signal.h>
-#include "Quasar/Watchdog.h"
+#include "Quasar/Quasar.h"
 #include "Common/ErrorHandler.h"
 #include "Quasar/quasarErrorHandler.h"
 
 // This should be more than enough...
 #define LINE_MAX_LEN (2*PATH_MAX)
 
-qsrQuasar * g_pWD = NULL;
+qsrQuasar * g_pQSR = NULL;
 
-psocErrMsgHandle g_wdErrorHandle = -1;
+psocErrMsgHandle g_qsrErrorHandle = -1;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -39,7 +39,7 @@ RETSIGTYPE sigterm_handler( int s )
    /*
     * We need to turn a flag on, to indicate it is time to shutdown
     */
-   g_pWD->controlWord |= WD_SHUTDOWN_REQUEST;
+   g_pQSR->controlWord |= QSR_SHUTDOWN_REQUEST;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -100,8 +100,8 @@ void qsrQuasarInit( qsrQuasar * pQuasar )
    }
    psocInitErrorHandler( &pQuasar->errorHandler );
    
-   g_wdErrorHandle = psocAddErrorMsgHandler( "Quasar", qsrGetErrorMsg );
-   if ( g_wdErrorHandle == PSOC_NO_ERRHANDLER ) {
+   g_qsrErrorHandle = psocAddErrorMsgHandler( "Quasar", qsrGetErrorMsg );
+   if ( g_qsrErrorHandle == PSOC_NO_ERRHANDLER ) {
       fprintf( stderr, "Error registring the error handler for Quasar errors\n" );
       fprintf( stderr, "The problem might be a lack of memory\n" );
    }
@@ -141,14 +141,14 @@ bool qsrDaemon( qsrQuasar * pQuasar )
     *
     * We do it in two steps to help "end-users" recover from errors.
     */
-   errcode = access( pQuasar->params.wdLocation, F_OK );
+   errcode = access( pQuasar->params.memLocation, F_OK );
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid directory for Photon shared memory, error = %d\n", 
                qsrLastError() );
       return false;
    }
    
-   errcode = access( pQuasar->params.wdLocation, R_OK | W_OK | X_OK );
+   errcode = access( pQuasar->params.memLocation, R_OK | W_OK | X_OK );
    if ( errcode != 0 ) {
       fprintf( stderr, "Invalid file permissions on the %s%d\n", 
                "Photon directory, error = ",
@@ -196,7 +196,7 @@ bool qsrDaemon( qsrQuasar * pQuasar )
       // The only way setsid() can fail is if we are already a group process
       // leader (our group ID == our pid). But this test does not cost 
       // anything and may detect attempts at "enhancing" the code ...
-      qsrSendMessage( &pQuasar->log, WD_ERROR,
+      qsrSendMessage( &pQuasar->log, QSR_ERROR,
                          "setsid() error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -204,7 +204,7 @@ bool qsrDaemon( qsrQuasar * pQuasar )
    pid = fork();
 
    if ( pid == -1 ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR,
+      qsrSendMessage( &pQuasar->log, QSR_ERROR,
                          "Fork error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -213,9 +213,9 @@ bool qsrDaemon( qsrQuasar * pQuasar )
    // We are the parent
    if ( pid != 0 ) exit(0);
 
-   errcode = chdir( pQuasar->params.wdLocation );
+   errcode = chdir( pQuasar->params.memLocation );
    if ( errcode != 0 ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR,
+      qsrSendMessage( &pQuasar->log, QSR_ERROR,
                          "chdir() error in Daemon() (errno = %d)",
                          errno );
       return false;
@@ -227,7 +227,7 @@ bool qsrDaemon( qsrQuasar * pQuasar )
    close( 1 );
    close( 2 );
    
-   qsrSendMessage( &pQuasar->log, WD_INFO, "Photon Quasar initialized as a daemon" );   
+   qsrSendMessage( &pQuasar->log, QSR_INFO, "Photon Quasar initialized as a daemon" );   
    return true;
 }
 #endif
@@ -323,8 +323,8 @@ bool qsrInstall( qsrQuasar * pQuasar )
                             PSO_LOCATION,
                             0, 
                             REG_SZ,
-                            (LPBYTE)pQuasar->params.wdLocation, 
-                            strlen(pQuasar->params.wdLocation)+1 );
+                            (LPBYTE)pQuasar->params.memLocation, 
+                            strlen(pQuasar->params.memLocation)+1 );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
@@ -332,11 +332,11 @@ bool qsrInstall( qsrQuasar * pQuasar )
    }
 
    errcode = RegSetValueEx( hKey, 
-                            PSO_WDADDRESS,
+                            PSO_QSRADDRESS,
                             0, 
                             REG_SZ,
-                            (LPBYTE)pQuasar->params.wdAddress,
-                            strlen(pQuasar->params.wdAddress)+1 );
+                            (LPBYTE)pQuasar->params.qsrAddress,
+                            strlen(pQuasar->params.qsrAddress)+1 );
    if ( errcode != ERROR_SUCCESS ) {
       fprintf( stderr, "RegSetValueEx error = %d\n", GetLastError() );
       RegCloseKey( hKey );
@@ -409,13 +409,13 @@ bool qsrQuasarReadConfig( qsrQuasar * pQuasar, const char* cfgname )
    rc = qsrReadConfig( cfgname, &pQuasar->params, 0, &pQuasar->errorHandler );
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      memset( pQuasar->errorMsg, 0, WD_MSG_LEN );
+      memset( pQuasar->errorMsg, 0, QSR_MSG_LEN );
       sprintf( pQuasar->errorMsg, "%s%d%s",
                   "Config error, error code = ", 
                   psocGetLastError( &pQuasar->errorHandler ),
                   ", error message = " );
       len = strlen(pQuasar->errorMsg);
-      psocGetErrorMsg( &pQuasar->errorHandler, &pQuasar->errorMsg[len], WD_MSG_LEN-len );
+      psocGetErrorMsg( &pQuasar->errorHandler, &pQuasar->errorMsg[len], QSR_MSG_LEN-len );
    }
 
    return rc;
@@ -438,7 +438,7 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
                            KEY_QUERY_VALUE,
                            &hKey );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegOpenKeyEx error = %d", 
                          GetLastError() );
       return false;
@@ -449,10 +449,10 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
                               PSO_LOCATION,
                               NULL, 
                               NULL, 
-                              (LPBYTE)pQuasar->params.wdLocation, 
+                              (LPBYTE)pQuasar->params.memLocation, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -466,7 +466,7 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
                               (LPBYTE)&pQuasar->params.memorySizekb, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -474,13 +474,13 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
 
    length = PATH_MAX;
    errcode = RegQueryValueEx( hKey, 
-                              PSO_WDADDRESS, 
+                              PSO_QSRADDRESS, 
                               NULL, 
                               NULL, 
-                              (LPBYTE)pQuasar->params.wdAddress,
+                              (LPBYTE)pQuasar->params.qsrAddress,
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -494,7 +494,7 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
                               (LPBYTE)&pQuasar->params.logOn, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -508,7 +508,7 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
                               (LPBYTE)&pQuasar->params.filePerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -522,7 +522,7 @@ bool qsrReadRegistry( qsrQuasar * pQuasar )
                               (LPBYTE)&pQuasar->params.dirPerms, 
                               &length );
    if ( errcode != ERROR_SUCCESS ) {
-      qsrSendMessage( &pQuasar->log, WD_ERROR, 
+      qsrSendMessage( &pQuasar->log, QSR_ERROR, 
                          "RegQueryValueEx error = %d", 
                          GetLastError() );
       return false;
@@ -539,65 +539,65 @@ void qsrRun()
    bool rc;
    
 #if defined ( WIN32 )
-   bool deallocWD = false;
-   if ( g_pWD == NULL ) {
+   bool deallocQSR = false;
+   if ( g_pQSR == NULL ) {
       // This condition is possible if run is called by the NT SCM (Service
       // Control Manager) instead of being called from main().
-      g_pWD = (qsrQuasar*) malloc( sizeof(qsrQuasar) );
+      g_pQSR = (qsrQuasar*) malloc( sizeof(qsrQuasar) );
 
       // A failure here is very unlikely - however since we need the 
       // quasar object to log errors... the only way to alert of a
       // problem is by forcing a crash!!!
-      assert( g_pWD != NULL );
+      assert( g_pQSR != NULL );
 
-      qsrQuasarInit( g_pWD );
+      qsrQuasarInit( g_pQSR );
 
-      deallocWD = true;
+      deallocQSR = true;
       
       // Set the log object to sent messages to the log facility of the OS 
       // instead of sending them to stderr.
-      qsrStartUsingLogger( &g_pWD->log );
+      qsrStartUsingLogger( &g_pQSR->log );
          
       // We have our object but it is not properly initialized - we need
       // to access the registry (the NT service equivalent of calling 
       // ReadConfig() from main().
-      rc = qsrReadRegistry( g_pWD );
+      rc = qsrReadRegistry( g_pQSR );
       PSO_POST_CONDITION( rc == true || rc == false );
       if ( ! rc ) {
-         qsrSendMessage( &g_pWD->log, WD_ERROR, 
+         qsrSendMessage( &g_pQSR->log, QSR_ERROR, 
                           "ReadRegistry failed - aborting..." );
          return;
       }
    }
 #endif
    
-   PSO_PRE_CONDITION( g_pWD != NULL );
+   PSO_PRE_CONDITION( g_pQSR != NULL );
 
    rc = qsrSetSigHandler();
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      qsrSendMessage( &g_pWD->log, 
-                       WD_ERROR,
+      qsrSendMessage( &g_pQSR->log, 
+                       QSR_ERROR,
                        "Signal Handler Installation error %d",
                        qsrLastError() );
       return;
    }
 
-   rc = qsrPrepareConnection( &g_pWD->acceptor, g_pWD );
+   rc = qsrPrepareConnection( &g_pQSR->acceptor, g_pQSR );
    PSO_POST_CONDITION( rc == true || rc == false );
    if ( ! rc ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR,
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR,
          "Error in PrepareConnection() - aborting..." );
       return;
    }
    
-   qsrWaitForConnections( &g_pWD->acceptor );
+   qsrWaitForConnections( &g_pQSR->acceptor );
    
 #if defined ( WIN32 )
-   if ( deallocWD ) {
-      qsrQuasarFini( g_pWD );
-      free( g_pWD );
-      g_pWD = NULL;
+   if ( deallocQSR ) {
+      qsrQuasarFini( g_pQSR );
+      free( g_pQSR );
+      g_pQSR = NULL;
    }
 #endif
 }
@@ -607,7 +607,7 @@ void qsrRun()
 bool qsrSetSigHandler()
 {
 #if defined(WIN32)
-   PSO_PRE_CONDITION( g_pWD != NULL );
+   PSO_PRE_CONDITION( g_pQSR != NULL );
 
    signal( SIGINT,  sigterm_handler );
    signal( SIGTERM, sigterm_handler );
@@ -617,7 +617,7 @@ bool qsrSetSigHandler()
    sigset_t old_set, new_set;
    struct sigaction action;
    
-   PSO_PRE_CONDITION( g_pWD != NULL );
+   PSO_PRE_CONDITION( g_pQSR != NULL );
 
    /*
     * Get the current process mask (meaning the list of signals which are
@@ -627,7 +627,7 @@ bool qsrSetSigHandler()
 
    errcode = sigprocmask( SIG_BLOCK, &new_set, &old_set ); 
    if ( errcode != 0 ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return false;
    }
@@ -651,7 +651,7 @@ bool qsrSetSigHandler()
     */
    errcode = sigprocmask( SIG_SETMASK, &old_set, &new_set );
    if ( errcode != 0 ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR, "%s%d\n",
          "sigprocmask error, errno = ", errno );
       return false;
    }
@@ -668,20 +668,20 @@ bool qsrSetSigHandler()
    action.sa_handler = sigterm_handler;
    errcode = sigaction( SIGTERM, &action, NULL );
    if ( errcode != 0 ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR, "%s%d\n",
          "sigaction (SIGTERM) error, errno = ", errno );
       return false;
    }
    errcode = sigaction( SIGINT,  &action, NULL );
    if ( errcode != 0 ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR, "%s%d\n",
          "sigaction (SIGINT) error, errno = ", errno );
       return false;
    }
    action.sa_handler = sighup_handler;
    errcode = sigaction( SIGHUP, &action, NULL );
    if ( errcode != 0 ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR, "%s%d\n",
          "sigaction (SIGHUP) error, errno = ", errno );
       return false;
    }
@@ -690,7 +690,7 @@ bool qsrSetSigHandler()
    action.sa_handler = sigpipe_handler;
    errcode = sigaction( SIGPIPE, &action, NULL );
    if ( errcode != 0 ) {
-      qsrSendMessage( &g_pWD->log, WD_ERROR, "%s%d\n",
+      qsrSendMessage( &g_pQSR->log, QSR_ERROR, "%s%d\n",
          "sigaction (SIGPIPE) error, errno = ", errno );
       return false;
    }
@@ -736,7 +736,7 @@ void qsrUninstall( qsrQuasar * pQuasar )
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }
-      errcode = RegDeleteValue( hKey, PSO_WDADDRESS );
+      errcode = RegDeleteValue( hKey, PSO_QSRADDRESS );
       if ( errcode != ERROR_SUCCESS ) {
          fprintf( stderr, "RegDeleteValue error = %d\n", GetLastError() );
       }

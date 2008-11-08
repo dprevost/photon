@@ -17,11 +17,11 @@ CLEANFILES = *~ core
 EXTRA_DIST =           \
         Makefile.win32 \
         RunTests.vbs   \
-        wdTests.sh     
+        qsrTests.sh     
 
 TESTS_ENVIRONMENT =                  \
         top_builddir=$(top_builddir) \
         verbose=0                    
 
-TESTS = wdTests.sh
+TESTS = qsrTests.sh
 

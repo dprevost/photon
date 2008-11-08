@@ -1,6 +1,6 @@
 /Makefile
 /Makefile.in
-/InjectErrorsVDS
+/InjectErrorsShMem
 /OutOfMemory
 /TransactionHashMap
 /TransactionQueue

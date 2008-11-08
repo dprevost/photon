@@ -46,7 +46,7 @@ int main()
    /*
     * The first thing we must do is to calibrate the loop. The problem
     * we have to "solve" is to make sure we cover all code paths in
-    * VdsTimer::Calculate(), specially this if condition:
+    * psocCalculateTimer(), specially this if condition:
     *   "if ( timeEnd.tv_usec < timeBegin.tv_usec )"
     *
     * To do that, we ajust the inner loop to be multiples of ~0.10 sec 

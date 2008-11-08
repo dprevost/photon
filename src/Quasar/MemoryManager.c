@@ -24,7 +24,7 @@
 #include "Nucleus/InitEngine.h"
 #include "Quasar/quasarErrors.h"
 
-extern psocErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_qsrErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -92,7 +92,7 @@ bool qsrCreateMem( qsrMemoryManager   * pManager,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       psocChainError( &pContext->errorHandler,
-                      g_wdErrorHandle,
+                      g_qsrErrorHandle,
                       QSR_CREATE_BACKSTORE_FAILURE );
       return false;
    }
@@ -101,7 +101,7 @@ bool qsrCreateMem( qsrMemoryManager   * pManager,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       psocChainError( &pContext->errorHandler,
-                      g_wdErrorHandle,
+                      g_qsrErrorHandle,
                       QSR_OPEN_BACKSTORE_FAILURE );
       return false;
    }
@@ -147,7 +147,7 @@ bool qsrCreateMem( qsrMemoryManager   * pManager,
                                 1 );
    if ( errcode != PSO_OK ) {
       psocSetError( &pContext->errorHandler,
-                    g_wdErrorHandle,
+                    g_qsrErrorHandle,
                     errcode );
       return false;
    }
@@ -284,7 +284,7 @@ bool qsrOpenMem( qsrMemoryManager   * pManager,
    
    if ( ! fileStatus.fileExist ) {
       psocSetError( &pContext->errorHandler,
-                    g_wdErrorHandle,
+                    g_qsrErrorHandle,
                     QSR_BACKSTORE_FILE_MISSING );
       return false;
    }
@@ -295,7 +295,7 @@ bool qsrOpenMem( qsrMemoryManager   * pManager,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       psocChainError( &pContext->errorHandler,
-                      g_wdErrorHandle,
+                      g_qsrErrorHandle,
                       QSR_ERROR_OPENING_MEMORY );
       return false;
    }
@@ -305,7 +305,7 @@ bool qsrOpenMem( qsrMemoryManager   * pManager,
    if ( (*ppHeader)->version != PSON_MEMORY_VERSION ) {
       (*ppHeader) = NULL;
       psocSetError( &pContext->errorHandler,
-                    g_wdErrorHandle,
+                    g_qsrErrorHandle,
                     QSR_INCOMPATIBLE_VERSIONS );
       return false;
    }

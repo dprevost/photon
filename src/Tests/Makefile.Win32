@@ -55,7 +55,7 @@ all:
 check_PROGRAMS =                         \
         .\Release\TransactionHashMap.exe \
         .\Release\TransactionQueue.exe   \
-        .\Release\InjectErrorsVDS.exe    \
+        .\Release\InjectErrorsShMem.exe  \
         .\Release\OutOfMemory.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)

@@ -45,7 +45,7 @@ import socket
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if len(sys.argv) != 8:
-	print 'usage: sys.argv[0] src_dir buidl_dir test_dir test_name tcp_port vds_dir'
+	print 'usage: sys.argv[0] src_dir build_dir test_dir test_name tcp_port mem_dir'
 	sys.exit(-1)
 
 src_dir   = sys.argv[1]
@@ -54,16 +54,16 @@ test_dir  = os.path.join( build_dir, sys.argv[3] )
 test_name = sys.argv[4]
 tcp_port  = sys.argv[5]
 errcode   = int(sys.argv[6])
-vds_dir   = sys.argv[7]
+mem_dir   = sys.argv[7]
 
 return_code = 0
 cfg_suff = 'cfg.xml'
-wd_name = 'quasar'
-wd_pid = 0
-wd_present = 0
+qsr_name = 'quasar'
+qsr_pid = 0
+qsr_present = 0
 
-wd_dir = os.path.join( os.path.join( build_dir, 'src' ), 'Quasar' )
-cfg_name = os.path.join( vds_dir, cfg_suff )
+qsr_dir = os.path.join( os.path.join( build_dir, 'src' ), 'Quasar' )
+cfg_name = os.path.join( mem_dir, cfg_suff )
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 #
@@ -107,11 +107,11 @@ def IsQuasarRunning():
 
 def StartQuasar():
 
-   global wd_dir, wd_name, cfg_name, wd_pid
+   global qsr_dir, qsr_name, cfg_name, qsr_pid
 
-   path = os.path.join( wd_dir, wd_name )
+   path = os.path.join( qsr_dir, qsr_name )
    try:
-      wd_pid = os.spawnl( os.P_NOWAIT, path, path, '--config',  cfg_name )
+      qsr_pid = os.spawnl( os.P_NOWAIT, path, path, '--config',  cfg_name )
    except OSError, (errno, strerror):
       print 'Error starting the server'
       print "OS error(%s): %s" % (errno, strerror)
@@ -137,10 +137,10 @@ def StartQuasar():
 
 def StopQuasar():
 
-   global wd_pid
+   global qsr_pid
 
-   if wd_pid > 0:
-      os.kill( wd_pid, signal.SIGINT )
+   if qsr_pid > 0:
+      os.kill( qsr_pid, signal.SIGINT )
 
    # We sleep a bit (if needed) since signals are asynch and we need to 
    # make sure that the server is stopped (since other tests might be 
@@ -158,7 +158,7 @@ def StopQuasar():
    # oh oh... no way to handle this gracefully (and we are in the process of 
    # exiting/cleaning up). Try SIGKILL and hope for the best...
    except:
-      os.kill( wd_pid, signal.SIGKILL )
+      os.kill( qsr_pid, signal.SIGKILL )
 #    time.sleep(5)
       try:
          count = 0
@@ -179,7 +179,7 @@ def StopQuasar():
 
 def WriteCfg():
 
-   global cfg_name, vds_dir
+   global cfg_name, mem_dir
 
    try:
       cfg_file = open( cfg_name, 'w' )
@@ -198,9 +198,9 @@ def WriteCfg():
       cfg_file.write( line )   
       line = 'xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"'
       cfg_file.write( line )   
-      line = 'xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig ' + os.path.join( vds_dir, 'quasar_config.xsd' ) + '\"> '
+      line = 'xsi:schemaLocation=\"http://photonsoftware.org/quasarConfig ' + os.path.join( mem_dir, 'quasar_config.xsd' ) + '\"> '
       cfg_file.write( line )   
-      line = '  <mem_location>' + vds_dir + '</mem_location>'
+      line = '  <mem_location>' + mem_dir + '</mem_location>'
       cfg_file.write( line )   
       line = '  <mem_size size=\"10240\" units=\"kb\" />'
       cfg_file.write( line )   
@@ -240,14 +240,14 @@ def RunTest():
 
 def Run():
 
-   global return_code, wd_present
+   global return_code, qsr_present
 
    # We use try:/except blocks to determine our exit code unless the
    # error occurs in the C program.
  
    try:
-      wd_present = IsQuasarRunning()
-      if wd_present == 0:
+      qsr_present = IsQuasarRunning()
+      if qsr_present == 0:
          WriteCfg()
          StartQuasar()
 #         time.sleep(1)
@@ -258,7 +258,7 @@ def Run():
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 Run()
-if wd_present == 0:
+if qsr_present == 0:
    StopQuasar()
 #if return_code == 0:
 #   print 'PASS:', test_name, '(Python test)'

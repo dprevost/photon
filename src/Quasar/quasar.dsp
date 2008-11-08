@@ -117,7 +117,7 @@ SOURCE=.\quasarErrorHandler.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\VDSHandler.c
+SOURCE=.\ShMemHandler.c
 # End Source File
 # Begin Source File
 
@@ -149,15 +149,15 @@ SOURCE=.\VerifyQueue.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\VerifyVDS.c
+SOURCE=.\VerifyShMem.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\Watchdog.c
+SOURCE=.\Quasar.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\wd.c
+SOURCE=.\qsrMain.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -185,11 +185,11 @@ SOURCE=.\quasarErrors.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\VDSHandler.h
+SOURCE=.\ShMemHandler.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Watchdog.h
+SOURCE=.\Quasar.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

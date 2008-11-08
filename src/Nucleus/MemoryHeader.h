@@ -36,8 +36,8 @@ BEGIN_C_DECLS
  * The memory header is allocated at the beginning of the memory-mapped 
  * file (or whatever else replaces it). Although this structure is
  * quite small - 1 block will be reserved for it - this will garantee that 
- * we can modify VDS on the fly if this structure is changed in future
- * releases.
+ * we can modify the shared memory on the fly if this structure is changed 
+ * in future releases.
  */
 struct psonMemoryHeader
 {

@@ -28,7 +28,7 @@
 #  include <Winsock2.h>
 #endif
 
-#include "API/WatchdogCommon.h"
+#include "API/QuasarCommon.h"
 #include "Common/ErrorHandler.h"
 
 BEGIN_C_DECLS
@@ -91,7 +91,7 @@ struct qsrAcceptor
    
    struct qsrDispatch dispatch[FD_SETSIZE];
 
-   struct WDOutput answer;
+   struct qsrOutput answer;
 
 #if defined (WIN32)
    /** If true, WSACleanup must be called by the destructor */

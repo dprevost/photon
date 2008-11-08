@@ -21,10 +21,10 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_vdsf_VdsFolder
+ * Class:     org_photon_psoFolder
  * Method:    Close
  */
-JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_Close (
+JNIEXPORT jlong JNICALL Java_org_photon_psoFolder_Close (
    JNIEnv * env, 
    jobject  obj )
 {
@@ -40,9 +40,9 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_Close (
    
    // Throw a java exception
 
-   exc = (*env)->FindClass( env, "org/photon/VdsException" );
+   exc = (*env)->FindClass( env, "org/photon/psoException" );
    if ( exc  != NULL ) {
-      sprintf( msg, "vdsf Error = %d", errcode );
+      sprintf( msg, "photon Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
    }
 
@@ -52,11 +52,11 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_Close (
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_vdsf_VdsFolder
+ * Class:     org_photon_psoFolder
  * Method:    init
  * Signature: (JLjava/lang/String;)J
  */
-JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_init(
+JNIEXPORT jlong JNICALL Java_org_photon_psoFolder_init(
    JNIEnv * env, 
    jobject  obj, 
    jlong    sessionHandle, 
@@ -81,9 +81,9 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsFolder_init(
    if ( errcode == PSO_OK ) return (jlong) handle;
    
    // Throw a java exception
-   exc = (*env)->FindClass( env, "org/photon/VdsException" );
+   exc = (*env)->FindClass( env, "org/photon/psoException" );
    if ( exc  != NULL ) {
-      sprintf( msg, "vdsf Error = %d", errcode );
+      sprintf( msg, "photon Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
    }
 

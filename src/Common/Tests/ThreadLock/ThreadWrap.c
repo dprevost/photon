@@ -39,7 +39,7 @@ void * psotStartRoutine( void* arg )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psotCreateThread( psotThreadWrap* pThread, 
-                      VDST_THREAD_FUNCTION startRoutine,
+                      PSOT_THREAD_FUNCTION startRoutine,
                       void* arg,
                       psocErrorHandler* pError )
 {

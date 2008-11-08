@@ -93,7 +93,7 @@ Source: C:\Program Files\libxml2\bin\xmlcatalog.exe; DestDir: {app}\bin; Compone
 Source: C:\Program Files\libxml2\bin\zlib1.dll; DestDir: {app}\bin; Components: libxml2
 
 [Icons]
-;Name: "{group}\Watchdog"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
+;Name: "{group}Quasar"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
 Name: {group}\Ref. Manual C API; Filename: {app}\Photon_C_API.chm
 Name: {group}\Ref. Manual C++ API; Filename: {app}\Photon_C++_API.chm
 Name: {group}\Uninstall Photon; Filename: {uninstallexe}

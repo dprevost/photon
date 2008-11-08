@@ -13,17 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.vdsf;
+package org.photon;
 
-public class VdsProcess {
+public class psoProcess {
 
    static {
-      System.loadLibrary("vdsf_jni");
+      System.loadLibrary("photon_jni");
    }
 
    /**
-    * This function initializes access to a VDS. It takes 2 input 
-    * arguments, the address of the watchdog and a boolean to indicate 
+    * This function initializes access to a shared memory. It takes 2 input 
+    * arguments, the address of the server (quasar) and a boolean to indicate 
     * if sessions and other objects (Queues, etc) are shared amongst 
     * threads (in the 
     * current process) and must be protected. Recommendation: always 
@@ -42,7 +42,7 @@ public class VdsProcess {
     * the error code is returned.
     */
 
-//   public native byte[] vdsjInit( String  wdAddress,
+//   public native byte[] psojInit( String  wdAddress,
 //                                  boolean protectionNeeded );
 
 

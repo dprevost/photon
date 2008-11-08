@@ -18,7 +18,7 @@ SUBDIRS = . Tests
  
 noinst_LTLIBRARIES   = libNucleus.la
 
-# Trick: keeping VdsErrorHandler.c as the first file forces make to
+# Trick: keeping psoErrorHandler.c as the first file forces make to
 # generate it (and the .h) before trying to build the rest. Otherwise
 # there was a bit of an issue (after doing a make distclean, which 
 # remove the dependency files - the dependencies could have been written

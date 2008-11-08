@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_PROCESS_TEST_H
-#define VDST_PROCESS_TEST_H
+#ifndef PSOT_PROCESS_TEST_H
+#define PSOT_PROCESS_TEST_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemoryObject.h"
@@ -104,5 +104,5 @@ psonProcess * initProcessTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_PROCESS_TEST_H */
+#endif /* PSOT_PROCESS_TEST_H */
 

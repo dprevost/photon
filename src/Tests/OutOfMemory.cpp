@@ -153,8 +153,8 @@ int main()
    
   
    session.GetInfo( info1 );
-   cerr << "Total allocated in vds: " << info1.allocatedSizeInBytes << endl;
-   cerr << info1.totalSizeInBytes << endl;
+   cerr << "Total allocated in memory: " << info1.allocatedSizeInBytes << endl;
+   cerr << "Total memory size:         " << info1.totalSizeInBytes << endl;
  
    psoObjStatus status;
 

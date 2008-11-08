@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_SESSION_TEST_H
-#define VDST_SESSION_TEST_H
+#ifndef PSOT_SESSION_TEST_H
+#define PSOT_SESSION_TEST_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemoryObject.h"
@@ -104,5 +104,5 @@ psonSession * initSessionTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_SESSION_TEST_H */
+#endif /* PSOT_SESSION_TEST_H */
 

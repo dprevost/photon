@@ -21,11 +21,11 @@
 #include "Quasar/Config.h"
 #include "Quasar/quasarErrors.h"
 
-extern psocErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_qsrErrorHandle;
 
 enum ECFG_PARAMS
 {
-   PSO_WDADDRESS = 0,
+   PSO_QSRADDRESS = 0,
    ePSO_LOCATION,
    ePSO_MEMSIZE,
    ePSO_USE_LOG,
@@ -195,7 +195,7 @@ bool qsrReadConfig( const char          * cfgname,
              * of the provided string).
              */
             if ( xmlStrlen(node->children->content) < PATH_MAX ) {
-               strcpy( pConfig->wdLocation, (char*)node->children->content );
+               strcpy( pConfig->memLocation, (char*)node->children->content );
                node = node->next;
                break;
             }
@@ -245,7 +245,7 @@ bool qsrReadConfig( const char          * cfgname,
    while ( node != NULL ) {
       if ( node->type == XML_ELEMENT_NODE ) {
          if ( xmlStrcmp( node->name, BAD_CAST "quasar_address") == 0 ) {
-            strcpy( pConfig->wdAddress, (char*)node->children->content );
+            strcpy( pConfig->qsrAddress, (char*)node->children->content );
             node = node->next;
             break;
          }
@@ -297,7 +297,7 @@ cleanup:
    if ( doc ) xmlFreeDoc( doc );
 
    if ( errcode != QSR_OK ) {
-      psocSetError( pError, g_wdErrorHandle, errcode );
+      psocSetError( pError, g_qsrErrorHandle, errcode );
       return false;
    }
    return true;

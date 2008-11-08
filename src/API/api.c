@@ -31,14 +31,14 @@ extern "C" {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoInit( const char * wdAddress,
+int psoInit( const char * qsrAddress,
              int          programIsMultiThreaded )                  
 {
    int errcode = PSO_OK;
    psoaProcess * process;
    bool ok;
    
-   if ( wdAddress == NULL ) return PSO_INVALID_QUASAR_ADDRESS;
+   if ( qsrAddress == NULL ) return PSO_INVALID_QUASAR_ADDRESS;
    
    g_protectionIsNeeded = programIsMultiThreaded;
    
@@ -52,7 +52,7 @@ int psoInit( const char * wdAddress,
    if ( process == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
   
    memset( process, 0, sizeof(psoaProcess) );
-   errcode = psoaProcessInit( process, wdAddress );
+   errcode = psoaProcessInit( process, qsrAddress );
 
    if ( errcode != PSO_OK ) free( process );
 

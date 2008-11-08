@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_THREAD_WRAP_H
-#define VDST_THREAD_WRAP_H
+#ifndef PSOT_THREAD_WRAP_H
+#define PSOT_THREAD_WRAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -46,7 +46,7 @@ BEGIN_C_DECLS
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef int (*VDST_THREAD_FUNCTION)(void*);
+typedef int (*PSOT_THREAD_FUNCTION)(void*);
 
 typedef struct psotThreadWrap
 {
@@ -59,7 +59,7 @@ typedef struct psotThreadWrap
 #endif
 
    /** Address of the routine to be executed */
-   VDST_THREAD_FUNCTION startRoutine;
+   PSOT_THREAD_FUNCTION startRoutine;
    
    /** Argument to the thread */
    void* arg;
@@ -72,7 +72,7 @@ typedef struct psotThreadWrap
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psotCreateThread( psotThreadWrap*      pThread, 
-                      VDST_THREAD_FUNCTION startRoutine,
+                      PSOT_THREAD_FUNCTION startRoutine,
                       void*                arg,
                       psocErrorHandler*    pError );
 
@@ -86,4 +86,4 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_THREAD_WRAP_H */
+#endif /* PSOT_THREAD_WRAP_H */

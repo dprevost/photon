@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_HASH_MAP_TEST_H
-#define VDST_HASH_MAP_TEST_H
+#ifndef PSOT_HASH_MAP_TEST_H
+#define PSOT_HASH_MAP_TEST_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemoryObject.h"
@@ -106,5 +106,5 @@ initHashMapTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_HASH_MAP_TEST_H */
+#endif /* PSOT_HASH_MAP_TEST_H */
 

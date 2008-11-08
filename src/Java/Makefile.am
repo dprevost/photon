@@ -15,31 +15,31 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/java/org/photon/*.class
 
 #Java_Source =                      \
-        org/photon/VdsException.java \
-        org/photon/VdsFolder.java    \
-        org/photon/VdsProcess.java   \
-        org/photon/VdsQueue.java     \
-        org/photon/VdsSession.java
+        org/photon/psoException.java \
+        org/photon/psoFolder.java    \
+        org/photon/psoProcess.java   \
+        org/photon/psoQueue.java     \
+        org/photon/psoSession.java
 
 #Java_Classes =                      \
-        org/photon/VdsException.class \
-        org/photon/VdsFolder.class    \
-        org/photon/VdsProcess.class   \
-        org/photon/VdsQueue.class     \
-        org/photon/VdsSession.class
+        org/photon/psoException.class \
+        org/photon/psoFolder.class    \
+        org/photon/psoProcess.class   \
+        org/photon/psoQueue.class     \
+        org/photon/psoSession.class
 
 #%.class: %.java
 #	javac -d $(top_builddir)/src/java $?
 
 ##QQQ_JAVA=$Java_Source)
 
-#org_vdsf_JAVA = VdsException.java
+#org_photon_JAVA = psoException.java
 
 #EXTRA_DIST=$(Java_Source)
 
 #all-local: $(Java_Classes)
 
-lib_LTLIBRARIES = libvdsf_jni.la
+lib_LTLIBRARIES = libphoton_jni.la
 
 # See http://www.gnu.org/software/libtool/manual.html#SEC34
 # for more info on version-info. 
@@ -47,16 +47,16 @@ lib_LTLIBRARIES = libvdsf_jni.la
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-libvdsf_jni_la_LDFLAGS = -version-info 1:0:0
+libphoton_jni_la_LDFLAGS = -version-info 1:0:0
 AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
-libvdsf_jni_la_SOURCES = \
+libphoton_jni_la_SOURCES = \
         jni_folder.c  \
         jni_hashmap.c \
         jni_process.c \
         jni_queue.c   \
         jni_session.c 
 
-libvdsf_jni_la_LIBADD = \
-   $(top_builddir)/src/API/libvdsf.la 
+libphoton_jni_la_LIBADD = \
+   $(top_builddir)/src/API/libphoton.la 
 

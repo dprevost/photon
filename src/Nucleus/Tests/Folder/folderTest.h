@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_FOLDER_TEST_H
-#define VDST_FOLDER_TEST_H
+#ifndef PSOT_FOLDER_TEST_H
+#define PSOT_FOLDER_TEST_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemoryObject.h"
@@ -147,5 +147,5 @@ psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_FOLDER_TEST_H */
+#endif /* PSOT_FOLDER_TEST_H */
 

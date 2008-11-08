@@ -34,7 +34,7 @@
 if [ "$TMPDIR" = "" ] ; then
    TMPDIR=/tmp
 fi
-BASE_DIR=$TMPDIR/wd_tests
+BASE_DIR=$TMPDIR/qsr_tests
 
 trap `rm -rf $BASE_DIR; exit 1` 1 2 3 15
 
@@ -156,7 +156,7 @@ fi
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
-  echo "Success wdTests.sh"
+  echo "Success qsrTests.sh"
 fi
 
 rm -rf $BASE_DIR

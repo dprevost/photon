@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "API/WatchdogCommon.h"
-#include "Quasar/Watchdog.h"
+#include "API/QuasarCommon.h"
+#include "Quasar/Quasar.h"
 #include "Common/Options.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -48,8 +48,8 @@ int main( int argc, char *argv[] )
    };
 #endif
 
-   g_pWD = &wDog;
-   qsrQuasarInit( g_pWD );
+   g_pQSR = &wDog;
+   qsrQuasarInit( g_pQSR );
 
 #if defined (WIN32)
    ok = psocSetSupportedOptions( 6, opts, &optHandle );
@@ -78,7 +78,7 @@ int main( int argc, char *argv[] )
       ok = qsrQuasarReadConfig( &wDog, optArgument );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) {
-         fprintf( stderr, "%s\n", g_pWD->errorMsg );
+         fprintf( stderr, "%s\n", g_pQSR->errorMsg );
          return -1;
       }
    }
@@ -112,7 +112,7 @@ int main( int argc, char *argv[] )
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
       qsrSendMessage( &wDog.log, 
-                       WD_ERROR, 
+                       QSR_ERROR, 
                        "Shared memory initialization error  - aborting..." );
       return -1;
    }

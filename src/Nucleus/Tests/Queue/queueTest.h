@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_QUEUE_TEST_H
-#define VDST_QUEUE_TEST_H
+#ifndef PSOT_QUEUE_TEST_H
+#define PSOT_QUEUE_TEST_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemoryObject.h"
@@ -106,7 +106,7 @@ initQueueTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_QUEUE_TEST_H */
+#endif /* PSOT_QUEUE_TEST_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

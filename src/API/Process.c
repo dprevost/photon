@@ -16,7 +16,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "API/Process.h"
-#include "API/WatchdogCommon.h"
+#include "API/QuasarCommon.h"
 #include "Nucleus/MemoryHeader.h"
 #include "Nucleus/ProcessManager.h"
 #include "Common/MemoryFile.h"
@@ -56,9 +56,9 @@ bool AreWeTerminated()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaProcessInit( psoaProcess * process, const char * wdAddress )
+int psoaProcessInit( psoaProcess * process, const char * qsrAddress )
 {
-   struct WDOutput answer;
+   struct qsrOutput answer;
    char path[PATH_MAX];
    int errcode = PSO_OK;
    psonSessionContext context;
@@ -67,7 +67,7 @@ int psoaProcessInit( psoaProcess * process, const char * wdAddress )
    size_t memorySizekb = 0;
    
    PSO_PRE_CONDITION( process   != NULL );
-   PSO_PRE_CONDITION( wdAddress != NULL );
+   PSO_PRE_CONDITION( qsrAddress != NULL );
    
    if ( ! psonInitEngine() ) return PSO_INTERNAL_ERROR;
    
@@ -84,23 +84,23 @@ int psoaProcessInit( psoaProcess * process, const char * wdAddress )
       goto the_exit;
    }
    
-   if ( wdAddress == NULL ) {
+   if ( qsrAddress == NULL ) {
       errcode = PSO_INVALID_QUASAR_ADDRESS;
       goto the_exit;
    }
    
    process->standalone = false;
-   if ( (strlen(wdAddress) > strlen("file:")) && 
-      (strncmp(wdAddress, "file:", strlen("file:")) == 0) ) {
+   if ( (strlen(qsrAddress) > strlen("file:")) && 
+      (strncmp(qsrAddress, "file:", strlen("file:")) == 0) ) {
       process->standalone = true;
-      errcode = psoaStandalone( wdAddress,
+      errcode = psoaStandalone( qsrAddress,
                                 path,
                                 &memorySizekb,
                                 &context.errorHandler );
    }
    else {
       errcode = psoaConnect( &process->connector, 
-                             wdAddress, 
+                             qsrAddress, 
                              &answer, 
                              &context.errorHandler );
    }

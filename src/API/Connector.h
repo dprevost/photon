@@ -25,7 +25,7 @@
 #  include <Winsock2.h>
 #endif
 
-#include "API/WatchdogCommon.h"
+#include "API/QuasarCommon.h"
 #include "Common/ErrorHandler.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -88,7 +88,7 @@ typedef struct psoaConnector
  */
 int psoaConnect( psoaConnector    * pConnector,
                  const char       * address,
-                 struct WDOutput  * pAnswer,
+                 struct qsrOutput * pAnswer,
                  psocErrorHandler * errorHandler );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

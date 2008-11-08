@@ -62,11 +62,11 @@ BEGIN_C_DECLS
 
 struct ConfigParams
 {
-   /** Address where the wd listen to incoming requests from application */
-   char wdAddress[PATH_MAX];
+   /** Address where the server listen to incoming requests from application */
+   char qsrAddress[PATH_MAX];
 
    /** Location of the backstore file for the shared memory */
-   char wdLocation[PATH_MAX];
+   char memLocation[PATH_MAX];
 
    /** The size of the shared memory in kilobytes */
    size_t memorySizekb;

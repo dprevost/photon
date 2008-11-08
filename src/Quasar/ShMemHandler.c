@@ -16,15 +16,15 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "Quasar/VDSHandler.h"
+#include "Quasar/ShMemHandler.h"
 #include "Quasar/MemoryManager.h"
-#include "Quasar/Watchdog.h"
-#include "Quasar/VerifyVDS.h"
-#include "API/WatchdogCommon.h"
+#include "Quasar/Quasar.h"
+#include "Quasar/VerifyShMem.h"
+#include "API/QuasarCommon.h"
 #include "Nucleus/SessionContext.h"
 #include "Nucleus/InitEngine.h"
 
-extern psocErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_qsrErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -61,7 +61,7 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
    ok = psonInitEngine();
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in VdsHandler.cpp\n", __LINE__ );
+      fprintf( stderr, "Abnormal error at line %d in ShMemHandler.c\n", __LINE__ );
       exit(1);
    }
    psocInitErrorHandler( &pHandler->context.errorHandler );
@@ -72,22 +72,22 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
       sizeof(qsrMemoryManager), 1 );
    if ( pHandler->pMemManager == NULL ) {
       psocSetError( &pHandler->context.errorHandler,
-                    g_wdErrorHandle,
+                    g_qsrErrorHandle,
                     QSR_NOT_ENOUGH_HEAP_MEMORY );
       return false;
    }
    qsrMemoryManagerInit( pHandler->pMemManager );
    
-   path_len = strlen( pConfig->wdLocation ) + strlen( PSO_DIR_SEPARATOR ) +
+   path_len = strlen( pConfig->memLocation ) + strlen( PSO_DIR_SEPARATOR ) +
       strlen( PSO_MEMFILE_NAME )  + strlen( ".bak" );
    if ( path_len >= PATH_MAX ) {
       psocSetError( &pHandler->context.errorHandler,
-                    g_wdErrorHandle,
+                    g_qsrErrorHandle,
                     QSR_CFG_BCK_LOCATION_TOO_LONG );
       return false;
    }
       
-   sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
+   sprintf( path, "%s%s%s", pConfig->memLocation, PSO_DIR_SEPARATOR,
             PSO_MEMFILE_NAME );
    
    psocInitMemoryFile ( &memFile, pConfig->memorySizekb, path );
@@ -96,7 +96,7 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
    if ( ! fileStatus.fileExist ) {
       if ( verifyMemOnly ) {
          psocSetError( &pHandler->context.errorHandler,
-                       g_wdErrorHandle,
+                       g_qsrErrorHandle,
                        QSR_NO_VERIFICATION_POSSIBLE );
          return false;
       }
@@ -112,12 +112,12 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
       (*ppMemoryAddress)->logON = false;
       if ( pConfig->logOn ) {
          
-         sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
+         sprintf( path, "%s%s%s", pConfig->memLocation, PSO_DIR_SEPARATOR,
                   PSO_LOGDIR_NAME );
          errcode = mkdir( path, pConfig->dirPerms );
          if ( errcode != 0 ) {
             psocSetError( &pHandler->context.errorHandler,
-                          g_wdErrorHandle,
+                          g_qsrErrorHandle,
                           QSR_MKDIR_FAILURE );
             return false;
          }
@@ -128,7 +128,7 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
       if ( ! fileStatus.fileReadable || ! fileStatus.fileWritable || 
          ! fileStatus.lenghtOK ) {
          psocSetError( &pHandler->context.errorHandler,
-                       g_wdErrorHandle,
+                       g_qsrErrorHandle,
                        QSR_FILE_NOT_ACCESSIBLE );
          return false;
       }
@@ -140,12 +140,12 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
       localtime_r( &t, &formattedTime );
       strftime( timeBuf, 30, "%Y_%m_%d_%H_%M_%S", &formattedTime );
 
-      path_len = strlen( pConfig->wdLocation ) + strlen( PSO_DIR_SEPARATOR ) +
+      path_len = strlen( pConfig->memLocation ) + strlen( PSO_DIR_SEPARATOR ) +
       strlen("Logs") + strlen( PSO_DIR_SEPARATOR ) +
       strlen("Verify_") + strlen(timeBuf) + strlen(".log");
       if ( path_len < PATH_MAX ) {
         sprintf( logFile, "%s%s%s", 
-            pConfig->wdLocation, 
+            pConfig->memLocation, 
             PSO_DIR_SEPARATOR,
             "Logs" );
       
@@ -156,13 +156,13 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
                              PSOC_ERRNO_HANDLE,
                              errno );
                psocChainError( &pHandler->context.errorHandler,
-                               g_wdErrorHandle,
+                               g_qsrErrorHandle,
                                QSR_MKDIR_FAILURE );
                return false;
             }
          }
          sprintf( logFile, "%s%s%s%s%s%s%s", 
-            pConfig->wdLocation, 
+            pConfig->memLocation, 
             PSO_DIR_SEPARATOR,
             "Logs",
             PSO_DIR_SEPARATOR,
@@ -181,7 +181,7 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) {
             psocChainError( &pHandler->context.errorHandler,
-                            g_wdErrorHandle,
+                            g_qsrErrorHandle,
                             QSR_COPY_BCK_FAILURE );
             return false;
          }
@@ -237,7 +237,7 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
           * program was run but is on now. Or that the directory was
           * removed for what ever reason. We recreate it if needed.
           */
-         sprintf( path, "%s%s%s", pConfig->wdLocation, PSO_DIR_SEPARATOR,
+         sprintf( path, "%s%s%s", pConfig->memLocation, PSO_DIR_SEPARATOR,
                   PSO_LOGDIR_NAME );
 #if HAVE_ACCESS
          errcode = access( path, F_OK );

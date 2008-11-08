@@ -20,8 +20,8 @@ fi
 mkdir -p $TMPDIR/debian_photon/DEBIAN
 
 cd ../..
-make DESTDIR=/tmp/debian_vdsf install-strip 
-mkdir -p $TMPDIR/debian_photon/usr/local/share/doc/vdsf
+make DESTDIR=/tmp/debian_photon install-strip 
+mkdir -p $TMPDIR/debian_photon/usr/local/share/doc/photon
 install -m 644 README $TMPDIR/debian_photon/usr/local/share/doc/photon/README
 install -m 644 COPYING $TMPDIR/debian_photon/usr/local/share/doc/photon/copyright
 install -m 644 ChangeLog $TMPDIR/debian_photon/usr/local/share/doc/photon/changelog
@@ -35,6 +35,6 @@ size=`du -sk $TMPDIR/debian_photon/usr  | gawk '{ print $1 }'`
 echo $size
 sed "s/@SIZE@/$size/g" < control > $TMPDIR/debian_photon/DEBIAN/control
 
-fakeroot dpkg-deb --build $TMPDIR/debian_vdsf
-mv  $TMPDIR/debian_vdsf.deb vdsf_@PACKAGE_VERSION@_@architecture@-1.deb
-rm -rf $TMPDIR/debian_vdsf
+fakeroot dpkg-deb --build $TMPDIR/debian_photon
+mv  $TMPDIR/debian_photon.deb photon_@PACKAGE_VERSION@_@architecture@-1.deb
+rm -rf $TMPDIR/debian_photon

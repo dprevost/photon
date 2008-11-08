@@ -17,30 +17,30 @@ CLEANFILES = *~
 AM_LDFLAGS = @LIBXML2_LIBS@
 AM_CPPFLAGS += @LIBXML2_CFLAGS@
 
-bin_PROGRAMS = vdsxml2c
+bin_PROGRAMS = psoxml2c
 
-#man_MANS = vdssh.1
-#info_TEXINFOS = vdssh.texi
+#man_MANS = psosh.1
+#info_TEXINFOS = psosh.texi
 
 #if COND_USE_DOCBOOK2TEXI
-#vdssh.texi: vdssh.xml
-#	docbook2x-texi --encoding=iso-8859-1 vdssh.xml
+#psosh.texi: psosh.xml
+#	docbook2x-texi --encoding=iso-8859-1 psosh.xml
 #endif
 #if COND_USE_DOCBOOK2MAN
-#vdssh.1: vdssh.xml
-#	docbook2x-man --encoding=iso-8859-1 vdssh.xml
+#psosh.1: psosh.xml
+#	docbook2x-man --encoding=iso-8859-1 psosh.xml
 #endif
 
 #EXTRA_DIST =           \
         $(man_MANS)    \
-        vdssh.xml      \
+        psosh.xml      \
         Makefile.win32 
 
-vdsxml2c_SOURCES = \
+psoxml2c_SOURCES = \
         common.c   \
         folder.c   \
         main.c     \
         objects.c    
         
-vdsxml2c_LDADD = $(top_builddir)/src/Common/libCommon.la
+psoxml2c_LDADD = $(top_builddir)/src/Common/libCommon.la
 

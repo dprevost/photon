@@ -58,7 +58,7 @@ bool psonInitEngine()
       g_psoErrorHandle = psocAddErrorMsgHandler( "Photon", psonGetErrorMsg );
 
       if ( g_psoErrorHandle == PSOC_NO_ERRHANDLER ) {
-         fprintf( stderr, "Error registring the error handler for VDS errors\n" );
+         fprintf( stderr, "Error registring the error handler for Photon errors\n" );
          fprintf( stderr, "The problem might be a lack of memory\n" );
          return false;
       }

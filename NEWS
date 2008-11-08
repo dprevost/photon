@@ -31,6 +31,16 @@ Version 0.3
     * XML to describe content of data components
     * Fast Maps (a read-only version of the hash maps)
     
+Version 0.4
+
+    * Transactions are now fully atomic.
+    * Ticket 13 is resolved (severe issue with locking).
+    * The API can be used standalone (without quasar running), as long
+      as there is an existing shared-memory backstore file.
+    * Quasar can be used to create/verify a backstore file and then exit
+      (with the new -e, --exit option). This can be use to prepare the
+      software to be used standalone.
+
 -------------------------------------------------------
 
 Copying information:

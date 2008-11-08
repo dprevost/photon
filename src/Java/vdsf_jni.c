@@ -16,17 +16,17 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include <jni.h>
-#include <photon/vds.h>
+#include <photon/photon.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 
 /*
- * Class:     org_vdsf_VdsSession
+ * Class:     org_photon_psoSession
  * Method:    initSession
  * Signature: (Z)J
  */
-JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
+JNIEXPORT jlong JNICALL Java_org_photon_psoSession_initSession (
    JNIEnv * env, 
    jobject  obj )
 {
@@ -35,16 +35,16 @@ JNIEXPORT jlong JNICALL Java_org_vdsf_VdsSession_initSession (
    char msg[100];
    PSO_HANDLE handle;
    
-   errcode = vdsInitSession( &handle );
+   errcode = psoInitSession( &handle );
 
    // Normal return
    if ( errcode == PSO_OK ) return (jlong) handle;
    
    // Throw a java exception
 
-   exc = (*env)->FindClass( env, "org/photon/VdsException" );
+   exc = (*env)->FindClass( env, "org/photon/psoException" );
    if ( exc  != NULL ) {
-      sprintf( msg, "vdsf Error = %d", errcode );
+      sprintf( msg, "photon Error = %d", errcode );
       (*env)->ThrowNew( env, exc, msg );
    }
 

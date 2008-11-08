@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_PROC_MGR_TEST_H
-#define VDST_PROC_MGR_TEST_H
+#ifndef PSOT_PROC_MGR_TEST_H
+#define PSOT_PROC_MGR_TEST_H
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/MemoryObject.h"
@@ -104,5 +104,5 @@ psonProcMgr* initProcMgrTest( bool                testIsExpectedToSucceed,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* VDST_PROC_MGR_TEST_H */
+#endif /* PSOT_PROC_MGR_TEST_H */
 

@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef VDST_BARRIER_H
-#define VDST_BARRIER_H
+#ifndef PSOT_BARRIER_H
+#define PSOT_BARRIER_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -54,7 +54,7 @@ struct psotSubBarrier
  
 struct psotBarrier
 {
-   /** Set to VDST_BARRIER_SIGNATURE at initialization. */
+   /** Set to PSOT_BARRIER_SIGNATURE at initialization. */
    unsigned int initialized;
 
    /** maximum number of running threads */
@@ -86,5 +86,5 @@ void psotBarrierWait( psotBarrier * pBarrier );
 
 END_C_DECLS
 
-#endif /* VDST_BARRIER_H */
+#endif /* PSOT_BARRIER_H */
 

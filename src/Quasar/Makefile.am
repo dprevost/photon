@@ -21,8 +21,6 @@ SUBDIRS = . Tests
  
 bin_PROGRAMS = quasar
 
-noinst_LIBRARIES = libVerifyVDS.a
-
 man_MANS = quasar.1
 info_TEXINFOS = quasar.texi
 
@@ -41,8 +39,6 @@ quasar.1: quasar.xml
 endif
 
 if COND_USE_ERRORPARSER
-##all-local: $(OUTPUT_FILES)
-
 $(OUTPUT_FILES): quasarOptions.xml quasarErrors.xml
 	errorParser --options quasarOptions.xml quasarErrors.xml
 endif
@@ -61,32 +57,29 @@ quasar_SOURCES =             \
         quasarErrors.h       \
         Acceptor.c           \
         Acceptor.h           \
-        Config.h             \
         Config.c             \
+        Config.h             \
         LogMsg.c             \
         LogMsg.h             \
         MemoryManager.c      \
         MemoryManager.h      \
-        VDSHandler.c         \
-        VDSHandler.h         \
-        Watchdog.c           \
-        Watchdog.h           \
-        wd.c                 
+        qsrMain.c            \
+        Quasar.c             \
+        Quasar.h             \
+        ShMemHandler.c       \
+        ShMemHandler.h       \
+        VerifyCommon.h       \
+        VerifyFastMap.c      \
+        VerifyFolder.c       \
+        VerifyHash.c         \
+        VerifyHashMap.c      \
+        VerifyHashTx.c       \
+        VerifyList.c         \
+        VerifyMemObj.c       \
+        VerifyQueue.c        \
+        VerifyShMem.c        \
+        VerifyShMem.h        
 
-libVerifyVDS_a_SOURCES = \
-        VerifyCommon.h   \
-        VerifyFastMap.c  \
-        VerifyFolder.c   \
-        VerifyHash.c     \
-        VerifyHashTx.c   \
-        VerifyHashMap.c  \
-        VerifyList.c     \
-        VerifyMemObj.c   \
-        VerifyQueue.c    \
-        VerifyVDS.c      \
-        VerifyVDS.h      
-
-quasar_LDADD = $(top_builddir)/src/Nucleus/libNucleus.la  \
-              $(top_builddir)/src/Common/libCommon.la     \
-              $(top_builddir)/src/Quasar/libVerifyVDS.a 
+quasar_LDADD = $(top_builddir)/src/Nucleus/libNucleus.la \
+               $(top_builddir)/src/Common/libCommon.la   
 

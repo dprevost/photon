@@ -15,17 +15,17 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSO_WATCHDOG_H
-#define PSO_WATCHDOG_H
+#ifndef PSO_QUASAR_H
+#define PSO_QUASAR_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Acceptor.h"
-#include "VDSHandler.h"
-#include "LogMsg.h"
-#include "Config.h"
+#include "Quasar/Acceptor.h"
+#include "Quasar/ShMemHandler.h"
+#include "Quasar/LogMsg.h"
+#include "Quasar/Config.h"
 #include "Common/ErrorHandler.h"
 
 BEGIN_C_DECLS
@@ -34,16 +34,16 @@ BEGIN_C_DECLS
 
 #define PROG_NAME "quasar"
 
-#define WD_SHUTDOWN_REQUEST 0X001
+#define QSR_SHUTDOWN_REQUEST 0X001
 
-#define WD_MSG_LEN 512
+#define QSR_MSG_LEN 512
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 // Forward declaration(s)
 struct psonMemoryHeader;
 
-extern psocErrMsgHandle g_wdErrorHandle;
+extern psocErrMsgHandle g_qsrErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,7 +55,7 @@ extern psocErrMsgHandle g_wdErrorHandle;
  * They also do not always match the values of the config.
  */
 #define PSO_LOCATION  "mem_location"
-#define PSO_WDADDRESS "quasar_address"
+#define PSO_QSRADDRESS "quasar_address"
 #define PSO_MEMSIZE   "mem_size"
 #define PSO_USE_LOG   "LogTransaction"
 #define PSO_FILEPERMS "file_access"
@@ -105,14 +105,14 @@ struct qsrQuasar
 
    bool verifyMemOnly;
    
-   char errorMsg[WD_MSG_LEN];
+   char errorMsg[QSR_MSG_LEN];
 };
 
 typedef struct qsrQuasar qsrQuasar;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-extern qsrQuasar * g_pWD;
+extern qsrQuasar * g_pQSR;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -120,7 +120,7 @@ static inline
 void qsrHandleAbnormalTermination( qsrQuasar * pQuasar,
                                    pid_t       pid )
 {
-   qsrHandleCrash( &g_pWD->handler, pid );
+   qsrHandleCrash( &g_pQSR->handler, pid );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -182,7 +182,7 @@ void qsrRun();
 
 END_C_DECLS
 
-#endif /* PSO_WATCHDOG_H */
+#endif /* PSO_QUASAR_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

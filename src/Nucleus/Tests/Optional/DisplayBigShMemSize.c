@@ -19,9 +19,9 @@
 
 /*
  * This is NOT a test. All this program do is calculate the size needed
- * by InitBigVDS and display it.
+ * by InitBigShMem and display it.
  *
- * Use this program before running InitBigVDS to see if you have enough RAM
+ * Use this program before running InitBigShMem to see if you have enough RAM
  * (you can always calculate it manually, of course...).
  */
 

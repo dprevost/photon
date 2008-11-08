@@ -14,12 +14,12 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =          \
-        DisplayBigVDSSize \
-        InitBigVDS        
+check_PROGRAMS =            \
+        DisplayBigShMemSize \
+        InitBigShMem        
 
-DisplayBigVDSSize_SOURCES = DisplayBigVDSSize.c
-InitBigVDS_SOURCES        = InitBigVDS.c
+DisplayBigShMemSize_SOURCES = DisplayBigShMemSize.c
+InitBigShMem_SOURCES        = InitBigShMem.c
 
 EXTRA_DIST = 
 

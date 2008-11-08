@@ -2,7 +2,7 @@ The tests in this directory are marked optional.
 
 Tests:
 
-InitBigVDS
+InitBigShMem
 
     The goal of this test is to see what occurs when we force the bitmap
     of the allocator to be equal to a whole block (forcing the memory
@@ -14,7 +14,7 @@ InitBigVDS
     The total memory is obtained by multiplying the number of blocks by the
     length of each block so: 8 * PSON_BLOCK_SIZE * PSON_BLOCK_SIZE.
     
-    The utility DisplayBigVDSSize can do this calculation for you if you 
+    The utility DisplayBigShMemSize can do this calculation for you if you 
     are unsure of the actual size of blocks you are using.
     
     For a block size of 8192 bytes, the shared memory would have to be 512 MB. 
