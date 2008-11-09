@@ -20,6 +20,7 @@
 #endif
 #include "API/Process.c"
 #include "API/Connector.c"
+#include "API/Standalone.c"
 #if defined WIN32
 #  pragma warning(default:4273)
 #endif
