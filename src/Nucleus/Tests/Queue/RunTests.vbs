@@ -112,7 +112,7 @@ fail_programs(42) = "RollbackAddNullOffset"
 fail_programs(43) = "RollbackAddNullQueue"
 fail_programs(44) = "RollbackRemoveNullOffset"
 fail_programs(45) = "RollbackRemoveNullQueue"
-fail_programs(45) = "StatusNullQueue"
+fail_programs(46) = "StatusNullQueue"
 fail_programs(47) = "StatusNullStatus"
 
 numTests = 63                 ' Sum of length of both arrays 

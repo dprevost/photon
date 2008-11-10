@@ -35,7 +35,7 @@ int main()
    int numLocks = 0;
    
    pDummy = initMemObjTest( expectedToPass, &context );
-   context.lockOffsets = &lockOffsets;
+   context.lockOffsets = lockOffsets;
    context.numLocks = &numLocks;
    
    errcode = psonMemObjectInit( &pDummy->memObject, 
