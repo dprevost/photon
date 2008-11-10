@@ -40,7 +40,7 @@
 #define PSON_BLOCK_SIZE 8192
 
 /* Version number of package */
-#define VERSION "0.3.0"
+#define VERSION "0.4.0"
 
 /* Name of package */
 #define PACKAGE "photon"
@@ -52,13 +52,13 @@
 #define PACKAGE_NAME "Photon Software"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Photon Software 0.3.0"
+#define PACKAGE_STRING "Photon Software 0.4.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "photon"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.3.0"
+#define PACKAGE_VERSION "0.4.0"
 
 typedef signed char int8_t;
 typedef signed short int16_t;

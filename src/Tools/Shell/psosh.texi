@@ -13,7 +13,7 @@
 @anchor{name}
 @chapheading Name
 
-psosh @^a€” starts a pseudo-shell to access Photon data
+psosh --- starts a pseudo-shell to access Photon data
 
 @noindent
 @anchor{synopsis}
