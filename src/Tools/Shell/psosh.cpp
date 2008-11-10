@@ -33,11 +33,12 @@ int main( int argc, char *argv[] )
    Session session;
    psoShell   sh(session);
    bool ok;
+   char address[PATH_MAX];
    
    psocOptionHandle optHandle;
    char *optArgument;
    struct psocOptStruct opts[1] = { 
-      { 'a', "address", 0, "quasar_address", "The address of the Photon server" }
+      { 'a', "address", 1, "quasar_address", "The address of the Photon server" }
    };
 
    ok = psocSetSupportedOptions( 1, opts, &optHandle );
@@ -56,8 +57,16 @@ int main( int argc, char *argv[] )
       
       return 0;
    }
+   
+   if ( psocIsShortOptPresent( optHandle, 'a' ) ) {
+      psocGetShortOptArgument( optHandle, 'a', &optArgument );
+   }
+   else {
+      cout << "Please enter the address of quasar or path to memory file: ";
+      cin.getline( address, PATH_MAX );
+      optArgument = address;
+   }
 
-   psocGetShortOptArgument( optHandle, 'a', &optArgument );
    try {
       process.Init( optArgument );
       session.Init();
