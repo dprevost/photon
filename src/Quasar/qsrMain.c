@@ -24,14 +24,16 @@
 int main( int argc, char *argv[] )
 {
    qsrQuasar wDog;
-   int errcode = 0;
+   int errcode = 0, i;
    bool ok, exitAfterOpen = false;
-   
+   char configName[PATH_MAX];
+   char c;
+
    psocOptionHandle optHandle;
    char *optArgument;
 #if defined (WIN32)
    struct psocOptStruct opts[6] = {
-      { 'c', "config",    0, "filename", "Filename for the configuration options" },
+      { 'c', "config",    1, "filename", "Filename for the configuration options" },
       { 'i', "install",   1, "",         "Install the program as a NT service (Windows only)" },
       { 'e', "exit",      1, "",         "Create/open/verify a shared memory and exit" },
       { 't', "test",      1, "",         "Test the config file and exit" },
@@ -40,9 +42,9 @@ int main( int argc, char *argv[] )
    };
 #else
    struct psocOptStruct opts[5] = {
-      { 'c', "config", 0, "filename", "Filename for the configuration options" },
+      { 'c', "config", 1, "filename", "Filename for the configuration options" },
       { 'd', "daemon", 1, "",         "Run the program as a Unix daemon (Unix/linux only)" },
-      { 'e', "exit",      1, "",         "Create/open/verify a shared memory and exit" },
+      { 'e', "exit",   1, "",         "Create/open/verify a shared memory and exit" },
       { 't', "test",   1, "",         "Test the config file and exit" },
       { 'v', "verify", 1, "",         "Verify the shared memory and exit" }
    };
@@ -74,13 +76,23 @@ int main( int argc, char *argv[] )
       return 0;
    }
 
-   if ( psocGetShortOptArgument( optHandle, 'c', &optArgument ) ) {
-      ok = qsrQuasarReadConfig( &wDog, optArgument );
-      PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) {
-         fprintf( stderr, "%s\n", g_pQSR->errorMsg );
-         return -1;
+   if ( psocIsShortOptPresent( optHandle, 'c' ) ) {
+      psocGetShortOptArgument( optHandle, 'c', &optArgument );
+   }
+   else {
+      memset( configName, 0, PATH_MAX );
+      printf( "Please enter the name of the XML configuration file: " );
+      for ( i = 0; i < PATH_MAX-1 &&  (c = getchar()) != EOF && c != '\n'; i++ ) {
+         configName[i] = c;
       }
+      optArgument = configName;
+   }
+   
+   ok = qsrQuasarReadConfig( &wDog, optArgument );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) {
+      fprintf( stderr, "%s\n", g_pQSR->errorMsg );
+      return -1;
    }
 
    // In test mode, we test the config file and exit.
