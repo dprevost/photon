@@ -76,15 +76,6 @@ fi
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 if [ $verbose = 1 ] ; then
-$top_builddir/src/Quasar/quasar 
-else
-$top_builddir/src/Quasar/quasar >/dev/null 2>&1
-fi
-if [ "$?" = 0 ] ; then
-   exit 1
-fi
-
-if [ $verbose = 1 ] ; then
 $top_builddir/src/Quasar/quasar -u
 else
 $top_builddir/src/Quasar/quasar -u >/dev/null 2>&1

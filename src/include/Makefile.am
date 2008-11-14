@@ -49,8 +49,7 @@ C_INSTALLED_FILES = $(subst pso,photon/pso,$(C_BASE_HEADER_FILES))
 CPP_HEADER_FILES = $(subst pso,$(top_srcdir)/src/include/photon/pso,$(CPP_BASE_HEADER_FILES))
 CPP_MAN_PAGES = $(addsuffix .3,$(subst pso,man3/pso,$(CPP_BASE_HEADER_FILES)))
 CPP_INSTALLED_FILES = $(subst pso,photon/pso,$(CPP_BASE_HEADER_FILES))
-CPP_DOXY_FILES_IN = $(addsuffix .in,$(subst pso,$(top_srcdir)/src/include/Doxygen/pso,$(CPP_BASE_HEADER_FILES)))
-CPP_DOXY_FILES = $(subst pso,Doxygen/pso,$(CPP_BASE_HEADER_FILES))
+CPP_DOXY_FILES = $(addsuffix .in,$(subst pso,$(top_srcdir)/src/include/Doxygen/pso,$(CPP_BASE_HEADER_FILES)))
 
 # Sadly, this list must be edited by hand (it will vary if functions are
 # added or removed from the C API).
@@ -152,7 +151,7 @@ EXTRA_DIST =              \
         Doxygen/pso_c.in  \
         $(C_MAN_PAGES)    \
         $(CPP_MAN_PAGES)  \
-        $(CPP_DOXY_FILES_IN) 
+        $(CPP_DOXY_FILES) 
 
 nobase_include_HEADERS =       \
         photon/photon          \
@@ -177,7 +176,7 @@ $(CPP_MAN_PAGES): $(CPP_INSTALLED_FILES) photon/photon $(CPP_DOXY_FILES)
 # not want to distribute (a header file for each error code, for each
 # data field in the data structures, etc.). All these files are links
 # to the "meat" we are keeping anyway!
-$(C_MAN_PAGES): $(C_HEADER_FILES) $(top_srcdir)/src/include/photon/photon.h Doxygen/pso_c
+$(C_MAN_PAGES): $(C_HEADER_FILES) $(top_srcdir)/src/include/photon/photon.h Doxygen/pso_c.in
 	doxygen Doxygen/pso_c
 	cp dummy/man/man3/pso*.3 man3/
 	cp dummy/man/man3/photon*.3 man3/
