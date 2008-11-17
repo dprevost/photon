@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Photon
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct FolderEntry
+    internal struct FolderEntry
     {
         int type;
         int status;
@@ -13,7 +13,7 @@ namespace Photon
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct ObjStatus
+    internal struct ObjStatus
     {
         /** The object type. */
         int type;
@@ -45,7 +45,7 @@ namespace Photon
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct Info
+    internal struct Info
     {
     }
 

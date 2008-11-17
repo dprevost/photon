@@ -15,5 +15,15 @@ namespace Photon
             string quasarAddress,
             int    protectionNeeded );
 
+        public void Init(string address, bool protectionNeeded)
+        {
+            int rc;
+            if (protectionNeeded) rc = psoInit(address, 1);
+            else rc = psoInit(address, 0);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException("Process::Init", rc));
+            }
+        }
     }
 }

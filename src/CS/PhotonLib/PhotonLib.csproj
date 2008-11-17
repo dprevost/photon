@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
+    <Compile Include="Exception.cs" />
     <Compile Include="FastMap.cs" />
     <Compile Include="FastMapEditor.cs" />
     <Compile Include="Folder.cs" />
