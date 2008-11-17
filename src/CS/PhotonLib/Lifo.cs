@@ -5,8 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    class Lifo
+    class Lifo: IDisposable
     {
+        // Track whether Dispose has been called.
+        private bool disposed = false;
+
+        private IntPtr handle;
+
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoClose(IntPtr objectHandle);
 
@@ -54,5 +59,30 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
+        public Lifo()
+        {
+            handle = (IntPtr)0;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called. 
+            if (!this.disposed)
+            {
+                psoLifoClose(handle);
+            }
+            disposed = true;
+        }
+
+        ~Lifo()      
+        {
+            Dispose(false);
+        }
     }
 }

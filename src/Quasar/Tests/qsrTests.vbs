@@ -79,7 +79,7 @@ if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
 end if
 
-exeName = progPath & "\" & "quasar.exe -u"
+exeName = progPath & "\" & "quasar.exe -z"
 if consoleMode then 
    WScript.Echo "Running " & exeName
    Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exeName & Chr(34))

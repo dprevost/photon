@@ -7,44 +7,73 @@ namespace Photon
 {
     public class PhotonException : System.Exception
     {
-        public PhotonException(string message) : base(message) { }
-
+        /*
+         * Declarations to access the photon C API.
+         */
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern string pson_ErrorMessage(int errcode);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoErrorMsg(
+            IntPtr sessionHandle,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder message,
+            IntPtr msgLengthInBytes);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoLastError(IntPtr sessionHandle);
+
+        private int theErrorCode;
+        public int ErrorCode() { return theErrorCode; }
+
+        /*
+         * Contructor. 
+         */
+        public PhotonException(string message, int errcode) : base(message) { theErrorCode = errcode; }
        
-        internal static string PrepareException(string functionName, int theErrorCode)
+        /*
+         * This static function uses the Photon API to extract the error message
+         * and pass it to the constructor.
+         */
+        internal static string PrepareException(string functionName, int errcode)
         {
-            string str = pson_ErrorMessage( theErrorCode );
+            string str = pson_ErrorMessage( errcode );
 
             if (str == null || str.Length == 0)
             {
-                str = "Cannot retrieve the error message - the error code is ";
-                str += theErrorCode;
+                str = functionName
+                    + " exception: Cannot retrieve the error message - the error code is "
+                    + errcode;
             }
             return str;
         }
 
-/*
- *      internal static string PrepareException( IntPtr sessionHandle, string functionName )
+        /*
+         * This static function uses the Photon API to extract the error message
+         * and pass it to the constructor.
+         */
+        internal static string PrepareException(IntPtr sessionHandle, string functionName)
         {
-            char s[1024];
-            int rc = 1;
-            ostringstream oss;
-   
-            rc = psoErrorMsg( sessionHandle, s, 1024 );
-            errcode = psoLastError( sessionHandle );
-            msg = functionName;
-            msg += " exception: ";
-            msg += s;
-   
-            if ( rc != 0 ) {
-                // We build our own message
-                oss << functionName << " exception: ";
-                oss << "Cannot retrieve the error message ";
-                msg = oss.str();
+            StringBuilder s = new StringBuilder(1024);
+            int rc = 1, errcode;
+            string msg = functionName + " exception: ";
+
+            rc = psoErrorMsg(sessionHandle, s, (IntPtr)1024);
+            if (rc == 0)
+            {
+                msg += " exception: ";
+                msg += s.ToString();
             }
+            else
+            {
+                errcode = psoLastError(sessionHandle);
+                msg = functionName
+                    + " exception: Cannot retrieve the error message - the error code is "
+                    + errcode;
+            }
+            
+            return msg;
         }
-*/
+
     }
 
 }

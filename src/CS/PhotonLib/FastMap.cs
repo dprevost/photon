@@ -5,8 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public class FastMap
+    public class FastMap: IDisposable
     {
+        // Track whether Dispose has been called.
+        private bool disposed = false;
+
+        private IntPtr handle;
+
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapClose(IntPtr objectHandle);
 
@@ -88,5 +93,29 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
+        public FastMap()
+        {
+            handle = (IntPtr)0;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called. 
+            if (!this.disposed)
+            {
+                psoFastMapClose(handle);
+            }
+            disposed = true;
+        }
+
+        ~FastMap()      
+        {
+            Dispose(false);
+        }
     }
 }

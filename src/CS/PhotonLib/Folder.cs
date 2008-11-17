@@ -5,8 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public class Folder
+    public class Folder: IDisposable
     {
+        // Track whether Dispose has been called.
+        private bool disposed = false;
+
+        private IntPtr handle;
+
         [DllImport("photon.dll", EntryPoint = "psoFolderClose", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoFolderClose( IntPtr objectHandle );
 
@@ -51,11 +56,30 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
-        private IntPtr handle;
-
         public Folder()
         {
             handle = (IntPtr)0;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called. 
+            if (!this.disposed)
+            {
+                psoFolderClose(handle);
+            }
+            disposed = true;
+        }
+
+        ~Folder()      
+        {
+            Dispose(false);
         }
     }
 }

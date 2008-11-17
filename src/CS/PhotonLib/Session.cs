@@ -5,8 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    class Session
+    class Session: IDisposable
     {
+        // Track whether Dispose has been called.
+        private bool disposed = false;
+
+        private IntPtr handle;
+
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoCommit(IntPtr sessionHandle);
 
@@ -26,7 +31,7 @@ namespace Photon
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoErrorMsg( 
             IntPtr sessionHandle,
-            string message,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder message,
             IntPtr msgLengthInBytes );
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -60,12 +65,30 @@ namespace Photon
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoRollback(IntPtr sessionHandle);
 
-        private IntPtr handle;
-
         public Session()
         {
             handle = (IntPtr)0;
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                psoExitSession(handle);
+            }
+            disposed = true;
+        }
+
+        ~Session()      
+        {
+            Dispose(false);
+        }
     }
 }

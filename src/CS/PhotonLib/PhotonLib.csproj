@@ -7,7 +7,7 @@
     <ProjectGuid>{BB9500D3-FF6D-4AC0-AAD3-516EABB0443E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
+    <RootNamespace>Photon</RootNamespace>
     <AssemblyName>PhotonLib</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

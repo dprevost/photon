@@ -5,8 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    class HashMap
+    class HashMap: IDisposable
     {
+        // Track whether Dispose has been called.
+        private bool disposed = false;
+
+        private IntPtr handle;
+
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoHashMapClose(IntPtr objectHandle);
 
@@ -78,5 +83,30 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
+        public HashMap()
+        {
+            handle = (IntPtr)0;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                psoHashMapClose(handle);
+            }
+            disposed = true;
+        }
+
+        ~HashMap()      
+        {
+            Dispose(false);
+        }
     }
 }

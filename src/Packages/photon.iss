@@ -4,7 +4,7 @@ AppName=Photon
 AppVerName=Photon Software version 0.4.0
 AppVersion=0.4.0
 AppSupportURL=http://photonsoftware.org/
-AppId=VDSF_V0
+AppId=PSO_V0
 InfoBeforeFile=COPYING
 DefaultDirName={pf}\Photonsoftware
 DefaultGroupName=Photon Software
@@ -94,6 +94,7 @@ Source: C:\Program Files\libxml2\bin\zlib1.dll; DestDir: {app}\bin; Components: 
 
 [Icons]
 ;Name: "{group}Quasar"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
+Name: {group}\Photon Shell; Filename: {app}\bin\psosh.exe; WorkingDir: {app}
 Name: {group}\Ref. Manual C API; Filename: {app}\Photon_C_API.chm
 Name: {group}\Ref. Manual C++ API; Filename: {app}\Photon_C++_API.chm
 Name: {group}\Uninstall Photon; Filename: {uninstallexe}
@@ -140,7 +141,7 @@ begin
       'UninstallString', strUninstall);
   end;
 
-  // Version 0.2 and beyond.
+  // Version 0.2 and 0.3.
   if RegKeyExists(HKEY_LOCAL_MACHINE,
     'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_V0_is1') then
   begin
@@ -149,12 +150,35 @@ begin
       'DisplayVersion', installedVersion);
 
 
-    if MsgBox('VDSF version ' + installedVersion + ' is already installed. Continue with the installation?',
+    if MsgBox('Photon version ' + installedVersion + ' is already installed. Continue with the installation?',
       mbConfirmation, MB_YESNO) = IDYES then
     begin
       removeOld := True;
       RegQueryStringValue(HKEY_LOCAL_MACHINE,
         'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\VDSF_V0_is1',
+        'UninstallString', strUninstall);
+    end
+    else
+    begin
+      Result := False;
+    end;
+  end;
+
+  // Version 0.4 and beyond.
+  if RegKeyExists(HKEY_LOCAL_MACHINE,
+    'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PSO_V0_is1') then
+  begin
+    RegQueryStringValue(HKEY_LOCAL_MACHINE,
+      'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PSO_V0_is1',
+      'DisplayVersion', installedVersion);
+
+
+    if MsgBox('Photon version ' + installedVersion + ' is already installed. Continue with the installation?',
+      mbConfirmation, MB_YESNO) = IDYES then
+    begin
+      removeOld := True;
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,
+        'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PSO_V0_is1',
         'UninstallString', strUninstall);
     end
     else
@@ -180,7 +204,7 @@ Name: libxml2; Description: The libxml2 library; Types: with_libxml2
 Name: with_libxml2; Description: Install everything including libxml2 (run-time)
 Name: without_libxml2; Description: Install everything except libxml2
 [Tasks]
-Name: setenv; Description: "Add Photon to your ""path"""; Flags: unchecked; Components: 
+Name: setenv; Description: "Add Photon to your ""path"""; Components: 
 [Run]
 Filename: {app}\bin\SetEnv.exe; Parameters: "-ua Path %""{app}\bin"""; Flags: runminimized skipifnotsilent; Components: ; Tasks: " setenv"
 [UninstallRun]
