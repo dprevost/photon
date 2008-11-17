@@ -11,6 +11,7 @@ namespace Photon
         private bool disposed = false;
 
         private IntPtr handle;
+        private IntPtr sessionHandle;
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueueClose(IntPtr objectHandle);
@@ -65,9 +66,10 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
-        public Queue()
+        public Queue(Session session)
         {
             handle = (IntPtr)0;
+            sessionHandle = session.handle;
         }
 
         public void Dispose()

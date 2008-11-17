@@ -10,7 +10,8 @@ namespace Photon
         // Track whether Dispose has been called.
         private bool disposed = false;
 
-        private IntPtr handle;
+        private IntPtr handle = (IntPtr)0;
+        private IntPtr sessionHandle = (IntPtr)0;
 
         [DllImport("photon.dll", EntryPoint = "psoFolderClose", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoFolderClose( IntPtr objectHandle );
@@ -56,9 +57,10 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
-        public Folder()
+        public Folder(Session session)
         {
             handle = (IntPtr)0;
+            sessionHandle = session.handle;
         }
 
         public void Dispose()

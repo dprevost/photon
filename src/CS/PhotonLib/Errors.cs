@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public class FastMapEditor: FastMap
+    public enum Errors
     {
-        public FastMapEditor(Session session) : base(session) {}
+        NULL_HANDLE = 3
     }
 }

@@ -11,6 +11,7 @@ namespace Photon
         private bool disposed = false;
 
         private IntPtr handle;
+        private IntPtr sessionHandle;
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoClose(IntPtr objectHandle);
@@ -59,9 +60,10 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
-        public Lifo()
+        public Lifo(Session session)
         {
             handle = (IntPtr)0;
+            sessionHandle = session.handle;
         }
 
         public void Dispose()

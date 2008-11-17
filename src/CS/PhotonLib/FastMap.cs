@@ -10,7 +10,8 @@ namespace Photon
         // Track whether Dispose has been called.
         private bool disposed = false;
 
-        private IntPtr handle;
+        protected IntPtr handle;
+        protected IntPtr sessionHandle;
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapClose(IntPtr objectHandle);
@@ -93,9 +94,10 @@ namespace Photon
             IntPtr        objectHandle,
             ref ObjStatus pStatus );
 
-        public FastMap()
+        public FastMap(Session session)
         {
             handle = (IntPtr)0;
+            sessionHandle = session.handle;
         }
         public void Dispose()
         {

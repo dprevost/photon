@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    class Session: IDisposable
+    public class Session: IDisposable
     {
         // Track whether Dispose has been called.
         private bool disposed = false;
 
-        private IntPtr handle;
+        internal IntPtr handle;
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoCommit(IntPtr sessionHandle);
