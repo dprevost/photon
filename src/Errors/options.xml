@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE options PUBLIC 
-     "-//Error Parser project//DTD Error Parser Options XML V1.0//EN"
-     "http://errorparser.sourceforge.net/xml/errorParserOptions10.dtd">
+<!DOCTYPE options SYSTEM 
+    "/usr/local/share/xml/errorParser/errorParserOptions11.dtd">
 
 <!-- 
    This xml file provides the options to the errorParser program.
@@ -18,7 +17,7 @@
    
 -->
 
-<options>
+<options version="1.1">
   <!-- The name of the enum. If absent, #define will be generated instead. -->
   <enumname> psoErrors</enumname>
   <!-- Name of the output dir for the error header file. If absent, the 
@@ -61,5 +60,13 @@
            differently by libc (printf()) and the iostream library (cout) -->         
   <err_msg percent="percent" />
   <selected_lang xml:lang="en" />
+    <!-- Optional section for creating an enum for C# -->
+  <csharp>
+    <!-- Full or relative path to the generated C# code -->
+    <cs_filename> ../CS/PhotonLib/Errors.cs </cs_filename>
+    <cs_enum> PhotonErrors </cs_enum>
+    <!-- The namespace is optional -->
+    <cs_namespace> Photon </cs_namespace>
+  </csharp>
 </options>
 
