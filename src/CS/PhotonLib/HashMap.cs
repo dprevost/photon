@@ -292,7 +292,7 @@ void HashMap::Insert( const void * key,
 
             if (sessionHandle == (IntPtr)0)
             {
-                rc = (int)Errors.NULL_HANDLE;
+                rc = (int)PhotonErrors.NULL_HANDLE;
                 throw new PhotonException(PhotonException.PrepareException("HashMap.Open", rc), rc);
             }
 
