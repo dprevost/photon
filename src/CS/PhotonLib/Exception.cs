@@ -34,7 +34,7 @@ namespace Photon
          * This static function uses the Photon API to extract the error message
          * and pass it to the constructor.
          */
-        internal static string PrepareException(string functionName, int errcode)
+        public static string PrepareException(string functionName, int errcode)
         {
             string str = pson_ErrorMessage( errcode );
 
@@ -51,7 +51,7 @@ namespace Photon
          * This static function uses the Photon API to extract the error message
          * and pass it to the constructor.
          */
-        internal static string PrepareException(IntPtr sessionHandle, string functionName)
+        public static string PrepareException(IntPtr sessionHandle, string functionName)
         {
             StringBuilder s = new StringBuilder(1024);
             int rc = 1, errcode;

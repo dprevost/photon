@@ -90,5 +90,9 @@ namespace Photon
         {
             Dispose(false);
         }
+
+        public void CreateObject()
+        {
+        }
     }
 }

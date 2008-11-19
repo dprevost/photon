@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Photon
 {
-    public class ObjectDefinition
+    public partial class ObjectDefinition
     {
     }
 }

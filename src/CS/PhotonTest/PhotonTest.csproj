@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BB9500D3-FF6D-4AC0-AAD3-516EABB0443E}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{E81094B3-3A98-4691-A382-1F5B909F483D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Photon</RootNamespace>
-    <AssemblyName>PhotonLib</AssemblyName>
+    <RootNamespace>PhotonTest</RootNamespace>
+    <AssemblyName>PhotonTest</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,26 +28,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PhotonLib, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\PhotonLib\bin\Release\PhotonLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Errors.cs" />
-    <Compile Include="Common.cs" />
-    <Compile Include="Exception.cs" />
-    <Compile Include="FastMap.cs" />
-    <Compile Include="FastMapEditor.cs" />
-    <Compile Include="Folder.cs" />
-    <Compile Include="HashMap.cs" />
-    <Compile Include="Lifo.cs" />
-    <Compile Include="ObjectDefinition.cs" />
-    <Compile Include="PrivateFolder.cs" />
-    <Compile Include="PrivateObjectDefinition.cs" />
-    <Compile Include="Process.cs" />
+    <Compile Include="MyHash.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queue.cs" />
-    <Compile Include="Session.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

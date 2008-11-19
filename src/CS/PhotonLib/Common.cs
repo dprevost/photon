@@ -3,6 +3,50 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
+    /**
+ * The object type as seen from the API
+ */
+    public enum ObjectType
+    {
+        FOLDER = 1,
+        HASH_MAP = 2,
+        LIFO = 3,  /* A LIFO queue aka a stack */
+        FAST_MAP = 4,  /* A read-only hash map */
+        QUEUE = 5,  /* A FIFO queue */
+    }
+    // Photon supported data types.
+
+    enum psoFieldType
+    {
+        PSO_INTEGER = 1,
+        PSO_BINARY,
+        PSO_STRING,
+        /** The decimal type should be mapped to an array of bytes of length
+         *  precision + 2 (optional sign and the decimal separator).
+         */
+        PSO_DECIMAL,
+        /** The boolean type should be mapped to a single byte in a C struct. */
+        PSO_BOOLEAN,
+        /** Only valid for the last field of the data definition */
+        PSO_VAR_BINARY,
+        /** Only valid for the last field of the data definition */
+        PSO_VAR_STRING
+    }
+
+    /**
+     * Photon supported data types for keys.
+     */
+    enum psoKeyType
+    {
+        PSO_KEY_INTEGER = 101,
+        PSO_KEY_BINARY,
+        PSO_KEY_STRING,
+        /** Only valid for the last field of the data definition */
+        PSO_KEY_VAR_BINARY,
+        /** Only valid for the last field of the data definition */
+        PSO_KEY_VAR_STRING
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct FolderEntry
     {

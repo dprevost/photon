@@ -26,7 +26,7 @@ using System;
 
 namespace Photon
 {
-    enum PhotonErrors
+    public enum PhotonErrors
     {
         // No error...
         OK = 0,
