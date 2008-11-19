@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    class HashMap: IDisposable
+    public class HashMap : IDisposable
     {
         // Track whether Dispose has been called.
         private bool disposed = false;
 
-        private IntPtr handle;
-        private IntPtr sessionHandle;
+        protected IntPtr handle;
+        protected IntPtr sessionHandle;
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -19,72 +19,72 @@ namespace Photon
         private static extern int psoHashMapClose(IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapDefinition( 
-            IntPtr               objectHandle, 
-            ref ObjectDefinition definition );
+        private static extern int psoHashMapDefinition(
+            IntPtr objectHandle,
+            ref ObjectDefinition definition);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapDelete( 
+        protected static extern int psoHashMapDelete(
+            IntPtr objectHandle,
+            IntPtr key,
+            IntPtr keyLength);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoHashMapGet(
             IntPtr objectHandle,
             byte[] key,
-            IntPtr keyLength );
+            IntPtr keyLength,
+            byte[] buffer,
+            IntPtr bufferLength,
+            ref IntPtr returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapGet( 
-            IntPtr     objectHandle,
-            byte[]     key,
-            IntPtr     keyLength,
-            byte[]     buffer,
-            IntPtr     bufferLength,
-            ref IntPtr returnedLength );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapGetFirst( 
-            IntPtr     objectHandle,
-            byte[]     key,
-            IntPtr     keyLength,
-            byte[]     buffer,
-            IntPtr     bufferLength,
+        private static extern int psoHashMapGetFirst(
+            IntPtr objectHandle,
+            byte[] key,
+            IntPtr keyLength,
+            byte[] buffer,
+            IntPtr bufferLength,
             ref IntPtr retKeyLength,
-            ref IntPtr retDataLength );
+            ref IntPtr retDataLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapGetNext( 
-            IntPtr     objectHandle,
-            byte[]     key,
-            IntPtr     keyLength,
-            byte[]     buffer,
-            IntPtr     bufferLength,
+        private static extern int psoHashMapGetNext(
+            IntPtr objectHandle,
+            byte[] key,
+            IntPtr keyLength,
+            byte[] buffer,
+            IntPtr bufferLength,
             ref IntPtr retKeyLength,
-            ref IntPtr retDataLength );
+            ref IntPtr retDataLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapInsert( 
-            IntPtr  objectHandle,
-            byte[]  key,
-            IntPtr  keyLength,
-            byte[]  data,
-            IntPtr  dataLength );
+        protected static extern int psoHashMapInsert(
+            IntPtr objectHandle,
+            IntPtr key,
+            IntPtr keyLength,
+            IntPtr data,
+            IntPtr dataLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapOpen( 
-            IntPtr     sessionHandle,
-            string     hashMapName,
-            IntPtr     nameLengthInBytes,
-            ref IntPtr objectHandle );
+        private static extern int psoHashMapOpen(
+            IntPtr sessionHandle,
+            string hashMapName,
+            IntPtr nameLengthInBytes,
+            ref IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapReplace( 
-            IntPtr  objectHandle,
-            byte[]  key,
-            IntPtr  keyLength,
-            byte[]  data,
-            IntPtr  dataLength );
+        protected static extern int psoHashMapReplace(
+            IntPtr objectHandle,
+            IntPtr key,
+            IntPtr keyLength,
+            IntPtr data,
+            IntPtr dataLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapStatus( 
-            IntPtr        objectHandle,
-            ref ObjStatus pStatus );
+        private static extern int psoHashMapStatus(
+            IntPtr objectHandle,
+            ref ObjStatus pStatus);
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -117,7 +117,7 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        ~HashMap()      
+        ~HashMap()
         {
             Dispose(false);
         }
@@ -177,112 +177,112 @@ void HashMap::Delete( const void * key,
 }
          */
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-/*
-void HashMap::Get( const void * key,
-                   size_t       keyLength,
-                   void       * buffer,
-                   size_t       bufferLength,
-                   size_t     & returnedLength )
-{
-   int rc;
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        /*
+        void HashMap::Get( const void * key,
+                           size_t       keyLength,
+                           void       * buffer,
+                           size_t       bufferLength,
+                           size_t     & returnedLength )
+        {
+           int rc;
    
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::Get", PSO_NULL_HANDLE );
-   }
+           if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+              throw pso::Exception( "HashMap::Get", PSO_NULL_HANDLE );
+           }
 
-   rc = psoHashMapGet( m_objectHandle,
-                       key,
-                       keyLength,
-                       buffer,
-                       bufferLength,
-                       &returnedLength );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Get" );
-   }
-}
-*/
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-/*
-int HashMap::GetFirst( void   * key,
-                       size_t   keyLength,
-                       void   * buffer,
-                       size_t   bufferLength,
-                       size_t & retKeyLength,
-                       size_t & retDataLength )
-{
-   int rc;
+           rc = psoHashMapGet( m_objectHandle,
+                               key,
+                               keyLength,
+                               buffer,
+                               bufferLength,
+                               &returnedLength );
+           if ( rc != 0 ) {
+              throw pso::Exception( m_sessionHandle, "HashMap::Get" );
+           }
+        }
+        */
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        /*
+        int HashMap::GetFirst( void   * key,
+                               size_t   keyLength,
+                               void   * buffer,
+                               size_t   bufferLength,
+                               size_t & retKeyLength,
+                               size_t & retDataLength )
+        {
+           int rc;
    
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::GetFirst", PSO_NULL_HANDLE );
-   }
+           if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+              throw pso::Exception( "HashMap::GetFirst", PSO_NULL_HANDLE );
+           }
 
-   rc = psoHashMapGetFirst( m_objectHandle,
-                            key,
-                            keyLength,
-                            buffer,
-                            bufferLength,
-                            &retKeyLength,
-                            &retDataLength );
-   if ( rc != 0 && rc != PSO_IS_EMPTY ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::GetFirst" );
-   }
+           rc = psoHashMapGetFirst( m_objectHandle,
+                                    key,
+                                    keyLength,
+                                    buffer,
+                                    bufferLength,
+                                    &retKeyLength,
+                                    &retDataLength );
+           if ( rc != 0 && rc != PSO_IS_EMPTY ) {
+              throw pso::Exception( m_sessionHandle, "HashMap::GetFirst" );
+           }
    
-   return rc;
-}
-*/
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-/*
-int HashMap::GetNext( void   * key,
-                      size_t   keyLength,
-                      void   * buffer,
-                      size_t   bufferLength,
-                      size_t & retKeyLength,
-                      size_t & retDataLength )
-{
-   int rc;
+           return rc;
+        }
+        */
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        /*
+        int HashMap::GetNext( void   * key,
+                              size_t   keyLength,
+                              void   * buffer,
+                              size_t   bufferLength,
+                              size_t & retKeyLength,
+                              size_t & retDataLength )
+        {
+           int rc;
    
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::GetNext", PSO_NULL_HANDLE );
-   }
+           if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+              throw pso::Exception( "HashMap::GetNext", PSO_NULL_HANDLE );
+           }
 
-   rc = psoHashMapGetNext( m_objectHandle,
-                           key,
-                           keyLength,
-                           buffer,
-                           bufferLength,
-                           &retKeyLength,
-                           &retDataLength );
-   if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::GetNext" );
-   }
+           rc = psoHashMapGetNext( m_objectHandle,
+                                   key,
+                                   keyLength,
+                                   buffer,
+                                   bufferLength,
+                                   &retKeyLength,
+                                   &retDataLength );
+           if ( rc != 0 && rc != PSO_REACHED_THE_END ) {
+              throw pso::Exception( m_sessionHandle, "HashMap::GetNext" );
+           }
 
-   return rc;
-}
-*/
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-/*
-void HashMap::Insert( const void * key,
-                      size_t       keyLength,
-                      const void * data,
-                      size_t       dataLength )
-{
-   int rc;
+           return rc;
+        }
+        */
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        /*
+        void HashMap::Insert( const void * key,
+                              size_t       keyLength,
+                              const void * data,
+                              size_t       dataLength )
+        {
+           int rc;
    
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::Insert", PSO_NULL_HANDLE );
-   }
+           if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+              throw pso::Exception( "HashMap::Insert", PSO_NULL_HANDLE );
+           }
 
-   rc = psoHashMapInsert( m_objectHandle,
-                          key,
-                          keyLength,
-                          data,
-                          dataLength );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Insert" );
-   }
-}
-*/
+           rc = psoHashMapInsert( m_objectHandle,
+                                  key,
+                                  keyLength,
+                                  data,
+                                  dataLength );
+           if ( rc != 0 ) {
+              throw pso::Exception( m_sessionHandle, "HashMap::Insert" );
+           }
+        }
+        */
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -306,45 +306,47 @@ void HashMap::Insert( const void * key,
             }
         }
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-/*
-void HashMap::Replace( const void * key,
-                       size_t       keyLength,
-                       const void * data,
-                       size_t       dataLength )
-{
-   int rc;
+        /*
+        void HashMap::Replace( const void * key,
+                               size_t       keyLength,
+                               const void * data,
+                               size_t       dataLength )
+        {
+           int rc;
    
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::Replace", PSO_NULL_HANDLE );
-   }
+           if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+              throw pso::Exception( "HashMap::Replace", PSO_NULL_HANDLE );
+           }
 
-   rc = psoHashMapReplace( m_objectHandle,
-                           key,
-                           keyLength,
-                           data,
-                           dataLength );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Replace" );
-   }
-}
-*/
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-/*
-void HashMap::Status( psoObjStatus & status )
-{
-   int rc;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::Status", PSO_NULL_HANDLE );
-   }
+           rc = psoHashMapReplace( m_objectHandle,
+                                   key,
+                                   keyLength,
+                                   data,
+                                   dataLength );
+           if ( rc != 0 ) {
+              throw pso::Exception( m_sessionHandle, "HashMap::Replace" );
+           }
+        }
+        */
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   rc = psoHashMapStatus( m_objectHandle, &status );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Status" );
-   }
-}
-*/
+        public void Status(ref ObjStatus status)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("HashMap.Status", rc), rc);
+            }
+
+            rc = psoHashMapStatus(handle, ref status);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "HashMap.Status"), rc);
+            }
+        }
     }
 }

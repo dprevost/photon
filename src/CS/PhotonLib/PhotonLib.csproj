@@ -41,6 +41,7 @@
     <Compile Include="Folder.cs" />
     <Compile Include="HashMap.cs" />
     <Compile Include="Lifo.cs" />
+    <Compile Include="MyHash.cs" />
     <Compile Include="ObjectDefinition.cs" />
     <Compile Include="Process.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

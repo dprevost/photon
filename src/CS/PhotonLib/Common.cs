@@ -13,7 +13,7 @@ namespace Photon
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ObjStatus
+    public struct ObjStatus
     {
         /** The object type. */
         int type;

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    class Lifo: IDisposable
+    public class Lifo: IDisposable
     {
         // Track whether Dispose has been called.
         private bool disposed = false;
