@@ -15,8 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Quasar/Acceptor.h"
 #include "Quasar/Quasar.h"
+#include "Quasar/Acceptor.h"
 
 #if ! defined(WIN32)
 #  include <sys/socket.h>

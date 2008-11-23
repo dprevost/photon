@@ -15,6 +15,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
@@ -88,12 +90,20 @@ bool qsrReadConfig( const char          * cfgname,
       isPresent[i] = 0;
    }
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   fd = _open( cfgname, O_RDONLY );
+#else
    fd = open( cfgname, O_RDONLY );
+#endif
    if ( fd == -1 ) {
       psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       return false;
    }
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   i = _read( fd, buf, 10000 );
+#else
    i = read( fd, buf, 10000 );
+#endif
    if ( i < 1 ) {
       if ( i == -1 ) psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
       return false;

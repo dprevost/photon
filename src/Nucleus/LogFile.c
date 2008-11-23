@@ -45,9 +45,15 @@ psoErrors psonInitLogFile( psonLogFile*      logFile,
             (unsigned long)pSession,
             PSO_LOG_EXT );
    
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   logFile->handle = _open( logFile->filename, 
+                            O_RDWR | O_CREAT | O_APPEND , 
+                            0755 );
+#else
    logFile->handle = open( logFile->filename, 
                            O_RDWR | O_CREAT | O_APPEND , 
                            0755 );
+#endif
    if ( logFile->handle == -1 ) {
       psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error opening log = %d\n", errno );
@@ -99,7 +105,11 @@ psoErrors psonLogTransaction( psonLogFile*      logFile,
    memset( msg, '\0', 80 );
    sprintf( msg, "Committed  %d %s", transactionId, timeBuf );
    
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   err = _write( logFile->handle, msg, strlen(msg) );
+#else
    err = write( logFile->handle, msg, strlen(msg) );
+#endif
    if ( err <= 0 ) {
       psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
 //      fprintf( stderr, "Error write log = %d\n", errno );
@@ -128,9 +138,15 @@ void psonCloseLogFile( psonLogFile*     logFile,
    PSO_INV_CONDITION( logFile->initialized == PSON_LOGFILE_SIGNATURE );
    
    if ( logFile->handle != -1 ) {
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+      _close( logFile->handle );
+      logFile->handle = -1;
+      err = _unlink( logFile->filename );
+#else
       close( logFile->handle );
       logFile->handle = -1;
       err = unlink( logFile->filename );
+#endif
       if ( err != 0 ) fprintf( stderr, "Unlink error %d\n", errno );
    }
 

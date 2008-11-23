@@ -21,10 +21,6 @@
  *
  */
 
-#if defined WIN32
-#  define FD_SETSIZE 100
-#endif
-
 #ifndef PSOC_COMMON_H
 #define PSOC_COMMON_H
 
@@ -33,6 +29,10 @@
 #endif
 #if defined WIN32
 #  include "config-win32.h"
+#  ifndef FD_SETSIZE
+#    define FD_SETSIZE 100
+#  endif
+#  include <Winsock2.h>
    /* 
     * The pragma is to hide a warning in Microsoft include files
     * with VC++ 6. Don't know about other versions yet.

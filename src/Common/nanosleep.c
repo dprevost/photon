@@ -19,10 +19,10 @@
 #if defined WIN32
 #  include "config-win32.h"
 #endif
-#include "Common.h"
 #if defined WIN32
 #  include <winsock2.h>
 #endif
+#include "Common.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

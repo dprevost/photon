@@ -13,6 +13,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#define BULDING_ERROR_MESSAGE
+
 #include "Nucleus/Engine.h"
 #include "Nucleus/InitEngine.h"
 #include "Common/ErrorHandler.h"

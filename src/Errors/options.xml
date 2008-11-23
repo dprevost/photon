@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE options SYSTEM 
-    "/usr/local/share/xml/errorParser/errorParserOptions11.dtd">
+<!DOCTYPE options PUBLIC
+    "-//Error Parser project//DTD Error Parser Options XML V1.1//EN"
+    "http://photonsoftware.org/xml/ep/errorParserOptions11.dtd">
 
 <!-- 
    This xml file provides the options to the errorParser program.

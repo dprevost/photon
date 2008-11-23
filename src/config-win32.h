@@ -19,6 +19,8 @@
 #pragma warning(disable:4514) /* unreferenced inline function has been removed */
 #pragma warning(disable:4710) /* inline function was not inlined */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #define _WIN32_WINNT 0x0500
 
 /*
@@ -206,7 +208,9 @@ typedef unsigned __int64 uint64_t;
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the `strnlen' function. */
-/* #define HAVE_STRNLEN 1 */
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+#  define HAVE_STRNLEN 1
+#endif
 
 /* Define if your system's sys/sem.h file defines struct semun */
 /* #undef HAVE_STRUCT_SEMUN */

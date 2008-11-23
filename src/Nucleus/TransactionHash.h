@@ -299,7 +299,7 @@ bool txHashDelete( psonTx        * pTx,
 
       curr = rowNumber;
 
-      while ( true ) {
+	  for (;;) { // while ( true ) {
          pArray[curr] = NULL;
          hole = curr;
 

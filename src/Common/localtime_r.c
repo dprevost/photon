@@ -245,8 +245,8 @@ timesub( const time_t * const		timep,
 			break;
 		}
 	}
-	days = *timep / SECSPERDAY;
-	rem = *timep % SECSPERDAY;
+	days = (long)*timep / SECSPERDAY;
+	rem  = (long)*timep % SECSPERDAY;
 #ifdef mc68k
 	if (*timep == 0x80000000) {
 		/*

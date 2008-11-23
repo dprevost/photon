@@ -20,10 +20,10 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Common/Common.h"
 #if defined (WIN32)
 #  include <Winsock2.h>
 #endif
+#include "Common/Common.h"
 
 #include "API/QuasarCommon.h"
 #include "Common/ErrorHandler.h"

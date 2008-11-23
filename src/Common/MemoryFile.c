@@ -215,9 +215,17 @@ bool psocCopyBackstore( psocMemoryFile   * pMem,
    buffer = malloc( length );
    if ( buffer == NULL ) goto error;
    
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   fdIn = _open( pMem->name, O_RDONLY );
+#else
    fdIn = open( pMem->name, O_RDONLY );
+#endif
    if ( fdIn < 0 ) goto error;
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   fdOut = _open( bckName, O_WRONLY | O_CREAT | O_TRUNC, filePerms );
+#else
    fdOut = open( bckName, O_WRONLY | O_CREAT | O_TRUNC, filePerms );
+#endif
    if ( fdOut < 0 ) goto error;
    
    /* 
@@ -226,14 +234,22 @@ bool psocCopyBackstore( psocMemoryFile   * pMem,
     * pipe, yes, a file?). But...
     */
    while ( leftToCopy > 0 ) {
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+      i = _read( fdIn, buffer, length );
+#else
       i = read( fdIn, buffer, length );
+#endif
       if ( i < 0 ) goto error;
       if ( i == 0 ) break;
       leftToCopy -= i;
       if ( leftToCopy < length ) length = leftToCopy;
       k = 0;
       do {
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+         j = _write( fdOut, &buffer[k], i );
+#else
          j = write( fdOut, &buffer[k], i );
+#endif
          if ( j < 0 ) goto error;
          i -= j;
          k += j;
@@ -241,15 +257,25 @@ bool psocCopyBackstore( psocMemoryFile   * pMem,
    }
    
    free( buffer );
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   _close( fdIn );
+   _close( fdOut );
+#else
    close( fdIn );
    close( fdOut );
+#endif
 
    return true;
    
 error:
    if ( buffer ) free( buffer );
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   if ( fdIn  > -1 ) _close( fdIn );
+   if ( fdOut > -1 ) _close( fdOut );
+#else
    if ( fdIn  > -1 ) close( fdIn );
    if ( fdOut > -1 ) close( fdOut );
+#endif
 
    psocSetError( pError, PSOC_ERRNO_HANDLE, errno );
    
@@ -297,12 +323,20 @@ bool psocCreateBackstore( psocMemoryFile   * pMem,
    PSO_PRE_CONDITION( ( filePerms & 0600 ) == 0600 );
    
    /* Create the file with the right permissions */
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   fd = _creat( pMem->name, filePerms );
+#else
    fd = creat( pMem->name, filePerms );
+#endif
    if ( fd < 0 ) {
       psocSetError( pError, PSOC_ERRNO_HANDLE, errno );      
       return false;
    }
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+   _close( fd );
+#else
    close( fd );
+#endif
 
    /**
     * \todo Replace the fseek with lseek (the call to creat to set the
