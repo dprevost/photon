@@ -324,7 +324,7 @@ bool psocCreateBackstore( psocMemoryFile   * pMem,
    
    /* Create the file with the right permissions */
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
-   fd = _creat( pMem->name, filePerms );
+   fd = _creat( pMem->name, _S_IREAD | _S_IWRITE );
 #else
    fd = creat( pMem->name, filePerms );
 #endif
