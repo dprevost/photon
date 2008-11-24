@@ -27,11 +27,11 @@ CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS=kernel32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\photonNucleus.dll" /implib:"$(OUTDIR_RELEASE)\photonNucleus.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\photonNucleus.dll"   /implib:"$(OUTDIR_DEBUG)\photonNucleus.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\photonNucleus.dll" /implib:"$(OUTDIR_RELEASE)\photonNucleus.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\photonNucleus.dll"   /implib:"$(OUTDIR_DEBUG)\photonNucleus.lib"   /libpath:"..\Debug"
 
-CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /Fo"$(INTDIR_RELEASE)\\"     /c 
-CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I "..\Common" /I "..\include" /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
+CFLAGS_DEBUG   = /Od /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd /Fp".\Debug/Nucleus.pch" /Fo".\Debug/" /Fd".\Debug/" /W4 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc /MD /Gy /Fp".\Release/Nucleus.pch" /Fo".\Release/" /Fd".\Release/" /W4 /nologo /c /TC /errorReport:prompt
 
 OBJS_RELEASE=                                   \
         "$(INTDIR_RELEASE)\BlockGroup.obj"      \
@@ -74,6 +74,7 @@ all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonNucleus.dll $(OUTDIR_DEBUG) $(OUT
    -del ..\Release\photonNucleus.dll
 	-del ..\Release\photonNucleus.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
+	mt.exe -manifest $(OUTDIR_RELEASE)\photonNucleus.dll.manifest -outputresource:$(OUTDIR_RELEASE)\photonNucleus.dll;2
    copy Release\photonNucleus.dll ..\Release
 	copy Release\photonNucleus.lib ..\Release
 
@@ -81,6 +82,7 @@ all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonNucleus.dll $(OUTDIR_DEBUG) $(OUT
    -del ..\Debug\photonNucleus.dll
 	-del ..\Debug\photonNucleus.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
+	mt.exe -manifest $(OUTDIR_DEBUG)\photonNucleus.dll.manifest -outputresource:$(OUTDIR_DEBUG)\photonNucleus.dll;2
    copy debug\photonNucleus.dll ..\Debug
 	copy debug\photonNucleus.lib ..\Debug
 

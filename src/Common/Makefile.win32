@@ -25,13 +25,13 @@ INTDIR_DEBUG   = .\Debug
 
 CLEANFILES = *~ Common.plg Common.dep vc60.idb vc60.pdb Common.mak Common.ncb
 
-W32_SYS_LIBS=kernel32.lib Advapi32.lib ws2_32.lib
+W32_SYS_LIBS=kernel32.lib advapi32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no         /machine:I386 /out:"$(OUTDIR_RELEASE)\photonCommon.dll" /implib:"$(OUTDIR_RELEASE)\photonCommon.lib"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:yes /debug /machine:I386 /out:"$(OUTDIR_DEBUG)\photonCommon.dll"   /implib:"$(OUTDIR_DEBUG)\photonCommon.lib"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\photonCommon.dll" /implib:"$(OUTDIR_RELEASE)\photonCommon.lib"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\photonCommon.dll"   /implib:"$(OUTDIR_DEBUG)\photonCommon.lib"
 
-CFLAGS_RELEASE=/nologo /MD  /W4 /O2     /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /Fo"$(INTDIR_RELEASE)\\"     /c 
-CFLAGS_DEBUG  =/nologo /MDd /W4 /ZI /Od /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /Fo"$(INTDIR_DEBUG)\\"   /GZ /c 
+CFLAGS_DEBUG   = /Od      /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd     /Fp".\Debug/Common.pch"   /Fo".\Debug/"   /Fd".\Debug/" /FR".\Debug\\" /W4 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc   /MD  /Gy /Fp".\Release/Common.pch" /Fo".\Release/" /Fd".\Release/" /W4 /nologo /c /TC /errorReport:prompt
 
 OBJS_RELEASE=                                \
         "$(INTDIR_RELEASE)\DirAccess.obj"    \
@@ -64,6 +64,7 @@ all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonCommon.dll $(OUTDIR_DEBUG) $(OUTD
    -del ..\Release\photonCommon.dll
 	-del ..\Release\photonCommon.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
+	mt.exe -manifest $(OUTDIR_RELEASE)\photonCommon.dll.manifest -outputresource:$(OUTDIR_RELEASE)\photonCommon.dll;2
    copy Release\photonCommon.dll ..\Release\photonCommon.dll
 	copy Release\photonCommon.lib ..\Release\photonCommon.lib
 
@@ -71,6 +72,7 @@ all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonCommon.dll $(OUTDIR_DEBUG) $(OUTD
    -del ..\Debug\photonCommon.dll
 	-del ..\Debug\photonCommon.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
+	mt.exe -manifest $(OUTDIR_DEBUG)\photonCommon.dll.manifest -outputresource:$(OUTDIR_DEBUG)\photonCommon.dll;2
    copy debug\photonCommon.dll ..\Debug\photonCommon.dll
 	copy debug\photonCommon.lib ..\Debug\photonCommon.lib
 

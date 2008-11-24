@@ -20,18 +20,16 @@ VBS_VERBOSE=
 CLEANFILES = *~  vc60.pdb
 
 W32_SYS_LIBS = kernel32.lib ws2_32.lib
-LDD_FLAGS = $(W32_SYS_LIBS)     photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug" 
+LDD_FLAGS       = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release" 
+LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug" 
 
 OUTDIR=.\Release
 INTDIR=.\Release
 OUTDIR_DEBUG=.\Debug
 INTDIR_DEBUG=.\Debug
 
-#CFLAGS_DEBUG=   /nologo /MDd /W4 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-#CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
-CFLAGS_RELEASE= /O2 /Ob1 /I "..\..\.." /I "..\..\..\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MD  /Gy  /Fo"$(INTDIR)\\"       /W4 /nologo     /TC /errorReport:prompt
-CFLAGS_DEBUG  = /Od      /I "..\..\.." /I "..\..\..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MDd      /Fo"$(INTDIR_DEBUG)\\" /W4 /nologo /ZI /TC /errorReport:prompt
+CFLAGS_RELEASE= /O2 /Ob1 /I "..\..\.." /I "..\..\..\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MD  /Gy  /Fo"$(INTDIR)\\"       /W4 /nologo /TC /errorReport:prompt
+CFLAGS_DEBUG  = /Od      /I "..\..\.." /I "..\..\..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MDd      /Fo"$(INTDIR_DEBUG)\\" /W4 /nologo /TC /errorReport:prompt
 
 .c{$(OUTDIR)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"

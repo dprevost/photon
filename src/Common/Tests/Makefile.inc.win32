@@ -20,9 +20,9 @@ VBS_VERBOSE=
 
 CLEANFILES = *~ 
 
-W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-LDD_FLAGS = $(W32_SYS_LIBS) photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../../Debug" 
+W32_SYS_LIBS=kernel32.lib advapi32.lib
+LDD_FLAGS       = $(W32_SYS_LIBS) photonCommon.lib /nologo /incremental:no /subsystem:console /machine:I386 /libpath:"../../../Release" 
+LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photonCommon.lib /nologo /incremental:no /subsystem:console /machine:I386 /libpath:"../../../Debug" 
 
 OUTDIR=.\Release
 INTDIR=.\Release
