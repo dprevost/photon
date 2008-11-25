@@ -104,7 +104,7 @@ bool psonMapCopy( psonMap            * pOldMap,
 
 bool psonMapDelete( psonMap            * pHashMap,
                     const void         * pKey,
-                    size_t               keyLength, 
+                    uint32_t             keyLength, 
                     psonSessionContext * pContext )
 {
    bool found;
@@ -182,9 +182,9 @@ void psonMapFini( psonMap        * pHashMap,
 
 bool psonMapGet( psonMap            * pHashMap,
                  const void         * pKey,
-                 size_t               keyLength, 
+                 uint32_t             keyLength, 
                  psonHashItem      ** ppHashItem,
-                 size_t               bufferLength,
+                 uint32_t             bufferLength,
                  psonSessionContext * pContext )
 {
    psonHashItem* pHashItem = NULL;
@@ -255,8 +255,8 @@ the_exit:
 
 bool psonMapGetFirst( psonMap            * pHashMap,
                       psonFashMapItem    * pItem,
-                      size_t               keyLength,
-                      size_t               bufferLength,
+                      uint32_t             keyLength,
+                      uint32_t             bufferLength,
                       psonSessionContext * pContext )
 {
    psonHashItem * pHashItem = NULL;
@@ -310,8 +310,8 @@ bool psonMapGetFirst( psonMap            * pHashMap,
 
 bool psonMapGetNext( psonMap            * pHashMap,
                      psonFashMapItem    * pItem,
-                     size_t               keyLength,
-                     size_t               bufferLength,
+                     uint32_t             keyLength,
+                     uint32_t             bufferLength,
                      psonSessionContext * pContext )
 {
    psonHashItem * pHashItem = NULL;
@@ -381,7 +381,7 @@ bool psonMapInit( psonMap             * pHashMap,
                   size_t                numberOfBlocks,
                   size_t                expectedNumOfItems,
                   psonTxStatus        * pTxStatus,
-                  size_t                origNameLength,
+                  uint32_t              origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
                   psoObjectDefinition * pDefinition,
@@ -477,9 +477,9 @@ bool psonMapInit( psonMap             * pHashMap,
 
 bool psonMapInsert( psonMap            * pHashMap,
                     const void         * pKey,
-                    size_t               keyLength, 
+                    uint32_t             keyLength, 
                     const void         * pItem,
-                    size_t               itemLength,
+                    uint32_t             itemLength,
                     psonSessionContext * pContext )
 {
    psoErrors errcode;
@@ -568,9 +568,9 @@ void psonMapReleaseNoLock( psonMap            * pHashMap,
 
 bool psonMapReplace( psonMap            * pHashMap,
                      const void         * pKey,
-                     size_t               keyLength, 
+                     uint32_t             keyLength, 
                      const void         * pData,
-                     size_t               dataLength,
+                     uint32_t             dataLength,
                      psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;

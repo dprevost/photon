@@ -137,8 +137,8 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
 
 int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       void       * buffer,
-                      size_t       bufferLength,
-                      size_t     * returnedLength )
+                      uint32_t     bufferLength,
+                      uint32_t   * returnedLength )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -215,8 +215,8 @@ error_handler:
 
 int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      void       * buffer,
-                     size_t       bufferLength,
-                     size_t     * returnedLength )
+                     uint32_t     bufferLength,
+                     uint32_t   * returnedLength )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -287,7 +287,7 @@ error_handler:
 
 int psoQueueOpen( PSO_HANDLE   sessionHandle,
                   const char * queueName,
-                  size_t       nameLengthInBytes,
+                  uint32_t     nameLengthInBytes,
                   PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
@@ -352,8 +352,8 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
 
 int psoQueuePop( PSO_HANDLE   objectHandle,
                  void       * buffer,
-                 size_t       bufferLength,
-                 size_t     * returnedLength )
+                 uint32_t     bufferLength,
+                 uint32_t   * returnedLength )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -429,7 +429,7 @@ error_handler:
 
 int psoQueuePush( PSO_HANDLE   objectHandle,
                   const void * data,
-                  size_t       dataLength )
+                  uint32_t     dataLength )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -490,7 +490,7 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
 
 int psoQueuePushNow( PSO_HANDLE   objectHandle,
                      const void * data,
-                     size_t       dataLength )
+                     uint32_t     dataLength )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -608,7 +608,7 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaQueueFirst( psoaQueue     * pQueue,
-                   psoaDataEntry * pEntry )
+                    psoaDataEntry * pEntry )
 {
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
@@ -644,7 +644,7 @@ int psoaQueueFirst( psoaQueue     * pQueue,
    ok = psonQueueGet( pMemQueue,
                       PSO_FIRST,
                       &pQueue->iterator,
-                      (size_t) -1,
+                      (uint32_t) -1,
                       &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
@@ -675,7 +675,7 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaQueueNext( psoaQueue     * pQueue,
-                  psoaDataEntry * pEntry )
+                   psoaDataEntry * pEntry )
 {
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
@@ -701,7 +701,7 @@ int psoaQueueNext( psoaQueue     * pQueue,
    ok = psonQueueGet( pMemQueue,
                       PSO_NEXT,
                       &pQueue->iterator,
-                      (size_t) -1,
+                      (uint32_t) -1,
                       &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
@@ -732,7 +732,7 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaQueueRemove( psoaQueue     * pQueue,
-                    psoaDataEntry * pEntry )
+                     psoaDataEntry * pEntry )
 {
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
@@ -768,7 +768,7 @@ int psoaQueueRemove( psoaQueue     * pQueue,
    ok = psonQueueRemove( pMemQueue,
                          &pQueue->iterator,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;

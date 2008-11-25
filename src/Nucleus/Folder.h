@@ -88,7 +88,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
-                             size_t                nameLengthInBytes,
+                             uint32_t              nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
                              psonSessionContext  * pContext );
 
@@ -98,7 +98,7 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonFolderDeleteObject( psonFolder         * pFolder,
                              const char         * objectName,
-                             size_t               strLength, 
+                             uint32_t             strLength, 
                              psonSessionContext * pContext );
 
 /**
@@ -107,13 +107,13 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonFolderDestroyObject( psonFolder         * pFolder,
                               const char         * objectName,
-                              size_t               nameLengthInBytes,
+                              uint32_t             nameLengthInBytes,
                               psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonFolderEditObject( psonFolder         * pFolder,
                            const char         * objectName,
-                           size_t               strLength, 
+                           uint32_t             strLength, 
                            enum psoObjectType   objectType, 
                            psonFolderItem     * pFolderItem,
                            psonSessionContext * pContext );
@@ -126,7 +126,7 @@ void psonFolderFini( psonFolder         * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
-                              size_t                strLength,
+                              uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
                               psonFieldDef       ** ppInternalDef,
                               psonSessionContext  * pContext );
@@ -144,7 +144,7 @@ bool psonFolderGetNext( psonFolder         * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonFolderGetObject( psonFolder         * pFolder,
                           const char         * objectName,
-                          size_t               strLength, 
+                          uint32_t             strLength, 
                           enum psoObjectType   objectType, 
                           psonFolderItem     * pFolderItem,
                           psonSessionContext * pContext );
@@ -152,7 +152,7 @@ bool psonFolderGetObject( psonFolder         * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonFolderGetStatus( psonFolder         * pFolder,
                           const char         * objectName,
-                          size_t               strLength, 
+                          uint32_t             strLength, 
                           psoObjStatus       * pStatus,
                           psonSessionContext * pContext );
 
@@ -162,7 +162,7 @@ bool psonFolderInit( psonFolder         * pFolder,
                      size_t               numberOfBlocks,
                      size_t               expectedNumOfChilds,
                      psonTxStatus       * pTxStatus,
-                     size_t               origNameLength,
+                     uint32_t             origNameLength,
                      char               * origName,
                      ptrdiff_t            hashItemOffset,
                      psonSessionContext * pContext );
@@ -171,7 +171,7 @@ PHOTON_ENGINE_EXPORT
 bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
-                             size_t                strLength,
+                             uint32_t              strLength,
                              psoObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
@@ -223,20 +223,20 @@ bool psonTopFolderCloseObject( psonFolderItem     * pDescriptor,
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
-                                size_t                nameLengthInBytes,
+                                uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
                                 psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderDestroyObject( psonFolder         * pFolder,
                                  const char         * objectName,
-                                 size_t               nameLengthInBytes,
+                                 uint32_t             nameLengthInBytes,
                                  psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderEditObject( psonFolder         * pFolder,
                               const char         * objectName,
-                              size_t               nameLengthInBytes,
+                              uint32_t             nameLengthInBytes,
                               enum psoObjectType   objectType, 
                               psonFolderItem     * pFolderItem,
                               psonSessionContext * pContext );
@@ -244,7 +244,7 @@ bool psonTopFolderEditObject( psonFolder         * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
-                          size_t                nameLengthInBytes,
+                          uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
                           psonFieldDef       ** ppInternalDef,
                           psonSessionContext  * pContext );
@@ -252,14 +252,14 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderGetStatus( psonFolder         * pFolder,
                              const char         * objectName,
-                             size_t               nameLengthInBytes,
+                             uint32_t             nameLengthInBytes,
                              psoObjStatus       * pFolderItem,
                              psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderOpenObject( psonFolder         * pFolder,
                               const char         * objectName,
-                              size_t               nameLengthInBytes,
+                              uint32_t             nameLengthInBytes,
                               enum psoObjectType   objectType, 
                               psonFolderItem     * pFolderItem,
                               psonSessionContext * pContext );

@@ -91,10 +91,10 @@ void FastMap::Definition( ObjDefinition & definition )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void FastMap::Get( const void * key,
-                   size_t       keyLength,
+                   uint32_t     keyLength,
                    void       * buffer,
-                   size_t       bufferLength,
-                   size_t     & returnedLength )
+                   uint32_t     bufferLength,
+                   uint32_t   & returnedLength )
 {
    int rc;
    
@@ -116,11 +116,11 @@ void FastMap::Get( const void * key,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int FastMap::GetFirst( void       * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        void       * buffer,
-                       size_t       bufferLength,
-                       size_t     & retKeyLength,
-                       size_t     & retDataLength )
+                       uint32_t     bufferLength,
+                       uint32_t   & retKeyLength,
+                       uint32_t   & retDataLength )
 {
    int rc;
    
@@ -145,11 +145,11 @@ int FastMap::GetFirst( void       * key,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int FastMap::GetNext( void       * key,
-                      size_t       keyLength,
+                      uint32_t     keyLength,
                       void       * buffer,
-                      size_t       bufferLength,
-                      size_t     & retKeyLength,
-                      size_t     & retDataLength )
+                      uint32_t     bufferLength,
+                      uint32_t   & retKeyLength,
+                      uint32_t   & retDataLength )
 {
    int rc;
    
@@ -193,7 +193,7 @@ void FastMap::Open( const std::string & hashMapName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void FastMap::Open( const char * hashMapName,
-                    size_t       nameLengthInBytes )
+                    uint32_t     nameLengthInBytes )
 {
    int rc;
    

@@ -92,9 +92,9 @@ void Queue::Definition( ObjDefinition & definition )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int Queue::GetFirst( void   * buffer,
-                     size_t   bufferLength,
-                     size_t & returnedLength )
+int Queue::GetFirst( void     * buffer,
+                     uint32_t   bufferLength,
+                     uint32_t & returnedLength )
 {
    int rc;
    
@@ -115,9 +115,9 @@ int Queue::GetFirst( void   * buffer,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int Queue::GetNext( void   * buffer,
-                    size_t   bufferLength,
-                    size_t & returnedLength )
+int Queue::GetNext( void     * buffer,
+                    uint32_t   bufferLength,
+                    uint32_t & returnedLength )
 {
    int rc;
    
@@ -158,7 +158,7 @@ void Queue::Open( const std::string & queueName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Queue::Open( const char * queueName,
-                  size_t       nameLengthInBytes )
+                  uint32_t     nameLengthInBytes )
 {
    int rc;
    
@@ -177,9 +177,9 @@ void Queue::Open( const char * queueName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int Queue::Pop( void   * buffer,
-                size_t   bufferLength,
-                size_t & returnedLength )
+int Queue::Pop( void     * buffer,
+                uint32_t   bufferLength,
+                uint32_t & returnedLength )
 {
    int rc;
    
@@ -200,7 +200,7 @@ int Queue::Pop( void   * buffer,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Queue::Push( const void * pItem, 
-                  size_t       length )
+                  uint32_t     length )
 {
    int rc;
    
@@ -219,7 +219,7 @@ void Queue::Push( const void * pItem,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Queue::PushNow( const void * pItem, 
-                     size_t       length )
+                     uint32_t     length )
 {
    int rc;
    

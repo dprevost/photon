@@ -100,7 +100,7 @@ bool psonQueueInit( psonQueue           * pQueue,
                     ptrdiff_t             parentOffset,
                     size_t                numberOfBlocks,
                     psonTxStatus        * pTxStatus,
-                    size_t                origNameLength,
+                    uint32_t              origNameLength,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
@@ -113,14 +113,14 @@ void psonQueueFini( psonQueue          * pQueue,
 PHOTON_ENGINE_EXPORT
 bool psonQueueInsert( psonQueue          * pQueue,
                       const void         * pItem, 
-                      size_t               length,
+                      uint32_t             length,
                       enum psonQueueEnum   firstOrLast,
                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonQueueInsertNow( psonQueue          * pQueue,
                          const void         * pItem, 
-                         size_t               length,
+                         uint32_t             length,
                          enum psonQueueEnum   firstOrLast,
                          psonSessionContext * pContext );
 
@@ -128,14 +128,14 @@ PHOTON_ENGINE_EXPORT
 bool psonQueueRemove( psonQueue          * pQueue,
                       psonQueueItem     ** ppQueueItem,
                       enum psonQueueEnum   firstOrLast,
-                      size_t               bufferLength,
+                      uint32_t             bufferLength,
                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonQueueGet( psonQueue          * pQueue,
                    unsigned int         flag,
                    psonQueueItem     ** ppIterator,
-                   size_t               bufferLength,
+                   uint32_t             bufferLength,
                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT

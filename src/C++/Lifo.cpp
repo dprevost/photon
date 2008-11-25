@@ -92,9 +92,9 @@ void Lifo::Definition( ObjDefinition & definition )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int Lifo::GetFirst( void   * buffer,
-                    size_t   bufferLength,
-                    size_t & returnedLength )
+int Lifo::GetFirst( void     * buffer,
+                    uint32_t   bufferLength,
+                    uint32_t & returnedLength )
 {
    int rc;
    
@@ -115,9 +115,9 @@ int Lifo::GetFirst( void   * buffer,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int Lifo::GetNext( void   * buffer,
-                   size_t   bufferLength,
-                   size_t & returnedLength )
+int Lifo::GetNext( void     * buffer,
+                   uint32_t   bufferLength,
+                   uint32_t & returnedLength )
 {
    int rc;
    
@@ -158,7 +158,7 @@ void Lifo::Open( const std::string & queueName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Lifo::Open( const char * queueName,
-                 size_t       nameLengthInBytes )
+                 uint32_t     nameLengthInBytes )
 {
    int rc;
    
@@ -177,9 +177,9 @@ void Lifo::Open( const char * queueName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int Lifo::Pop( void   * buffer,
-               size_t   bufferLength,
-               size_t & returnedLength )
+int Lifo::Pop( void     * buffer,
+               uint32_t   bufferLength,
+               uint32_t & returnedLength )
 {
    int rc;
    
@@ -201,7 +201,7 @@ int Lifo::Pop( void   * buffer,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Lifo::Push( const void * pItem, 
-                 size_t       length )
+                 uint32_t     length )
 {
    int rc;
    

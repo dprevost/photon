@@ -96,7 +96,7 @@ typedef struct psonTreeNode psonTreeNode;
 static inline 
 void psonTreeNodeInit( psonTreeNode * pNode,
                        ptrdiff_t      txStatusOffset,
-                       size_t         originalNameLength,
+                       uint32_t       originalNameLength,
                        ptrdiff_t      originalNameOffset,
                        ptrdiff_t      parentOffset,
                        ptrdiff_t      hashItemOffset )

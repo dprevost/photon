@@ -83,7 +83,7 @@ void Folder::CreateObject( const std::string   & objectName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::CreateObject( const char          * objectName,
-                           size_t                nameLengthInBytes,
+                           uint32_t              nameLengthInBytes,
                            psoObjectDefinition & definition )
 {
    int rc;
@@ -122,7 +122,7 @@ void Folder::CreateObjectXML( const std::string & xmlBuffer )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::CreateObjectXML( const char * xmlBuffer,
-                              size_t       lengthInBytes )
+                              uint32_t     lengthInBytes )
 {
    int rc;
    
@@ -159,7 +159,7 @@ void Folder::DestroyObject( const std::string & objectName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::DestroyObject( const char * objectName,
-                            size_t       nameLengthInBytes )
+                            uint32_t     nameLengthInBytes )
 {
    int rc;
    
@@ -236,7 +236,7 @@ void Folder::Open( const std::string & folderName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::Open( const char * folderName,
-                   size_t       nameLengthInBytes )
+                   uint32_t     nameLengthInBytes )
 {
    int rc;
    

@@ -34,9 +34,9 @@ void psonFolderReleaseNoLock( psonFolder         * pFolder,
 
 static 
 psoErrors psonValidateString( const char * objectName,
-                              size_t            strLength, 
-                              size_t          * pPartialLength,
-                              bool            * pLastIteration );
+                              uint32_t     strLength, 
+                              uint32_t   * pPartialLength,
+                              bool       * pLastIteration );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -97,13 +97,13 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
  */
 bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
-                             size_t                nameLengthInBytes,
+                             uint32_t              nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
                              psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
-   size_t first = 0;
+   uint32_t strLength, i;
+   uint32_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
@@ -226,11 +226,11 @@ bool psonFolderDeletable( psonFolder         * pFolder,
 
 bool psonFolderDeleteObject( psonFolder         * pFolder,
                              const char         * objectName,
-                             size_t               strLength, 
+                             uint32_t             strLength, 
                              psonSessionContext * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0;
+   uint32_t partialLength = 0;
    psoErrors errcode = PSO_OK;
    psonObjectDescriptor* pDesc = NULL;
    psonHashTxItem* pHashItem = NULL;
@@ -382,12 +382,12 @@ the_exit:
 
 bool psonFolderDestroyObject( psonFolder         * pFolder,
                               const char         * objectName,
-                              size_t               nameLengthInBytes,
+                              uint32_t             nameLengthInBytes,
                               psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
-   size_t first = 0;
+   uint32_t strLength, i;
+   uint32_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
@@ -464,13 +464,14 @@ error_handler:
 
 bool psonFolderEditObject( psonFolder         * pFolder,
                            const char         * objectName,
-                           size_t               strLength,
+                           uint32_t             strLength,
                            enum psoObjectType   objectType,
                            psonFolderItem     * pFolderItem,
                            psonSessionContext * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0, bucket = 0, descLength;
+   uint32_t partialLength = 0;
+   size_t bucket = 0, descLength;
    psonObjectDescriptor * pDescOld = NULL, * pDescNew = NULL;
    psonHashTxItem * pHashItemOld = NULL, * pHashItemNew = NULL;
    psoErrors errcode;
@@ -745,13 +746,13 @@ void psonFolderFini( psonFolder         * pFolder,
 
 bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
-                              size_t                strLength,
+                              uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
                               psonFieldDef       ** ppInternalDef,
                               psonSessionContext  * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0;
+   uint32_t partialLength = 0;
    psonObjectDescriptor * pDesc = NULL;
    psonHashTxItem * pHashItem = NULL;
    psoErrors errcode;
@@ -1042,13 +1043,13 @@ bool psonFolderGetNext( psonFolder         * pFolder,
 
 bool psonFolderGetObject( psonFolder         * pFolder,
                           const char         * objectName,
-                          size_t               strLength,
+                          uint32_t             strLength,
                           enum psoObjectType   objectType,
                           psonFolderItem     * pFolderItem,
                           psonSessionContext * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0;
+   uint32_t partialLength = 0;
    psonObjectDescriptor* pDesc = NULL;
    psonHashTxItem* pHashItem = NULL;
    psoErrors errcode;
@@ -1165,12 +1166,12 @@ the_exit:
 
 bool psonFolderGetStatus( psonFolder         * pFolder,
                           const char         * objectName,
-                          size_t               strLength, 
+                          uint32_t             strLength, 
                           psoObjStatus       * pStatus,
                           psonSessionContext * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0;
+   uint32_t partialLength = 0;
    psonObjectDescriptor * pDesc = NULL;
    psonHashTxItem * pHashItem = NULL;
    psoErrors errcode;
@@ -1315,7 +1316,7 @@ bool psonFolderInit( psonFolder         * pFolder,
                      size_t               numberOfBlocks,
                      size_t               expectedNumOfChilds,
                      psonTxStatus       * pTxStatus,
-                     size_t               origNameLength,
+                     uint32_t             origNameLength,
                      char               * origName,
                      ptrdiff_t            hashItemOffset,
                      psonSessionContext * pContext )
@@ -1368,14 +1369,14 @@ bool psonFolderInit( psonFolder         * pFolder,
 bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
-                             size_t                strLength, 
+                             uint32_t              strLength, 
                              psoObjectDefinition * pDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psonSessionContext  * pContext )
 {
    bool lastIteration = true;
-   size_t partialLength = 0;
+   uint32_t partialLength = 0;
    psonHashTxItem * pHashItem, * previousHashItem = NULL;
    psoErrors errcode = PSO_OK;
    psonObjectDescriptor* pDesc = NULL;
@@ -1972,14 +1973,14 @@ bool psonTopFolderCloseObject( psonFolderItem     * pFolderItem,
 
 bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
-                                size_t                nameLengthInBytes,
+                                uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
                                 psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
+   uint32_t strLength, i;
    bool ok;
-   size_t first = 0;
+   uint32_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
 
@@ -2068,12 +2069,12 @@ error_handler:
 
 bool psonTopFolderDestroyObject( psonFolder         * pFolder,
                                  const char         * objectName,
-                                 size_t               nameLengthInBytes,
+                                 uint32_t             nameLengthInBytes,
                                  psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
-   size_t first = 0;
+   uint32_t strLength, i;
+   uint32_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
@@ -2156,15 +2157,15 @@ error_handler:
 
 bool psonTopFolderEditObject( psonFolder         * pFolder,
                               const char         * objectName,
-                              size_t               nameLengthInBytes,
+                              uint32_t             nameLengthInBytes,
                               enum psoObjectType   objectType, 
                               psonFolderItem     * pFolderItem,
                               psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
+   uint32_t strLength, i;
    bool ok;
-   size_t first = 0;
+   uint32_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
 
@@ -2259,15 +2260,15 @@ error_handler:
 
 bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
-                          size_t                nameLengthInBytes,
+                          uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
                           psonFieldDef       ** ppInternalDef,
                           psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
+   uint32_t strLength, i;
    bool ok;
-   size_t first = 0;
+   uint32_t first = 0;
 
    const char * name = objectName;
    char * lowerName = NULL;
@@ -2366,14 +2367,14 @@ error_handler:
 
 bool psonTopFolderGetStatus( psonFolder         * pFolder,
                              const char         * objectName,
-                             size_t               nameLengthInBytes,
+                             uint32_t             nameLengthInBytes,
                              psoObjStatus       * pStatus,
                              psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
+   uint32_t strLength, i;
    bool ok;
-   size_t first = 0;
+   uint32_t first = 0;
 
    const char * name = objectName;
    char * lowerName = NULL;
@@ -2471,14 +2472,14 @@ error_handler:
 
 bool psonTopFolderOpenObject( psonFolder         * pFolder,
                               const char         * objectName,
-                              size_t               nameLengthInBytes,
+                              uint32_t             nameLengthInBytes,
                               enum psoObjectType   objectType, 
                               psonFolderItem     * pFolderItem,
                               psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   size_t strLength, i;
-   size_t first = 0;
+   uint32_t strLength, i;
+   uint32_t first = 0;
    const char * name = objectName;
    char * lowerName = NULL;
    bool ok;
@@ -2573,11 +2574,11 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 psoErrors psonValidateString( const char * objectName,
-                              size_t       strLength, 
-                              size_t     * pPartialLength,
+                              uint32_t     strLength, 
+                              uint32_t   * pPartialLength,
                               bool       * pLastIteration )
 {
-   size_t i;
+   uint32_t i;
    bool last = true;
    
    /* The first char is always special - it cannot be '/' */

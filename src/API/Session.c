@@ -99,7 +99,7 @@ int psoCommit( PSO_HANDLE sessionHandle )
    
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
-                     size_t                nameLengthInBytes,
+                     uint32_t              nameLengthInBytes,
                      psoObjectDefinition * pDefinition )
 {
    psoaSession* pSession;
@@ -167,7 +167,7 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
 
 int psoDestroyObject( PSO_HANDLE   sessionHandle,
                       const char * objectName,
-                      size_t       nameLengthInBytes )
+                      uint32_t     nameLengthInBytes )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -222,7 +222,7 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
 
 int psoErrorMsg( PSO_HANDLE sessionHandle,
                  char *     message,
-                 size_t     msgLengthInBytes )
+                 uint32_t   msgLengthInBytes )
 {
    psoaSession* pSession;
    int rc = PSO_OK;
@@ -338,7 +338,7 @@ int psoExitSession( PSO_HANDLE sessionHandle )
 
 int psoGetDefinition( PSO_HANDLE             sessionHandle,
                       const char           * objectName,
-                      size_t                 nameLengthInBytes,
+                      uint32_t               nameLengthInBytes,
                       psoObjectDefinition ** ppDefinition )
 {
    psoaSession* pSession;
@@ -485,7 +485,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
 
 int psoGetStatus( PSO_HANDLE     sessionHandle,
                   const char   * objectName,
-                  size_t         nameLengthInBytes,
+                  uint32_t       nameLengthInBytes,
                   psoObjStatus * pStatus )
 {
    psoaSession* pSession;
@@ -732,7 +732,7 @@ int psoRollback( PSO_HANDLE sessionHandle )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaSessionCloseObj( psoaSession             * pSession,
-                        struct psoaCommonObject * pObject )
+                         struct psoaCommonObject * pObject )
 {
    int errcode = PSO_OK;
    bool ok = true;
@@ -831,11 +831,11 @@ int psoaCloseSession( psoaSession * pSession )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaSessionOpenObj( psoaSession             * pSession,
-                       enum psoObjectType       objectType,
-                       psoaEditMode              editMode,
-                       const char             * objectName,
-                       size_t                   nameLengthInBytes,
-                       struct psoaCommonObject * pObject )
+                        enum psoObjectType        objectType,
+                        psoaEditMode              editMode,
+                        const char              * objectName,
+                        uint32_t                  nameLengthInBytes,
+                        struct psoaCommonObject * pObject )
 {
    int errcode = PSO_OK;
    psonFolder * pTree;

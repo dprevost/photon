@@ -100,8 +100,8 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
 PHOTON_EXPORT
 int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       void       * buffer,
-                      size_t       bufferLength,
-                      size_t     * returnedLength );
+                      uint32_t     bufferLength,
+                      uint32_t   * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -130,8 +130,8 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoQueueGetNext( PSO_HANDLE   objectHandle,
                      void       * buffer,
-                     size_t       bufferLength,
-                     size_t     * returnedLength );
+                     uint32_t     bufferLength,
+                     uint32_t   * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -152,7 +152,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoQueueOpen(  PSO_HANDLE   sessionHandle,
                    const char * queueName,
-                   size_t       nameLengthInBytes,
+                   uint32_t     nameLengthInBytes,
                    PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -179,8 +179,8 @@ int psoQueueOpen(  PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoQueuePop( PSO_HANDLE   objectHandle,
                  void       * buffer,
-                 size_t       bufferLength,
-                 size_t     * returnedLength );
+                 uint32_t     bufferLength,
+                 uint32_t   * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -198,7 +198,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoQueuePush( PSO_HANDLE   objectHandle, 
                   const void * pItem, 
-                  size_t       length );
+                  uint32_t     length );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -217,7 +217,7 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoQueuePushNow( PSO_HANDLE   objectHandle, 
                      const void * pItem, 
-                     size_t       length );
+                     uint32_t     length );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

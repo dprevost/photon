@@ -40,7 +40,7 @@ FastMapEditor::~FastMapEditor()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void FastMapEditor::Delete( const void * key,
-                            size_t       keyLength )
+                            uint32_t     keyLength )
 {
    int rc;
    
@@ -75,9 +75,9 @@ void FastMapEditor::Empty()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void FastMapEditor::Insert( const void * key,
-                            size_t       keyLength,
+                            uint32_t     keyLength,
                             const void * data,
-                            size_t       dataLength )
+                            uint32_t     dataLength )
 {
    int rc;
    
@@ -117,7 +117,7 @@ void FastMapEditor::Open( const std::string & hashMapName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void FastMapEditor::Open( const char * hashMapName,
-                          size_t       nameLengthInBytes )
+                          uint32_t     nameLengthInBytes )
 {
    int rc;
    
@@ -137,9 +137,9 @@ void FastMapEditor::Open( const char * hashMapName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void FastMapEditor::Replace( const void * key,
-                             size_t       keyLength,
+                             uint32_t     keyLength,
                              const void * data,
-                             size_t       dataLength )
+                             uint32_t     dataLength )
 {
    int rc;
    

@@ -122,10 +122,10 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Get( const void * key,
-             size_t       keyLength,
+             uint32_t     keyLength,
              void       * buffer,
-             size_t       bufferLength,
-             size_t     & returnedLength );
+             uint32_t     bufferLength,
+             uint32_t   & returnedLength );
 
    /** 
     * Iterate through the hash map.
@@ -151,12 +151,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetFirst( void    * key,
-                 size_t    keyLength,
-                 void    * buffer,
-                 size_t    bufferLength,
-                 size_t  & retKeyLength,
-                 size_t  & retDataLength );
+   int GetFirst( void     * key,
+                 uint32_t   keyLength,
+                 void     * buffer,
+                 uint32_t   bufferLength,
+                 uint32_t & retKeyLength,
+                 uint32_t & retDataLength );
 
    /** 
     * Iterate through the hash map.
@@ -188,12 +188,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetNext( void    * key,
-                size_t    keyLength,
-                void    * buffer,
-                size_t    bufferLength,
-                size_t  & retKeyLength,
-                size_t  & retDataLength );
+   int GetNext( void     * key,
+                uint32_t   keyLength,
+                void     * buffer,
+                uint32_t   bufferLength,
+                uint32_t & retKeyLength,
+                uint32_t & retDataLength );
 
    /** 
     * Open an existing read-only hash map (see psoSession::CreateObject to 
@@ -216,7 +216,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * hashMapName,
-              size_t       nameLengthInBytes );
+              uint32_t     nameLengthInBytes );
    
    /**
     * Return the status of the hash map.

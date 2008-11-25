@@ -67,7 +67,7 @@ typedef enum psoaEditMode psoaEditMode;
 struct psoaDataEntry
 {
    /** Length of the data in bytes. */
-   size_t length;
+   uint32_t length;
    
    /** Pointer to the data. */
    const void * data;

@@ -84,7 +84,7 @@ void psonHashMapCommitRemove( psonHashMap        * pHashMap,
 PHOTON_ENGINE_EXPORT
 bool psonHashMapDelete( psonHashMap        * pHashMap,
                         const void         * key,
-                        size_t               keyLength, 
+                        uint32_t             keyLength, 
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -94,23 +94,23 @@ void psonHashMapFini( psonHashMap        * pHashMap,
 PHOTON_ENGINE_EXPORT
 bool psonHashMapGet( psonHashMap        * pHashMap,
                      const void         * pKey,
-                     size_t               keyLength, 
+                     uint32_t             keyLength, 
                      psonHashTxItem      ** ppItem,
-                     size_t               bufferLength,
+                     uint32_t             bufferLength,
                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonHashMapGetFirst( psonHashMap        * pHashMap,
                           psonHashMapItem    * pItem,
-                          size_t               keyLength,
-                          size_t               bufferLength,
+                          uint32_t             keyLength,
+                          uint32_t             bufferLength,
                           psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonHashMapGetNext( psonHashMap        * pHashMap,
                          psonHashMapItem    * pItem,
-                         size_t               keyLength,
-                         size_t               bufferLength,
+                         uint32_t             keyLength,
+                         uint32_t             bufferLength,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -119,7 +119,7 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       size_t                numberOfBlocks,
                       size_t                expectedNumOfChilds,
                       psonTxStatus        * pTxStatus,
-                      size_t                origNameLength,
+                      uint32_t              origNameLength,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
@@ -128,9 +128,9 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
 PHOTON_ENGINE_EXPORT
 bool psonHashMapInsert( psonHashMap        * pHashMap,
                         const void         * pKey,
-                        size_t               keyLength,
+                        uint32_t             keyLength,
                         const void         * pItem,
-                        size_t               itemLength,
+                        uint32_t             itemLength,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -141,9 +141,9 @@ bool psonHashMapRelease( psonHashMap        * pHashMap,
 PHOTON_ENGINE_EXPORT
 bool psonHashMapReplace( psonHashMap        * pHashMap,
                          const void         * pKey,
-                         size_t               keyLength,
+                         uint32_t             keyLength,
                          const void         * pItem,
-                         size_t               itemLength,
+                         uint32_t             itemLength,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT

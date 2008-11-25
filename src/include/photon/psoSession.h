@@ -151,7 +151,7 @@ int psoCommit( PSO_HANDLE sessionHandle );
 PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
-                     size_t                nameLengthInBytes,
+                     uint32_t              nameLengthInBytes,
                      psoObjectDefinition * pDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -179,7 +179,7 @@ Not sure yet how this will be implemented. If at all...
 PHOTON_EXPORT
 int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
                         const char * xmlBuffer,
-                        size_t       lengthInBytes );
+                        uint32_t     lengthInBytes );
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -201,7 +201,7 @@ int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoDestroyObject( PSO_HANDLE   sessionHandle,
                       const char * objectName,
-                      size_t       nameLengthInBytes );
+                      uint32_t     nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -228,7 +228,7 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoErrorMsg( PSO_HANDLE   sessionHandle,
                  char       * message,
-                 size_t       msgLengthInBytes );
+                 uint32_t     msgLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -270,7 +270,7 @@ int psoExitSession( PSO_HANDLE sessionHandle );
 PHOTON_EXPORT
 int psoGetDefinition( PSO_HANDLE             sessionHandle,
                       const char           * objectName,
-                      size_t                 nameLengthInBytes,
+                      uint32_t               nameLengthInBytes,
                       psoObjectDefinition ** definition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -308,7 +308,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoGetStatus(  PSO_HANDLE     sessionHandle,
                    const char   * objectName,
-                   size_t         nameLengthInBytes,
+                   uint32_t       nameLengthInBytes,
                    psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

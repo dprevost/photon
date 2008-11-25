@@ -189,7 +189,7 @@ void psonHashTxFini( psonHashTx * pHash )
 
 bool psonHashTxGet( psonHashTx          * pHash,
                     const unsigned char * pKey,
-                    size_t                keyLength,
+                    uint32_t              keyLength,
                     psonHashTxItem     ** ppItem,
                     size_t              * pBucket,
                     psonSessionContext  * pContext )
@@ -368,9 +368,9 @@ enum psoErrors psonHashTxInit( psonHashTx         * pHash,
 enum psoErrors psonHashTxInsert( psonHashTx          * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
-                                 size_t                keyLength,
+                                 uint32_t              keyLength,
                                  const void          * pData,
-                                 size_t                dataLength,
+                                 uint32_t              dataLength,
                                  psonHashTxItem     ** ppNewItem,
                                  psonSessionContext  * pContext )
 {

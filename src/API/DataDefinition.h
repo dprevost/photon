@@ -45,14 +45,14 @@ int psoaGetDefinition( psonFieldDef          * pInternalDef,
 
 PHOTON_API_EXPORT
 void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
-                       size_t           * pMinLength,
-                       size_t           * pMaxLength );
+                       uint32_t         * pMinLength,
+                       uint32_t         * pMaxLength );
 
 PHOTON_API_EXPORT
 void psoaGetLimits( psonFieldDef * pDefinition,
                     uint16_t       numFields,
-                    size_t       * pMinLength,
-                    size_t       * pMaxLength );
+                    uint32_t     * pMinLength,
+                    uint32_t     * pMaxLength );
 
 /*
  * Similar to psoaGetLimits (but using the api struct), it calculates the 
@@ -61,17 +61,17 @@ void psoaGetLimits( psonFieldDef * pDefinition,
  */
 PHOTON_API_EXPORT
 void psoaGetOffsets( psoObjectDefinition * pDefinition,
-                     size_t              * pOffsets );
+                     uint32_t            * pOffsets );
 
 PHOTON_API_EXPORT
 int psoaValidateDefinition( psoObjectDefinition * pDefinition );
 
 PHOTON_API_EXPORT
 int psoaXmlToDefinition( const char           * xmlBuffer,
-                         size_t                 lengthInBytes,
+                         uint32_t               lengthInBytes,
                          psoObjectDefinition ** ppDefinition,
                          char                ** objectName,
-                         size_t               * nameLengthInBytes );
+                         uint32_t             * nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

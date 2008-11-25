@@ -19,6 +19,8 @@
 #define PSO_COMMON_H
 
 #include <stdlib.h>
+#include <stdint.h>
+#define uint32_t long long
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -155,13 +157,13 @@ struct psoKeyDefinition
    enum psoKeyType type;
 
    /** For fixed-length data types */
-   size_t length;
+   uint32_t length;
 
    /** For variable-length data types */
-   size_t minLength;
+   uint32_t minLength;
 
    /** For variable-length data types */
-   size_t maxLength;
+   uint32_t maxLength;
 };
 
 typedef struct psoKeyDefinition psoKeyDefinition;
@@ -184,19 +186,19 @@ struct psoFieldDefinition
    enum psoFieldType type;
    
    /** For fixed-length data types */
-   size_t length;
+   uint32_t length;
 
    /** For variable-length data types */
-   size_t minLength;
+   uint32_t minLength;
 
    /** For variable-length data types */
-   size_t maxLength;
+   uint32_t maxLength;
 
    /** Total number of digits in the decimal field. */
-   size_t precision;
+   uint32_t precision;
 
    /** Number of digits following the decimal separator. */
-   size_t scale;
+   uint32_t scale;
 };
 
 typedef struct psoFieldDefinition psoFieldDefinition;
@@ -230,6 +232,9 @@ typedef struct psoObjectDefinition psoObjectDefinition;
  */
 struct psoFolderEntry
 {
+   /** The name of the object. */
+   char name[PSO_MAX_NAME_LENGTH];
+
    /** The object type */
    psoObjectType type;
    
@@ -241,10 +246,8 @@ struct psoFolderEntry
    int status;
    
    /** The actual length (in bytes) of the name of the object. */
-   size_t nameLengthInBytes;
+   uint32_t nameLengthInBytes;
    
-   /** The name of the object. */
-   char name[PSO_MAX_NAME_LENGTH];
 };
 
 typedef struct psoFolderEntry psoFolderEntry;

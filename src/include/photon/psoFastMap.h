@@ -160,7 +160,7 @@ int psoFastMapDefinition( PSO_HANDLE             objectHandle,
 PHOTON_EXPORT
 int psoFastMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
-                      size_t       keyLength );
+                      uint32_t     keyLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -183,7 +183,7 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
-                    size_t       nameLengthInBytes,
+                    uint32_t     nameLengthInBytes,
                     PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -220,10 +220,10 @@ int psoFastMapEmpty( PSO_HANDLE objectHandle );
 PHOTON_EXPORT
 int psoFastMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
-                   size_t       keyLength,
+                   uint32_t     keyLength,
                    void       * buffer,
-                   size_t       bufferLength,
-                   size_t     * returnedLength );
+                   uint32_t     bufferLength,
+                   uint32_t   * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -250,11 +250,11 @@ int psoFastMapGet( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
-                        size_t       keyLength,
+                        uint32_t     keyLength,
                         void       * buffer,
-                        size_t       bufferLength,
-                        size_t     * retKeyLength,
-                        size_t     * retDataLength );
+                        uint32_t     bufferLength,
+                        uint32_t   * retKeyLength,
+                        uint32_t   * retDataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -286,11 +286,11 @@ int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoFastMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        void       * buffer,
-                       size_t       bufferLength,
-                       size_t     * retKeyLength,
-                       size_t     * retDataLength );
+                       uint32_t     bufferLength,
+                       uint32_t   * retKeyLength,
+                       uint32_t   * retDataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -310,9 +310,9 @@ int psoFastMapGetNext( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoFastMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
-                      size_t       keyLength,
+                      uint32_t     keyLength,
                       const void * data,
-                      size_t       dataLength );
+                      uint32_t     dataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -334,7 +334,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoFastMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
-                    size_t       nameLengthInBytes,
+                    uint32_t     nameLengthInBytes,
                     PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -355,9 +355,9 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoFastMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        const void * data,
-                       size_t       dataLength );
+                       uint32_t     dataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

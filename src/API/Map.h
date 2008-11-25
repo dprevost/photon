@@ -43,10 +43,10 @@ typedef struct psoaMap
    /** A pointer to the data definition of the queue. */
    psonFieldDef * pDefinition;
    
-   size_t minLength;
-   size_t maxLength;
-   size_t minKeyLength;
-   size_t maxKeyLength;
+   uint32_t minLength;
+   uint32_t maxLength;
+   uint32_t minKeyLength;
+   uint32_t maxKeyLength;
 
    int editMode;
 
@@ -58,16 +58,16 @@ typedef struct psoaMap
 
 PHOTON_API_EXPORT
 int psoaMapFirst( psoaMap          * pHashMap,
-                 psoaHashMapEntry * pEntry );
+                  psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
 int psoaMapNext( psoaMap          * pHashMap,
-                psoaHashMapEntry * pEntry );
+                 psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psoaMapRetrieve( psoaMap       * pHashMap,
-                    const void   * key,
-                    size_t         keyLength,
+int psoaMapRetrieve( psoaMap      * pHashMap,
+                    const void    * key,
+                    uint32_t        keyLength,
                     psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

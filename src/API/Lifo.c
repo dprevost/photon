@@ -137,8 +137,8 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
 
 int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                      void       * buffer,
-                     size_t       bufferLength,
-                     size_t     * returnedLength )
+                     uint32_t     bufferLength,
+                     uint32_t   * returnedLength )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
@@ -215,8 +215,8 @@ error_handler:
 
 int psoLifoGetNext( PSO_HANDLE   objectHandle,
                     void       * buffer,
-                    size_t       bufferLength,
-                    size_t     * returnedLength )
+                    uint32_t     bufferLength,
+                    uint32_t   * returnedLength )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
@@ -287,7 +287,7 @@ error_handler:
 
 int psoLifoOpen( PSO_HANDLE   sessionHandle,
                  const char * queueName,
-                 size_t       nameLengthInBytes,
+                 uint32_t     nameLengthInBytes,
                  PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
@@ -352,8 +352,8 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
 
 int psoLifoPop( PSO_HANDLE   objectHandle,
                 void       * buffer,
-                size_t       bufferLength,
-                size_t     * returnedLength )
+                uint32_t     bufferLength,
+                uint32_t   * returnedLength )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
@@ -429,7 +429,7 @@ error_handler:
 
 int psoLifoPush( PSO_HANDLE   objectHandle,
                  const void * data,
-                 size_t       dataLength )
+                 uint32_t     dataLength )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
@@ -547,7 +547,7 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaLifoFirst( psoaLifo      * pLifo,
-                  psoaDataEntry * pEntry )
+                   psoaDataEntry * pEntry )
 {
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
@@ -583,7 +583,7 @@ int psoaLifoFirst( psoaLifo      * pLifo,
    ok = psonQueueGet( pMemLifo,
                       PSO_FIRST,
                       &pLifo->iterator,
-                      (size_t) -1,
+                      (uint32_t) -1,
                       &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
@@ -614,7 +614,7 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaLifoNext( psoaLifo      * pLifo,
-                 psoaDataEntry * pEntry )
+                  psoaDataEntry * pEntry )
 {
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
@@ -640,7 +640,7 @@ int psoaLifoNext( psoaLifo      * pLifo,
    ok = psonQueueGet( pMemLifo,
                       PSO_NEXT,
                       &pLifo->iterator,
-                      (size_t) -1,
+                      (uint32_t) -1,
                       &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
@@ -671,7 +671,7 @@ error_handler:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaLifoRemove( psoaLifo      * pLifo,
-                   psoaDataEntry * pEntry )
+                    psoaDataEntry * pEntry )
 {
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
@@ -707,7 +707,7 @@ int psoaLifoRemove( psoaLifo      * pLifo,
    ok = psonQueueRemove( pMemLifo,
                          &pLifo->iterator,
                          PSON_QUEUE_LAST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;

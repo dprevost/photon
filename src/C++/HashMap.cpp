@@ -91,7 +91,7 @@ void HashMap::Definition( ObjDefinition & definition )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Delete( const void * key,
-                      size_t       keyLength )
+                      uint32_t     keyLength )
 {
    int rc;
    
@@ -110,10 +110,10 @@ void HashMap::Delete( const void * key,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Get( const void * key,
-                   size_t       keyLength,
+                   uint32_t     keyLength,
                    void       * buffer,
-                   size_t       bufferLength,
-                   size_t     & returnedLength )
+                   uint32_t     bufferLength,
+                   uint32_t   & returnedLength )
 {
    int rc;
    
@@ -134,12 +134,12 @@ void HashMap::Get( const void * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int HashMap::GetFirst( void   * key,
-                       size_t   keyLength,
-                       void   * buffer,
-                       size_t   bufferLength,
-                       size_t & retKeyLength,
-                       size_t & retDataLength )
+int HashMap::GetFirst( void     * key,
+                       uint32_t   keyLength,
+                       void     * buffer,
+                       uint32_t   bufferLength,
+                       uint32_t & retKeyLength,
+                       uint32_t & retDataLength )
 {
    int rc;
    
@@ -163,12 +163,12 @@ int HashMap::GetFirst( void   * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-int HashMap::GetNext( void   * key,
-                      size_t   keyLength,
-                      void   * buffer,
-                      size_t   bufferLength,
-                      size_t & retKeyLength,
-                      size_t & retDataLength )
+int HashMap::GetNext( void     * key,
+                      uint32_t   keyLength,
+                      void     * buffer,
+                      uint32_t   bufferLength,
+                      uint32_t & retKeyLength,
+                      uint32_t & retDataLength )
 {
    int rc;
    
@@ -193,9 +193,9 @@ int HashMap::GetNext( void   * key,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Insert( const void * key,
-                      size_t       keyLength,
+                      uint32_t     keyLength,
                       const void * data,
-                      size_t       dataLength )
+                      uint32_t     dataLength )
 {
    int rc;
    
@@ -235,7 +235,7 @@ void HashMap::Open( const std::string & hashMapName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Open( const char * hashMapName,
-                    size_t       nameLengthInBytes )
+                    uint32_t     nameLengthInBytes )
 {
    int rc;
    
@@ -255,9 +255,9 @@ void HashMap::Open( const char * hashMapName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Replace( const void * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        const void * data,
-                       size_t       dataLength )
+                       uint32_t     dataLength )
 {
    int rc;
    

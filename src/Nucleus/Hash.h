@@ -44,9 +44,9 @@ struct psonHashItem
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
    
-   size_t        keyLength;
+   uint32_t      keyLength;
    ptrdiff_t     dataOffset;
-   size_t        dataLength;
+   uint32_t      dataLength;
    size_t        bucket;
    unsigned char key[1];
    
@@ -121,7 +121,7 @@ void psonHashDelWithItem( psonHash            * pHash,
 PHOTON_ENGINE_EXPORT 
 bool psonHashDelWithKey( psonHash            * pHash,
                          const unsigned char * pKey, 
-                         size_t                keyLength,
+                         uint32_t              keyLength,
                          psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT 
@@ -134,7 +134,7 @@ void psonHashFini( psonHash * pHash );
 PHOTON_ENGINE_EXPORT 
 bool psonHashGet( psonHash            * pHash,
                   const unsigned char * pkey,
-                  size_t                keyLength,
+                  uint32_t              keyLength,
                   psonHashItem       ** ppItem,
                   size_t              * pBucket,
                   psonSessionContext  * pContext );
@@ -161,9 +161,9 @@ enum psoErrors psonHashInit( psonHash           * pHash,
 PHOTON_ENGINE_EXPORT 
 enum psoErrors psonHashInsert( psonHash            * pHash,
                                const unsigned char * pKey,
-                               size_t                keyLength,
+                               uint32_t              keyLength,
                                const void          * pData,
-                               size_t                dataLength,
+                               uint32_t              dataLength,
                                psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -173,9 +173,9 @@ enum psoErrors psonHashResize( psonHash           * pHash,
 PHOTON_ENGINE_EXPORT
 enum psoErrors psonHashUpdate( psonHash            * pHash,
                                const unsigned char * pKey,
-                               size_t                keyLength,
+                               uint32_t              keyLength,
                                const void          * pData,
-                               size_t                dataLength,
+                               uint32_t              dataLength,
                                psonSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

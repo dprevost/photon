@@ -77,15 +77,15 @@ int psoaCloseSession( psoaSession* pSession );
 
 PHOTON_API_EXPORT
 int psoaSessionCloseObj( psoaSession             * pSession,
-                        struct psoaCommonObject * pObject );
+                         struct psoaCommonObject * pObject );
 
 PHOTON_API_EXPORT
 int psoaSessionOpenObj( psoaSession             * pSession,
-                       psoObjectType            objectType,
-                       psoaEditMode              editMode,
-                       const char             * objectName,
-                       size_t                   nameLengthInBytes,
-                       struct psoaCommonObject * pObject );
+                        psoObjectType             objectType,
+                        psoaEditMode              editMode,
+                        const char              * objectName,
+                        uint32_t                  nameLengthInBytes,
+                        struct psoaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

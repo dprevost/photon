@@ -68,11 +68,11 @@ typedef struct psoaCommonObject
 
 /** Common function for opening data containers. */
 PHOTON_API_EXPORT
-int psoaCommonObjOpen( psoaCommonObject    * pObject,
+int psoaCommonObjOpen( psoaCommonObject  * pObject,
                       enum psoObjectType   objectType, 
-                      psoaEditMode          editMode,
+                      psoaEditMode         editMode,
                       const char         * objectName,
-                      size_t               nameLengthInBytes );
+                      uint32_t             nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

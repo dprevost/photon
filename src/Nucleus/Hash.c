@@ -361,7 +361,7 @@ enum psoErrors psonHashCopy( psonHash           * pOldHash,
  */
 bool psonHashDelWithKey( psonHash            * pHash,
                          const unsigned char * pKey, 
-                         size_t                keyLength,
+                         uint32_t              keyLength,
                          psonSessionContext  * pContext  )
 {
    size_t bucket = 0;
@@ -472,7 +472,7 @@ void psonHashFini( psonHash * pHash )
 
 bool psonHashGet( psonHash            * pHash,
                   const unsigned char * pKey,
-                  size_t                keyLength,
+                  uint32_t              keyLength,
                   psonHashItem       ** ppItem,
                   size_t              * pBucket,
                   psonSessionContext  * pContext )
@@ -648,9 +648,9 @@ enum psoErrors psonHashInit( psonHash           * pHash,
 
 enum psoErrors psonHashInsert( psonHash            * pHash,
                                const unsigned char * pKey,
-                               size_t                keyLength,
+                               uint32_t              keyLength,
                                const void          * pData,
-                               size_t                dataLength,
+                               uint32_t              dataLength,
                                psonSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
@@ -805,9 +805,9 @@ enum psoErrors psonHashResize( psonHash           * pHash,
 enum psoErrors 
 psonHashUpdate( psonHash            * pHash,
                 const unsigned char * pKey,
-                size_t                keyLength,
+                uint32_t              keyLength,
                 const void          * pData,
-                size_t                dataLength,
+                uint32_t              dataLength,
                 psonSessionContext  * pContext )
 {
    size_t bucket = 0;

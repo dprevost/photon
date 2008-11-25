@@ -95,7 +95,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const char          * objectName,
-                      size_t                nameLengthInBytes,
+                      uint32_t              nameLengthInBytes,
                       psoObjectDefinition & definition );
 
    /**
@@ -133,7 +133,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObjectXML( const char * xmlBuffer,
-                         size_t       lengthInBytes );
+                         uint32_t     lengthInBytes );
 
    /**
     * Destroy an object, child of the current folder, in shared memory.
@@ -160,7 +160,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const char * objectName,
-                       size_t       nameLengthInBytes );
+                       uint32_t     nameLengthInBytes );
 
    /** 
     * Iterate through the folder - no data items are removed from the 
@@ -223,7 +223,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * folderName,
-              size_t       nameLengthInBytes );
+              uint32_t     nameLengthInBytes );
    
    /**
     * Return the status of the folder.

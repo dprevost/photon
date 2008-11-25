@@ -49,9 +49,9 @@ struct psonHashTxItem
    /** Next item with same key (for replace, etc.) */
    ptrdiff_t     nextSameKey;
    
-   size_t        keyLength;
+   uint32_t      keyLength;
    ptrdiff_t     dataOffset;
-   size_t        dataLength;
+   uint32_t      dataLength;
    size_t        bucket;
    unsigned char key[1];
    
@@ -120,7 +120,7 @@ void psonHashTxFini( psonHashTx * pHash );
 PHOTON_ENGINE_EXPORT 
 bool psonHashTxGet( psonHashTx          * pHash,
                     const unsigned char * pkey,
-                    size_t                keyLength,
+                    uint32_t              keyLength,
                     psonHashTxItem     ** ppItem,
                     size_t              * pBucket,
                     psonSessionContext  * pContext );
@@ -152,9 +152,9 @@ PHOTON_ENGINE_EXPORT
 enum psoErrors psonHashTxInsert( psonHashTx          * pHash,
                                  size_t                bucket,
                                  const unsigned char * pKey,
-                                 size_t                keyLength,
+                                 uint32_t              keyLength,
                                  const void          * pData,
-                                 size_t                dataLength,
+                                 uint32_t              dataLength,
                                  psonHashTxItem     ** ppNewItem,
                                  psonSessionContext  * pContext );
 

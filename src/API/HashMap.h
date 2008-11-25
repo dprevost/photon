@@ -42,10 +42,10 @@ typedef struct psoaHashMap
    /** A pointer to the data definition of the queue. */
    psonFieldDef * pDefinition;
    
-   size_t minLength;
-   size_t maxLength;
-   size_t minKeyLength;
-   size_t maxKeyLength;
+   uint32_t minLength;
+   uint32_t maxLength;
+   uint32_t minKeyLength;
+   uint32_t maxKeyLength;
 
 } psoaHashMap;
 
@@ -53,8 +53,8 @@ typedef struct psoaHashMap
 
 typedef struct psoaHashMapEntry
 {
-   size_t keyLength;
-   size_t dataLength;
+   uint32_t keyLength;
+   uint32_t dataLength;
    const void * key;
    const void * data;
 
@@ -73,7 +73,7 @@ int psoaHashMapNext( psoaHashMap      * pHashMap,
 PHOTON_API_EXPORT
 int psoaHashMapRetrieve( psoaHashMap   * pHashMap,
                         const void   * key,
-                        size_t         keyLength,
+                        uint32_t       keyLength,
                         psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

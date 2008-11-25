@@ -97,7 +97,7 @@ int psoFolderClose( PSO_HANDLE objectHandle )
 
 int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            const char          * objectName,
-                           size_t                nameLengthInBytes,
+                           uint32_t              nameLengthInBytes,
                            psoObjectDefinition * pDefinition )
 {
    psoaFolder * pFolder;
@@ -170,12 +170,12 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
 
 int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
                               const char * xmlBuffer,
-                              size_t       lengthInBytes )
+                              uint32_t     lengthInBytes )
 {
    psoObjectDefinition * pDefinition = NULL;
    int errcode = PSO_OK;
    char * objectName = NULL;
-   size_t nameLengthInBytes = 0;
+   uint32_t nameLengthInBytes = 0;
 
    psoaFolder * pFolder;
    psoaSession* pSession;
@@ -222,7 +222,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
 
 int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
                             const char * objectName,
-                            size_t       nameLengthInBytes )
+                            uint32_t     nameLengthInBytes )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -438,7 +438,7 @@ error_handler:
 
 int psoFolderOpen( PSO_HANDLE   sessionHandle,
                    const char * folderName,
-                   size_t       nameLengthInBytes,
+                   uint32_t     nameLengthInBytes,
                    PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;

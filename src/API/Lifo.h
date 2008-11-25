@@ -42,8 +42,8 @@ typedef struct psoaLifo
    /** A pointer to the data definition of the queue. */
    psonFieldDef * pDefinition;
    
-   size_t minLength;
-   size_t maxLength;
+   uint32_t minLength;
+   uint32_t maxLength;
    
 } psoaLifo;
 

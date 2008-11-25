@@ -154,7 +154,7 @@ int psoFastMapDefinition( PSO_HANDLE             objectHandle,
 
 int psoFastMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
-                      size_t       keyLength )
+                      uint32_t     keyLength )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -220,7 +220,7 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
 
 int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
-                    size_t       nameLengthInBytes,
+                    uint32_t     nameLengthInBytes,
                     PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
@@ -359,10 +359,10 @@ error_handler:
 
 int psoFastMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
-                   size_t       keyLength,
+                   uint32_t     keyLength,
                    void       * buffer,
-                   size_t       bufferLength,
-                   size_t     * returnedLength )
+                   uint32_t     bufferLength,
+                   uint32_t   * returnedLength )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -446,11 +446,11 @@ error_handler:
 
 int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
-                        size_t       keyLength,
+                        uint32_t     keyLength,
                         void       * buffer,
-                        size_t       bufferLength,
-                        size_t     * retKeyLength,
-                        size_t     * retDataLength )
+                        uint32_t     bufferLength,
+                        uint32_t   * retKeyLength,
+                        uint32_t   * retDataLength )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -536,11 +536,11 @@ error_handler:
 
 int psoFastMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        void       * buffer,
-                       size_t       bufferLength,
-                       size_t     * retKeyLength,
-                       size_t     * retDataLength )
+                       uint32_t     bufferLength,
+                       uint32_t   * retKeyLength,
+                       uint32_t   * retDataLength )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -619,9 +619,9 @@ error_handler:
 
 int psoFastMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
-                      size_t       keyLength,
+                      uint32_t     keyLength,
                       const void * data,
-                      size_t       dataLength )
+                      uint32_t     dataLength )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -699,7 +699,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
 
 int psoFastMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
-                    size_t       nameLengthInBytes,
+                    uint32_t     nameLengthInBytes,
                     PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
@@ -774,9 +774,9 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
 
 int psoFastMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        const void * data,
-                       size_t       dataLength )
+                       uint32_t     dataLength )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -938,8 +938,8 @@ int psoaMapFirst( psoaMap          * pHashMap,
 
    ok = psonMapGetFirst( pMemHashMap,
                          &pHashMap->iterator,
-                         (size_t) -1,
-                         (size_t) -1,
+                         (uint32_t) -1,
+                         (uint32_t) -1,
                          &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
@@ -996,8 +996,8 @@ int psoaMapNext( psoaMap          * pHashMap,
 
    ok = psonMapGetNext( pMemHashMap,
                         &pHashMap->iterator,
-                        (size_t) -1,
-                        (size_t) -1,
+                        (uint32_t) -1,
+                        (uint32_t) -1,
                         &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
@@ -1059,9 +1059,9 @@ void psoaMapResetReader( void * map )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaMapRetrieve( psoaMap       * pHashMap,
-                    const void   * key,
-                    size_t         keyLength,
+int psoaMapRetrieve( psoaMap      * pHashMap,
+                    const void    * key,
+                    uint32_t        keyLength,
                     psoaDataEntry * pEntry )
 {
    psonMap * pMemHashMap;
@@ -1102,7 +1102,7 @@ int psoaMapRetrieve( psoaMap       * pHashMap,
                     key,
                     keyLength,
                     &pHashItem,
-                    (size_t) -1,
+                    (uint32_t) -1,
                     &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;

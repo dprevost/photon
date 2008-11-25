@@ -90,9 +90,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetFirst( void   * buffer,
-                 size_t   bufferLength,
-                 size_t & returnedLength );
+   int GetFirst( void     * buffer,
+                 uint32_t   bufferLength,
+                 uint32_t & returnedLength );
 
    /** 
     * Iterate through the queue - no data items are removed from the queue
@@ -118,9 +118,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetNext( void   * buffer,
-                size_t   bufferLength,
-                size_t & returnedLength );
+   int GetNext( void     * buffer,
+                uint32_t   bufferLength,
+                uint32_t & returnedLength );
 
    /** 
     * Open an existing FIFO queue (see Session::CreateObject to create a new 
@@ -143,7 +143,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * queueName,
-              size_t       nameLengthInBytes );
+              uint32_t     nameLengthInBytes );
 
    /** 
     * Remove the first item from the beginning of a FIFO queue and return it 
@@ -166,9 +166,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int Pop( void   * buffer,
-            size_t   bufferLength,
-            size_t & returnedLength );
+   int Pop( void     * buffer,
+            uint32_t   bufferLength,
+            uint32_t & returnedLength );
 
    /**
     * Insert a data element at the end of the FIFO queue.
@@ -181,7 +181,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Push( const void * pItem, 
-              size_t       length );
+              uint32_t     length );
 
    /**
     * Insert a data element at the end of the FIFO queue.
@@ -196,7 +196,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void PushNow( const void * pItem, 
-                 size_t       length );
+                 uint32_t     length );
 
    /**
     * Return the status of the queue.

@@ -100,7 +100,7 @@ int psoHashMapDefinition( PSO_HANDLE             objectHandle,
 PHOTON_EXPORT
 int psoHashMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
-                      size_t       keyLength );
+                      uint32_t     keyLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -125,10 +125,10 @@ int psoHashMapDelete( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoHashMapGet( PSO_HANDLE   objectHandle,
                    const void * key,
-                   size_t       keyLength,
+                   uint32_t     keyLength,
                    void       * buffer,
-                   size_t       bufferLength,
-                   size_t     * returnedLength );
+                   uint32_t     bufferLength,
+                   uint32_t   * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -158,11 +158,11 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
                         void       * key,
-                        size_t       keyLength,
+                        uint32_t     keyLength,
                         void       * buffer,
-                        size_t       bufferLength,
-                        size_t     * retKeyLength,
-                        size_t     * retDataLength );
+                        uint32_t     bufferLength,
+                        uint32_t   * retKeyLength,
+                        uint32_t   * retDataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -197,11 +197,11 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoHashMapGetNext( PSO_HANDLE   objectHandle,
                        void       * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        void       * buffer,
-                       size_t       bufferLength,
-                       size_t     * retKeyLength,
-                       size_t     * retDataLength );
+                       uint32_t     bufferLength,
+                       uint32_t   * retKeyLength,
+                       uint32_t   * retDataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -221,9 +221,9 @@ int psoHashMapGetNext( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoHashMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
-                      size_t       keyLength,
+                      uint32_t     keyLength,
                       const void * data,
-                      size_t       dataLength );
+                      uint32_t     dataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -244,7 +244,7 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
-                    size_t       nameLengthInBytes,
+                    uint32_t     nameLengthInBytes,
                     PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -265,9 +265,9 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoHashMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
-                       size_t       keyLength,
+                       uint32_t     keyLength,
                        const void * data,
-                       size_t       dataLength );
+                       uint32_t     dataLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

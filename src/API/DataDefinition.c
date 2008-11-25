@@ -92,8 +92,8 @@ int psoaGetDefinition( psonFieldDef         * pInternalDef,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
-                       size_t           * pMinLength,
-                       size_t           * pMaxLength )
+                       uint32_t         * pMinLength,
+                       uint32_t         * pMaxLength )
 {
    PSO_PRE_CONDITION( pKeyDef    != NULL );
    PSO_PRE_CONDITION( pMinLength != NULL );
@@ -108,7 +108,7 @@ void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
       /* PSO_KEY_VAR_BINARY || PSO_VAR_STRING */
       *pMinLength = pKeyDef->minLength;
       *pMaxLength = pKeyDef->maxLength;
-      if ( *pMaxLength == 0 ) *pMaxLength = 4294967295UL;
+      if ( *pMaxLength == 0 ) *pMaxLength = (uint32_t) -1;
    }
 }
 
@@ -116,11 +116,11 @@ void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
 
 void psoaGetLimits( psonFieldDef * pDefinition,
                     uint16_t       numFields,
-                    size_t       * pMinLength,
-                    size_t       * pMaxLength )
+                    uint32_t     * pMinLength,
+                    uint32_t     * pMaxLength )
 {
    unsigned int i;
-   size_t minLength = 0, maxLength = 0;
+   uint32_t minLength = 0, maxLength = 0;
 
    PSO_PRE_CONDITION( pDefinition != NULL );
    PSO_PRE_CONDITION( pMinLength  != NULL );
@@ -154,7 +154,7 @@ void psoaGetLimits( psonFieldDef * pDefinition,
    case PSO_VAR_STRING:
       minLength = pDefinition[0].length1;
       maxLength = pDefinition[0].length2;
-      if ( maxLength == 0 ) maxLength = 4294967295UL;
+      if ( maxLength == 0 ) maxLength = (uint32_t) -1;
       break;
    }
    
@@ -204,8 +204,8 @@ void psoaGetLimits( psonFieldDef * pDefinition,
          minLength += pDefinition[i].length1;
 
          if ( pDefinition[i].length2 == 0 ||
-            pDefinition[i].length2 >= 4294967295UL - minLength ) {
-            maxLength = 4294967295UL;
+            pDefinition[i].length2 >= ((uint32_t) -1) - minLength ) {
+            maxLength = (uint32_t) -1;
          }
          else {
             maxLength = minLength + pDefinition[i].length2;
@@ -223,10 +223,10 @@ void psoaGetLimits( psonFieldDef * pDefinition,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psoaGetOffsets( psoObjectDefinition * pDefinition,
-                     size_t              * pOffsets )
+                     uint32_t            * pOffsets )
 {
    unsigned int i;
-   size_t minLength = 0;
+   uint32_t minLength = 0;
 
    PSO_PRE_CONDITION( pDefinition != NULL );
    PSO_PRE_CONDITION( pOffsets    != NULL );
@@ -510,10 +510,10 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaXmlToDefinition( const char           * xmlBuffer,
-                         size_t                 lengthInBytes,
+                         uint32_t               lengthInBytes,
                          psoObjectDefinition ** ppDefinition,
                          char                ** objectName,
-                         size_t               * nameLengthInBytes )
+                         uint32_t             * nameLengthInBytes )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;
