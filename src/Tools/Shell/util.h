@@ -39,26 +39,26 @@ using namespace std;
 void shellBuffToOut( string              & outStr, 
                      psoObjectDefinition * pDefinition,
                      unsigned char       * buffer,
-                     size_t                length );
+                     uint32_t              length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void shellKeyToOut( string           & outStr, 
                     psoKeyDefinition * pDefinition,
                     unsigned char    * key,
-                    size_t             length );
+                    uint32_t           length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 unsigned char * shellInToBuff( string              & inData, 
                                psoObjectDefinition * pDefinition,
-                               size_t              & length );
+                               uint32_t            & length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 unsigned char * shellInToKey( string           & inData, 
                               psoKeyDefinition * pDefinition,
-                              size_t           & length );
+                              uint32_t         & length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

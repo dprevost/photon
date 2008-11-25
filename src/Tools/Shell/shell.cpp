@@ -250,9 +250,9 @@ void psoShell::Cat()
    psoObjStatus status;
    unsigned char * key, * buffer;
    int rc;
-   size_t keyLength, dataLength;
+   uint32_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
-   size_t * offsets;
+   uint32_t * offsets;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -285,7 +285,7 @@ void psoShell::Cat()
    }
 
    try {
-      offsets = new size_t[pDefinition->numFields];
+      offsets = new uint32_t[pDefinition->numFields];
    }
    catch ( ... ) {
       cerr << "psosh: cat: Not enough memory " << endl;
@@ -294,7 +294,7 @@ void psoShell::Cat()
    }
    
    psoaGetOffsets( pDefinition, offsets );
-   for ( size_t i = 0; i < pDefinition->numFields; ++i ) {
+   for ( uint32_t i = 0; i < pDefinition->numFields; ++i ) {
       cout << "offsets[" << i << "] = " << offsets[i] << endl;
    }
    
@@ -470,7 +470,7 @@ void psoShell::Cp()
    psoObjStatus status;
    unsigned char * key, * buffer;
    int rc;
-   size_t keyLength, dataLength;
+   uint32_t keyLength, dataLength;
    psoObjectDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
@@ -563,7 +563,7 @@ void psoShell::Echo()
    string objectName;
    psoObjStatus status;
    unsigned char * key = NULL, * buffer = NULL;
-   size_t keyLength, dataLength;
+   uint32_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
    bool nokey = false;
    

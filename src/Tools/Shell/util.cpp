@@ -444,9 +444,9 @@ void shellBuffToOut( string              & outStr,
                      unsigned char       * buffer,
                      size_t                length )
 {
-   size_t * offsets = NULL, i;
+   uint32_t * offsets = NULL, i;
   
-   offsets = new size_t[pDefinition->numFields];
+   offsets = new uint32_t[pDefinition->numFields];
    psoaGetOffsets( pDefinition, offsets );
    for ( i = 0; i < pDefinition->numFields; ++i ) {
       string s;
@@ -521,7 +521,7 @@ unsigned char * shellInToBuff( string              & inStr,
                                psoObjectDefinition * pDefinition,
                                size_t              & length )
 {
-   size_t * offsets = NULL, i;
+   uint32_t * offsets = NULL, i;
    unsigned char * buffer = NULL;
    istringstream iss( inStr );
    vector<string> inData;
@@ -535,7 +535,7 @@ unsigned char * shellInToBuff( string              & inStr,
 
    if ( inData.size() != pDefinition->numFields ) throw(inData.size()+1);
    
-   offsets = new size_t[pDefinition->numFields];
+   offsets = new uint32_t[pDefinition->numFields];
    psoaGetOffsets( pDefinition, offsets );
    length = offsets[pDefinition->numFields-1];
    

@@ -20,7 +20,6 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-#define uint32_t long long
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -275,17 +274,17 @@ struct psoObjStatus
    /** The number of groups of blocks allocated to this object. */
    size_t numBlockGroup;
 
-   /** The number of data items in thisa object. */
+   /** The number of data items in this object. */
    size_t numDataItem;
    
    /** The amount of free space available in the blocks allocated to this object. */
    size_t freeBytes;
 
    /** Maximum data length (in bytes). */
-   size_t maxDataLength;
+   uint32_t maxDataLength;
    
    /** Maximum key length (in bytes) if keys are supported - zero otherwise */
-   size_t maxKeyLength;
+   uint32_t maxKeyLength;
 
 };
 

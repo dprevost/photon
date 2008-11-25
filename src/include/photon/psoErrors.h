@@ -389,7 +389,7 @@ enum psoErrors
     PSO_XML_READ_ERROR = 201,
 
     /**
-     * The root element is not the expected root, <folder> and similar.
+     * The root element is not the expected root.
      */
     PSO_XML_INVALID_ROOT = 202,
 

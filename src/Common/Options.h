@@ -109,8 +109,8 @@ int psocValidateUserOptions( psocOptionHandle   handle,
 /*! \brief Print usage information. */
 PHOTON_COMMON_EXPORT
 void psocShowUsage( psocOptionHandle   handle,
-                    char             * progName,
-                    char             * addArguments );
+                    const char       * progName,
+                    const char       * addArguments );
 
 /*! \brief Retrieves the argument associated with a given option. */
 PHOTON_COMMON_EXPORT

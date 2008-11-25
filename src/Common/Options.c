@@ -743,8 +743,8 @@ bool psocIsLongOptPresent( psocOptionHandle   handle,
  */
 
 void psocShowUsage( psocOptionHandle   handle,
-                    char             * progName,
-                    char             * addArguments )
+                    const char       * progName,
+                    const char       * addArguments )
 {
    int i, len, max_len;
    char longOpt[PSOC_OPT_LONG_OPT_LENGTH+PSOC_OPT_ARGUMENT_MSG_LENGTH+3];
