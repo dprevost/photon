@@ -81,7 +81,7 @@ int psoFolderClose( PSO_HANDLE objectHandle );
 PHOTON_EXPORT
 int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char          * objectName,
-                           uint32_t              nameLengthInBytes,
+                           psoUint32             nameLengthInBytes,
                            psoObjectDefinition * pDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -106,7 +106,7 @@ int psoFolderCreateObject( PSO_HANDLE            folderHandle,
 PHOTON_EXPORT
 int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
                               const char * xmlBuffer,
-                              uint32_t     lengthInBytes );
+                              psoUint32    lengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -127,7 +127,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
 PHOTON_EXPORT
 int psoFolderDestroyObject( PSO_HANDLE   folderHandle,
                             const char * objectName,
-                            uint32_t     nameLengthInBytes );
+                            psoUint32    nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -191,7 +191,7 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
 PHOTON_EXPORT
 int psoFolderOpen( PSO_HANDLE   sessionHandle,
                    const char * folderName,
-                   uint32_t     nameLengthInBytes,
+                   psoUint32    nameLengthInBytes,
                    PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

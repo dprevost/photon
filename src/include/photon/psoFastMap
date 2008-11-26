@@ -122,10 +122,10 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Get( const void * key,
-             uint32_t     keyLength,
+             psoUint32    keyLength,
              void       * buffer,
-             uint32_t     bufferLength,
-             uint32_t   & returnedLength );
+             psoUint32    bufferLength,
+             psoUint32  & returnedLength );
 
    /** 
     * Iterate through the hash map.
@@ -151,12 +151,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetFirst( void     * key,
-                 uint32_t   keyLength,
-                 void     * buffer,
-                 uint32_t   bufferLength,
-                 uint32_t & retKeyLength,
-                 uint32_t & retDataLength );
+   int GetFirst( void      * key,
+                 psoUint32   keyLength,
+                 void      * buffer,
+                 psoUint32   bufferLength,
+                 psoUint32 & retKeyLength,
+                 psoUint32 & retDataLength );
 
    /** 
     * Iterate through the hash map.
@@ -188,12 +188,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetNext( void     * key,
-                uint32_t   keyLength,
-                void     * buffer,
-                uint32_t   bufferLength,
-                uint32_t & retKeyLength,
-                uint32_t & retDataLength );
+   int GetNext( void      * key,
+                psoUint32   keyLength,
+                void      * buffer,
+                psoUint32   bufferLength,
+                psoUint32 & retKeyLength,
+                psoUint32 & retDataLength );
 
    /** 
     * Open an existing read-only hash map (see psoSession::CreateObject to 
@@ -216,7 +216,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * hashMapName,
-              uint32_t     nameLengthInBytes );
+              psoUint32    nameLengthInBytes );
    
    /**
     * Return the status of the hash map.

@@ -149,8 +149,8 @@ static unsigned int g_minLoadFactor = 100;
  * --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline 
-size_t calculateItemLength( size_t keyLength,
-                            size_t dataLength )
+size_t calculateItemLength( uint32_t keyLength,
+                            uint32_t dataLength )
 {
    size_t len;
    
@@ -166,7 +166,7 @@ size_t calculateItemLength( size_t keyLength,
 
 /* Just in case a new function is used instead, one of these days */
 static inline u_long
-hash_it (const unsigned char * str, size_t len)
+hash_it (const unsigned char * str, uint32_t len)
 {
    return fnv_buf( (void *)str, len, FNV1_INIT );
 }
@@ -198,7 +198,7 @@ psonHashResizeEnum isItTimeToResize( psonHash * pHash )
 static bool findKey( psonHash            * pHash,
                      ptrdiff_t           * pArray,
                      const unsigned char * pKey,
-                     size_t                keyLength,
+                     uint32_t                keyLength,
                      psonHashItem       ** ppItem,
                      psonHashItem       ** ppPreviousItem,
                      size_t              * pBucket )

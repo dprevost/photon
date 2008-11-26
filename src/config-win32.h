@@ -68,7 +68,7 @@ typedef signed long int32_t;
 typedef signed __int64 int64_t;
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
-typedef unsigned long uint32_t;
+typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

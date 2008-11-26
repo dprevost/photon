@@ -124,7 +124,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const char                * objectName,
-                      size_t                      nameLengthInBytes,
+                      psoUint32                   nameLengthInBytes,
                       const psoObjectDefinition & definition );
    
    /**
@@ -152,7 +152,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const char * objectName,
-                       size_t       nameLengthInBytes );
+                       psoUint32    nameLengthInBytes );
 
    /**
     * Return the error message associated with the last error(s).
@@ -188,8 +188,8 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */   
-   void ErrorMsg( char   * message,
-                  size_t   msgLengthInBytes );
+   void ErrorMsg( char      * message,
+                  psoUint32   msgLengthInBytes );
 
    /**
     * \brief Retrieve the data definition of the named object.
@@ -225,7 +225,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void GetDefinition( const char           * objectName,
-                       size_t                 nameLengthInBytes,
+                       psoUint32              nameLengthInBytes,
                        psoObjectDefinition ** definition );
 
    /**
@@ -262,7 +262,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void GetStatus( const char   * objectName,
-                   size_t         nameLengthInBytes,
+                   psoUint32      nameLengthInBytes,
                    psoObjStatus & status );
 
    /**

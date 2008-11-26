@@ -61,7 +61,7 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   ObjDefinition( size_t numberOfFields, enum psoObjectType type );
+   ObjDefinition( psoUint32 numberOfFields, enum psoObjectType type );
    
    virtual ~ObjDefinition();
 
@@ -80,9 +80,9 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void AddKey( psoKeyType type,
-                size_t     length,
-                size_t     minLength,
-                size_t     maxLength );
+                psoUint32  length,
+                psoUint32  minLength,
+                psoUint32  maxLength );
 
    /**
     * Add a field to the definition. Fields must be added in order.
@@ -105,11 +105,11 @@ public:
     */
    void AddField( std::string  & name,
                   psoFieldType   type,
-                  size_t         length,
-                  size_t         minLength,
-                  size_t         maxLength,
-                  size_t         precision,
-                  size_t         scale );
+                  psoUint32      length,
+                  psoUint32      minLength,
+                  psoUint32      maxLength,
+                  psoUint32      precision,
+                  psoUint32      scale );
 
    /**
     * Add a field to the definition. Fields must be added in order.
@@ -132,13 +132,13 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void AddField( const char   * name,
-                  size_t         nameLength,
+                  psoUint32      nameLength,
                   psoFieldType   type,
-                  size_t         length,
-                  size_t         minLength,
-                  size_t         maxLength,
-                  size_t         precision,
-                  size_t         scale );
+                  psoUint32      length,
+                  psoUint32      minLength,
+                  psoUint32      maxLength,
+                  psoUint32      precision,
+                  psoUint32      scale );
 
    /**
     * Set the type of the object.
@@ -168,7 +168,7 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Reset( size_t numberOfFields, enum psoObjectType type );
+   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
 
    /**
     * Reset the object to be reused for the definition of another data 
@@ -192,7 +192,7 @@ private:
    psoObjectDefinition * pDefinition;
    
    /// Iterator
-   size_t currentField;
+   psoUint32 currentField;
    
    /// was the key added?
    bool keyAdded;

@@ -101,10 +101,6 @@
 #  include <inttypes.h>
 #elif HAVE_STDINT_H
 #  include <stdint.h>
-#else
-#  if defined(WIN32)
-typedef DWORD uint32_t;
-#  endif
 #endif
 
 #if HAVE_UNISTD_H

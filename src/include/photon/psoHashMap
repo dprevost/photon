@@ -89,7 +89,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Delete( const void * key,
-                uint32_t     keyLength );
+                psoUint32    keyLength );
 
    /** 
     * Retrieve the data item identified by the given key from the hash map.
@@ -109,10 +109,10 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Get( const void * key,
-             uint32_t     keyLength,
+             psoUint32    keyLength,
              void       * buffer,
-             uint32_t     bufferLength,
-             uint32_t   & returnedLength );
+             psoUint32    bufferLength,
+             psoUint32  & returnedLength );
 
    /** 
     * Iterate through the hash map.
@@ -138,12 +138,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetFirst( void     * key,
-                 uint32_t   keyLength,
-                 void     * buffer,
-                 uint32_t   bufferLength,
-                 uint32_t & retKeyLength,
-                 uint32_t & retDataLength );
+   int GetFirst( void      * key,
+                 psoUint32   keyLength,
+                 void      * buffer,
+                 psoUint32   bufferLength,
+                 psoUint32 & retKeyLength,
+                 psoUint32 & retDataLength );
 
    /** 
     * Iterate through the hash map.
@@ -175,12 +175,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   int GetNext( void     * key,
-                uint32_t   keyLength,
-                void     * buffer,
-                uint32_t   bufferLength,
-                uint32_t & retKeyLength,
-                uint32_t & retDataLength );
+   int GetNext( void      * key,
+                psoUint32   keyLength,
+                void      * buffer,
+                psoUint32   bufferLength,
+                psoUint32 & retKeyLength,
+                psoUint32 & retDataLength );
 
    /**
     * Insert a data element in the hash map.
@@ -195,9 +195,9 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Insert( const void * key,
-                uint32_t     keyLength,
+                psoUint32    keyLength,
                 const void * data,
-                uint32_t     dataLength );
+                psoUint32    dataLength );
 
    /** 
     * Open an existing hash map (see psoSession::CreateObject to create a new 
@@ -220,7 +220,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Open( const char * hashMapName,
-              uint32_t     nameLengthInBytes );
+              psoUint32    nameLengthInBytes );
    
    /**
     * Replace a data element in the hash map.
@@ -235,9 +235,9 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Replace( const void * key,
-                 uint32_t     keyLength,
+                 psoUint32    keyLength,
                  const void * data,
-                 uint32_t     dataLength );
+                 psoUint32    dataLength );
 
    /**
     * Return the status of the hash map.

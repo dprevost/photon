@@ -19,6 +19,10 @@
 #include <signal.h>
 #include "Tests/PrintError.h"
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+#  define unlink(a) _unlink(a)
+#endif
+
 const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

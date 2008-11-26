@@ -100,8 +100,8 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
 PHOTON_EXPORT
 int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                      void       * buffer,
-                     uint32_t     bufferLength,
-                     uint32_t   * returnedLength );
+                     psoUint32    bufferLength,
+                     psoUint32  * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -130,8 +130,8 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoLifoGetNext( PSO_HANDLE   objectHandle,
                     void       * buffer,
-                    uint32_t     bufferLength,
-                    uint32_t   * returnedLength );
+                    psoUint32    bufferLength,
+                    psoUint32  * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -152,7 +152,7 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoLifoOpen(  PSO_HANDLE   sessionHandle,
                   const char * queueName,
-                  uint32_t     nameLengthInBytes,
+                  psoUint32    nameLengthInBytes,
                   PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -179,8 +179,8 @@ int psoLifoOpen(  PSO_HANDLE   sessionHandle,
 PHOTON_EXPORT
 int psoLifoPop( PSO_HANDLE   objectHandle,
                 void       * buffer,
-                uint32_t     bufferLength,
-                uint32_t   * returnedLength );
+                psoUint32    bufferLength,
+                psoUint32  * returnedLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -198,7 +198,7 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
 PHOTON_EXPORT
 int psoLifoPush( PSO_HANDLE   objectHandle, 
                  const void * pItem, 
-                 uint32_t     length );
+                 psoUint32    length );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

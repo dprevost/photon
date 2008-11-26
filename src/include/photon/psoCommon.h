@@ -19,7 +19,18 @@
 #define PSO_COMMON_H
 
 #include <stdlib.h>
-#include <stdint.h>
+
+/*
+ * We use our own type instead of one of the defined types to avoid
+ * redefinition of the same symbol, either in building Photon itself
+ * and possibly client code using Photon.
+ */
+#ifdef _MSC_VER
+typedef unsigned __int32 psoUint32;
+#else
+#  include <stdint.h>
+typedef uint32_t psoUint32;
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -156,13 +167,13 @@ struct psoKeyDefinition
    enum psoKeyType type;
 
    /** For fixed-length data types */
-   uint32_t length;
+   psoUint32 length;
 
    /** For variable-length data types */
-   uint32_t minLength;
+   psoUint32 minLength;
 
    /** For variable-length data types */
-   uint32_t maxLength;
+   psoUint32 maxLength;
 };
 
 typedef struct psoKeyDefinition psoKeyDefinition;
@@ -185,19 +196,19 @@ struct psoFieldDefinition
    enum psoFieldType type;
    
    /** For fixed-length data types */
-   uint32_t length;
+   psoUint32 length;
 
    /** For variable-length data types */
-   uint32_t minLength;
+   psoUint32 minLength;
 
    /** For variable-length data types */
-   uint32_t maxLength;
+   psoUint32 maxLength;
 
    /** Total number of digits in the decimal field. */
-   uint32_t precision;
+   psoUint32 precision;
 
    /** Number of digits following the decimal separator. */
-   uint32_t scale;
+   psoUint32 scale;
 };
 
 typedef struct psoFieldDefinition psoFieldDefinition;
@@ -211,7 +222,7 @@ struct psoObjectDefinition
    enum psoObjectType type;
 
    /** The number of fields in the definition. */
-   unsigned int numFields;
+   psoUint32 numFields;
    
    /** The data definition of the key (hash map/fast map only) */
    psoKeyDefinition key;
@@ -245,7 +256,7 @@ struct psoFolderEntry
    int status;
    
    /** The actual length (in bytes) of the name of the object. */
-   uint32_t nameLengthInBytes;
+   psoUint32 nameLengthInBytes;
    
 };
 
@@ -281,10 +292,10 @@ struct psoObjStatus
    size_t freeBytes;
 
    /** Maximum data length (in bytes). */
-   uint32_t maxDataLength;
+   psoUint32 maxDataLength;
    
    /** Maximum key length (in bytes) if keys are supported - zero otherwise */
-   uint32_t maxKeyLength;
+   psoUint32 maxKeyLength;
 
 };
 
