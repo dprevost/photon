@@ -33,6 +33,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PrivateHashMap.cs" />
     <Compile Include="Errors.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Exception.cs" />
