@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data2";
    char buffer[200];
    char buffKey[50];
-   size_t dataLength, keyLength;
+   uint32_t dataLength, keyLength;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
       1, 

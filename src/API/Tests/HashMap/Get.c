@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    const char * key  = "My Key";
    const char * data = "My Data";
    char buffer[200];
-   size_t length;
+   uint32_t length;
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP, 
       1, 

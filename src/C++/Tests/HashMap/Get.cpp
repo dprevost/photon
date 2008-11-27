@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
 
    const char * key  = "My Key";
    const char * data = "My Data";
-   size_t length;
+   uint32_t length;
    char buffer[50];
    psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { 

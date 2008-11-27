@@ -78,7 +78,7 @@ void Session::CreateObject( const std::string         & objectName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::CreateObject( const char                * objectName,
-                            size_t                      nameLengthInBytes,
+                            uint32_t                    nameLengthInBytes,
                             const psoObjectDefinition & definition )
 {
    int rc;
@@ -117,7 +117,7 @@ void Session::DestroyObject( const std::string & objectName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::DestroyObject( const char * objectName,
-                             size_t       nameLengthInBytes )
+                             uint32_t     nameLengthInBytes )
 {
    int rc;
    
@@ -159,7 +159,7 @@ Session::ErrorMsg( std::string & message )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::ErrorMsg( char   * message,
-                        size_t   msgLengthInBytes )
+                        uint32_t msgLengthInBytes )
 {
    int rc;
    
@@ -198,7 +198,7 @@ void Session::GetDefinition( const std::string    & objectName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::GetDefinition( const char           * objectName,
-                             size_t                 nameLengthInBytes,
+                             uint32_t               nameLengthInBytes,
                              psoObjectDefinition ** ppDefinition )
 {
    int rc;
@@ -255,7 +255,7 @@ void Session::GetStatus( const std::string & objectName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::GetStatus( const char   * objectName,
-                         size_t         nameLengthInBytes,
+                         uint32_t       nameLengthInBytes,
                          psoObjStatus & status )
 {
    int rc;

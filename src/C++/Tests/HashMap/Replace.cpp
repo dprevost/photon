@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    const char * data2 = "My Data 2";
    char buffer[50];
-   size_t length;
+   uint32_t length;
    psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP,

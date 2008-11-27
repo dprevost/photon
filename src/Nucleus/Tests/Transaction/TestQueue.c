@@ -172,7 +172,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -186,7 +186,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -200,7 +200,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -230,7 +230,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -244,7 +244,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -258,7 +258,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -314,7 +314,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueGet( pQueue,
                       PSO_FIRST,
                       &pQueueItem,
-                      (size_t) -1,
+                      (uint32_t) -1,
                       &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -377,7 +377,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueGet( pQueue,
                       PSO_FIRST,
                       &pQueueItem,
-                      (size_t) -1,
+                      (uint32_t) -1,
                       &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -407,7 +407,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -421,7 +421,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -435,7 +435,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -465,7 +465,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -479,7 +479,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -493,7 +493,7 @@ fprintf(stderr, "commit 2\n" );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
-                         (size_t) -1,
+                         (uint32_t) -1,
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

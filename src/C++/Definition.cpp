@@ -32,7 +32,7 @@ ObjDefinition::ObjDefinition()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ObjDefinition::ObjDefinition( size_t numberOfFields, enum psoObjectType type )
+ObjDefinition::ObjDefinition( uint32_t numberOfFields, enum psoObjectType type )
    : pDefinition  ( NULL ),
      currentField ( 0 ),
      keyAdded     ( false )
@@ -70,11 +70,11 @@ ObjDefinition::~ObjDefinition()
 
 void ObjDefinition::AddField( std::string  & name,
                               psoFieldType   type,
-                              size_t         length,
-                              size_t         minLength,
-                              size_t         maxLength,
-                              size_t         precision,
-                              size_t         scale )
+                              uint32_t       length,
+                              uint32_t       minLength,
+                              uint32_t       maxLength,
+                              uint32_t       precision,
+                              uint32_t       scale )
 {
    AddField( name.c_str(),
              name.length(),
@@ -89,13 +89,13 @@ void ObjDefinition::AddField( std::string  & name,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void ObjDefinition::AddField( const char   * name,
-                              size_t         nameLength,
+                              uint32_t       nameLength,
                               psoFieldType   type,
-                              size_t         length,
-                              size_t         minLength,
-                              size_t         maxLength,
-                              size_t         precision,
-                              size_t         scale )
+                              uint32_t       length,
+                              uint32_t       minLength,
+                              uint32_t       maxLength,
+                              uint32_t       precision,
+                              uint32_t       scale )
 {
    if ( pDefinition == NULL ) {
       throw pso::Exception( "ObjDefinition::AddField", PSO_NULL_POINTER );
@@ -179,9 +179,9 @@ void ObjDefinition::AddField( const char   * name,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void ObjDefinition::AddKey( psoKeyType type,
-                            size_t     length,
-                            size_t     minLength,
-                            size_t     maxLength )
+                            uint32_t   length,
+                            uint32_t   minLength,
+                            uint32_t   maxLength )
 {
    if ( pDefinition == NULL ) {
       throw pso::Exception( "ObjDefinition::AddKey", PSO_NULL_POINTER );
@@ -260,7 +260,7 @@ enum psoObjectType ObjDefinition::ObjectType()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void ObjDefinition::Reset( size_t numberOfFields, enum psoObjectType type )
+void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
 {
    psoObjectDefinition * tmp;
    

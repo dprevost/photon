@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
 
    const char * data1 = "My Data1";
    char buffer[50];
-   size_t length;
+   uint32_t length;
    int rc;
    psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { 

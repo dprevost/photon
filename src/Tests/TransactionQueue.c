@@ -559,7 +559,7 @@ int Test21()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -597,7 +597,7 @@ int Test22()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -639,7 +639,7 @@ int Test23()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -686,7 +686,7 @@ int Test24()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -736,7 +736,7 @@ int Test25()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );   
    if ( errcode != PSO_OK ) goto end;
@@ -782,7 +782,7 @@ int Test26()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -828,7 +828,7 @@ int Test27()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -877,7 +877,7 @@ int Test28()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -926,7 +926,7 @@ int Test29()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -978,7 +978,7 @@ int Test30()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -1024,7 +1024,7 @@ int Test31()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;
@@ -1074,7 +1074,7 @@ int Test32()
    int errcode = 0;
    PSO_HANDLE q1 = NULL, q2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    
    errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef );
    if ( errcode != PSO_OK ) goto end;

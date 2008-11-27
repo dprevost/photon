@@ -38,7 +38,7 @@ int main( int argc, char * argv[] )
    char buffer[50];
    char buffKey[50];
    int errcode;
-   size_t dataLength, keyLength;
+   uint32_t dataLength, keyLength;
    psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP,

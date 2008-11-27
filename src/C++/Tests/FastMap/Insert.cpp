@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    const char * key  = "My Key";
    const char * data = "My Data";
    char buffer[20], keyBuff[20];
-   size_t length, keyLength;
+   uint32_t length, keyLength;
    int rc;
    psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { 

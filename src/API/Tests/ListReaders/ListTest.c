@@ -58,7 +58,7 @@ int main()
    }
    
    if ( sum1 != list.currentSize ) {
-      fprintf( stderr, "%d %d\n", sum1, list.currentSize );
+      fprintf( stderr, "%d "PSO_SIZE_T_FORMAT"\n", sum1, list.currentSize );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -75,7 +75,7 @@ int main()
    } while ( psoaListReadersPeakNext( &list, dummy, &dummy ) );
    
    if ( sum2 != list.currentSize ) {
-      fprintf( stderr, "%d %d\n", sum2, list.currentSize );
+      fprintf( stderr, "%d "PSO_SIZE_T_FORMAT"\n", sum2, list.currentSize );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( sum2 != sum1 ) {
@@ -96,7 +96,7 @@ int main()
    }
 
    if ( (MAX_READERS-sum1) != list.currentSize ) {
-      fprintf( stderr, "%d %d\n", sum1, list.currentSize );
+      fprintf( stderr, "%d "PSO_SIZE_T_FORMAT"\n", sum1, list.currentSize );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -120,7 +120,7 @@ int main()
    } while ( psoaListReadersPeakNext( &list, dummy, &dummy ) );
    
    if ( sum2 != list.currentSize ) {
-      fprintf( stderr, "%d %d\n", sum2, list.currentSize );
+      fprintf( stderr, "%d "PSO_SIZE_T_FORMAT"\n", sum2, list.currentSize );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

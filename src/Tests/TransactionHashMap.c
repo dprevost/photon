@@ -559,7 +559,7 @@ int Test21()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -597,7 +597,7 @@ int Test22()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
 
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -639,7 +639,7 @@ int Test23()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -687,7 +687,7 @@ int Test24()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -738,7 +738,7 @@ int Test25()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );   
@@ -785,7 +785,7 @@ int Test26()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -832,7 +832,7 @@ int Test27()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -882,7 +882,7 @@ int Test28()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -932,7 +932,7 @@ int Test29()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -985,7 +985,7 @@ int Test30()
    int errcode = 0;
    PSO_HANDLE h1 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -1032,7 +1032,7 @@ int Test31()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );
@@ -1083,7 +1083,7 @@ int Test32()
    int errcode = 0;
    PSO_HANDLE h1 = NULL, h2 = NULL;
    char str[25];
-   size_t returnLength;
+   uint32_t returnLength;
    char * key1 = "Key 1";
    
    errcode = psoCreateObject( g_session1, "A_Map", strlen("A_Map"), &g_mapDef );

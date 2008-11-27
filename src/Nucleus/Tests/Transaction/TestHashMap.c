@@ -277,7 +277,7 @@ int main()
                         key2,
                         strlen(key2),
                         &pHashItem,
-                        (size_t) -1,
+                        (uint32_t) -1,
                         &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -344,7 +344,7 @@ int main()
                         key2,
                         strlen(key2),
                         &pHashItem,
-                        (size_t) -1,
+                        (uint32_t) -1,
                         &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -375,7 +375,7 @@ int main()
                         key2,
                         strlen(key2),
                         &pHashItem,
-                        (size_t) -1,
+                        (uint32_t) -1,
                         &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -427,7 +427,7 @@ int main()
                         key2,
                         strlen(key2),
                         &pHashItem,
-                        (size_t) -1,
+                        (uint32_t) -1,
                         &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

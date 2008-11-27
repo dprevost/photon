@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    char buffer[200];
-   size_t length;
+   uint32_t length;
    psoObjectDefinition defQueue = { 
       PSO_QUEUE,
       1, 

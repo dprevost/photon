@@ -136,8 +136,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes <= baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -169,8 +170,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n",
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -183,8 +185,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( status.numDataItem != 1 ) {
-      fprintf( stderr, "Status error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Status error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -229,8 +232,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -243,8 +247,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( status.numDataItem != 1 ) {
-      fprintf( stderr, "Status error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Status error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -306,8 +311,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes == baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -320,8 +326,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( status.numDataItem != 2 ) {
-      fprintf( stderr, "Status error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Status error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n",
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -336,8 +343,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes == baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -352,8 +360,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes == baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -368,8 +377,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n",
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -431,8 +441,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n",
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -445,8 +456,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( status.numDataItem != 2 ) {
-      fprintf( stderr, "Status error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Status error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -473,8 +485,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -528,8 +541,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -576,8 +590,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline3.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -593,8 +608,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( info.allocatedSizeInBytes != baseline2.allocatedSizeInBytes ) {
-      fprintf( stderr, "Baseline error: %d %d\n", info.allocatedSizeInBytes,
-         baseline3.allocatedSizeInBytes );
+      fprintf( stderr, "Baseline error: "PSO_SIZE_T_FORMAT" "PSO_SIZE_T_FORMAT"\n", 
+	       info.allocatedSizeInBytes,
+               baseline3.allocatedSizeInBytes );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 

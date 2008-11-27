@@ -442,7 +442,7 @@ bool writeVarBinary( string        & inStr,
 void shellBuffToOut( string              & outStr, 
                      psoObjectDefinition * pDefinition,
                      unsigned char       * buffer,
-                     size_t                length )
+                     uint32_t              length )
 {
    uint32_t * offsets = NULL, i;
   
@@ -497,7 +497,7 @@ void shellBuffToOut( string              & outStr,
 void shellKeyToOut( string           & outStr, 
                     psoKeyDefinition * pDefinition,
                     unsigned char    * key,
-                    size_t             length )
+                    uint32_t           length )
 {
    switch( pDefinition->type ) {
 
@@ -519,7 +519,7 @@ void shellKeyToOut( string           & outStr,
 
 unsigned char * shellInToBuff( string              & inStr, 
                                psoObjectDefinition * pDefinition,
-                               size_t              & length )
+                               uint32_t            & length )
 {
    uint32_t * offsets = NULL, i;
    unsigned char * buffer = NULL;
@@ -638,7 +638,7 @@ unsigned char * shellInToBuff( string              & inStr,
 
 unsigned char * shellInToKey( string           & inKey, 
                               psoKeyDefinition * pDefinition,
-                              size_t           & length )
+                              uint32_t         & length )
 {
    unsigned char * key = NULL;
    bool ok = false;

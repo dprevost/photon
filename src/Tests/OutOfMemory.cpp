@@ -52,7 +52,7 @@ int main()
    psoInfo info1; 
    const char * dataIn = "1234567890123456789012345";
    char dataOut[50];
-   size_t length;
+   uint32_t length;
    int countIn = 0, countOut = 0, errcode;
    Queue q1(session), q2(session);
 
@@ -130,10 +130,12 @@ int main()
       do {
          errcode = q1.Pop( dataOut, 50, length );
          if ( errcode == 0 ) countOut++;
+	 if ( (countOut % 500) == 0 ) session.Commit();
       } while ( errcode == 0 );
       do {
          errcode = q2.Pop( dataOut, 50, length );
          if ( errcode == 0 ) countOut++;
+	 if ( (countOut % 500) == 0 ) session.Commit();
       } while ( errcode == 0 );
    }
    catch( Exception exc ) {

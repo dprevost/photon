@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    string qname = fname + "/test";
    const char * data1 = "My Data1";
    char buffer[50];
-   size_t length;
+   uint32_t length;
    psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { 
       PSO_LIFO,

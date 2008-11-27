@@ -349,12 +349,6 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
          if ( pDefinition->key.length == 0 ) {
             return PSO_INVALID_FIELD_LENGTH;
          }
-#if SIZEOF_VOID_P > 4
-         /* For 64 bits processors */
-         if ( pDefinition->key.length > 4294967295 ) {
-            return PSO_INVALID_FIELD_LENGTH;
-         }
-#endif
          break;
 
       case PSO_KEY_VAR_BINARY:
@@ -362,20 +356,6 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
          if ( pDefinition->key.minLength == 0 ) {
             return PSO_INVALID_FIELD_LENGTH;
          }
-         /*
-          * Reminder: maxLength set to zero indicates the maximum value
-          * allowed which is 4294967295.
-          */
-#if SIZEOF_VOID_P > 4
-         /* For 64 bits processors */
-         if ( pDefinition->key.maxLength > 4294967295 ) {
-            return PSO_INVALID_FIELD_LENGTH;
-         }
-         /* in case maxLength = 0 */
-         if ( pDefinition->key.minLength > 4294967295 ) {
-            return PSO_INVALID_FIELD_LENGTH;
-         }
-#endif
          if ( pDefinition->key.maxLength != 0 ) {
             if ( pDefinition->key.minLength > 
                  pDefinition->key.maxLength ) {
@@ -412,12 +392,6 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
             if ( pDefinition->fields[i].length == 0 ) {
                return PSO_INVALID_FIELD_LENGTH;
             }
-#if SIZEOF_VOID_P > 4
-            /* For 64 bits processors */
-            if ( pDefinition->fields[i].length > 4294967295 ) {
-               return PSO_INVALID_FIELD_LENGTH;
-            }
-#endif
             break;
 
          case PSO_DECIMAL:
@@ -448,16 +422,6 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
              * Reminder: maxLength set to zero indicates the maximum value
              * allowed which is 4294967295.
              */
-#if SIZEOF_VOID_P > 4
-            /* For 64 bits processors */
-            if ( pDefinition->fields[i].maxLength > 4294967295 ) {
-               return PSO_INVALID_FIELD_LENGTH;
-            }
-            /* in case maxLength = 0 */
-            if ( pDefinition->fields[i].minLength > 4294967295 ) {
-               return PSO_INVALID_FIELD_LENGTH;
-            }
-#endif
             if ( pDefinition->fields[i].maxLength != 0 ) {
                if ( pDefinition->fields[i].minLength > 
                     pDefinition->fields[i].maxLength ) {

@@ -130,7 +130,7 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( pFolder->nodeObject.txCounter != 4 ) {
-      fprintf( stderr, "txCounter = %d\n", pFolder->nodeObject.txCounter );
+      fprintf( stderr, "txCounter = "PSO_SIZE_T_FORMAT"\n", pFolder->nodeObject.txCounter );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

@@ -32,7 +32,7 @@ int main()
 {
    int errcode, i;
    char name [PSO_MAX_NAME_LENGTH+10];
-   size_t partial;
+   uint32_t partial;
    bool last;
    
    errcode = psonValidateString( "Test2",
