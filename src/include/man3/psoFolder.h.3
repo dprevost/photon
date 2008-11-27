@@ -1,4 +1,4 @@
-.TH "psoFolder.h" 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFolder.h" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,15 +24,15 @@ Definition in file \fBpsoFolder.h\fP.
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, \fBpsoUint32\fP lengthInBytes)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
@@ -44,7 +44,7 @@ Definition in file \fBpsoFolder.h\fP.
 .br
 .RI "\fIIterate through the folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing folder (see \fBpsoCreateObject\fP to create a new folder). \fP"
 .ti -1c

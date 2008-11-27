@@ -1,4 +1,4 @@
-.TH "psoKeyDefinition" 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoKeyDefinition" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ psoKeyDefinition \-
 .PP 
 Description of the structure of the hash map key. 
 .PP
-Definition at line 152 of file psoCommon.h.
+Definition at line 164 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -21,15 +21,15 @@ Definition at line 152 of file psoCommon.h.
 .br
 .RI "\fIThe data type of the key. \fP"
 .ti -1c
-.RI "size_t \fBlength\fP"
+.RI "\fBpsoUint32\fP \fBlength\fP"
 .br
 .RI "\fIFor fixed-length data types. \fP"
 .ti -1c
-.RI "size_t \fBminLength\fP"
+.RI "\fBpsoUint32\fP \fBminLength\fP"
 .br
 .RI "\fIFor variable-length data types. \fP"
 .ti -1c
-.RI "size_t \fBmaxLength\fP"
+.RI "\fBpsoUint32\fP \fBmaxLength\fP"
 .br
 .RI "\fIFor variable-length data types. \fP"
 .in -1c
@@ -41,22 +41,22 @@ The data type of the key.
 .PP
 
 .PP
-Definition at line 155 of file psoCommon.h.
-.SS "size_t \fBpsoKeyDefinition::length\fP"
+Definition at line 167 of file psoCommon.h.
+.SS "\fBpsoUint32\fP \fBpsoKeyDefinition::length\fP"
 .PP
 For fixed-length data types. 
 .PP
-Definition at line 158 of file psoCommon.h.
-.SS "size_t \fBpsoKeyDefinition::minLength\fP"
+Definition at line 170 of file psoCommon.h.
+.SS "\fBpsoUint32\fP \fBpsoKeyDefinition::minLength\fP"
 .PP
 For variable-length data types. 
 .PP
-Definition at line 161 of file psoCommon.h.
-.SS "size_t \fBpsoKeyDefinition::maxLength\fP"
+Definition at line 173 of file psoCommon.h.
+.SS "\fBpsoUint32\fP \fBpsoKeyDefinition::maxLength\fP"
 .PP
 For variable-length data types. 
 .PP
-Definition at line 164 of file psoCommon.h.
+Definition at line 176 of file psoCommon.h.
 
 .SH "Author"
 .PP 

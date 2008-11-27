@@ -1,4 +1,4 @@
-.TH "psoSession.h" 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoSession.h" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -43,15 +43,15 @@ Definition in file \fBpsoSession.h\fP.
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .br
 .RI "\fIDestroy an existing object in shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, \fBpsoUint32\fP msgLengthInBytes)"
 .br
 .RI "\fIReturn the error message associated with the last error(s). \fP"
 .ti -1c
@@ -59,7 +59,7 @@ Definition in file \fBpsoSession.h\fP.
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
@@ -67,7 +67,7 @@ Definition in file \fBpsoSession.h\fP.
 .br
 .RI "\fIReturn information on the current status of the shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c

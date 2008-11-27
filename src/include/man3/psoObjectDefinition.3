@@ -1,4 +1,4 @@
-.TH "psoObjectDefinition" 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoObjectDefinition" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ psoObjectDefinition \-
 .PP 
 This struct has a variable length. 
 .PP
-Definition at line 207 of file psoCommon.h.
+Definition at line 219 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -21,7 +21,7 @@ Definition at line 207 of file psoCommon.h.
 .br
 .RI "\fIThe object type. \fP"
 .ti -1c
-.RI "unsigned int \fBnumFields\fP"
+.RI "\fBpsoUint32\fP \fBnumFields\fP"
 .br
 .RI "\fIThe number of fields in the definition. \fP"
 .ti -1c
@@ -41,24 +41,24 @@ The object type.
 .PP
 
 .PP
-Definition at line 210 of file psoCommon.h.
-.SS "unsigned int \fBpsoObjectDefinition::numFields\fP"
+Definition at line 222 of file psoCommon.h.
+.SS "\fBpsoUint32\fP \fBpsoObjectDefinition::numFields\fP"
 .PP
 The number of fields in the definition. 
 .PP
 
 .PP
-Definition at line 213 of file psoCommon.h.
+Definition at line 225 of file psoCommon.h.
 .SS "\fBpsoKeyDefinition\fP \fBpsoObjectDefinition::key\fP"
 .PP
 The data definition of the key (hash map/fast map only). 
 .PP
-Definition at line 216 of file psoCommon.h.
+Definition at line 228 of file psoCommon.h.
 .SS "\fBpsoFieldDefinition\fP \fBpsoObjectDefinition::fields\fP[1]"
 .PP
 The data definition of the fields. 
 .PP
-Definition at line 219 of file psoCommon.h.
+Definition at line 231 of file psoCommon.h.
 
 .SH "Author"
 .PP 

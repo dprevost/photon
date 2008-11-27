@@ -1,4 +1,4 @@
-.TH "API functions for Photon folders." 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon folders." 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,15 +25,15 @@ If a flat structure is preferred, simply make all your data containers children 
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, size_t lengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, \fBpsoUint32\fP lengthInBytes)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
@@ -45,7 +45,7 @@ If a flat structure is preferred, simply make all your data containers children 
 .br
 .RI "\fIIterate through the folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing folder (see \fBpsoCreateObject\fP to create a new folder). \fP"
 .ti -1c
@@ -72,7 +72,7 @@ This function terminates the current access to the folder in shared memory (the 
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
+.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
@@ -97,7 +97,7 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateObjectXML (\fBPSO_HANDLE\fP folderHandle, const char * xmlBuffer, size_t lengthInBytes)"
+.SS "PHOTON_EXPORT int psoFolderCreateObjectXML (\fBPSO_HANDLE\fP folderHandle, const char * xmlBuffer, \fBpsoUint32\fP lengthInBytes)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
@@ -120,7 +120,7 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderDestroyObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, size_t nameLengthInBytes)"
+.SS "PHOTON_EXPORT int psoFolderDestroyObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .PP
 Destroy an object, child of the current folder, in shared memory. 
 .PP
@@ -181,7 +181,7 @@ Evidently, you must call \fBpsoFolderGetFirst\fP to initialize the iterator.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderOpen (\fBPSO_HANDLE\fP sessionHandle, const char * folderName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
+.SS "PHOTON_EXPORT int psoFolderOpen (\fBPSO_HANDLE\fP sessionHandle, const char * folderName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open an existing folder (see \fBpsoCreateObject\fP to create a new folder). 
 .PP

@@ -1,4 +1,4 @@
-.TH "API functions for Photon read-only hash maps." 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon read-only hash maps." 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -32,11 +32,11 @@ Note: the old versions are removed from memory when all readers have updated the
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength)"
 .br
 .RI "\fIRemove the data item identified by the given key from the hash map (you must be in edit mode). \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapEdit\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapEdit\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen a temporary copy of an existing hash map for editing. \fP"
 .ti -1c
@@ -44,27 +44,27 @@ Note: the old versions are removed from memory when all readers have updated the
 .br
 .RI "\fIRemove all data items from the map (you must be in edit mode). \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapGet\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *returnedLength)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapGet\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *returnedLength)"
 .br
 .RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *key, \fBpsoUint32\fP keyLength, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *retKeyLength, \fBpsoUint32\fP *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *key, size_t keyLength, void *buffer, size_t bufferLength, size_t *retKeyLength, size_t *retDataLength)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *key, \fBpsoUint32\fP keyLength, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *retKeyLength, \fBpsoUint32\fP *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, const void *data, \fBpsoUint32\fP dataLength)"
 .br
 .RI "\fIInsert a data element in the hash map (you must be in edit mode). \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
 .RI "\fIOpen an existing hash map read only (see \fBpsoCreateObject\fP to create a new object). \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFastMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, size_t keyLength, const void *data, size_t dataLength)"
+.RI "PHOTON_EXPORT int \fBpsoFastMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, const void *data, \fBpsoUint32\fP dataLength)"
 .br
 .RI "\fIReplace a data element in the hash map (you must be in edit mode). \fP"
 .ti -1c
@@ -118,7 +118,7 @@ This function allocates a buffer to hold the definition (using malloc()). You mu
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapDelete (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength)"
+.SS "PHOTON_EXPORT int psoFastMapDelete (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength)"
 .PP
 Remove the data item identified by the given key from the hash map (you must be in edit mode). 
 .PP
@@ -139,7 +139,7 @@ The removals only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapEdit (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
+.SS "PHOTON_EXPORT int psoFastMapEdit (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open a temporary copy of an existing hash map for editing. 
 .PP
@@ -179,7 +179,7 @@ The removals only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapGet (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * returnedLength)"
+.SS "PHOTON_EXPORT int psoFastMapGet (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, void * buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP * returnedLength)"
 .PP
 Retrieve the data item identified by the given key from the hash map. 
 .PP
@@ -204,7 +204,7 @@ Retrieve the data item identified by the given key from the hash map.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapGetFirst (\fBPSO_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "PHOTON_EXPORT int psoFastMapGetFirst (\fBPSO_HANDLE\fP objectHandle, void * key, \fBpsoUint32\fP keyLength, void * buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP * retKeyLength, \fBpsoUint32\fP * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -233,7 +233,7 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapGetNext (\fBPSO_HANDLE\fP objectHandle, void * key, size_t keyLength, void * buffer, size_t bufferLength, size_t * retKeyLength, size_t * retDataLength)"
+.SS "PHOTON_EXPORT int psoFastMapGetNext (\fBPSO_HANDLE\fP objectHandle, void * key, \fBpsoUint32\fP keyLength, void * buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP * retKeyLength, \fBpsoUint32\fP * retDataLength)"
 .PP
 Iterate through the hash map. 
 .PP
@@ -264,7 +264,7 @@ Data items retrieved this way will not be sorted.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapInsert (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "PHOTON_EXPORT int psoFastMapInsert (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, const void * data, \fBpsoUint32\fP dataLength)"
 .PP
 Insert a data element in the hash map (you must be in edit mode). 
 .PP
@@ -289,7 +289,7 @@ The additions only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapOpen (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, size_t nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
+.SS "PHOTON_EXPORT int psoFastMapOpen (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open an existing hash map read only (see \fBpsoCreateObject\fP to create a new object). 
 .PP
@@ -310,7 +310,7 @@ Open an existing hash map read only (see \fBpsoCreateObject\fP to create a new o
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFastMapReplace (\fBPSO_HANDLE\fP objectHandle, const void * key, size_t keyLength, const void * data, size_t dataLength)"
+.SS "PHOTON_EXPORT int psoFastMapReplace (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, const void * data, \fBpsoUint32\fP dataLength)"
 .PP
 Replace a data element in the hash map (you must be in edit mode). 
 .PP

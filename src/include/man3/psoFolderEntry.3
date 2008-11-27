@@ -1,4 +1,4 @@
-.TH "psoFolderEntry" 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFolderEntry" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,10 +12,14 @@ psoFolderEntry \-
 .PP 
 This data structure is used to iterate throught all objects in a folder. 
 .PP
-Definition at line 231 of file psoCommon.h.
+Definition at line 243 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
+.ti -1c
+.RI "char \fBname\fP [PSO_MAX_NAME_LENGTH]"
+.br
+.RI "\fIThe name of the object. \fP"
 .ti -1c
 .RI "\fBpsoObjectType\fP \fBtype\fP"
 .br
@@ -25,42 +29,38 @@ Definition at line 231 of file psoCommon.h.
 .br
 .RI "\fIStatus of the object. \fP"
 .ti -1c
-.RI "size_t \fBnameLengthInBytes\fP"
+.RI "\fBpsoUint32\fP \fBnameLengthInBytes\fP"
 .br
 .RI "\fIThe actual length (in bytes) of the name of the object. \fP"
-.ti -1c
-.RI "char \fBname\fP [PSO_MAX_NAME_LENGTH]"
-.br
-.RI "\fIThe name of the object. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
-.SS "\fBpsoObjectType\fP \fBpsoFolderEntry::type\fP"
-.PP
-The object type. 
-.PP
-Definition at line 234 of file psoCommon.h.
-.SS "int \fBpsoFolderEntry::status\fP"
-.PP
-Status of the object. 
-.PP
-For example, created but not committed, etc. 
-.PP
-Definition at line 241 of file psoCommon.h.
-.SS "size_t \fBpsoFolderEntry::nameLengthInBytes\fP"
-.PP
-The actual length (in bytes) of the name of the object. 
-.PP
-
-.PP
-Definition at line 244 of file psoCommon.h.
 .SS "char \fBpsoFolderEntry::name\fP[PSO_MAX_NAME_LENGTH]"
 .PP
 The name of the object. 
 .PP
 
 .PP
-Definition at line 247 of file psoCommon.h.
+Definition at line 246 of file psoCommon.h.
+.SS "\fBpsoObjectType\fP \fBpsoFolderEntry::type\fP"
+.PP
+The object type. 
+.PP
+Definition at line 249 of file psoCommon.h.
+.SS "int \fBpsoFolderEntry::status\fP"
+.PP
+Status of the object. 
+.PP
+For example, created but not committed, etc. 
+.PP
+Definition at line 256 of file psoCommon.h.
+.SS "\fBpsoUint32\fP \fBpsoFolderEntry::nameLengthInBytes\fP"
+.PP
+The actual length (in bytes) of the name of the object. 
+.PP
+
+.PP
+Definition at line 259 of file psoCommon.h.
 
 .SH "Author"
 .PP 

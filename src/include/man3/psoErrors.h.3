@@ -1,4 +1,4 @@
-.TH "psoErrors.h" 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoErrors.h" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -245,7 +245,7 @@ No validation is done at this point. Therefore the error is likely something lik
 A simple Google search for 'well-formed xml' returns many web sites that describe the syntax rules for XML. You can also use the program xmllint (included in the distribution of libxm2) to pinpoint the issue. 
 .TP
 \fB\fIPSO_XML_INVALID_ROOT \fP\fP
-The root element is not the expected root, <folder> and similar. 
+The root element is not the expected root. 
 .TP
 \fB\fIPSO_XML_NO_SCHEMA_LOCATION \fP\fP
 The root element must have an attribute named schemaLocation (in the namespace 'http://www.w3.org/2001/XMLSchema-instance') to point to the schema use for the xml buffer stream. 

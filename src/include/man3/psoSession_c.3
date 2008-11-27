@@ -1,4 +1,4 @@
-.TH "API functions for Photon sessions." 3 "10 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon sessions." 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -34,15 +34,15 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .br
 .RI "\fIDestroy an existing object in shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, size_t msgLengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoErrorMsg\fP (\fBPSO_HANDLE\fP sessionHandle, char *message, \fBpsoUint32\fP msgLengthInBytes)"
 .br
 .RI "\fIReturn the error message associated with the last error(s). \fP"
 .ti -1c
@@ -50,7 +50,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP **definition)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
@@ -58,7 +58,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fIReturn information on the current status of the shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, size_t nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
+.RI "PHOTON_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
 .br
 .RI "\fIReturn the status of the named object. \fP"
 .ti -1c
@@ -95,7 +95,7 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
+.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
 .PP
 Create a new object in shared memory. 
 .PP
@@ -120,7 +120,7 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoDestroyObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes)"
+.SS "PHOTON_EXPORT int psoDestroyObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .PP
 Destroy an existing object in shared memory. 
 .PP
@@ -141,7 +141,7 @@ The destruction of the object only becomes permanent after a call to \fBpsoCommi
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoErrorMsg (\fBPSO_HANDLE\fP sessionHandle, char * message, size_t msgLengthInBytes)"
+.SS "PHOTON_EXPORT int psoErrorMsg (\fBPSO_HANDLE\fP sessionHandle, char * message, \fBpsoUint32\fP msgLengthInBytes)"
 .PP
 Return the error message associated with the last error(s). 
 .PP
@@ -183,7 +183,7 @@ Once this function is executed, attempts to use the session handle might lead to
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes, \fBpsoObjectDefinition\fP ** definition)"
+.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP ** definition)"
 .PP
 Retrieve the data definition of the named object. 
 .PP
@@ -228,7 +228,7 @@ The fetched information is mainly about the current status of the memory allocat
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoGetStatus (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, size_t nameLengthInBytes, \fBpsoObjStatus\fP * pStatus)"
+.SS "PHOTON_EXPORT int psoGetStatus (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjStatus\fP * pStatus)"
 .PP
 Return the status of the named object. 
 .PP
