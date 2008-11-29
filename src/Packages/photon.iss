@@ -52,7 +52,7 @@ Source: src\Examples\iso_3166.tab; DestDir: {app}\Examples
 Source: src\Examples\quasar-config.example.xml; DestDir: {app}\Examples
 Source: src\Examples\quasar_config.xsd; DestDir: {app}\Examples
 Source: src\Examples\README.txt; DestDir: {app}\Examples
-Source: src\Examples\C\Examples.dsw; DestDir: {app}\Examples\C
+Source: src\Examples\C\Examples.sln; DestDir: {app}\Examples\C
 Source: src\Examples\C\HashMap.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\HashMapLoop.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\iso_3166.h; DestDir: {app}\Examples\C
@@ -63,12 +63,12 @@ Source: src\Examples\C\QueueOut.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\QueueWork.c; DestDir: {app}\Examples\C
 Source: src\Examples\C\README.txt; DestDir: {app}\Examples\C
 Source: src\Examples\C\RunQueue.vbs; DestDir: {app}\Examples\C
-Source: src\Examples\C\Project_Files\HashMap.dsp; DestDir: {app}\Examples\C\Project_Files
-Source: src\Examples\C\Project_Files\HashMapLoop.dsp; DestDir: {app}\Examples\C\Project_Files
-Source: src\Examples\C\Project_Files\QueueIn.dsp; DestDir: {app}\Examples\C\Project_Files
-Source: src\Examples\C\Project_Files\QueueOut.dsp; DestDir: {app}\Examples\C\Project_Files
-Source: src\Examples\C\Project_Files\QueueWork.dsp; DestDir: {app}\Examples\C\Project_Files
-Source: src\Examples\C++\Examples.dsw; DestDir: {app}\Examples\C++
+Source: src\Examples\C\Project_Files\HashMap.vcproj; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\HashMapLoop.vcproj; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\QueueIn.vcproj; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\QueueOut.vcproj; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C\Project_Files\QueueWork.vcproj; DestDir: {app}\Examples\C\Project_Files
+Source: src\Examples\C++\Examples.sln; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\HashMap.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\HashMapLoop.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\iso_3166.h; DestDir: {app}\Examples\C++
@@ -79,11 +79,11 @@ Source: src\Examples\C++\QueueOut.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\QueueWork.cpp; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\README.txt; DestDir: {app}\Examples\C++
 Source: src\Examples\C++\RunQueue.vbs; DestDir: {app}\Examples\C++
-Source: src\Examples\C++\Project_Files\HashMap.dsp; DestDir: {app}\Examples\C++\Project_Files
-Source: src\Examples\C++\Project_Files\HashMapLoop.dsp; DestDir: {app}\Examples\C++\Project_Files
-Source: src\Examples\C++\Project_Files\QueueIn.dsp; DestDir: {app}\Examples\C++\Project_Files
-Source: src\Examples\C++\Project_Files\QueueOut.dsp; DestDir: {app}\Examples\C++\Project_Files
-Source: src\Examples\C++\Project_Files\QueueWork.dsp; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\HashMap.vcproj; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\HashMapLoop.vcproj; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\QueueIn.vcproj; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\QueueOut.vcproj; DestDir: {app}\Examples\C++\Project_Files
+Source: src\Examples\C++\Project_Files\QueueWork.vcproj; DestDir: {app}\Examples\C++\Project_Files
 ;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
 Source: src\Packages\SetEnv.exe; DestDir: {app}\bin
 Source: C:\Program Files\libxml2\bin\iconv.dll; DestDir: {app}\bin; Components: libxml2

@@ -48,10 +48,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..,..\include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;BUILD_PHOTON_API;BUILD_PHOTON"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;BUILD_PHOTON_API;LIBXML_STATIC;BUILD_PHOTON"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="2"
 				PrecompiledHeaderFile=".\Debug/API.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="photonCommon.lib photonNucleus.lib ws2_32.lib libxml2.lib"
+				AdditionalDependencies="photonCommon.lib photonNucleus.lib libxml2_a.lib zlib.lib iconv_a.lib ws2_32.lib"
 				OutputFile="Debug/photon.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -149,7 +149,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..,..\include"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;BUILD_PHOTON_API;BUILD_PHOTON"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;BUILD_PHOTON_API;LIBXML_STATIC;BUILD_PHOTON"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -175,7 +175,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="photonCommon.lib photonNucleus.lib ws2_32.lib libxml2.lib"
+				AdditionalDependencies="photonCommon.lib photonNucleus.lib libxml2_a.lib zlib.lib iconv_a.lib ws2_32.lib"
 				OutputFile="Release/photon.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
