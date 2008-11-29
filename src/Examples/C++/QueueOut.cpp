@@ -10,6 +10,8 @@
 
 // This program is part of a set of three, showing one possible use of queues.
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 #include "Queue.h"
 #include <time.h>

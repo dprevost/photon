@@ -14,6 +14,8 @@
  *   show the idea behind sessions.
  */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 
 #ifndef PATH_MAX
@@ -126,7 +128,7 @@ int main( int argc, char *argv[] )
    char countryCode[3];
    char description[81];
    char msg[256];
-   size_t keyLength, dataLength;
+   unsigned int keyLength, dataLength;
    
    if ( argc < 3 ) {
       fprintf( stderr, "Usage: %s iso_3166_data_file quasar_address\n", argv[0] );

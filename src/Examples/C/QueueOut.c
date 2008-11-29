@@ -12,6 +12,8 @@
  * This program is part of a set of three, showing one possible use of queues.
  */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 #include "Queue.h"
 #include <time.h>
@@ -74,7 +76,7 @@ int timetoShutdown()
 {
    int rc;
    int controlData = 0;
-   size_t length;
+   unsigned int length;
    
    rc = psoHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
@@ -89,7 +91,7 @@ int main( int argc, char *argv[] )
 {
    int rc;
    char msg[256];
-   size_t length;
+   unsigned int length;
    isoStruct outStruct;
    int loop = 1;
    int boolShutdown = 0;

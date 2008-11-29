@@ -17,6 +17,8 @@
  *  - At the end of a specified time, starts the shutdown process.
  */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 #include "Queue.h"
 #include <time.h>
@@ -193,7 +195,7 @@ void waitForFriends()
 {
    int rc;
    int controlData = 0;
-   size_t length;
+   unsigned int length;
 #if ! defined(WIN32)
    struct timespec req, rem;
    

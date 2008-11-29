@@ -14,6 +14,8 @@
  *   show the idea behind sessions.
  */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 
 #ifndef PATH_MAX
@@ -126,7 +128,7 @@ int main( int argc, char *argv[] )
    int rc;
    char description[80];
    char msg[256];
-   size_t length;
+   unsigned int length;
    psoObjStatus status;
    
    if ( argc < 3 ) {

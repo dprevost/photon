@@ -13,6 +13,8 @@
  * Specific responsabilities:
  */
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include <time.h>
 #include <ctype.h>
 
@@ -98,7 +100,7 @@ int timetoShutdown()
 {
    int rc;
    int controlData = 0;
-   size_t length;
+   unsigned int length;
    
    rc = psoHashMapGet( control, shutdownKey, strlen(shutdownKey), 
       &controlData, sizeof(int), &length );
@@ -113,7 +115,7 @@ int main( int argc, char *argv[] )
 {
    int rc;
    char msg[256];
-   size_t length;
+   unsigned int length;
    isoStruct workStruct;
    unsigned int loop = 1, i;
    int boolShutdown = 0;

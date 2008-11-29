@@ -34,6 +34,7 @@ using namespace pso;
 
 FILE * fp = NULL;
 
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int openData( const char* filename )

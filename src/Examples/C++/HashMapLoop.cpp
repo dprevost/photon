@@ -11,6 +11,8 @@
 // This example: 
 //    We create a hash map and show how to iterate through it.
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 
 #ifndef PATH_MAX

@@ -12,6 +12,8 @@
 //    We create a hash map and play with it. We do it using two sessions to
 //    show the idea behind sessions.
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "iso_3166.h"
 
 #ifndef PATH_MAX
