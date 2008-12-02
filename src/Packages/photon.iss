@@ -84,16 +84,10 @@ Source: src\Examples\C++\Project_Files\HashMapLoop.vcproj; DestDir: {app}\Exampl
 Source: src\Examples\C++\Project_Files\QueueIn.vcproj; DestDir: {app}\Examples\C++\Project_Files
 Source: src\Examples\C++\Project_Files\QueueOut.vcproj; DestDir: {app}\Examples\C++\Project_Files
 Source: src\Examples\C++\Project_Files\QueueWork.vcproj; DestDir: {app}\Examples\C++\Project_Files
-;Source: c:\windows\system32\mswinsck.ocx; DestDir: {sys}; Flags: regserver restartreplace sharedfile
 Source: src\Packages\SetEnv.exe; DestDir: {app}\bin
-Source: C:\Program Files\libxml2\bin\iconv.dll; DestDir: {app}\bin; Components: libxml2
-Source: C:\Program Files\libxml2\bin\iconv.exe; DestDir: {app}\bin; Components: libxml2
-Source: C:\Program Files\libxml2\bin\libxml2.dll; DestDir: {app}\bin; Components: libxml2
-Source: C:\Program Files\libxml2\bin\xmlcatalog.exe; DestDir: {app}\bin; Components: libxml2
-Source: C:\Program Files\libxml2\bin\zlib1.dll; DestDir: {app}\bin; Components: libxml2
 
 [Icons]
-;Name: "{group}Quasar"; Filename: "{app}\bin\quasar.EXE"; WorkingDir: "{app}"
+Name: {group}\Quasar; Filename: {app}\bin\quasar.EXE; WorkingDir: {app}
 Name: {group}\Photon Shell; Filename: {app}\bin\psosh.exe; WorkingDir: {app}
 Name: {group}\Ref. Manual C API; Filename: {app}\Photon_C_API.chm
 Name: {group}\Ref. Manual C++ API; Filename: {app}\Photon_C++_API.chm
@@ -199,10 +193,10 @@ begin
   end;
 end;
 [Components]
-Name: libxml2; Description: The libxml2 library; Types: with_libxml2
+;Name: libxml2; Description: The libxml2 library; Types: with_libxml2
 [Types]
-Name: with_libxml2; Description: Install everything including libxml2 (run-time)
-Name: without_libxml2; Description: Install everything except libxml2
+;Name: with_libxml2; Description: Install everything including libxml2 (run-time)
+;Name: without_libxml2; Description: Install everything except libxml2
 [Tasks]
 Name: setenv; Description: "Add Photon to your ""path"""; Components: 
 [Run]
