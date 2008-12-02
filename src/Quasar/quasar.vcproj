@@ -619,6 +619,10 @@
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
+			<File
+				RelativePath=".\quasar.rc"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
