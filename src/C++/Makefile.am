@@ -40,7 +40,7 @@ libphotoncpp_la_SOURCES = \
         Session.cpp       
 
 EXTRA_DIST =           \
-        CPP.dsp        \
+        CPP.vcproj     \
         Makefile.win32 
 
 libphotoncpp_la_LIBADD =                          \

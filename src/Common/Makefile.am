@@ -61,7 +61,7 @@ LOCK_FILES =                      \
 
 EXTRA_DIST =           \
         asctime_r.c    \
-        Common.dsp     \
+        Common.vcproj  \
         ctime_r.c      \
         localtime_r.c  \
         Makefile.win32 \

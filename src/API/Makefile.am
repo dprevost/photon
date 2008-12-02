@@ -61,6 +61,6 @@ libphoton_la_LIBADD =                             \
         $(top_builddir)/src/Common/libCommon.la   
 
 EXTRA_DIST =           \
-        API.dsp        \
+        API.vcproj     \
         Makefile.win32 
 

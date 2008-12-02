@@ -34,7 +34,7 @@ EXTRA_DIST =           \
         $(man_MANS)    \
         psosh.xml      \
         Makefile.win32 \
-        psosh.dsp      
+        psosh.vcproj   
 
 psosh_SOURCES =       \
         constants.cpp \

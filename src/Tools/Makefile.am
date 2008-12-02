@@ -24,7 +24,7 @@ psoinfo_SOURCES = info.cpp
 
 EXTRA_DIST =           \
         Makefile.win32 \
-        psoInfo.dsp    
+        psoInfo.vcproj 
 
 psoinfo_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 

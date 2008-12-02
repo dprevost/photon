@@ -39,44 +39,44 @@ SUBDIRS =             \
 # To be added after the C++ subdir
 # $(MAYBE_Java) 
 
-EXAMPLES_FILES =                                   \
-        Examples/iso_3166.tab                      \
-        Examples/README.txt                        \
-        Examples/quasar-config.example.xml         \
-        Examples/C/Examples.dsw                    \
-        Examples/C/HashMap.c                       \
-        Examples/C/HashMapLoop.c                   \
-        Examples/C/iso_3166.h                      \
-        Examples/C/Makefile                        \
-        Examples/C/Queue.h                         \
-        Examples/C/QueueIn.c                       \
-        Examples/C/QueueOut.c                      \
-        Examples/C/QueueWork.c                     \
-        Examples/C/README.txt                      \
-        Examples/C/RunQueue.sh                     \
-        Examples/C/RunQueue.vbs                    \
-        Examples/C/Project_Files/HashMap.dsp       \
-        Examples/C/Project_Files/HashMapLoop.dsp   \
-        Examples/C/Project_Files/QueueIn.dsp       \
-        Examples/C/Project_Files/QueueOut.dsp      \
-        Examples/C/Project_Files/QueueWork.dsp     \
-        Examples/C++/Examples.dsw                  \
-        Examples/C++/HashMap.cpp                   \
-        Examples/C++/HashMapLoop.cpp               \
-        Examples/C++/iso_3166.h                    \
-        Examples/C++/Makefile                      \
-        Examples/C++/Queue.h                       \
-        Examples/C++/QueueIn.cpp                   \
-        Examples/C++/QueueOut.cpp                  \
-        Examples/C++/QueueWork.cpp                 \
-        Examples/C++/README.txt                    \
-        Examples/C++/RunQueue.sh                   \
-        Examples/C++/RunQueue.vbs                  \
-        Examples/C++/Project_Files/HashMap.dsp     \
-        Examples/C++/Project_Files/HashMapLoop.dsp \
-        Examples/C++/Project_Files/QueueIn.dsp     \
-        Examples/C++/Project_Files/QueueOut.dsp    \
-        Examples/C++/Project_Files/QueueWork.dsp   
+EXAMPLES_FILES =                                      \
+        Examples/iso_3166.tab                         \
+        Examples/README.txt                           \
+        Examples/quasar-config.example.xml            \
+        Examples/C/Examples.sln                       \
+        Examples/C/HashMap.c                          \
+        Examples/C/HashMapLoop.c                      \
+        Examples/C/iso_3166.h                         \
+        Examples/C/Makefile                           \
+        Examples/C/Queue.h                            \
+        Examples/C/QueueIn.c                          \
+        Examples/C/QueueOut.c                         \
+        Examples/C/QueueWork.c                        \
+        Examples/C/README.txt                         \
+        Examples/C/RunQueue.sh                        \
+        Examples/C/RunQueue.vbs                       \
+        Examples/C/Project_Files/HashMap.vcproj       \
+        Examples/C/Project_Files/HashMapLoop.vcproj   \
+        Examples/C/Project_Files/QueueIn.vcproj       \
+        Examples/C/Project_Files/QueueOut.vcproj      \
+        Examples/C/Project_Files/QueueWork.vcproj     \
+        Examples/C++/Examples.sln                     \
+        Examples/C++/HashMap.cpp                      \
+        Examples/C++/HashMapLoop.cpp                  \
+        Examples/C++/iso_3166.h                       \
+        Examples/C++/Makefile                         \
+        Examples/C++/Queue.h                          \
+        Examples/C++/QueueIn.cpp                      \
+        Examples/C++/QueueOut.cpp                     \
+        Examples/C++/QueueWork.cpp                    \
+        Examples/C++/README.txt                       \
+        Examples/C++/RunQueue.sh                      \
+        Examples/C++/RunQueue.vbs                     \
+        Examples/C++/Project_Files/HashMap.vcproj     \
+        Examples/C++/Project_Files/HashMapLoop.vcproj \
+        Examples/C++/Project_Files/QueueIn.vcproj     \
+        Examples/C++/Project_Files/QueueOut.vcproj    \
+        Examples/C++/Project_Files/QueueWork.vcproj   
 
 PACKAGES_FILES =                \
         Packages/photon.iss     \
@@ -86,7 +86,7 @@ EXTRA_DIST =               \
         $(EXAMPLES_FILES)  \
         config-win32.h     \
         Makefile.win32     \
-        photon.dsw         \
+        photon.sln         \
         $(PACKAGES_FILES)  \
         XML/quasar_config.xsd  
 
