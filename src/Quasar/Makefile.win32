@@ -26,7 +26,7 @@ OUTDIR_DEBUG   = .\Debug
 INTDIR_DEBUG   = .\Debug
 
 LIBXML2_INCLUDE = "C:\Program Files\libxml2\include"
-LIBXML2_LIB     = "C:\Program Files\libxml2\lib\libxml2.lib"
+LIBXML2_LIB     = libxml2_a.lib zlib.lib iconv_a.lib 
 
 CLEANFILES = *~ quasar.plg quasar.dep vc60.idb vc60.pdb quasar.mak BuildTools.ncb
 
@@ -35,8 +35,11 @@ W32_SYS_LIBS=kernel32.lib advapi32.lib ws2_32.lib
 LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\quasar.exe" /libpath:"..\Release" 
 LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\quasar.exe"   /libpath:"..\Debug" 
 
-CFLAGS_DEBUG   = /Od /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MDd /Fp".\Debug/quasar.pch" /Fo".\Debug/" /Fd".\Debug/" /W3 /nologo /c /Zi /TC /errorReport:prompt
-CFLAGS_RELEASE = /O2 /Ob1 /I ".." /I "..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc /MD /Gy /Fp".\Release/quasar.pch" /Fo".\Release/" /Fd".\Release/" /W3 /nologo /c /TC /errorReport:prompt
+CFLAGS_DEBUG   = /Od      /I ".." /I "..\include" /D LIBXML_STATIC /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MD     /Fp".\Debug/quasar.pch"   /Fo".\Debug/"   /Fd".\Debug/"   /W3 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I ".." /I "..\include" /D LIBXML_STATIC /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc   /MD /Gy /Fp".\Release/quasar.pch" /Fo".\Release/" /Fd".\Release/" /W3 /nologo /c /TC /errorReport:prompt
+
+RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo".\Debug/quasar.res"
+RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/quasar.res"
 
 OBJS_RELEASE=                                      \
         "$(INTDIR_RELEASE)\Acceptor.obj"           \
@@ -76,17 +79,21 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 .c{$(INTDIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
+
+   
 all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\quasar.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\quasar.exe
 
 "$(OUTDIR_RELEASE)\quasar.exe" : "$(OUTDIR_RELEASE)" $(OBJS_RELEASE)
 	-del ..\Release\quasar.exe
-	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
+	rc.exe $(RC_FLAGS_RELEASE) quasar.rc 
+	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE) .\Release\quasar.res
 	mt.exe -manifest $(OUTDIR_RELEASE)\quasar.exe.manifest -outputresource:$(OUTDIR_RELEASE)\quasar.exe;1
 	copy Release\quasar.exe ..\Release
 
 "$(OUTDIR_DEBUG)\quasar.exe" : "$(OUTDIR_DEBUG)" $(OBJS_DEBUG)
 	-del ..\Debug\quasar.exe
-	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
+	rc.exe $(RC_FLAGS_DEBUG) quasar.rc 
+	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG) .\Debug\quasar.res
 	mt.exe -manifest $(OUTDIR_DEBUG)\quasar.exe.manifest -outputresource:$(OUTDIR_DEBUG)\quasar.exe;1
 	copy debug\quasar.exe ..\Debug
 

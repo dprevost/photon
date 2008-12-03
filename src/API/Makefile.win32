@@ -24,8 +24,7 @@ OUTDIR_DEBUG   = .\Debug
 INTDIR_DEBUG   = .\Debug
 
 LIBXML2_INCLUDE = "c:\Program Files\libxml2\include"
-LIBXML2_LIB     = "c:\Program Files\libxml2\lib\libxml2.lib"
-
+LIBXML2_LIB     = libxml2_a.lib zlib.lib iconv_a.lib 
 CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS = kernel32.lib ws2_32.lib

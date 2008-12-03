@@ -23,12 +23,15 @@ INTDIR_DEBUG   = .\Debug
 CLEANFILES = *~  vc60.pdb
 
 W32_SYS_LIBS = kernel32.lib 
-#user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+
 LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /incremental:no /MANIFEST /subsystem:console /machine:I386 /libpath:"../../Release" 
 LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /incremental:no /MANIFEST /subsystem:console /machine:I386 /libpath:"../../Debug" 
 
 CFLAGS_DEBUG   = /Od /I "..\.." /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MTd /Fp".\Debug/psosh.pch" /Fo".\Debug/" /Fd".\Debug/" /W3 /nologo /c /Zi /TP /errorReport:prompt
 CFLAGS_RELEASE = /O2 /Ob1 /I "..\.." /I "..\..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc /MT /Gy /Fp".\Release/psosh.pch" /Fo".\Release/" /Fd".\Release/" /W3 /nologo /c /TP /errorReport:prompt
+
+RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo".\Debug/psosh.res"
+RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/psosh.res"
 
 OBJS_RELEASE=                             \
         "$(INTDIR_RELEASE)\constants.obj" \
@@ -60,13 +63,15 @@ all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\psosh.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBU
 
 "$(OUTDIR_RELEASE)\psosh.exe" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
    -del ..\..\Release\psosh.exe
-	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\psosh.exe" $(OBJS_RELEASE)
+	rc.exe $(RC_FLAGS_RELEASE) psosh.rc 
+	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\psosh.exe" $(OBJS_RELEASE) .\Release\psosh.res
 	mt.exe -manifest $(OUTDIR_RELEASE)\psosh.exe.manifest -outputresource:$(OUTDIR_RELEASE)\psosh.exe;1
    copy Release\psosh.exe ..\..\Release
 
 "$(OUTDIR_DEBUG)\psosh.exe" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
    -del ..\..\Debug\psosh.exe
-	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\psosh.exe" $(OBJS_DEBUG)
+	rc.exe $(RC_FLAGS_DEBUG) psosh.rc 
+	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\psosh.exe" $(OBJS_DEBUG) .\Debug\psosh.res
 	mt.exe -manifest $(OUTDIR_DEBUG)\psosh.exe.manifest -outputresource:$(OUTDIR_DEBUG)\psosh.exe;1
    copy debug\psosh.exe ..\..\Debug
 
