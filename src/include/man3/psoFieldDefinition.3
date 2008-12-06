@@ -1,4 +1,4 @@
-.TH "psoFieldDefinition" 3 "25 Nov 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFieldDefinition" 3 "6 Dec 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,7 @@ This structure is aligned in such a way that you can do:
 .PP
 malloc( offsetof(psoObjectDefinition, fields) + numFields * sizeof(psoFieldDefinition) ); 
 .PP
-Definition at line 190 of file psoCommon.h.
+Definition at line 193 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -57,41 +57,41 @@ The name of the field.
 .PP
 
 .PP
-Definition at line 193 of file psoCommon.h.
+Definition at line 196 of file psoCommon.h.
 .SS "enum \fBpsoFieldType\fP \fBpsoFieldDefinition::type\fP"
 .PP
 The data type of the field/. 
 .PP
-Definition at line 196 of file psoCommon.h.
+Definition at line 199 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoFieldDefinition::length\fP"
 .PP
 For fixed-length data types. 
 .PP
-Definition at line 199 of file psoCommon.h.
+Definition at line 202 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoFieldDefinition::minLength\fP"
 .PP
 For variable-length data types. 
 .PP
-Definition at line 202 of file psoCommon.h.
+Definition at line 205 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoFieldDefinition::maxLength\fP"
 .PP
 For variable-length data types. 
 .PP
-Definition at line 205 of file psoCommon.h.
+Definition at line 208 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoFieldDefinition::precision\fP"
 .PP
 Total number of digits in the decimal field. 
 .PP
 
 .PP
-Definition at line 208 of file psoCommon.h.
+Definition at line 211 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoFieldDefinition::scale\fP"
 .PP
 Number of digits following the decimal separator. 
 .PP
 
 .PP
-Definition at line 211 of file psoCommon.h.
+Definition at line 214 of file psoCommon.h.
 
 .SH "Author"
 .PP 
