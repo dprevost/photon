@@ -22,20 +22,19 @@ SUBDIRS = . Tests
 bin_PROGRAMS = quasar
 
 man_MANS = quasar.1
-info_TEXINFOS = quasar.texi
 
 OUTPUT_FILES =               \
         quasarErrors.h       \
         quasarErrorHandler.c \
         quasarErrorHandler.h 
 
-if COND_USE_DOCBOOK2TEXI
-quasar.texi: quasar.xml
-	docbook2x-texi --encoding=iso-8859-1 quasar.xml
+if COND_USE_DOCBOOK2XMAN
+quasar.1: quasar.xml
+	docbook2x-man --encoding=iso-8859-1 quasar.xml
 endif
 if COND_USE_DOCBOOK2MAN
 quasar.1: quasar.xml
-	docbook2x-man --encoding=iso-8859-1 quasar.xml
+	db2x_docbook2man --encoding=iso-8859-1 quasar.xml
 endif
 
 if COND_USE_ERRORPARSER

@@ -138,9 +138,6 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoProcess.3
 /usr/local/share/man/man3/psoQueue.3
 /usr/local/share/man/man3/psoSession.3
-/usr/local/info/dir
-/usr/local/info/psosh.info
-/usr/local/info/quasar.info
 /usr/local/share/man/man3/psoFastMap.h.3
 /usr/local/share/man/man3/psoFastMapClose.3
 /usr/local/share/man/man3/psoFastMapDefinition.3

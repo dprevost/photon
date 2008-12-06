@@ -19,15 +19,14 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 bin_PROGRAMS = psosh
 
 man_MANS = psosh.1
-info_TEXINFOS = psosh.texi
 
-if COND_USE_DOCBOOK2TEXI
-psosh.texi: psosh.xml
-	docbook2x-texi --encoding=iso-8859-1 psosh.xml
+if COND_USE_DOCBOOK2XMAN
+psosh.1: psosh.xml
+	docbook2x-man --encoding=iso-8859-1 psosh.xml
 endif
 if COND_USE_DOCBOOK2MAN
 psosh.1: psosh.xml
-	docbook2x-man --encoding=iso-8859-1 psosh.xml
+	db2x_docbook2man --encoding=iso-8859-1 psosh.xml
 endif
 
 EXTRA_DIST =           \

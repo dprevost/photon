@@ -67,10 +67,12 @@ AM_CONDITIONAL([COND_USE_LATEX], [test "$LATEX_IS_PRESENT" = yes])
 
 # Tell our makefiles that we can use docbook2x to regenerate some 
 # of the documentation, as needed.
-AC_CHECK_PROG([DOCBOOK2MAN_IS_PRESENT], [docbook2x-man], [yes], [no])
+AC_CHECK_PROG([DOCBOOK2XMAN_IS_PRESENT], [docbook2x-man], [yes], [no])
+AM_CONDITIONAL([COND_USE_DOCBOOK2XMAN], [test "$DOCBOOK2XMAN_IS_PRESENT" = yes])
+# On fedora, the exe has a different name
+AC_CHECK_PROG([DOCBOOK2MAN_IS_PRESENT], [db2x_docbook2man], [yes], [no])
 AM_CONDITIONAL([COND_USE_DOCBOOK2MAN], [test "$DOCBOOK2MAN_IS_PRESENT" = yes])
-AC_CHECK_PROG([DOCBOOK2TEXI_IS_PRESENT], [docbook2x-texi], [yes], [no])
-AM_CONDITIONAL([COND_USE_DOCBOOK2TEXI], [test "$DOCBOOK2TEXI_IS_PRESENT" = yes])
+
 # Tell our makefiles if we can use db2pdf to regenerate some 
 # of the documentation, as needed.
 AC_CHECK_PROG([DB2PDF_IS_PRESENT], [db2pdf], [yes], [no])
