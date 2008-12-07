@@ -23,108 +23,80 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public partial class HashMap
+    public partial class Queue
     {
         // Track whether Dispose has been called.
         private bool disposed = false;
 
-        protected IntPtr handle;
-        protected IntPtr sessionHandle;
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        private IntPtr handle;
+        private IntPtr sessionHandle;
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapClose(IntPtr objectHandle);
+        private static extern int psoQueueClose(IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapDefinition(
+        private static extern int psoQueueDefinition(
             IntPtr objectHandle,
             ref ObjectDefinition definition);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        protected static extern int psoHashMapDelete(
+        private static extern int psoQueueGetFirst(
             IntPtr objectHandle,
-            IntPtr key,
-            UInt32 keyLength);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapGet(
-            IntPtr objectHandle,
-            byte[] key,
-            UInt32 keyLength,
             byte[] buffer,
-            UInt32 bufferLength,
-            ref UInt32 returnedLength);
+            IntPtr bufferLength,
+            ref IntPtr returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapGetFirst(
+        private static extern int psoQueueGetNext(
             IntPtr objectHandle,
-            byte[] key,
-            UInt32 keyLength,
             byte[] buffer,
-            UInt32 bufferLength,
-            ref UInt32 retKeyLength,
-            ref UInt32 retDataLength);
+            IntPtr bufferLength,
+            ref IntPtr returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapGetNext(
-            IntPtr objectHandle,
-            byte[] key,
-            UInt32 keyLength,
-            byte[] buffer,
-            UInt32 bufferLength,
-            ref UInt32 retKeyLength,
-            ref UInt32 retDataLength);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        protected static extern int psoHashMapInsert(
-            IntPtr objectHandle,
-            IntPtr key,
-            UInt32 keyLength,
-            IntPtr data,
-            UInt32 dataLength);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapOpen(
+        private static extern int psoQueueOpen(
             IntPtr sessionHandle,
-            string hashMapName,
-            UInt32 nameLengthInBytes,
+            string queueName,
+            IntPtr nameLengthInBytes,
             ref IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        protected static extern int psoHashMapReplace(
+        private static extern int psoQueuePop(
             IntPtr objectHandle,
-            IntPtr key,
-            UInt32 keyLength,
-            IntPtr data,
-            UInt32 dataLength);
+            byte[] buffer,
+            IntPtr bufferLength,
+            ref IntPtr returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoHashMapStatus(
+        private static extern int psoQueuePush(
+            IntPtr objectHandle,
+            byte[] pItem,
+            IntPtr length);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoQueuePushNow(
+            IntPtr objectHandle,
+            byte[] pItem,
+            IntPtr length);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoQueueStatus(
             IntPtr objectHandle,
             ref ObjStatus pStatus);
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         private void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
             if (!this.disposed)
             {
-                psoHashMapClose(handle);
-                handle = (IntPtr)0;
+                psoQueueClose(handle);
             }
             disposed = true;
         }
 
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-        ~HashMap()
+        ~Queue()
         {
             Dispose(false);
         }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
     }
 }

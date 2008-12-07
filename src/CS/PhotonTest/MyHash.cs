@@ -43,12 +43,12 @@ namespace PhotonTest
             if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
             {
                 rc = (int)PhotonErrors.NULL_HANDLE;
-                throw new PhotonException(PhotonException.PrepareException("HashMap.Insert", rc), rc);
+                throw new PhotonException(PhotonException.PrepareException("HashMap.Delete", rc), rc);
             }
 
             rc = psoHashMapDelete(handle,
                                   keyPtr,
-                                  (IntPtr)Marshal.SizeOf(key));
+                                  (UInt32)Marshal.SizeOf(key));
             Marshal.FreeHGlobal(keyPtr);
 
             if (rc != 0)
@@ -81,9 +81,9 @@ namespace PhotonTest
 
             rc = psoHashMapInsert(handle,
                                    keyPtr,
-                                   (IntPtr)Marshal.SizeOf(key),
+                                   (UInt32)Marshal.SizeOf(key),
                                    dataPtr, //ref my,
-                                   (IntPtr)Marshal.SizeOf(my));
+                                   (UInt32)Marshal.SizeOf(my));
             Marshal.FreeHGlobal(keyPtr);
 
             if (rc != 0)
@@ -117,9 +117,9 @@ namespace PhotonTest
 
             rc = psoHashMapReplace(handle,
                                    keyPtr,
-                                   (IntPtr)Marshal.SizeOf(key),
+                                   (UInt32)Marshal.SizeOf(key),
                                    dataPtr, //ref my,
-                                   (IntPtr)Marshal.SizeOf(my));
+                                   (UInt32)Marshal.SizeOf(my));
             Marshal.FreeHGlobal(keyPtr);
 
             if (rc != 0)

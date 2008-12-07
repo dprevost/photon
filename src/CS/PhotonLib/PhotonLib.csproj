@@ -33,6 +33,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PrivateFastMap.cs" />
+    <Compile Include="PrivateFastMapEditor.cs" />
     <Compile Include="PrivateHashMap.cs" />
     <Compile Include="Errors.cs" />
     <Compile Include="Common.cs" />
@@ -44,11 +46,16 @@
     <Compile Include="Lifo.cs" />
     <Compile Include="ObjectDefinition.cs" />
     <Compile Include="PrivateFolder.cs" />
+    <Compile Include="PrivateLifo.cs" />
     <Compile Include="PrivateObjectDefinition.cs" />
+    <Compile Include="PrivateQueue.cs" />
     <Compile Include="Process.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queue.cs" />
     <Compile Include="Session.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
