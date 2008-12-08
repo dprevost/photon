@@ -52,11 +52,11 @@ AC_PROG_CXX
 AC_DEFINE_UNQUOTED(MYCXX, "$CXX", The C++ Compiler)
 
 AC_PROG_LIBTOOL
-AC_ARG_VAR([PYTHON], [path to PYTHON])
-AC_PATH_PROG([PYTHON], [python], [no])
-if test "$PYTHON" = "no"; then
-  AC_MSG_ERROR([python is required for the test suite])
-fi
+
+# Not sure  which version is needed to run the tests.
+AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
+# Any version before 2.2 won't work (how to define new types waschanged then).
+AC_PYTHON_DEVEL(">= '2.2'")
 
 # Tell our makefiles that we can use doxygen and latex to regenerate some of 
 # the documentation, as needed.
@@ -535,6 +535,7 @@ AC_CONFIG_FILES([
    src/Quasar/Tests/Makefile
    src/Java/Makefile
    src/include/Makefile
+   src/Python/Makefile
    src/Tests/Makefile
    src/Tools/Makefile
    src/Tools/Shell/Makefile
