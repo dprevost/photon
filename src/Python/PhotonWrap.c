@@ -48,7 +48,11 @@ initphoton(void)
 
    if (m == NULL) return;
 
-   AddSession(m);
+    if (m == NULL)
+      return;
+
+    Py_INCREF(&SessionType);
+    PyModule_AddObject(m, "Session", (PyObject *)&SessionType);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -60,8 +60,16 @@ Session_commit(Session* self)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static int 
+Session_createObject(Session * self, PyObject * args )
+{
+   return 0;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef Session_members[] = {
-    {"handle", T_OBJECT_EX, offsetof(Session, handle), 0,
+    {"handle", T_OBJECT_EX, offsetof(Session, handle), RO,
      "Session handle"},
     {NULL}  /* Sentinel */
 };
@@ -69,10 +77,13 @@ static PyMemberDef Session_members[] = {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMethodDef Session_methods[] = {
-    {"commit", (PyCFunction)Session_commit, METH_NOARGS,
+   { "commit", (PyCFunction)Session_commit, METH_NOARGS,
      "Commit the current session"
-    },
-    {NULL}  /* Sentinel */
+   },
+   { "create_object", (PyCFunction)Session_createObject, METH_VARARGS,
+     "Create a new photon object in shared memory"
+   },
+   {NULL}  /* Sentinel */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
