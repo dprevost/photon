@@ -18,13 +18,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include "Python.h"
-#include "structmember.h"
-
-#include <photon/photon.h>
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 typedef struct {
     PyObject_HEAD
     PSO_HANDLE handle;
@@ -128,31 +121,3 @@ static PyTypeObject SessionType = {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyMethodDef module_methods[] = {
-    {NULL}  /* Sentinel */
-};
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
-PyMODINIT_FUNC
-initphoton(void) 
-{
-    PyObject* m;
-
-    if (PyType_Ready(&SessionType) < 0)
-        return;
-
-    m = Py_InitModule3("photon", module_methods,
-                       "Example module that creates an extension type.");
-
-    if (m == NULL)
-      return;
-
-    Py_INCREF(&SessionType);
-    PyModule_AddObject(m, "Session", (PyObject *)&SessionType);
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

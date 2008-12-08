@@ -22,8 +22,9 @@ photon_la_LIBADD = ../API/libphoton.la
 
 #SUBDIRS = . Tests
 
-photon_la_SOURCES = \
-        Session.c   
+photon_la_SOURCES =  \
+        PhotonWrap.c \
+        Session.h    
 
 EXTRA_DIST =           
 
