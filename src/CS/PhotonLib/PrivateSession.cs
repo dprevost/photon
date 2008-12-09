@@ -23,78 +23,77 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public partial class Queue
+    public partial class Session
     {
         // Track whether Dispose has been called.
         private bool disposed = false;
 
-        private IntPtr handle;
-        private IntPtr sessionHandle;
+        internal IntPtr handle;
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueueClose(IntPtr objectHandle);
+        private static extern int psoCommit(IntPtr sessionHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueueDefinition(
-            IntPtr objectHandle,
+        private static extern int psoCreateObject(
+            IntPtr sessionHandle,
+            string objectName,
+            UInt32 nameLengthInBytes,
+            ObjectDefinition pDefinition);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoDestroyObject(
+            IntPtr sessionHandle,
+            [MarshalAs(UnmanagedType.LPStr)] string objectName,
+            UInt32 nameLengthInBytes);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoErrorMsg(
+            IntPtr sessionHandle,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder message,
+            IntPtr msgLengthInBytes);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoExitSession(IntPtr sessionHandle);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoGetDefinition(
+            IntPtr sessionHandle,
+            [MarshalAs(UnmanagedType.LPStr)] string objectName,
+            UInt32 nameLengthInBytes,
             ref ObjectDefinition definition);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueueGetFirst(
-            IntPtr objectHandle,
-            byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueueGetNext(
-            IntPtr objectHandle,
-            byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueueOpen(
+        private static extern int psoGetInfo(
             IntPtr sessionHandle,
-            string queueName,
-            IntPtr nameLengthInBytes,
-            ref IntPtr objectHandle);
+            ref Info pInfo);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueuePop(
-            IntPtr objectHandle,
-            byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueuePush(
-            IntPtr objectHandle,
-            byte[] pItem,
-            IntPtr length);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueuePushNow(
-            IntPtr objectHandle,
-            byte[] pItem,
-            IntPtr length);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoQueueStatus(
-            IntPtr objectHandle,
+        private static extern int psoGetStatus(
+            IntPtr sessionHandle,
+            [MarshalAs(UnmanagedType.LPStr)] string objectName,
+            UInt32 nameLengthInBytes,
             ref ObjStatus pStatus);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoInitSession(ref IntPtr sessionHandle);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoLastError(IntPtr sessionHandle);
+
+        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int psoRollback(IntPtr sessionHandle);
 
         private void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
             if (!this.disposed)
             {
-                psoQueueClose(handle);
+                psoExitSession(handle);
             }
             disposed = true;
         }
 
-        ~Queue()
+        ~Session()
         {
             Dispose(false);
         }

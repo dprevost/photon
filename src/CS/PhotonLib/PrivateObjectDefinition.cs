@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -29,19 +29,19 @@ namespace Photon
          * Description of the structure of the hash map key.
          */
         [StructLayout(LayoutKind.Sequential)]
-        private struct psoKeyDefinition
+        private struct KeyDefinition
         {
             /* The data type of the key. */
-            public psoKeyType type;
+            public KeyType type;
 
             /** For fixed-length data types */
-            public IntPtr length;
+            public UInt32 length;
 
             /** For variable-length data types */
-            public IntPtr minLength;
+            public UInt32 minLength;
 
             /** For variable-length data types */
-            public IntPtr maxLength;
+            public UInt32 maxLength;
         }
 
         /*
@@ -54,28 +54,28 @@ namespace Photon
          *
          */
         [StructLayout(LayoutKind.Sequential)]
-        private struct psoFieldDefinition
+        private struct FieldDefinition
         {
             /** The name of the field. */
             [MarshalAs(UnmanagedType.LPStr, SizeConst=32)]String name;
    
             /** The data type of the field/ */
-            psoFieldType type;
+            FieldType type;
    
             /** For fixed-length data types */
-            IntPtr length;
+            UInt32 length;
 
             /** For variable-length data types */
-            IntPtr minLength;
+            UInt32 minLength;
 
             /** For variable-length data types */
-            IntPtr maxLength;
+            UInt32 maxLength;
 
             /** Total number of digits in the decimal field. */
-            IntPtr precision;
+            UInt32 precision;
 
             /** Number of digits following the decimal separator. */
-            IntPtr scale;
+            UInt32 scale;
         }
 
         /*
@@ -91,10 +91,10 @@ namespace Photon
             UInt32 numFields;
    
             /** The data definition of the key (hash map/fast map only) */
-            psoKeyDefinition key;
+            KeyDefinition key;
 
             /** The data definition of the fields */
-            psoFieldDefinition[] fields;
+            FieldDefinition[] fields;
         }
 
 

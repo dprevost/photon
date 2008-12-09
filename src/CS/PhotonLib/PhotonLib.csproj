@@ -48,7 +48,9 @@
     <Compile Include="PrivateFolder.cs" />
     <Compile Include="PrivateLifo.cs" />
     <Compile Include="PrivateObjectDefinition.cs" />
+    <Compile Include="PrivateProcess.cs" />
     <Compile Include="PrivateQueue.cs" />
+    <Compile Include="PrivateSession.cs" />
     <Compile Include="Process.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queue.cs" />

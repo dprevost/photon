@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -23,70 +23,22 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public class Session: IDisposable
+    public partial class Session: IDisposable
     {
-        // Track whether Dispose has been called.
-        private bool disposed = false;
-
-        internal IntPtr handle;
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoCommit(IntPtr sessionHandle);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoCreateObject( 
-            IntPtr           sessionHandle,
-            string           objectName,
-            IntPtr           nameLengthInBytes,
-            ObjectDefinition pDefinition );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoDestroyObject(
-            IntPtr sessionHandle,
-            string objectName,
-            IntPtr nameLengthInBytes );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoErrorMsg( 
-            IntPtr sessionHandle,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder message,
-            IntPtr msgLengthInBytes );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoExitSession(IntPtr sessionHandle);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoGetDefinition( 
-            IntPtr               sessionHandle,
-            string               objectName,
-            IntPtr               nameLengthInBytes,
-            ref ObjectDefinition definition );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoGetInfo( 
-            IntPtr   sessionHandle,
-            ref Info pInfo );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoGetStatus( 
-            IntPtr    sessionHandle,
-            string    objectName,
-            IntPtr    nameLengthInBytes,
-            ObjStatus pStatus );
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoInitSession(ref IntPtr sessionHandle);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoLastError(IntPtr sessionHandle);
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoRollback(IntPtr sessionHandle);
-
         public Session()
         {
+            int rc;
+
             handle = (IntPtr)0;
+
+            rc = psoInitSession(ref handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException("Session.Session", rc), rc);
+            }
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         public void Dispose()
         {
@@ -94,23 +46,87 @@ namespace Photon
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+        
+        public void Commit()
         {
-            // Check to see if Dispose has already been called.
-            if (!this.disposed)
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void CreateObject( String           objectName,
+                                  ObjectDefinition definition )
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void DestroyObject( String objectName )
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void ErrorMsg( String message )
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Exit()
+        {
+            Dispose();
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void GetDefinition(String objectName,
+                                  ObjectDefinition definition)
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void GetInfo( ref Info info )
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void GetStatus( String        objectName,
+                               ref ObjStatus status )
+        {
+            int rc;
+
+            if (handle == (IntPtr)0)
             {
-                psoExitSession(handle);
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.GetStatus", rc), rc);
             }
-            disposed = true;
+
+            rc = psoGetStatus(handle, 
+                              objectName,
+                              (UInt32)objectName.Length,
+                              ref status);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.GetStatus"), rc);
+            }
         }
 
-        ~Session()      
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void LastError()
         {
-            Dispose(false);
         }
 
-        public void CreateObject()
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Rollback()
         {
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
     }
 }

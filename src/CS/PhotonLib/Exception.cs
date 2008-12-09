@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -28,7 +28,7 @@ namespace Photon
         /*
          * Declarations to access the photon C API.
          */
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("photonNucleus.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern string pson_ErrorMessage(int errcode);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]

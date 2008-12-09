@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -19,23 +19,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.InteropServices;
 
 namespace Photon
 {
-    public class Process: IDisposable
+    public partial class Process: IDisposable
     {
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern void psoExit();
-
-        [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int psoInit( 
-            string quasarAddress,
-            int    protectionNeeded );
-
-        // Track whether Dispose has been called.
-        private bool disposed = false;
-
+        // protectionNeeded should usually be false except under these conditions:
+        //  - you are sharing sessions between threads (not recommended!)
+        //  - you call Thread.Abort() to terminate your threads (this may leave 
+        //    unclosed Photon handles in the aborted thread which will require
+        //    the cleanup code in the unmanaged code (posExit()) to use an internal lock).
+        //  - your process terminates while threads are still running (same point as before).
         public void Init(string address, bool protectionNeeded)
         {
             int rc;
@@ -56,29 +50,6 @@ namespace Photon
             // finalization queue and prevent finalization code for this 
             // object from executing a second time.
             GC.SuppressFinalize(this);
-        }
-
-        // Dispose(bool disposing) executes in two distinct scenarios.
-        // If disposing equals true, the method has been called directly
-        // or indirectly by a user's code. Managed and unmanaged resources
-        // can be disposed.
-        // If disposing equals false, the method has been called by the 
-        // runtime from inside the finalizer and you should not reference 
-        // other objects. Only unmanaged resources can be disposed.
-        private void Dispose(bool disposing)
-        {
-            // Check to see if Dispose has already been called. Although 
-            // technically, calling psoExit twice won't hurt.
-            if (!this.disposed)
-            {
-                psoExit();
-            }
-            disposed = true;
-        }
-
-        ~Process()      
-        {
-            Dispose(false);
         }
     }
 }

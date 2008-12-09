@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -34,7 +34,7 @@ namespace Photon
     }
     
     // Photon supported data types.
-    public enum psoFieldType
+    public enum FieldType
     {
         INTEGER = 1,
         BINARY,
@@ -52,7 +52,7 @@ namespace Photon
     }
 
     // Photon supported data types for keys.
-    public enum psoKeyType
+    public enum KeyType
     {
         KEY_INTEGER = 101,
         KEY_BINARY,
@@ -67,10 +67,10 @@ namespace Photon
     internal struct FolderEntry
     {
         [MarshalAs(UnmanagedType.LPStr, SizeConst = 256)]
-        String name;
+        String     name;
         ObjectType type;
-        int status;
-        IntPtr nameLengthInBytes;
+        UInt32     status;
+        UInt32     nameLengthInBytes;
         
     }
 
@@ -83,7 +83,7 @@ namespace Photon
         /*
          * Status of the object. For example, created but not committed, etc.
          */
-        int status;
+        UInt32 status;
 
         /* The number of blocks allocated to this object. */
         IntPtr numBlocks;
@@ -105,7 +105,7 @@ namespace Photon
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Info
+    public struct Info
     {
     }
 

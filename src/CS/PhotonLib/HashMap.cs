@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -90,9 +90,9 @@ namespace Photon
             }
 
             rc = psoHashMapOpen(sessionHandle,
-                                 hashMapName,
-                                 (UInt32)hashMapName.Length,
-                                 ref handle);
+                                hashMapName,
+                                (UInt32)hashMapName.Length,
+                                ref handle);
             if (rc != 0)
             {
                 throw new PhotonException(PhotonException.PrepareException(sessionHandle, "HashMap.Open"), rc);

@@ -10,11 +10,26 @@ namespace PhotonTest
         static void Main(string[] args)
         {
             Process proc = new Process();
+
+            try
+            {
+                proc.Init("10701", false);
+            }
+            catch(PhotonException e)
+            {
+                Console.WriteLine(e.ToString());
+                Console.WriteLine("Init");
+                Environment.Exit(e.ErrorCode());
+            }
+
+            int rc = 0;
+            Console.WriteLine("Init" + rc);
+
             Session sess = new Session();
 
-            proc.Init("10701", false);
+            ObjStatus status = new ObjStatus();
 
-//            sess.
+            sess.GetStatus("/test", ref status);
         }
     }
 }
