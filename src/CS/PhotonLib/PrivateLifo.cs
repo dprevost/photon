@@ -25,11 +25,15 @@ namespace Photon
 {
     public partial class Lifo
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
 
         private IntPtr handle;
         private IntPtr sessionHandle;
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoClose(IntPtr objectHandle);
@@ -43,40 +47,42 @@ namespace Photon
         private static extern int psoLifoGetFirst(
             IntPtr objectHandle,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoGetNext(
             IntPtr objectHandle,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoOpen(
             IntPtr sessionHandle,
             string queueName,
-            IntPtr nameLengthInBytes,
+            UInt32 nameLengthInBytes,
             ref IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoPop(
             IntPtr objectHandle,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoPush(
             IntPtr objectHandle,
             byte[] pItem,
-            IntPtr length);
+            UInt32 length);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLifoStatus(
             IntPtr objectHandle,
             ref ObjStatus pStatus);
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         private void Dispose(bool disposing)
         {
@@ -88,9 +94,13 @@ namespace Photon
             disposed = true;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         ~Lifo()
         {
             Dispose(false);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

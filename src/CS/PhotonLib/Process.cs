@@ -24,6 +24,8 @@ namespace Photon
 {
     public partial class Process: IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // protectionNeeded should usually be false except under these conditions:
         //  - you are sharing sessions between threads (not recommended!)
         //  - you call Thread.Abort() to terminate your threads (this may leave 
@@ -41,6 +43,8 @@ namespace Photon
             }
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Implement IDisposable.
         public void Dispose()
         {
@@ -51,5 +55,7 @@ namespace Photon
             // object from executing a second time.
             GC.SuppressFinalize(this);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

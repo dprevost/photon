@@ -25,6 +25,8 @@ namespace Photon
 {
     public partial class ObjectDefinition
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         /*
          * Description of the structure of the hash map key.
          */
@@ -43,6 +45,8 @@ namespace Photon
             /** For variable-length data types */
             public UInt32 maxLength;
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         /*
          * Description of the structure of the data (if any).
@@ -78,6 +82,8 @@ namespace Photon
             UInt32 scale;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         /*
          * This struct has a variable length.
          */
@@ -97,6 +103,6 @@ namespace Photon
             FieldDefinition[] fields;
         }
 
-
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

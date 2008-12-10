@@ -25,16 +25,75 @@ namespace Photon
 {
     public partial class Lifo: IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public Lifo(Session session)
         {
             handle = (IntPtr)0;
             sessionHandle = session.handle;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Close()
+        {
+            Dispose();
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Definition(ref ObjectDefinition definition)
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Open(String queueName)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Lifo.Open", rc), rc);
+            }
+
+            rc = psoLifoOpen(sessionHandle,
+                             queueName,
+                             (UInt32)queueName.Length,
+                             ref handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Lifo.Open"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Status(ref ObjStatus status)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Lifo.Status", rc), rc);
+            }
+
+            rc = psoLifoStatus(handle, ref status);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Lifo.Status"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

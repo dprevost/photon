@@ -25,6 +25,8 @@ namespace Photon
 {
     public partial class HashMap
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
 
@@ -125,6 +127,5 @@ namespace Photon
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
     }
 }

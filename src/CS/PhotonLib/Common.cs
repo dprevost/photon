@@ -21,6 +21,8 @@ using System.Runtime.InteropServices;
 
 namespace Photon
 {
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
     /*
      * enums in C# are ints, 4 bytes long.  
      */
@@ -32,7 +34,9 @@ namespace Photon
         FAST_MAP = 4,  // A read-only hash map 
         QUEUE    = 5,  // A FIFO queue 
     }
-    
+
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
     // Photon supported data types.
     public enum FieldType
     {
@@ -51,6 +55,8 @@ namespace Photon
         VAR_STRING
     }
 
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
     // Photon supported data types for keys.
     public enum KeyType
     {
@@ -63,8 +69,10 @@ namespace Photon
         KEY_VAR_STRING
     }
 
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
     [StructLayout(LayoutKind.Sequential)]
-    internal struct FolderEntry
+    public struct FolderEntry
     {
         [MarshalAs(UnmanagedType.LPStr, SizeConst = 256)]
         String     name;
@@ -73,6 +81,8 @@ namespace Photon
         UInt32     nameLengthInBytes;
         
     }
+
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ObjStatus
@@ -104,9 +114,12 @@ namespace Photon
         UInt32 maxKeyLength;
     }
 
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
     [StructLayout(LayoutKind.Sequential)]
     public struct Info
     {
     }
 
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

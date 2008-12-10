@@ -25,16 +25,76 @@ namespace Photon
 {
     public partial class Queue: IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public Queue(Session session)
         {
             handle = (IntPtr)0;
             sessionHandle = session.handle;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Close()
+        {
+            Dispose();
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   
+        public void Definition(ref ObjectDefinition definition)
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Open(String queueName)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Queue.Open", rc), rc);
+            }
+
+            rc = psoQueueOpen(sessionHandle,
+                              queueName,
+                              (UInt32)queueName.Length,
+                              ref handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Queue.Open"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Status(ref ObjStatus status)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Queue.Status", rc), rc);
+            }
+
+            rc = psoQueueStatus(handle, ref status);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Queue.Status"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

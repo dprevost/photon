@@ -47,35 +47,9 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        /*
-        void Definition( ObjDefinition & definition )
-{
-   int rc;
-   psoObjectDefinition * def = NULL;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::Definition", PSO_NULL_HANDLE );
-   }
-
-   rc = psoHashMapDefinition( m_objectHandle, &def );   
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
-   }
-   
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      definition.Reset( *def );
-   }
-   catch( pso::Exception exc ) {
-      free( def );
-      throw exc;
-   }
-   
-   free( def );
-}
-*/
-
-
+        public void Definition( ObjectDefinition definition )
+        {
+        }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -117,5 +91,7 @@ namespace Photon
                 throw new PhotonException(PhotonException.PrepareException(sessionHandle, "HashMap.Status"), rc);
             }
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

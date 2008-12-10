@@ -25,6 +25,8 @@ namespace Photon
 {
     public partial class Folder
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
 
@@ -97,6 +99,5 @@ namespace Photon
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
     }
 }

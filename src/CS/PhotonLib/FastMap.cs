@@ -25,16 +25,73 @@ namespace Photon
 {
     public partial class FastMap: IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public FastMap(Session session)
         {
             handle = (IntPtr)0;
             sessionHandle = session.handle;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Close() { Dispose(); }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Definition(ObjectDefinition definition)
+        {
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        void Open(string hashMapName)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("FastMap.Open", rc), rc);
+            }
+
+            rc = psoFastMapOpen(sessionHandle,
+                                hashMapName,
+                                (UInt32)hashMapName.Length,
+                                ref handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "FastMap.Open"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Status(ref ObjStatus status)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("FastMap.Status", rc), rc);
+            }
+
+            rc = psoFastMapStatus(handle, ref status);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "FastMap.Status"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

@@ -25,10 +25,14 @@ namespace Photon
 {
     public partial class Session
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
 
         internal IntPtr handle;
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoCommit(IntPtr sessionHandle);
@@ -50,7 +54,7 @@ namespace Photon
         private static extern int psoErrorMsg(
             IntPtr sessionHandle,
             [MarshalAs(UnmanagedType.LPStr)] StringBuilder message,
-            IntPtr msgLengthInBytes);
+            UInt32 msgLengthInBytes);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoExitSession(IntPtr sessionHandle);
@@ -83,6 +87,8 @@ namespace Photon
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoRollback(IntPtr sessionHandle);
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         private void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
@@ -93,9 +99,13 @@ namespace Photon
             disposed = true;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         ~Session()
         {
             Dispose(false);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

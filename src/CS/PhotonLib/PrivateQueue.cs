@@ -25,11 +25,15 @@ namespace Photon
 {
     public partial class Queue
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
 
         private IntPtr handle;
         private IntPtr sessionHandle;
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueueClose(IntPtr objectHandle);
@@ -43,46 +47,48 @@ namespace Photon
         private static extern int psoQueueGetFirst(
             IntPtr objectHandle,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueueGetNext(
             IntPtr objectHandle,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueueOpen(
             IntPtr sessionHandle,
             string queueName,
-            IntPtr nameLengthInBytes,
+            UInt32 nameLengthInBytes,
             ref IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueuePop(
             IntPtr objectHandle,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueuePush(
             IntPtr objectHandle,
             byte[] pItem,
-            IntPtr length);
+            UInt32 length);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueuePushNow(
             IntPtr objectHandle,
             byte[] pItem,
-            IntPtr length);
+            UInt32 length);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoQueueStatus(
             IntPtr objectHandle,
             ref ObjStatus pStatus);
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         private void Dispose(bool disposing)
         {
@@ -94,9 +100,13 @@ namespace Photon
             disposed = true;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         ~Queue()
         {
             Dispose(false);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

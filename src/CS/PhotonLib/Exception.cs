@@ -25,6 +25,8 @@ namespace Photon
 {
     public class PhotonException : System.Exception
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         /*
          * Declarations to access the photon C API.
          */
@@ -40,14 +42,20 @@ namespace Photon
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoLastError(IntPtr sessionHandle);
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         private int theErrorCode;
         public int ErrorCode() { return theErrorCode; }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         /*
          * Contructor. 
          */
         public PhotonException(string message, int errcode) : base(message) { theErrorCode = errcode; }
-       
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         /*
          * This static function uses the Photon API to extract the error message
          * and pass it to the constructor.
@@ -64,6 +72,8 @@ namespace Photon
             }
             return str;
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         /*
          * This static function uses the Photon API to extract the error message
@@ -92,6 +102,6 @@ namespace Photon
             return msg;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
-
 }

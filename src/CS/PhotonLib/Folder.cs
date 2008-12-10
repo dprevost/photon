@@ -25,6 +25,8 @@ namespace Photon
 {
     public partial class Folder: IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public Folder(Session session)
         {
             handle = (IntPtr)0;
@@ -41,5 +43,156 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+        public void Close() { Dispose(); }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void CreateObject(String           objectName,
+                                 ObjectDefinition definition)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.CreateObject", rc), rc);
+            }
+
+            rc = psoFolderCreateObject(handle, 
+                                       objectName, 
+                                       (UInt32)objectName.Length,
+                                       definition);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.CreateObject"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void CreateObjectXML(String xmlBuffer)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.CreateObjectXML", rc), rc);
+            }
+
+            rc = psoFolderCreateObjectXML(handle,
+                                          xmlBuffer,
+                                          (UInt32)xmlBuffer.Length);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.CreateObjectXML"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void DestroyObject(String objectName)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.DestroyObject", rc), rc);
+            }
+
+            rc = psoFolderDestroyObject(handle,
+                                        objectName,
+                                        (UInt32)objectName.Length );
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.DestroyObject"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public int GetFirst(ref FolderEntry entry)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.GetFirst", rc), rc);
+            }
+
+            rc = psoFolderGetFirst(handle, ref entry);
+            if (rc != 0 && rc != (int)PhotonErrors.IS_EMPTY)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.GetFirst"), rc);
+            }
+
+            return rc;
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public int GetNext(ref FolderEntry entry )
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.GetNext", rc), rc);
+            }
+
+            rc = psoFolderGetNext(handle, ref entry);
+            if (rc != 0 && rc != (int)PhotonErrors.REACHED_THE_END)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.GetNext"), rc);
+            }
+
+            return rc;
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Open(String folderName)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.Open", rc), rc);
+            }
+
+            rc = psoFolderOpen(sessionHandle,
+                               folderName,
+                               (UInt32)folderName.Length,
+                               ref handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.Open"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void Status(ref ObjStatus status)
+        {
+            int rc;
+
+            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.Status", rc), rc);
+            }
+
+            rc = psoFolderStatus(handle, ref status);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.Status"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

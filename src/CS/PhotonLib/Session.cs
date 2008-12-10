@@ -25,6 +25,8 @@ namespace Photon
 {
     public partial class Session: IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public Session()
         {
             int rc;
@@ -50,6 +52,19 @@ namespace Photon
         
         public void Commit()
         {
+            int rc;
+
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.Commit", rc), rc);
+            }
+
+            rc = psoCommit(handle );
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.Commit"), rc);
+            }
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -63,12 +78,44 @@ namespace Photon
 
         public void DestroyObject( String objectName )
         {
+            int rc;
+
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.DestroyObject", rc), rc);
+            }
+
+            rc = psoDestroyObject(handle,
+                                  objectName,
+                                  (UInt32)objectName.Length);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.DestroyObject"), rc);
+            }
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public void ErrorMsg( String message )
+        public String ErrorMsg()
         {
+            int rc;
+            StringBuilder msg = new StringBuilder();
+
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.ErrorMsg", rc), rc);
+            }
+
+            msg.Capacity = 1024;
+            rc = psoErrorMsg(handle, msg, 1024 );
+            if ( rc != 0 ) 
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.ErrorMsg"), rc);
+            }
+
+            return msg.ToString();
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -89,6 +136,19 @@ namespace Photon
 
         public void GetInfo( ref Info info )
         {
+            int rc;
+
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.GetInfo", rc), rc);
+            }
+
+            rc = psoGetInfo(handle, ref info);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.GetInfo"), rc);
+            }
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -116,17 +176,30 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public void LastError()
+        public int LastError()
         {
+            return psoLastError(handle);
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         public void Rollback()
         {
+            int rc;
+
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.Rollback", rc), rc);
+            }
+
+            rc = psoRollback(handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.Rollback"), rc);
+            }
         }
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
     }
 }

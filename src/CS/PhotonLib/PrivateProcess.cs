@@ -25,6 +25,8 @@ namespace Photon
 {
     public partial class Process
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void psoExit();
 
@@ -33,8 +35,12 @@ namespace Photon
             string quasarAddress,
             int protectionNeeded);
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         // Dispose(bool disposing) executes in two distinct scenarios.
         // If disposing equals true, the method has been called directly
@@ -54,9 +60,13 @@ namespace Photon
             disposed = true;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         ~Process()
         {
             Dispose(false);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

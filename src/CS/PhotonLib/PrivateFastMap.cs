@@ -25,11 +25,15 @@ namespace Photon
 {
     public partial class FastMap : IDisposable
     {
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         // Track whether Dispose has been called.
         private bool disposed = false;
 
         protected IntPtr handle;
         protected IntPtr sessionHandle;
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapClose(IntPtr objectHandle);
@@ -43,42 +47,44 @@ namespace Photon
         internal static extern int psoFastMapGet(
             IntPtr objectHandle,
             byte[] key,
-            IntPtr keyLength,
+            UInt32 keyLength,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr returnedLength);
+            UInt32 bufferLength,
+            ref UInt32 returnedLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapGetFirst(
             IntPtr objectHandle,
             byte[] key,
-            IntPtr keyLength,
+            UInt32 keyLength,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr retKeyLength,
-            ref IntPtr retDataLength);
+            UInt32 bufferLength,
+            ref UInt32 retKeyLength,
+            ref UInt32 retDataLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapGetNext(
             IntPtr objectHandle,
             byte[] key,
-            IntPtr keyLength,
+            UInt32 keyLength,
             byte[] buffer,
-            IntPtr bufferLength,
-            ref IntPtr retKeyLength,
-            ref IntPtr retDataLength);
+            UInt32 bufferLength,
+            ref UInt32 retKeyLength,
+            ref UInt32 retDataLength);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapOpen(
             IntPtr sessionHandle,
             string hashMapName,
-            IntPtr nameLengthInBytes,
+            UInt32 nameLengthInBytes,
             ref IntPtr objectHandle);
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int psoFastMapStatus(
             IntPtr objectHandle,
             ref ObjStatus pStatus);
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         private void Dispose(bool disposing)
         {
@@ -90,9 +96,13 @@ namespace Photon
             disposed = true;
         }
 
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         ~FastMap()
         {
             Dispose(false);
         }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }
