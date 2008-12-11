@@ -34,6 +34,9 @@ int main( int argc, char * argv[] )
    string name = "/cpp_session_create";
    const char * c_name = "/cpp_session_create";
    psoObjectDefinition folderDef;
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
+   };
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;
@@ -56,7 +59,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session.CreateObject( NULL, strlen(c_name), folderDef );
+      session.CreateObject( NULL, strlen(c_name), folderDef, NULL );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -69,7 +72,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( c_name, 0, folderDef );
+      session.CreateObject( c_name, 0, folderDef, NULL );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -82,7 +85,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( "", folderDef );
+      session.CreateObject( "", folderDef, NULL );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -96,7 +99,8 @@ int main( int argc, char * argv[] )
 
    try {
       folderDef.type = (psoObjectType)0;
-      session.CreateObject( name, folderDef );
+      // The last argument cannot be NULL since we are not creating a folder.
+      session.CreateObject( name, folderDef, fields );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -111,7 +115,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      session.CreateObject( name, folderDef );
+      session.CreateObject( name, folderDef, NULL );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

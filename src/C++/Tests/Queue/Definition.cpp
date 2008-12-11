@@ -77,7 +77,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( fname, folderDef, NULL );
-      session.CreateObject( hname, queueDef.GetDef() );
+      session.CreateObject( hname, queueDef );
       queue.Open( hname );
       queue.Push( &data, sizeof(data) );
    }
@@ -95,8 +95,13 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   len = offsetof( psoObjectDefinition, fields ) + 5 * sizeof(psoFieldDefinition);
+   len = sizeof( psoObjectDefinition );
    if ( memcmp( &queueDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   len = 5 * sizeof(psoFieldDefinition);
+   if ( memcmp( queueDef.GetFields(), returnedDef.GetFields(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

@@ -42,8 +42,10 @@ int main( int argc, char * argv[] )
    psoObjectDefinition queueDef = { 
       PSO_LIFO,
       1, 
-      { PSO_KEY_VAR_BINARY, 0, 0, 0 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 0, 0 }
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );
@@ -58,7 +60,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( fname, folderDef, NULL );
-      session.CreateObject( qname, queueDef );
+      session.CreateObject( qname, queueDef, fields );
       queue.Open( qname );
       queue.Push( data1, strlen(data1) );
       queue.Push( data2, strlen(data2) );

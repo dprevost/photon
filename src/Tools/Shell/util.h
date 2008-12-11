@@ -39,29 +39,29 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void shellBuffToOut( string              & outStr, 
-                     psoObjectDefinition * pDefinition,
-                     unsigned char       * buffer,
-                     uint32_t              length );
+void shellBuffToOut( string             & outStr, 
+                     pso::ObjDefinition & definition,
+                     unsigned char      * buffer,
+                     uint32_t             length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void shellKeyToOut( string           & outStr, 
-                    psoKeyDefinition * pDefinition,
-                    unsigned char    * key,
-                    uint32_t           length );
+void shellKeyToOut( string             & outStr, 
+                    pso::ObjDefinition & definition,
+                    unsigned char      * key,
+                    uint32_t             length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * shellInToBuff( string              & inData, 
-                               psoObjectDefinition * pDefinition,
-                               uint32_t            & length );
+unsigned char * shellInToBuff( string             & inData, 
+                               pso::ObjDefinition & definition,
+                               uint32_t           & length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * shellInToKey( string           & inData, 
-                              psoKeyDefinition * pDefinition,
-                              uint32_t         & length );
+unsigned char * shellInToKey( string             & inData, 
+                              pso::ObjDefinition & definition,
+                              uint32_t           & length );
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

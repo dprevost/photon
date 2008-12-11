@@ -26,6 +26,8 @@
 #include "Common/Common.h"
 #include "API/DataDefinition.h" // for psoaGetOffsets
 
+using namespace pso;
+
 /*
  * The read functions read from the buffer (obtained from shared memory)
  * an transform the "raw data" into something that can be displayed on the
@@ -442,38 +444,41 @@ bool writeVarBinary( string        & inStr,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void shellBuffToOut( string              & outStr, 
-                     psoObjectDefinition * pDefinition,
-                     unsigned char       * buffer,
-                     uint32_t              length )
+void shellBuffToOut( string        & outStr, 
+                     ObjDefinition & definition,
+                     unsigned char * buffer,
+                     uint32_t        length )
 {
    uint32_t * offsets = NULL, i;
+
+   psoObjectDefinition def = definition.GetDef();
+   const psoFieldDefinition * fields = definition.GetFields();
   
-   offsets = new uint32_t[pDefinition->numFields];
-   psoaGetOffsets( pDefinition, offsets );
-   for ( i = 0; i < pDefinition->numFields; ++i ) {
+   offsets = new uint32_t[def.numFields];
+   psoaGetOffsets( &def, (psoFieldDefinition *)fields, offsets );
+   for ( i = 0; i < def.numFields; ++i ) {
       string s;
       
-      switch( pDefinition->fields[i].type ) {
+      switch( fields[i].type ) {
 
       case PSO_INTEGER:
          readInt( s, 
-                  pDefinition->fields[i].length,
+                  fields[i].length,
                   &buffer[offsets[i]] );
          break;
       case PSO_BINARY:
          readBinary( s,
-                     pDefinition->fields[i].length,
+                     fields[i].length,
                      &buffer[offsets[i]] );
          break;
       case PSO_STRING:
          readString( s,
-                     pDefinition->fields[i].length,
+                     fields[i].length,
                      &buffer[offsets[i]] );
          break;
       case PSO_DECIMAL:
          readDecimal( s,
-                      pDefinition->fields[i].precision,
+                      fields[i].precision,
                       &buffer[offsets[i]] );
          break;
       case PSO_BOOLEAN:
@@ -491,18 +496,20 @@ void shellBuffToOut( string              & outStr,
          break;
       }
       outStr += s;
-      if ( i < pDefinition->numFields-1) outStr += ", ";
+      if ( i < def.numFields-1) outStr += ", ";
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void shellKeyToOut( string           & outStr, 
-                    psoKeyDefinition * pDefinition,
-                    unsigned char    * key,
-                    uint32_t           length )
+void shellKeyToOut( string        & outStr, 
+                    ObjDefinition & definition,
+                    unsigned char * key,
+                    uint32_t        length )
 {
-   switch( pDefinition->type ) {
+   psoObjectDefinition def = definition.GetDef();
+
+   switch( def.key.type ) {
 
    case PSO_KEY_INTEGER:
       readInt( outStr, length, key );
@@ -520,9 +527,9 @@ void shellKeyToOut( string           & outStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * shellInToBuff( string              & inStr, 
-                               psoObjectDefinition * pDefinition,
-                               uint32_t            & length )
+unsigned char * shellInToBuff( string        & inStr, 
+                               ObjDefinition & definition,
+                               uint32_t      & length )
 {
    uint32_t * offsets = NULL, i;
    unsigned char * buffer = NULL;
@@ -530,31 +537,34 @@ unsigned char * shellInToBuff( string              & inStr,
    vector<string> inData;
    string s;
    bool ok;
+
+   psoObjectDefinition def = definition.GetDef();
+   const psoFieldDefinition * fields = definition.GetFields();
    
    do {
       getline( iss, s, ',');
       inData.push_back( s );
    } while ( ! iss.eof() );
 
-   if ( inData.size() != pDefinition->numFields ) throw(inData.size()+1);
+   if ( inData.size() != def.numFields ) throw(inData.size()+1);
    
-   offsets = new uint32_t[pDefinition->numFields];
-   psoaGetOffsets( pDefinition, offsets );
-   length = offsets[pDefinition->numFields-1];
+   offsets = new uint32_t[def.numFields];
+   psoaGetOffsets( &def, (psoFieldDefinition *)fields, offsets );
+   length = offsets[def.numFields-1];
    
    // We partially analyse the last field to determine the length of the
    // buffer to allocate.
-   i = pDefinition->numFields-1;
-   switch( pDefinition->fields[i].type ) {
+   i = def.numFields-1;
+   switch( fields[i].type ) {
 
    case PSO_BINARY:
    case PSO_STRING:
    case PSO_INTEGER:
-      length += pDefinition->fields[i].length;
+      length += fields[i].length;
       break;
 
    case PSO_DECIMAL:
-      length += pDefinition->fields[i].precision + 2;
+      length += fields[i].precision + 2;
       break;
 
    case PSO_BOOLEAN:
@@ -562,11 +572,11 @@ unsigned char * shellInToBuff( string              & inStr,
       break;
 
    case PSO_VAR_STRING:
-      if ( inData[i].length() > pDefinition->fields[i].minLength ) {
+      if ( inData[i].length() > fields[i].minLength ) {
          length += inData[i].length();
       }
       else {
-         length += pDefinition->fields[i].minLength;
+         length += fields[i].minLength;
       }
       break;
 
@@ -577,11 +587,11 @@ unsigned char * shellInToBuff( string              & inStr,
       if ( z > 0 ) {
          if ( inData[i][0] == '0' && (inData[i][1] == 'x' || inData[i][1] == 'X') ) z--;
       }
-      if ( z > pDefinition->fields[i].minLength ) {
+      if ( z > fields[i].minLength ) {
          length += z;
       }
       else {
-         length += pDefinition->fields[i].minLength;
+         length += fields[i].minLength;
       }
       break;
    }
@@ -589,30 +599,30 @@ unsigned char * shellInToBuff( string              & inStr,
    buffer = new unsigned char[length];
    memset( buffer, 0, length );
    
-   for ( i = 0; i < pDefinition->numFields; ++i ) {
+   for ( i = 0; i < def.numFields; ++i ) {
 
-      switch( pDefinition->fields[i].type ) {
+      switch( fields[i].type ) {
 
       case PSO_INTEGER:
          ok = writeInt( inData[i],
-                        pDefinition->fields[i].length,
+                        fields[i].length,
                         &buffer[offsets[i]] );
          break;
       case PSO_BINARY:
          ok = writeFixBinary( inData[i],
-                              pDefinition->fields[i].length,
+                              fields[i].length,
                               &buffer[offsets[i]] );
          break;
       case PSO_STRING:
          ok = writeFixString( inData[i],
-                              pDefinition->fields[i].length,
+                              fields[i].length,
                               &buffer[offsets[i]] );
          break;
 
       case PSO_DECIMAL:
          ok = writeDecimal( inData[i],
-                            pDefinition->fields[i].precision,
-                            pDefinition->fields[i].scale,
+                            fields[i].precision,
+                            fields[i].scale,
                             &buffer[offsets[i]] );
          break;
       case PSO_BOOLEAN:
@@ -620,14 +630,14 @@ unsigned char * shellInToBuff( string              & inStr,
          break;
       case PSO_VAR_STRING:
          ok = writeVarString( inData[i],
-                              pDefinition->fields[i].minLength,
-                              pDefinition->fields[i].maxLength,
+                              fields[i].minLength,
+                              fields[i].maxLength,
                               &buffer[offsets[i]] );
          break;
       case PSO_VAR_BINARY:
          ok = writeVarBinary( inData[i],
-                              pDefinition->fields[i].minLength,
-                              pDefinition->fields[i].maxLength,
+                              fields[i].minLength,
+                              fields[i].maxLength,
                               &buffer[offsets[i]] );
          break;
       }
@@ -639,28 +649,30 @@ unsigned char * shellInToBuff( string              & inStr,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-unsigned char * shellInToKey( string           & inKey, 
-                              psoKeyDefinition * pDefinition,
-                              uint32_t         & length )
+unsigned char * shellInToKey( string        & inKey, 
+                              ObjDefinition & definition,
+                              uint32_t      & length )
 {
    unsigned char * key = NULL;
    bool ok = false;
+
+   psoObjectDefinition def = definition.GetDef();
    
    // We need to determine the length of the key buffer to allocate.
-   switch( pDefinition->type ) {
+   switch( def.key.type ) {
 
    case PSO_KEY_BINARY:
    case PSO_KEY_STRING:
    case PSO_KEY_INTEGER:
-      length += pDefinition->length;
+      length += def.key.length;
       break;
 
    case PSO_KEY_VAR_STRING:
-      if ( inKey.length() > pDefinition->minLength ) {
+      if ( inKey.length() > def.key.minLength ) {
          length = inKey.length();
       }
       else {
-         length = pDefinition->minLength;
+         length = def.key.minLength;
       }
       break;
 
@@ -671,11 +683,11 @@ unsigned char * shellInToKey( string           & inKey,
       if ( z > 0 ) {
          if ( inKey[0] == '0' && (inKey[1] == 'x' || inKey[1] == 'X') ) z--;
       }
-      if ( z > pDefinition->minLength ) {
+      if ( z > def.key.minLength ) {
          length += z;
       }
       else {
-         length += pDefinition->minLength;
+         length += def.key.minLength;
       }
       break;
    }
@@ -683,33 +695,33 @@ unsigned char * shellInToKey( string           & inKey,
    key = new unsigned char[length];
    memset( key, 0, length );
    
-   switch( pDefinition->type ) {
+   switch( def.key.type ) {
 
    case PSO_KEY_INTEGER:
       ok = writeInt( inKey,
-                     pDefinition->length,
+                     def.key.length,
                      key );
       break;
    case PSO_KEY_BINARY:
       ok = writeFixBinary( inKey,
-                           pDefinition->length,
+                           def.key.length,
                            key );
       break;
    case PSO_KEY_STRING:
       ok = writeFixString( inKey,
-                           pDefinition->length,
+                           def.key.length,
                            key );
       break;
    case PSO_KEY_VAR_STRING:
       ok = writeVarString( inKey,
-                           pDefinition->minLength,
-                           pDefinition->maxLength,
+                           def.key.minLength,
+                           def.key.maxLength,
                            key );
       break;
    case PSO_KEY_VAR_BINARY:
       ok = writeVarBinary( inKey,
-                           pDefinition->minLength,
-                           pDefinition->maxLength,
+                           def.key.minLength,
+                           def.key.maxLength,
                            key );
       break;
    }

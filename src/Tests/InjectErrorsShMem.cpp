@@ -761,12 +761,14 @@ void PopulateHashMaps( Session & session, vector<myMap> & h )
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP,
       1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 200 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 1, 200, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 200 }
+   };
+   psoFieldDefinition fields[1] = { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 200, 0, 0 } 
    };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      session.CreateObject( h[i].name, mapDef );
+      session.CreateObject( h[i].name, mapDef, fields );
       h[i].map.Open( h[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -792,12 +794,14 @@ void PopulateLifos( Session & session, vector<myLifo> & l )
    psoObjectDefinition queueDef = { 
       PSO_LIFO,
       1, 
-      { PSO_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 100, 0, 0 } } 
+      { PSO_KEY_INTEGER, 0, 0, 0 }
+   };
+   psoFieldDefinition fields[1] = { 
+      { "Field_1", PSO_VAR_STRING, 0, 4, 100, 0, 0 } 
    };
    
    for ( i = 0; i < NUM_LIFOS; ++i ) {
-      session.CreateObject( l[i].name, queueDef );
+      session.CreateObject( l[i].name, queueDef, fields );
       l[i].queue.Open( l[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -822,13 +826,15 @@ void PopulateQueues( Session & session, vector<myQueue> & q )
    psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
-      { PSO_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 100, 0, 0 } } 
+      { PSO_KEY_INTEGER, 0, 0, 0 }
+   };
+   psoFieldDefinition fields[1] = { 
+      { "Field_1", PSO_VAR_STRING, 0, 4, 100, 0, 0 } 
    };
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
       cout << " i = " << i << ", " << q[i].name << ", " << &session << endl;
-      session.CreateObject( q[i].name, queueDef );
+      session.CreateObject( q[i].name, queueDef, fields );
       q[i].queue.Open( q[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -858,7 +864,7 @@ int main()
    try {
       process.Init( "10701" );
       session.Init();
-      session.CreateObject( foldername, folderDef );
+      session.CreateObject( foldername, folderDef, NULL );
    }
    catch( pso::Exception exc ) {
       rc = exc.ErrorCode();

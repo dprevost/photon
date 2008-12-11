@@ -205,6 +205,57 @@ void Session::ErrorMsg( char   * message,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void Session::GetDefinition( const std::string & objectName,
+                             ObjDefinition     & definition )
+{
+   int rc;
+   psoObjectDefinition def;
+   psoFieldDefinition * fields;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "Session::GetDefinition", PSO_NULL_HANDLE );
+   }
+   
+   memset( &def, 0, sizeof(psoObjectDefinition) );
+   rc = psoGetDefinition( m_sessionHandle,
+                          objectName.c_str(),
+                          objectName.length(),
+                          &def,
+                          0,
+                          NULL );
+   //psoHashMapDefinition( m_objectHandle, &def, 0, NULL );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
+   }
+   fields = (psoFieldDefinition *) 
+      calloc(sizeof(psoFieldDefinition) * def.numFields, 1);
+   if ( fields == NULL ) {
+      throw pso::Exception( "Session::GetDefinition", PSO_NOT_ENOUGH_HEAP_MEMORY );
+   }
+   rc = psoGetDefinition( m_sessionHandle,
+                          objectName.c_str(),
+                          objectName.length(),
+                          &def,
+                          def.numFields, 
+                          fields );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
+   }
+   
+   // We catch and rethrow the exception to avoid a memory leak
+   try {
+      definition.Reset( def, fields );
+   }
+   catch( pso::Exception exc ) {
+      free( fields );
+      throw exc;
+   }
+   
+   free( fields );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void Session::GetDefinition( const std::string   & objectName,
                              psoObjectDefinition & definition,
                              psoUint32             numFields,

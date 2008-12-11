@@ -62,8 +62,10 @@ int main()
    psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
-      { PSO_KEY_INTEGER, 0, 0, 0 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_INTEGER, 0, 0, 0 }
+   };
+   psoFieldDefinition fields[1] = { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
    };
    psoObjectDefinition folderDef;
 
@@ -82,9 +84,9 @@ int main()
       }
       catch ( Exception exc ) {}
 
-      session.CreateObject( folderName, folderDef );
-      session.CreateObject( queueName1, queueDef );
-      session.CreateObject( queueName2, queueDef );
+      session.CreateObject( folderName, folderDef, NULL );
+      session.CreateObject( queueName1, queueDef, fields );
+      session.CreateObject( queueName2, queueDef, fields );
       session.GetInfo( info1 );
    }
    catch( Exception exc ) {

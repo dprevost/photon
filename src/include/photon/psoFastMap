@@ -88,11 +88,6 @@ public:
     * This function terminates the current access to the hash map in shared 
     * memory (the hash map itself is untouched).
     *
-    * \warning Closing an object does not automatically commit or rollback 
-    * data items that were inserted or removed. You still must use either 
-    * psoSession::Commit or psoSession::Rollback to end the current unit of 
-    * work.
-    *
     * \exception pso::Exception An abnormal error occured.
     */
    void Close();
@@ -100,9 +95,8 @@ public:
    /**
     * \brief Retrieve the data definition of the hash map.
     *
-    * You can call this function twice - the first time with numFields set
-    * to \em zero and \em fields set to NULL to retrieve the actual number
-    * of fields. This allows you to allocate the proper size for \em fields.
+    * This function uses the optional class ObjDefinition. This class 
+    * simplify the management of the array of field definitions.
     *
     * \param[out] definition The definition of the object (accessed through
     *             the definition "helper object".

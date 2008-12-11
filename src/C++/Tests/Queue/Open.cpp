@@ -39,8 +39,10 @@ int main( int argc, char * argv[] )
    psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
-      { PSO_KEY_VAR_BINARY, 0, 0, 0 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 0, 0 }
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
 
    memset( &folderDef, 0, sizeof folderDef );
@@ -56,7 +58,7 @@ int main( int argc, char * argv[] )
       session1.Init();
       session2.Init();
       session1.CreateObject( fname, folderDef, NULL );
-      session1.CreateObject( qname, queueDef );
+      session1.CreateObject( qname, queueDef, fields );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

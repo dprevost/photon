@@ -66,6 +66,19 @@ public:
    
    /**
     * \brief Retrieve the data definition of the queue.
+   *
+    * This function uses the optional class ObjDefinition. This class 
+    * simplify the management of the array of field definitions.
+    *
+    * \param[out] definition The definition of the object (accessed through
+    *             the definition "helper object".
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Definition( ObjDefinition & definition );
+
+   /**
+    * \brief Retrieve the data definition of the queue.
     *
     * You can call this function twice - the first time with numFields set
     * to \em zero and \em fields set to NULL to retrieve the actual number

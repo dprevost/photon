@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
       folder = new Folder(*session);
       
       session->Init();
-      session->CreateObject( name, folderDef );
+      session->CreateObject( name, folderDef, NULL );
       folder->Open( name );
       
       delete session;

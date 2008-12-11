@@ -39,8 +39,10 @@ int main( int argc, char * argv[] )
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP,
       1, 
-      { PSO_KEY_VAR_BINARY, 0, 1, 20 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 1, 20 }
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };
 
    memset( &folderDef, 0, sizeof folderDef );

@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( name, folderDef );
+      session.CreateObject( name, folderDef, NULL );
       session.ErrorMsg( msg );
    }
    catch( pso::Exception exc ) {
@@ -64,7 +64,7 @@ int main( int argc, char * argv[] )
    cout << "Message 1 (no error): " << msg  << endl;
 
    try {
-      session.CreateObject( name, folderDef );
+      session.CreateObject( name, folderDef, NULL );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

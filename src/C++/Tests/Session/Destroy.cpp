@@ -40,8 +40,10 @@ int main( int argc, char * argv[] )
    psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
-      { PSO_KEY_VAR_BINARY, 0, 0, 0 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 0, 0 }
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
 
    memset( &folderDef, 0, sizeof folderDef );
@@ -78,7 +80,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      session1.CreateObject( name, folderDef );
+      session1.CreateObject( name, folderDef, NULL );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -207,7 +209,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session1.CreateObject( name, queueDef );
+      session1.CreateObject( name, queueDef, fields );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

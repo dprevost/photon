@@ -181,7 +181,7 @@ public:
     * the C++ class from the C structs.
     *
     * \param[in] definition The object definition C struct
-    * \param[in] fields The field definition array
+    * \param[in] inputFields The field definition array
     *
     * \exception pso::Exception An abnormal error occured.
     */

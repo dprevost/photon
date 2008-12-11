@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
          return 1;
       }
       // Our first "test call"
-      session.CreateObject( name, folderDef );
+      session.CreateObject( name, folderDef, NULL );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
    // Create the same object a second time and check that last error is
    // the one we expect.
    try {
-      session.CreateObject( name, folderDef );
+      session.CreateObject( name, folderDef, NULL );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

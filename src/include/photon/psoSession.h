@@ -148,7 +148,7 @@ int psoCommit( PSO_HANDLE sessionHandle );
  *            the Photon engine).
  * \param[in] pDefinition The type of object to create (folder, queue, etc.)
  *            and the optional definitions (as needed).
- * \param[in] pFields An array of field definitions. It can be set to
+ * \param[in] fields An array of field definitions. It can be set to
  *            NULL when creating a Folder.
  *
  * \return 0 on success or a ::psoErrors on error.

@@ -256,6 +256,7 @@ void psoShell::Cat()
    uint32_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
    uint32_t * offsets;
+   ObjDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -280,7 +281,7 @@ void psoShell::Cat()
    }
    
    try {
-      session.GetDefinition( objectName, &pDefinition );
+      session.GetDefinition( objectName, definition );
    }
    catch ( Exception exc ) {
       cerr << "psosh: cat: " << exc.Message() << endl;
@@ -296,7 +297,9 @@ void psoShell::Cat()
       return;
    }
    
-   psoaGetOffsets( pDefinition, offsets );
+   psoaGetOffsets( (psoObjectDefinition *)&(definition.GetDef()), 
+                   (psoFieldDefinition *)definition.GetFields(), 
+                   offsets );
    for ( uint32_t i = 0; i < pDefinition->numFields; ++i ) {
       cout << "offsets[" << i << "] = " << offsets[i] << endl;
    }
@@ -323,11 +326,11 @@ void psoShell::Cat()
                string keyStr, dataStr;
                
                shellBuffToOut( dataStr,
-                               pDefinition,
+                               definition,
                                buffer,
                                dataLength );
                shellKeyToOut( keyStr,
-                              &pDefinition->key,
+                              definition,
                               key,
                               keyLength );               
                cout << "key : " << keyStr << endl;
@@ -356,11 +359,11 @@ void psoShell::Cat()
                string keyStr, dataStr;
                
                shellBuffToOut( dataStr,
-                               pDefinition,
+                               definition,
                                buffer,
                                dataLength );
                shellKeyToOut( keyStr,
-                              &pDefinition->key,
+                              definition,
                               key,
                               keyLength );
                cout << "key : " << keyStr << endl;
@@ -385,7 +388,7 @@ void psoShell::Cat()
                string dataStr;
                
                shellBuffToOut( dataStr,
-                               pDefinition,
+                               definition,
                                buffer,
                                dataLength );
                cout << dataStr << endl;
@@ -406,7 +409,7 @@ void psoShell::Cat()
                string dataStr;
                
                shellBuffToOut( dataStr,
-                               pDefinition,
+                               definition,
                                buffer,
                                dataLength );
                cout << dataStr << endl;
@@ -474,7 +477,8 @@ void psoShell::Cp()
    unsigned char * key, * buffer;
    int rc;
    uint32_t keyLength, dataLength;
-   psoObjectDefinition definition;
+//   psoObjectDefinition definition;
+   ObjDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -507,7 +511,8 @@ void psoShell::Cp()
    }
    
    try {
-      definition.type = status.type;
+      session.GetDefinition( srcName, definition );
+//      definition.type = status.type;
       session.CreateObject( destName, definition );
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
@@ -569,6 +574,7 @@ void psoShell::Echo()
    uint32_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
    bool nokey = false;
+   ObjDefinition definition;
    
    if ( tokens.size() == 4 ) nokey = true;
    
@@ -615,7 +621,7 @@ void psoShell::Echo()
    }
    
    try {
-      session.GetDefinition( objectName, &pDefinition );
+      session.GetDefinition( objectName, definition );
    }
    catch ( Exception exc ) {
       cerr << "psosh: echo: " << exc.Message() << endl;
@@ -624,11 +630,11 @@ void psoShell::Echo()
 
    try {
       if ( nokey ) {
-         buffer = shellInToBuff( tokens[1], pDefinition, dataLength );
+         buffer = shellInToBuff( tokens[1], definition, dataLength );
       }
       else {
-         key = shellInToKey( tokens[1], &pDefinition->key, keyLength );
-         buffer = shellInToBuff( tokens[2], pDefinition, dataLength );
+         key    = shellInToKey(  tokens[1], definition, keyLength );
+         buffer = shellInToBuff( tokens[2], definition, dataLength );
       }
    }   
    catch ( exception exc ) {
@@ -824,7 +830,7 @@ void psoShell::Mkdir()
    
    try {
       definition.type = PSO_FOLDER;
-      session.CreateObject( folderName, definition );
+      session.CreateObject( folderName, definition, NULL );
       session.Commit();
    }
    catch ( Exception exc ) {
@@ -1007,7 +1013,7 @@ void psoShell::Touch()
       }
    
       try {
-         session.CreateObject( objectName, definition );
+         session.CreateObject( objectName, definition, NULL );
          session.Commit();
       }
       catch ( Exception exc ) {

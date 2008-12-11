@@ -65,7 +65,6 @@ void FastMap::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-
 void FastMap::Definition( ObjDefinition & definition )
 {
    int rc;
