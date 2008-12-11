@@ -67,12 +67,21 @@ public:
    /**
     * \brief Retrieve the data definition of the queue.
     *
-    * \param[out]  definition The definition object holding the 
-    *              definition itself.
+    * You can call this function twice - the first time with numFields set
+    * to \em zero and \em fields set to NULL to retrieve the actual number
+    * of fields. This allows you to allocate the proper size for \em fields.
+    *
+    * \param[out] definition The definition of the object.
+    * \param[in]  numFields The length of the array \em fields. Can be set to 
+    *             zero to get the actual number of fields.
+    * \param[out] fields The definition of all the fields. It can be set to NULL
+    *             if \em numFields is set to zero.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Definition( ObjDefinition & definition );
+   void Definition( psoObjectDefinition & definition,
+                    psoUint32             numFields,
+                    psoFieldDefinition  * fields );
 
    /** 
     * Iterate through the queue - no data items are removed from the queue

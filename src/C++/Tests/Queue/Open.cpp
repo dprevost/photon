@@ -55,7 +55,7 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, folderDef );
+      session1.CreateObject( fname, folderDef, NULL );
       session1.CreateObject( qname, queueDef );
    }
    catch( pso::Exception exc ) {

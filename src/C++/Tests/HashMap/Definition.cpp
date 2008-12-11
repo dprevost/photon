@@ -86,7 +86,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef );
+      session.CreateObject( fname, folderDef, NULL );
       session.CreateObject( hname, mapDef.GetDef() );
       hashmap.Open( hname );
       hashmap.Insert( key, strlen(key), &data, sizeof(data) );

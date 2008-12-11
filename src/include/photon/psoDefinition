@@ -178,21 +178,29 @@ public:
     * container.
     *
     * This version of reset is used internally by the C++ API to populate
-    * the C++ class from the C struct.
+    * the C++ class from the C structs.
     *
-    * \param[in] definition The definition C struct
+    * \param[in] definition The object definition C struct
+    * \param[in] fields The field definition array
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Reset( psoObjectDefinition & definition );
+   void Reset( psoObjectDefinition & definition,
+               psoFieldDefinition  * inputFields );
    
    /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();
+
+   /** Returns a reference to the C struct definition. */
+   const psoFieldDefinition * GetFields();
    
 private:
 
    /// The C struct holding the definition itself
-   psoObjectDefinition * pDefinition;
+   psoObjectDefinition definition;
+   
+   /// The C struct array holding the definition of the fields
+   psoFieldDefinition * fields;
    
    /// Iterator
    psoUint32 currentField;

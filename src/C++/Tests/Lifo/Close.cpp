@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef );
+      session.CreateObject( fname, folderDef, NULL );
       session.CreateObject( qname, queueDef );
    }
    catch( pso::Exception exc ) {

@@ -66,30 +66,23 @@ void Queue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Queue::Definition( ObjDefinition & definition )
+void Queue::Definition( psoObjectDefinition & definition,
+                        psoUint32             numFields,
+                        psoFieldDefinition  * fields )
 {
    int rc;
-   psoObjectDefinition * def = NULL;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
       throw pso::Exception( "Queue::Definition", PSO_NULL_HANDLE );
    }
 
-   rc = psoQueueDefinition( m_objectHandle, &def );
+   rc = psoQueueDefinition( m_objectHandle, 
+                           &definition,
+                           numFields,
+                           fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Queue::Definition" );
    }
-   
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      definition.Reset( *def );
-   }
-   catch( pso::Exception exc ) {
-      free( def );
-      throw exc;
-   }
-   
-   free( def );
 }
 
 

@@ -39,10 +39,12 @@ int main( int argc, char * argv[] )
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP,
       1, 
-      { PSO_KEY_VAR_BINARY, 0, 1, 20 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_BINARY, 0, 1, 20 }
    };
-
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
+   };
+   
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;
    
@@ -54,8 +56,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef );
-      session.CreateObject( hname, mapDef );
+      session.CreateObject( fname, folderDef, NULL );
+      session.CreateObject( hname, mapDef, fields );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

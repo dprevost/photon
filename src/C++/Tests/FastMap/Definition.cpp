@@ -83,8 +83,8 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef );
-      session.CreateObject( hname, mapDef.GetDef() );
+      session.CreateObject( fname, folderDef, NULL );
+      session.CreateObject( hname, mapDef );
       hashmap.Open( hname );
    }
    catch( pso::Exception exc ) {
@@ -101,8 +101,13 @@ int main( int argc, char * argv[] )
       return 1;
    }
    
-   len = offsetof( psoObjectDefinition, fields ) + 5 * sizeof(psoFieldDefinition);
+   len = sizeof( psoObjectDefinition );
    if ( memcmp( &mapDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   len = 5 * sizeof(psoFieldDefinition);
+   if ( memcmp( mapDef.GetFields(), returnedDef.GetFields(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

@@ -65,30 +65,60 @@ void FastMap::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+
 void FastMap::Definition( ObjDefinition & definition )
 {
    int rc;
-   psoObjectDefinition * def = NULL;
+   psoObjectDefinition def;
+   psoFieldDefinition * fields;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMap::Definition", PSO_NULL_HANDLE );
+   }
+   
+   memset( &def, 0, sizeof(psoObjectDefinition) );
+   rc = psoFastMapDefinition( m_objectHandle, &def, 0, NULL );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
+   }
+   fields = (psoFieldDefinition *) 
+      calloc(sizeof(psoFieldDefinition) * def.numFields, 1);
+   if ( fields == NULL ) {
+      throw pso::Exception( "FastMap::Definition", PSO_NOT_ENOUGH_HEAP_MEMORY );
+   }
+   rc = psoFastMapDefinition( m_objectHandle, &def, def.numFields, fields );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
+   }
+   
+   // We catch and rethrow the exception to avoid a memory leak
+   try {
+      definition.Reset( def, fields );
+   }
+   catch( pso::Exception exc ) {
+      free( fields );
+      throw exc;
+   }
+   
+   free( fields );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void FastMap::Definition( psoObjectDefinition & definition,
+                          psoUint32             numFields,
+                          psoFieldDefinition  * fields )
+{
+   int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
       throw pso::Exception( "FastMap::Definition", PSO_NULL_HANDLE );
    }
 
-   rc = psoFastMapDefinition( m_objectHandle, &def );
+   rc = psoFastMapDefinition( m_objectHandle, &definition, numFields, fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
    }
-
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      definition.Reset( *def );
-   }
-   catch( pso::Exception exc ) {
-      free( def );
-      throw exc;
-   }
-   
-   free( def );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

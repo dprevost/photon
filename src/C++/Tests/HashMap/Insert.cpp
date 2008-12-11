@@ -60,8 +60,8 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, folderDef );
-      session1.CreateObject( hname, mapDef );
+      session1.CreateObject( fname, folderDef, NULL );
+      session1.CreateObject( hname, mapDef, fields );
       session1.Commit();
       map1.Open( hname );
       map2.Open( hname );
