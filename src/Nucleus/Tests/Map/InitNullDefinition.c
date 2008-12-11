@@ -31,6 +31,9 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
+   };
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -45,6 +48,7 @@ int main()
                      "Map1", 
                      SET_OFFSET(pHashMap),
                      NULL,
+                     fields,
                      &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

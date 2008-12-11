@@ -34,8 +34,7 @@ int main()
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    memset( name, 't', PSO_MAX_FULL_NAME_LENGTH+99 );
@@ -47,6 +46,7 @@ int main()
                                    "Test1",
                                    0,
                                    &def,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -60,6 +60,7 @@ int main()
                                    "/Test2",
                                    1,
                                    &def,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -73,6 +74,7 @@ int main()
                                    name,
                                    PSO_MAX_FULL_NAME_LENGTH+1,
                                    &def,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -89,6 +91,7 @@ int main()
                                    name,
                                    PSO_MAX_NAME_LENGTH+1,
                                    &def,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

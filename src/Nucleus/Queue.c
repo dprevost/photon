@@ -249,6 +249,7 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
+                    psoFieldDefinition  * pFields,
                     psonSessionContext  * pContext )
 {
    psoErrors errcode;
@@ -260,6 +261,7 @@ bool psonQueueInit( psonQueue           * pQueue,
    PSO_PRE_CONDITION( pTxStatus    != NULL );
    PSO_PRE_CONDITION( origName     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
+   PSO_PRE_CONDITION( pFields      != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
@@ -299,24 +301,24 @@ bool psonQueueInit( psonQueue           * pQueue,
    pQueue->dataDefOffset = SET_OFFSET(ptr);
 
    for ( i = 0; i < pQueue->numFields; ++i) {
-      memcpy( ptr[i].name, pDefinition->fields[i].name, PSO_MAX_FIELD_LENGTH );
-      ptr[i].type = pDefinition->fields[i].type;
+      memcpy( ptr[i].name, pFields[i].name, PSO_MAX_FIELD_LENGTH );
+      ptr[i].type = pFields[i].type;
       switch( ptr[i].type ) {
       case PSO_INTEGER:
       case PSO_BINARY:
       case PSO_STRING:
-         ptr[i].length1 = pDefinition->fields[i].length;
+         ptr[i].length1 = pFields[i].length;
          break;
       case PSO_DECIMAL:
-         ptr[i].length1 = pDefinition->fields[i].precision;
-         ptr[i].length2 = pDefinition->fields[i].scale;         
+         ptr[i].length1 = pFields[i].precision;
+         ptr[i].length2 = pFields[i].scale;         
          break;
       case PSO_BOOLEAN:
          break;
       case PSO_VAR_BINARY:
       case PSO_VAR_STRING:
-         ptr[i].length1 = pDefinition->fields[i].minLength;
-         ptr[i].length2 = pDefinition->fields[i].maxLength;
+         ptr[i].length1 = pFields[i].minLength;
+         ptr[i].length2 = pFields[i].maxLength;
          
       }
    }

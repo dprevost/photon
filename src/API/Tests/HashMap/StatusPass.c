@@ -39,14 +39,15 @@ int main( int argc, char * argv[] )
    psoObjectDefinition mapDef = { 
       PSO_HASH_MAP, 
       1, 
-      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
 
    if ( argc > 1 ) {
@@ -69,7 +70,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ahsp",
                               strlen("/ahsp"),
-                              &folderDef );
+                              &folderDef,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -78,7 +80,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ahsp/test",
                               strlen("/ahsp/test"),
-                              &mapDef );
+                              &mapDef,
+                              fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

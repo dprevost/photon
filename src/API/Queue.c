@@ -91,8 +91,10 @@ int psoQueueClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoQueueDefinition( PSO_HANDLE             objectHandle,
-                        psoObjectDefinition ** ppDefinition )
+int psoQueueDefinition( PSO_HANDLE            objectHandle,
+                        psoObjectDefinition * pDefinition,
+                        psoUint32             numFields,
+                        psoFieldDefinition  * pFields )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -106,7 +108,12 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
 
    pContext = &pQueue->object.pSession->context;
 
-   if ( ppDefinition == NULL ) {
+   if ( pDefinition == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   if ( numFields > 0 && pFields == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
@@ -115,10 +122,13 @@ int psoQueueDefinition( PSO_HANDLE             objectHandle,
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
-         errcode = psoaGetDefinition( pQueue->pDefinition,
-                                      pMemQueue->numFields,
-                                      ppDefinition );
-         if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_QUEUE;
+         pDefinition->type = PSO_QUEUE;
+         pDefinition->numFields = pMemQueue->numFields;
+         if ( numFields > 0 ) {
+            errcode = psoaGetDefinition( pQueue->pDefinition,
+                                         pMemQueue->numFields,
+                                         pFields );
+         }
          psoaCommonUnlock( &pQueue->object );
       }
       else {

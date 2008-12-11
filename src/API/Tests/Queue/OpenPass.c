@@ -36,14 +36,15 @@ int main( int argc, char * argv[] )
    psoObjectDefinition defQueue = { 
       PSO_QUEUE,
       1, 
-      { 0, 0, 0, 0}, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { 0, 0, 0, 0}
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    memset( junk, 0, 12 );
@@ -73,7 +74,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/aqop",
                               strlen("/aqop"),
-                              &folderDef );
+                              &folderDef,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -82,7 +84,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/aqop/test",
                               strlen("/aqop/test"),
-                              &defQueue );
+                              &defQueue,
+                              fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

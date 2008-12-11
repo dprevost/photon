@@ -38,16 +38,17 @@ int main( int argc, char * argv[] )
    uint32_t length;
    char buffer[20];
    psoObjectDefinition mapDef = { 
-      PSO_FAST_MAP, 
+      PSO_FAST_MAP,
       1, 
-      { PSO_KEY_VAR_STRING, 0, 4, 10 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 4, 10 }
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
 
    if ( argc > 1 ) {
@@ -75,7 +76,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle1,
                               "/amdp",
                               strlen("/amdp"),
-                              &folderDef );
+                              &folderDef,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -87,7 +89,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle1,
                               "/amdp/test",
                               strlen("/amdp/test"),
-                              &mapDef );
+                              &mapDef,
+                              fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

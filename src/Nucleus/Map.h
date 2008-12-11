@@ -131,6 +131,7 @@ bool psonMapInit( psonMap             * pHashMap,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
                   psoObjectDefinition * pDefinition,
+                  psoFieldDefinition  * pFields,
                   psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

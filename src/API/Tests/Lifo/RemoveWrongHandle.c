@@ -37,14 +37,15 @@ int main( int argc, char * argv[] )
    psoObjectDefinition defLilo = { 
       PSO_LIFO,
       1, 
-      { 0, 0, 0, 0}, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { 0, 0, 0, 0}
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
 
    if ( argc > 1 ) {
@@ -67,7 +68,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_rwh",
                               strlen("/api_lifo_rwh"),
-                              &folderDef );
+                              &folderDef,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -76,7 +78,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_rwh/test",
                               strlen("/api_lifo_rwh/test"),
-                              &defLilo );
+                              &defLilo,
+                              fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

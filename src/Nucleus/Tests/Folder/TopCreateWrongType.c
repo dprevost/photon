@@ -33,8 +33,7 @@ int main()
    psoObjectDefinition def = { 
       0, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
@@ -43,6 +42,7 @@ int main()
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
+                                   NULL,
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

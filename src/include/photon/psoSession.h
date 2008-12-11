@@ -142,12 +142,14 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * psoQueueOpen and similar functions to get the handle.
  *
  * \param[in] sessionHandle Handle to the current session.
- * \param[in]  objectName The fully qualified name of the object. 
- * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
- *             counting the null terminator (null-terminators are not used by
- *             the Photon engine).
- * \param[in]  pDefinition The type of object to create (folder, queue, etc.)
- *             and the optional definitions (as needed).
+ * \param[in] objectName The fully qualified name of the object. 
+ * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+ *            counting the null terminator (null-terminators are not used by
+ *            the Photon engine).
+ * \param[in] pDefinition The type of object to create (folder, queue, etc.)
+ *            and the optional definitions (as needed).
+ * \param[in] pFields An array of field definitions. It can be set to
+ *            NULL when creating a Folder.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -155,7 +157,8 @@ PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
-                     psoObjectDefinition * pDefinition );
+                     psoObjectDefinition * pDefinition,
+                     psoFieldDefinition  * fields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -255,26 +258,31 @@ int psoExitSession( PSO_HANDLE sessionHandle );
 /**
  * \brief Retrieve the data definition of the named object.
  *
- * \warning This function allocates a buffer to hold the definition (using 
- * malloc()). You must free it (with free()) when you no longer need the
- * definition.
+ * You can call this function twice - the first time with numFields set
+ * to \em zero and \em fields set to NULL to retrieve the actual number
+ * of fields. This allows you to allocate the proper size for \em fields.
+ *
  *
  * \param[in]  sessionHandle Handle to the current session.
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
  *             the Photon engine).
- * \param[out]  definition The buffer allocated by the API to hold the content 
- *              of the object definition. Freeing the memory (with free())
- *              is the responsability of the caller.
+ * \param[out] definition The definition of the object.
+ * \param[in]  numFields The length of the array \em fields. Can be set to 
+ *             zero to get the actual number of fields.
+ * \param[out] fields The definition of all the fields. It can be set to NULL
+ *             if \em numFields is set to zero.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoGetDefinition( PSO_HANDLE             sessionHandle,
-                      const char           * objectName,
-                      psoUint32              nameLengthInBytes,
-                      psoObjectDefinition ** definition );
+int psoGetDefinition( PSO_HANDLE            sessionHandle,
+                      const char          * objectName,
+                      psoUint32             nameLengthInBytes,
+                      psoObjectDefinition * definition,
+                      psoUint32             numFields,
+                      psoFieldDefinition  * fields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

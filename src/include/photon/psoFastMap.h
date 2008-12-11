@@ -130,21 +130,25 @@ int psoFastMapClose( PSO_HANDLE objectHandle );
 /**
  * \brief Retrieve the data definition of the hash map.
  *
- * \warning This function allocates a buffer to hold the definition (using 
- * malloc()). You must free it (with free()) when you no longer need the
- * definition.
+ * You can call this function twice - the first time with numFields set
+ * to \em zero and \em fields set to NULL to retrieve the actual number
+ * of fields. This allows you to allocate the proper size for \em fields.
  *
  * \param[in]   objectHandle The handle to the hash map (see ::psoFastMapOpen 
  *                           or ::psoFastMapEdit).
- * \param[out]  definition The buffer allocated by the API to hold the content 
- *              of the object definition. Freeing the memory (with free())
- *              is the responsability of the caller.
+ * \param[out] definition The definition of the object.
+ * \param[in]  numFields The length of the array \em fields. Can be set to 
+ *             zero to get the actual number of fields.
+ * \param[out] fields The definition of all the fields. It can be set to NULL
+ *             if \em numFields is set to zero.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoFastMapDefinition( PSO_HANDLE             objectHandle, 
-                          psoObjectDefinition ** definition );
+int psoFastMapDefinition( PSO_HANDLE            objectHandle, 
+                          psoObjectDefinition * definition,
+                          psoUint32             numFields,
+                          psoFieldDefinition  * fields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

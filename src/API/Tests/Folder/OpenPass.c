@@ -36,8 +36,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    memset( junk, 0, 12 );
@@ -67,7 +66,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/afop",
                               strlen("/afop"),
-                              &def );
+                              &def,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

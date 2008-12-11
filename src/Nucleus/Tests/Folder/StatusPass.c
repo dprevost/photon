@@ -34,8 +34,7 @@ int main()
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    pFolder = initFolderTest( expectedToPass, &context );
@@ -52,6 +51,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -64,6 +64,7 @@ int main()
                                 "Test3",
                                 5,
                                 &def,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -76,6 +77,7 @@ int main()
                                 "Test4",
                                 5,
                                 &def,
+                                NULL,
                                 1,
                                 0,
                                 &context );

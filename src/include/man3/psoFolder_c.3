@@ -1,4 +1,4 @@
-.TH "API functions for Photon folders." 3 "6 Dec 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon folders." 3 "10 Dec 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,7 +25,7 @@ If a flat structure is preferred, simply make all your data containers children 
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition, \fBpsoFieldDefinition\fP *pFields)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
@@ -72,7 +72,7 @@ This function terminates the current access to the folder in shared memory (the 
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition)"
+.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition, \fBpsoFieldDefinition\fP * pFields)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
@@ -88,7 +88,9 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
 .br
-\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the 'optional' definition.
+\fIpDefinition\fP The type of object to create (folder, queue, etc.), the number of fields and the 'optional' key definition (for hash maps and similar). 
+.br
+\fIpFields\fP An array of field definitions.
 .RE
 .PP
 \fBReturns:\fP

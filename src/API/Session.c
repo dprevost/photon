@@ -103,7 +103,8 @@ int psoCommit( PSO_HANDLE sessionHandle )
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      uint32_t              nameLengthInBytes,
-                     psoObjectDefinition * pDefinition )
+                     psoObjectDefinition * pDefinition,
+                     psoFieldDefinition  * pFields )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -130,7 +131,12 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
       return PSO_NULL_POINTER;
    }
 
-   errcode = psoaValidateDefinition( pDefinition );
+   if ( pDefinition->type != PSO_FOLDER && pFields == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   errcode = psoaValidateDefinition( pDefinition, pFields );
    if ( errcode != PSO_OK ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
       return errcode;
@@ -143,6 +149,7 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                                          objectName,
                                          nameLengthInBytes,
                                          pDefinition,
+                                         pFields,
                                          &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
       }
@@ -339,16 +346,17 @@ int psoExitSession( PSO_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoGetDefinition( PSO_HANDLE             sessionHandle,
-                      const char           * objectName,
-                      uint32_t               nameLengthInBytes,
-                      psoObjectDefinition ** ppDefinition )
+int psoGetDefinition( PSO_HANDLE            sessionHandle,
+                      const char          * objectName,
+                      uint32_t              nameLengthInBytes,
+                      psoObjectDefinition * pDefinition,
+                      psoUint32             numFields,
+                      psoFieldDefinition  * pFields )
 {
-   psoaSession* pSession;
+   psoaSession * pSession;
    int errcode = PSO_OK;
    psonFolder * pTree;
    psonFieldDef * pInternalDef;
-   psoObjectDefinition *pDefinition;
    bool ok = true;
    
    pSession = (psoaSession*) sessionHandle;
@@ -366,15 +374,14 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
       return PSO_INVALID_LENGTH;
    }
    
-   if ( ppDefinition == NULL ) {
+   if ( pDefinition == NULL ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
-
-   pDefinition = calloc( sizeof(psoObjectDefinition), 1 );
-   if ( pDefinition == NULL ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
-      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   
+   if ( numFields > 0 && pFields == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
    
    if ( psoaSessionLock( pSession ) ) {
@@ -388,22 +395,10 @@ int psoGetDefinition( PSO_HANDLE             sessionHandle,
                                    &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
-            if ( pDefinition->type == PSO_FOLDER ) {
-               *ppDefinition = pDefinition;
-            }
-            else {
+            if ( pDefinition->type != PSO_FOLDER && numFields > 0 ) {
                errcode = psoaGetDefinition( pInternalDef,
                                             (uint16_t)pDefinition->numFields,
-                                            ppDefinition );
-               if ( errcode == 0 ) {
-                  (*ppDefinition)->type = pDefinition->type;
-                  if ( pDefinition->type == PSO_HASH_MAP || 
-                     pDefinition->type == PSO_FAST_MAP ) {
-                     memcpy( &(*ppDefinition)->key, 
-                             &pDefinition->key, 
-                             sizeof(psoKeyDefinition) );
-                  }
-               }
+                                            pFields );
             }
          }
       }

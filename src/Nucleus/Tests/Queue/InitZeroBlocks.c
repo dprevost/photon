@@ -33,8 +33,10 @@ int main()
    psoObjectDefinition def = { 
       PSO_QUEUE, 
       1, 
-      { 0, 0, 0, 0}, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      { 0, 0, 0, 0}
+   };
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };
    
    pQueue = initQueueTest( expectedToPass, &context );
@@ -42,8 +44,15 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    psonQueueInit( pQueue, 
-                  0, 0, &status, 4, 
-                  "Queue1", SET_OFFSET(pQueue), &def, &context );
+                  0,
+                  0,
+                  &status,
+                  6, 
+                  "Queue1",
+                  SET_OFFSET(pQueue),
+                  &def,
+                  fields,
+                  &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

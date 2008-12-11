@@ -231,7 +231,7 @@ struct psoObjectDefinition
    psoKeyDefinition key;
 
    /** The data definition of the fields */
-   psoFieldDefinition fields[1];
+//   psoFieldDefinition fields[1];
 };
 
 typedef struct psoObjectDefinition psoObjectDefinition;

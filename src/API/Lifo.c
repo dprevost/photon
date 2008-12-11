@@ -91,8 +91,10 @@ int psoLifoClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoLifoDefinition( PSO_HANDLE             objectHandle,
-                       psoObjectDefinition ** ppDefinition )
+int psoLifoDefinition( PSO_HANDLE            objectHandle,
+                       psoObjectDefinition * pDefinition,
+                       psoUint32             numFields,
+                       psoFieldDefinition  * pFields )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
@@ -106,7 +108,12 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
 
    pContext = &pLifo->object.pSession->context;
 
-   if ( ppDefinition == NULL ) {
+   if ( pDefinition == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   if ( numFields > 0 && pFields == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
@@ -115,10 +122,13 @@ int psoLifoDefinition( PSO_HANDLE             objectHandle,
       if ( psoaCommonLock( &pLifo->object ) ) {
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
       
-         errcode = psoaGetDefinition( pLifo->pDefinition,
-                                      pMemLifo->numFields,
-                                      ppDefinition );
-         if ( errcode == PSO_OK ) (*ppDefinition)->type = PSO_LIFO;
+         pDefinition->type = PSO_LIFO;
+         pDefinition->numFields = pMemLifo->numFields;
+         if ( numFields > 0 ) {
+            errcode = psoaGetDefinition( pLifo->pDefinition,
+                                         pMemLifo->numFields,
+                                         pFields );
+         }
          psoaCommonUnlock( &pLifo->object );
       }
       else {

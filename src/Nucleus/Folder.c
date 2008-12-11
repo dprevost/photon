@@ -102,6 +102,7 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
+                             psoFieldDefinition  * pFields,
                              psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -117,6 +118,9 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
    PSO_PRE_CONDITION( pDefinition != NULL );
    PSO_PRE_CONDITION( pDefinition->type > 0 && 
                       pDefinition->type < PSO_LAST_OBJECT_TYPE );
+   if ( pDefinition->type != PSO_FOLDER ) {
+      PSO_PRE_CONDITION( pFields  != NULL );
+   }
    
    strLength = nameLengthInBytes;
 
@@ -156,6 +160,7 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
+                                   pFields,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
@@ -1374,6 +1379,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * originalName,
                              uint32_t              strLength, 
                              psoObjectDefinition * pDefinition,
+                             psoFieldDefinition  * pFields,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psonSessionContext  * pContext )
@@ -1399,6 +1405,9 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
    PSO_PRE_CONDITION( originalName != NULL )
    PSO_PRE_CONDITION( pContext     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
+   if ( pDefinition->type != PSO_FOLDER ) {
+      PSO_PRE_CONDITION( pFields   != NULL );
+   }
    PSO_PRE_CONDITION( strLength > 0 );
    PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
 
@@ -1533,6 +1542,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              pDesc->originalName,
                              SET_OFFSET(pHashItem),
                              pDefinition,
+                             pFields,
                              pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonQueue,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonQueue,memObject);
@@ -1562,6 +1572,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                pDesc->originalName,
                                SET_OFFSET(pHashItem),
                                pDefinition,
+                               pFields,
                                pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonHashMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonHashMap,memObject);
@@ -1577,6 +1588,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                            pDesc->originalName,
                            SET_OFFSET(pHashItem),
                            pDefinition,
+                           pFields,
                            pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonMap,nodeObject);
@@ -1649,6 +1661,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                 &originalName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pDefinition,
+                                pFields,
                                 numBlocks,
                                 expectedNumOfChilds,
                                 pContext );
@@ -1978,6 +1991,7 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
+                                psoFieldDefinition  * pFields,
                                 psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -1993,6 +2007,9 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
    PSO_PRE_CONDITION( pDefinition != NULL );
    PSO_PRE_CONDITION( pDefinition->type > 0 && 
                       pDefinition->type < PSO_LAST_OBJECT_TYPE );
+   if ( pDefinition->type != PSO_FOLDER ) {
+      PSO_PRE_CONDITION( pFields  != NULL );
+   }
    
    strLength = nameLengthInBytes;
 
@@ -2038,6 +2055,7 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
+                                   pFields,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );

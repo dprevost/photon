@@ -35,8 +35,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    if ( argc > 1 ) {
@@ -59,7 +58,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/afgnp",
                               strlen("/afgnp"),
-                              &def );
+                              &def,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -67,7 +67,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/afgnp/f1",
                               strlen("/afgnp/f1"),
-                              &def );
+                              &def,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -75,7 +76,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/afgnp/f2",
                               strlen("/afgnp/f2"),
-                              &def );
+                              &def,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

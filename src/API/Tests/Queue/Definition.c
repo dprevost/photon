@@ -40,40 +40,35 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    struct dummy * data1 = NULL;
-   size_t lenData, len;
-   psoObjectDefinition * pDef = NULL;
-   psoObjectDefinition * pDefQueue = NULL;
+   size_t lenData;
+
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
+   psoObjectDefinition queueDef = {
+      PSO_QUEUE, 
+      5, 
+      { 0, 0, 0, 0}
+   };
+
+   psoFieldDefinition fields[5] = {
+      { "field1", PSO_INTEGER,     1, 0, 0, 0, 0 },
+      { "field2", PSO_INTEGER,     4, 0, 0, 0, 0 },
+      { "field3", PSO_STRING,     30, 0, 0, 0, 0 },
+      { "field4", PSO_INTEGER,     2, 0, 0, 0, 0 },
+      { "field5", PSO_VAR_BINARY,  0, 0, 0, 0, 0 }
+   };
+   
+   psoFieldDefinition retFields[5];
+   psoObjectDefinition retDef;
+   
+   memset( &retDef, 0, sizeof(psoObjectDefinition) );
+   memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
 
    lenData = offsetof(struct dummy, bin) + 10;
    data1 = (struct dummy *)malloc( lenData );
-   
-   len = offsetof( psoObjectDefinition, fields ) + 
-      5 * sizeof(psoFieldDefinition);
-   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
-   pDefQueue->type = PSO_QUEUE;
-   pDefQueue->numFields = 5;
-   pDefQueue->fields[0].type = PSO_INTEGER;
-   pDefQueue->fields[1].type = PSO_INTEGER;
-   pDefQueue->fields[2].type = PSO_STRING;
-   pDefQueue->fields[3].type = PSO_INTEGER;
-   pDefQueue->fields[4].type = PSO_VAR_BINARY;
-
-   pDefQueue->fields[0].length = 1;
-   pDefQueue->fields[1].length = 4;
-   pDefQueue->fields[2].length = 30;
-   pDefQueue->fields[3].length = 2;
-
-   strcpy( pDefQueue->fields[0].name, "field1" );
-   strcpy( pDefQueue->fields[1].name, "field2" );
-   strcpy( pDefQueue->fields[2].name, "field3" );
-   strcpy( pDefQueue->fields[3].name, "field4" );
-   strcpy( pDefQueue->fields[4].name, "field5" );
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -95,7 +90,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/aqsp",
                               strlen("/aqsp"),
-                              &folderDef );
+                              &folderDef,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -104,7 +100,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/aqsp/test",
                               strlen("/aqsp/test"),
-                              pDefQueue );
+                              &queueDef,
+                              fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -127,26 +124,45 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoQueueDefinition( NULL, &pDef );
+   errcode = psoQueueDefinition( NULL, &retDef, 5, retFields );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, NULL );
+   errcode = psoQueueDefinition( objHandle, NULL, 5, retFields );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoQueueDefinition( objHandle, &retDef, 5, NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoQueueDefinition( objHandle, &pDef );
+   errcode = psoQueueDefinition( objHandle, &retDef, 0, NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( memcmp( pDefQueue, pDef, len ) != 0 ) {
+   if ( memcmp( &queueDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoQueueDefinition( objHandle, &retDef, 5, retFields );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   if ( memcmp( &queueDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -158,7 +174,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, &pDef );
+   errcode = psoQueueDefinition( objHandle, &retDef, 0, NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -32,6 +32,10 @@ int main()
    bool ok;
    psonTxStatus status;
    
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
+   };
+
    pFolder = initFolderTest( expectedToPass, &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
@@ -46,6 +50,7 @@ int main()
                                 "Test2",
                                 5,
                                 NULL,
+                                fields,
                                 1,
                                 0,
                                 &context );

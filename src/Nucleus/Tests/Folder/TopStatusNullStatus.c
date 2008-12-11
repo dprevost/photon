@@ -34,8 +34,7 @@ int main()
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
@@ -44,6 +43,7 @@ int main()
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
+                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

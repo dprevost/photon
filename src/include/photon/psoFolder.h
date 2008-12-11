@@ -76,8 +76,11 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
  *            counting the null terminator (null-terminators are not used by
  *            the Photon engine).
- * \param[in] pDefinition The type of object to create (folder, queue, etc.)
- *            and the "optional" definition.
+ * \param[in] pDefinition The type of object to create (folder, queue, etc.),
+ *            the number of fields and the "optional" key definition 
+ *            (for hash maps and similar).
+ * \param[in] pFields An array of field definitions. It can be set to
+ *            NULL when creating a Folder.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -85,7 +88,8 @@ PHOTON_EXPORT
 int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char          * objectName,
                            psoUint32             nameLengthInBytes,
-                           psoObjectDefinition * pDefinition );
+                           psoObjectDefinition * pDefinition,
+                           psoFieldDefinition  * pFields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

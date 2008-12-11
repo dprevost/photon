@@ -33,22 +33,25 @@ int main()
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, 
       1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }
    };
    
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
+   };
+
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
    ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &folderDef,
+                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -58,6 +61,7 @@ int main()
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
+                                   fields,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

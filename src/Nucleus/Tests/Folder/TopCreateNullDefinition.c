@@ -31,12 +31,17 @@ int main()
    psonSessionContext context;
    bool ok;
    
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
+   };
+
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
    ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    NULL,
+                                   fields,
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -103,8 +103,10 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoFastMapDefinition( PSO_HANDLE             objectHandle,
-                          psoObjectDefinition ** ppDefinition )
+int psoFastMapDefinition( PSO_HANDLE            objectHandle,
+                          psoObjectDefinition * pDefinition,
+                          psoUint32             numFields,
+                          psoFieldDefinition  * pFields )
 {
    psoaMap * pHashMap;
    psonMap * pMemHashMap;
@@ -118,7 +120,12 @@ int psoFastMapDefinition( PSO_HANDLE             objectHandle,
 
    pContext = &pHashMap->object.pSession->context;
 
-   if ( ppDefinition == NULL ) {
+   if ( pDefinition == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   if ( numFields > 0 && pFields == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
@@ -127,14 +134,16 @@ int psoFastMapDefinition( PSO_HANDLE             objectHandle,
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
       
-         errcode = psoaGetDefinition( pHashMap->pDefinition,
-                                      pMemHashMap->numFields,
-                                      ppDefinition );
-         if ( errcode == PSO_OK ) {
-            (*ppDefinition)->type = PSO_FAST_MAP;
-            memcpy( &(*ppDefinition)->key, 
-                    &pMemHashMap->keyDef, 
-                    sizeof(psoKeyDefinition) );
+         pDefinition->type = PSO_FAST_MAP;
+         memcpy( &pDefinition->key, 
+                 &pMemHashMap->keyDef, 
+                 sizeof(psoKeyDefinition) );
+         pDefinition->numFields = pMemHashMap->numFields;
+
+         if ( numFields > 0 ) {
+            errcode = psoaGetDefinition( pHashMap->pDefinition,
+                                         pMemHashMap->numFields,
+                                         pFields );
          }
          psoaCommonUnlock( &pHashMap->object );
       }

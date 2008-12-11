@@ -41,44 +41,35 @@ int main( int argc, char * argv[] )
    int errcode;
    struct dummy * data1 = NULL;
    char key[] = "My Key";
-   size_t lenData, len;
-   psoObjectDefinition * pDef = NULL;
-   psoObjectDefinition * pDefHashMap = NULL;
+   size_t lenData;
+
    psoObjectDefinition folderDef = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
+   psoObjectDefinition hashMapDef = {
+      PSO_HASH_MAP, 
+      5, 
+      { PSO_KEY_VAR_STRING, 0, 1, 0}
+   };
+
+   psoFieldDefinition fields[5] = {
+      { "field1", PSO_INTEGER,     1, 0, 0, 0, 0 },
+      { "field2", PSO_INTEGER,     4, 0, 0, 0, 0 },
+      { "field3", PSO_STRING,     30, 0, 0, 0, 0 },
+      { "field4", PSO_INTEGER,     2, 0, 0, 0, 0 },
+      { "field5", PSO_VAR_BINARY,  0, 0, 0, 0, 0 }
+   };
+   
+   psoFieldDefinition retFields[5];
+   psoObjectDefinition retDef;
+   
+   memset( &retDef, 0, sizeof(psoObjectDefinition) );
+   memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
 
    lenData = offsetof(struct dummy, bin) + 10;
    data1 = (struct dummy *)malloc( lenData );
-   
-   len = offsetof( psoObjectDefinition, fields ) + 
-      5 * sizeof(psoFieldDefinition);
-   pDefHashMap = (psoObjectDefinition *)calloc( len, 1 );
-   pDefHashMap->type = PSO_HASH_MAP;
-   pDefHashMap->numFields = 5;
-   pDefHashMap->fields[0].type = PSO_INTEGER;
-   pDefHashMap->fields[1].type = PSO_INTEGER;
-   pDefHashMap->fields[2].type = PSO_STRING;
-   pDefHashMap->fields[3].type = PSO_INTEGER;
-   pDefHashMap->fields[4].type = PSO_VAR_BINARY;
-
-   pDefHashMap->fields[0].length = 1;
-   pDefHashMap->fields[1].length = 4;
-   pDefHashMap->fields[2].length = 30;
-   pDefHashMap->fields[3].length = 2;
-
-   strcpy( pDefHashMap->fields[0].name, "field1" );
-   strcpy( pDefHashMap->fields[1].name, "field2" );
-   strcpy( pDefHashMap->fields[2].name, "field3" );
-   strcpy( pDefHashMap->fields[3].name, "field4" );
-   strcpy( pDefHashMap->fields[4].name, "field5" );
-   
-   pDefHashMap->key.type = PSO_KEY_VAR_STRING;
-   pDefHashMap->key.minLength = 1;
-   pDefHashMap->key.maxLength = 0;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -100,7 +91,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ahmd",
                               strlen("/ahmd"),
-                              &folderDef );
+                              &folderDef,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -109,7 +101,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ahmd/test",
                               strlen("/ahmd/test"),
-                              pDefHashMap );
+                              &hashMapDef,
+                              fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -132,26 +125,45 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoHashMapDefinition( NULL, &pDef );
+   errcode = psoHashMapDefinition( NULL, &retDef, 5, retFields );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapDefinition( objHandle, NULL );
+   errcode = psoHashMapDefinition( objHandle, NULL, 5, retFields );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapDefinition( objHandle, &retDef, 5, NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoHashMapDefinition( objHandle, &pDef );
+   errcode = psoHashMapDefinition( objHandle, &retDef, 0, NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( memcmp( pDefHashMap, pDef, len ) != 0 ) {
+   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapDefinition( objHandle, &retDef, 5, retFields );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -163,7 +175,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapDefinition( objHandle, &pDef );
+   errcode = psoHashMapDefinition( objHandle, &retDef, 0, NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

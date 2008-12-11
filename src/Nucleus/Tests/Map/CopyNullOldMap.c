@@ -37,8 +37,10 @@ int main()
    psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { PSO_KEY_VAR_STRING, 0, 1, 100 }
+   };
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
    };
    psonHashTxItem   hashItem;
    
@@ -46,9 +48,8 @@ int main()
 
    psonTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonMapInit( pOldMap, 
-                     0, 1, 0, &hashItem.txStatus, 4, 
-                     "Map1", SET_OFFSET(pOldMap), &def, &context );
+   ok = psonMapInit( pOldMap, 0, 1, 0, &hashItem.txStatus, 4, "Map1", 
+                     SET_OFFSET(pOldMap), &def, fields, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

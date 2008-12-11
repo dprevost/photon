@@ -33,8 +33,10 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
+   };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
    
    if ( argc > 1 ) {
@@ -57,7 +59,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/afcr",
                               strlen("/afcr"),
-                              &def );
+                              &def,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -77,7 +80,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     NULL,
                                     strlen("afcr"),
-                                    &def );
+                                    &def,
+                              NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -86,7 +90,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     0,
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -96,8 +101,18 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
-                                    &def );
+                                    &def,
+                                    fields );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "afcr",
+                                    strlen("afcr"),
+                                    &def,
+                                    NULL ); /* can only be NULL for folders */
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -106,6 +121,7 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
+                                    NULL,
                                     NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -116,7 +132,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -132,7 +149,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr2",
                                     strlen("afcr2"),
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -153,7 +171,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr3",
                                     strlen("afcr3"),
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

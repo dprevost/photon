@@ -32,6 +32,11 @@ int main()
    int errcode;
    psonTxStatus status;
    
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
+   };
+
+   
    pHashMap = initHashMapTest( expectedToPass, &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
@@ -45,6 +50,7 @@ int main()
                               "Map1", 
                               SET_OFFSET(pHashMap),
                               NULL,
+                              fields,
                               &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

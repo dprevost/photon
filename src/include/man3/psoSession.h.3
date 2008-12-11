@@ -1,4 +1,4 @@
-.TH "psoSession.h" 3 "6 Dec 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoSession.h" 3 "10 Dec 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -43,7 +43,7 @@ Definition in file \fBpsoSession.h\fP.
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition, \fBpsoFieldDefinition\fP *fields)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c

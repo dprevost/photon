@@ -33,10 +33,10 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def = { 
       PSO_FOLDER, 
       0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      { 0, 0, 0, 0}
    };
-   psoObjectDefinition *pDefinition;
+   psoObjectDefinition definition;
+   psoFieldDefinition fields[2];
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -58,7 +58,8 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ammcr",
                               strlen("/ammcr"),
-                              &def );
+                              &def,
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -73,226 +74,240 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition = (psoObjectDefinition *)
-      calloc( offsetof(psoObjectDefinition,fields) +
-              7 * sizeof(psoFieldDefinition), 1 );
-   if ( pDefinition == NULL ) {
-      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
    /* Invalid definition. */
    
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( fields, 0, 2*sizeof(psoFieldDefinition) );
+
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->type = PSO_FAST_MAP;   
+   definition.type = PSO_FAST_MAP;   
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->key.type = PSO_KEY_INTEGER;
+   definition.key.type = PSO_KEY_INTEGER;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pDefinition->key.type = PSO_KEY_STRING;
+   definition.key.type = PSO_KEY_STRING;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->key.type = PSO_KEY_VAR_STRING;
+   definition.key.type = PSO_KEY_VAR_STRING;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->key.length = 100;
+   definition.key.length = 100;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   pDefinition->key.length = 0;
-   pDefinition->key.minLength = 10;
-   pDefinition->key.maxLength = 8;
+   definition.key.length = 0;
+   definition.key.minLength = 10;
+   definition.key.maxLength = 8;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->key.minLength = 1;
-   pDefinition->key.maxLength = 0;
+   definition.key.minLength = 1;
+   definition.key.maxLength = 0;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_NUM_FIELDS ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->numFields = 1;
+   definition.numFields = 1;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_INTEGER;
+   fields[0].type = PSO_INTEGER;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].length = 5;
+   fields[0].length = 5;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   pDefinition->fields[0].length = 4;
+   fields[0].length = 4;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_BINARY;
-   pDefinition->fields[0].length = 0;
+   fields[0].type = PSO_BINARY;
+   fields[0].length = 0;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_STRING;
-   pDefinition->fields[0].length = 0;
+   fields[0].type = PSO_STRING;
+   fields[0].length = 0;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_VAR_BINARY;
-   pDefinition->fields[0].minLength = 100;
-   pDefinition->fields[0].maxLength =  90;
+   fields[0].type = PSO_VAR_BINARY;
+   fields[0].minLength = 100;
+   fields[0].maxLength =  90;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_VAR_STRING;
-   pDefinition->fields[0].minLength = 100;
-   pDefinition->fields[0].maxLength =  90;
+   fields[0].type = PSO_VAR_STRING;
+   fields[0].minLength = 100;
+   fields[0].maxLength =  90;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_DECIMAL;
+   fields[0].type = PSO_DECIMAL;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_DECIMAL;
-   pDefinition->fields[0].precision = 50;
+   fields[0].type = PSO_DECIMAL;
+   fields[0].precision = 50;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->fields[0].type = PSO_DECIMAL;
-   pDefinition->fields[0].precision = 5;
-   pDefinition->fields[0].scale = 6;
+   fields[0].type = PSO_DECIMAL;
+   fields[0].precision = 5;
+   fields[0].scale = 6;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_SCALE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   pDefinition->numFields = 2;
-   pDefinition->fields[0].type = PSO_VAR_STRING;
-   pDefinition->fields[0].minLength = 10;
-   pDefinition->fields[1].type = PSO_BINARY;
-   pDefinition->fields[1].length = 20;
+   definition.numFields = 2;
+   fields[0].type = PSO_VAR_STRING;
+   fields[0].minLength = 10;
+   fields[1].type = PSO_BINARY;
+   fields[1].length = 20;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    pDefinition );
+                                    &definition,
+                                    fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -302,7 +317,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -318,7 +334,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr2",
                                     strlen("ahmcr2"),
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -339,7 +356,8 @@ int main( int argc, char * argv[] )
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr3",
                                     strlen("ahmcr3"),
-                                    &def );
+                                    &def,
+                                    NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

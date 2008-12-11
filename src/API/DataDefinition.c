@@ -37,40 +37,33 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 /* 
  * Note: the type of object must be filled by the caller.
  */
-int psoaGetDefinition( psonFieldDef         * pInternalDef,
-                       uint16_t               numFields,
-                       psoObjectDefinition ** ppDefinition )
+int psoaGetDefinition( psonFieldDef       * pInternalDef,
+                       uint16_t             numFields,
+                       psoFieldDefinition * pFields )
 {
    unsigned int i;
-   psoObjectDefinition * ptr;
    
    PSO_PRE_CONDITION( pInternalDef != NULL );
-   PSO_PRE_CONDITION( ppDefinition != NULL );
+   PSO_PRE_CONDITION( pFields      != NULL );
    PSO_PRE_CONDITION( numFields > 0 );
-   
-   ptr = (psoObjectDefinition *)calloc( offsetof(psoObjectDefinition,fields) +
-      numFields * sizeof(psoFieldDefinition), 1 );
-   if ( ptr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
-
-   ptr->numFields = numFields;
 
    for ( i = 0; i < numFields; ++i ) {
 
-      ptr->fields[i].type = pInternalDef[i].type;
-      memcpy( ptr->fields[i].name, pInternalDef[i].name, PSO_MAX_FIELD_LENGTH );
+      pFields[i].type = pInternalDef[i].type;
+      memcpy( pFields[i].name, pInternalDef[i].name, PSO_MAX_FIELD_LENGTH );
 
       switch( pInternalDef[i].type ) {
 
       case PSO_BINARY:
       case PSO_STRING:
       case PSO_INTEGER:
-         ptr->fields[i].length = pInternalDef[i].length1;
+         pFields[i].length = pInternalDef[i].length1;
          
          break;
 
       case PSO_DECIMAL:
-         ptr->fields[i].precision = pInternalDef[i].length1;
-         ptr->fields[i].scale     = pInternalDef[i].length2;
+         pFields[i].precision = pInternalDef[i].length1;
+         pFields[i].scale     = pInternalDef[i].length2;
 
          break;
 
@@ -81,14 +74,13 @@ int psoaGetDefinition( psonFieldDef         * pInternalDef,
       case PSO_VAR_BINARY:
       case PSO_VAR_STRING:
 
-         ptr->fields[i].minLength = pInternalDef[i].length1;
-         ptr->fields[i].maxLength = pInternalDef[i].length2;
+         pFields[i].minLength = pInternalDef[i].length1;
+         pFields[i].maxLength = pInternalDef[i].length2;
 
          break;
       }
    }
 
-   *ppDefinition = ptr;
    return 0;
 }
 
@@ -226,12 +218,14 @@ void psoaGetLimits( psonFieldDef * pDefinition,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void psoaGetOffsets( psoObjectDefinition * pDefinition,
+                     psoFieldDefinition  * pFields,
                      uint32_t            * pOffsets )
 {
    unsigned int i;
    uint32_t minLength = 0;
 
    PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pFields     != NULL );
    PSO_PRE_CONDITION( pOffsets    != NULL );
    
    /*
@@ -240,16 +234,16 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
     */
    pOffsets[0] = 0;
 
-   switch( pDefinition->fields[0].type ) {
+   switch( pFields[0].type ) {
 
    case PSO_INTEGER:
    case PSO_BINARY:
    case PSO_STRING:
-      minLength = pDefinition->fields[0].length;
+      minLength = pFields[0].length;
       break;
 
    case PSO_DECIMAL:
-      minLength = pDefinition->fields[0].precision + 2;
+      minLength = pFields[0].precision + 2;
       break;
 
    case PSO_BOOLEAN:
@@ -264,16 +258,16 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
    
    for ( i = 1; i < pDefinition->numFields; ++i ) {
 
-      switch( pDefinition->fields[i].type ) {
+      switch( pFields[i].type ) {
 
       case PSO_INTEGER:
-         if ( pDefinition->fields[i].length == 1 ) {
+         if ( pFields[i].length == 1 ) {
             minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          }
-         else if ( pDefinition->fields[i].length == 2 ) {
+         else if ( pFields[i].length == 2 ) {
             minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
          }
-         else if ( pDefinition->fields[i].length == 4 ) {
+         else if ( pFields[i].length == 4 ) {
             minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
          }
          else {
@@ -281,7 +275,7 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
          }
          pOffsets[i] = minLength;
          
-         minLength += pDefinition->fields[i].length;
+         minLength += pFields[i].length;
 
          break;
 
@@ -290,7 +284,7 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          pOffsets[i] = minLength;
 
-         minLength += pDefinition->fields[i].length;
+         minLength += pFields[i].length;
 
          break;
 
@@ -298,7 +292,7 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          pOffsets[i] = minLength;
 
-         minLength += pDefinition->fields[i].precision + 2;
+         minLength += pFields[i].precision + 2;
 
          break;
 
@@ -321,12 +315,16 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaValidateDefinition( psoObjectDefinition * pDefinition )
+int psoaValidateDefinition( psoObjectDefinition * pDefinition,
+                            psoFieldDefinition  * pFields )
 {
    unsigned int i, j;
    
    PSO_PRE_CONDITION( pDefinition != NULL );
-
+   if ( pDefinition->type != PSO_FOLDER ) {
+      PSO_PRE_CONDITION( pFields  != NULL );
+   }
+   
    switch( pDefinition->type ) {
 
    case PSO_FOLDER:
@@ -379,31 +377,31 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
       }
 
       for ( i = 0; i < pDefinition->numFields; ++i ) {
-         switch( pDefinition->fields[i].type ) {
+         switch( pFields[i].type ) {
 
          case PSO_INTEGER:
-            if ( pDefinition->fields[i].length != 1 &&
-                 pDefinition->fields[i].length != 2 &&
-                 pDefinition->fields[i].length != 4 &&
-                 pDefinition->fields[i].length != 8 ) {
+            if ( pFields[i].length != 1 &&
+                 pFields[i].length != 2 &&
+                 pFields[i].length != 4 &&
+                 pFields[i].length != 8 ) {
                return PSO_INVALID_FIELD_LENGTH_INT;
             }
             break;
 
          case PSO_BINARY:
          case PSO_STRING:
-            if ( pDefinition->fields[i].length == 0 ) {
+            if ( pFields[i].length == 0 ) {
                return PSO_INVALID_FIELD_LENGTH;
             }
             break;
 
          case PSO_DECIMAL:
-            if ( pDefinition->fields[i].precision == 0 ||
-               pDefinition->fields[i].precision > PSO_FIELD_MAX_PRECISION ) {
+            if ( pFields[i].precision == 0 ||
+               pFields[i].precision > PSO_FIELD_MAX_PRECISION ) {
                return PSO_INVALID_PRECISION;
             }
-            if ( pDefinition->fields[i].scale > 
-                 pDefinition->fields[i].precision ) {
+            if ( pFields[i].scale > 
+                 pFields[i].precision ) {
                return PSO_INVALID_SCALE;
             }
             break;
@@ -418,16 +416,15 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
 
             /* BIG WARNING: this rule is not captured by the XML schema */
             if ( pDefinition->numFields == 1 && 
-                 pDefinition->fields[i].minLength == 0 ) {
+                 pFields[i].minLength == 0 ) {
                return PSO_INVALID_FIELD_LENGTH;
             }
             /*
              * Reminder: maxLength set to zero indicates the maximum value
              * allowed which is 4294967295.
              */
-            if ( pDefinition->fields[i].maxLength != 0 ) {
-               if ( pDefinition->fields[i].minLength > 
-                    pDefinition->fields[i].maxLength ) {
+            if ( pFields[i].maxLength != 0 ) {
+               if ( pFields[i].minLength > pFields[i].maxLength ) {
                   return PSO_INVALID_FIELD_LENGTH;
                }
             }
@@ -446,21 +443,21 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
           * example VS2008:
           *     http://msdn.microsoft.com/en-us/library/565w213d.aspx.
           */
-         if ( ! isalpha(pDefinition->fields[i].name[0]) ) {
+         if ( ! isalpha(pFields[i].name[0]) ) {
             return PSO_INVALID_FIELD_NAME;
          }
          for ( j = 1; j < PSO_MAX_FIELD_LENGTH; ++j ) {
-            if ( pDefinition->fields[i].name[j] == 0 ) break;
-            if ( isalnum(pDefinition->fields[i].name[j]) ) continue;
-            if ( pDefinition->fields[i].name[j] == '_' ) continue;
+            if ( pFields[i].name[j] == 0 ) break;
+            if ( isalnum(pFields[i].name[j]) ) continue;
+            if ( pFields[i].name[j] == '_' ) continue;
             
             return PSO_INVALID_FIELD_NAME;
          }
 
          /* We must also make sure that field names are not duplicate. */
          for ( j = 0; j < i; ++j ) {
-            if ( strncmp( pDefinition->fields[i].name,
-                          pDefinition->fields[j].name,
+            if ( strncmp( pFields[i].name,
+                          pFields[j].name,
                           PSO_MAX_FIELD_LENGTH ) == 0 ) {
                return PSO_DUPLICATE_FIELD_NAME;
             }
@@ -478,7 +475,8 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition )
 
 int psoaXmlToDefinition( const char           * xmlBuffer,
                          uint32_t               lengthInBytes,
-                         psoObjectDefinition ** ppDefinition,
+                         psoObjectDefinition  * pDefinition,
+                         psoFieldDefinition  ** ppFields,                         
                          char                ** objectName,
                          uint32_t             * nameLengthInBytes )
 {
@@ -494,10 +492,13 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
    bool dynamicMode;
    
    PSO_PRE_CONDITION( xmlBuffer         != NULL );
-   PSO_PRE_CONDITION( ppDefinition      != NULL );
+   PSO_PRE_CONDITION( pDefinition       != NULL );
+   PSO_PRE_CONDITION( ppFields          != NULL );
    PSO_PRE_CONDITION( objectName        != NULL );
    PSO_PRE_CONDITION( nameLengthInBytes != NULL );
 
+   *ppFields = NULL;
+   
    /*
     * for debugging, I could use this instead:
     * doc = xmlReadMemory( buf, i, NULL, NULL, 0 );
@@ -599,14 +600,8 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
    prop = NULL;
    
    if ( xmlStrcmp( root->name, BAD_CAST "folder") == 0 ) {
-      *ppDefinition = (psoObjectDefinition *)
-                      calloc( sizeof(psoObjectDefinition), 1 );
-      if (*ppDefinition == NULL ) {
-         errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
-         goto cleanup;
-      }
-      (*ppDefinition)->type = PSO_FOLDER;
-      /* No fields to process. Go directly to the exit, error or not. */
+      pDefinition->type = PSO_FOLDER;
+      /* No fields to process. Go directly to the exit. */
       goto cleanup;
    }
 
@@ -658,19 +653,18 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
       nodeField = nodeField->next;
    }
 
-   *ppDefinition = (psoObjectDefinition *)
-      calloc( offsetof(psoObjectDefinition,fields) +
-              numFields * sizeof(psoFieldDefinition), 1 );
-   if (*ppDefinition == NULL ) {
+   *ppFields = (psoFieldDefinition *)
+      calloc( numFields * sizeof(psoFieldDefinition), 1 );
+   if (*ppFields == NULL ) {
       errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
       goto cleanup;
    }
-   (*ppDefinition)->numFields = numFields;
+   pDefinition->numFields = numFields;
 
    /* Extract the key, if any */
    if ( nodeKey != NULL ) {
-      (*ppDefinition)->type = PSO_FAST_MAP;
-      if ( dynamicMode ) (*ppDefinition)->type = PSO_HASH_MAP;
+      pDefinition->type = PSO_FAST_MAP;
+      if ( dynamicMode ) pDefinition->type = PSO_HASH_MAP;
       nodeType = nodeKey->children;
       while ( nodeType != NULL ) {
          if ( nodeType->type == XML_ELEMENT_NODE ) {
@@ -680,8 +674,8 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               (*ppDefinition)->key.type = PSO_KEY_INTEGER;
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
+               pDefinition->key.type = PSO_KEY_INTEGER;
+               sscanf( (char*)prop, "%ud", &pDefinition->key.length );
                xmlFree(prop);
                prop = NULL;
             }
@@ -691,8 +685,8 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               (*ppDefinition)->key.type = PSO_KEY_STRING;
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
+               pDefinition->key.type = PSO_KEY_STRING;
+               sscanf( (char*)prop, "%ud", &pDefinition->key.length );
                xmlFree(prop);
                prop = NULL;
             }
@@ -702,8 +696,8 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               (*ppDefinition)->key.type = PSO_KEY_BINARY;
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.length );
+               pDefinition->key.type = PSO_KEY_BINARY;
+               sscanf( (char*)prop, "%ud", &pDefinition->key.length );
                xmlFree(prop);
                prop = NULL;
             }
@@ -713,17 +707,17 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.minLength );
+               sscanf( (char*)prop, "%ud", &pDefinition->key.minLength );
                xmlFree(prop);
                prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                if ( prop == NULL ) {
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.maxLength );
+               sscanf( (char*)prop, "%ud", &pDefinition->key.maxLength );
                xmlFree(prop);               
                prop = NULL;
-               (*ppDefinition)->key.type = PSO_KEY_VAR_STRING;
+               pDefinition->key.type = PSO_KEY_VAR_STRING;
             }
             else if ( xmlStrcmp( nodeType->name, BAD_CAST "varBinary") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
@@ -731,17 +725,17 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.minLength );
+               sscanf( (char*)prop, "%ud", &pDefinition->key.minLength );
                xmlFree(prop);
                prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                if ( prop == NULL ) {
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &(*ppDefinition)->key.maxLength );
+               sscanf( (char*)prop, "%ud", &pDefinition->key.maxLength );
                xmlFree(prop);               
                prop = NULL;
-               (*ppDefinition)->key.type = PSO_KEY_VAR_BINARY;
+               pDefinition->key.type = PSO_KEY_VAR_BINARY;
             }
             else {
                errcode = PSO_INVALID_KEY_DEF;
@@ -757,10 +751,10 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
    else {
       nodeField = root->children;
       if ( xmlStrcmp( root->name, BAD_CAST "queue") == 0 ) {
-         (*ppDefinition)->type = PSO_QUEUE;
+         pDefinition->type = PSO_QUEUE;
       }
       else if ( xmlStrcmp( root->name, BAD_CAST "lifo") == 0 ) {
-         (*ppDefinition)->type = PSO_LIFO;
+         pDefinition->type = PSO_LIFO;
       }
       else {
          errcode = PSO_WRONG_OBJECT_TYPE;
@@ -776,7 +770,7 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
             errcode = PSO_INVALID_FIELD_NAME;
             goto cleanup;
          }
-         strncpy( (*ppDefinition)->fields[numFields].name, 
+         strncpy( (*ppFields)[numFields].name, 
             (char*)prop, PSO_MAX_FIELD_LENGTH );
          xmlFree(prop);
          prop = NULL;
@@ -792,14 +786,14 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
-                     &(*ppDefinition)->fields[numFields].length );
+                     &(*ppFields)[numFields].length );
                   xmlFree(prop);
                   prop = NULL;
 
-                  (*ppDefinition)->fields[numFields].type = PSO_INTEGER;
+                  (*ppFields)[numFields].type = PSO_INTEGER;
                }
                else if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
-                  (*ppDefinition)->fields[numFields].type = PSO_BOOLEAN;
+                  (*ppFields)[numFields].type = PSO_BOOLEAN;
                }
                else if ( (xmlStrcmp(nodeType->name, BAD_CAST "string") == 0) ||
                          (xmlStrcmp(nodeType->name, BAD_CAST "binary") == 0) ) {
@@ -809,15 +803,15 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
-                     &(*ppDefinition)->fields[numFields].length );
+                     &(*ppFields)[numFields].length );
                   xmlFree(prop);
                   prop = NULL;
                   
                   if ( xmlStrcmp( nodeType->name, BAD_CAST "string") == 0 ) {
-                     (*ppDefinition)->fields[numFields].type = PSO_STRING;
+                     (*ppFields)[numFields].type = PSO_STRING;
                   }
                   else {
-                     (*ppDefinition)->fields[numFields].type = PSO_BINARY;
+                     (*ppFields)[numFields].type = PSO_BINARY;
                   }
                }
                else if ( (xmlStrcmp(nodeType->name, BAD_CAST "varString") == 0) ||
@@ -832,7 +826,7 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
-                     &(*ppDefinition)->fields[numFields].minLength );
+                     &(*ppFields)[numFields].minLength );
                   xmlFree(prop);
                   prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                   if ( prop == NULL ) {
@@ -840,15 +834,15 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
-                     &(*ppDefinition)->fields[numFields].maxLength );
+                     &(*ppFields)[numFields].maxLength );
                   xmlFree(prop);
                   prop = NULL;
                   
                   if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
-                     (*ppDefinition)->fields[numFields].type = PSO_VAR_STRING;
+                     (*ppFields)[numFields].type = PSO_VAR_STRING;
                   }
                   else {
-                     (*ppDefinition)->fields[numFields].type = PSO_VAR_BINARY;
+                     (*ppFields)[numFields].type = PSO_VAR_BINARY;
                   }
                }
                else if ( xmlStrcmp(nodeType->name, BAD_CAST "decimal") == 0 ) {
@@ -858,7 +852,7 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
-                     &(*ppDefinition)->fields[numFields].precision );
+                     &(*ppFields)[numFields].precision );
                   xmlFree(prop);
                   prop = xmlGetProp( nodeType, BAD_CAST "scale" );
                   if ( prop == NULL ) {
@@ -866,11 +860,11 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                      goto cleanup;
                   }
                   sscanf( (char*)prop, "%ud", 
-                     &(*ppDefinition)->fields[numFields].scale );
+                     &(*ppFields)[numFields].scale );
                   xmlFree(prop);
                   prop = NULL;
                   
-                  (*ppDefinition)->fields[numFields].type = PSO_DECIMAL;
+                  (*ppFields)[numFields].type = PSO_DECIMAL;
                }
                else {
                   errcode = PSO_INVALID_FIELD_TYPE;

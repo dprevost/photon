@@ -42,9 +42,9 @@ BEGIN_C_DECLS
  * The memory must be free by the calling program.
  */
 PHOTON_API_EXPORT
-int psoaGetDefinition( psonFieldDef          * pInternalDef,
-                       uint16_t               numFields,
-                       psoObjectDefinition ** ppDefinition );
+int psoaGetDefinition( psonFieldDef       * pInternalDef,
+                       uint16_t             numFields,
+                       psoFieldDefinition * pFields );
 
 PHOTON_API_EXPORT
 void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
@@ -64,15 +64,18 @@ void psoaGetLimits( psonFieldDef * pDefinition,
  */
 PHOTON_API_EXPORT
 void psoaGetOffsets( psoObjectDefinition * pDefinition,
+                     psoFieldDefinition  * pFields,
                      uint32_t            * pOffsets );
 
 PHOTON_API_EXPORT
-int psoaValidateDefinition( psoObjectDefinition * pDefinition );
+int psoaValidateDefinition( psoObjectDefinition * pDefinition,
+                            psoFieldDefinition  * pFields );
 
 PHOTON_API_EXPORT
 int psoaXmlToDefinition( const char           * xmlBuffer,
                          uint32_t               lengthInBytes,
-                         psoObjectDefinition ** ppDefinition,
+                         psoObjectDefinition *  pDefinition,
+                         psoFieldDefinition  ** ppFields,
                          char                ** objectName,
                          uint32_t             * nameLengthInBytes );
 

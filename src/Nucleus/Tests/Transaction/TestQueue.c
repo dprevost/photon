@@ -40,10 +40,11 @@ int main()
    char * data3 = "My data3";
    psonQueueItem * pQueueItem;
    psoObjectDefinition def = { 
-      PSO_QUEUE, 
-      1, 
-      { 0, 0, 0, 0}, 
-      { { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } } 
+      PSO_QUEUE, 1, { 0, 0, 0, 0}
+   };
+
+   psoFieldDefinition fields[1] =  { 
+      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };
 
    pFolder = initFolderTest( expectedToPass, &context );
@@ -62,6 +63,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                fields,
                                 1,
                                 0,
                                 &context );
