@@ -128,7 +128,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string         & objectName,
-                      const psoObjectDefinition & definition,
+                      const psoBasicObjectDef & definition,
                       psoFieldDefinition        * fields );
    
    /**
@@ -150,7 +150,7 @@ public:
     */
    void CreateObject( const char                * objectName,
                       psoUint32                   nameLengthInBytes,
-                      const psoObjectDefinition & definition,
+                      const psoBasicObjectDef & definition,
                       psoFieldDefinition        * fields );
    
    /**
@@ -249,7 +249,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void GetDefinition( const std::string   & objectName,
-                       psoObjectDefinition & definition,
+                       psoBasicObjectDef & definition,
                        psoUint32             numFields,
                        psoFieldDefinition  * fields );
 
@@ -273,7 +273,7 @@ public:
     */
    void GetDefinition( const char          * objectName,
                        psoUint32             nameLengthInBytes,
-                       psoObjectDefinition & definition,
+                       psoBasicObjectDef & definition,
                        psoUint32             numFields,
                        psoFieldDefinition  * fields );
 

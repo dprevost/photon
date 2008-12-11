@@ -80,7 +80,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
+                      psoBasicObjectDef & definition,
                       psoFieldDefinition  * fields );
 
    /**
@@ -106,7 +106,7 @@ public:
     */
    void CreateObject( const char          * objectName,
                       psoUint32             nameLengthInBytes,
-                      psoObjectDefinition & definition,
+                      psoBasicObjectDef & definition,
                       psoFieldDefinition  * fields );
 
    /**

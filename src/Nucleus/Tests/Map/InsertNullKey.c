@@ -32,7 +32,7 @@ int main()
    bool ok;
    psonTxStatus status;
    char * data = "my data";
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FAST_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

@@ -186,7 +186,7 @@ typedef struct psoKeyDefinition psoKeyDefinition;
  *
  * This structure is aligned in such a way that you can do:
  *
- *    malloc( offsetof(psoObjectDefinition, fields) +
+ *    malloc( offsetof(psoBasicObjectDef, fields) +
  *            numFields * sizeof(psoFieldDefinition) );
  *
  */
@@ -217,9 +217,17 @@ struct psoFieldDefinition
 typedef struct psoFieldDefinition psoFieldDefinition;
 
 /**
- * This struct has a variable length.
+ * This struct contains the basic elements defining an object (type, 
+ * number of fields, etc).
+ *
+ * This struct will be expanded in the near future to add hints to the
+ * framework for better utilization of resources (cpu, RAM).
+ *
+ * For exmple: the expected minimal number of data records can be used 
+ * to preallocate the internal hash array (avoiding unneeded Resize() and
+ * potential memory fragmentation).
  */
-struct psoObjectDefinition
+struct psoBasicObjectDef
 {
    /** The object type. */
    enum psoObjectType type;
@@ -230,11 +238,9 @@ struct psoObjectDefinition
    /** The data definition of the key (hash map/fast map only) */
    psoKeyDefinition key;
 
-   /** The data definition of the fields */
-//   psoFieldDefinition fields[1];
 };
 
-typedef struct psoObjectDefinition psoObjectDefinition;
+typedef struct psoBasicObjectDef psoBasicObjectDef;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

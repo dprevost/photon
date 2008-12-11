@@ -32,10 +32,10 @@ int main()
    bool ok;
    psonFolderItem item;
    psonTxStatus status;
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef mapDef = { 
       PSO_HASH_MAP, 1, { 0, 0, 0, 0}
    };
-   psoObjectDefinition folderDef = { 
+   psoBasicObjectDef folderDef = { 
       PSO_FOLDER, 0, { 0, 0, 0, 0}
    };
 

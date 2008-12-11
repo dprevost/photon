@@ -33,7 +33,7 @@ int main()
    psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

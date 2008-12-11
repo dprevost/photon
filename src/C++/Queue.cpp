@@ -69,14 +69,14 @@ void Queue::Close()
 void Queue::Definition( ObjDefinition & definition )
 {
    int rc;
-   psoObjectDefinition def;
+   psoBasicObjectDef def;
    psoFieldDefinition * fields;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
       throw pso::Exception( "Queue::Definition", PSO_NULL_HANDLE );
    }
    
-   memset( &def, 0, sizeof(psoObjectDefinition) );
+   memset( &def, 0, sizeof(psoBasicObjectDef) );
    rc = psoQueueDefinition( m_objectHandle, &def, 0, NULL );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Queue::Definition" );
@@ -105,7 +105,7 @@ void Queue::Definition( ObjDefinition & definition )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Queue::Definition( psoObjectDefinition & definition,
+void Queue::Definition( psoBasicObjectDef & definition,
                         psoUint32             numFields,
                         psoFieldDefinition  * fields )
 {

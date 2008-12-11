@@ -92,7 +92,7 @@ int psoLifoClose( PSO_HANDLE objectHandle )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoLifoDefinition( PSO_HANDLE            objectHandle,
-                       psoObjectDefinition * pDefinition,
+                       psoBasicObjectDef * pDefinition,
                        psoUint32             numFields,
                        psoFieldDefinition  * pFields )
 {

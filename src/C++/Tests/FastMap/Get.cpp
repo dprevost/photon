@@ -40,8 +40,8 @@ int main( int argc, char * argv[] )
    const char * data = "My Data";
    uint32_t length;
    char buffer[50];
-   psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef folderDef;
+   psoBasicObjectDef mapDef = { 
       PSO_FAST_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

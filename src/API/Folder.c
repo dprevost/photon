@@ -101,7 +101,7 @@ int psoFolderClose( PSO_HANDLE objectHandle )
 int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            const char          * objectName,
                            uint32_t              nameLengthInBytes,
-                           psoObjectDefinition * pDefinition,
+                           psoBasicObjectDef * pDefinition,
                            psoFieldDefinition  * pFields )
 {
    psoaFolder * pFolder;
@@ -182,7 +182,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
                               const char * xmlBuffer,
                               uint32_t     lengthInBytes )
 {
-   psoObjectDefinition definition;
+   psoBasicObjectDef definition;
    psoFieldDefinition  * pFields = NULL;
    int errcode = PSO_OK;
    char * objectName = NULL;

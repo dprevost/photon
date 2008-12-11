@@ -42,12 +42,12 @@ int main( int argc, char * argv[] )
    struct dummy * data1 = NULL;
    size_t lenData;
 
-   psoObjectDefinition folderDef = { 
+   psoBasicObjectDef folderDef = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}
    };
-   psoObjectDefinition lifoDef = {
+   psoBasicObjectDef lifoDef = {
       PSO_LIFO, 
       5, 
       { 0, 0, 0, 0}
@@ -62,9 +62,9 @@ int main( int argc, char * argv[] )
    };
    
    psoFieldDefinition retFields[5];
-   psoObjectDefinition retDef;
+   psoBasicObjectDef retDef;
    
-   memset( &retDef, 0, sizeof(psoObjectDefinition) );
+   memset( &retDef, 0, sizeof(psoBasicObjectDef) );
    memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
 
    lenData = offsetof(struct dummy, bin) + 10;
@@ -149,7 +149,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( memcmp( &lifoDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+   if ( memcmp( &lifoDef, &retDef, sizeof(psoBasicObjectDef) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -159,7 +159,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( memcmp( &lifoDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+   if ( memcmp( &lifoDef, &retDef, sizeof(psoBasicObjectDef) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {

@@ -103,7 +103,7 @@ int psoCommit( PSO_HANDLE sessionHandle )
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      uint32_t              nameLengthInBytes,
-                     psoObjectDefinition * pDefinition,
+                     psoBasicObjectDef * pDefinition,
                      psoFieldDefinition  * pFields )
 {
    psoaSession* pSession;
@@ -349,7 +349,7 @@ int psoExitSession( PSO_HANDLE sessionHandle )
 int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       uint32_t              nameLengthInBytes,
-                      psoObjectDefinition * pDefinition,
+                      psoBasicObjectDef * pDefinition,
                       psoUint32             numFields,
                       psoFieldDefinition  * pFields )
 {

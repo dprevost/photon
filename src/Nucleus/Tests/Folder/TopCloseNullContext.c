@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonFolderItem folderItem;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

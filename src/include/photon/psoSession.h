@@ -157,7 +157,7 @@ PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
-                     psoObjectDefinition * pDefinition,
+                     psoBasicObjectDef * pDefinition,
                      psoFieldDefinition  * fields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -280,7 +280,7 @@ PHOTON_EXPORT
 int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       psoUint32             nameLengthInBytes,
-                      psoObjectDefinition * definition,
+                      psoBasicObjectDef * definition,
                       psoUint32             numFields,
                       psoFieldDefinition  * fields );
 

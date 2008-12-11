@@ -53,7 +53,7 @@ namespace Photon
          *
          * This structure is aligned in such a way that you can do:
          *
-         *    malloc( offsetof(psoObjectDefinition, fields) +
+         *    malloc( offsetof(psoBasicObjectDef, fields) +
          *            numFields * sizeof(psoFieldDefinition) );
          *
          */
@@ -88,7 +88,7 @@ namespace Photon
          * This struct has a variable length.
          */
         [StructLayout(LayoutKind.Sequential)]
-        struct psoObjectDefinition
+        struct psoBasicObjectDef
         {
             /** The object type. */
             ObjectType type;

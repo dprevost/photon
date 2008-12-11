@@ -30,12 +30,12 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle;
    int errcode;
-   psoObjectDefinition folderDef = { 
+   psoBasicObjectDef folderDef = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}
    };
-   psoObjectDefinition queueDef = {
+   psoBasicObjectDef queueDef = {
       PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}

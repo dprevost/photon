@@ -39,7 +39,7 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    psonQueueItem * pQueueItem;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_QUEUE, 1, { 0, 0, 0, 0}
    };
 

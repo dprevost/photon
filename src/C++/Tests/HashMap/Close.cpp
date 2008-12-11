@@ -34,8 +34,8 @@ int main( int argc, char * argv[] )
    HashMap hashmap(session);
    string fname = "/cpp_hashmap_close";
    string hname = fname + "/test";
-   psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef folderDef;
+   psoBasicObjectDef mapDef = { 
       PSO_HASH_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

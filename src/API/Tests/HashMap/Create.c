@@ -30,12 +30,12 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}
    };
-   psoObjectDefinition definition;
+   psoBasicObjectDef definition;
    psoFieldDefinition fields[2];
    
    if ( argc > 1 ) {
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
 
    /* Invalid definition. */
    
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &definition, 0, sizeof(psoBasicObjectDef) );
    memset( fields, 0, 2*sizeof(psoFieldDefinition) );
    
    errcode = psoFolderCreateObject( folderHandle,

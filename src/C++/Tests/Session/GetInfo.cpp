@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    string name = "/cpp_session_getinfo", msg;
    psoInfo info, info2;
    size_t allocSpace;
-   psoObjectDefinition folderDef;
+   psoBasicObjectDef folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;

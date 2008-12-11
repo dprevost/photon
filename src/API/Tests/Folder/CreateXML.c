@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
    int errcode;
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/photon_meta10.xsd"};
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

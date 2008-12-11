@@ -31,7 +31,7 @@ int main()
    bool ok;
    psonFolderItem item;
    psonTxStatus status;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

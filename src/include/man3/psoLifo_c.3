@@ -17,7 +17,7 @@ Data items are placed at the end of the queue and retrieved from the end of the 
 .br
 .RI "\fIClose a LIFO queue. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
@@ -69,7 +69,7 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoLifoDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoLifoDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
 .PP
 Retrieve the data definition of the queue. 
 .PP

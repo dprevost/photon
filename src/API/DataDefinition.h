@@ -63,18 +63,18 @@ void psoaGetLimits( psonFieldDef * pDefinition,
  * The array of offsets must be allocated by the caller.
  */
 PHOTON_API_EXPORT
-void psoaGetOffsets( psoObjectDefinition * pDefinition,
+void psoaGetOffsets( psoBasicObjectDef * pDefinition,
                      psoFieldDefinition  * pFields,
                      uint32_t            * pOffsets );
 
 PHOTON_API_EXPORT
-int psoaValidateDefinition( psoObjectDefinition * pDefinition,
+int psoaValidateDefinition( psoBasicObjectDef * pDefinition,
                             psoFieldDefinition  * pFields );
 
 PHOTON_API_EXPORT
 int psoaXmlToDefinition( const char           * xmlBuffer,
                          uint32_t               lengthInBytes,
-                         psoObjectDefinition *  pDefinition,
+                         psoBasicObjectDef *  pDefinition,
                          psoFieldDefinition  ** ppFields,
                          char                ** objectName,
                          uint32_t             * nameLengthInBytes );

@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle;
    int errcode;
    psoaCommonObject object;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

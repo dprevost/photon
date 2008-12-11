@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    int errcode;
    bool ok;
    psoaCommonObject object;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

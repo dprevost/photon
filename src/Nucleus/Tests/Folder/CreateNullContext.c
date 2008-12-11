@@ -29,7 +29,7 @@ int main()
 #if defined(USE_DBC)
    psonFolder * pFolder;
    psonSessionContext context;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

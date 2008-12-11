@@ -66,7 +66,7 @@ void Folder::Close()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::CreateObject( const std::string   & objectName,
-                           psoObjectDefinition & definition,
+                           psoBasicObjectDef & definition,
                            psoFieldDefinition  * fields )
 {
    int rc;
@@ -89,7 +89,7 @@ void Folder::CreateObject( const std::string   & objectName,
 
 void Folder::CreateObject( const char          * objectName,
                            uint32_t              nameLengthInBytes,
-                           psoObjectDefinition & definition,
+                           psoBasicObjectDef & definition,
                            psoFieldDefinition  * fields )
 {
    int rc;

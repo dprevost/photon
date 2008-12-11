@@ -32,7 +32,7 @@ int main()
    bool ok;
    psonTxStatus status;
    char * data = "My Data";
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}

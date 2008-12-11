@@ -31,7 +31,7 @@ ObjDefinition::ObjDefinition()
      currentField ( 0 ),
      keyAdded     ( false )
 {
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &definition, 0, sizeof(psoBasicObjectDef) );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -50,7 +50,7 @@ ObjDefinition::ObjDefinition( uint32_t numberOfFields, enum psoObjectType type )
                             PSO_WRONG_OBJECT_TYPE );
    }
    
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &definition, 0, sizeof(psoBasicObjectDef) );
 
    // using calloc - being lazy...
    size_t len = numberOfFields * sizeof(psoFieldDefinition);
@@ -279,7 +279,7 @@ void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
    }
    currentField = numberOfFields;
    
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &definition, 0, sizeof(psoBasicObjectDef) );
    
    // using calloc - being lazy...
    size_t len = numberOfFields * sizeof(psoFieldDefinition);
@@ -299,7 +299,7 @@ void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void ObjDefinition::Reset( psoObjectDefinition & inputDef,
+void ObjDefinition::Reset( psoBasicObjectDef & inputDef,
                            psoFieldDefinition  * inputFields )
 {
    psoFieldDefinition * tmp;
@@ -322,7 +322,7 @@ void ObjDefinition::Reset( psoObjectDefinition & inputDef,
    if ( fields != NULL ) free( fields );
    fields = tmp;
 
-   memcpy( &definition, &inputDef, sizeof(psoObjectDefinition) );
+   memcpy( &definition, &inputDef, sizeof(psoBasicObjectDef) );
    memcpy( fields, inputFields, len );
    
    currentField = inputDef.numFields;
@@ -331,7 +331,7 @@ void ObjDefinition::Reset( psoObjectDefinition & inputDef,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-const psoObjectDefinition & ObjDefinition::GetDef()
+const psoBasicObjectDef & ObjDefinition::GetDef()
 {
    return definition;
 }

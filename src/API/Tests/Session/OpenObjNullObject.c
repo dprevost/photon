@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    PSO_HANDLE sessionHandle;
    int errcode;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

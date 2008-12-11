@@ -50,7 +50,7 @@ int main( int argc, char * argv[] )
    struct dummy data;
    char key[] = "My Key";
    size_t len;
-   psoObjectDefinition folderDef;
+   psoBasicObjectDef folderDef;
    ObjDefinition mapDef( 5, PSO_HASH_MAP );
    ObjDefinition returnedDef;
    
@@ -106,7 +106,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   len = sizeof( psoObjectDefinition );
+   len = sizeof( psoBasicObjectDef );
    if ( memcmp( &mapDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

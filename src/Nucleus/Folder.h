@@ -92,7 +92,7 @@ PHOTON_ENGINE_EXPORT
 bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
-                             psoObjectDefinition * pDefinition,
+                             psoBasicObjectDef * pDefinition,
                              psoFieldDefinition  * pFields,
                              psonSessionContext  * pContext );
 
@@ -131,7 +131,7 @@ PHOTON_ENGINE_EXPORT
 bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
-                              psoObjectDefinition * pDefinition,
+                              psoBasicObjectDef * pDefinition,
                               psonFieldDef       ** ppInternalDef,
                               psonSessionContext  * pContext );
 
@@ -176,7 +176,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              uint32_t              strLength,
-                             psoObjectDefinition * pDefinition,
+                             psoBasicObjectDef * pDefinition,
                              psoFieldDefinition  * pFields,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
@@ -229,7 +229,7 @@ PHOTON_ENGINE_EXPORT
 bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
-                                psoObjectDefinition * pDefinition,
+                                psoBasicObjectDef * pDefinition,
                                 psoFieldDefinition  * pFields,
                                 psonSessionContext  * pContext );
 
@@ -251,7 +251,7 @@ PHOTON_ENGINE_EXPORT
 bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
-                          psoObjectDefinition * pDefinition,
+                          psoBasicObjectDef * pDefinition,
                           psonFieldDef       ** ppInternalDef,
                           psonSessionContext  * pContext );
 

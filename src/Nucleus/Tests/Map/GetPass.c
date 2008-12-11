@@ -34,7 +34,7 @@ int main()
    char * data = "my data";
    psonHashItem * pItem;
    char * ptr;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FAST_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

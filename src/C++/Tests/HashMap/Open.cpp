@@ -35,8 +35,8 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_hashmap_open";
    string hname = fname + "/test";
    const char * c_name = "/cpp_hashmap_open/test";
-   psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef folderDef;
+   psoBasicObjectDef mapDef = { 
       PSO_HASH_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

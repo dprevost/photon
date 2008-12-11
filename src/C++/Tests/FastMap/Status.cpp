@@ -42,8 +42,8 @@ int main( int argc, char * argv[] )
    const char * key3 = "My Key3";
    const char * data = "My Data";
    psoObjStatus status;
-   psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef folderDef;
+   psoBasicObjectDef mapDef = { 
       PSO_FAST_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

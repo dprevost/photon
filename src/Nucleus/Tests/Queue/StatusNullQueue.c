@@ -32,7 +32,7 @@ int main()
    bool ok;
    psonTxStatus txStatus;
    psoObjStatus status;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}

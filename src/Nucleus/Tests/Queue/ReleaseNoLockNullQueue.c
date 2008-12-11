@@ -43,7 +43,7 @@ int main()
    psonTxStatus status;
    char * data = "My Data";
    psonQueueItem * pItem = NULL;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_QUEUE, 
       1, 
       { 0, 0, 0, 0}

@@ -68,14 +68,14 @@ void HashMap::Close()
 void HashMap::Definition( ObjDefinition & definition )
 {
    int rc;
-   psoObjectDefinition def;
+   psoBasicObjectDef def;
    psoFieldDefinition * fields;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
       throw pso::Exception( "HashMap::Definition", PSO_NULL_HANDLE );
    }
    
-   memset( &def, 0, sizeof(psoObjectDefinition) );
+   memset( &def, 0, sizeof(psoBasicObjectDef) );
    rc = psoHashMapDefinition( m_objectHandle, &def, 0, NULL );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
@@ -104,7 +104,7 @@ void HashMap::Definition( ObjDefinition & definition )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void HashMap::Definition( psoObjectDefinition & definition,
+void HashMap::Definition( psoBasicObjectDef & definition,
                           psoUint32             numFields,
                           psoFieldDefinition  * fields )
 {

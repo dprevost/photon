@@ -88,7 +88,7 @@ PHOTON_EXPORT
 int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char          * objectName,
                            psoUint32             nameLengthInBytes,
-                           psoObjectDefinition * pDefinition,
+                           psoBasicObjectDef * pDefinition,
                            psoFieldDefinition  * pFields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

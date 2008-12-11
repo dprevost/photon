@@ -30,7 +30,7 @@ int main()
    psonFolder * pFolder;
    psonSessionContext context;
  
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       0, 
       0, 
       { 0, 0, 0, 0}

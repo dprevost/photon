@@ -34,7 +34,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *pDefinition, \fBpsoFieldDefinition\fP *fields)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
@@ -50,7 +50,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
@@ -95,7 +95,7 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * pDefinition, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP * pDefinition, \fBpsoFieldDefinition\fP * fields)"
 .PP
 Create a new object in shared memory. 
 .PP
@@ -185,7 +185,7 @@ Once this function is executed, attempts to use the session handle might lead to
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
 .PP
 Retrieve the data definition of the named object. 
 .PP

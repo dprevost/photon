@@ -26,7 +26,7 @@
 
 PSO_HANDLE g_session1, g_session2;
 
-psoObjectDefinition g_queueDef = { 
+psoBasicObjectDef g_queueDef = { 
    PSO_QUEUE,
    1, 
    { PSO_BINARY, 0, 0, 0 }
@@ -34,7 +34,7 @@ psoObjectDefinition g_queueDef = {
 psoFieldDefinition g_fields[1] = { 
    { "Field_1", PSO_VAR_STRING, 0, 1, 200, 0, 0 } 
 };
-psoObjectDefinition g_folderDef = { 
+psoBasicObjectDef g_folderDef = { 
    PSO_FOLDER,
    0, 
    { 0, 0, 0, 0 }

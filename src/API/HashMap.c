@@ -94,7 +94,7 @@ int psoHashMapClose( PSO_HANDLE objectHandle )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoHashMapDefinition( PSO_HANDLE            objectHandle,
-                          psoObjectDefinition * pDefinition,
+                          psoBasicObjectDef * pDefinition,
                           psoUint32             numFields,
                           psoFieldDefinition  * pFields )
 {

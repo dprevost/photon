@@ -41,7 +41,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

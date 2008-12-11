@@ -34,7 +34,7 @@ int main()
    char * key  = "my key";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

@@ -32,7 +32,7 @@ int main()
    psonTxStatus status;
    psonFolderItem folderItem;
    psonMemObject * pOldMemObj = NULL;
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef mapDef = { 
       PSO_FAST_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

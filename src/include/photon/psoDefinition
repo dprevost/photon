@@ -39,7 +39,7 @@
 namespace pso {
 
 /** 
- * This class is a wrapper for the C struct psoObjectDefinition.
+ * This class is a wrapper for the C struct psoBasicObjectDef.
  *
  * It's main pupose is to encapsulate the memory management of the C struct.
  */
@@ -185,11 +185,11 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Reset( psoObjectDefinition & definition,
+   void Reset( psoBasicObjectDef & definition,
                psoFieldDefinition  * inputFields );
    
    /** Returns a reference to the C struct definition. */
-   const psoObjectDefinition & GetDef();
+   const psoBasicObjectDef & GetDef();
 
    /** Returns a reference to the C struct definition. */
    const psoFieldDefinition * GetFields();
@@ -197,7 +197,7 @@ public:
 private:
 
    /// The C struct holding the definition itself
-   psoObjectDefinition definition;
+   psoBasicObjectDef definition;
    
    /// The C struct array holding the definition of the fields
    psoFieldDefinition * fields;

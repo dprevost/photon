@@ -758,7 +758,7 @@ void PopulateHashMaps( Session & session, vector<myMap> & h )
    int i, j;
    string data, key;
    char s[4];
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef mapDef = { 
       PSO_HASH_MAP,
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 200 }
@@ -791,7 +791,7 @@ void PopulateLifos( Session & session, vector<myLifo> & l )
    int i, j;
    string data;
    char s[4];
-   psoObjectDefinition queueDef = { 
+   psoBasicObjectDef queueDef = { 
       PSO_LIFO,
       1, 
       { PSO_KEY_INTEGER, 0, 0, 0 }
@@ -823,7 +823,7 @@ void PopulateQueues( Session & session, vector<myQueue> & q )
    int i, j;
    string data;
    char s[4];
-   psoObjectDefinition queueDef = { 
+   psoBasicObjectDef queueDef = { 
       PSO_QUEUE,
       1, 
       { PSO_KEY_INTEGER, 0, 0, 0 }
@@ -856,7 +856,7 @@ int main()
    Process process;
    Session session;
    int i, rc;
-   psoObjectDefinition folderDef;
+   psoBasicObjectDef folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;

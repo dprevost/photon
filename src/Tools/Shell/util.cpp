@@ -451,7 +451,7 @@ void shellBuffToOut( string        & outStr,
 {
    uint32_t * offsets = NULL, i;
 
-   psoObjectDefinition def = definition.GetDef();
+   psoBasicObjectDef def = definition.GetDef();
    const psoFieldDefinition * fields = definition.GetFields();
   
    offsets = new uint32_t[def.numFields];
@@ -507,7 +507,7 @@ void shellKeyToOut( string        & outStr,
                     unsigned char * key,
                     uint32_t        length )
 {
-   psoObjectDefinition def = definition.GetDef();
+   psoBasicObjectDef def = definition.GetDef();
 
    switch( def.key.type ) {
 
@@ -538,7 +538,7 @@ unsigned char * shellInToBuff( string        & inStr,
    string s;
    bool ok;
 
-   psoObjectDefinition def = definition.GetDef();
+   psoBasicObjectDef def = definition.GetDef();
    const psoFieldDefinition * fields = definition.GetFields();
    
    do {
@@ -656,7 +656,7 @@ unsigned char * shellInToKey( string        & inKey,
    unsigned char * key = NULL;
    bool ok = false;
 
-   psoObjectDefinition def = definition.GetDef();
+   psoBasicObjectDef def = definition.GetDef();
    
    // We need to determine the length of the key buffer to allocate.
    switch( def.key.type ) {

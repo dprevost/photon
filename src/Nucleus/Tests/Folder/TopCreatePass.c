@@ -30,7 +30,7 @@ int main()
    psonSessionContext context;
    int errcode;
    bool ok;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

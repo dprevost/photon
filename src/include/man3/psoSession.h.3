@@ -43,7 +43,7 @@ Definition in file \fBpsoSession.h\fP.
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *pDefinition, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *pDefinition, \fBpsoFieldDefinition\fP *fields)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
@@ -59,7 +59,7 @@ Definition in file \fBpsoSession.h\fP.
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c

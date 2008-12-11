@@ -50,7 +50,7 @@ int main( int argc, char * argv[] )
    Folder * folder = NULL;
    string name = "/cpp_session_exit";
    psoObjStatus status;
-   psoObjectDefinition folderDef;
+   psoBasicObjectDef folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;

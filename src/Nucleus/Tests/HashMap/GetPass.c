@@ -35,7 +35,7 @@ int main()
    psonHashTxItem * pItem;
    char * ptr;
    psonTxStatus * txItemStatus;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

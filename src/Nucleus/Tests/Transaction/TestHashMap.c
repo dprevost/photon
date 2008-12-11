@@ -42,7 +42,7 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    psonHashTxItem * pHashItem;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_HASH_MAP, 1, { 0, 0, 0, 0} 
    };
 

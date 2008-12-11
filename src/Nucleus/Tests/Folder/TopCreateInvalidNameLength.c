@@ -31,7 +31,7 @@ int main()
    int errcode;
    bool ok;
    char name[PSO_MAX_FULL_NAME_LENGTH+100];
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

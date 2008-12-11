@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    string name = "/cpp_folder_destroy";
    string subname = "test";
    string fullname = "/cpp_folder_destroy/test";
-   psoObjectDefinition def; 
+   psoBasicObjectDef def; 
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;

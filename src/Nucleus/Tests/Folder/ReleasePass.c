@@ -34,7 +34,7 @@ int main()
    psonObjectDescriptor * pDescriptor;
    psonTxStatus * txItemStatus;
    psonTreeNode * pNode;
-   psoObjectDefinition def = { 
+   psoBasicObjectDef def = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}

@@ -254,7 +254,7 @@ void psoShell::Cat()
    unsigned char * key, * buffer;
    int rc;
    uint32_t keyLength, dataLength;
-   psoObjectDefinition * pDefinition = NULL;
+   psoBasicObjectDef * pDefinition = NULL;
    uint32_t * offsets;
    ObjDefinition definition;
    
@@ -297,7 +297,7 @@ void psoShell::Cat()
       return;
    }
    
-   psoaGetOffsets( (psoObjectDefinition *)&(definition.GetDef()), 
+   psoaGetOffsets( (psoBasicObjectDef *)&(definition.GetDef()), 
                    (psoFieldDefinition *)definition.GetFields(), 
                    offsets );
    for ( uint32_t i = 0; i < pDefinition->numFields; ++i ) {
@@ -477,7 +477,7 @@ void psoShell::Cp()
    unsigned char * key, * buffer;
    int rc;
    uint32_t keyLength, dataLength;
-//   psoObjectDefinition definition;
+//   psoBasicObjectDef definition;
    ObjDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
@@ -572,7 +572,7 @@ void psoShell::Echo()
    psoObjStatus status;
    unsigned char * key = NULL, * buffer = NULL;
    uint32_t keyLength, dataLength;
-   psoObjectDefinition * pDefinition = NULL;
+   psoBasicObjectDef * pDefinition = NULL;
    bool nokey = false;
    ObjDefinition definition;
    
@@ -818,7 +818,7 @@ void psoShell::Man()
 void psoShell::Mkdir()
 {
    string folderName;
-   psoObjectDefinition definition;
+   psoBasicObjectDef definition;
 
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -955,7 +955,7 @@ void psoShell::Touch()
 {
    string objectName;
    string option, filename;
-   psoObjectDefinition definition;
+   psoBasicObjectDef definition;
    bool useXML = false;
    Folder folder( session );
    

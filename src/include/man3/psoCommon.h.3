@@ -23,9 +23,9 @@ psoCommon.h \-
 .br
 .RI "\fIDescription of the structure of the data (if any). \fP"
 .ti -1c
-.RI "struct \fBpsoObjectDefinition\fP"
+.RI "struct \fBpsoBasicObjectDef\fP"
 .br
-.RI "\fIThis struct has a variable length. \fP"
+.RI "\fIThis struct contains the basic elements defining an object (type, number of fields, etc). \fP"
 .ti -1c
 .RI "struct \fBpsoFolderEntry\fP"
 .br
@@ -84,7 +84,7 @@ psoCommon.h \-
 .RI "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
 .br
 .ti -1c
-.RI "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
+.RI "typedef struct \fBpsoBasicObjectDef\fP \fBpsoBasicObjectDef\fP"
 .br
 .ti -1c
 .RI "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
@@ -156,24 +156,24 @@ Definition at line 76 of file psoCommon.h.
 PSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. 
 .PP
 Definition at line 68 of file psoCommon.h.
+.SS "typedef struct \fBpsoBasicObjectDef\fP \fBpsoBasicObjectDef\fP"
+.PP
+Definition at line 243 of file psoCommon.h.
 .SS "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
 .PP
 Definition at line 217 of file psoCommon.h.
 .SS "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
 .PP
-Definition at line 266 of file psoCommon.h.
+Definition at line 272 of file psoCommon.h.
 .SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .PP
-Definition at line 360 of file psoCommon.h.
+Definition at line 366 of file psoCommon.h.
 .SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .PP
 Definition at line 182 of file psoCommon.h.
-.SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
-.PP
-Definition at line 237 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
-Definition at line 305 of file psoCommon.h.
+Definition at line 311 of file psoCommon.h.
 .SS "typedef uint32_t \fBpsoUint32\fP"
 .PP
 Definition at line 35 of file psoCommon.h.

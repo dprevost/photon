@@ -38,7 +38,7 @@ int main( int argc, char * argv[] )
    string sub2name = name + "/f2";
    psoFolderEntry entry;
    int rc;
-   psoObjectDefinition def; 
+   psoBasicObjectDef def; 
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;

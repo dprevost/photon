@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    Folder folder(session);
    string name = "/cpp_folder_createXML";
    string subname = "test";
-   psoObjectDefinition def; 
+   psoBasicObjectDef def; 
    
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/photon_meta10.xsd"};

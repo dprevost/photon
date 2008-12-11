@@ -39,8 +39,8 @@ int main( int argc, char * argv[] )
    char buffer[50];
    uint32_t length;
    int rc;
-   psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { 
+   psoBasicObjectDef folderDef;
+   psoBasicObjectDef queueDef = { 
       PSO_QUEUE,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 0, 0 }

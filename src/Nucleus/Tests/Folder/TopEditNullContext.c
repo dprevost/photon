@@ -31,13 +31,13 @@ int main()
    psonSessionContext context;
    bool ok;
    psonFolderItem folderItem;
-   psoObjectDefinition folderDef = { 
+   psoBasicObjectDef folderDef = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}
    };
 
-   psoObjectDefinition mapDef = { 
+   psoBasicObjectDef mapDef = { 
       PSO_FAST_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

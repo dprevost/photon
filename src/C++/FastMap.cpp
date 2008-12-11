@@ -68,14 +68,14 @@ void FastMap::Close()
 void FastMap::Definition( ObjDefinition & definition )
 {
    int rc;
-   psoObjectDefinition def;
+   psoBasicObjectDef def;
    psoFieldDefinition * fields;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
       throw pso::Exception( "FastMap::Definition", PSO_NULL_HANDLE );
    }
    
-   memset( &def, 0, sizeof(psoObjectDefinition) );
+   memset( &def, 0, sizeof(psoBasicObjectDef) );
    rc = psoFastMapDefinition( m_objectHandle, &def, 0, NULL );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
@@ -104,7 +104,7 @@ void FastMap::Definition( ObjDefinition & definition )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void FastMap::Definition( psoObjectDefinition & definition,
+void FastMap::Definition( psoBasicObjectDef & definition,
                           psoUint32             numFields,
                           psoFieldDefinition  * fields )
 {
