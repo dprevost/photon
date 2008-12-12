@@ -25,7 +25,7 @@
 #############################################################################
 
 AC_INIT([Photon Software],
-        [0.4.0],
+        [0.5.0],
         [Daniel Prevost <dprevost@photonsoftware.org>],
         [photon])
 
@@ -56,7 +56,7 @@ AC_PROG_LIBTOOL
 # Not sure  which version is needed to run the tests.
 AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
 # Any version before 2.2 won't work (how to define new types waschanged then).
-AC_PYTHON_DEVEL(">= '2.2'")
+# AC_PYTHON_DEVEL(">= '2.2'")
 
 # Tell our makefiles that we can use doxygen and latex to regenerate some of 
 # the documentation, as needed.

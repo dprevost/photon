@@ -82,13 +82,20 @@ PACKAGES_FILES =                \
         Packages/photon.iss     \
         Packages/photon.spec.in 
 
-EXTRA_DIST =               \
-        $(EXAMPLES_FILES)  \
-        config-win32.h     \
-        Makefile.win32     \
-        photon.sln         \
-        $(PACKAGES_FILES)  \
-        XML/quasar_config.xsd  
+PYTHON_FILES =       \
+        Makefile.in  \
+        PhotonWrap.c \
+        Session.h    \
+        setup.py     
+
+EXTRA_DIST =                  \
+        $(EXAMPLES_FILES)     \
+        config-win32.h        \
+        Makefile.win32        \
+        photon.sln            \
+        $(PACKAGES_FILES)     \
+        $(PYTHON_FILES)       \
+        XML/quasar_config.xsd 
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(datadir)/doc/photon/Examples

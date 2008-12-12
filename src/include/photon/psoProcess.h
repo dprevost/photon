@@ -49,7 +49,7 @@ extern "C" {
  * if called twice or if ::psoInit was not called).
  */
 PHOTON_EXPORT
-void psoExit();
+void psoExit(void);
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

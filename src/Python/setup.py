@@ -9,7 +9,5 @@ setup(name='photon',
       author_email='dprevost@photonsoftware.org',
       url='http://photonsoftware.org/',
       ext_modules=[Extension('photon', ['PhotonWrap.c'],
-         include_dirs=['../include'],
-         library_dirs=['../API/.libs/'],
          libraries=['photon'] )],
      )

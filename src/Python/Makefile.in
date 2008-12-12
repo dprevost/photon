@@ -1,0 +1,45 @@
+# Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
+# 
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+#-------------------------------------------------------------------
+#
+# Change this as needed 
+#
+PHOTON_INCLUDE_DIR = $(PWD)/../include
+PHOTON_LIB_DIR     = $(PWD)/../API/.libs
+PYTHON = @PYTHON@
+#
+## Possible alternatives (if Photon is installed in /usr/local):
+#PHOTON_INCLUDE_DIR = /usr/local/include
+#PHOTON_LIB_DIR = /usr/local/lib
+#
+#-------------------------------------------------------------------
+
+
+SOURCE_FILES =       \
+        PhotonWrap.c \
+        Session.h    
+
+all: $(SOURCE_FILES) setup.py
+	${PYTHON} setup.py build_ext --include-dirs=$(PHOTON_INCLUDE_DIR) \
+      --library-dirs=$(PHOTON_LIB_DIR) 
+
+dist: all
+	${PYTHON} setup.py bdist --format=gztar
+
+install: all
+	${PYTHON} setup.py install
+
+clean:
+	-rm -rf build
+	-rm -rf dist
+	-rm -rf *~ core 
+
+
