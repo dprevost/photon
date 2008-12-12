@@ -10,7 +10,9 @@ namespace PhotonTest
         static void Main(string[] args)
         {
             Process proc = new Process();
-
+                                             
+            BasicObjectDef definition = new BasicObjectDef();
+            FieldDefinition[] fields = new FieldDefinition[1];
             try
             {
                 proc.Init("10701", false);
@@ -27,9 +29,13 @@ namespace PhotonTest
 
             Session sess = new Session();
 
+            definition.type = ObjectType.FOLDER;
+            sess.CreateObject("/Test", ref definition, fields);
+            sess.Commit();
+
             ObjStatus status = new ObjStatus();
 
-            sess.GetStatus("/test", ref status);
+            sess.GetStatus("/Test", ref status);
         }
     }
 }

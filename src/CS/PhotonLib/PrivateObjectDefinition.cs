@@ -27,82 +27,11 @@ namespace Photon
     {
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        /*
-         * Description of the structure of the hash map key.
-         */
-        [StructLayout(LayoutKind.Sequential)]
-        private struct KeyDefinition
-        {
-            /* The data type of the key. */
-            public KeyType type;
+        private BasicObjectDef def;
 
-            /** For fixed-length data types */
-            public UInt32 length;
-
-            /** For variable-length data types */
-            public UInt32 minLength;
-
-            /** For variable-length data types */
-            public UInt32 maxLength;
-        }
+        private FieldDefinition[] fields;
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        /*
-         * Description of the structure of the data (if any).
-         *
-         * This structure is aligned in such a way that you can do:
-         *
-         *    malloc( offsetof(psoBasicObjectDef, fields) +
-         *            numFields * sizeof(psoFieldDefinition) );
-         *
-         */
-        [StructLayout(LayoutKind.Sequential)]
-        private struct FieldDefinition
-        {
-            /** The name of the field. */
-            [MarshalAs(UnmanagedType.LPStr, SizeConst=32)]String name;
-   
-            /** The data type of the field/ */
-            FieldType type;
-   
-            /** For fixed-length data types */
-            UInt32 length;
-
-            /** For variable-length data types */
-            UInt32 minLength;
-
-            /** For variable-length data types */
-            UInt32 maxLength;
-
-            /** Total number of digits in the decimal field. */
-            UInt32 precision;
-
-            /** Number of digits following the decimal separator. */
-            UInt32 scale;
-        }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-        /*
-         * This struct has a variable length.
-         */
-        [StructLayout(LayoutKind.Sequential)]
-        struct psoBasicObjectDef
-        {
-            /** The object type. */
-            ObjectType type;
-
-            /** The number of fields in the definition. */
-            UInt32 numFields;
-   
-            /** The data definition of the key (hash map/fast map only) */
-            KeyDefinition key;
-
-            /** The data definition of the fields */
-            FieldDefinition[] fields;
-        }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
     }
 }

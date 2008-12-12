@@ -36,10 +36,15 @@ extern "C" {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #if defined(WIN32)
-#  if defined(BULDING_ERROR_MESSAGE)
-#    define ERROR_MESSAGE_EXPORT __declspec ( dllexport )
+#  if !defined(ERROR_MESSAGE_EXPORT)
+#    if defined(BULDING_ERROR_MESSAGE)
+#      define ERROR_MESSAGE_EXPORT __declspec ( dllexport )
+#    else
+#      define ERROR_MESSAGE_EXPORT __declspec ( dllimport )
+#    endif
 #  else
-#    define ERROR_MESSAGE_EXPORT __declspec ( dllimport )
+#    undef ERROR_MESSAGE_EXPORT
+#    define ERROR_MESSAGE_EXPORT
 #  endif
 #else
 #  define ERROR_MESSAGE_EXPORT

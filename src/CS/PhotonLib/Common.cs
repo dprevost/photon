@@ -122,4 +122,73 @@ namespace Photon
     }
 
     // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+    /*
+     * Description of the structure of the hash map key.
+     */
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KeyDefinition
+    {
+        /* The data type of the key. */
+        public KeyType type;
+
+        /** For fixed-length data types */
+        public UInt32 length;
+
+        /** For variable-length data types */
+        public UInt32 minLength;
+
+        /** For variable-length data types */
+        public UInt32 maxLength;
+    }
+
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+    /*
+     * Description of the structure of the fields.
+     */
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FieldDefinition
+    {
+        /** The name of the field. */
+        [MarshalAs(UnmanagedType.LPStr, SizeConst = 32)]
+        String name;
+
+        /** The data type of the field/ */
+        FieldType type;
+
+        /** For fixed-length data types */
+        UInt32 length;
+
+        /** For variable-length data types */
+        UInt32 minLength;
+
+        /** For variable-length data types */
+        UInt32 maxLength;
+
+        /** Total number of digits in the decimal field. */
+        UInt32 precision;
+
+        /** Number of digits following the decimal separator. */
+        UInt32 scale;
+    }
+
+    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+    /*
+     * 
+     */
+    [StructLayout(LayoutKind.Sequential)]
+    public struct BasicObjectDef
+    {
+        /** The object type. */
+        public ObjectType type;
+
+        /** The number of fields in the definition. */
+        public UInt32 numFields;
+
+        /** The data definition of the key (hash map/fast map only) */
+        public KeyDefinition key;
+    }
+
 }

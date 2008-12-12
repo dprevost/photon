@@ -76,6 +76,31 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+        public void CreateObject( String             objectName,
+                                  ref BasicObjectDef definition,
+                                  FieldDefinition[]  fields )
+        {
+            int rc;
+
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Session.DestroyObject", rc), rc);
+            }
+            
+            rc = psoCreateObject(handle,
+                                 objectName,
+                                 (UInt32)objectName.Length,
+                                 ref definition,
+                                 fields );
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(handle, "Session.DestroyObject"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public void DestroyObject( String objectName )
         {
             int rc;

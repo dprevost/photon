@@ -42,7 +42,8 @@ namespace Photon
             IntPtr sessionHandle,
             string objectName,
             UInt32 nameLengthInBytes,
-            ObjectDefinition pDefinition);
+            ref BasicObjectDef definition,
+            FieldDefinition[]  fields );
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoDestroyObject(
