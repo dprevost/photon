@@ -25,6 +25,7 @@ PYTHON = @PYTHON@
 
 SOURCE_FILES =       \
         PhotonWrap.c \
+        Process.h    \
         Session.h    
 
 all: $(SOURCE_FILES) setup.py

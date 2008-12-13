@@ -22,12 +22,13 @@
 #include "structmember.h"
 
 #include <photon/photon.h>
+#include "Process.h"
 #include "Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMethodDef module_methods[] = {
-    {NULL}  /* Sentinel */
+   {NULL}  /* Sentinel */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -48,11 +49,12 @@ initphoton(void)
 
    if (m == NULL) return;
 
-    if (m == NULL)
-      return;
+   Py_INCREF( &SessionType );
+   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
 
-    Py_INCREF(&SessionType);
-    PyModule_AddObject(m, "Session", (PyObject *)&SessionType);
+   Py_INCREF( &ProcessType );
+   PyModule_AddObject( m, "Process", (PyObject *)&ProcessType );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
