@@ -18,15 +18,22 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#include "Python.h"
+#include "structmember.h"
+
+#include <photon/photon.h>
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 typedef struct {
    PyObject_HEAD
    PSO_HANDLE handle;
-} Session;
+} photon_Session;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
-Session_dealloc( Session * self )
+Session_dealloc( photon_Session * self )
 {
    self->ob_type->tp_free( (PyObject *)self );
 }
@@ -36,9 +43,9 @@ Session_dealloc( Session * self )
 static PyObject *
 Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   Session * self;
+   photon_Session * self;
 
-   self = (Session *)type->tp_alloc( type, 0 );
+   self = (photon_Session *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->handle = 0;
    }
@@ -49,7 +56,7 @@ Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_commit( Session * self )
+Session_commit( photon_Session * self )
 {
    int errcode;
    
@@ -61,7 +68,7 @@ Session_commit( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_createObject(Session * self, PyObject * args )
+Session_createObject(photon_Session * self, PyObject * args )
 {
    return Py_None;
 }
@@ -69,7 +76,7 @@ Session_createObject(Session * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef Session_members[] = {
-   {"handle", T_OBJECT_EX, offsetof(Session, handle), RO,
+   {"handle", T_OBJECT_EX, offsetof(photon_Session, handle), RO,
     "Session handle"},
    {NULL}  /* Sentinel */
 };
@@ -91,8 +98,8 @@ static PyMethodDef Session_methods[] = {
 static PyTypeObject SessionType = {
    PyObject_HEAD_INIT(NULL)
    0,                           /*ob_size*/
-   "photon.Session",            /*tp_name*/
-   sizeof(Session),             /*tp_basicsize*/
+   "pso.Session",            /*tp_name*/
+   sizeof(photon_Session),             /*tp_basicsize*/
    0,                           /*tp_itemsize*/
    (destructor)Session_dealloc, /*tp_dealloc*/
    0,                           /*tp_print*/
@@ -129,6 +136,37 @@ static PyTypeObject SessionType = {
    0,                           /* tp_alloc */
    Session_new,                 /* tp_new */
 };
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if 0
+static PyMethodDef module_methods[] = {
+   {NULL}  /* Sentinel */
+};
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
+#define PyMODINIT_FUNC void
+#endif
+PyMODINIT_FUNC
+initSession(void) 
+{
+   PyObject * m;
+
+   if (PyType_Ready(&SessionType) < 0) return;
+
+   m = Py_InitModule3( "pso", 
+                       module_methods,
+                       "The Photon library.");
+
+   fprintf( stderr, "m = %p\n", m );
+   if (m == NULL) return;
+
+   Py_INCREF( &SessionType );
+   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
+}
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

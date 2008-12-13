@@ -8,6 +8,14 @@ setup(name='photon',
       author='D. Prevost',
       author_email='dprevost@photonsoftware.org',
       url='http://photonsoftware.org/',
-      ext_modules=[Extension('photon', ['PhotonWrap.c'],
-         libraries=['photon'] )],
+#      packages=['photon'],
+      ext_modules=[Extension('pso', 
+                             ['PhotonWrap.c'], 
+                             libraries=['photon'])
+#      ext_modules=[Extension('simpletype', 
+#                             ['photon.c'], 
+#                             libraries=['photon'])
+
+      ]
      )
+

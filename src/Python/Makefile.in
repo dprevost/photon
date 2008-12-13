@@ -23,10 +23,9 @@ PYTHON = @PYTHON@
 #-------------------------------------------------------------------
 
 
-SOURCE_FILES =       \
-        PhotonWrap.c \
-        Process.h    \
-        Session.h    
+SOURCE_FILES =           \
+        photon/Process.c \
+        photon/Session.c 
 
 all: $(SOURCE_FILES) setup.py
 	${PYTHON} setup.py build_ext --include-dirs=$(PHOTON_INCLUDE_DIR) \
@@ -41,6 +40,6 @@ install: all
 clean:
 	-rm -rf build
 	-rm -rf dist
-	-rm -rf *~ core 
+	-rm -rf *~ core *.so
 
 

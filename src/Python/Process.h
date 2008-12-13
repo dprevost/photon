@@ -18,6 +18,13 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#include "Python.h"
+#include "structmember.h"
+
+#include <photon/photon.h>
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 typedef struct {
    PyObject_HEAD
 } Process;
@@ -125,5 +132,34 @@ static PyTypeObject ProcessType = {
    Process_new,                 /* tp_new */
 };
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+#if 0
+
+static PyMethodDef module_methods[] = {
+   {NULL}  /* Sentinel */
+};
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
+#define PyMODINIT_FUNC void
+#endif
+PyMODINIT_FUNC
+initProcess(void) 
+{
+   PyObject * m;
+
+   if (PyType_Ready(&ProcessType) < 0) return;
+
+   m = Py_InitModule3( "Process", 
+                       module_methods,
+                       "The Process module for Photon.");
+
+   if (m == NULL) return;
+
+   Py_INCREF( &ProcessType );
+   PyModule_AddObject( m, "Process", (PyObject *)&ProcessType );
+}
+#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

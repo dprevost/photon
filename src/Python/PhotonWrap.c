@@ -22,8 +22,8 @@
 #include "structmember.h"
 
 #include <photon/photon.h>
-#include "Process.h"
-#include "Session.h"
+#include "photon/Process.c"
+#include "photon/Session.c"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,13 +37,15 @@ static PyMethodDef module_methods[] = {
 #define PyMODINIT_FUNC void
 #endif
 PyMODINIT_FUNC
-initphoton(void) 
+initpso(void) 
 {
    PyObject * m;
 
+   fprintf( stderr, "here!\n" );
+   
    if (PyType_Ready(&SessionType) < 0) return;
 
-   m = Py_InitModule3( "photon", 
+   m = Py_InitModule3( "pso", 
                        module_methods,
                        "Example module that creates an extension type.");
 
@@ -52,8 +54,8 @@ initphoton(void)
    Py_INCREF( &SessionType );
    PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
 
-   Py_INCREF( &ProcessType );
-   PyModule_AddObject( m, "Process", (PyObject *)&ProcessType );
+//   Py_INCREF( &ProcessType );
+//   PyModule_AddObject( m, "Process", (PyObject *)&ProcessType );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
