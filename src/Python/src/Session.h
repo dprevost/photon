@@ -27,24 +27,28 @@
 
 typedef struct {
    PyObject_HEAD
-} Process;
+   PSO_HANDLE handle;
+} Session;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
-Process_dealloc( Process * self )
+Session_dealloc( Session * self )
 {
-   self->ob_type->tp_free( (PyObject*)self );
+   self->ob_type->tp_free( (PyObject *)self );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Process_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
+Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   Process * self;
+   Session * self;
 
-   self = (Process *)type->tp_alloc( type, 0 );
+   self = (Session *)type->tp_alloc( type, 0 );
+   if (self != NULL) {
+      self->handle = 0;
+   }
 
    return (PyObject *)self;
 }
@@ -52,51 +56,52 @@ Process_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Process_exit( Process * self )
+Session_commit( Session * self )
 {
-   psoExit();
+   int errcode;
    
-   return Py_None;
+   errcode = psoCommit( (PSO_HANDLE)self->handle );
+   
+   return Py_BuildValue("i", errcode);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Process_init( Process * self, PyObject * args )
+Session_createObject(Session * self, PyObject * args )
 {
-   int errcode;
-   const char * quasarAddress;
-   int protectionNeeded;
-
-   if ( !PyArg_ParseTuple(args, "si", &quasarAddress, &protectionNeeded) ) {
-      return NULL;
-   }
-   errcode = psoInit( quasarAddress, protectionNeeded );
-   
-   return Py_BuildValue( "i", errcode );
+   return Py_None;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyMethodDef Process_methods[] = {
-   { "init", (PyCFunction)Process_init, METH_VARARGS,
-     "Initialize the photon library"
+static PyMemberDef Session_members[] = {
+   {"handle", T_OBJECT_EX, offsetof(Session, handle), RO,
+    "Session handle"},
+   {NULL}  /* Sentinel */
+};
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyMethodDef Session_methods[] = {
+   { "commit", (PyCFunction)Session_commit, METH_NOARGS,
+     "Commit the current session"
    },
-   { "exit", (PyCFunction)Process_exit, METH_NOARGS,
-     "Terminates access to the photon library"
+   { "create_object", (PyCFunction)Session_createObject, METH_VARARGS,
+     "Create a new photon object in shared memory"
    },
    {NULL}  /* Sentinel */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyTypeObject ProcessType = {
+static PyTypeObject SessionType = {
    PyObject_HEAD_INIT(NULL)
    0,                           /*ob_size*/
-   "photon.Process",            /*tp_name*/
-   sizeof(Process),             /*tp_basicsize*/
+   "pso.Session",               /*tp_name*/
+   sizeof(Session),             /*tp_basicsize*/
    0,                           /*tp_itemsize*/
-   (destructor)Process_dealloc, /*tp_dealloc*/
+   (destructor)Session_dealloc, /*tp_dealloc*/
    0,                           /*tp_print*/
    0,                           /*tp_getattr*/
    0,                           /*tp_setattr*/
@@ -112,15 +117,15 @@ static PyTypeObject ProcessType = {
    0,                           /*tp_setattro*/
    0,                           /*tp_as_buffer*/
    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-   "Photon process object",     /* tp_doc */
+   "Session objects",           /* tp_doc */
    0,		                     /* tp_traverse */
    0,		                     /* tp_clear */
    0,		                     /* tp_richcompare */
    0,		                     /* tp_weaklistoffset */
    0,		                     /* tp_iter */
    0,		                     /* tp_iternext */
-   Process_methods,             /* tp_methods */
-   0,                           /* tp_members */
+   Session_methods,             /* tp_methods */
+   Session_members,             /* tp_members */
    0,                           /* tp_getset */
    0,                           /* tp_base */
    0,                           /* tp_dict */
@@ -129,37 +134,8 @@ static PyTypeObject ProcessType = {
    0,                           /* tp_dictoffset */
    0,                           /* tp_init */
    0,                           /* tp_alloc */
-   Process_new,                 /* tp_new */
+   Session_new,                 /* tp_new */
 };
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-#if 0
-
-static PyMethodDef module_methods[] = {
-   {NULL}  /* Sentinel */
-};
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
-PyMODINIT_FUNC
-initProcess(void) 
-{
-   PyObject * m;
-
-   if (PyType_Ready(&ProcessType) < 0) return;
-
-   m = Py_InitModule3( "Process", 
-                       module_methods,
-                       "The Process module for Photon.");
-
-   if (m == NULL) return;
-
-   Py_INCREF( &ProcessType );
-   PyModule_AddObject( m, "Process", (PyObject *)&ProcessType );
-}
-#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

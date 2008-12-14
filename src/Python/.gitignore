@@ -1,3 +1,5 @@
 /build
 /dist
 /Makefile
+/MANIFEST
+/pso.so
