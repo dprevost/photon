@@ -22,14 +22,14 @@ PYTHON = @PYTHON@
 #
 #-------------------------------------------------------------------
 
-
-SOURCE_FILES =           \
-        photon/Process.c \
-        photon/Session.c 
+SOURCE_FILES =          \
+        src/pso.c       \
+        src/ObjStatus.h \
+        src/Session.h   
 
 all: $(SOURCE_FILES) setup.py
 	${PYTHON} setup.py build_ext --include-dirs=$(PHOTON_INCLUDE_DIR) \
-      --library-dirs=$(PHOTON_LIB_DIR) 
+      --library-dirs=$(PHOTON_LIB_DIR) -i
 
 dist: all
 	${PYTHON} setup.py bdist --format=gztar

@@ -27,7 +27,7 @@
 
 typedef struct {
    PyObject_HEAD
-   PSO_HANDLE handle;
+   long handle;
 } Session;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -56,7 +56,7 @@ Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_commit( Session * self )
+Session_Commit( Session * self )
 {
    int errcode;
    
@@ -68,15 +68,123 @@ Session_commit( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_createObject(Session * self, PyObject * args )
+Session_CreateObject( Session * self, PyObject * args )
 {
-   return Py_None;
+   int errcode;
+   const char * objectName;
+   PyObject * def, * l;
+   psoBasicObjectDef definition;
+   psoFieldDefinition  * fields = NULL;
+   
+   if ( !PyArg_ParseTuple(args, "soo", &objectName, &def, &l) ) {
+      return NULL;
+   }
+   
+   return Py_BuildValue("i", errcode);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+Session_DestroyObject( Session * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   errcode = psoDestroyObject( (PSO_HANDLE)self->handle,
+                               objectName,
+                               (psoUint32)strlen(nameLengthInBytes) );
+   
+   return Py_BuildValue("i", errcode);
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_ErrorMsg( Session * self, PyObject * args );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_ExitSession( Session * self, PyObject * args );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_GetDefinition(  Session * self, PyObject * args );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_GetInfo( Session * self, PyObject * args );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_GetStatus( Session * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   ObjStatus * pStatusPy;
+   psoObjStatus status;
+   
+   if ( !PyArg_ParseTuple(args, "sO", &objectName, &pStatusPy) ) {
+      return NULL;
+   }
+
+   errcode = psoGetStatus( (PSO_HANDLE)self->handle,
+                           objectName,
+                           (psoUint32)strlen(objectName),
+                           &status );
+   if ( errcode == 0 ) {
+      pStatusPy->objType       = status.type;
+      pStatusPy->status        = status.status;
+      pStatusPy->numBlocks     = status.numBlocks;
+      pStatusPy->numBlockGroup = status.numBlockGroup;
+      pStatusPy->numDataItem   = status.numDataItem;
+      pStatusPy->freeBytes     = status.freeBytes;
+      pStatusPy->maxDataLength = status.maxDataLength;
+      pStatusPy->maxKeyLength  = status.maxKeyLength;
+   }
+
+   return Py_BuildValue("i", errcode);
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static int
+Session_init(Session * self, PyObject * args )
+{
+   int errcode;
+   PSO_HANDLE h;
+   
+   errcode = psoInitSession( &h );
+   if ( errcode == 0 ) {
+      self->handle = (long)h;
+      return 0
+   }
+   
+   return -1;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_LastError( Session * self );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_Rollback( Session * self );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef Session_members[] = {
-   {"handle", T_OBJECT_EX, offsetof(Session, handle), RO,
+   {"handle", T_INT, offsetof(Session, handle), RO,
     "Session handle"},
    {NULL}  /* Sentinel */
 };
@@ -84,11 +192,14 @@ static PyMemberDef Session_members[] = {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMethodDef Session_methods[] = {
-   { "commit", (PyCFunction)Session_commit, METH_NOARGS,
+   { "commit", (PyCFunction)Session_Commit, METH_NOARGS,
      "Commit the current session"
    },
-   { "create_object", (PyCFunction)Session_createObject, METH_VARARGS,
+   { "create_object", (PyCFunction)Session_CreateObject, METH_VARARGS,
      "Create a new photon object in shared memory"
+   },
+   { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
+     "Get the status of a Photon object"
    },
    {NULL}  /* Sentinel */
 };
@@ -132,7 +243,7 @@ static PyTypeObject SessionType = {
    0,                           /* tp_descr_get */
    0,                           /* tp_descr_set */
    0,                           /* tp_dictoffset */
-   0,                           /* tp_init */
+   Session_init,                /* tp_init */
    0,                           /* tp_alloc */
    Session_new,                 /* tp_new */
 };

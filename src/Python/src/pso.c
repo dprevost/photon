@@ -22,6 +22,7 @@
 #include "structmember.h"
 
 #include <photon/photon.h>
+#include "ObjStatus.h"
 #include "Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -72,15 +73,19 @@ initpso(void)
 {
    PyObject * m;
 
-   fprintf( stderr, "here!\n" );
+//   fprintf( stderr, "here!\n" );
    
    if (PyType_Ready(&SessionType) < 0) return;
+   if (PyType_Ready(&ObjStatusType) < 0) return;
 
    m = Py_InitModule3( "pso", 
                        pso_methods,
                        "Example module that creates an extension type.");
-
    if (m == NULL) return;
+
+   ObjStatusType.tp_new = PyType_GenericNew;
+   Py_INCREF( &ObjStatusType );
+   PyModule_AddObject( m, "ObjStatus", (PyObject *)&ObjStatusType );
 
    Py_INCREF( &SessionType );
    PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
