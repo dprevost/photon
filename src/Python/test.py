@@ -18,6 +18,12 @@ s = pso.Session()
 print s
 print dir(s)
 
+f = pso.Folder(s, '/')
+print dir(f)
+
+for e in f:
+    print 'e.name,', e
+
 status = pso.ObjStatus()
 #print status.obj_type
 print dir(status)

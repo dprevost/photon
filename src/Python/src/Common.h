@@ -23,6 +23,8 @@
 
 #include <photon/photon.h>
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 const char * pson_ErrorMessage( int );
 
 /*
@@ -49,14 +51,6 @@ static void SetException( int errcode )
    }
 }
 
-/* The C struct first */
-#include "ObjStatus.h"
-#include "BasicDef.h"
-#include "FolderEntry.h"
-
-#include "Session.h"
-#include "Folder.h"
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
@@ -72,3 +66,37 @@ const char * g_ObjectType[PSO_LAST_OBJECT_TYPE-1] = {
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+PyObject * GetObjectType( psoObjectType objType )
+{
+   switch (objType ) {
+      
+   case PSO_FOLDER:
+      return PyString_FromString( "Folder" );
+   case PSO_HASH_MAP:
+      return PyString_FromString( "Hash Map" );
+   case PSO_LIFO:
+      return PyString_FromString( "LIFO Queue" );
+   case PSO_FAST_MAP:
+      return PyString_FromString( "Fast Hash Map" );
+   case PSO_QUEUE:
+      return PyString_FromString( "FIFO Queue" );
+   case PSO_LAST_OBJECT_TYPE:
+      return PyString_FromString( "Unknown Type" );
+   }
+
+   return PyString_FromString( "Unknown Type" );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/* The C struct first */
+#include "ObjStatus.h"
+#include "BasicDef.h"
+#include "FolderEntry.h"
+
+#include "Session.h"
+#include "Folder.h"
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

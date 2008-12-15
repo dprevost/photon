@@ -36,6 +36,22 @@ typedef struct {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+FolderEntry_str( FolderEntry * obj )
+{
+   if ( obj->name && obj->objType ) {
+      return PyString_FromFormat( 
+         "FolderEntry{name:\%s, obj_type:\%s, status:\%d, nameLength:\%d}",
+         PyString_AsString(obj->name),
+         PyString_AsString(obj->objType),
+         obj->status,
+         obj->nameLength );
+   }
+   return PyString_FromString("FolderEntry is not set");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef FolderEntry_members[] = {
    { "name", T_OBJECT_EX, offsetof(FolderEntry, name), RO,
      "The type of the object"},
@@ -67,7 +83,7 @@ static PyTypeObject FolderEntryType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   FolderEntry_str,                          /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/

@@ -70,16 +70,39 @@ Folder_init( PyTypeObject * self, PyObject * args, PyObject *kwds )
 {
    int errcode;
    PSO_HANDLE h;
-   Folder * fold = (Folder *)self;
-    
-//   errcode = psoFolderOpen( &h );
-   if ( errcode == 0 ) {
-      fold->handle = (size_t)h;
-      return 0;
+   Folder * folder = (Folder *)self;
+   PyObject * session = NULL;
+   const char * folderName = NULL;
+   static char *kwlist[] = {"session", "name", NULL};
+
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "|Os", kwlist, 
+      &session, &folderName) ) {
+      return -1; 
+   }
+      
+   if (session == NULL) {
+      PyErr_SetString( PyExc_SyntaxError, 
+         "Syntax: Folder( Session [, folder_name ] )" );
+      return -1;
+   }
+
+   folder->sessionHandle = ((Session *)session)->handle;
+
+   if (folderName) {
+      errcode = psoFolderOpen( (PSO_HANDLE)folder->sessionHandle,
+                               folderName,
+                               (psoUint32)strlen(folderName),
+                               &h );
+      if ( errcode == 0 ) {
+         folder->handle = (size_t)h;
+         return 0;
+      }
+
+      SetException( errcode );
+      return -1;
    }
    
-   PyErr_SetString( PhotonError, "Photon Error!" );
-   return -1;
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -102,6 +125,8 @@ Folder_next( PyObject * self )
    int errcode;
    psoFolderEntry entry;
    Folder * fold = (Folder *) self;
+   FolderEntry * e;
+   PyObject * objType = NULL, * entryName = NULL;
    
    if ( fold->iteratorStarted == 1 ) {
       fold->iteratorStarted = 0;
@@ -122,8 +147,23 @@ Folder_next( PyObject * self )
       SetException( errcode );
       return NULL;
    }
+  
+   objType = GetObjectType( entry.type );
+   if ( objType == NULL ) return NULL;
    
-   return NULL;
+   entryName = PyString_FromStringAndSize( entry.name,
+                                            entry.nameLengthInBytes );
+   if ( entryName == NULL ) return NULL;
+
+   e = PyObject_New(FolderEntry, &FolderEntryType);
+   if ( e == NULL ) return NULL;
+   
+   e->status = entry.status;
+   e->nameLength = entry.nameLengthInBytes;
+   e->name = entryName;
+   e->objType = objType;
+   
+   return (PyObject *)e;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
