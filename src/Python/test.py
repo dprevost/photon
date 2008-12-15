@@ -3,9 +3,16 @@
 import pso
 
 print dir(pso)
+print dir(pso.error)
 
-rc = pso.init("10701", False )
-print 'rc = ', rc, ', ', pso.FOLDER
+try:
+    pso.init("10701", False )
+    
+except pso.error:
+    print "Is Quasar running? Does the shared-memory file exists?"
+    raise
+    
+#print 'rc = ', rc, ', ', pso.FOLDER
 
 s = pso.Session()
 print s

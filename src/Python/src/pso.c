@@ -22,8 +22,8 @@
 #include "structmember.h"
 
 #include <photon/photon.h>
-#include "ObjStatus.h"
-#include "Session.h"
+
+#include "Common.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -44,13 +44,20 @@ pso_init( PyObject * self, PyObject * args )
    int errcode;
    const char * quasarAddress;
    int protectionNeeded;
-
+   
    if ( !PyArg_ParseTuple(args, "si", &quasarAddress, &protectionNeeded) ) {
       return NULL;
    }
-   errcode = psoInit( quasarAddress, protectionNeeded );
    
-   return Py_BuildValue( "i", errcode );
+   errcode = psoInit( quasarAddress, protectionNeeded );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+   
+
+   Py_INCREF(Py_None);
+   return Py_None;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -73,20 +80,36 @@ initpso(void)
 {
    PyObject * m;
 
-//   fprintf( stderr, "here!\n" );
-   
-   if (PyType_Ready(&SessionType) < 0) return;
+   if (PyType_Ready(&BaseDefType) < 0) return;
+   if (PyType_Ready(&FolderType) < 0) return;
+   if (PyType_Ready(&FolderEntryType) < 0) return;
    if (PyType_Ready(&ObjStatusType) < 0) return;
+   if (PyType_Ready(&SessionType) < 0) return;
 
    m = Py_InitModule3( "pso", 
                        pso_methods,
                        "Example module that creates an extension type.");
    if (m == NULL) return;
 
+   /* Our exception */
+   PhotonError = PyErr_NewException("pso.error", NULL, NULL);
+   Py_INCREF(PhotonError);
+   PyModule_AddObject(m, "error", PhotonError);
+
+   /* C structs (and enums? */
+   BaseDefType.tp_new = PyType_GenericNew;
+   Py_INCREF( &BaseDefType );
+   PyModule_AddObject( m, "BaseDef", (PyObject *)&BaseDefType );
+   FolderEntryType.tp_new = PyType_GenericNew;
+   Py_INCREF( &FolderEntryType );
+   PyModule_AddObject( m, "FolderEntry", (PyObject *)&FolderEntryType );
    ObjStatusType.tp_new = PyType_GenericNew;
    Py_INCREF( &ObjStatusType );
    PyModule_AddObject( m, "ObjStatus", (PyObject *)&ObjStatusType );
 
+   /* Photon objects */
+   Py_INCREF( &FolderType );
+   PyModule_AddObject( m, "Folder", (PyObject *)&FolderType );
    Py_INCREF( &SessionType );
    PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
    

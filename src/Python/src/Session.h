@@ -27,7 +27,8 @@
 
 typedef struct {
    PyObject_HEAD
-   long handle;
+   /* size_t -> on 64 bits OSes, this int will be 64 bits */
+   size_t handle;
 } Session;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -35,6 +36,10 @@ typedef struct {
 static void
 Session_dealloc( Session * self )
 {
+   if ( self->handle != 0 ) {
+      psoExitSession( (PSO_HANDLE)self->handle );
+   }
+   
    self->ob_type->tp_free( (PyObject *)self );
 }
 
@@ -51,6 +56,25 @@ Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
    }
 
    return (PyObject *)self;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static int
+Session_init( PyTypeObject * self, PyObject * args, PyObject *kwds )
+{
+   int errcode;
+   PSO_HANDLE h;
+   Session * s = (Session *)self;
+    
+   errcode = psoInitSession( &h );
+   if ( errcode == 0 ) {
+      s->handle = (size_t)h;
+      return 0;
+   }
+   
+   PyErr_SetString( PhotonError, "Photon Error!" );
+   return -1;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -80,7 +104,8 @@ Session_CreateObject( Session * self, PyObject * args )
       return NULL;
    }
    
-   return Py_BuildValue("i", errcode);
+//   return Py_BuildValue("i", errcode);
+   return NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -97,7 +122,7 @@ Session_DestroyObject( Session * self, PyObject * args )
    
    errcode = psoDestroyObject( (PSO_HANDLE)self->handle,
                                objectName,
-                               (psoUint32)strlen(nameLengthInBytes) );
+                               (psoUint32)strlen(objectName) );
    
    return Py_BuildValue("i", errcode);
 }
@@ -105,12 +130,40 @@ Session_DestroyObject( Session * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_ErrorMsg( Session * self, PyObject * args );
+Session_ErrorMsg( Session * self )
+{
+   int errcode;
+   char message[1024];
+   PyObject * str = NULL;
+   
+   errcode = psoErrorMsg( (PSO_HANDLE)self->handle,
+                          message,
+                          1024 );
+   if ( errcode == 0 ) {
+# if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION < 6
+      str = PyString_FromString( message );
+#else
+      str = PyBytes_FromString( message );
+#endif
+      return str;
+   }
+   
+   return Py_BuildValue("i", errcode);
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_ExitSession( Session * self, PyObject * args );
+Session_ExitSession( Session * self )
+{
+   if ( self->handle != 0 ) {
+      psoExitSession( (PSO_HANDLE)self->handle );
+   }
+   self->handle = 0;
+
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -156,30 +209,27 @@ Session_GetStatus( Session * self, PyObject * args )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static int
-Session_init(Session * self, PyObject * args )
+static PyObject *
+Session_LastError( Session * self )
 {
    int errcode;
-   PSO_HANDLE h;
    
-   errcode = psoInitSession( &h );
-   if ( errcode == 0 ) {
-      self->handle = (long)h;
-      return 0
-   }
+   errcode = psoLastError( (PSO_HANDLE)self->handle );
    
-   return -1;
+   return Py_BuildValue("i", errcode);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_LastError( Session * self );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Session_Rollback( Session * self );
+Session_Rollback( Session * self )
+{
+   int errcode;
+   
+   errcode = psoRollback( (PSO_HANDLE)self->handle );
+   
+   return Py_BuildValue("i", errcode);
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -198,8 +248,23 @@ static PyMethodDef Session_methods[] = {
    { "create_object", (PyCFunction)Session_CreateObject, METH_VARARGS,
      "Create a new photon object in shared memory"
    },
+   { "destroy_object", (PyCFunction)Session_DestroyObject, METH_VARARGS,
+     "Destroy an existing photon object in shared memory"
+   },
+   { "error_msg", (PyCFunction)Session_ErrorMsg, METH_NOARGS,
+     "Return the messages associated with the last error"
+   },
+   { "exit", (PyCFunction)Session_ExitSession, METH_NOARGS,
+     "Terminate the current session"
+   },
    { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
      "Get the status of a Photon object"
+   },
+   { "last_error", (PyCFunction)Session_LastError, METH_NOARGS,
+     "Return the error code of the last error"
+   },
+   { "rollback", (PyCFunction)Session_Rollback, METH_NOARGS,
+     "Rollback the current session"
    },
    {NULL}  /* Sentinel */
 };
@@ -243,7 +308,7 @@ static PyTypeObject SessionType = {
    0,                           /* tp_descr_get */
    0,                           /* tp_descr_set */
    0,                           /* tp_dictoffset */
-   Session_init,                /* tp_init */
+   (initproc)Session_init,      /* tp_init */
    0,                           /* tp_alloc */
    Session_new,                 /* tp_new */
 };
