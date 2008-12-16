@@ -23,6 +23,7 @@ typedef struct {
    /* size_t -> on 64 bits OSes, this int will be 64 bits */
    size_t handle;
    size_t sessionHandle;
+   PyObject * name;
    
    /* This is completely private. Should not be put in the members struct */
 
@@ -37,12 +38,16 @@ typedef struct {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
-Folder_dealloc( Folder * self )
+Folder_dealloc( PyObject * self )
 {
-   if ( self->handle != 0 ) {
-      psoFolderClose( (PSO_HANDLE)self->handle );
+   Folder * folder = (Folder *) self;
+
+   if ( folder->handle != 0 ) {
+      psoFolderClose( (PSO_HANDLE)folder->handle );
    }
-   
+
+   Py_XDECREF(folder->name);
+
    self->ob_type->tp_free( (PyObject *)self );
 }
 
@@ -52,12 +57,22 @@ static PyObject *
 Folder_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
    Folder * self;
+   PyObject * session = NULL;
+   const char * folderName = NULL;
+   static char *kwlist[] = {"session", "name", NULL};
+
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "O|s", kwlist, 
+      &session, &folderName) ) {
+      return NULL; 
+   }
 
    self = (Folder *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->handle = 0;
       self->sessionHandle = 0;
       self->iteratorStarted = 0;
+      self->sessionHandle = ((Session *)session)->handle;
+      self->name = NULL;
    }
 
    return (PyObject *)self;
@@ -71,7 +86,7 @@ Folder_init( PyTypeObject * self, PyObject * args, PyObject *kwds )
    int errcode;
    PSO_HANDLE h;
    Folder * folder = (Folder *)self;
-   PyObject * session = NULL;
+   PyObject * session = NULL, * name = NULL, * tmp = NULL;
    const char * folderName = NULL;
    static char *kwlist[] = {"session", "name", NULL};
 
@@ -79,25 +94,32 @@ Folder_init( PyTypeObject * self, PyObject * args, PyObject *kwds )
       &session, &folderName) ) {
       return -1; 
    }
-      
-   if (session == NULL) {
-      PyErr_SetString( PyExc_SyntaxError, 
-         "Syntax: Folder( Session [, folder_name ] )" );
-      return -1;
-   }
-
-   folder->sessionHandle = ((Session *)session)->handle;
 
    if (folderName) {
+
+      name = PyString_FromString( folderName );
+      if ( name == NULL ) return -1;
+
       errcode = psoFolderOpen( (PSO_HANDLE)folder->sessionHandle,
                                folderName,
                                (psoUint32)strlen(folderName),
                                &h );
       if ( errcode == 0 ) {
+         /*
+          * Copying the old value of 'name' before decreasing the ref.
+          * counter. Likely overkill but safer according to Python
+          * documentation.
+          */
+         tmp = folder->name;
+         folder->name = name;
+         Py_XDECREF(tmp);
+         
          folder->handle = (size_t)h;
+
          return 0;
       }
 
+      Py_DECREF(name);
       SetException( errcode );
       return -1;
    }
@@ -110,9 +132,10 @@ Folder_init( PyTypeObject * self, PyObject * args, PyObject *kwds )
 static PyObject *
 Folder_iter( PyObject * self )
 {
-   Folder * fold = (Folder *) self;
-   
-   fold->iteratorStarted = 1;
+   Folder * folder = (Folder *) self;
+
+   Py_INCREF(self); 
+   folder->iteratorStarted = 1;
 
    return self;
 }
@@ -124,20 +147,20 @@ Folder_next( PyObject * self )
 {
    int errcode;
    psoFolderEntry entry;
-   Folder * fold = (Folder *) self;
+   Folder * folder = (Folder *) self;
    FolderEntry * e;
    PyObject * objType = NULL, * entryName = NULL;
    
-   if ( fold->iteratorStarted == 1 ) {
-      fold->iteratorStarted = 0;
-      errcode = psoFolderGetFirst( (PSO_HANDLE)fold->handle, &entry );
+   if ( folder->iteratorStarted == 1 ) {
+      folder->iteratorStarted = 0;
+      errcode = psoFolderGetFirst( (PSO_HANDLE)folder->handle, &entry );
       if ( errcode == PSO_IS_EMPTY ) {
          PyErr_SetString( PyExc_StopIteration, "" );
          return NULL;
       }
    }
    else {
-      errcode = psoFolderGetNext( (PSO_HANDLE)fold->handle, &entry );
+      errcode = psoFolderGetNext( (PSO_HANDLE)folder->handle, &entry );
       if ( errcode == PSO_REACHED_THE_END ) {
          PyErr_SetString( PyExc_StopIteration, "" );
          return NULL;
@@ -152,28 +175,65 @@ Folder_next( PyObject * self )
    if ( objType == NULL ) return NULL;
    
    entryName = PyString_FromStringAndSize( entry.name,
-                                            entry.nameLengthInBytes );
+                                           entry.nameLengthInBytes );
    if ( entryName == NULL ) return NULL;
 
-   e = PyObject_New(FolderEntry, &FolderEntryType);
+   e = (FolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
    if ( e == NULL ) return NULL;
    
    e->status = entry.status;
    e->nameLength = entry.nameLengthInBytes;
    e->name = entryName;
    e->objType = objType;
-   
+
    return (PyObject *)e;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Folder_Close( Session * self )
+Folder_Close( PyObject * self )
 {
    int errcode;
+   Folder * folder = (Folder *) self;
    
-   errcode = psoFolderClose( (PSO_HANDLE)self->handle );
+   errcode = psoFolderClose( (PSO_HANDLE)folder->handle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+   
+   folder->handle = 0;
+   Py_XDECREF(folder->name);
+   
+   Py_INCREF(Py_None);
+   return Py_None;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_CreateObject( PyObject * self, PyObject * args )
+{
+   return NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_DestroyObject( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   Folder * folder = (Folder *) self;
+   
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   errcode = psoDestroyObject( (PSO_HANDLE)folder->handle,
+                               objectName,
+                               (psoUint32)strlen(objectName) );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
@@ -186,76 +246,149 @@ Folder_Close( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Folder_CreateObject( Session * self, PyObject * args )
-{
-   return NULL;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Folder_DestroyObject( Session * self, PyObject * args )
+Folder_GetFirst( PyObject * self, PyObject * args )
 {
    int errcode;
-   const char * objectName;
-   
-   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
-      return NULL;
-   }
-   
-   errcode = psoDestroyObject( (PSO_HANDLE)self->handle,
-                               objectName,
-                               (psoUint32)strlen(objectName) );
-   
-   return Py_BuildValue("i", errcode);
-}
+   psoFolderEntry entry;
+   Folder * folder = (Folder *) self;
+   FolderEntry * e;
+   PyObject * objType = NULL, * entryName = NULL;
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Folder_GetFirst( Session * self, PyObject * args )
-{
-   return NULL;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Folder_GetNext( Session * self, PyObject * args )
-{
-   return NULL;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Folder_Open( Session * self, PyObject * args )
-{
-   return NULL;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Folder_Status( Session * self, PyObject * args )
-{
-   int errcode;
-   ObjStatus * pStatusPy;
-   psoObjStatus status;
-   
-   if ( !PyArg_ParseTuple(args, "O", &pStatusPy) ) {
-      return NULL;
-   }
-
-   errcode = psoFolderStatus( (PSO_HANDLE)self->handle,
-                              &status );
+   errcode = psoFolderGetFirst( (PSO_HANDLE)folder->handle, &entry );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
    }
    
-   pStatusPy->objType       = status.type;
-   pStatusPy->status        = status.status;
+   objType = GetObjectType( entry.type );
+   if ( objType == NULL ) return NULL;
+   
+   entryName = PyString_FromStringAndSize( entry.name,
+                                           entry.nameLengthInBytes );
+   if ( entryName == NULL ) return NULL;
+
+   e = (FolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
+   if ( e == NULL ) return NULL;
+   
+   e->status = entry.status;
+   e->nameLength = entry.nameLengthInBytes;
+   e->name = entryName;
+   e->objType = objType;
+
+   return (PyObject *)e;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_GetNext( PyObject * self, PyObject * args )
+{
+   int errcode;
+   psoFolderEntry entry;
+   Folder * folder = (Folder *) self;
+   FolderEntry * e;
+   PyObject * objType = NULL, * entryName = NULL;
+
+   errcode = psoFolderGetNext( (PSO_HANDLE)folder->handle, &entry );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+   
+   objType = GetObjectType( entry.type );
+   if ( objType == NULL ) return NULL;
+   
+   entryName = PyString_FromStringAndSize( entry.name,
+                                           entry.nameLengthInBytes );
+   if ( entryName == NULL ) return NULL;
+
+   e = (FolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
+   if ( e == NULL ) return NULL;
+   
+   e->status = entry.status;
+   e->nameLength = entry.nameLengthInBytes;
+   e->name = entryName;
+   e->objType = objType;
+
+   return (PyObject *)e;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_Open( PyObject * self, PyObject * args )
+{
+   int errcode;
+   Folder * folder = (Folder *) self;
+   const char * folderName;
+   PSO_HANDLE h;
+   PyObject * name = NULL, * tmp = NULL;
+   
+   if ( !PyArg_ParseTuple(args, "s", &folderName) ) {
+      return NULL;
+   }
+
+   if ( folder->handle ) {
+      SetException( PSO_ALREADY_OPEN );
+      return NULL;
+   }
+
+   name = PyString_FromString( folderName );
+   if ( name == NULL ) return NULL;
+
+   errcode = psoFolderOpen( (PSO_HANDLE)folder->sessionHandle,
+                            folderName,
+                            (psoUint32)strlen(folderName),
+                            &h );
+   if ( errcode == 0 ) {
+      /*
+       * Copying the old value of 'name' before decreasing the ref.
+       * counter. Likely overkill but safer according to Python
+       * documentation.
+       */
+      tmp = folder->name;
+      folder->name = name;
+      Py_XDECREF(tmp);
+         
+      folder->handle = (size_t)h;
+
+      Py_INCREF(Py_None);
+      return Py_None;
+   }
+
+   Py_DECREF(name);
+   SetException( errcode );
+   return NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_Status( PyObject * self )
+{
+   int errcode;
+   ObjStatus * pStatusPy;
+   psoObjStatus status;
+   Folder * folder = (Folder *) self;
+   PyObject * objType = NULL, * objStatus = NULL;
+   
+   errcode = psoFolderStatus( (PSO_HANDLE)folder->handle, &status );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+   
+   objType = GetObjectType( status.type );
+   if ( objType == NULL ) return NULL;
+
+   objStatus = GetObjectStatus( status.status );
+   if ( objStatus == NULL ) return NULL;
+
+   pStatusPy = (ObjStatus *)PyObject_New(ObjStatus, &ObjStatusType);
+   if ( pStatusPy == NULL ) return NULL;
+   
+   pStatusPy->objType       = objType;
+   pStatusPy->status        = objStatus;
    pStatusPy->numBlocks     = status.numBlocks;
    pStatusPy->numBlockGroup = status.numBlockGroup;
    pStatusPy->numDataItem   = status.numDataItem;
@@ -263,8 +396,7 @@ Folder_Status( Session * self, PyObject * args )
    pStatusPy->maxDataLength = status.maxDataLength;
    pStatusPy->maxKeyLength  = status.maxKeyLength;
 
-   Py_INCREF(Py_None);
-   return Py_None;
+   return (PyObject *)pStatusPy;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -272,6 +404,8 @@ Folder_Status( Session * self, PyObject * args )
 static PyMemberDef Folder_members[] = {
    {"handle", T_INT, offsetof(Folder, handle), RO,
     "Folder handle"},
+   { "name", T_OBJECT_EX, offsetof(Folder, name), RO,
+     "The name of the folder"},
    {NULL}  /* Sentinel */
 };
 
@@ -296,7 +430,7 @@ static PyMethodDef Folder_methods[] = {
    { "open", (PyCFunction)Folder_Open, METH_VARARGS,
      "Open (get access to) a Photon folder"
    },
-   { "status", (PyCFunction)Folder_Status, METH_VARARGS,
+   { "status", (PyCFunction)Folder_Status, METH_NOARGS,
      "Return the error code of the last error"
    },
    {NULL}  /* Sentinel */

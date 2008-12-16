@@ -230,6 +230,9 @@ void Folder::Open( const std::string & folderName )
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Folder::Open", PSO_NULL_HANDLE );
    }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Folder::Open", PSO_ALREADY_OPEN );
+   }
 
    rc = psoFolderOpen( m_sessionHandle,
                        folderName.c_str(),
@@ -249,6 +252,9 @@ void Folder::Open( const char * folderName,
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Folder::Open", PSO_NULL_HANDLE );
+   }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Folder::Open", PSO_ALREADY_OPEN );
    }
 
    rc = psoFolderOpen( m_sessionHandle,

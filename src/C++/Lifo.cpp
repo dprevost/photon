@@ -180,6 +180,9 @@ void Lifo::Open( const std::string & queueName )
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Lifo::Open", PSO_NULL_HANDLE );
    }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Lifo::Open", PSO_ALREADY_OPEN );
+   }
 
    rc = psoLifoOpen( m_sessionHandle,
                      queueName.c_str(),
@@ -199,6 +202,9 @@ void Lifo::Open( const char * queueName,
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Lifo::Open", PSO_NULL_HANDLE );
+   }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Lifo::Open", PSO_ALREADY_OPEN );
    }
 
    rc = psoLifoOpen( m_sessionHandle,

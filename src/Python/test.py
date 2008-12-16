@@ -24,12 +24,24 @@ print dir(f)
 for e in f:
     print 'e.name,', e
 
-status = pso.ObjStatus()
-#print status.obj_type
-print dir(status)
+f2 = pso.Folder(s)
+try:
+    print f2.name
+except:
+    pass
 
-rc = s.get_status( 'test1', status )
-print 'rc = ', rc
+f2.__init__(s,'/test1')
+print f2.name
+
+print 'after loop'
+print dir(f)
+
+#status = pso.ObjStatus()
+#print status.obj_type
+
+status = s.get_status( 'test1' )
+print 'status = ', status
 print status.obj_type, ' ', status.free_bytes
+print 'status = ', dir(status)
 
 pso.exit()

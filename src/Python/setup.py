@@ -8,13 +8,9 @@ setup(name='photon',
       author='D. Prevost',
       author_email='dprevost@photonsoftware.org',
       url='http://photonsoftware.org/',
-#      packages=['pso'],
       ext_modules=[Extension('pso', 
                              ['src/pso.c'], 
                              libraries=['photon'])
-#      ext_modules=[Extension('simpletype', 
-#                             ['photon.c'], 
-#                             libraries=['photon'])
 
       ]
      )

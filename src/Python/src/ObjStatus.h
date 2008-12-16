@@ -29,10 +29,10 @@ typedef struct {
    PyObject_HEAD
 
    /** The object type. */
-   psoObjectType objType;
+   PyObject * objType;
 
    /* Status of the object. */
-   int status;
+   PyObject * status;
 
    /** The number of blocks allocated to this object. */
    size_t numBlocks;
@@ -56,10 +56,23 @@ typedef struct {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static void
+ObjStatus_dealloc( PyObject * self )
+{
+   ObjStatus * status = (ObjStatus *) self;
+
+   Py_XDECREF(status->objType);
+   Py_XDECREF(status->status);
+
+   self->ob_type->tp_free( (PyObject *)self );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef ObjStatus_members[] = {
-   { "obj_type", T_INT, offsetof(ObjStatus, objType), RO,
+   { "obj_type", T_OBJECT_EX, offsetof(ObjStatus, objType), RO,
      "The type of the object"},
-   { "status", T_INT, offsetof(ObjStatus, status), RO,
+   { "status", T_OBJECT_EX, offsetof(ObjStatus, status), RO,
      "Status of the object"},
    { "num_blocks", T_INT, offsetof(ObjStatus, numBlocks), RO,
      "The number of blocks allocated to this object"},
@@ -84,7 +97,7 @@ static PyTypeObject ObjStatusType = {
    "pso.ObjStatus",            /*tp_name*/
    sizeof(ObjStatus),          /*tp_basicsize*/
    0,                          /*tp_itemsize*/
-   0,                          /*tp_dealloc*/
+   ObjStatus_dealloc,          /*tp_dealloc*/
    0,                          /*tp_print*/
    0,                          /*tp_getattr*/
    0,                          /*tp_setattr*/

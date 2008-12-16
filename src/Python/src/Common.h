@@ -90,6 +90,47 @@ PyObject * GetObjectType( psoObjectType objType )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+PyObject * GetObjectStatus( int status )
+{
+   /* From Nucleus/TxStatus.h:
+      #define PSON_TXS_OK                   0x00
+      #define PSON_TXS_DESTROYED            0x01
+      #define PSON_TXS_ADDED                0x02
+      #define PSON_TXS_EDIT                 0x04
+      #define PSON_TXS_REPLACED             0x08
+      #define PSON_TXS_DESTROYED_COMMITTED  0x10
+      #define PSON_TXS_EDIT_COMMITTED       0x20
+      
+      So what follows is a hack until I defined an enum in psoCommon.h
+   */
+   
+   if ( status == 0 ) {
+      return PyString_FromString( "OK" );
+   }
+   if ( status & 0x01 ) {
+      return PyString_FromString( "Destroyed" );
+   }
+   if ( status & 0x02 ) {
+      return PyString_FromString( "Added" );
+   }
+   if ( status & 0x04 ) {
+      return PyString_FromString( "Edit" );
+   }
+   if ( status & 0x08 ) {
+      return PyString_FromString( "Replaced" );
+   }
+   if ( status & 0x10 ) {
+      return PyString_FromString( "Destroyed and Committed" );
+   }
+   if ( status & 0x20 ) {
+      return PyString_FromString( "Edited and Committed" );
+   }
+
+   return PyString_FromString( "Unknown Status" );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /* The C struct first */
 #include "ObjStatus.h"
 #include "BasicDef.h"

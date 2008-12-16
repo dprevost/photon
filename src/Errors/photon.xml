@@ -767,6 +767,28 @@
     </error>
 
     <error>
+      <errnumber> 73 </errnumber>
+      <errname> ALREADY_OPEN </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The object is open. You must close it before reopening it.
+          </errormsg>
+          <errordoc>
+            The object is open. You must close it before reopening it.
+          </errordoc>
+          <errordoc>
+            This error is for object-oriented languages (C++, Python, etc.).
+            In these environments, you can reuse the same API object to access
+            multiple shared-memory objects. But, evidently, you must 
+            terminate access to the current shared-memory object before
+            accessing another one.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
       <errnumber> 101 </errnumber>
       <errname> INVALID_NUM_FIELDS </errname>
       <message_group>

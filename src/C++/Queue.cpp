@@ -180,6 +180,9 @@ void Queue::Open( const std::string & queueName )
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Queue::Open", PSO_NULL_HANDLE );
    }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Queue::Open", PSO_ALREADY_OPEN );
+   }
 
    rc = psoQueueOpen( m_sessionHandle,
                       queueName.c_str(),
@@ -199,6 +202,9 @@ void Queue::Open( const char * queueName,
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Queue::Open", PSO_NULL_HANDLE );
+   }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Queue::Open", PSO_ALREADY_OPEN );
    }
 
    rc = psoQueueOpen( m_sessionHandle,

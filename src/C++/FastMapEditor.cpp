@@ -107,6 +107,9 @@ void FastMapEditor::Open( const std::string & hashMapName )
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "FastMapEditor::Open", PSO_NULL_HANDLE );
    }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "FastMapEditor::Open", PSO_ALREADY_OPEN );
+   }
 
    rc = psoFastMapEdit( m_sessionHandle,
                         hashMapName.c_str(),
@@ -126,6 +129,9 @@ void FastMapEditor::Open( const char * hashMapName,
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "FastMapEditor::Open", PSO_NULL_HANDLE );
+   }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "FastMapEditor::Open", PSO_ALREADY_OPEN );
    }
 
    rc = psoFastMapEdit( m_sessionHandle,

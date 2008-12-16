@@ -257,6 +257,9 @@ void HashMap::Open( const std::string & hashMapName )
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "HashMap::Open", PSO_NULL_HANDLE );
    }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "HashMap::Open", PSO_ALREADY_OPEN );
+   }
 
    rc = psoHashMapOpen( m_sessionHandle,
                         hashMapName.c_str(),
@@ -276,6 +279,9 @@ void HashMap::Open( const char * hashMapName,
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "HashMap::Open", PSO_NULL_HANDLE );
+   }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "HashMap::Open", PSO_ALREADY_OPEN );
    }
 
    rc = psoHashMapOpen( m_sessionHandle,

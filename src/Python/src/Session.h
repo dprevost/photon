@@ -184,8 +184,9 @@ Session_GetStatus( Session * self, PyObject * args )
    const char * objectName;
    ObjStatus * pStatusPy;
    psoObjStatus status;
+   PyObject * objType = NULL, * objStatus = NULL;
    
-   if ( !PyArg_ParseTuple(args, "sO", &objectName, &pStatusPy) ) {
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
       return NULL;
    }
 
@@ -193,18 +194,30 @@ Session_GetStatus( Session * self, PyObject * args )
                            objectName,
                            (psoUint32)strlen(objectName),
                            &status );
-   if ( errcode == 0 ) {
-      pStatusPy->objType       = status.type;
-      pStatusPy->status        = status.status;
-      pStatusPy->numBlocks     = status.numBlocks;
-      pStatusPy->numBlockGroup = status.numBlockGroup;
-      pStatusPy->numDataItem   = status.numDataItem;
-      pStatusPy->freeBytes     = status.freeBytes;
-      pStatusPy->maxDataLength = status.maxDataLength;
-      pStatusPy->maxKeyLength  = status.maxKeyLength;
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
    }
+   
+   objType = GetObjectType( status.type );
+   if ( objType == NULL ) return NULL;
 
-   return Py_BuildValue("i", errcode);
+   objStatus = GetObjectStatus( status.status );
+   if ( objStatus == NULL ) return NULL;
+
+   pStatusPy = (ObjStatus *)PyObject_New(ObjStatus, &ObjStatusType);
+   if ( pStatusPy == NULL ) return NULL;
+   
+   pStatusPy->objType       = objType;
+   pStatusPy->status        = objStatus;
+   pStatusPy->numBlocks     = status.numBlocks;
+   pStatusPy->numBlockGroup = status.numBlockGroup;
+   pStatusPy->numDataItem   = status.numDataItem;
+   pStatusPy->freeBytes     = status.freeBytes;
+   pStatusPy->maxDataLength = status.maxDataLength;
+   pStatusPy->maxKeyLength  = status.maxKeyLength;
+
+   return (PyObject *)pStatusPy;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

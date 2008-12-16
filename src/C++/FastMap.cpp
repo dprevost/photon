@@ -211,6 +211,9 @@ void FastMap::Open( const std::string & hashMapName )
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "FastMap::Open", PSO_NULL_HANDLE );
    }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "FastMap::Open", PSO_ALREADY_OPEN );
+   }
 
    rc = psoFastMapOpen( m_sessionHandle,
                         hashMapName.c_str(),
@@ -231,6 +234,9 @@ void FastMap::Open( const char * hashMapName,
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "FastMap::Open", PSO_NULL_HANDLE );
+   }
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "FastMap::Open", PSO_ALREADY_OPEN );
    }
 
    rc = psoFastMapOpen( m_sessionHandle,

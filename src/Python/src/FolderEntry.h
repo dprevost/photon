@@ -36,17 +36,50 @@ typedef struct {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyObject *
-FolderEntry_str( FolderEntry * obj )
+static void
+FolderEntry_dealloc( PyObject * self )
 {
-   if ( obj->name && obj->objType ) {
+   FolderEntry * fe = (FolderEntry *)self;
+   
+   Py_XDECREF( fe->name );
+   Py_XDECREF( fe->objType );
+   self->ob_type->tp_free( self );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+FolderEntry_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
+{
+   FolderEntry * self;
+
+   self = (FolderEntry *)type->tp_alloc( type, 0 );
+   if (self != NULL) {
+      self->name       = NULL;
+      self->objType    = NULL;
+      self->status     = 0;
+      self->nameLength = 0;
+   }
+
+   return (PyObject *)self;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+FolderEntry_str( PyObject * self )
+{
+   FolderEntry * fe = (FolderEntry *)self;
+
+   if ( fe->name && fe->objType ) {
       return PyString_FromFormat( 
          "FolderEntry{name:\%s, obj_type:\%s, status:\%d, nameLength:\%d}",
-         PyString_AsString(obj->name),
-         PyString_AsString(obj->objType),
-         obj->status,
-         obj->nameLength );
+         PyString_AsString(fe->name),
+         PyString_AsString(fe->objType),
+         fe->status,
+         fe->nameLength );
    }
+   
    return PyString_FromString("FolderEntry is not set");
 }
 
@@ -54,13 +87,13 @@ FolderEntry_str( FolderEntry * obj )
 
 static PyMemberDef FolderEntry_members[] = {
    { "name", T_OBJECT_EX, offsetof(FolderEntry, name), RO,
-     "The type of the object"},
+     "The name of the object"},
    { "obj_type", T_OBJECT_EX, offsetof(FolderEntry, objType), RO,
-     "Status of the object"},
+     "The type of the object"},
    { "status", T_INT, offsetof(FolderEntry, status), RO,
      "Status of the object"},
    { "name_length", T_INT, offsetof(FolderEntry, nameLength), RO,
-     "Status of the object"},
+     "The length of the name of the object"},
    {NULL}  /* Sentinel */
 };
 
@@ -72,7 +105,7 @@ static PyTypeObject FolderEntryType = {
    "pso.FolderEntry",          /*tp_name*/
    sizeof(FolderEntry),        /*tp_basicsize*/
    0,                          /*tp_itemsize*/
-   0,                          /*tp_dealloc*/
+   FolderEntry_dealloc,        /*tp_dealloc*/
    0,                          /*tp_print*/
    0,                          /*tp_getattr*/
    0,                          /*tp_setattr*/
@@ -83,7 +116,7 @@ static PyTypeObject FolderEntryType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   FolderEntry_str,                          /*tp_str*/
+   FolderEntry_str,            /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
@@ -105,7 +138,7 @@ static PyTypeObject FolderEntryType = {
    0,                          /* tp_dictoffset */
    0,                          /* tp_init */
    0,                          /* tp_alloc */
-   0,                          /* tp_new */
+   FolderEntry_new,            /* tp_new */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
