@@ -133,6 +133,7 @@ PyObject * GetObjectStatus( int status )
 
 /* The C struct first */
 #include "ObjStatus.h"
+#include "KeyDefinition.h"
 #include "BasicDef.h"
 #include "FolderEntry.h"
 

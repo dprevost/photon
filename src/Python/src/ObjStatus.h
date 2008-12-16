@@ -69,6 +69,31 @@ ObjStatus_dealloc( PyObject * self )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+ObjStatus_str( PyObject * self )
+{
+   ObjStatus * obj = (ObjStatus *)self;
+
+   if ( obj->objType && obj->status ) {
+      return PyString_FromFormat( 
+         "ObjStatus{obj_type:\%s, status:\%s, num_blocks:\%d, "
+         "num_groups:\%d, num_data_items:\%d, free_bytes:\%d, "
+         "max_data_length:\%d, max_key_length:\%d}",
+         PyString_AsString(obj->objType),
+         PyString_AsString(obj->status),
+         obj->numBlocks,
+         obj->numBlockGroup,
+         obj->numDataItem,
+         obj->freeBytes,
+         obj->maxDataLength,
+         obj->maxKeyLength );
+   }
+   
+   return PyString_FromString("ObjStatus is not set");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef ObjStatus_members[] = {
    { "obj_type", T_OBJECT_EX, offsetof(ObjStatus, objType), RO,
      "The type of the object"},
@@ -108,7 +133,7 @@ static PyTypeObject ObjStatusType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   ObjStatus_str,              /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
