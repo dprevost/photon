@@ -25,7 +25,67 @@ typedef struct {
    int        length;
    int        minLength;
    int        maxLength;
+
+   /* This is completely private. Should not be put in the members struct */
+   int intType; /* The key type, as an integer. */
 } KeyDefinition;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static void
+KeyDefinition_dealloc( PyObject * self )
+{
+   KeyDefinition * def = (KeyDefinition *)self;
+   
+   Py_XDECREF( def->keyType );
+   self->ob_type->tp_free( self );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+KeyDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
+{
+   KeyDefinition * self;
+
+   self = (KeyDefinition *)type->tp_alloc( type, 0 );
+   if (self != NULL) {
+      self->keyType = NULL;
+      self->length = 0;
+      self->minLength = 0;
+      self->maxLength = 0;
+      self->intType = 0;
+   }
+
+   return (PyObject *)self;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static int
+KeyDefinition_init( PyObject * self, PyObject * args, PyObject *kwds )
+{
+   KeyDefinition * def = (KeyDefinition *)self;
+   PyObject * keyType = NULL;
+   static char *kwlist[] = {"key_type", "length", "min_length", "max_length", NULL};
+   int type, length, minLength, maxLength;
+   
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "iiii", kwlist, 
+      &type, &length, &minLength, &maxLength) ) {
+      return -1; 
+   }
+
+   keyType = GetKeyType( type );
+   if ( keyType == NULL ) return -1;
+
+   def->keyType = keyType;
+   def->intType = type;
+   def->length = length;
+   def->minLength = minLength;
+   def->maxLength = maxLength;
+   
+   return 0;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -49,7 +109,7 @@ static PyTypeObject KeyDefinitionType = {
    "pso.KeyDefinition",        /*tp_name*/
    sizeof(KeyDefinition),      /*tp_basicsize*/
    0,                          /*tp_itemsize*/
-   0,                          /*tp_dealloc*/
+   KeyDefinition_dealloc,      /*tp_dealloc*/
    0,                          /*tp_print*/
    0,                          /*tp_getattr*/
    0,                          /*tp_setattr*/
@@ -80,9 +140,9 @@ static PyTypeObject KeyDefinitionType = {
    0,                          /* tp_descr_get */
    0,                          /* tp_descr_set */
    0,                          /* tp_dictoffset */
-   0,                          /* tp_init */
+   KeyDefinition_init,         /* tp_init */
    0,                          /* tp_alloc */
-   0,                          /* tp_new */
+   KeyDefinition_new,          /* tp_new */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

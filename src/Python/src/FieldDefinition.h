@@ -21,39 +21,46 @@
 typedef struct {
    PyObject_HEAD
 
-   PyObject * objType;
-   int        numFields;
-   PyObject * keyDef;
-
-   /* This is completely private. Should not be put in the members struct */
-   int intType; /* The type, as an integer. */
+   PyObject * name;
+   PyObject * fieldType;
+   int        length;
+   int        minLength;
+   int        maxLength;
+   int        precision;
+   int        scale;
    
-} BaseDef;
+   /* This is completely private. Should not be put in the members struct */
+   int intType; /* The key type, as an integer. */
+} FieldDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
-BaseDef_dealloc( PyObject * self )
+FieldDefinition_dealloc( PyObject * self )
 {
-   BaseDef * def = (BaseDef *)self;
+   FieldDefinition * def = (FieldDefinition *)self;
    
-   Py_XDECREF( def->objType );
-   Py_XDECREF( def->keyDef );
+   Py_XDECREF( def->name );
+   Py_XDECREF( def->fieldType );
    self->ob_type->tp_free( self );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-BaseDef_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
+FieldDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   BaseDef * self;
+   FieldDefinition * self;
 
-   self = (BaseDef *)type->tp_alloc( type, 0 );
+   self = (FieldDefinition *)type->tp_alloc( type, 0 );
    if (self != NULL) {
-      self->objType = NULL;
-      self->numFields = 0;
-      self->keyDef = NULL;
+      self->name = NULL;
+      self->fieldType = NULL;
+      self->length = 0;
+      self->minLength = 0;
+      self->maxLength = 0;
+      self->precision = 0;
+      self->scale = 0;
       self->intType = 0;
    }
 
@@ -63,56 +70,66 @@ BaseDef_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static int
-BaseDef_init( PyObject * self, PyObject * args, PyObject *kwds )
+FieldDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 {
-   BaseDef * def = (BaseDef *)self;
-   PyObject * key = NULL, * objType = NULL, * tmp = NULL;
-   static char *kwlist[] = {"obj_type", "num_fields", "key_def", NULL};
-   int type, number;
+   FieldDefinition * def = (FieldDefinition *)self;
+   PyObject * fieldType = NULL, * name = NULL, * tmp = NULL;
+   static char *kwlist[] = {"name", "field_type", "length", "min_length", "max_length", "precision", "scale", NULL};
+   int type, length, minLength, maxLength, precision, scale;
    
-   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "ii|O", kwlist, 
-      &type, &number, &key) ) {
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "Siiiiii", kwlist, 
+      &name, &type, &length, &minLength, &maxLength, &precision, &scale) ) {
       return -1; 
    }
-
-   objType = GetObjectType( type );
-   if ( objType == NULL ) return -1;
-
-   def->objType = objType;
-   def->intType = type;
-   def->numFields = number;
    
-   if ( key ) {
-      tmp = def->keyDef;
-      Py_INCREF(key);
-      def->keyDef = key;
-      Py_XDECREF(tmp);
-   }
+   fieldType = GetFieldType( type );
+   if ( fieldType == NULL ) return -1;
 
+   tmp = def->name;
+   Py_INCREF(name);
+   def->name = name;
+   Py_XDECREF(tmp);
+
+   def->fieldType = fieldType;
+   def->intType = type;
+   def->length = length;
+   def->minLength = minLength;
+   def->maxLength = maxLength;
+   def->precision = precision;
+   def->scale = scale;
+   
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyMemberDef BaseDef_members[] = {
-   { "obj_type", T_OBJECT_EX, offsetof(BaseDef, objType), RO,
-     "Status of the object"},
-   { "num_fields", T_INT, offsetof(BaseDef, numFields), RO,
-     "Status of the object"},
-   { "key_definition", T_OBJECT_EX, offsetof(BaseDef, keyDef), RO,
-     "The type of the object"},
+static PyMemberDef FieldDefinition_members[] = {
+   { "name", T_OBJECT_EX, offsetof(FieldDefinition, name), RO,
+     "Name of the field" },
+   { "field_type", T_OBJECT_EX, offsetof(FieldDefinition, fieldType), RO,
+     "Type of field" },
+   { "length", T_INT, offsetof(FieldDefinition, length), RO,
+     "Length of the key (if type is fixed length)" },
+   { "min_length", T_INT, offsetof(FieldDefinition, minLength), RO,
+     "Minimum length of the key (if type is variable length)" },
+   { "max_length", T_INT, offsetof(FieldDefinition, maxLength), RO,
+     "Maximum length of the key (if type is variable length)" },
+   { "precision", T_INT, offsetof(FieldDefinition, precision), RO,
+     "Precision (used by decimal type)" },
+   { "scale", T_INT, offsetof(FieldDefinition, scale), RO,
+     "Scale (used by decimal type)" },
    {NULL}  /* Sentinel */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyTypeObject BaseDefType = {
+static PyTypeObject FieldDefinitionType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
-   "pso.BaseDef",              /*tp_name*/
-   sizeof(BaseDef),            /*tp_basicsize*/
+   "pso.FieldDefinition",      /*tp_name*/
+   sizeof(FieldDefinition),    /*tp_basicsize*/
    0,                          /*tp_itemsize*/
-   BaseDef_dealloc,            /*tp_dealloc*/
+   FieldDefinition_dealloc,    /*tp_dealloc*/
    0,                          /*tp_print*/
    0,                          /*tp_getattr*/
    0,                          /*tp_setattr*/
@@ -128,7 +145,7 @@ static PyTypeObject BaseDefType = {
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-   "Base definition of a Photon object", /* tp_doc */
+   "Key Definition of a photon object (if any)", /* tp_doc */
    0,		                      /* tp_traverse */
    0,		                      /* tp_clear */
    0,		                      /* tp_richcompare */
@@ -136,16 +153,16 @@ static PyTypeObject BaseDefType = {
    0,		                      /* tp_iter */
    0,		                      /* tp_iternext */
    0,                          /* tp_methods */
-   BaseDef_members,            /* tp_members */
+   FieldDefinition_members,    /* tp_members */
    0,                          /* tp_getset */
    0,                          /* tp_base */
    0,                          /* tp_dict */
    0,                          /* tp_descr_get */
    0,                          /* tp_descr_set */
    0,                          /* tp_dictoffset */
-   BaseDef_init,               /* tp_init */
+   FieldDefinition_init,       /* tp_init */
    0,                          /* tp_alloc */
-   BaseDef_new,                /* tp_new */
+   FieldDefinition_new,        /* tp_new */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

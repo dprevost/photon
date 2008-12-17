@@ -30,7 +30,7 @@ typedef struct {
 
    PyObject * name;
    PyObject * objType;
-   int        status;
+   PyObject * status;
    int        nameLength;
 } FolderEntry;
 
@@ -39,10 +39,11 @@ typedef struct {
 static void
 FolderEntry_dealloc( PyObject * self )
 {
-   FolderEntry * fe = (FolderEntry *)self;
+   FolderEntry * entry = (FolderEntry *)self;
    
-   Py_XDECREF( fe->name );
-   Py_XDECREF( fe->objType );
+   Py_XDECREF( entry->name );
+   Py_XDECREF( entry->objType );
+   Py_XDECREF( entry->status );
    self->ob_type->tp_free( self );
 }
 
@@ -57,7 +58,7 @@ FolderEntry_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
    if (self != NULL) {
       self->name       = NULL;
       self->objType    = NULL;
-      self->status     = 0;
+      self->status     = NULL;
       self->nameLength = 0;
    }
 
@@ -69,15 +70,15 @@ FolderEntry_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 static PyObject *
 FolderEntry_str( PyObject * self )
 {
-   FolderEntry * fe = (FolderEntry *)self;
+   FolderEntry * entry = (FolderEntry *)self;
 
-   if ( fe->name && fe->objType ) {
+   if ( entry->name && entry->objType && entry->status ) {
       return PyString_FromFormat( 
-         "FolderEntry{name:\%s, obj_type:\%s, status:\%d, nameLength:\%d}",
-         PyString_AsString(fe->name),
-         PyString_AsString(fe->objType),
-         fe->status,
-         fe->nameLength );
+         "FolderEntry{name:\%s, obj_type:\%s, status:\%s, name_length:\%d}",
+         PyString_AsString(entry->name),
+         PyString_AsString(entry->objType),
+         PyString_AsString(entry->status),
+         entry->nameLength );
    }
    
    return PyString_FromString("FolderEntry is not set");
@@ -90,7 +91,7 @@ static PyMemberDef FolderEntry_members[] = {
      "The name of the object"},
    { "obj_type", T_OBJECT_EX, offsetof(FolderEntry, objType), RO,
      "The type of the object"},
-   { "status", T_INT, offsetof(FolderEntry, status), RO,
+   { "status", T_OBJECT_EX, offsetof(FolderEntry, status), RO,
      "Status of the object"},
    { "name_length", T_INT, offsetof(FolderEntry, nameLength), RO,
      "The length of the name of the object"},

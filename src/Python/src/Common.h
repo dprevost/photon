@@ -53,23 +53,55 @@ static void SetException( int errcode )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/*
- * This array allows us to convert a psoObjectType into a 
- * human-readable string.
- */
-const char * g_ObjectType[PSO_LAST_OBJECT_TYPE-1] = {
-   "Folder",
-   "Hash Map",
-   "LIFO Queue",
-   "Fast Hash Map",
-   "FIFO Queue" 
-};
+PyObject * GetFieldType( enum psoFieldType type )
+{
+   switch (type) {
+      
+   case PSO_INTEGER:
+      return PyString_FromString( "Integer" );
+   case PSO_BINARY:
+      return PyString_FromString( "Binary" );
+   case PSO_STRING:
+      return PyString_FromString( "String" );
+   case PSO_DECIMAL:
+      return PyString_FromString( "Decimal" );
+   case PSO_BOOLEAN:
+      return PyString_FromString( "Boolean" );
+   case PSO_VAR_BINARY:
+      return PyString_FromString( "Variable Binary" );
+   case PSO_VAR_STRING:
+      return PyString_FromString( "Variable String" );
+   }
+
+   return PyString_FromString( "Unknown Type" );
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-PyObject * GetObjectType( psoObjectType objType )
+PyObject * GetKeyType( enum psoKeyType type )
 {
-   switch (objType ) {
+   switch (type) {
+      
+   case PSO_KEY_INTEGER:
+      return PyString_FromString( "Integer" );
+   case PSO_KEY_BINARY:
+      return PyString_FromString( "Binary" );
+   case PSO_KEY_STRING:
+      return PyString_FromString( "String" );
+   case PSO_KEY_VAR_BINARY:
+      return PyString_FromString( "Variable Binary" );
+   case PSO_KEY_VAR_STRING:
+      return PyString_FromString( "Variable String" );
+   }
+
+   return PyString_FromString( "Unknown Type" );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+PyObject * GetObjectType( enum psoObjectType objType )
+{
+   switch (objType) {
       
    case PSO_FOLDER:
       return PyString_FromString( "Folder" );
@@ -135,6 +167,7 @@ PyObject * GetObjectStatus( int status )
 #include "ObjStatus.h"
 #include "KeyDefinition.h"
 #include "BasicDef.h"
+#include "FieldDefinition.h"
 #include "FolderEntry.h"
 
 #include "Session.h"

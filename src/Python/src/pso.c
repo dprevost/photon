@@ -81,6 +81,7 @@ initpso(void)
    PyObject * m;
 
    if (PyType_Ready(&BaseDefType) < 0) return;
+   if (PyType_Ready(&FieldDefinitionType) < 0) return;
    if (PyType_Ready(&FolderType) < 0) return;
    if (PyType_Ready(&FolderEntryType) < 0) return;
    if (PyType_Ready(&KeyDefinitionType) < 0) return;
@@ -97,14 +98,14 @@ initpso(void)
    Py_INCREF(PhotonError);
    PyModule_AddObject(m, "error", PhotonError);
 
-   /* C structs (and enums? */
-   BaseDefType.tp_new = PyType_GenericNew;
+   /* C structs (and enums?) */
    Py_INCREF( &BaseDefType );
    PyModule_AddObject( m, "BaseDef", (PyObject *)&BaseDefType );
-   FolderEntryType.tp_new = PyType_GenericNew;
+   Py_INCREF( &FieldDefinitionType );
+   PyModule_AddObject( m, "FieldDefinition", (PyObject *)&FieldDefinitionType );
+//   FolderEntryType.tp_new = PyType_GenericNew; needed???????????????????
    Py_INCREF( &FolderEntryType );
    PyModule_AddObject( m, "FolderEntry", (PyObject *)&FolderEntryType );
-   KeyDefinitionType.tp_new = PyType_GenericNew;
    Py_INCREF( &KeyDefinitionType );
    PyModule_AddObject( m, "KeyDefinition", (PyObject *)&KeyDefinitionType );
    ObjStatusType.tp_new = PyType_GenericNew;

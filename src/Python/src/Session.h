@@ -34,13 +34,15 @@ typedef struct {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
-Session_dealloc( Session * self )
+Session_dealloc( PyObject * self )
 {
-   if ( self->handle != 0 ) {
-      psoExitSession( (PSO_HANDLE)self->handle );
+   Session * s = (Session *)self;
+
+   if ( s->handle != 0 ) {
+      psoExitSession( (PSO_HANDLE)s->handle );
    }
    
-   self->ob_type->tp_free( (PyObject *)self );
+   self->ob_type->tp_free( self );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -61,7 +63,7 @@ Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static int
-Session_init( PyTypeObject * self, PyObject * args, PyObject *kwds )
+Session_init( PyObject * self, PyObject * args, PyObject *kwds )
 {
    int errcode;
    PSO_HANDLE h;
@@ -96,16 +98,92 @@ Session_CreateObject( Session * self, PyObject * args )
 {
    int errcode;
    const char * objectName;
-   PyObject * def, * l;
+   PyObject * list = NULL;
    psoBasicObjectDef definition;
    psoFieldDefinition  * fields = NULL;
+   BaseDef * baseDef;
+   KeyDefinition * key;
+   FieldDefinition * item = NULL;
+   Py_ssize_t i;
    
-   if ( !PyArg_ParseTuple(args, "soo", &objectName, &def, &l) ) {
+   if ( !PyArg_ParseTuple(args, "sO|O", &objectName, &baseDef, &list) ) {
       return NULL;
    }
+
+   if ( list == NULL ) {
+      if ( baseDef->numFields != 0 ) {
+         SetException( PSO_INVALID_NUM_FIELDS );
+         return NULL;
+      }
+   }
+   else {
+      if ( (Py_ssize_t)baseDef->numFields != PyList_Size(list) ) {
+         SetException( PSO_INVALID_NUM_FIELDS );
+         return NULL;
+      }
+      
+      fields = (psoFieldDefinition *) 
+         PyMem_Malloc(baseDef->numFields*sizeof(psoFieldDefinition));
+      if ( fields == NULL ) {
+         return PyErr_NoMemory();
+      }
+      
+      for ( i = 0; i < (Py_ssize_t)baseDef->numFields; ++i ) {
+
+         item = (FieldDefinition *) PyList_GetItem( list, i );
+         if ( item == NULL ) {
+            PyMem_Free( fields );
+            return NULL;
+         }
+         
+         // Validate that it is a definition!
+         if ( ! PyObject_TypeCheck(item, &FieldDefinitionType) ) {
+            PyMem_Free( fields );
+            PyErr_SetString( PyExc_TypeError, 
+               "One item of the list is not a FieldDefinition" );
+            return NULL;
+         }
+
+         if ( item->name == NULL ) {
+            PyMem_Free( fields );
+            SetException( PSO_INVALID_FIELD_NAME );
+            return NULL;
+         }
+         strncpy( fields[i].name, PyString_AsString(item->name), 
+            PSO_MAX_FIELD_LENGTH );
+         fields[i].type = item->intType;
+         fields[i].length = item->length;
+         fields[i].minLength = item->minLength;
+         fields[i].maxLength = item->maxLength;
+         fields[i].precision = item->precision;
+         fields[i].scale = item->scale;
+      }
+   }
    
-//   return Py_BuildValue("i", errcode);
-   return NULL;
+   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   definition.type = baseDef->intType;
+   definition.numFields = baseDef->numFields;
+   key = (KeyDefinition *) baseDef->keyDef;
+   if ( key != NULL ) {
+      definition.key.type      = key->intType;
+      definition.key.length    = key->length;
+      definition.key.minLength = key->minLength;
+      definition.key.minLength = key->maxLength;      
+   }
+   
+   errcode = psoCreateObject( (PSO_HANDLE)self->handle,
+                              objectName,
+                              (psoUint32)strlen(objectName),
+                              &definition,
+                              fields );
+   PyMem_Free( fields );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -290,7 +368,7 @@ static PyTypeObject SessionType = {
    "pso.Session",               /*tp_name*/
    sizeof(Session),             /*tp_basicsize*/
    0,                           /*tp_itemsize*/
-   (destructor)Session_dealloc, /*tp_dealloc*/
+   Session_dealloc,             /*tp_dealloc*/
    0,                           /*tp_print*/
    0,                           /*tp_getattr*/
    0,                           /*tp_setattr*/
@@ -307,12 +385,12 @@ static PyTypeObject SessionType = {
    0,                           /*tp_as_buffer*/
    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
    "Session objects",           /* tp_doc */
-   0,		                     /* tp_traverse */
-   0,		                     /* tp_clear */
-   0,		                     /* tp_richcompare */
-   0,		                     /* tp_weaklistoffset */
-   0,		                     /* tp_iter */
-   0,		                     /* tp_iternext */
+   0,		                       /* tp_traverse */
+   0,		                       /* tp_clear */
+   0,		                       /* tp_richcompare */
+   0,		                       /* tp_weaklistoffset */
+   0,		                       /* tp_iter */
+   0,		                       /* tp_iternext */
    Session_methods,             /* tp_methods */
    Session_members,             /* tp_members */
    0,                           /* tp_getset */
@@ -321,7 +399,7 @@ static PyTypeObject SessionType = {
    0,                           /* tp_descr_get */
    0,                           /* tp_descr_set */
    0,                           /* tp_dictoffset */
-   (initproc)Session_init,      /* tp_init */
+   Session_init,                /* tp_init */
    0,                           /* tp_alloc */
    Session_new,                 /* tp_new */
 };
