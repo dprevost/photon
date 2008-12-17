@@ -146,3 +146,27 @@ static PyTypeObject KeyDefinitionType = {
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static KeyDefinition *
+keyDefToObject( psoKeyDefinition * def ) 
+{
+   KeyDefinition * key = NULL;
+   PyObject * keyType;
+   
+   key = (KeyDefinition *)KeyDefinition_new(&KeyDefinitionType, NULL, NULL);
+   if ( key == NULL ) return NULL;
+      
+   keyType = GetKeyType( def->type );
+   if ( keyType == NULL ) return NULL;
+
+   key->keyType   = keyType;
+   key->intType   = def->type;
+   key->length    = def->length;
+   key->minLength = def->minLength;
+   key->maxLength = def->maxLength;
+   
+   return key;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -149,3 +149,25 @@ static PyTypeObject BaseDefType = {
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static BaseDef *
+BaseDefToObject( psoBasicObjectDef * def, PyObject * key ) 
+{
+   BaseDef * base = NULL;
+   PyObject * objType;
+   
+   base = (BaseDef *)BaseDef_new(&BaseDefType, NULL, NULL);
+   if ( base == NULL ) return NULL;
+   
+   objType = GetObjectType( def->type );
+   if ( objType == NULL ) return NULL;
+
+   base->objType   = objType;
+   base->intType   = def->type;
+   base->numFields = def->numFields;
+   base->keyDef    = key;
+   
+   return base;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

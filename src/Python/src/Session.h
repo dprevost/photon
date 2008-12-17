@@ -87,8 +87,13 @@ Session_Commit( Session * self )
    int errcode;
    
    errcode = psoCommit( (PSO_HANDLE)self->handle );
-   
-   return Py_BuildValue("i", errcode);
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -201,8 +206,13 @@ Session_DestroyObject( Session * self, PyObject * args )
    errcode = psoDestroyObject( (PSO_HANDLE)self->handle,
                                objectName,
                                (psoUint32)strlen(objectName) );
-   
-   return Py_BuildValue("i", errcode);
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -217,16 +227,17 @@ Session_ErrorMsg( Session * self )
    errcode = psoErrorMsg( (PSO_HANDLE)self->handle,
                           message,
                           1024 );
-   if ( errcode == 0 ) {
-# if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION < 6
-      str = PyString_FromString( message );
-#else
-      str = PyBytes_FromString( message );
-#endif
-      return str;
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
    }
-   
-   return Py_BuildValue("i", errcode);
+
+# if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION < 6
+   str = PyString_FromString( message );
+#else
+   str = PyBytes_FromString( message );
+#endif
+   return str;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -246,7 +257,70 @@ Session_ExitSession( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_GetDefinition(  Session * self, PyObject * args );
+Session_GetDefinition( Session * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   PyObject * list = NULL;
+   psoBasicObjectDef definition;
+   psoFieldDefinition  * fields = NULL;
+   BaseDef * baseDef;
+   KeyDefinition * key = NULL;
+   
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+
+   errcode = psoGetDefinition( (PSO_HANDLE)self->handle,
+                               objectName,
+                               (psoUint32)strlen(objectName),
+                               &definition,
+                               0,
+                               NULL );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   fields = (psoFieldDefinition *) 
+      PyMem_Malloc(definition.numFields*sizeof(psoFieldDefinition));
+   if ( fields == NULL ) return PyErr_NoMemory();
+
+   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   errcode = psoGetDefinition( (PSO_HANDLE)self->handle,
+                               objectName,
+                               (psoUint32)strlen(objectName),
+                               &definition,
+                               definition.numFields,
+                               fields );
+   if ( errcode != 0 ) {
+      PyMem_Free( fields );
+      SetException( errcode );
+      return NULL;
+   }
+
+   /* Start building the key definition, if any */
+   if ( definition.key.type != 0 ) {
+      key = keyDefToObject( &definition.key );
+      if ( key == NULL ) {
+         PyMem_Free( fields );
+         return NULL;
+      }
+   }
+   baseDef = BaseDefToObject( &definition, (PyObject *)key );
+   if ( baseDef == NULL ) {
+      PyMem_Free( fields );
+      return NULL;
+   }
+   
+   list = FieldDefToList( definition.numFields, fields );
+   if ( list == NULL ) {
+      PyMem_Free( fields );
+      return NULL;
+   }
+
+   return Py_BuildValue( "OO", baseDef, list );     
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -318,8 +392,13 @@ Session_Rollback( Session * self )
    int errcode;
    
    errcode = psoRollback( (PSO_HANDLE)self->handle );
-   
-   return Py_BuildValue("i", errcode);
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -347,6 +426,9 @@ static PyMethodDef Session_methods[] = {
    },
    { "exit", (PyCFunction)Session_ExitSession, METH_NOARGS,
      "Terminate the current session"
+   },
+   { "get_definition", (PyCFunction)Session_GetDefinition, METH_VARARGS,
+     "Get the definition of a Photon object"
    },
    { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
      "Get the status of a Photon object"

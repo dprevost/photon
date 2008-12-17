@@ -61,6 +61,9 @@ else:
 status = s.get_status( 'folder1' )
 print 'status = ', status
 print status.obj_type, ' ', status.free_bytes
+status = f1.status()
+print 'status = ', status
+print status.obj_type, ' ', status.free_bytes
 
 pso.exit()
 

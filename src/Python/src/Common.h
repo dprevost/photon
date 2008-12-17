@@ -169,6 +169,7 @@ PyObject * GetObjectStatus( int status )
 #include "BasicDef.h"
 #include "FieldDefinition.h"
 #include "FolderEntry.h"
+#include "Info.h"
 
 #include "Session.h"
 #include "Folder.h"

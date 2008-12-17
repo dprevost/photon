@@ -84,6 +84,7 @@ initpso(void)
    if (PyType_Ready(&FieldDefinitionType) < 0) return;
    if (PyType_Ready(&FolderType) < 0) return;
    if (PyType_Ready(&FolderEntryType) < 0) return;
+   if (PyType_Ready(&InfoType) < 0) return;
    if (PyType_Ready(&KeyDefinitionType) < 0) return;
    if (PyType_Ready(&ObjStatusType) < 0) return;
    if (PyType_Ready(&SessionType) < 0) return;
@@ -106,6 +107,11 @@ initpso(void)
 //   FolderEntryType.tp_new = PyType_GenericNew; needed???????????????????
    Py_INCREF( &FolderEntryType );
    PyModule_AddObject( m, "FolderEntry", (PyObject *)&FolderEntryType );
+
+   InfoType.tp_new = PyType_GenericNew;
+   Py_INCREF( &InfoType );
+   PyModule_AddObject( m, "Info", (PyObject *)&InfoType );
+
    Py_INCREF( &KeyDefinitionType );
    PyModule_AddObject( m, "KeyDefinition", (PyObject *)&KeyDefinitionType );
    ObjStatusType.tp_new = PyType_GenericNew;

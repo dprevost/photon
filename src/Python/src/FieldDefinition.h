@@ -166,3 +166,60 @@ static PyTypeObject FieldDefinitionType = {
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject * FieldDefToList( int number, psoFieldDefinition * fields )
+{
+   PyObject * list = NULL;
+   FieldDefinition * item = NULL;
+   int i, errcode;
+   
+   list = PyList_New(number);
+   if (list == NULL) return NULL;
+   
+   for ( i = 0; i < number; ++i ) {
+      item = (FieldDefinition *)
+         FieldDefinition_new( &FieldDefinitionType, NULL, NULL );
+      if (item == NULL) goto cleanup;
+      
+      item->fieldType = GetFieldType( fields[i].type );
+      if ( item->fieldType == NULL ) goto cleanup;
+
+      item->name = PyString_FromStringAndSize( fields[i].name, 32 );
+      if ( item->name == NULL ) goto cleanup;
+
+      item->intType   = fields[i].type;
+      item->length    = fields[i].length;
+      item->minLength = fields[i].minLength;
+      item->maxLength = fields[i].maxLength;
+      item->precision = fields[i].precision;
+      item->scale     = fields[i].scale;
+   
+      errcode = PyList_SetItem( list, i, (PyObject *)item );
+      item = NULL;
+      if ( errcode != 0 ) goto cleanup;
+   }
+   
+   return list;
+
+cleanup:
+   if ( item ) {
+      Py_XDECREF(item->fieldType);
+      Py_XDECREF(item->name);
+      Py_XDECREF(item);
+   }
+   
+   for ( i = 0; i < number; ++i ) {
+      item = (FieldDefinition *)PyList_GetItem( list, i );
+      if ( item ) {
+         Py_XDECREF(item->fieldType);
+         Py_XDECREF(item->name);
+         Py_XDECREF(item);
+      }
+   }   
+   Py_XDECREF(list);
+   
+   return NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
