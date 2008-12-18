@@ -78,7 +78,7 @@ static PyMethodDef pso_methods[] = {
 PyMODINIT_FUNC
 initpso(void) 
 {
-   PyObject * m;
+   PyObject * m = NULL, * errs = NULL;
 
    if (PyType_Ready(&BaseDefType) < 0) return;
    if (PyType_Ready(&FieldDefinitionType) < 0) return;
@@ -99,6 +99,14 @@ initpso(void)
    Py_INCREF(PhotonError);
    PyModule_AddObject(m, "error", PhotonError);
 
+   errs = AddErrors();
+   if ( errs != NULL ) {
+      PyModule_AddObject( m, "errs", errs );
+   }
+   else {
+      fprintf( stderr, "Errors not added to module!\n" );
+   }
+   
    /* C structs (and enums?) */
    Py_INCREF( &BaseDefType );
    PyModule_AddObject( m, "BaseDef", (PyObject *)&BaseDefType );
@@ -131,7 +139,7 @@ initpso(void)
    PyModule_AddIntConstant( m, "FAST_MAP", PSO_FAST_MAP );
    PyModule_AddIntConstant( m, "QUEUE",    PSO_QUEUE );
 
-   /* Iterators */
+   /* Iterators - needed ? */
    PyModule_AddIntConstant( m, "FIRST", PSO_FIRST );
    PyModule_AddIntConstant( m, "NEXT",  PSO_NEXT );
 

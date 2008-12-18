@@ -325,7 +325,68 @@ Session_GetDefinition( Session * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_GetInfo( Session * self, PyObject * args );
+Session_GetInfo( Session * self, PyObject * args )
+{
+   int errcode;
+   Info * pInfo;
+   psoInfo info;
+   PyObject * compiler = NULL;
+   PyObject * compilerVersion = NULL;
+   PyObject * platform = NULL;
+   PyObject * dllVersion = NULL;
+   PyObject * quasarVersion = NULL;
+   PyObject * creationTime = NULL;
+   
+   errcode = psoGetInfo( (PSO_HANDLE)self->handle, &info );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+   
+   compiler        = GetString( info.compiler, 20 );
+   if ( compiler == NULL ) goto cleanup;
+   compilerVersion = GetString( info.compilerVersion, 10 );
+   if ( compilerVersion == NULL ) goto cleanup;
+   platform        = GetString( info.platform, 20 );
+   if ( platform == NULL ) goto cleanup;
+   dllVersion      = GetString( info.dllVersion, 10 );
+   if ( dllVersion == NULL ) goto cleanup;
+   quasarVersion   = GetString( info.quasarVersion, 10 );
+   if ( quasarVersion == NULL ) goto cleanup;
+   creationTime    = GetString( info.creationTime, 30 );
+   if ( creationTime == NULL ) goto cleanup;
+
+   pInfo = (Info *)PyObject_New(Info, &InfoType);
+   if ( pInfo == NULL ) return NULL;
+
+   pInfo->totalSizeInBytes = info.totalSizeInBytes;
+   pInfo->allocatedSizeInBytes = info.allocatedSizeInBytes;
+   pInfo->numObjects = info.numObjects;
+   pInfo->numGroups = info.numGroups;
+   pInfo->numMallocs = info.numMallocs;
+   pInfo->numFrees = info.numFrees;
+   pInfo->largestFreeInBytes = info.largestFreeInBytes;
+   pInfo->memoryVersion = info.memoryVersion;
+   pInfo->bigEndian = info.bigEndian;
+   pInfo->compiler = compiler;
+   pInfo->compilerVersion = compilerVersion;
+   pInfo->platform = platform;
+   pInfo->dllVersion = dllVersion;
+   pInfo->quasarVersion = quasarVersion;
+   pInfo->creationTime = creationTime;
+   
+   return (PyObject *)pInfo;
+   
+cleanup:
+   Py_XDECREF( compiler );
+   Py_XDECREF( compilerVersion );
+   Py_XDECREF( platform );
+   Py_XDECREF( dllVersion );
+   Py_XDECREF( quasarVersion );
+   Py_XDECREF( creationTime );
+
+   return NULL;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -355,10 +416,17 @@ Session_GetStatus( Session * self, PyObject * args )
    if ( objType == NULL ) return NULL;
 
    objStatus = GetObjectStatus( status.status );
-   if ( objStatus == NULL ) return NULL;
-
+   if ( objStatus == NULL ) {
+      Py_XDECREF(objType);
+      return NULL;
+   }
+   
    pStatusPy = (ObjStatus *)PyObject_New(ObjStatus, &ObjStatusType);
-   if ( pStatusPy == NULL ) return NULL;
+   if ( pStatusPy == NULL ) {
+      Py_XDECREF(objType);
+      Py_XDECREF(objStatus);
+      return NULL;
+   }
    
    pStatusPy->objType       = objType;
    pStatusPy->status        = objStatus;
@@ -429,6 +497,9 @@ static PyMethodDef Session_methods[] = {
    },
    { "get_definition", (PyCFunction)Session_GetDefinition, METH_VARARGS,
      "Get the definition of a Photon object"
+   },
+   { "get_info", (PyCFunction)Session_GetInfo, METH_NOARGS,
+     "Return information on the shared-memory system"
    },
    { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
      "Get the status of a Photon object"

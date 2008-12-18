@@ -163,6 +163,26 @@ PyObject * GetObjectStatus( int status )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/* 
+ * Some of the photon string might not be NULL-terminated. This function 
+ * goes around this potential issue.
+ */
+static PyObject*
+GetString( const char * s, Py_ssize_t len)
+{
+   Py_ssize_t i;
+    
+   for ( i = 0; i < len; ++i ) {
+      if ( s[i] == 0 ) return PyString_FromString(s);
+   }
+
+   return PyString_FromStringAndSize(s, len);
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#include "errors.h"
+
 /* The C struct first */
 #include "ObjStatus.h"
 #include "KeyDefinition.h"

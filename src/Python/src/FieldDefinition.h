@@ -184,7 +184,7 @@ static PyObject * FieldDefToList( int number, psoFieldDefinition * fields )
       item->fieldType = GetFieldType( fields[i].type );
       if ( item->fieldType == NULL ) goto cleanup;
 
-      item->name = PyString_FromStringAndSize( fields[i].name, 32 );
+      item->name = GetString( fields[i].name, PSO_MAX_FIELD_LENGTH );
       if ( item->name == NULL ) goto cleanup;
 
       item->intType   = fields[i].type;
