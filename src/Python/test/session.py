@@ -15,6 +15,7 @@ def create_test():
     try:
         s.create_object( '', pso.BaseDef(pso.FOLDER, 0) )
     except pso.error, (msg, errcode):
+        print 'errcode = ', pso.err_names[errcode]
         if errcode != pso.errs['INVALID_LENGTH']:
             raise
     else:

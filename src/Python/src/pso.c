@@ -78,8 +78,8 @@ static PyMethodDef pso_methods[] = {
 PyMODINIT_FUNC
 initpso(void) 
 {
-   PyObject * m = NULL, * errs = NULL;
-
+   PyObject * m = NULL, * tup = NULL, * errs = NULL, * errNames = NULL;
+PyObject * q;
    if (PyType_Ready(&BaseDefType) < 0) return;
    if (PyType_Ready(&FieldDefinitionType) < 0) return;
    if (PyType_Ready(&FolderType) < 0) return;
@@ -99,9 +99,15 @@ initpso(void)
    Py_INCREF(PhotonError);
    PyModule_AddObject(m, "error", PhotonError);
 
-   errs = AddErrors();
-   if ( errs != NULL ) {
-      PyModule_AddObject( m, "errs", errs );
+   tup = AddErrors();
+   if ( tup != NULL ) {
+      if ( PyArg_ParseTuple(tup, "OOO", &errs, &errNames, &q) ) {
+         PyModule_AddObject( m, "errs", errs );
+         PyModule_AddObject( m, "err_names", errNames );
+      }
+      else {
+         fprintf( stderr, "Errors not added to module!\n" );
+      }
    }
    else {
       fprintf( stderr, "Errors not added to module!\n" );
