@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -217,9 +217,9 @@ void psoaGetLimits( psonFieldDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaGetOffsets( psoBasicObjectDef * pDefinition,
-                     psoFieldDefinition  * pFields,
-                     uint32_t            * pOffsets )
+void psoaGetOffsets( psoBasicObjectDef  * pDefinition,
+                     psoFieldDefinition * pFields,
+                     uint32_t           * pOffsets )
 {
    unsigned int i;
    uint32_t minLength = 0;
@@ -315,8 +315,8 @@ void psoaGetOffsets( psoBasicObjectDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaValidateDefinition( psoBasicObjectDef * pDefinition,
-                            psoFieldDefinition  * pFields )
+int psoaValidateDefinition( psoBasicObjectDef  * pDefinition,
+                            psoFieldDefinition * pFields )
 {
    unsigned int i, j;
    
@@ -413,7 +413,6 @@ int psoaValidateDefinition( psoBasicObjectDef * pDefinition,
          case PSO_VAR_STRING:
             /* These 2 types are only valid for the last field. */
             if ( i != (pDefinition->numFields-1) ) return PSO_INVALID_FIELD_TYPE;
-
             /* BIG WARNING: this rule is not captured by the XML schema */
             if ( pDefinition->numFields == 1 && 
                  pFields[i].minLength == 0 ) {
@@ -473,12 +472,12 @@ int psoaValidateDefinition( psoBasicObjectDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaXmlToDefinition( const char           * xmlBuffer,
-                         uint32_t               lengthInBytes,
-                         psoBasicObjectDef  * pDefinition,
-                         psoFieldDefinition  ** ppFields,                         
-                         char                ** objectName,
-                         uint32_t             * nameLengthInBytes )
+int psoaXmlToDefinition( const char          * xmlBuffer,
+                         uint32_t              lengthInBytes,
+                         psoBasicObjectDef   * pDefinition,
+                         psoFieldDefinition ** ppFields,                         
+                         char               ** objectName,
+                         uint32_t            * nameLengthInBytes )
 {
    xmlSchemaPtr schema = NULL;
    xmlSchemaValidCtxtPtr  validCtxt = NULL;

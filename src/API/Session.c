@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -100,11 +100,11 @@ int psoCommit( PSO_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
-int psoCreateObject( PSO_HANDLE            sessionHandle,
-                     const char          * objectName,
-                     uint32_t              nameLengthInBytes,
-                     psoBasicObjectDef * pDefinition,
-                     psoFieldDefinition  * pFields )
+int psoCreateObject( PSO_HANDLE           sessionHandle,
+                     const char         * objectName,
+                     uint32_t             nameLengthInBytes,
+                     psoBasicObjectDef  * pDefinition,
+                     psoFieldDefinition * pFields )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -131,6 +131,11 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
       return PSO_NULL_POINTER;
    }
 
+   if ( pDefinition->type == 0 || pDefinition->type >= PSO_LAST_OBJECT_TYPE ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_OBJECT_TYPE );
+      return PSO_WRONG_OBJECT_TYPE;
+   }
+   
    if ( pDefinition->type != PSO_FOLDER && pFields == NULL ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
@@ -230,11 +235,11 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoErrorMsg( PSO_HANDLE sessionHandle,
-                 char *     message,
-                 uint32_t   msgLengthInBytes )
+int psoErrorMsg( PSO_HANDLE   sessionHandle,
+                 char       * message,
+                 uint32_t     msgLengthInBytes )
 {
-   psoaSession* pSession;
+   psoaSession * pSession;
    int rc = PSO_OK;
    size_t len;
    
@@ -346,12 +351,12 @@ int psoExitSession( PSO_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoGetDefinition( PSO_HANDLE            sessionHandle,
-                      const char          * objectName,
-                      uint32_t              nameLengthInBytes,
-                      psoBasicObjectDef * pDefinition,
-                      psoUint32             numFields,
-                      psoFieldDefinition  * pFields )
+int psoGetDefinition( PSO_HANDLE           sessionHandle,
+                      const char         * objectName,
+                      uint32_t             nameLengthInBytes,
+                      psoBasicObjectDef  * pDefinition,
+                      psoUint32            numFields,
+                      psoFieldDefinition * pFields )
 {
    psoaSession * pSession;
    int errcode = PSO_OK;

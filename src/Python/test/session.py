@@ -15,8 +15,156 @@ def create_test():
     try:
         s.create_object( '', pso.BaseDef(pso.FOLDER, 0) )
     except pso.error, (msg, errcode):
-        print 'errcode = ', pso.err_names[errcode]
         if errcode != pso.errs['INVALID_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'test1', pso.BaseDef(0, 0) )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['WRONG_OBJECT_TYPE']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'test1', pso.BaseDef(pso.FOLDER, 1) )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_NUM_FIELDS']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('', pso.STRING, 20, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_NAME']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('field1', 0, 20, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_TYPE']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('field1', pso.STRING, 0, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('field1', pso.INTEGER, 6, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_LENGTH_INT']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('field1', pso.VAR_BINARY, 0, 5, 4, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('field1', pso.VAR_BINARY, 0, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 1),
+            [ pso.FieldDefinition('field1', pso.VAR_BINARY, 0, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 2),
+            [ pso.FieldDefinition('field1', pso.VAR_BINARY, 0, 0, 0, 0, 0),
+              pso.FieldDefinition('field2', pso.INTEGER,    4, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_TYPE']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'map1', pso.BaseDef(pso.HASH_MAP, 1),
+            [ pso.FieldDefinition('field1', pso.STRING, 20, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_TYPE']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.create_object( 'map1', 
+            pso.BaseDef(pso.HASH_MAP, 1, pso.KeyDefinition(pso.KEY_STRING, 0, 0, 0)),
+            [ pso.FieldDefinition('field1', pso.STRING, 20, 0, 0, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_FIELD_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+
+#
+    try:
+        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 3),
+            [ pso.FieldDefinition('field1', pso.STRING,    20, 0,   0, 0, 0),
+              pso.FieldDefinition('field2', pso.INTEGER,    4, 0,   0, 0, 0),
+              pso.FieldDefinition('field3', pso.VAR_BINARY, 0, 0, 100, 0, 0)] )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_NUM_FIELDS']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
             raise
     else:
         raise pso.error, 'failed'

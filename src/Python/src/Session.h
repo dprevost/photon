@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -63,7 +63,7 @@ Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static int
-Session_init( PyObject * self, PyObject * args, PyObject *kwds )
+Session_init( PyObject * self, PyObject * args, PyObject * kwds )
 {
    int errcode;
    PSO_HANDLE h;
@@ -173,15 +173,14 @@ Session_CreateObject( Session * self, PyObject * args )
       definition.key.type      = key->intType;
       definition.key.length    = key->length;
       definition.key.minLength = key->minLength;
-      definition.key.minLength = key->maxLength;      
+      definition.key.maxLength = key->maxLength;
    }
-   
    errcode = psoCreateObject( (PSO_HANDLE)self->handle,
                               objectName,
                               (psoUint32)strlen(objectName),
                               &definition,
                               fields );
-   PyMem_Free( fields );
+   if ( fields ) PyMem_Free( fields );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
