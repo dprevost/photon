@@ -79,7 +79,7 @@ PyMODINIT_FUNC
 initpso(void) 
 {
    PyObject * m = NULL, * tup = NULL, * errs = NULL, * errNames = NULL;
-PyObject * q;
+
    if (PyType_Ready(&BaseDefType) < 0) return;
    if (PyType_Ready(&FieldDefinitionType) < 0) return;
    if (PyType_Ready(&FolderType) < 0) return;
@@ -101,7 +101,7 @@ PyObject * q;
 
    tup = AddErrors();
    if ( tup != NULL ) {
-      if ( PyArg_ParseTuple(tup, "OOO", &errs, &errNames, &q) ) {
+      if ( PyArg_ParseTuple(tup, "OO", &errs, &errNames) ) {
          PyModule_AddObject( m, "errs", errs );
          PyModule_AddObject( m, "err_names", errNames );
       }
