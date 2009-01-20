@@ -107,6 +107,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+   def.type = PSO_QUEUE;
    errcode = psoFolderCreateObject( folderHandle,
                                     "afcr",
                                     strlen("afcr"),
