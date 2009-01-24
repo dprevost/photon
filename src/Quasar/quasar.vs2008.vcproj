@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
-	Name="Common"
-	ProjectGUID="{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}"
+	Version="9.00"
+	Name="Quasar"
+	ProjectGUID="{722A2F6A-EA35-4979-8F1D-1001FC24D741}"
+	RootNamespace="Quasar"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -15,9 +17,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
-			ConfigurationType="2"
+			OutputDirectory=".\Debug2008"
+			IntermediateDirectory=".\Debug2008"
+			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -37,27 +39,18 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/Common.tlb"
+				TypeLibraryName=".\Debug/quasar.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".."
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_PHOTON_COMMON"
+				AdditionalIncludeDirectories="..,..\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;LIBXML_STATIC;ERROR_MESSAGE_EXPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug/Common.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
-				WarningLevel="4"
+				RuntimeLibrary="2"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="1"
@@ -72,17 +65,19 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\Debug\ mkdir ..\Debug&#x0D;&#x0A;if exist ..\Debug\photonCommon.dll del ..\Debug\photonCommon.dll&#x0D;&#x0A;if exist ..\Debug\photonCommon.lib del ..\Debug\photonCommon.lib&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Advapi32.lib ws2_32.lib"
-				OutputFile="Debug/photonCommon.dll"
+				AdditionalDependencies="Advapi32.lib photonCommon.lib ws2_32.lib photonNucleus.lib libxml2_a.lib zlib.lib iconv_a.lib"
+				OutputFile=".\Debug2008/quasar.exe"
+				Version="0.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\Debug2008"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/photonCommon.pdb"
-				ImportLibrary=".\Debug/photonCommon.lib"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,7 +92,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/Common.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -106,18 +100,15 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy debug\photonCommon.dll ..\Debug&#x0D;&#x0A;copy debug\photonCommon.lib ..\Debug&#x0D;&#x0A;"
+				CommandLine="copy debug2008\quasar.exe ..\Debug2008"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
-			ConfigurationType="2"
+			OutputDirectory=".\Release2008"
+			IntermediateDirectory=".\Release2008"
+			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -137,27 +128,19 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Release/Common.tlb"
+				TypeLibraryName=".\Release/quasar.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BUILD_PHOTON_COMMON"
+				AdditionalIncludeDirectories="..,..\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;LIBXML_STATIC;ERROR_MESSAGE_EXPORT"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/Common.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="4"
+				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="1"
 			/>
@@ -171,16 +154,18 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\Release\ mkdir ..\Release&#x0D;&#x0A;if exist ..\Release\photonCommon.dll del ..\Release\photonCommon.dll&#x0D;&#x0A;if exist ..\Release\photonCommon.lib del ..\Release\photonCommon.lib&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Advapi32.lib ws2_32.lib"
-				OutputFile="Release/photonCommon.dll"
+				AdditionalDependencies="Advapi32.lib photonCommon.lib ws2_32.lib photonNucleus.lib libxml2_a.lib zlib.lib iconv_a.lib"
+				OutputFile=".\Release2008/quasar.exe"
+				Version="0.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\Release/photonCommon.pdb"
-				ImportLibrary=".\Release/photonCommon.lib"
+				AdditionalLibraryDirectories="..\Release2008"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -195,7 +180,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/Common.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -204,11 +188,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy Release\photonCommon.dll ..\Release&#x0D;&#x0A;copy Release\photonCommon.lib ..\Release&#x0D;&#x0A;"
+				CommandLine="copy Release2008\quasar.exe ..\Release2008"
 			/>
 		</Configuration>
 	</Configurations>
@@ -220,7 +201,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="DirAccess.c"
+				RelativePath="Acceptor.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -242,7 +223,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ErrorHandler.c"
+				RelativePath="Config.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -264,7 +245,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="localtime_r.c"
+				RelativePath="LogMsg.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -286,7 +267,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="MemoryFile.c"
+				RelativePath="MemoryManager.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -308,7 +289,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Options.c"
+				RelativePath="qsrMain.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -330,7 +311,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ProcessLock.c"
+				RelativePath="Quasar.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -352,7 +333,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="strnlen.c"
+				RelativePath="quasarErrorHandler.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -374,7 +355,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ThreadLock.c"
+				RelativePath="ShMemHandler.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -396,7 +377,165 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Timer.c"
+				RelativePath="VerifyFastMap.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="VerifyFolder.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="VerifyHash.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="VerifyHashMap.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\VerifyHashTx.c"
+				>
+			</File>
+			<File
+				RelativePath="VerifyList.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="VerifyMemObj.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="VerifyQueue.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="VerifyShMem.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -423,55 +562,43 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="Common.h"
+				RelativePath="Acceptor.h"
 				>
 			</File>
 			<File
-				RelativePath="..\config-win32.h"
+				RelativePath=".\Config.h"
 				>
 			</File>
 			<File
-				RelativePath="DirAccess.h"
+				RelativePath="LogMsg.h"
 				>
 			</File>
 			<File
-				RelativePath="ErrorHandler.h"
+				RelativePath="MemoryManager.h"
 				>
 			</File>
 			<File
-				RelativePath="MemoryFile.h"
+				RelativePath="Quasar.h"
 				>
 			</File>
 			<File
-				RelativePath="MemoryFile.inl"
+				RelativePath="quasarErrorHandler.h"
 				>
 			</File>
 			<File
-				RelativePath="Options.h"
+				RelativePath="quasarErrors.h"
 				>
 			</File>
 			<File
-				RelativePath="private.h"
+				RelativePath="ShMemHandler.h"
 				>
 			</File>
 			<File
-				RelativePath="ProcessLock.h"
+				RelativePath=".\VerifyCommon.h"
 				>
 			</File>
 			<File
-				RelativePath="ThreadLock.h"
-				>
-			</File>
-			<File
-				RelativePath="ThreadLock.inl"
-				>
-			</File>
-			<File
-				RelativePath="Timer.h"
-				>
-			</File>
-			<File
-				RelativePath="tzfile.h"
+				RelativePath=".\VerifyShMem.h"
 				>
 			</File>
 		</Filter>
@@ -479,6 +606,10 @@
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
+			<File
+				RelativePath=".\quasar.rc"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

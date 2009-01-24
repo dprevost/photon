@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory=".\Debug2005"
+			IntermediateDirectory=".\Debug2005"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -49,10 +49,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile=".\Debug/quasar.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -72,13 +68,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Advapi32.lib photonCommon.lib ws2_32.lib photonNucleus.lib libxml2_a.lib zlib.lib iconv_a.lib"
-				OutputFile=".\Debug/quasar.exe"
+				OutputFile=".\Debug2005/quasar.exe"
 				Version="0.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\Debug"
+				AdditionalLibraryDirectories="..\Debug2005"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/quasar.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -94,7 +89,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/quasar.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -107,13 +101,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy debug\quasar.exe ..\Debug"
+				CommandLine="copy debug2005\quasar.exe ..\Debug2005"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory=".\Release2005"
+			IntermediateDirectory=".\Release2005"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -146,10 +140,6 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/quasar.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="1"
@@ -168,12 +158,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Advapi32.lib photonCommon.lib ws2_32.lib photonNucleus.lib libxml2_a.lib zlib.lib iconv_a.lib"
-				OutputFile=".\Release/quasar.exe"
+				OutputFile=".\Release2005/quasar.exe"
 				Version="0.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\Release"
-				ProgramDatabaseFile=".\Release/quasar.pdb"
+				AdditionalLibraryDirectories="..\Release2005"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -189,7 +178,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/quasar.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -202,7 +190,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy Release\quasar.exe ..\Release"
+				CommandLine="copy Release2005\quasar.exe ..\Release2005"
 			/>
 		</Configuration>
 	</Configurations>

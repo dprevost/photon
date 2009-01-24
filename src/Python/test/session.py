@@ -1,11 +1,20 @@
 #!/usr/bin/env python
+#
+# Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 import pso
 
-
-#pso.__dict__['INVALID_LENGTH'] = 8
-print dir(pso)
-#print dir(pso.error)
+# Warning: the tests in here are not complete. They are meant to
+# proove that the Python interface works as intended; not to
+# provide an alternate test suite.
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -154,15 +163,57 @@ def create_test():
     else:
         raise pso.error, 'failed'
 
+# --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#
+def destroy_test():
+    global s
+    
     try:
-        s.create_object( 'queue1', pso.BaseDef(pso.QUEUE, 3),
-            [ pso.FieldDefinition('field1', pso.STRING,    20, 0,   0, 0, 0),
-              pso.FieldDefinition('field2', pso.INTEGER,    4, 0,   0, 0, 0),
-              pso.FieldDefinition('field3', pso.VAR_BINARY, 0, 0, 100, 0, 0)] )
+        s.destroy_object( 'sess_folder1/folder3/queue1' )
     except pso.error, (msg, errcode):
-        if errcode != pso.errs['INVALID_NUM_FIELDS']:
+        if errcode != pso.errs['OBJECT_IS_IN_USE']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    s.commit()
+    
+    try:
+        s.destroy_object( '' )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['INVALID_LENGTH']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.destroy_object( 'sess_not_exists' )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['NO_SUCH_OBJECT']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.destroy_object( 'sess_not_exists/object1' )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['NO_SUCH_FOLDER']:
+            print 'errcode = ', pso.err_names[errcode]
+            print 'message = ', msg
+            raise
+    else:
+        raise pso.error, 'failed'
+
+    try:
+        s.destroy_object( 'sess_folder1' )
+    except pso.error, (msg, errcode):
+        if errcode != pso.errs['FOLDER_IS_NOT_EMPTY']:
             print 'errcode = ', pso.err_names[errcode]
             print 'message = ', msg
             raise
@@ -178,43 +229,31 @@ except pso.error:
     print "Is Quasar running? Does the shared-memory file exists?"
     raise
     
-s = pso.Session()
-
-#print s
-#print dir(s)
-
-create_test()
-
-s.create_object( 'sess_folder1', pso.BaseDef(pso.FOLDER, 0) )
-s.create_object( 'sess_folder1/folder2', pso.BaseDef(pso.FOLDER, 0) )
-s.create_object( 'sess_folder1/folder3', pso.BaseDef(pso.FOLDER, 0) )
-s.create_object( 'sess_folder1/folder3/queue1', pso.BaseDef(pso.QUEUE, 3),
-    [ pso.FieldDefinition('field1', pso.STRING,    20, 0,   0, 0, 0),
-      pso.FieldDefinition('field2', pso.INTEGER,    4, 0,   0, 0, 0),
-      pso.FieldDefinition('field3', pso.VAR_BINARY, 0, 0, 100, 0, 0)] )
-
-
-
-f = pso.Folder(s, '/')
-print dir(f)
-
-for e in f:
-    print 'e.name,', e
-
-f2 = pso.Folder(s)
 try:
-    print f2.name
+    s = pso.Session()
+
+    create_test()
+
+    s.create_object( 'sess_folder1', pso.BaseDef(pso.FOLDER, 0) )
+    s.create_object( 'sess_folder1/folder2', pso.BaseDef(pso.FOLDER, 0) )
+    s.create_object( 'sess_folder1/folder3', pso.BaseDef(pso.FOLDER, 0) )
+    s.create_object( 'sess_folder1/folder3/queue1', pso.BaseDef(pso.QUEUE, 3),
+        [ pso.FieldDefinition('field1', pso.STRING,    20, 0,   0, 0, 0),
+          pso.FieldDefinition('field2', pso.INTEGER,    4, 0,   0, 0, 0),
+          pso.FieldDefinition('field3', pso.VAR_BINARY, 0, 0, 100, 0, 0)] )
+
+    destroy_test()
+
+    s.destroy_object( 'sess_folder1/folder2' )
+
+except pso.error, (msg, errcode):
+    print 'pso message = ', msg
+    raise
 except:
-    pass
+    print 'The test failed on a non-pso exception'
+    raise 
 
-f2.__init__(s,'/test1')
-print f2.name
-
-print 'after loop'
-print dir(f)
-
-#status = pso.ObjStatus()
-#print status.obj_type
+pso.exit()
 
 status = s.get_status( 'test1' )
 print 'status = ', status

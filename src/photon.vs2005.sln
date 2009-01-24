@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "API", "API\API.vs2005.vcproj", "{9F419CFD-6062-4A19-9D87-DEF29D506243}"
+	ProjectSection(ProjectDependencies) = postProject
+		{90C39761-D92D-4415-817C-5EE525F9208D} = {90C39761-D92D-4415-817C-5EE525F9208D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CPP", "C++\CPP.vs2005.vcproj", "{8DFE657F-DF29-4BB2-BA5D-F6400233E34D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9F419CFD-6062-4A19-9D87-DEF29D506243} = {9F419CFD-6062-4A19-9D87-DEF29D506243}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Common.vs2005.vcproj", "{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Nucleus", "Nucleus\Nucleus.vs2005.vcproj", "{90C39761-D92D-4415-817C-5EE525F9208D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A} = {1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Quasar", "Quasar\quasar.vs2005.vcproj", "{722A2F6A-EA35-4979-8F1D-1001FC24D741}"
+	ProjectSection(ProjectDependencies) = postProject
+		{90C39761-D92D-4415-817C-5EE525F9208D} = {90C39761-D92D-4415-817C-5EE525F9208D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "psoInfo", "TOOLS\psoInfo.vs2005.vcproj", "{5A5AF176-EFF9-4186-B843-66ED0DACAFE3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8DFE657F-DF29-4BB2-BA5D-F6400233E34D} = {8DFE657F-DF29-4BB2-BA5D-F6400233E34D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "psosh", "TOOLS\SHELL\psosh.vs2005.vcproj", "{42EC05AD-903C-4DE2-AB6A-2927C2ABA313}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8DFE657F-DF29-4BB2-BA5D-F6400233E34D} = {8DFE657F-DF29-4BB2-BA5D-F6400233E34D}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F419CFD-6062-4A19-9D87-DEF29D506243}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F419CFD-6062-4A19-9D87-DEF29D506243}.Debug|Win32.Build.0 = Debug|Win32
+		{9F419CFD-6062-4A19-9D87-DEF29D506243}.Release|Win32.ActiveCfg = Release|Win32
+		{9F419CFD-6062-4A19-9D87-DEF29D506243}.Release|Win32.Build.0 = Release|Win32
+		{8DFE657F-DF29-4BB2-BA5D-F6400233E34D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8DFE657F-DF29-4BB2-BA5D-F6400233E34D}.Debug|Win32.Build.0 = Debug|Win32
+		{8DFE657F-DF29-4BB2-BA5D-F6400233E34D}.Release|Win32.ActiveCfg = Release|Win32
+		{8DFE657F-DF29-4BB2-BA5D-F6400233E34D}.Release|Win32.Build.0 = Release|Win32
+		{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}.Debug|Win32.Build.0 = Debug|Win32
+		{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}.Release|Win32.ActiveCfg = Release|Win32
+		{1E45A082-EDAB-4EC2-8D9B-71C83631EA3A}.Release|Win32.Build.0 = Release|Win32
+		{90C39761-D92D-4415-817C-5EE525F9208D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{90C39761-D92D-4415-817C-5EE525F9208D}.Debug|Win32.Build.0 = Debug|Win32
+		{90C39761-D92D-4415-817C-5EE525F9208D}.Release|Win32.ActiveCfg = Release|Win32
+		{90C39761-D92D-4415-817C-5EE525F9208D}.Release|Win32.Build.0 = Release|Win32
+		{722A2F6A-EA35-4979-8F1D-1001FC24D741}.Debug|Win32.ActiveCfg = Debug|Win32
+		{722A2F6A-EA35-4979-8F1D-1001FC24D741}.Debug|Win32.Build.0 = Debug|Win32
+		{722A2F6A-EA35-4979-8F1D-1001FC24D741}.Release|Win32.ActiveCfg = Release|Win32
+		{722A2F6A-EA35-4979-8F1D-1001FC24D741}.Release|Win32.Build.0 = Release|Win32
+		{5A5AF176-EFF9-4186-B843-66ED0DACAFE3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A5AF176-EFF9-4186-B843-66ED0DACAFE3}.Debug|Win32.Build.0 = Debug|Win32
+		{5A5AF176-EFF9-4186-B843-66ED0DACAFE3}.Release|Win32.ActiveCfg = Release|Win32
+		{5A5AF176-EFF9-4186-B843-66ED0DACAFE3}.Release|Win32.Build.0 = Release|Win32
+		{42EC05AD-903C-4DE2-AB6A-2927C2ABA313}.Debug|Win32.ActiveCfg = Debug|Win32
+		{42EC05AD-903C-4DE2-AB6A-2927C2ABA313}.Debug|Win32.Build.0 = Debug|Win32
+		{42EC05AD-903C-4DE2-AB6A-2927C2ABA313}.Release|Win32.ActiveCfg = Release|Win32
+		{42EC05AD-903C-4DE2-AB6A-2927C2ABA313}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

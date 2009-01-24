@@ -21,7 +21,9 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#define _WIN32_WINNT 0x0500
+#if !defined(_WIN32_WINNT)
+#  define _WIN32_WINNT 0x0500
+#endif
 
 /*
  * DBC inserts contract validations (tests for NULL pointers, etc.) in the 

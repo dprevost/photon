@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="psosh"
 	ProjectGUID="{42EC05AD-903C-4DE2-AB6A-2927C2ABA313}"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -15,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory=".\Debug2008"
+			IntermediateDirectory=".\Debug2008"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -48,10 +49,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\Debug/psosh.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -70,13 +67,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="photoncpp.lib photon.lib photonCommon.lib"
-				OutputFile=".\Debug/psosh.exe"
+				OutputFile=".\Debug2008/psosh.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\Debug"
+				AdditionalLibraryDirectories="..\..\Debug2008"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/psosh.pdb"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -91,7 +89,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/psosh.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -100,17 +97,14 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy debug\psosh.exe ..\..\Debug"
+				CommandLine="copy debug2008\psosh.exe ..\..\Debug2008"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory=".\Release2008"
+			IntermediateDirectory=".\Release2008"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -143,10 +137,6 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/psosh.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -164,12 +154,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="photoncpp.lib photon.lib photonCommon.lib"
-				OutputFile=".\Release/psosh.exe"
+				OutputFile=".\Release2008/psosh.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\Release"
-				ProgramDatabaseFile=".\Release/psosh.pdb"
+				AdditionalLibraryDirectories="..\..\Release2008"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -184,7 +175,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/psosh.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -193,11 +183,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy Release\psosh.exe ..\..\Release"
+				CommandLine="copy Release2008\psosh.exe ..\..\Release2008"
 			/>
 		</Configuration>
 	</Configurations>
