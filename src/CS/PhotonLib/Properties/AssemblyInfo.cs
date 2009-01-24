@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("photonsoftware.org")]
 [assembly: AssemblyProduct("PhotonLib")]
-[assembly: AssemblyCopyright("Copyright © 2008 Daniel Prevost <dprevost@photonsoftware.org>")]
+[assembly: AssemblyCopyright("Copyright © 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.4.0.0")]
-[assembly: AssemblyFileVersion("0.4.0.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual C# Express 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotonLib", "PhotonLib\PhotonLib.csproj", "{BB9500D3-FF6D-4AC0-AAD3-516EABB0443E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotonLib", "PhotonLib\PhotonLib.vs2005.csproj", "{BB9500D3-FF6D-4AC0-AAD3-516EABB0443E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
