@@ -97,7 +97,6 @@ PYTHON_FILES =                       \
         Python/src/ObjStatus.h       \
         Python/src/pso.c             \
         Python/src/Session.h         \
-        Python/test/errors.py        \
         Python/test/folder.py        \
         Python/test/session.py       
 
