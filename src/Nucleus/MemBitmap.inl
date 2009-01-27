@@ -1,7 +1,7 @@
 /* -*- c -*- */
 /* :mode=c:  - For jedit, previous line for emacs */
 /*
- * Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *

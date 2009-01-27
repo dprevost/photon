@@ -5,7 +5,7 @@
  *
  * The version of this interface is 0.4.
  *
- * Copyright (C) 2006-2008 Daniel Prevost
+ * Copyright (C) 2006-2009 Daniel Prevost
  *
  * This file is part of the Photon framework (photonsoftware.org).
  *

@@ -5,7 +5,7 @@
  *
  * The version of the XML error file is 0.5.
  *
- * Copyright (C) 2006-2008 Daniel Prevost
+ * Copyright (C) 2006-2009 Daniel Prevost
  *
  * This file is part of Photon (photonsoftware.org).
  *
