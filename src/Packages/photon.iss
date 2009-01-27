@@ -13,13 +13,13 @@ OutputDir=src\Packages\Output
 OutputBaseFilename=photon-0.5.0
 
 [Files]
-Source: src\Release\photon.dll; DestDir: {app}\bin
-Source: src\Release\photonCommon.dll; DestDir: {app}\bin
-Source: src\Release\photoncpp.dll; DestDir: {app}\bin
-Source: src\Release\photonNucleus.dll; DestDir: {app}\bin
-Source: src\Release\psoInfo.exe; DestDir: {app}\bin
-Source: src\Release\psosh.exe; DestDir: {app}\bin
-Source: src\Release\quasar.exe; DestDir: {app}\bin
+Source: src\Release2005\photon.dll; DestDir: {app}\bin
+Source: src\Release2005\photonCommon.dll; DestDir: {app}\bin
+Source: src\Release2005\photoncpp.dll; DestDir: {app}\bin
+Source: src\Release2005\photonNucleus.dll; DestDir: {app}\bin
+Source: src\Release2005\psoInfo.exe; DestDir: {app}\bin
+Source: src\Release2005\psosh.exe; DestDir: {app}\bin
+Source: src\Release2005\quasar.exe; DestDir: {app}\bin
 Source: src\include\photon\photon.h; DestDir: {app}\include
 Source: src\include\photon\psoCommon.h; DestDir: {app}\include
 Source: src\include\photon\psoErrors.h; DestDir: {app}\include
@@ -41,8 +41,8 @@ Source: src\include\photon\psoLifo; DestDir: {app}\include
 Source: src\include\photon\psoProcess; DestDir: {app}\include
 Source: src\include\photon\psoQueue; DestDir: {app}\include
 Source: src\include\photon\psoSession; DestDir: {app}\include
-Source: src\Release\photon.lib; DestDir: {app}\lib
-Source: src\Release\photoncpp.lib; DestDir: {app}\lib
+Source: src\Release2005\photon.lib; DestDir: {app}\lib
+Source: src\Release2005\photoncpp.lib; DestDir: {app}\lib
 Source: doc\refman_c.pdf; DestDir: {app}
 Source: doc\refman_c++.pdf; DestDir: {app}
 Source: doc\Photon_C_API.chm; DestDir: {app}
