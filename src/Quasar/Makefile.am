@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -42,13 +42,14 @@ $(OUTPUT_FILES): quasarOptions.xml quasarErrors.xml
 	errorParser --options quasarOptions.xml quasarErrors.xml
 endif
 
-EXTRA_DIST =              \
-        $(man_MANS)       \
-        Makefile.win32    \
-        quasar.xml        \
-        quasar.vcproj     \
-        quasarErrors.xml  \
-        quasarOptions.xml 
+EXTRA_DIST =                 \
+        $(man_MANS)          \
+        Makefile.win32       \
+        quasar.xml           \
+        quasar.vs2005.vcproj \
+        quasar.vs2008.vcproj \
+        quasarErrors.xml     \
+        quasarOptions.xml    
 
 quasar_SOURCES =             \
         quasarErrorHandler.c \

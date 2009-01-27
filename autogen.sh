@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -52,14 +52,6 @@ rm -f autom4te.cache/output*
 rm -f autom4te.cache/requests*
 rm -f autom4te.cache/traces*
 
-chmod 755 Config/config.guess
-chmod 755 Config/config.sub
-chmod 755 Config/depcomp
-chmod 755 Config/install-sh
-chmod 755 Config/ltmain.sh
-chmod 755 Config/missing
-chmod 755 Config/mkinstalldirs
-
 echo "-----------------------------------------------"
 echo "End of cleanup phase - warning messages are not"
 echo "expected from now on and should be examined... "
@@ -67,6 +59,8 @@ echo "-----------------------------------------------"
 
 ##########################################################################
 
+echo "libtoolize"
+libtoolize -f
 echo "- aclocal -I m4"
 aclocal -I m4
 echo "- autoconf"

@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -59,19 +59,20 @@ LOCK_FILES =                      \
         arch/Lock-win32.h         \
         arch/Lock-x86_64-gcc.h    
 
-EXTRA_DIST =           \
-        asctime_r.c    \
-        Common.vcproj  \
-        ctime_r.c      \
-        localtime_r.c  \
-        Makefile.win32 \
-        memcmp.c       \
-        memset.c       \
-        nanosleep.c    \
-        private.h      \
-        strnlen.c      \
-        tzfile.h       \
-        $(LOCK_FILES)  
+EXTRA_DIST =                  \
+        asctime_r.c           \
+        Common.vs2005.vcproj  \
+        Common.vs2008.vcproj  \
+        ctime_r.c             \
+        localtime_r.c         \
+        Makefile.win32        \
+        memcmp.c              \
+        memset.c              \
+        nanosleep.c           \
+        private.h             \
+        strnlen.c             \
+        tzfile.h              \
+        $(LOCK_FILES)         
 
 libCommon_la_LIBADD = @LTLIBOBJS@
 

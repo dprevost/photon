@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -60,7 +60,8 @@ libphoton_la_LIBADD =                             \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la   
 
-EXTRA_DIST =           \
-        API.vcproj     \
-        Makefile.win32 
+EXTRA_DIST =              \
+        API.vs2005.vcproj \
+        API.vs2008.vcproj \
+        Makefile.win32    
 

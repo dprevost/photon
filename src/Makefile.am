@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -82,17 +82,30 @@ PACKAGES_FILES =                \
         Packages/photon.iss     \
         Packages/photon.spec.in 
 
-PYTHON_FILES =       \
-        Makefile.in  \
-        PhotonWrap.c \
-        Session.h    \
-        setup.py     
+PYTHON_FILES =                       \
+        Python/Makefile.in           \
+        Python/MANIFEST.in           \
+        Python/setup.py              \
+        Python/src/BasicDef.h        \
+        Python/src/Common.h          \
+        Python/src/errors.h          \
+        Python/src/FieldDefinition.h \
+        Python/src/FolderEntry.h     \
+        Python/src/Folder.h          \
+        Python/src/Info.h            \
+        Python/src/KeyDefinition.h   \
+        Python/src/ObjStatus.h       \
+        Python/src/pso.c             \
+        Python/src/Session.h         \
+        Python/test/errors.py        \
+        Python/test/folder.py        \
+        Python/test/session.py       
 
 EXTRA_DIST =                  \
         $(EXAMPLES_FILES)     \
         config-win32.h        \
         Makefile.win32        \
-        photon.sln            \
+        photon.vs2005.sln     \
         $(PACKAGES_FILES)     \
         $(PYTHON_FILES)       \
         XML/quasar_config.xsd 

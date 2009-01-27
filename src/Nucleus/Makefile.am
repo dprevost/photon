@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -75,7 +75,8 @@ libNucleus_la_SOURCES =   \
         TreeNode.h        \
         TxStatus.h        
    
-EXTRA_DIST =           \
-        Nucleus.vcproj \
-        Makefile.win32 
+EXTRA_DIST =                  \
+        Nucleus.vs2005.vcproj \
+        Nucleus.vs2008.vcproj \
+        Makefile.win32        
 

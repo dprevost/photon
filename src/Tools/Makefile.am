@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -20,11 +20,15 @@ SUBDIRS = . Shell
  
 bin_PROGRAMS = psoinfo
 
-psoinfo_SOURCES = info.cpp
+psoinfo_SOURCES =  \
+        info.cpp   \
+        resource.h 
 
-EXTRA_DIST =           \
-        Makefile.win32 \
-        psoInfo.vcproj 
+EXTRA_DIST =                  \
+        Makefile.win32        \
+        psoInfo.rc            \
+        psoInfo.vs2005.vcproj \
+        psoInfo.vs2008.vcproj 
 
 psoinfo_LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -29,11 +29,13 @@ psosh.1: psosh.xml
 	db2x_docbook2man --encoding=iso-8859-1 psosh.xml
 endif
 
-EXTRA_DIST =           \
-        $(man_MANS)    \
-        psosh.xml      \
-        Makefile.win32 \
-        psosh.vcproj   
+EXTRA_DIST =                \
+        $(man_MANS)         \
+        psosh.xml           \
+        Makefile.win32      \
+        psosh.rc            \
+        psosh.vs2005.vcproj \
+        psosh.vs2008.vcproj 
 
 psosh_SOURCES =       \
         constants.cpp \
@@ -41,6 +43,7 @@ psosh_SOURCES =       \
         shell.cpp     \
         shell.h       \
         psosh.cpp     \
+        resource.h    \
         util.cpp      \
         util.h        
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -39,9 +39,10 @@ libphotoncpp_la_SOURCES = \
         Queue.cpp         \
         Session.cpp       
 
-EXTRA_DIST =           \
-        CPP.vcproj     \
-        Makefile.win32 
+EXTRA_DIST =              \
+        CPP.vs2005.vcproj \
+        CPP.vs2008.vcproj \
+        Makefile.win32    
 
 libphotoncpp_la_LIBADD =                          \
         $(top_builddir)/src/API/libphoton.la      \

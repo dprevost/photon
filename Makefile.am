@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2008 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -11,13 +11,6 @@
 CLEANFILES = *~
 
 EXTRA_DIST =                 \
-        configure            \
-        Config/config.guess  \
-        Config/config.sub    \
-        Config/install-sh    \
-        Config/ltmain.sh     \
-        Config/missing       \
-        Config/mkinstalldirs \
         Makefile.win32       
 
 # The 'doc' subdir must be placed after 'src' since some of the 
