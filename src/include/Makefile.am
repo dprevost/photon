@@ -10,17 +10,7 @@
 
 CLEANFILES = *~ photon/*~ Doxygen/*~
 
-C_BASE_HEADER_FILES = \
-        psoCommon.h   \
-        psoFastMap.h  \
-        psoFolder.h   \
-        psoHashMap.h  \
-        psoLifo.h     \
-        psoQueue.h    \
-        psoProcess.h  \
-        psoSession.h  
-
-HEADER_FILES =                                        \
+C_HEADER_FILES =                                      \
         $(top_srcdir)/src/include/photon/photon.h     \
         $(top_srcdir)/src/include/photon/psoCommon.h  \
         $(top_srcdir)/src/include/photon/psoFastMap.h \
@@ -31,25 +21,54 @@ HEADER_FILES =                                        \
         $(top_srcdir)/src/include/photon/psoProcess.h \
         $(top_srcdir)/src/include/photon/psoSession.h 
 
-CPP_BASE_HEADER_FILES =  \
-        psoDefinition    \
-        psoException     \
-        psoFastMap       \
-        psoFastMapEditor \
-        psoFolder        \
-        psoHashMap       \
-        psoLifo          \
-        psoProcess       \
-        psoQueue         \
-        psoSession       
+C_INSTALLED_FILES =         \
+        photon/photon.h     \
+        photon/psoCommon.h  \
+        photon/psoErrors.h  \
+        photon/psoFastMap.h \
+        photon/psoFolder.h  \
+        photon/psoHashMap.h \
+        photon/psoLifo.h    \
+        photon/psoQueue.h   \
+        photon/psoProcess.h \
+        photon/psoSession.h 
 
-C_HEADER_FILES = $(subst pso,$(top_srcdir)/src/include/photon/pso,$(C_BASE_HEADER_FILES))
-C_INSTALLED_FILES = $(subst pso,photon/pso,$(C_BASE_HEADER_FILES))
+CPP_INSTALLED_FILES =           \
+        photon/photon           \
+        photon/psoDefinition    \
+        photon/psoException     \
+        photon/psoFastMap       \
+        photon/psoFastMapEditor \
+        photon/psoFolder        \
+        photon/psoHashMap       \
+        photon/psoLifo          \
+        photon/psoProcess       \
+        photon/psoQueue         \
+        photon/psoSession       
 
-CPP_HEADER_FILES = $(subst pso,$(top_srcdir)/src/include/photon/pso,$(CPP_BASE_HEADER_FILES))
-CPP_MAN_PAGES = $(addsuffix .3,$(subst pso,man3/pso,$(CPP_BASE_HEADER_FILES)))
-CPP_INSTALLED_FILES = $(subst pso,photon/pso,$(CPP_BASE_HEADER_FILES))
-CPP_DOXY_FILES = $(addsuffix .in,$(subst pso,$(top_srcdir)/src/include/Doxygen/pso,$(CPP_BASE_HEADER_FILES)))
+CPP_DOXY_FILES =  \
+        $(top_srcdir)/src/include/Doxygen/psoDefinition.in    \
+        $(top_srcdir)/src/include/Doxygen/psoException.in     \
+        $(top_srcdir)/src/include/Doxygen/psoFastMap.in       \
+        $(top_srcdir)/src/include/Doxygen/psoFastMapEditor.in \
+        $(top_srcdir)/src/include/Doxygen/psoFolder.in        \
+        $(top_srcdir)/src/include/Doxygen/psoHashMap.in       \
+        $(top_srcdir)/src/include/Doxygen/psoLifo.in          \
+        $(top_srcdir)/src/include/Doxygen/psoProcess.in       \
+        $(top_srcdir)/src/include/Doxygen/psoQueue.in         \
+        $(top_srcdir)/src/include/Doxygen/psoSession.in       
+
+CPP_MAN_PAGES =                 \
+        man3/psoDefinition.3    \
+        man3/psoException.3     \
+        man3/psoFastMap.3       \
+        man3/psoFastMapEditor.3 \
+        man3/psoFolder.3        \
+        man3/psoHashMap.3       \
+        man3/psoLifo.3          \
+        man3/psoProcess.3       \
+        man3/psoQueue.3         \
+        man3/psoSession.3       
 
 # Sadly, this list must be edited by hand (it will vary if functions are
 # added or removed from the C API).
@@ -123,7 +142,7 @@ C_MAN_PAGES =                           \
         man3/psoLifoPop.3               \
         man3/psoLifoPush.3              \
         man3/psoLifoStatus.3            \
-        man3/psoBasicObjectDef.3      \
+        man3/psoBasicObjectDef.3        \
         man3/psoObjectType.3            \
         man3/psoObjStatus.3             \
         man3/psoProcess_c.3             \
@@ -154,9 +173,6 @@ EXTRA_DIST =              \
         $(CPP_DOXY_FILES) 
 
 nobase_include_HEADERS =       \
-        photon/photon          \
-        photon/photon.h        \
-        photon/psoErrors.h     \
         $(C_INSTALLED_FILES)   \
         $(CPP_INSTALLED_FILES) 
 
@@ -165,18 +181,52 @@ nobase_include_HEADERS =       \
 #
 if COND_USE_DOXYGEN
 
-$(CPP_MAN_PAGES): $(CPP_INSTALLED_FILES) photon/photon $(CPP_DOXY_FILES)
-	@for f in $(CPP_BASE_HEADER_FILES); do           \
-      doxygen $(top_srcdir)/src/include/Doxygen/$$f; \
-      cp dummy/man/man3/$$f.3 man3/$$f.3; \
-   done
+man3/psoDefinition.3: $(top_srcdir)/src/include/Doxygen/psoDefinition.in $(top_srcdir)/src/include/photon/psoDefinition
+	doxygen $(top_srcdir)/src/include/Doxygen/psoDefinition 
+	cp dummy/man/man3/psoDefinition.3 man3/psoDefinition.3
+	-rm -rf dummy
+man3/psoException.3: $(top_srcdir)/src/include/Doxygen/psoException.in $(top_srcdir)/src/include/photon/psoException
+	doxygen $(top_srcdir)/src/include/Doxygen/psoException 
+	cp dummy/man/man3/psoException.3 man3/psoException.3
+	-rm -rf dummy
+man3/psoFastMap.3: $(top_srcdir)/src/include/Doxygen/psoFastMap.in $(top_srcdir)/src/include/photon/psoFastMap
+	doxygen $(top_srcdir)/src/include/Doxygen/psoFastMap 
+	cp dummy/man/man3/psoFastMap.3 man3/psoFastMap.3
+	-rm -rf dummy
+man3/psoFastMapEditor.3: $(top_srcdir)/src/include/Doxygen/psoFastMapEditor.in $(top_srcdir)/src/include/photon/psoFastMapEditor
+	doxygen $(top_srcdir)/src/include/Doxygen/psoFastMapEditor 
+	cp dummy/man/man3/psoFastMapEditor.3 man3/psoFastMapEditor.3
+	-rm -rf dummy
+man3/psoFolder.3: $(top_srcdir)/src/include/Doxygen/psoFolder.in $(top_srcdir)/src/include/photon/psoFolder
+	doxygen $(top_srcdir)/src/include/Doxygen/psoFolder 
+	cp dummy/man/man3/psoFolder.3 man3/psoFolder.3
+	-rm -rf dummy
+man3/psoHashMap.3: $(top_srcdir)/src/include/Doxygen/psoHashMap.in $(top_srcdir)/src/include/photon/psoHashMap
+	doxygen $(top_srcdir)/src/include/Doxygen/psoHashMap 
+	cp dummy/man/man3/psoHashMap.3 man3/psoHashMap.3
+	-rm -rf dummy
+man3/psoLifo.3: $(top_srcdir)/src/include/Doxygen/psoLifo.in $(top_srcdir)/src/include/photon/psoLifo
+	doxygen $(top_srcdir)/src/include/Doxygen/psoLifo 
+	cp dummy/man/man3/psoLifo.3 man3/psoLifo.3
+	-rm -rf dummy
+man3/psoProcess.3: $(top_srcdir)/src/include/Doxygen/psoProcess.in $(top_srcdir)/src/include/photon/psoProcess
+	doxygen $(top_srcdir)/src/include/Doxygen/psoProcess 
+	cp dummy/man/man3/psoProcess.3 man3/psoProcess.3
+	-rm -rf dummy
+man3/psoQueue.3: $(top_srcdir)/src/include/Doxygen/psoQueue.in $(top_srcdir)/src/include/photon/psoQueue
+	doxygen $(top_srcdir)/src/include/Doxygen/psoQueue 
+	cp dummy/man/man3/psoQueue.3 man3/psoQueue.3
+	-rm -rf dummy
+man3/psoSession.3: $(top_srcdir)/src/include/Doxygen/psoSession.in $(top_srcdir)/src/include/photon/psoSession
+	doxygen $(top_srcdir)/src/include/Doxygen/psoSession 
+	cp dummy/man/man3/psoSession.3 man3/psoSession.3
 	-rm -rf dummy
 
 # Warning: this doxygen run creates many more files which we do
 # not want to distribute (a header file for each error code, for each
 # data field in the data structures, etc.). All these files are links
 # to the "meat" we are keeping anyway!
-$(C_MAN_PAGES): $(C_HEADER_FILES) $(top_srcdir)/src/include/photon/photon.h Doxygen/pso_c.in
+$(C_MAN_PAGES): $(C_HEADER_FILES) Doxygen/pso_c.in
 	doxygen Doxygen/pso_c
 	cp dummy/man/man3/pso*.3 man3/
 	cp dummy/man/man3/photon*.3 man3/
@@ -186,7 +236,6 @@ endif
 
 clean-local:
 	-rm -rf dummy
-	echo $(ZZ)
 
 #
 # Only clean the man pages if doxygen is present.

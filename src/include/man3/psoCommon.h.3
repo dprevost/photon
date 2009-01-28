@@ -1,4 +1,4 @@
-.TH "psoCommon.h" 3 "12 Dec 2008" "Version 0.4.0" "Photon Software" \" -*- nroff -*-
+.TH "psoCommon.h" 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -77,6 +77,12 @@ psoCommon.h \-
 .RI "typedef void * \fBPSO_HANDLE\fP"
 .br
 .RI "\fIPSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
+.ti -1c
+.RI "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.br
+.ti -1c
+.RI "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.br
 .ti -1c
 .RI "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .br
@@ -168,9 +174,15 @@ Definition at line 272 of file psoCommon.h.
 .SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .PP
 Definition at line 366 of file psoCommon.h.
+.SS "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.PP
+Definition at line 126 of file psoCommon.h.
 .SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .PP
 Definition at line 182 of file psoCommon.h.
+.SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.PP
+Definition at line 118 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
 Definition at line 311 of file psoCommon.h.
@@ -207,7 +219,7 @@ Only valid for the last field of the data definition.
 Only valid for the last field of the data definition. 
 .PP
 Definition at line 133 of file psoCommon.h.
-.SS "enum typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.SS "enum \fBpsoIteratorType\fP"
 .PP
 \fBEnumerator: \fP
 .in +1c
@@ -238,7 +250,7 @@ Only valid for the last field of the data definition.
 Only valid for the last field of the data definition. 
 .PP
 Definition at line 153 of file psoCommon.h.
-.SS "enum typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.SS "enum \fBpsoObjectType\fP"
 .PP
 The object type as seen from the API. 
 .PP
