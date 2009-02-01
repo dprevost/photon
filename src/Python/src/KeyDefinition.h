@@ -16,6 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#ifndef KEY_DEFINITION_H
+#define KEY_DEFINITION_H
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct {
@@ -167,6 +170,10 @@ keyDefToObject( psoKeyDefinition * def )
    
    return key;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* KEY_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

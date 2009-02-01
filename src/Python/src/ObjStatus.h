@@ -69,9 +69,9 @@ ObjStatus_str( PyObject * self )
 
    if ( obj->objType && obj->status ) {
       return PyString_FromFormat( 
-         "ObjStatus{obj_type:\%s, status:\%s, num_blocks:\%d, "
-         "num_groups:\%d, num_data_items:\%d, free_bytes:\%d, "
-         "max_data_length:\%d, max_key_length:\%d}",
+         "ObjStatus{obj_type: %s, status: %s, num_blocks: %d, "
+         "num_groups: %d, num_data_items: %d, free_bytes: %d, "
+         "max_data_length: %d, max_key_length: %d}",
          PyString_AsString(obj->objType),
          PyString_AsString(obj->status),
          obj->numBlocks,

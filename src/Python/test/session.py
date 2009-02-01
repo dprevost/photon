@@ -222,6 +222,11 @@ def destroy_test():
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+def get_def_test():
+    global s
+
+# --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 try:
     pso.init("10701", False )
     
@@ -245,6 +250,19 @@ try:
     destroy_test()
 
     s.destroy_object( 'sess_folder1/folder2' )
+    s.commit()
+    
+    s.destroy_object( 'sess_folder1/folder3/queue1' )    
+    s.rollback()
+    
+    get_def_test()
+    
+    base, fields = s.get_definition( 'sess_folder1/folder3/queue1' )
+    print base
+    i = s.get_info()
+    print i
+    status = s.get_status( 'sess_folder1/folder3/queue1' )
+    print 'status = ', status
 
 except pso.error, (msg, errcode):
     print 'pso message = ', msg
@@ -255,9 +273,6 @@ except:
 
 pso.exit()
 
-status = s.get_status( 'test1' )
-print 'status = ', status
-print status.obj_type, ' ', status.free_bytes
-print 'status = ', dir(status)
+#print 'status = ', dir(status)
 
 pso.exit()

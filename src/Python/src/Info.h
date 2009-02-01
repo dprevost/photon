@@ -91,6 +91,50 @@ Info_dealloc( PyObject * self )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+Info_str( PyObject * self )
+{
+   Info * obj = (Info *)self;
+
+   if ( obj->compiler ) {
+      return PyString_FromFormat( 
+         "Info{total_size: %zu, "
+         "allocated_size: %zu, "
+         "num_objects: %zu, "
+         "num_groups: %zu, "
+         "num_mallocs: %zu, "
+         "num_frees: %zu, "
+         "largest_free: %zu, "
+         "memory_version: %d, "
+         "big_endian: %d, "
+         "compiler_name: %s, "
+         "compiler_version: %s, "
+         "platform: %s, "
+         "dll_version: %s, "
+         "quasar_version: %s, "
+         "creation_time: %s}",
+         obj->totalSizeInBytes,
+         obj->allocatedSizeInBytes,
+         obj->numObjects,
+         obj->numGroups,
+         obj->numMallocs,
+         obj->numFrees,
+         obj->largestFreeInBytes,
+         obj->memoryVersion,
+         obj->bigEndian,
+         PyString_AsString(obj->compiler),
+         PyString_AsString(obj->compilerVersion),
+         PyString_AsString(obj->platform),
+         PyString_AsString(obj->dllVersion),
+         PyString_AsString(obj->quasarVersion),
+         PyString_AsString(obj->creationTime) );
+   }
+   
+   return PyString_FromString("Info is not set");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef Info_members[] = {
    { "total_size", T_INT, offsetof(Info, totalSizeInBytes), RO,
      "Total size of the shared memory"},
@@ -112,7 +156,7 @@ static PyMemberDef Info_members[] = {
      "Endianess (0 for little endian, 1 for big endian)."},
    { "compiler_name", T_OBJECT_EX, offsetof(Info, compiler), RO,
      "Compiler name"},
-   { "", T_OBJECT_EX, offsetof(Info, compilerVersion), RO,
+   { "compiler_version", T_OBJECT_EX, offsetof(Info, compilerVersion), RO,
      "Compiler version (if available)"},
    { "platform", T_OBJECT_EX, offsetof(Info, platform), RO,
      "Platform"},
@@ -144,7 +188,7 @@ static PyTypeObject InfoType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   Info_str,                   /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/

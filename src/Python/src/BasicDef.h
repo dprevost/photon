@@ -16,6 +16,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#include "KeyDefinition.h"
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct {
@@ -94,6 +96,25 @@ BaseDef_init( PyObject * self, PyObject * args, PyObject *kwds )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+BaseDef_str( PyObject * self )
+{
+   BaseDef * obj = (BaseDef *)self;
+
+//   PyObject * keyDef;
+
+   if ( obj->objType ) {
+      return PyString_FromFormat( 
+         "BaseDef{obj_type: %s, num_fields: %d}",
+         PyString_AsString(obj->objType),
+         obj->numFields );
+   }
+   
+   return PyString_FromString("BaseDef is not set");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef BaseDef_members[] = {
    { "obj_type", T_OBJECT_EX, offsetof(BaseDef, objType), RO,
      "Status of the object"},
@@ -123,7 +144,7 @@ static PyTypeObject BaseDefType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   BaseDef_str,                /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/

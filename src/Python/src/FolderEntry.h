@@ -74,7 +74,7 @@ FolderEntry_str( PyObject * self )
 
    if ( entry->name && entry->objType && entry->status ) {
       return PyString_FromFormat( 
-         "FolderEntry{name:\%s, obj_type:\%s, status:\%s, name_length:\%d}",
+         "FolderEntry{name: %s, obj_type: %s, status: %s, name_length: %d}",
          PyString_AsString(entry->name),
          PyString_AsString(entry->objType),
          PyString_AsString(entry->status),
