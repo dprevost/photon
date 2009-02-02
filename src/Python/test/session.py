@@ -259,6 +259,7 @@ try:
     
     base, fields = s.get_definition( 'sess_folder1/folder3/queue1' )
     print base
+    print fields[1]
     i = s.get_info()
     print i
     status = s.get_status( 'sess_folder1/folder3/queue1' )

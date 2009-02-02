@@ -706,7 +706,8 @@ int psoHashMapStatus( PSO_HANDLE     objectHandle,
             psonMemObjectStatus( &pMemHashMap->memObject, pStatus );
 
             psonHashMapStatus( pMemHashMap, pStatus );
-
+            pStatus->type = PSO_HASH_MAP;
+            
             psonUnlock( &pMemHashMap->memObject, pContext );
          }
          else {

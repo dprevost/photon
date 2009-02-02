@@ -16,6 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#ifndef PSO_PY_BASIC_DEF_H
+#define PSO_PY_BASIC_DEF_H
+
 #include "KeyDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -100,14 +103,25 @@ static PyObject *
 BaseDef_str( PyObject * self )
 {
    BaseDef * obj = (BaseDef *)self;
-
-//   PyObject * keyDef;
-
+   PyObject * key, * outStr;
+   
    if ( obj->objType ) {
-      return PyString_FromFormat( 
-         "BaseDef{obj_type: %s, num_fields: %d}",
-         PyString_AsString(obj->objType),
-         obj->numFields );
+      if ( obj->keyDef ) {
+         key = KeyDefinition_str( obj->keyDef );
+         outStr = PyString_FromFormat( 
+            "BaseDef{ obj_type: %s, num_fields: %d, key: %s }",
+            PyString_AsString(obj->objType),
+            obj->numFields,
+            PyString_AsString(key) );
+         Py_XDECREF( key );
+      }
+      else {
+         outStr = PyString_FromFormat( 
+            "BaseDef{ obj_type: %s, num_fields: %d }",
+            PyString_AsString(obj->objType),
+            obj->numFields );
+      }
+      return outStr;
    }
    
    return PyString_FromString("BaseDef is not set");
@@ -192,3 +206,8 @@ BaseDefToObject( psoBasicObjectDef * def, PyObject * key )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_BASIC_DEF_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -16,6 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#ifndef PSO_PY_FIELD_DEFINITION_H
+#define PSO_PY_FIELD_DEFINITION_H
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct {
@@ -103,6 +106,35 @@ FieldDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+FieldDefinition_str( PyObject * self )
+{
+   FieldDefinition * def = (FieldDefinition *)self;
+
+   if ( def->name && def->fieldType ) {
+      return PyString_FromFormat( 
+         "FieldDefinition{ "
+         "name: %s, "
+         "field_type: %s, "
+         "length: %d, "
+         "min_length: %d, "
+         "max_length: %d, "
+         "precision: %d, "
+         "scale: %d }",
+         PyString_AsString(def->name),
+         PyString_AsString(def->fieldType),
+         def->length,
+         def->minLength,
+         def->maxLength,
+         def->precision,
+         def->scale );
+   }
+
+   return PyString_FromString("FieldDefinition is not set");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef FieldDefinition_members[] = {
    { "name", T_OBJECT_EX, offsetof(FieldDefinition, name), RO,
      "Name of the field" },
@@ -140,7 +172,7 @@ static PyTypeObject FieldDefinitionType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   FieldDefinition_str,        /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
@@ -220,6 +252,10 @@ cleanup:
    
    return NULL;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_FIELD_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

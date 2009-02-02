@@ -16,6 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#ifndef PSO_PY_FOLDER_ENTRY_H
+#define PSO_PY_FOLDER_ENTRY_H
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Python.h"
@@ -74,7 +77,7 @@ FolderEntry_str( PyObject * self )
 
    if ( entry->name && entry->objType && entry->status ) {
       return PyString_FromFormat( 
-         "FolderEntry{name: %s, obj_type: %s, status: %s, name_length: %d}",
+         "FolderEntry{ name: %s, obj_type: %s, status: %s, name_length: %d }",
          PyString_AsString(entry->name),
          PyString_AsString(entry->objType),
          PyString_AsString(entry->status),
@@ -143,3 +146,8 @@ static PyTypeObject FolderEntryType = {
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_FOLDER_ENTRY_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

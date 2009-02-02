@@ -16,6 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#ifndef PSO_PY_INFO_H
+#define PSO_PY_INFO_H
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
@@ -98,7 +101,7 @@ Info_str( PyObject * self )
 
    if ( obj->compiler ) {
       return PyString_FromFormat( 
-         "Info{total_size: %zu, "
+         "Info{ total_size: %zu, "
          "allocated_size: %zu, "
          "num_objects: %zu, "
          "num_groups: %zu, "
@@ -112,7 +115,7 @@ Info_str( PyObject * self )
          "platform: %s, "
          "dll_version: %s, "
          "quasar_version: %s, "
-         "creation_time: %s}",
+         "creation_time: %s }",
          obj->totalSizeInBytes,
          obj->allocatedSizeInBytes,
          obj->numObjects,
@@ -212,6 +215,10 @@ static PyTypeObject InfoType = {
    0,                          /* tp_alloc */
    0,                          /* tp_new */
 };
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_INFO_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

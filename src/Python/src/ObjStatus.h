@@ -15,6 +15,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
+ 
+#ifndef PSO_PY_OBJ_STATUS_H
+#define PSO_PY_OBJ_STATUS_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -69,9 +72,9 @@ ObjStatus_str( PyObject * self )
 
    if ( obj->objType && obj->status ) {
       return PyString_FromFormat( 
-         "ObjStatus{obj_type: %s, status: %s, num_blocks: %d, "
+         "ObjStatus{ obj_type: %s, status: %s, num_blocks: %d, "
          "num_groups: %d, num_data_items: %d, free_bytes: %d, "
-         "max_data_length: %d, max_key_length: %d}",
+         "max_data_length: %d, max_key_length: %d }",
          PyString_AsString(obj->objType),
          PyString_AsString(obj->status),
          obj->numBlocks,
@@ -150,6 +153,10 @@ static PyTypeObject ObjStatusType = {
    0,                          /* tp_alloc */
    0,                          /* tp_new */
 };
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_OBJ_STATUS_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

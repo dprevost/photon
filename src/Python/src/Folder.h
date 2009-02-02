@@ -16,6 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
+#ifndef PSO_PY_FOLDER_H
+#define PSO_PY_FOLDER_H
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct {
@@ -474,7 +477,8 @@ Folder_Status( PyObject * self )
       SetException( errcode );
       return NULL;
    }
-   
+
+fprintf( stderr, "TYPE = %d\n", status.type );
    objType = GetObjectType( status.type );
    if ( objType == NULL ) return NULL;
 
@@ -498,9 +502,23 @@ Folder_Status( PyObject * self )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+Folder_str( PyObject * self )
+{
+   Folder * folder = (Folder *) self;
+   
+   if ( folder->name != NULL ) {
+      return PyString_FromFormat( 
+         "Folder{ name: %s }",
+         PyString_AsString(folder->name) );
+   }
+   
+   return PyString_FromString("Folder is not open");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef Folder_members[] = {
-   {"handle", T_INT, offsetof(Folder, handle), RO,
-    "Folder handle"},
    { "name", T_OBJECT_EX, offsetof(Folder, name), RO,
      "The name of the folder"},
    {NULL}  /* Sentinel */
@@ -552,7 +570,7 @@ static PyTypeObject FolderType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   Folder_str,                 /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
@@ -578,3 +596,8 @@ static PyTypeObject FolderType = {
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_FOLDER_H */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -529,6 +529,7 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
             psonMemObjectStatus( &pMemLifo->memObject, pStatus );
 
             psonQueueStatus( pMemLifo, pStatus );
+            pStatus->type = PSO_LIFO;
 
             psonUnlock( &pMemLifo->memObject, pContext );
          }

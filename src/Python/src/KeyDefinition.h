@@ -16,8 +16,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-#ifndef KEY_DEFINITION_H
-#define KEY_DEFINITION_H
+#ifndef PSO_PY_KEY_DEFINITION_H
+#define PSO_PY_KEY_DEFINITION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -92,6 +92,28 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject *kwds )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+KeyDefinition_str( PyObject * self )
+{
+   KeyDefinition * def = (KeyDefinition *)self;
+   
+   if ( def->keyType != NULL ) {
+      return PyString_FromFormat( 
+         "KeyDefinition{ key_type: %s, "
+         "length: %d,"
+         "min_length: %d," 
+         "max_length: %d }", 
+         PyString_AsString(def->keyType),
+         def->length,
+         def->minLength,
+         def->maxLength );
+   }
+
+   return PyString_FromString("KeyDefinition is not set");
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyMemberDef KeyDefinition_members[] = {
    { "key_type", T_OBJECT_EX, offsetof(KeyDefinition, keyType), RO,
      "Type of key"},
@@ -123,7 +145,7 @@ static PyTypeObject KeyDefinitionType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   0,                          /*tp_str*/
+   KeyDefinition_str,          /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
@@ -173,7 +195,7 @@ keyDefToObject( psoKeyDefinition * def )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* KEY_DEFINITION_H */
+#endif /* PSO_PY_KEY_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -590,6 +590,7 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
             psonMemObjectStatus( &pMemQueue->memObject, pStatus );
 
             psonQueueStatus( pMemQueue, pStatus );
+            pStatus->type = PSO_QUEUE;
 
             psonUnlock( &pMemQueue->memObject, pContext );
          }

@@ -18,6 +18,9 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#ifndef PSO_PY_COMMON_H
+#define PSO_PY_COMMON_H
+
 #include "Python.h"
 #include "structmember.h"
 
@@ -193,6 +196,10 @@ GetString( const char * s, Py_ssize_t len)
 
 #include "Session.h"
 #include "Folder.h"
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#endif /* PSO_PY_COMMON_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

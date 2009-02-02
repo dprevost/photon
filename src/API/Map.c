@@ -882,6 +882,7 @@ int psoFastMapStatus( PSO_HANDLE     objectHandle,
             psonMemObjectStatus( &pMemHashMap->memObject, pStatus );
 
             psonMapStatus( pMemHashMap, pStatus );
+            pStatus->type = PSO_FAST_MAP;
 
             psonUnlock( &pMemHashMap->memObject, pContext );
          }

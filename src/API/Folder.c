@@ -544,7 +544,8 @@ int psoFolderStatus( PSO_HANDLE     objectHandle,
             psonMemObjectStatus( &pMemFolder->memObject, pStatus );
 
             psonFolderMyStatus( pMemFolder, pStatus );
-
+            pStatus->type = PSO_FOLDER;
+            
             psonUnlock( &pMemFolder->memObject, pContext );
          }
          else {
