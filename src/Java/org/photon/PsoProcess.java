@@ -18,13 +18,13 @@
 
 package org.photon;
 
-public class psoProcess {
+public class PsoProcess {
 
    static {
       System.loadLibrary("photon_jni");
    }
 
-   public psoProcess( String psoAddress ) throws psoException {
+   public PsoProcess( String psoAddress ) throws psoException {
       
       init( psoAddress );
    }
