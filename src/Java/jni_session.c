@@ -41,7 +41,7 @@ JNIEXPORT jlong JNICALL Java_org_photon_psoSession_initSession (
    errcode = psoInitSession( &handle );
 
    // Normal return
-   if ( errcode == PSO_OK ) return (jlong) handle;
+   if ( errcode == PSO_OK ) return (size_t) handle;
    
    // Throw a java exception
 
@@ -51,7 +51,7 @@ JNIEXPORT jlong JNICALL Java_org_photon_psoSession_initSession (
       (*env)->ThrowNew( env, exc, msg );
    }
 
-   return (jlong) NULL; 
+   return (size_t) NULL; 
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

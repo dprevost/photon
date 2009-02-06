@@ -71,7 +71,7 @@ JNIEXPORT jlong JNICALL Java_org_photon_psoFolder_init(
    PSO_HANDLE handle;
    const char *folderName = (*env)->GetStringUTFChars( env, jstr, NULL );
    if ( folderName == NULL ) {
-      return (jlong) NULL; // out-of-memory exception by the JVM
+      return (size_t) NULL; // out-of-memory exception by the JVM
    }
    
    errcode = psoFolderOpen( (PSO_HANDLE) sessionHandle,
@@ -81,7 +81,7 @@ JNIEXPORT jlong JNICALL Java_org_photon_psoFolder_init(
   (*env)->ReleaseStringUTFChars( env, jstr, folderName );   
 
    // Normal return
-   if ( errcode == PSO_OK ) return (jlong) handle;
+   if ( errcode == PSO_OK ) return (size_t) handle;
    
    // Throw a java exception
    exc = (*env)->FindClass( env, "org/photon/psoException" );
@@ -90,7 +90,7 @@ JNIEXPORT jlong JNICALL Java_org_photon_psoFolder_init(
       (*env)->ThrowNew( env, exc, msg );
    }
 
-   return (jlong) NULL; 
+   return (size_t) NULL; 
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
