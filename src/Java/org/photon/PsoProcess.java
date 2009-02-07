@@ -24,7 +24,7 @@ public class PsoProcess {
       System.loadLibrary("photon_jni");
    }
 
-   public PsoProcess( String psoAddress ) throws psoException {
+   public PsoProcess( String psoAddress ) throws PsoException {
       
       init( psoAddress );
    }
@@ -37,7 +37,7 @@ public class PsoProcess {
       fini();
    }
    
-   private native void init( String psoAddress ) throws psoException;
+   private native void init( String psoAddress ) throws PsoException;
 
    private native void fini();
 }

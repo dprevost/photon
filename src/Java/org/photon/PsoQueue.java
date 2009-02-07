@@ -22,6 +22,6 @@ package org.photon;
  * Queue class for the Photon library.
  */
 
-class psoQueue {
+class PsoQueue {
 
 }

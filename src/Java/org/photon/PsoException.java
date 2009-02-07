@@ -22,6 +22,6 @@ package org.photon;
  * Exception class for the Photon library.
  */
 
-class psoException extends Exception {
+class PsoException extends Exception {
 
 }

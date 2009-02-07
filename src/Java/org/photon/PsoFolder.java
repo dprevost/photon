@@ -18,7 +18,7 @@
 
 package org.photon;
 
-class psoFolderEntry {
+class PsoFolderEntry {
    
    private int type;
    private String name;
@@ -29,18 +29,18 @@ class psoFolderEntry {
  * Folder class for the Photon library.
  */
 
-class psoFolder {
+class PsoFolder {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
    
-   public psoFolder( psoSession session, String name ) throws psoException {
+   public PsoFolder( PsoSession session, String name ) throws PsoException {
 
       handle = init( session.Handle(), name );
    }
 
-   private native long fini( long h, String s ) throws psoException ;
-   private native long init( long h, String s ) throws psoException ;
-   private native psoFolderEntry getFirst( long h );
+   private native long fini( long h, String s ) throws PsoException ;
+   private native long init( long h, String s ) throws PsoException ;
+   private native PsoFolderEntry getFirst( long h );
 }
 

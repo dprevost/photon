@@ -22,17 +22,17 @@ package org.photon;
  * 
  */
 
-class psoSession {
+class PsoSession {
 
    /** To save the native pointer/handle. */
    private long handle;
    
-   public psoSession() throws psoException {
+   public PsoSession() throws PsoException {
 
       handle = initSession();
    }
 
-   private native long initSession() throws psoException ;
+   private native long initSession() throws PsoException ;
    
    public long Handle() {
       return handle;

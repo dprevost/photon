@@ -12,7 +12,7 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/java/org/photon/*.class
+CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
 Java_Source =                        \
         org/photon/PsoException.java \
