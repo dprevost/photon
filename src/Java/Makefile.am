@@ -15,6 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
 Java_Source =                        \
+        org/photon/PsoErrors.java    \
         org/photon/PsoException.java \
         org/photon/PsoFolder.java    \
         org/photon/PsoProcess.java   \
@@ -22,6 +23,7 @@ Java_Source =                        \
         org/photon/PsoSession.java   
 
 Java_Classes =                        \
+        org/photon/PsoErrors.class    \
         org/photon/PsoException.class \
         org/photon/PsoFolder.class    \
         org/photon/PsoProcess.class   \

@@ -38,15 +38,43 @@ class PsoFolder {
    /** To save the native pointer/handle. */
    private long handle = 0;
    private long sessionHandle = 0;
+
+   /* Iterations
+    * 
+    * Usage:
+    *
+    * while ( folder.getNext() ) {
+    *     type   = folder.entryType();
+    *     name   = folder.entryName();
+    *     status = folder.entryStatus();
+    * }
+    */
+   private boolean endIteration = true;
+   private int entryType;
+   private String entryName;
+   private int entryStatus;
+   
+   public int getEntryType()    { return entryType; }
+   public String getEntryName() { return entryName; }
+   public int getEntryStatus()  { return entryStatus; }
    
    public PsoFolder( PsoSession session, String name ) throws PsoException {
 
       handle = init( session.Handle(), name );
    }
 
-   private native long fini( long h ) throws PsoException ;
-   private native long init( long h, String s ) throws PsoException ;
-   private native PsoFolderEntry getFirst( long h );
+   private native long fini( long h ) throws PsoException;
+   private native long init( long h, String s ) throws PsoException;
+
+   private native void folderCreateObject( long h, String objectName, 
+      ObjectDefinition definition ) throws PsoException;
+   private native void folderCreateObjectXML( long h, String xmlBuffer ) throws PsoException;
+   private native void folderDestroyObject( long h, String objectName ) throws PsoException;
+
+   private native boolean folderGetFirst( long h, int entryType, 
+      String entryName, int entryStatus );
+   private native boolean folderGetNext( long h, int entryType, 
+      String entryName, int entryStatus );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -62,79 +90,62 @@ class PsoFolder {
 
    public void createObject( String           objectName,
                              ObjectDefinition definition) {
-
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
-         rc = (int)PhotonErrors.NULL_HANDLE;
-         throw new PhotonException(PhotonException.PrepareException("Folder.CreateObject", rc), rc);
+         throw new PsoException( PsoErrors.NULL_HANDLE );
       }
 
-      rc = folderCreateObject( handle, 
-                               objectName, 
-                               definition );
-      if (rc != 0) {
-         throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.CreateObject"), rc);
-         
-      }
+      folderCreateObject( handle, 
+                          objectName, 
+                          definition );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public void CreateObjectXML(String xmlBuffer)
-        {
-            int rc;
+   public void createObjectXML(String xmlBuffer) {
+      int rc;
 
-            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
-            {
-                rc = (int)PhotonErrors.NULL_HANDLE;
-                throw new PhotonException(PhotonException.PrepareException("Folder.CreateObjectXML", rc), rc);
-            }
+      if ( sessionHandle == 0 || handle == 0 ) {
+         throw new PsoException( PsoErrors.NULL_HANDLE );
+      }
 
-            rc = psoFolderCreateObjectXML(handle,
-                                          xmlBuffer,
-                                          (UInt32)xmlBuffer.Length);
-            if (rc != 0)
-            {
-                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.CreateObjectXML"), rc);
-            }
-        }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-        public void DestroyObject(String objectName)
-        {
-            int rc;
-
-            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
-            {
-                rc = (int)PhotonErrors.NULL_HANDLE;
-                throw new PhotonException(PhotonException.PrepareException("Folder.DestroyObject", rc), rc);
-            }
-
-            rc = psoFolderDestroyObject(handle,
-                                        objectName,
-                                        (UInt32)objectName.Length );
-            if (rc != 0)
-            {
-                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.DestroyObject"), rc);
-            }
-        }
+      folderCreateObjectXML( handle, xmlBuffer );
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public int GetFirst( PsoFolderEntry entry) {
-   
+   public void destroyObject(String objectName) {
       int rc;
 
-      if (sessionHandle == 0 || handle == 0 ) {
-         rc = (int)PhotonErrors.NULL_HANDLE;
-         throw new PhotonException(PhotonException.PrepareException("Folder.GetFirst", rc), rc);
+      if ( sessionHandle == 0 || handle == 0 ) {
+         throw new PsoException( PsoErrors.NULL_HANDLE );
       }
 
-      rc = psoFolderGetFirst(handle, entry);
-      if (rc != 0 && rc != (int)PhotonErrors.IS_EMPTY) {
-         throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.GetFirst"), rc);
+      folderDestroyObject( handle, objectName );
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public boolean getNext() {
+   
+      boolean rc;
+
+      if ( sessionHandle == 0 || handle == 0 ) {
+         throw new PsoException( PsoErrors.NULL_HANDLE );
+      }
+
+      try {
+         if ( endIteration ) {
+            endIteration = false;
+            rc = folderGetFirst( handle, entryType, entryName, entryStatus );
+         } else {
+            rc = folderGetNext( handle, entryType, entryName, entryStatus );
+         }
+         if ( ! rc ) { endIteration = true; }
+      } catch (PsoException e) {
+         endIteration = true;
+         throw e;
       }
       
       return rc;
@@ -142,48 +153,17 @@ class PsoFolder {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public int GetNext( PsoFolderEntry entry )
-        {
-            int rc;
+   public void Open( String folderName ) {
+      int rc;
 
-            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
-            {
-                rc = (int)PhotonErrors.NULL_HANDLE;
-                throw new PhotonException(PhotonException.PrepareException("Folder.GetNext", rc), rc);
-            }
+      if ( sessionHandle == 0 ) {
+         throw new PsoException( PsoErrors.NULL_HANDLE );
+      }
 
-            rc = psoFolderGetNext(handle, entry);
-            if (rc != 0 && rc != (int)PhotonErrors.REACHED_THE_END)
-            {
-                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.GetNext"), rc);
-            }
+      handle = folderOpen( sessionHandle, folderName );
+   }
 
-            return rc;
-        }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-        public void Open(String folderName)
-        {
-            int rc;
-
-            if (sessionHandle == (IntPtr)0)
-            {
-                rc = (int)PhotonErrors.NULL_HANDLE;
-                throw new PhotonException(PhotonException.PrepareException("Folder.Open", rc), rc);
-            }
-
-            rc = psoFolderOpen(sessionHandle,
-                               folderName,
-                               (UInt32)folderName.Length,
-                               handle);
-            if (rc != 0)
-            {
-                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.Open"), rc);
-            }
-        }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
         public void Status( ObjStatus status)
         {
@@ -191,14 +171,14 @@ class PsoFolder {
 
             if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
             {
-                rc = (int)PhotonErrors.NULL_HANDLE;
-                throw new PhotonException(PhotonException.PrepareException("Folder.Status", rc), rc);
+                rc = (int)PsoErrors.NULL_HANDLE;
+                throw new PsoException(PsoException.PrepareException("Folder.Status", rc), rc);
             }
 
             rc = psoFolderStatus(handle, status);
             if (rc != 0)
             {
-                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.Status"), rc);
+                throw new PsoException(PsoException.PrepareException(sessionHandle, "Folder.Status"), rc);
             }
         }
 

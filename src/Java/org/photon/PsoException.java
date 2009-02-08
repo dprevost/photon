@@ -24,34 +24,13 @@ package org.photon;
 
 class PsoException extends Exception {
 
-   private int theErrorCode;
+   private PsoErrors theErrorCode;
    
-   public int getErrorCode() { return theErrorCode; }
+   public int getErrorCode() { return theErrorCode.getErrorNumber(); }
         
-   public PsoException( String msg, int errcode ) { 
-      super(msg);
+   public PsoException( PsoErrors errcode ) { 
+      super( errcode.getMessage() );
 
       theErrorCode = errcode; 
-
-      msg = getErrorMessage( errcode );
-      
    }
-
-   /*
-    * This static function uses the Photon API to extract the error message
-    * and pass it to the constructor.
-    */
-   public static String PrepareException( String functionName, int errcode ) {
-
-      String str = getErrorMessage( errcode );
-
-      if (str == null || str.length() == 0) {
-         str = functionName
-               + " exception: Cannot retrieve the error message - the error code is "
-               + errcode;
-      }
-      return str;
-   }
-
-   private static native String getErrorMessage( int errcode );
 }

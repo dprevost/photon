@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE options PUBLIC
-    "-//Error Parser project//DTD Error Parser Options XML V2.0//EN"
-    "http://photonsoftware.org/xml/ep/errorParserOptions20.dtd">
+    "-//Error Parser project//DTD Error Parser Options XML V2.1//EN"
+    "http://photonsoftware.org/xml/ep/errorParserOptions21.dtd">
 
 <!-- 
    This xml file provides the options to the errorParser program.
@@ -18,12 +18,24 @@
    
 -->
 
-<options version="2.0">
+<options version="2.1">
 
   <general_options>
     <!-- Prefix to be used for the error codes (enum or #define). -->
     <prefix_error_no_namespace> PSO </prefix_error_no_namespace>
     <selected_lang xml:lang="en" />
+    <!-- How to handle the error message. The problem: the generated C strings
+         will be use, eventually, by standard C/C++ libraries and some 
+         sequence of characters could have some bad side effects, possibly
+         including security issues.
+         The defaults:
+           - escape sequences are not permitted (a more fine grain approach
+             could be written if the need arise).
+           - quotes (' and ") are allowed (and will be escaped as needed) 
+           - The % symbol. No default. I recommend the textual "percent" 
+             (% is the most problematic one, IMHO. %d %p, etc are interpreted
+             differently by libc (printf()) and the iostream library (cout) -->
+    <message percent="percent"/>
   </general_options>
   
   <header_file>
@@ -58,18 +70,6 @@
          error messages -->
     <errmsg_options build_dll="yes"/>
     <errmsg_prefix_var> pson </errmsg_prefix_var>
-    <!-- How to handle the error message. The problem: the generated C strings
-         will be use, eventually, by standard C/C++ libraries and some 
-         sequence of characters could have some bad side effects, possibly
-         including security issues.
-         The defaults:
-           - escape sequences are not permitted (a more fine grain approach
-             could be written if the need arise).
-           - quotes (' and ") are allowed (and will be escaped as needed) 
-           - The % symbol. No default. I recommend the textual "percent" 
-             (% is the most problematic one, IMHO. %d %p, etc are interpreted
-             differently by libc (printf()) and the iostream library (cout) -->
-    <errmsg_msg percent="percent"/>
   </errmsg_files>
 
   <!-- Optional section for creating an enum for C# -->
@@ -86,6 +86,15 @@
     <ext_py_dirname> ../Python/src </ext_py_dirname>
     <ext_py_filename> errors.h </ext_py_filename>
   </ext_python>
-  
+
+  <!-- Optional section for Java -->
+  <java>
+    <java_filename>
+      ../Java/org/photon/PsoErrors.java
+    </java_filename>
+    <java_enum_name> PsoErrors </java_enum_name>
+    <java_package> org.photon </java_package>
+  </java>
+
 </options>
 
