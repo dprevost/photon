@@ -18,16 +18,7 @@
 
 package org.photon;
 
-class PsoFolderEntry {
-   
-   private int type;
-   private String name;
-   private int status;
-   
-   public int getType()    { return type; }
-   public String getName() { return name; }
-   public int getStatus()  { return status; }
-}
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /**
  * Folder class for the Photon library.
@@ -58,35 +49,36 @@ class PhotonFolder {
    public String getEntryName() { return entryName; }
    public int getEntryStatus()  { return entryStatus; }
    
-   public PhotonFolder( PhotonSession session, String name ) throws PhotonException {
-
-      handle = init( session.Handle(), name );
+   public PhotonFolder( PhotonSession session ) throws PhotonException {
+      sessionHandle = session.Handle();
    }
 
-   private native long fini( long h ) throws PhotonException;
-   private native long init( long h, String s ) throws PhotonException;
+   public PhotonFolder( PhotonSession session, String name ) throws PhotonException {
+      sessionHandle = session.Handle();
+      handle = folderInit( sessionHandle, name );
+   }
 
    private native void folderCreateObject( long h, String objectName, 
       ObjectDefinition definition ) throws PhotonException;
    private native void folderCreateObjectXML( long h, String xmlBuffer ) throws PhotonException;
    private native void folderDestroyObject( long h, String objectName ) throws PhotonException;
-
+   private native void folderFini( long h );
    private native boolean folderGetFirst( long h, int entryType, 
       String entryName, int entryStatus ) throws PhotonException;
    private native boolean folderGetNext( long h, int entryType, 
       String entryName, int entryStatus ) throws PhotonException;
-   private native long folderOpen( long h, String folderName ) throws PhotonException;
+   private native long folderInit( long h, String s ) throws PhotonException;
    private native void folderStatus( long h, ObjStatus status ) throws PhotonException;
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    protected void finalize() {
-      fini( handle );
+      folderFini( handle );
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void Close() { fini(handle); }
+   public void close() { folderFini(handle); }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -161,8 +153,8 @@ class PhotonFolder {
       if ( sessionHandle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
-
-      handle = folderOpen( sessionHandle, folderName );
+   
+      handle = folderInit( sessionHandle, folderName );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -178,7 +170,5 @@ class PhotonFolder {
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-
 }
 

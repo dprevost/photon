@@ -18,5 +18,37 @@
 
 package org.photon;
 
+/**
+ * This data structure is used to retrieve the status of objects.
+ */
 class ObjStatus {
-}
+
+   /** The object type. */
+   public ObjectType type;
+
+   /**
+    * Status of the object.
+    *
+    * For example, created but not committed, etc.
+    */
+   public int status;
+
+   /** The number of blocks allocated to this object. */
+   public long numBlocks;
+
+   /** The number of groups of blocks allocated to this object. */
+   public long numBlockGroup;
+
+   /** The number of data items in this object. */
+   public long numDataItem;
+   
+   /** The amount of free space available in the blocks allocated to this object. */
+   public long freeBytes;
+
+   /** Maximum data length (in bytes). */
+   public int maxDataLength;
+   
+   /** Maximum key length (in bytes) if keys are supported - zero otherwise */
+   public int maxKeyLength;
+
+};

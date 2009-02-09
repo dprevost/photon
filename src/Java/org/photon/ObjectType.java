@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -20,23 +20,35 @@ package org.photon;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-/**
- * 
- */
+public enum ObjectType {
 
-class PhotonSession {
+   FOLDER(1) {
+      String getText() { return "Folder"; } },
 
-   /** To save the native pointer/handle. */
-   private long handle;
-   
-   public PhotonSession() throws PhotonException {
+   HASH_MAP(2) {
+      String getText() { return "Hash Map"; } },
 
-      handle = initSession();
+   LIFO(3) {
+      String getText() { return "LIFO Queue"; } },
+
+   FAST_MAP(4) {
+      String getText() { return "Read-only Hash Map"; } },
+
+   QUEUE(5) {
+      String getText() { return "FIFO Queue"; } };
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private final int type;
+
+   ObjectType( int type ) { 
+      this.type = type;
    }
 
-   private native long initSession() throws PhotonException ;
-   
-   public long Handle() {
-      return handle;
-   }
+   public int getValue() { return type; }
+
+   abstract String getText();
+
 }
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

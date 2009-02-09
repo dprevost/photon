@@ -16,6 +16,7 @@ CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
 Java_Source =                            \
         org/photon/ObjectDefinition.java \
+        org/photon/ObjStatus.java        \
         org/photon/PhotonErrors.java     \
         org/photon/PhotonException.java  \
         org/photon/PhotonFolder.java     \
@@ -25,6 +26,7 @@ Java_Source =                            \
 
 Java_Classes =                            \
         org/Photon/ObjectDefinition.class \
+        org/photon/ObjStatus.class        \
         org/photon/PhotonErrors.class     \
         org/photon/PhotonException.class  \
         org/photon/PhotonFolder.class     \
