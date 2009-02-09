@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -18,27 +18,5 @@
 
 package org.photon;
 
-public class PsoProcess {
-
-   static {
-      System.loadLibrary("photon_jni");
-   }
-
-   public PsoProcess( String psoAddress ) throws PsoException {
-      
-      init( psoAddress );
-   }
-   
-   public void exit(){
-      fini();
-   }
-
-   protected void finalize() {
-      fini();
-   }
-   
-   private native void init( String psoAddress ) throws PsoException;
-
-   private native void fini();
+class ObjectDefinition {
 }
-

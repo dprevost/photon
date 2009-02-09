@@ -14,21 +14,23 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
-Java_Source =                        \
-        org/photon/PsoErrors.java    \
-        org/photon/PsoException.java \
-        org/photon/PsoFolder.java    \
-        org/photon/PsoProcess.java   \
-        org/photon/PsoQueue.java     \
-        org/photon/PsoSession.java   
+Java_Source =                            \
+        org/photon/ObjectDefinition.java \
+        org/photon/PhotonErrors.java     \
+        org/photon/PhotonException.java  \
+        org/photon/PhotonFolder.java     \
+        org/photon/PhotonProcess.java    \
+        org/photon/PhotonQueue.java      \
+        org/photon/PhotonSession.java    
 
-Java_Classes =                        \
-        org/photon/PsoErrors.class    \
-        org/photon/PsoException.class \
-        org/photon/PsoFolder.class    \
-        org/photon/PsoProcess.class   \
-        org/photon/PsoQueue.class     \
-        org/photon/PsoSession.class
+Java_Classes =                            \
+        org/Photon/ObjectDefinition.class \
+        org/photon/PhotonErrors.class     \
+        org/photon/PhotonException.class  \
+        org/photon/PhotonFolder.class     \
+        org/photon/PhotonProcess.class    \
+        org/photon/PhotonQueue.class      \
+        org/photon/PhotonSession.class    
 
 org_photondir = $(top_builddir)/src/Java
 JAVAROOT      = $(top_builddir)/src/Java

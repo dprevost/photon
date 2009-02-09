@@ -19,18 +19,9 @@
 package org.photon;
 
 /**
- * Exception class for the Photon library.
+ * Queue class for the Photon library.
  */
 
-class PsoException extends Exception {
+class PhotonQueue {
 
-   private PsoErrors theErrorCode;
-   
-   public int getErrorCode() { return theErrorCode.getErrorNumber(); }
-        
-   public PsoException( PsoErrors errcode ) { 
-      super( errcode.getMessage() );
-
-      theErrorCode = errcode; 
-   }
 }

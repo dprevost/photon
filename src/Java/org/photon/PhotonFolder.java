@@ -33,7 +33,7 @@ class PsoFolderEntry {
  * Folder class for the Photon library.
  */
 
-class PsoFolder {
+class PhotonFolder {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
@@ -58,23 +58,25 @@ class PsoFolder {
    public String getEntryName() { return entryName; }
    public int getEntryStatus()  { return entryStatus; }
    
-   public PsoFolder( PsoSession session, String name ) throws PsoException {
+   public PhotonFolder( PhotonSession session, String name ) throws PhotonException {
 
       handle = init( session.Handle(), name );
    }
 
-   private native long fini( long h ) throws PsoException;
-   private native long init( long h, String s ) throws PsoException;
+   private native long fini( long h ) throws PhotonException;
+   private native long init( long h, String s ) throws PhotonException;
 
    private native void folderCreateObject( long h, String objectName, 
-      ObjectDefinition definition ) throws PsoException;
-   private native void folderCreateObjectXML( long h, String xmlBuffer ) throws PsoException;
-   private native void folderDestroyObject( long h, String objectName ) throws PsoException;
+      ObjectDefinition definition ) throws PhotonException;
+   private native void folderCreateObjectXML( long h, String xmlBuffer ) throws PhotonException;
+   private native void folderDestroyObject( long h, String objectName ) throws PhotonException;
 
    private native boolean folderGetFirst( long h, int entryType, 
-      String entryName, int entryStatus );
+      String entryName, int entryStatus ) throws PhotonException;
    private native boolean folderGetNext( long h, int entryType, 
-      String entryName, int entryStatus );
+      String entryName, int entryStatus ) throws PhotonException;
+   private native long folderOpen( long h, String folderName ) throws PhotonException;
+   private native void folderStatus( long h, ObjStatus status ) throws PhotonException;
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -89,11 +91,11 @@ class PsoFolder {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void createObject( String           objectName,
-                             ObjectDefinition definition) {
+                             ObjectDefinition definition) throws PhotonException {
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
-         throw new PsoException( PsoErrors.NULL_HANDLE );
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       folderCreateObject( handle, 
@@ -103,11 +105,11 @@ class PsoFolder {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void createObjectXML(String xmlBuffer) {
+   public void createObjectXML(String xmlBuffer) throws PhotonException {
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
-         throw new PsoException( PsoErrors.NULL_HANDLE );
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       folderCreateObjectXML( handle, xmlBuffer );
@@ -115,11 +117,11 @@ class PsoFolder {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void destroyObject(String objectName) {
+   public void destroyObject(String objectName) throws PhotonException {
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
-         throw new PsoException( PsoErrors.NULL_HANDLE );
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       folderDestroyObject( handle, objectName );
@@ -127,12 +129,12 @@ class PsoFolder {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public boolean getNext() {
+   public boolean getNext() throws PhotonException {
    
       boolean rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
-         throw new PsoException( PsoErrors.NULL_HANDLE );
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       try {
@@ -143,7 +145,7 @@ class PsoFolder {
             rc = folderGetNext( handle, entryType, entryName, entryStatus );
          }
          if ( ! rc ) { endIteration = true; }
-      } catch (PsoException e) {
+      } catch (PhotonException e) {
          endIteration = true;
          throw e;
       }
@@ -153,11 +155,11 @@ class PsoFolder {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void Open( String folderName ) {
+   public void open( String folderName ) throws PhotonException {
       int rc;
 
       if ( sessionHandle == 0 ) {
-         throw new PsoException( PsoErrors.NULL_HANDLE );
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       handle = folderOpen( sessionHandle, folderName );
@@ -165,24 +167,17 @@ class PsoFolder {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public void Status( ObjStatus status)
-        {
+   public void status( ObjStatus status) throws PhotonException {
             int rc;
 
-            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
-            {
-                rc = (int)PsoErrors.NULL_HANDLE;
-                throw new PsoException(PsoException.PrepareException("Folder.Status", rc), rc);
-            }
+      if ( sessionHandle == 0 || handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
 
-            rc = psoFolderStatus(handle, status);
-            if (rc != 0)
-            {
-                throw new PsoException(PsoException.PrepareException(sessionHandle, "Folder.Status"), rc);
-            }
-        }
+      folderStatus( handle, status );
+   }
 
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 
 }

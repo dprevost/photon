@@ -90,9 +90,9 @@
   <!-- Optional section for Java -->
   <java>
     <java_filename>
-      ../Java/org/photon/PsoErrors.java
+      ../Java/org/photon/PhotonErrors.java
     </java_filename>
-    <java_enum_name> PsoErrors </java_enum_name>
+    <java_enum_name> PhotonErrors </java_enum_name>
     <java_package> org.photon </java_package>
   </java>
 

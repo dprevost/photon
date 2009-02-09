@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -18,10 +18,5 @@
 
 package org.photon;
 
-/**
- * Queue class for the Photon library.
- */
-
-class PsoQueue {
-
+class ObjStatus {
 }

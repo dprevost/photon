@@ -18,23 +18,27 @@
 
 package org.photon;
 
-/**
- * 
- */
+public class PhotonProcess {
 
-class PsoSession {
-
-   /** To save the native pointer/handle. */
-   private long handle;
-   
-   public PsoSession() throws PsoException {
-
-      handle = initSession();
+   static {
+      System.loadLibrary("photon_jni");
    }
 
-   private native long initSession() throws PsoException ;
-   
-   public long Handle() {
-      return handle;
+   public PhotonProcess( String psoAddress ) throws PhotonException {
+      
+      init( psoAddress );
    }
+   
+   public void exit(){
+      fini();
+   }
+
+   protected void finalize() {
+      fini();
+   }
+   
+   private native void init( String psoAddress ) throws PhotonException;
+
+   private native void fini();
 }
+
