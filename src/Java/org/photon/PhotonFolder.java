@@ -18,17 +18,75 @@
 
 package org.photon;
 
+import java.lang.*;
+import java.util.*;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /**
  * Folder class for the Photon library.
  */
 
-class PhotonFolder {
+class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
    private long sessionHandle = 0;
+   private FolderEntry entry;
+   
+   private boolean nextWasQueried = false;
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   // The next three methods implement Iterator.
+
+   // We cannot implement hasNext directly. What we do instead is to
+   // get the next item into this.entry and set nextWasQueried to true
+   public boolean hasNext() {
+      // In case hasNext is called twice without a call to next()
+      if ( nextWasQueried ) { return true; }
+      
+      try {
+         nextWasQueried = getNext();
+      } catch (PhotonException e) {
+         return false;
+      }
+      
+      return nextWasQueried;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public FolderEntry next() {
+      
+      nextWasQueried = false;
+      
+      if ( nextWasQueried ) { return entry; }
+      
+      try {
+         if ( getNext() ) {
+            return entry;
+         }
+      } catch (PhotonException e) {
+      }
+
+      throw new NoSuchElementException();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public void remove() {
+      throw new UnsupportedOperationException();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   // And this method implements Iterable   
+   public Iterator<FolderEntry> iterator() {
+      return this;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /* Iterations
     * 
@@ -41,34 +99,41 @@ class PhotonFolder {
     * }
     */
    private boolean endIteration = true;
-   private int entryType;
-   private String entryName;
-   private int entryStatus;
    
-   public int getEntryType()    { return entryType; }
-   public String getEntryName() { return entryName; }
-   public int getEntryStatus()  { return entryStatus; }
-   
-   public PhotonFolder( PhotonSession session ) throws PhotonException {
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public PhotonFolder( PhotonSession session ) {
       sessionHandle = session.Handle();
+      
+      entry = new FolderEntry();
    }
 
    public PhotonFolder( PhotonSession session, String name ) throws PhotonException {
+      
+      int rc;
+      
       sessionHandle = session.Handle();
-      handle = folderInit( sessionHandle, name );
+      
+      rc = folderInit( sessionHandle, name );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
+
+      entry = new FolderEntry();
    }
 
-   private native void folderCreateObject( long h, String objectName, 
-      ObjectDefinition definition ) throws PhotonException;
-   private native void folderCreateObjectXML( long h, String xmlBuffer ) throws PhotonException;
-   private native void folderDestroyObject( long h, String objectName ) throws PhotonException;
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private native int  folderCreateObject( long             h, 
+                                           String           objectName, 
+                                           ObjectDefinition definition );
+   private native int  folderCreateObjectXML( long h, String xmlBuffer );
+   private native int  folderDestroyObject( long h, String objectName );
    private native void folderFini( long h );
-   private native boolean folderGetFirst( long h, int entryType, 
-      String entryName, int entryStatus ) throws PhotonException;
-   private native boolean folderGetNext( long h, int entryType, 
-      String entryName, int entryStatus ) throws PhotonException;
-   private native long folderInit( long h, String s ) throws PhotonException;
-   private native void folderStatus( long h, ObjStatus status ) throws PhotonException;
+   private native int  folderGetFirst( long h, FolderEntry e );
+   private native int  folderGetNext( long h, FolderEntry e );
+   private native int  folderInit( long h, String s );
+   private native int  folderStatus( long h, ObjStatus status );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -90,83 +155,104 @@ class PhotonFolder {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      folderCreateObject( handle, 
-                          objectName, 
-                          definition );
+      rc = folderCreateObject( handle, 
+                               objectName, 
+                               definition );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void createObjectXML(String xmlBuffer) throws PhotonException {
+
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      folderCreateObjectXML( handle, xmlBuffer );
+      rc = folderCreateObjectXML( handle, xmlBuffer );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void destroyObject(String objectName) throws PhotonException {
+
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      folderDestroyObject( handle, objectName );
+      rc = folderDestroyObject( handle, objectName );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public boolean getNext() throws PhotonException {
    
-      boolean rc;
+      int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      try {
-         if ( endIteration ) {
-            endIteration = false;
-            rc = folderGetFirst( handle, entryType, entryName, entryStatus );
-         } else {
-            rc = folderGetNext( handle, entryType, entryName, entryStatus );
-         }
-         if ( ! rc ) { endIteration = true; }
-      } catch (PhotonException e) {
-         endIteration = true;
-         throw e;
+      if ( endIteration ) {
+         endIteration = false;
+         rc = folderGetFirst( handle, entry );
+      } else {
+         rc = folderGetNext( handle, entry );
+      }
+      if ( rc == 0 ) { 
+         return true;
+      }
+      endIteration = true;
+      if ( rc == PhotonErrors.IS_EMPTY.getErrorNumber() || 
+           rc == PhotonErrors.REACHED_THE_END.getErrorNumber() ) {
+         return false;
       }
       
-      return rc;
+      throw new PhotonException( PhotonErrors.getEnum(rc) );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void open( String folderName ) throws PhotonException {
-      int rc;
 
+      int rc;
+      
       if ( sessionHandle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
    
-      handle = folderInit( sessionHandle, folderName );
+      rc = folderInit( sessionHandle, folderName );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void status( ObjStatus status) throws PhotonException {
-            int rc;
+   public void status( ObjStatus status ) throws PhotonException {
+
+      int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      folderStatus( handle, status );
+      rc = folderStatus( handle, status );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

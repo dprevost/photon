@@ -87,7 +87,8 @@
     <ext_py_filename> errors.h </ext_py_filename>
   </ext_python>
 
-  <!-- Optional section for Java -->
+  <!-- Optional section for creating an enum for Java. This feature 
+       requires Java 5.0. -->
   <java>
     <java_filename>
       ../Java/org/photon/PhotonErrors.java

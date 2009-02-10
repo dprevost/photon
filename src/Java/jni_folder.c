@@ -27,9 +27,9 @@
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;)V
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;)I
  */
-JNIEXPORT void JNICALL 
+JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv * env, 
                                                  jobject  obj, 
                                                  jlong    h, 
@@ -43,9 +43,9 @@ Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv * env,
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderCreateObjectXML
- * Signature: (JLjava/lang/String;)V
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT void JNICALL 
+JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderCreateObjectXML( JNIEnv * env, 
                                                     jobject  obj, 
                                                     jlong    h, 
@@ -58,9 +58,9 @@ Java_org_photon_PhotonFolder_folderCreateObjectXML( JNIEnv * env,
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderDestroyObject
- * Signature: (JLjava/lang/String;)V
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT void JNICALL 
+JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderDestroyObject( JNIEnv * env, 
                                                   jobject  obj, 
                                                   jlong    h, 
@@ -93,15 +93,13 @@ Java_org_photon_PhotonFolder_folderFini( JNIEnv * env,
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderGetFirst
- * Signature: (JILjava/lang/String;I)Z
+ * Signature: (JLorg/photon/FolderEntry;)I
  */
-JNIEXPORT jboolean JNICALL 
+JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderGetFirst( JNIEnv * env, 
                                              jobject  obj, 
-                                             jlong    h, 
-                                             jint     type, 
-                                             jstring  name, 
-                                             jint )
+                                             jlong    h,
+                                             jobject  entry )
 {
 }
 
@@ -110,15 +108,13 @@ Java_org_photon_PhotonFolder_folderGetFirst( JNIEnv * env,
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderGetNext
- * Signature: (JILjava/lang/String;I)Z
+ * Signature: (JLorg/photon/FolderEntry;)I
  */
 JNIEXPORT jboolean JNICALL 
 Java_org_photon_PhotonFolder_folderGetNext( JNIEnv * env, 
-                                            jobject, 
-                                            jlong, 
-                                            jint, 
-                                            jstring, 
-                                            jint )
+                                            jobject  obj, 
+                                            jlong    h,
+                                            jobject  entry )
 {
 }
 
@@ -127,43 +123,41 @@ Java_org_photon_PhotonFolder_folderGetNext( JNIEnv * env,
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderInit
- * Signature: (JLjava/lang/String;)J
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT jlong JNICALL 
+JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderInit( JNIEnv * env, 
                                          jobject  obj, 
                                          jlong    h, 
                                          jstring  jstr )
 {
    int errcode;
-   jclass exc;
-   char msg[100];
+   jclass myClass;
    PSO_HANDLE handle;
    size_t sessionHandle = (size_t)h;
    const char *folderName;
+   jfieldID id;
    
    folderName = (*env)->GetStringUTFChars( env, jstr, NULL );
    if ( folderName == NULL ) {
-      return (size_t) NULL; // out-of-memory exception by the JVM
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
    
+   myClass = (*env)->FindClass( env, "org/photon/PhotonFolder" );
+
+   id = (*env)->GetFieldID( env, myClass, "handle", "L" );
+
    errcode = psoFolderOpen( (PSO_HANDLE) sessionHandle,
                             folderName,
                             strlen(folderName),
                             &handle );
    (*env)->ReleaseStringUTFChars( env, jstr, folderName );
 
-   // Normal return
-   if ( errcode == PSO_OK ) return (size_t) handle;
-   
-   // Throw a java exception
-   exc = (*env)->FindClass( env, "org/photon/PhotonException" );
-   if ( exc  != NULL ) {
-      sprintf( msg, "photon Error = %d", errcode );
-      (*env)->ThrowNew( env, exc, msg );
+   if ( errcode == PSO_OK ) {
+      (*env)->SetLongField( env, obj, id, (size_t) handle );
    }
-
-   return (size_t) NULL; 
+   
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -171,13 +165,13 @@ Java_org_photon_PhotonFolder_folderInit( JNIEnv * env,
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderStatus
- * Signature: (JLorg/photon/ObjStatus;)V
+ * Signature: (JLorg/photon/ObjStatus;)I
  */
-JNIEXPORT void JNICALL 
+JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderStatus( JNIEnv * env, 
-                                           jobject, 
-                                           jlong, 
-                                           jobject )
+                                           jobject  obj, 
+                                           jlong    h, 
+                                           jobject  status )
 {
 }
 

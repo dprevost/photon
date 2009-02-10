@@ -15,6 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
 Java_Source =                            \
+        org/photon/FolderEntry.java      \
         org/photon/ObjectDefinition.java \
         org/photon/ObjStatus.java        \
         org/photon/PhotonErrors.java     \
@@ -25,6 +26,7 @@ Java_Source =                            \
         org/photon/PhotonSession.java    
 
 Java_Classes =                            \
+        org/photon/FolderEntry.class      \
         org/Photon/ObjectDefinition.class \
         org/photon/ObjStatus.class        \
         org/photon/PhotonErrors.class     \
