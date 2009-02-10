@@ -22,19 +22,23 @@
 #include <photon/photon.h>
 #include <string.h>
 
+#include "org_photon_PhotonFolder.h"
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/BaseObjDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv * env, 
-                                                 jobject  obj, 
-                                                 jlong    h, 
-                                                 jstring  jname, 
-                                                 jobject  def )
+Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
+                                                 jobject      obj,
+                                                 jlong        h,
+                                                 jstring      jname, 
+                                                 jobject      jdef,
+                                                 jobject      jkey,
+                                                 jobjectArray jfields)
 {
    int errcode;
    jclass myClass;
@@ -317,7 +321,7 @@ JNIEXPORT jint JNICALL
 Java_org_photon_PhotonFolder_folderStatus( JNIEnv * env, 
                                            jobject  obj, 
                                            jlong    h, 
-                                           jobject  status )
+                                           jobject  jstatus )
 {
 }
 

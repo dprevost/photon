@@ -124,9 +124,11 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private native int  folderCreateObject( long             h, 
-                                           String           objectName, 
-                                           ObjectDefinition definition );
+   private native int  folderCreateObject( long              h, 
+                                           String            objectName, 
+                                           BaseObjDefinition definition, 
+                                           KeyDefinition     key,
+                                           FieldDefinition[] fields );
    private native int  folderCreateObjectXML( long h, String xmlBuffer );
    private native int  folderDestroyObject( long h, String objectName );
    private native void folderFini( long h );
@@ -147,8 +149,10 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void createObject( String           objectName,
-                             ObjectDefinition definition) throws PhotonException {
+   public void createObject( String            objectName,
+                             BaseObjDefinition definition, 
+                             KeyDefinition     key,
+                             FieldDefinition[] fields ) throws PhotonException {
       int rc;
 
       if ( sessionHandle == 0 || handle == 0 ) {
@@ -157,7 +161,9 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
       rc = folderCreateObject( handle, 
                                objectName, 
-                               definition );
+                               definition,
+                               key,
+                               fields );
       if ( rc != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(rc) );
       }

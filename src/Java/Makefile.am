@@ -14,27 +14,33 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
-Java_Source =                            \
-        org/photon/FolderEntry.java      \
-        org/photon/ObjectDefinition.java \
-        org/photon/ObjStatus.java        \
-        org/photon/PhotonErrors.java     \
-        org/photon/PhotonException.java  \
-        org/photon/PhotonFolder.java     \
-        org/photon/PhotonProcess.java    \
-        org/photon/PhotonQueue.java      \
-        org/photon/PhotonSession.java    
+Java_Source =                             \
+        org/photon/BaseObjDefinition.java \
+        org/photon/FieldDefinition.java   \
+        org/photon/FolderEntry.java       \
+        org/photon/KeyDefinition.java     \
+        org/photon/ObjectDefinition.java  \
+        org/photon/ObjStatus.java         \
+        org/photon/PhotonErrors.java      \
+        org/photon/PhotonException.java   \
+        org/photon/PhotonFolder.java      \
+        org/photon/PhotonProcess.java     \
+        org/photon/PhotonQueue.java       \
+        org/photon/PhotonSession.java     
 
-Java_Classes =                            \
-        org/photon/FolderEntry.class      \
-        org/Photon/ObjectDefinition.class \
-        org/photon/ObjStatus.class        \
-        org/photon/PhotonErrors.class     \
-        org/photon/PhotonException.class  \
-        org/photon/PhotonFolder.class     \
-        org/photon/PhotonProcess.class    \
-        org/photon/PhotonQueue.class      \
-        org/photon/PhotonSession.class    
+Java_Classes =                             \
+        org/photon/BaseObjDefinition.class \
+        org/photon/FieldDefinition.class   \
+        org/photon/FolderEntry.class       \
+        org/photon/KeyDefinition.class     \
+        org/Photon/ObjectDefinition.class  \
+        org/photon/ObjStatus.class         \
+        org/photon/PhotonErrors.class      \
+        org/photon/PhotonException.class   \
+        org/photon/PhotonFolder.class      \
+        org/photon/PhotonProcess.class     \
+        org/photon/PhotonQueue.class       \
+        org/photon/PhotonSession.class     
 
 org_photondir = $(top_builddir)/src/Java
 JAVAROOT      = $(top_builddir)/src/Java
