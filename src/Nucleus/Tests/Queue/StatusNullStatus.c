@@ -31,11 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus txStatus;
-   psoBasicObjectDef def = { 
-      PSO_QUEUE, 
-      1, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_QUEUE, 1 };
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };

@@ -130,7 +130,8 @@ bool psonMapInit( psonMap             * pHashMap,
                   uint32_t              origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
-                  psoBasicObjectDef * pDefinition,
+                  psoObjectDefinition * pDefinition,
+                  psoKeyDefinition    * pKey,
                   psoFieldDefinition  * pFields,
                   psonSessionContext  * pContext );
 

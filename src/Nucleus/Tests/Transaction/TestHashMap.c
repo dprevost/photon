@@ -42,9 +42,8 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    psonHashTxItem * pHashItem;
-   psoBasicObjectDef def = { 
-      PSO_HASH_MAP, 1, { 0, 0, 0, 0} 
-   };
+   psoObjectDefinition def = { PSO_HASH_MAP, 1 };
+   psoKeyDefinition key = { 0, 0, 0, 0} ;
 
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
@@ -66,6 +65,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                &key,
                                 fields,
                                 1,
                                 0,

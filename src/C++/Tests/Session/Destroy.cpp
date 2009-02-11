@@ -36,8 +36,8 @@ int main( int argc, char * argv[] )
    
    string name = "/cpp_session_destroy";
    const char * c_name = "/cpp_session_destroy";
-   psoBasicObjectDef folderDef;
-   psoBasicObjectDef queueDef = { 
+   psoObjectDefinition folderDef;
+   psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 0, 0 }

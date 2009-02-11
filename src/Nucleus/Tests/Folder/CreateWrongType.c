@@ -30,11 +30,7 @@ int main()
    psonFolder * pFolder;
    psonSessionContext context;
  
-   psoBasicObjectDef def = { 
-      0, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
 
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
@@ -46,6 +42,7 @@ int main()
                            "Test1",
                            strlen("Test1"),
                            &def,
+                           NULL,
                            fields,
                            &context );
 

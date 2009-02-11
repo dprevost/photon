@@ -43,12 +43,8 @@ int main( int argc, char * argv[] )
    char key[] = "My Key";
    size_t lenData;
 
-   psoBasicObjectDef folderDef = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
-   psoBasicObjectDef hashMapDef = {
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
+   psoObjectDefinition hashMapDef = {
       PSO_HASH_MAP, 
       5, 
       { PSO_KEY_VAR_STRING, 0, 1, 0}
@@ -63,9 +59,9 @@ int main( int argc, char * argv[] )
    };
    
    psoFieldDefinition retFields[5];
-   psoBasicObjectDef retDef;
+   psoObjectDefinition retDef;
    
-   memset( &retDef, 0, sizeof(psoBasicObjectDef) );
+   memset( &retDef, 0, sizeof(psoObjectDefinition) );
    memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
 
    lenData = offsetof(struct dummy, bin) + 10;
@@ -150,7 +146,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( memcmp( &hashMapDef, &retDef, sizeof(psoBasicObjectDef) ) != 0 ) {
+   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -160,7 +156,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   if ( memcmp( &hashMapDef, &retDef, sizeof(psoBasicObjectDef) ) != 0 ) {
+   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {

@@ -33,11 +33,7 @@ int main()
    psonTxStatus status;
    psonObjectDescriptor* pDescriptor = NULL;
    psonFolderItem folderItem;
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    /* Create "/" */
    pFolder1 = initFolderTest( expectedToPass, &context );
@@ -56,6 +52,7 @@ int main()
                                 5,
                                 &def,
                                 NULL,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -69,6 +66,7 @@ int main()
                                 "Test5",
                                 5,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,
@@ -86,6 +84,7 @@ int main()
                                 "Test3",
                                 5,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,
@@ -114,6 +113,7 @@ int main()
                                 5,
                                 &def,
                                 NULL,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -127,6 +127,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,
@@ -186,6 +187,7 @@ int main()
                                 "Test2/Test4/Test5",
                                 17,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,

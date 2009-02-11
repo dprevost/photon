@@ -72,8 +72,9 @@ void Session::CreateObject( const std::string   & objectName,
    rc = psoCreateObject( m_sessionHandle,
                          objectName.c_str(),
                          objectName.length(),
-                         (psoBasicObjectDef*)&(definition.GetDef()),
-                         (psoFieldDefinition*)definition.GetFields() );
+                         (psoObjectDefinition *)&(definition.GetDef()),
+                         (psoKeyDefinition *)   &(definition.GetKey()),
+                         (psoFieldDefinition *) definition.GetFields() );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
@@ -82,7 +83,8 @@ void Session::CreateObject( const std::string   & objectName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::CreateObject( const std::string         & objectName,
-                            const psoBasicObjectDef & definition,
+                            const psoObjectDefinition & definition,
+                            const psoKeyDefinition    * pKey,
                             psoFieldDefinition        * fields )
 {
    int rc;
@@ -94,7 +96,8 @@ void Session::CreateObject( const std::string         & objectName,
    rc = psoCreateObject( m_sessionHandle,
                          objectName.c_str(),
                          objectName.length(),
-                         (psoBasicObjectDef*)&definition,
+                         (psoObjectDefinition *) &definition,
+                         (psoKeyDefinition *)    pKey,
                          fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
@@ -105,7 +108,8 @@ void Session::CreateObject( const std::string         & objectName,
 
 void Session::CreateObject( const char                * objectName,
                             uint32_t                    nameLengthInBytes,
-                            const psoBasicObjectDef & definition,
+                            const psoObjectDefinition & definition,
+                            const psoKeyDefinition    * pKey,
                             psoFieldDefinition        * fields )
 {
    int rc;
@@ -117,7 +121,8 @@ void Session::CreateObject( const char                * objectName,
    rc = psoCreateObject( m_sessionHandle,
                          objectName,
                          nameLengthInBytes,
-                         (psoBasicObjectDef*)&definition,
+                         (psoObjectDefinition *) &definition,
+                         (psoKeyDefinition *)    pKey,
                          fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
@@ -209,14 +214,14 @@ void Session::GetDefinition( const std::string & objectName,
                              ObjDefinition     & definition )
 {
    int rc;
-   psoBasicObjectDef def;
+   psoObjectDefinition def;
    psoFieldDefinition * fields;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::GetDefinition", PSO_NULL_HANDLE );
    }
    
-   memset( &def, 0, sizeof(psoBasicObjectDef) );
+   memset( &def, 0, sizeof(psoObjectDefinition) );
    rc = psoGetDefinition( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length(),
@@ -257,7 +262,7 @@ void Session::GetDefinition( const std::string & objectName,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::GetDefinition( const std::string   & objectName,
-                             psoBasicObjectDef & definition,
+                             psoObjectDefinition & definition,
                              psoUint32             numFields,
                              psoFieldDefinition  * fields )
 {
@@ -282,7 +287,7 @@ void Session::GetDefinition( const std::string   & objectName,
 
 void Session::GetDefinition( const char          * objectName,
                              uint32_t              nameLengthInBytes,
-                             psoBasicObjectDef & definition,
+                             psoObjectDefinition & definition,
                              psoUint32             numFields,
                              psoFieldDefinition  * fields )
 {

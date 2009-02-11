@@ -32,12 +32,9 @@ int main()
    bool ok;
    psonFolderItem item;
    psonTxStatus status;
-   psoBasicObjectDef mapDef = { 
-      PSO_HASH_MAP, 1, { 0, 0, 0, 0}
-   };
-   psoBasicObjectDef folderDef = { 
-      PSO_FOLDER, 0, { 0, 0, 0, 0}
-   };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 1 };
+   psoKeyDefinition key = { 0, 0, 0, 0};
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
 
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
@@ -60,6 +57,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -72,6 +70,7 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
+                                &key,
                                 fields,
                                 1,
                                 0,
@@ -109,6 +108,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -121,6 +121,7 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
+                                &key,
                                 fields,
                                 1,
                                 0,
@@ -210,6 +211,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -222,6 +224,7 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
+                                &key,
                                 fields,
                                 1,
                                 0,
@@ -266,6 +269,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                NULL,
                                 1,
                                 0,
                                 &context );
@@ -278,6 +282,7 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
+                                &key,
                                 fields,
                                 1,
                                 0,

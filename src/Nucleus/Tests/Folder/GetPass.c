@@ -34,11 +34,7 @@ int main()
    psonObjectDescriptor * pDescriptor;
    psonTxStatus * txItemStatus;
    psonTreeNode * pNode;
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
 
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -54,6 +50,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,
@@ -103,6 +100,7 @@ int main()
                                 "Test4",
                                 5,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,

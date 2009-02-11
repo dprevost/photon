@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    string name = "/cpp_folder_getfirst";
    string subname = name + "/f1";
    psoFolderEntry entry;
-   psoBasicObjectDef def; 
+   psoObjectDefinition def; 
    int rc;
    
    memset( &def, 0, sizeof def );

@@ -254,7 +254,7 @@ void psoShell::Cat()
    unsigned char * key, * buffer;
    int rc;
    uint32_t keyLength, dataLength;
-   psoBasicObjectDef * pDefinition = NULL;
+   psoObjectDefinition * pDefinition = NULL;
    uint32_t * offsets;
    ObjDefinition definition;
    
@@ -297,7 +297,7 @@ void psoShell::Cat()
       return;
    }
    
-   psoaGetOffsets( (psoBasicObjectDef *)&(definition.GetDef()), 
+   psoaGetOffsets( (psoObjectDefinition *)&(definition.GetDef()), 
                    (psoFieldDefinition *)definition.GetFields(), 
                    offsets );
    for ( uint32_t i = 0; i < pDefinition->numFields; ++i ) {
@@ -477,7 +477,7 @@ void psoShell::Cp()
    unsigned char * key, * buffer;
    int rc;
    uint32_t keyLength, dataLength;
-//   psoBasicObjectDef definition;
+//   psoObjectDefinition definition;
    ObjDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
@@ -572,7 +572,7 @@ void psoShell::Echo()
    psoObjStatus status;
    unsigned char * key = NULL, * buffer = NULL;
    uint32_t keyLength, dataLength;
-   psoBasicObjectDef * pDefinition = NULL;
+   psoObjectDefinition * pDefinition = NULL;
    bool nokey = false;
    ObjDefinition definition;
    
@@ -818,7 +818,7 @@ void psoShell::Man()
 void psoShell::Mkdir()
 {
    string folderName;
-   psoBasicObjectDef definition;
+   psoObjectDefinition definition;
 
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -830,7 +830,7 @@ void psoShell::Mkdir()
    
    try {
       definition.type = PSO_FOLDER;
-      session.CreateObject( folderName, definition, NULL );
+      session.CreateObject( folderName, definition, NULL, NULL );
       session.Commit();
    }
    catch ( Exception exc ) {
@@ -955,7 +955,7 @@ void psoShell::Touch()
 {
    string objectName;
    string option, filename;
-   psoBasicObjectDef definition;
+   psoObjectDefinition definition;
    bool useXML = false;
    Folder folder( session );
    
@@ -1013,7 +1013,7 @@ void psoShell::Touch()
       }
    
       try {
-         session.CreateObject( objectName, definition, NULL );
+         session.CreateObject( objectName, definition, NULL, NULL );
          session.Commit();
       }
       catch ( Exception exc ) {

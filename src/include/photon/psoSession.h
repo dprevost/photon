@@ -147,7 +147,8 @@ int psoCommit( PSO_HANDLE sessionHandle );
  *            counting the null terminator (null-terminators are not used by
  *            the Photon engine).
  * \param[in] pDefinition The type of object to create (folder, queue, etc.)
- *            and the optional definitions (as needed).
+ *            and additional fields (the number of data fields, for example).
+ * \param[in] pKey The definition of the key or NULL if the object has no key.
  * \param[in] fields An array of field definitions. It can be set to
  *            NULL when creating a Folder.
  *
@@ -157,7 +158,8 @@ PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
-                     psoBasicObjectDef * pDefinition,
+                     psoObjectDefinition * pDefinition,
+                     psoKeyDefinition    * pKey,
                      psoFieldDefinition  * fields );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -280,7 +282,7 @@ PHOTON_EXPORT
 int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       psoUint32             nameLengthInBytes,
-                      psoBasicObjectDef * definition,
+                      psoObjectDefinition * definition,
                       psoUint32             numFields,
                       psoFieldDefinition  * fields );
 

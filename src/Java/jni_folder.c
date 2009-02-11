@@ -58,7 +58,7 @@ Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
 //   errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
 //                                    objectName,
 //                                    strlen(objectName),
-//                           psoBasicObjectDef * pDefinition,
+//                           psoObjectDefinition * pDefinition,
 //                           psoFieldDefinition  * pFields );
 
    (*env)->ReleaseStringUTFChars( env, jname, objectName );

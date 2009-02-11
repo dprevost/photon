@@ -31,17 +31,10 @@ int main()
    psonSessionContext context;
    bool ok;
    psonFolderItem folderItem;
-   psoBasicObjectDef folderDef = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
 
-   psoBasicObjectDef mapDef = { 
-      PSO_FAST_MAP, 
-      1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 100 }
-   };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 1 };
+   psoKeyDefinition key = { PSO_KEY_VAR_STRING, 0, 1, 100 };
 
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
@@ -54,6 +47,7 @@ int main()
                                    strlen("Test1"),
                                    &folderDef,
                                    NULL,
+                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -63,6 +57,7 @@ int main()
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
+                                   &key,
                                    fields,
                                    &context );
    if ( ok != true ) {

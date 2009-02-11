@@ -30,7 +30,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoBasicObjectDef def = { 
+   psoObjectDefinition def = { 
       PSO_FAST_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }

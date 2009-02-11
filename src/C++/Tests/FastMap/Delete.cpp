@@ -41,8 +41,8 @@ int main( int argc, char * argv[] )
    uint32_t length, keyLength;
    char buffer[20], keyBuff[20];
    int rc;
-   psoBasicObjectDef folderDef;
-   psoBasicObjectDef mapDef = { 
+   psoObjectDefinition folderDef;
+   psoObjectDefinition mapDef = { 
       PSO_FAST_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

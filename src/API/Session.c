@@ -100,11 +100,12 @@ int psoCommit( PSO_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
    
-int psoCreateObject( PSO_HANDLE           sessionHandle,
-                     const char         * objectName,
-                     uint32_t             nameLengthInBytes,
-                     psoBasicObjectDef  * pDefinition,
-                     psoFieldDefinition * pFields )
+int psoCreateObject( PSO_HANDLE            sessionHandle,
+                     const char          * objectName,
+                     uint32_t              nameLengthInBytes,
+                     psoObjectDefinition * pDefinition,
+                     psoKeyDefinition    * pKey,
+                     psoFieldDefinition  * pFields )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -141,7 +142,7 @@ int psoCreateObject( PSO_HANDLE           sessionHandle,
       return PSO_NULL_POINTER;
    }
 
-   errcode = psoaValidateDefinition( pDefinition, pFields );
+   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
    if ( errcode != PSO_OK ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
       return errcode;
@@ -154,6 +155,7 @@ int psoCreateObject( PSO_HANDLE           sessionHandle,
                                          objectName,
                                          nameLengthInBytes,
                                          pDefinition,
+                                         pKey,
                                          pFields,
                                          &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
@@ -351,12 +353,12 @@ int psoExitSession( PSO_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoGetDefinition( PSO_HANDLE           sessionHandle,
-                      const char         * objectName,
-                      uint32_t             nameLengthInBytes,
-                      psoBasicObjectDef  * pDefinition,
-                      psoUint32            numFields,
-                      psoFieldDefinition * pFields )
+int psoGetDefinition( PSO_HANDLE            sessionHandle,
+                      const char          * objectName,
+                      uint32_t              nameLengthInBytes,
+                      psoObjectDefinition * pDefinition,
+                      psoUint32             numFields,
+                      psoFieldDefinition  * pFields )
 {
    psoaSession * pSession;
    int errcode = PSO_OK;

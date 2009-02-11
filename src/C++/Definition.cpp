@@ -31,7 +31,8 @@ ObjDefinition::ObjDefinition()
      currentField ( 0 ),
      keyAdded     ( false )
 {
-   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &key, 0, sizeof(psoKeyDefinition) );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -50,7 +51,7 @@ ObjDefinition::ObjDefinition( uint32_t numberOfFields, enum psoObjectType type )
                             PSO_WRONG_OBJECT_TYPE );
    }
    
-   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
 
    // using calloc - being lazy...
    size_t len = numberOfFields * sizeof(psoFieldDefinition);
@@ -279,7 +280,7 @@ void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
    }
    currentField = numberOfFields;
    
-   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
    
    // using calloc - being lazy...
    size_t len = numberOfFields * sizeof(psoFieldDefinition);
@@ -299,7 +300,7 @@ void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void ObjDefinition::Reset( psoBasicObjectDef & inputDef,
+void ObjDefinition::Reset( psoObjectDefinition & inputDef,
                            psoFieldDefinition  * inputFields )
 {
    psoFieldDefinition * tmp;
@@ -322,7 +323,7 @@ void ObjDefinition::Reset( psoBasicObjectDef & inputDef,
    if ( fields != NULL ) free( fields );
    fields = tmp;
 
-   memcpy( &definition, &inputDef, sizeof(psoBasicObjectDef) );
+   memcpy( &definition, &inputDef, sizeof(psoObjectDefinition) );
    memcpy( fields, inputFields, len );
    
    currentField = inputDef.numFields;
@@ -331,9 +332,16 @@ void ObjDefinition::Reset( psoBasicObjectDef & inputDef,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-const psoBasicObjectDef & ObjDefinition::GetDef()
+const psoObjectDefinition & ObjDefinition::GetDef()
 {
    return definition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+const psoKeyDefinition & ObjDefinition::GetKey()
+{
+   return key;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

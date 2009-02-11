@@ -182,13 +182,7 @@ struct psoKeyDefinition
 typedef struct psoKeyDefinition psoKeyDefinition;
 
 /**
- * Description of the structure of the data (if any).
- *
- * This structure is aligned in such a way that you can do:
- *
- *    malloc( offsetof(psoBasicObjectDef, fields) +
- *            numFields * sizeof(psoFieldDefinition) );
- *
+ * Description of the structure of the data.
  */
 struct psoFieldDefinition
 {
@@ -227,7 +221,7 @@ typedef struct psoFieldDefinition psoFieldDefinition;
  * to preallocate the internal hash array (avoiding unneeded Resize() and
  * potential memory fragmentation).
  */
-struct psoBasicObjectDef
+struct psoObjectDefinition
 {
    /** The object type. */
    enum psoObjectType type;
@@ -236,11 +230,11 @@ struct psoBasicObjectDef
    psoUint32 numFields;
    
    /** The data definition of the key (hash map/fast map only) */
-   psoKeyDefinition key;
+//   psoKeyDefinition key;
 
 };
 
-typedef struct psoBasicObjectDef psoBasicObjectDef;
+typedef struct psoObjectDefinition psoObjectDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

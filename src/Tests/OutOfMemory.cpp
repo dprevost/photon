@@ -59,7 +59,7 @@ int main()
    int countIn = 0, countOut = 0, errcode;
    Queue q1(session), q2(session);
 
-   psoBasicObjectDef queueDef = { 
+   psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
       { PSO_KEY_INTEGER, 0, 0, 0 }
@@ -67,7 +67,7 @@ int main()
    psoFieldDefinition fields[1] = { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
    };
-   psoBasicObjectDef folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;

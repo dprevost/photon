@@ -387,7 +387,8 @@ bool psonMapInit( psonMap             * pHashMap,
                   uint32_t              origNameLength,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
-                  psoBasicObjectDef * pDefinition,
+                  psoObjectDefinition * pDefinition,
+                  psoKeyDefinition    * pKey,
                   psoFieldDefinition  * pFields,
                   psonSessionContext  * pContext )
 {
@@ -470,7 +471,7 @@ bool psonMapInit( psonMap             * pHashMap,
          
       }
    }
-   memcpy( &pHashMap->keyDef, &pDefinition->key, sizeof(psoKeyDefinition) );
+   memcpy( &pHashMap->keyDef, pKey, sizeof(psoKeyDefinition) );
 
    pHashMap->latestVersion = hashItemOffset;
    pHashMap->editVersion = PSON_NULL_OFFSET;

@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
    string hname = fname + "/test";
 
    size_t len;
-   psoBasicObjectDef folderDef;
+   psoObjectDefinition folderDef;
    ObjDefinition mapDef( 5, PSO_FAST_MAP );
    ObjDefinition returnedDef;
    
@@ -101,7 +101,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
    
-   len = sizeof( psoBasicObjectDef );
+   len = sizeof( psoObjectDefinition );
    if ( memcmp( &mapDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

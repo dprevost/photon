@@ -92,7 +92,7 @@ int psoQueueClose( PSO_HANDLE objectHandle )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoQueueDefinition( PSO_HANDLE            objectHandle,
-                        psoBasicObjectDef * pDefinition,
+                        psoObjectDefinition * pDefinition,
                         psoUint32             numFields,
                         psoFieldDefinition  * pFields )
 {

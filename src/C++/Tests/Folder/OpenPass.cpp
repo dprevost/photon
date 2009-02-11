@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    Folder folder1(session1), folder2(session2);
    string name = "/cpp_folder_open";
    const char * c_name = "/cpp_folder_open";
-   psoBasicObjectDef def; 
+   psoObjectDefinition def; 
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;

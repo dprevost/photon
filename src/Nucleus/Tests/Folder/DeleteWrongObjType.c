@@ -31,11 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
@@ -55,6 +51,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                NULL,
                                 fields,
                                 1,
                                 0,

@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    Folder folder(session);
    string name = "/cpp_folder_status";
    psoObjStatus status;
-   psoBasicObjectDef def; 
+   psoObjectDefinition def; 
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;

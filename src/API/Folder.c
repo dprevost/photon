@@ -98,11 +98,12 @@ int psoFolderClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoFolderCreateObject( PSO_HANDLE           objectHandle,
-                           const char         * objectName,
-                           uint32_t             nameLengthInBytes,
-                           psoBasicObjectDef  * pDefinition,
-                           psoFieldDefinition * pFields )
+int psoFolderCreateObject( PSO_HANDLE            objectHandle,
+                           const char          * objectName,
+                           uint32_t              nameLengthInBytes,
+                           psoObjectDefinition * pDefinition,
+                           psoKeyDefinition    * pKey,
+                           psoFieldDefinition  * pFields )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -143,7 +144,7 @@ int psoFolderCreateObject( PSO_HANDLE           objectHandle,
       return PSO_NULL_POINTER;
    }
    
-   errcode = psoaValidateDefinition( pDefinition, pFields );
+   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
    if ( errcode != PSO_OK ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
       return errcode;
@@ -157,6 +158,7 @@ int psoFolderCreateObject( PSO_HANDLE           objectHandle,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
+                                      pKey,
                                       pFields,
                                       &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
@@ -187,7 +189,8 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
                               const char * xmlBuffer,
                               uint32_t     lengthInBytes )
 {
-   psoBasicObjectDef definition;
+   psoObjectDefinition definition;
+   psoKeyDefinition    key;
    psoFieldDefinition  * pFields = NULL;
    int errcode = PSO_OK;
    char * objectName = NULL;
@@ -216,6 +219,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
    errcode = psoaXmlToDefinition( xmlBuffer,
                                   lengthInBytes,
                                   &definition,
+                                  &key,
                                   &pFields,
                                   &objectName,
                                   &nameLengthInBytes );
@@ -224,6 +228,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
                                        objectName,
                                        nameLengthInBytes,
                                        &definition,
+                                       &key,
                                        pFields );
    }
    

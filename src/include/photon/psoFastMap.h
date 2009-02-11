@@ -146,7 +146,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle );
  */
 PHOTON_EXPORT
 int psoFastMapDefinition( PSO_HANDLE            objectHandle, 
-                          psoBasicObjectDef * definition,
+                          psoObjectDefinition * definition,
                           psoUint32             numFields,
                           psoFieldDefinition  * fields );
 

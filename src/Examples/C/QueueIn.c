@@ -70,24 +70,24 @@ int initObjects()
    int controlData;
    size_t len;
    
-   psoBasicObjectDef defFolder = { 
+   psoObjectDefinition defFolder = { 
       PSO_FOLDER, 
       0, 
       { 0, 0, 0, 0}, 
       { { "", 0, 0, 0, 0, 0, 0} } 
    };
 
-   psoBasicObjectDef defMap = { 
+   psoObjectDefinition defMap = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 20}, 
       { { "Status", PSO_INTEGER, 4, 0, 0, 0, 0} } 
    };
-   psoBasicObjectDef * pDefQueue = NULL;
+   psoObjectDefinition * pDefQueue = NULL;
 
-   len = offsetof( psoBasicObjectDef, fields ) + 
+   len = offsetof( psoObjectDefinition, fields ) + 
       2 * sizeof(psoFieldDefinition);
-   pDefQueue = (psoBasicObjectDef *)calloc( len, 1 );
+   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
    pDefQueue->type = PSO_QUEUE;
    pDefQueue->numFields = 2;
    pDefQueue->fields[0].type = PSO_STRING;

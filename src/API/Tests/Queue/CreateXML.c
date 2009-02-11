@@ -49,11 +49,7 @@ int main( int argc, char * argv[] )
    int errcode;
    char buff[1000];
    char src_path[PATH_MAX] = {"../../../XML/photon_meta10.xsd"};
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

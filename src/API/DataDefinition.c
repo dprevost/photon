@@ -217,9 +217,9 @@ void psoaGetLimits( psonFieldDef * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaGetOffsets( psoBasicObjectDef  * pDefinition,
-                     psoFieldDefinition * pFields,
-                     uint32_t           * pOffsets )
+void psoaGetOffsets( psoObjectDefinition * pDefinition,
+                     psoFieldDefinition  * pFields,
+                     uint32_t            * pOffsets )
 {
    unsigned int i;
    uint32_t minLength = 0;
@@ -315,8 +315,9 @@ void psoaGetOffsets( psoBasicObjectDef  * pDefinition,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaValidateDefinition( psoBasicObjectDef  * pDefinition,
-                            psoFieldDefinition * pFields )
+int psoaValidateDefinition( psoObjectDefinition * pDefinition,
+                            psoKeyDefinition    * pKey,
+                            psoFieldDefinition  * pFields )
 {
    unsigned int i, j;
    
@@ -474,7 +475,8 @@ int psoaValidateDefinition( psoBasicObjectDef  * pDefinition,
 
 int psoaXmlToDefinition( const char          * xmlBuffer,
                          uint32_t              lengthInBytes,
-                         psoBasicObjectDef   * pDefinition,
+                         psoObjectDefinition * pDefinition,
+                         psoKeyDefinition    * pKey,
                          psoFieldDefinition ** ppFields,                         
                          char               ** objectName,
                          uint32_t            * nameLengthInBytes )

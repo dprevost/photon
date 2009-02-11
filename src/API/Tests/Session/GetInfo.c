@@ -33,11 +33,7 @@ int main( int argc, char * argv[] )
    psoInfo info, info2;
    size_t allocSpace;
    int xyz = 12345;
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

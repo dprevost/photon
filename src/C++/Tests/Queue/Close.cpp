@@ -34,8 +34,8 @@ int main( int argc, char * argv[] )
    Queue queue(session);
    string fname = "/cpp_queue_close";
    string qname = fname + "/test";
-   psoBasicObjectDef folderDef;
-   psoBasicObjectDef queueDef = { 
+   psoObjectDefinition folderDef;
+   psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 0, 0 }

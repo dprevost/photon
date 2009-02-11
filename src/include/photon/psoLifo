@@ -92,7 +92,7 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Definition( psoBasicObjectDef & definition,
+   void Definition( psoObjectDefinition & definition,
                     psoUint32             numFields,
                     psoFieldDefinition  * fields );
 

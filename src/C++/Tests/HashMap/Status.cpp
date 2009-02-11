@@ -41,8 +41,8 @@ int main( int argc, char * argv[] )
    const char * key3 = "My Key3";
    const char * data = "My Data";
    psoObjStatus status;
-   psoBasicObjectDef folderDef;
-   psoBasicObjectDef mapDef = { 
+   psoObjectDefinition folderDef;
+   psoObjectDefinition mapDef = { 
       PSO_HASH_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

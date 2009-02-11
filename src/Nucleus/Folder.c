@@ -101,7 +101,8 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
 bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
-                             psoBasicObjectDef * pDefinition,
+                             psoObjectDefinition * pDefinition,
+                             psoKeyDefinition    * pKey,
                              psoFieldDefinition  * pFields,
                              psonSessionContext  * pContext )
 {
@@ -160,6 +161,7 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
+                                   pKey,
                                    pFields,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
@@ -755,7 +757,7 @@ void psonFolderFini( psonFolder         * pFolder,
 bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
-                              psoBasicObjectDef * pDefinition,
+                              psoObjectDefinition * pDefinition,
                               psonFieldDef       ** ppInternalDef,
                               psonSessionContext  * pContext )
 {
@@ -1378,7 +1380,8 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * objectName,
                              const char          * originalName,
                              uint32_t              strLength, 
-                             psoBasicObjectDef * pDefinition,
+                             psoObjectDefinition * pDefinition,
+                             psoKeyDefinition    * pKey,
                              psoFieldDefinition  * pFields,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
@@ -1572,6 +1575,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                pDesc->originalName,
                                SET_OFFSET(pHashItem),
                                pDefinition,
+                               pKey,
                                pFields,
                                pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonHashMap,nodeObject);
@@ -1588,6 +1592,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                            pDesc->originalName,
                            SET_OFFSET(pHashItem),
                            pDefinition,
+                           pKey,
                            pFields,
                            pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
@@ -1661,6 +1666,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                 &originalName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pDefinition,
+                                pKey,
                                 pFields,
                                 numBlocks,
                                 expectedNumOfChilds,
@@ -1990,7 +1996,8 @@ bool psonTopFolderCloseObject( psonFolderItem     * pFolderItem,
 bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
-                                psoBasicObjectDef * pDefinition,
+                                psoObjectDefinition * pDefinition,
+                                psoKeyDefinition    * pKey,
                                 psoFieldDefinition  * pFields,
                                 psonSessionContext  * pContext )
 {
@@ -2055,6 +2062,7 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
+                                   pKey,
                                    pFields,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
@@ -2282,7 +2290,7 @@ error_handler:
 bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
-                          psoBasicObjectDef * pDefinition,
+                          psoObjectDefinition * pDefinition,
                           psonFieldDef       ** ppInternalDef,
                           psonSessionContext  * pContext )
 {

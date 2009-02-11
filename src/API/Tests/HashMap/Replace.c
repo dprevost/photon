@@ -37,7 +37,7 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data 2";
    char buffer[20];
    uint32_t length;
-   psoBasicObjectDef mapDef = { 
+   psoObjectDefinition mapDef = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 4, 10 }
@@ -45,11 +45,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
-   psoBasicObjectDef folderDef = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

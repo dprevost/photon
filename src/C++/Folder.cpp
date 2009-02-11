@@ -66,7 +66,8 @@ void Folder::Close()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::CreateObject( const std::string   & objectName,
-                           psoBasicObjectDef & definition,
+                           psoObjectDefinition & definition,
+                           psoKeyDefinition    * pKey,
                            psoFieldDefinition  * fields )
 {
    int rc;
@@ -79,6 +80,7 @@ void Folder::CreateObject( const std::string   & objectName,
                                objectName.c_str(),
                                objectName.length(),
                                &definition,
+                               pKey,
                                fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
@@ -89,7 +91,8 @@ void Folder::CreateObject( const std::string   & objectName,
 
 void Folder::CreateObject( const char          * objectName,
                            uint32_t              nameLengthInBytes,
-                           psoBasicObjectDef & definition,
+                           psoObjectDefinition & definition,
+                           psoKeyDefinition    * pKey,
                            psoFieldDefinition  * fields )
 {
    int rc;
@@ -102,6 +105,7 @@ void Folder::CreateObject( const char          * objectName,
                                objectName,
                                nameLengthInBytes,
                                &definition,
+                               pKey,
                                fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );

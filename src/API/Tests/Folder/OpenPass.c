@@ -33,11 +33,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    memset( junk, 0, 12 );
    

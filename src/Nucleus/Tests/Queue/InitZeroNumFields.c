@@ -30,7 +30,7 @@ int main()
    psonQueue * pQueue;
    psonSessionContext context;
    psonTxStatus status;
-   psoBasicObjectDef def = { 
+   psoObjectDefinition def = { 
       PSO_QUEUE, 
       0, 
       { 0, 0, 0, 0}

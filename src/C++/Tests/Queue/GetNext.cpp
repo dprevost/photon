@@ -38,8 +38,8 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data2";
    char buffer[50];
    uint32_t length;
-   psoBasicObjectDef folderDef;
-   psoBasicObjectDef queueDef = { 
+   psoObjectDefinition folderDef;
+   psoObjectDefinition queueDef = { 
       PSO_QUEUE,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 0, 0 }

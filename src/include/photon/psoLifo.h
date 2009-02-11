@@ -81,7 +81,7 @@ int psoLifoClose( PSO_HANDLE objectHandle );
  */
 PHOTON_EXPORT
 int psoLifoDefinition( PSO_HANDLE            objectHandle, 
-                       psoBasicObjectDef * definition,
+                       psoObjectDefinition * definition,
                        psoUint32             numFields,
                        psoFieldDefinition  * fields );
 

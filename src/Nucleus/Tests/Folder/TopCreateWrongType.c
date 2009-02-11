@@ -30,11 +30,7 @@ int main()
    psonFolder * pTopFolder;
    psonSessionContext context;
    bool ok;
-   psoBasicObjectDef def = { 
-      0, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { 0, 0 };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -42,6 +38,7 @@ int main()
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
+                                   NULL,
                                    NULL,
                                    &context );
 

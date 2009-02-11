@@ -40,7 +40,7 @@ int createMap()
     * The content of the hash map is simple: a fixed length key, the country 
     * code, and the country name (a variable string - max length of 100).
     */
-   psoBasicObjectDef def = { 
+   psoObjectDefinition def = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_STRING, 2, 0, 0}, 

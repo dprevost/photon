@@ -50,6 +50,7 @@ int main()
                                 "Test2",
                                 5,
                                 NULL,
+                                NULL,
                                 fields,
                                 1,
                                 0,

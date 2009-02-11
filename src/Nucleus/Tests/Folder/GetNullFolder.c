@@ -32,11 +32,7 @@ int main()
    bool ok;
    psonTxStatus status;
    psonFolderItem folderItem;
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -52,6 +48,7 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
+                                NULL,
                                 NULL,
                                 1,
                                 0,

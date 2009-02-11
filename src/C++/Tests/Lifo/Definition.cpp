@@ -49,7 +49,7 @@ int main( int argc, char * argv[] )
 
    struct dummy data;
    size_t len;
-   psoBasicObjectDef folderDef;
+   psoObjectDefinition folderDef;
    ObjDefinition queueDef( 5, PSO_LIFO );
    ObjDefinition returnedDef;
    
@@ -95,7 +95,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   len = sizeof( psoBasicObjectDef );
+   len = sizeof( psoObjectDefinition );
    if ( memcmp( &queueDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

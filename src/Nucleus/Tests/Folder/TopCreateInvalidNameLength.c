@@ -31,11 +31,7 @@ int main()
    int errcode;
    bool ok;
    char name[PSO_MAX_FULL_NAME_LENGTH+100];
-   psoBasicObjectDef def = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition def = { PSO_FOLDER, 0 };
    
    memset( name, 't', PSO_MAX_FULL_NAME_LENGTH+99 );
    name[PSO_MAX_FULL_NAME_LENGTH+99] = 0;
@@ -46,6 +42,7 @@ int main()
                                    "Test1",
                                    0,
                                    &def,
+                                   NULL,
                                    NULL,
                                    &context );
    if ( ok != false ) {
@@ -61,6 +58,7 @@ int main()
                                    1,
                                    &def,
                                    NULL,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -74,6 +72,7 @@ int main()
                                    name,
                                    PSO_MAX_FULL_NAME_LENGTH+1,
                                    &def,
+                                   NULL,
                                    NULL,
                                    &context );
    if ( ok != false ) {
@@ -91,6 +90,7 @@ int main()
                                    name,
                                    PSO_MAX_NAME_LENGTH+1,
                                    &def,
+                                   NULL,
                                    NULL,
                                    &context );
    if ( ok != false ) {

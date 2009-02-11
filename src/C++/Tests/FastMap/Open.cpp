@@ -35,8 +35,8 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_fastmap_open";
    string hname = fname + "/test";
    const char * c_name = "/cpp_fastmap_open/test";
-   psoBasicObjectDef folderDef;
-   psoBasicObjectDef mapDef = { 
+   psoObjectDefinition folderDef;
+   psoObjectDefinition mapDef = { 
       PSO_FAST_MAP,
       1, 
       { PSO_KEY_VAR_BINARY, 0, 1, 20 }

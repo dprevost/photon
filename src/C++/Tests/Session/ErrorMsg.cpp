@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
    Process process;
    Session session;
    string name = "/cpp_session_errormsg", msg;
-   psoBasicObjectDef folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;

@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    Session session;
    string name = "/cpp_session_create";
    const char * c_name = "/cpp_session_create";
-   psoBasicObjectDef folderDef;
+   psoObjectDefinition folderDef;
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };

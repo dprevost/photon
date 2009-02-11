@@ -174,7 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoKeyDefinition.3
 /usr/local/share/man/man3/psoKeyType.3
 /usr/local/share/man/man3/psoLifo.3
-/usr/local/share/man/man3/psoBasicObjectDef.3
+/usr/local/share/man/man3/psoObjectDefinition.3
 /usr/local/share/man/man3/psoQueueDefinition.3
 /usr/local/share/man/man3/psoQueuePushNow.3
 

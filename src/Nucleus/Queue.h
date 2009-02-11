@@ -106,7 +106,7 @@ bool psonQueueInit( psonQueue           * pQueue,
                     uint32_t              origNameLength,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
-                    psoBasicObjectDef * pDefinition,
+                    psoObjectDefinition * pDefinition,
                     psoFieldDefinition  * pFields,
                     psonSessionContext  * pContext );
 

@@ -186,7 +186,7 @@ static PyTypeObject BaseDefType = {
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static BaseDef *
-BaseDefToObject( psoBasicObjectDef * def, PyObject * key ) 
+BaseDefToObject( psoObjectDefinition * def, PyObject * key ) 
 {
    BaseDef * base = NULL;
    PyObject * objType;

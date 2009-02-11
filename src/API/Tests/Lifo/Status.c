@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data2";
    const char * data3 = "My Data3";
    psoObjStatus status;
-   psoBasicObjectDef defLilo = { 
+   psoObjectDefinition defLilo = { 
       PSO_LIFO,
       1, 
       { 0, 0, 0, 0}
@@ -43,11 +43,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
-   psoBasicObjectDef folderDef = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

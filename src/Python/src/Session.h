@@ -107,7 +107,7 @@ Session_CreateObject( Session * self, PyObject * args )
    int errcode;
    const char * objectName;
    PyObject * list = NULL;
-   psoBasicObjectDef definition;
+   psoObjectDefinition definition;
    psoFieldDefinition  * fields = NULL;
    BaseDef * baseDef;
    KeyDefinition * key;
@@ -168,7 +168,7 @@ Session_CreateObject( Session * self, PyObject * args )
       }
    }
    
-   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
    definition.type = baseDef->intType;
    definition.numFields = baseDef->numFields;
    key = (KeyDefinition *) baseDef->keyDef;
@@ -264,7 +264,7 @@ Session_GetDefinition( Session * self, PyObject * args )
    int errcode;
    const char * objectName;
    PyObject * list = NULL;
-   psoBasicObjectDef definition;
+   psoObjectDefinition definition;
    psoFieldDefinition  * fields = NULL;
    BaseDef * baseDef;
    KeyDefinition * key = NULL;
@@ -288,7 +288,7 @@ Session_GetDefinition( Session * self, PyObject * args )
       PyMem_Malloc(definition.numFields*sizeof(psoFieldDefinition));
    if ( fields == NULL ) return PyErr_NoMemory();
 
-   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
    errcode = psoGetDefinition( (PSO_HANDLE)self->handle,
                                objectName,
                                (psoUint32)strlen(objectName),

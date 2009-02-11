@@ -227,7 +227,7 @@ Folder_CreateObject( PyObject * self, PyObject * args )
    Folder * folder = (Folder *) self;
    const char * objectName;
    PyObject * list = NULL;
-   psoBasicObjectDef definition;
+   psoObjectDefinition definition;
    psoFieldDefinition  * fields = NULL;
    BaseDef * baseDef;
    KeyDefinition * key;
@@ -288,7 +288,7 @@ Folder_CreateObject( PyObject * self, PyObject * args )
       }
    }
    
-   memset( &definition, 0, sizeof(psoBasicObjectDef) );
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
    definition.type = baseDef->intType;
    definition.numFields = baseDef->numFields;
    key = (KeyDefinition *) baseDef->keyDef;

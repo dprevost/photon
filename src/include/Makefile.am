@@ -142,7 +142,7 @@ C_MAN_PAGES =                           \
         man3/psoLifoPop.3               \
         man3/psoLifoPush.3              \
         man3/psoLifoStatus.3            \
-        man3/psoBasicObjectDef.3        \
+        man3/psoObjectDefinition.3      \
         man3/psoObjectType.3            \
         man3/psoObjStatus.3             \
         man3/psoProcess_c.3             \

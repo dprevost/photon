@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    Session session;
    Folder folder(session);
    string name = "/cpp_folder_close";
-   psoBasicObjectDef def; 
+   psoObjectDefinition def; 
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;

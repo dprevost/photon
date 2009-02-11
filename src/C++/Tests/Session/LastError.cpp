@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    Session session;
    int errcode;
    string name = "/cpp_session_last_error";
-   psoBasicObjectDef folderDef;
+   psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
    folderDef.type = PSO_FOLDER;

@@ -61,11 +61,11 @@ void initObjects()
 {
    int controlData;
    
-   psoBasicObjectDef defFolder;
-   memset( &defFolder, 0, sizeof(psoBasicObjectDef) );
+   psoObjectDefinition defFolder;
+   memset( &defFolder, 0, sizeof(psoObjectDefinition) );
    defFolder.type = PSO_FOLDER;
 
-   psoBasicObjectDef defMap = { 
+   psoObjectDefinition defMap = { 
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 20}, 
