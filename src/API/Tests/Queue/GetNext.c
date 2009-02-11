@@ -35,11 +35,7 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data2";
    char buffer[200];
    uint32_t length;
-   psoObjectDefinition defQueue = { 
-      PSO_QUEUE,
-      1, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition defQueue = { PSO_QUEUE, 1 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -66,6 +62,7 @@ int main( int argc, char * argv[] )
                               "/aqgn",
                               strlen("/aqgn"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -76,6 +73,7 @@ int main( int argc, char * argv[] )
                               "/aqgn/test",
                               strlen("/aqgn/test"),
                               &defQueue,
+                              NULL,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

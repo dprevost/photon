@@ -31,11 +31,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
-   psoObjectDefinition defQueue = { 
-      PSO_QUEUE,
-      1, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition defQueue = { PSO_QUEUE, 1 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -62,6 +58,7 @@ int main( int argc, char * argv[] )
                               "/aqcp",
                               strlen("/aqcp"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -72,6 +69,7 @@ int main( int argc, char * argv[] )
                               "/aqcp/test",
                               strlen("/aqcp/test"),
                               &defQueue,
+                              NULL,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
