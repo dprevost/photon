@@ -93,7 +93,7 @@ void Queue::Definition( ObjDefinition & definition )
    
    // We catch and rethrow the exception to avoid a memory leak
    try {
-      definition.Reset( def, fields );
+      definition.Reset( def, NULL, fields );
    }
    catch( pso::Exception exc ) {
       free( fields );

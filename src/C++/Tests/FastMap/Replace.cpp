@@ -42,11 +42,8 @@ int main( int argc, char * argv[] )
    char buffer[50];
    uint32_t length;
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { 
-      PSO_FAST_MAP,
-      1, 
-      { PSO_KEY_VAR_BINARY, 0, 1, 20 }
-   };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 1 };
+   psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -63,8 +60,8 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, folderDef, NULL );
-      session1.CreateObject( hname, mapDef, fields );
+      session1.CreateObject( fname, folderDef, NULL, NULL );
+      session1.CreateObject( hname, mapDef, &keyDef, fields );
       map1.Open( hname );
       // Insert after commit for first test below
       map1.Insert( key, 6, data1, strlen(data1) );

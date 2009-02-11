@@ -758,6 +758,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
+                              psoKeyDefinition    * key,
                               psonFieldDef       ** ppInternalDef,
                               psonSessionContext  * pContext )
 {
@@ -828,6 +829,16 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
          case PSO_FOLDER:
             break;
          case PSO_HASH_MAP:
+            /*
+             * This test cannot be done in the API since we don't know the
+             * object type. The other alternative is to force a key- def 
+             * parameter on GetDefinition for queues and folder. It would
+             * make the code simpler but the API more rigid.
+             */
+            if ( key == NULL ) {
+               errcode = PSO_NULL_POINTER;
+               break;
+            }
             *ppInternalDef = GET_PTR_FAST(
                GET_PTR_FAST( pDesc->offset, psonHashMap)->dataDefOffset,
                psonFieldDef );
@@ -843,6 +854,10 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                GET_PTR_FAST( pDesc->offset, psonQueue)->numFields;
             break;
          case PSO_FAST_MAP:
+            if ( key == NULL ) {
+               errcode = PSO_NULL_POINTER;
+               break;
+            }
             *ppInternalDef = GET_PTR_FAST(
                GET_PTR_FAST( pDesc->offset, psonMap)->dataDefOffset,
                psonFieldDef );
@@ -858,6 +873,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
          errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          goto the_exit;
       }
+      if ( errcode != PSO_OK ) goto the_exit;
       
       psonUnlock( &pFolder->memObject, pContext );
 
@@ -888,6 +904,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                                  &objectName[partialLength+1], 
                                  strLength - partialLength - 1, 
                                  pDefinition,
+                                 key,
                                  ppInternalDef,
                                  pContext );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -2291,6 +2308,7 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
+                          psoKeyDefinition    * key,
                           psonFieldDef       ** ppInternalDef,
                           psonSessionContext  * pContext )
 {
@@ -2362,6 +2380,7 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                                        &(lowerName[first]), 
                                        strLength, 
                                        pDefinition,
+                                       key,
                                        ppInternalDef,
                                        pContext );
          PSO_POST_CONDITION( ok == true || ok == false );

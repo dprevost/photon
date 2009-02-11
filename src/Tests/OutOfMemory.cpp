@@ -59,11 +59,7 @@ int main()
    int countIn = 0, countOut = 0, errcode;
    Queue q1(session), q2(session);
 
-   psoObjectDefinition queueDef = { 
-      PSO_QUEUE,
-      1, 
-      { PSO_KEY_INTEGER, 0, 0, 0 }
-   };
+   psoObjectDefinition queueDef = { PSO_QUEUE, 1 };
    psoFieldDefinition fields[1] = { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
    };
@@ -84,9 +80,9 @@ int main()
       }
       catch ( Exception exc ) {}
 
-      session.CreateObject( folderName, folderDef, NULL );
-      session.CreateObject( queueName1, queueDef, fields );
-      session.CreateObject( queueName2, queueDef, fields );
+      session.CreateObject( folderName, folderDef, NULL, NULL );
+      session.CreateObject( queueName1, queueDef,  NULL, fields );
+      session.CreateObject( queueName2, queueDef,  NULL, fields );
       session.GetInfo( info1 );
    }
    catch( Exception exc ) {

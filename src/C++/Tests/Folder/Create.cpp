@@ -38,6 +38,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
    };
+   psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
 
    memset( &def, 0, sizeof def );
    def.type = PSO_FOLDER;
@@ -50,7 +51,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, def, NULL );
+      session.CreateObject( name, def, NULL, NULL );
       folder.Open( name );
    }
    catch( pso::Exception exc ) {
@@ -62,7 +63,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      folder.CreateObject( NULL, subname.length(), def, NULL );
+      folder.CreateObject( NULL, subname.length(), def, NULL, NULL );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -74,7 +75,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.CreateObject( subname.c_str(), 0, def, NULL );
+      folder.CreateObject( subname.c_str(), 0, def, NULL, NULL );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -88,7 +89,7 @@ int main( int argc, char * argv[] )
    def.type = (psoObjectType)0;
    try {
       // The last argument cannot be NULL since we are not creating a folder.
-      folder.CreateObject( subname, def, fields );
+      folder.CreateObject( subname, def, &keyDef, fields );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -102,7 +103,7 @@ int main( int argc, char * argv[] )
    
    // End of invalid args. This call should succeed.
    try {
-      folder.CreateObject( subname, def, NULL );
+      folder.CreateObject( subname, def, NULL, NULL );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

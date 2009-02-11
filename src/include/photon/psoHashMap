@@ -96,6 +96,7 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Definition( psoObjectDefinition & definition,
+                    psoKeyDefinition    & key,
                     psoUint32             numFields,
                     psoFieldDefinition  * fields );
 

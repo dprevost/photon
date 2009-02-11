@@ -215,6 +215,7 @@ void Session::GetDefinition( const std::string & objectName,
 {
    int rc;
    psoObjectDefinition def;
+   psoKeyDefinition key;
    psoFieldDefinition * fields;
    
    if ( m_sessionHandle == NULL ) {
@@ -222,10 +223,12 @@ void Session::GetDefinition( const std::string & objectName,
    }
    
    memset( &def, 0, sizeof(psoObjectDefinition) );
+   memset( &key, 0, sizeof(psoKeyDefinition) );
    rc = psoGetDefinition( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length(),
                           &def,
+                          &key,
                           0,
                           NULL );
    //psoHashMapDefinition( m_objectHandle, &def, 0, NULL );
@@ -241,6 +244,7 @@ void Session::GetDefinition( const std::string & objectName,
                           objectName.c_str(),
                           objectName.length(),
                           &def,
+                          &key,
                           def.numFields, 
                           fields );
    if ( rc != 0 ) {
@@ -249,7 +253,12 @@ void Session::GetDefinition( const std::string & objectName,
    
    // We catch and rethrow the exception to avoid a memory leak
    try {
-      definition.Reset( def, fields );
+      if ( key.type == 0 ) {
+         definition.Reset( def, NULL, fields );
+      }
+      else {
+         definition.Reset( def, &key, fields );
+      }
    }
    catch( pso::Exception exc ) {
       free( fields );
@@ -263,6 +272,7 @@ void Session::GetDefinition( const std::string & objectName,
 
 void Session::GetDefinition( const std::string   & objectName,
                              psoObjectDefinition & definition,
+                             psoKeyDefinition    * key,
                              psoUint32             numFields,
                              psoFieldDefinition  * fields )
 {
@@ -276,6 +286,7 @@ void Session::GetDefinition( const std::string   & objectName,
                           objectName.c_str(),
                           objectName.length(),
                           &definition,
+                          key,
                           numFields,
                           fields );
    if ( rc != 0 ) {
@@ -288,6 +299,7 @@ void Session::GetDefinition( const std::string   & objectName,
 void Session::GetDefinition( const char          * objectName,
                              uint32_t              nameLengthInBytes,
                              psoObjectDefinition & definition,
+                             psoKeyDefinition    * key,
                              psoUint32             numFields,
                              psoFieldDefinition  * fields )
 {
@@ -301,6 +313,7 @@ void Session::GetDefinition( const char          * objectName,
                           objectName,
                           nameLengthInBytes,
                           &definition,
+                          key,
                           numFields,
                           fields );
    if ( rc != 0 ) {

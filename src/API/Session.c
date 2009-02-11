@@ -142,6 +142,13 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
       return PSO_NULL_POINTER;
    }
 
+   if ( pDefinition->type == PSO_HASH_MAP || pDefinition->type == PSO_FAST_MAP ) {
+      if ( pKey == NULL ) {
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+         return PSO_NULL_POINTER;
+      }
+   }
+
    errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
    if ( errcode != PSO_OK ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
@@ -357,6 +364,7 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       uint32_t              nameLengthInBytes,
                       psoObjectDefinition * pDefinition,
+                      psoKeyDefinition    * key,
                       psoUint32             numFields,
                       psoFieldDefinition  * pFields )
 {
@@ -398,6 +406,7 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition,
+                                   key,
                                    &pInternalDef,
                                    &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );

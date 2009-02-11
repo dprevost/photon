@@ -69,6 +69,7 @@ void HashMap::Definition( ObjDefinition & definition )
 {
    int rc;
    psoObjectDefinition def;
+   psoKeyDefinition key;
    psoFieldDefinition * fields;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
@@ -76,7 +77,8 @@ void HashMap::Definition( ObjDefinition & definition )
    }
    
    memset( &def, 0, sizeof(psoObjectDefinition) );
-   rc = psoHashMapDefinition( m_objectHandle, &def, 0, NULL );
+   memset( &key, 0, sizeof(psoKeyDefinition) );
+   rc = psoHashMapDefinition( m_objectHandle, &def, &key, 0, NULL );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
    }
@@ -85,14 +87,14 @@ void HashMap::Definition( ObjDefinition & definition )
    if ( fields == NULL ) {
       throw pso::Exception( "HashMap::Definition", PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
-   rc = psoHashMapDefinition( m_objectHandle, &def, def.numFields, fields );
+   rc = psoHashMapDefinition( m_objectHandle, &def, &key, def.numFields, fields );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
    }
    
    // We catch and rethrow the exception to avoid a memory leak
    try {
-      definition.Reset( def, fields );
+      definition.Reset( def, &key, fields );
    }
    catch( pso::Exception exc ) {
       free( fields );
@@ -105,6 +107,7 @@ void HashMap::Definition( ObjDefinition & definition )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Definition( psoObjectDefinition & definition,
+                          psoKeyDefinition    & key,
                           psoUint32             numFields,
                           psoFieldDefinition  * fields )
 {
@@ -116,6 +119,7 @@ void HashMap::Definition( psoObjectDefinition & definition,
 
    rc = psoHashMapDefinition( m_objectHandle, 
                               &definition,
+                              &key,
                               numFields,
                               fields );   
    if ( rc != 0 ) {

@@ -204,8 +204,8 @@ void ObjDefinition::AddKey( psoKeyType type,
          throw pso::Exception( "ObjDefinition::AddKey",
                                PSO_INVALID_KEY_DEF );
       }
-      definition.key.type = type;
-      definition.key.length = length;
+      key.type = type;
+      key.length = length;
       keyAdded = true;
       break;
 
@@ -215,8 +215,8 @@ void ObjDefinition::AddKey( psoKeyType type,
          throw pso::Exception( "ObjDefinition::AddKey",
                                PSO_INVALID_KEY_DEF );
       }
-      definition.key.type = type;
-      definition.key.length = length;
+      key.type = type;
+      key.length = length;
       keyAdded = true;
       break;
 
@@ -226,9 +226,9 @@ void ObjDefinition::AddKey( psoKeyType type,
          throw pso::Exception( "ObjDefinition::AddKey",
                                PSO_INVALID_KEY_DEF );
       }
-      definition.key.type = type;
-      definition.key.minLength = minLength;
-      definition.key.maxLength = maxLength;
+      key.type = type;
+      key.minLength = minLength;
+      key.maxLength = maxLength;
       keyAdded = true;
       break;
 
@@ -281,6 +281,7 @@ void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
    currentField = numberOfFields;
    
    memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &key, 0, sizeof(psoKeyDefinition) );
    
    // using calloc - being lazy...
    size_t len = numberOfFields * sizeof(psoFieldDefinition);
@@ -301,6 +302,7 @@ void ObjDefinition::Reset( uint32_t numberOfFields, enum psoObjectType type )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void ObjDefinition::Reset( psoObjectDefinition & inputDef,
+                           psoKeyDefinition    * inputKey,
                            psoFieldDefinition  * inputFields )
 {
    psoFieldDefinition * tmp;
@@ -308,6 +310,10 @@ void ObjDefinition::Reset( psoObjectDefinition & inputDef,
    if ( inputDef.numFields == 0 || inputDef.numFields > PSO_MAX_FIELDS ) {
       throw pso::Exception( "ObjDefinition::Reset",
                             PSO_INVALID_NUM_FIELDS );
+   }
+   if ( inputFields == NULL ) {
+      throw pso::Exception( "ObjDefinition::Reset",
+                            PSO_NULL_POINTER );
    }
    if ( inputDef.type < PSO_FOLDER || inputDef.type >= PSO_LAST_OBJECT_TYPE ) {
       throw pso::Exception( "ObjDefinition::Reset",
@@ -327,7 +333,12 @@ void ObjDefinition::Reset( psoObjectDefinition & inputDef,
    memcpy( fields, inputFields, len );
    
    currentField = inputDef.numFields;
-   keyAdded = true;
+   
+   keyAdded = false;
+   if ( inputKey != NULL ) {
+      memcpy( &key, inputKey, sizeof(psoKeyDefinition) );
+      keyAdded = true;
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

@@ -507,9 +507,9 @@ void shellKeyToOut( string        & outStr,
                     unsigned char * key,
                     uint32_t        length )
 {
-   psoObjectDefinition def = definition.GetDef();
+   psoKeyDefinition keyDef = definition.GetKey();
 
-   switch( def.key.type ) {
+   switch( keyDef.type ) {
 
    case PSO_KEY_INTEGER:
       readInt( outStr, length, key );
@@ -657,22 +657,23 @@ unsigned char * shellInToKey( string        & inKey,
    bool ok = false;
 
    psoObjectDefinition def = definition.GetDef();
+   psoKeyDefinition keyDef = definition.GetKey();
    
    // We need to determine the length of the key buffer to allocate.
-   switch( def.key.type ) {
+   switch( keyDef.type ) {
 
    case PSO_KEY_BINARY:
    case PSO_KEY_STRING:
    case PSO_KEY_INTEGER:
-      length += def.key.length;
+      length += keyDef.length;
       break;
 
    case PSO_KEY_VAR_STRING:
-      if ( inKey.length() > def.key.minLength ) {
+      if ( inKey.length() > keyDef.minLength ) {
          length = inKey.length();
       }
       else {
-         length = def.key.minLength;
+         length = keyDef.minLength;
       }
       break;
 
@@ -683,11 +684,11 @@ unsigned char * shellInToKey( string        & inKey,
       if ( z > 0 ) {
          if ( inKey[0] == '0' && (inKey[1] == 'x' || inKey[1] == 'X') ) z--;
       }
-      if ( z > def.key.minLength ) {
+      if ( z > keyDef.minLength ) {
          length += z;
       }
       else {
-         length += def.key.minLength;
+         length += keyDef.minLength;
       }
       break;
    }
@@ -695,33 +696,33 @@ unsigned char * shellInToKey( string        & inKey,
    key = new unsigned char[length];
    memset( key, 0, length );
    
-   switch( def.key.type ) {
+   switch( keyDef.type ) {
 
    case PSO_KEY_INTEGER:
       ok = writeInt( inKey,
-                     def.key.length,
+                     keyDef.length,
                      key );
       break;
    case PSO_KEY_BINARY:
       ok = writeFixBinary( inKey,
-                           def.key.length,
+                           keyDef.length,
                            key );
       break;
    case PSO_KEY_STRING:
       ok = writeFixString( inKey,
-                           def.key.length,
+                           keyDef.length,
                            key );
       break;
    case PSO_KEY_VAR_STRING:
       ok = writeVarString( inKey,
-                           def.key.minLength,
-                           def.key.maxLength,
+                           keyDef.minLength,
+                           keyDef.maxLength,
                            key );
       break;
    case PSO_KEY_VAR_BINARY:
       ok = writeVarBinary( inKey,
-                           def.key.minLength,
-                           def.key.maxLength,
+                           keyDef.minLength,
+                           keyDef.maxLength,
                            key );
       break;
    }

@@ -133,6 +133,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
+                              psoKeyDefinition    * key,
                               psonFieldDef       ** ppInternalDef,
                               psonSessionContext  * pContext );
 
@@ -255,6 +256,7 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
+                          psoKeyDefinition    * key,
                           psonFieldDef       ** ppInternalDef,
                           psonSessionContext  * pContext );
 

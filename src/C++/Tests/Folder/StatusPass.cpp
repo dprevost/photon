@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, def, NULL );
+      session.CreateObject( name, def, NULL, NULL );
       folder.Open( name );
    }
    catch( pso::Exception exc ) {

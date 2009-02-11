@@ -181,11 +181,14 @@ public:
     * the C++ class from the C structs.
     *
     * \param[in] definition The object definition C struct
+    * \param[in] inputKey   The key definition. Set it to NULL for objects
+    *                       not using keys (FIFO Queues, etc.).
     * \param[in] inputFields The field definition array
     *
     * \exception pso::Exception An abnormal error occured.
     */
    void Reset( psoObjectDefinition & definition,
+               psoKeyDefinition    * inputKey,
                psoFieldDefinition  * inputFields );
    
    /** Returns a reference to the C struct definition. */

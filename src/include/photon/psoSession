@@ -252,6 +252,7 @@ public:
     */
    void GetDefinition( const std::string   & objectName,
                        psoObjectDefinition & definition,
+                       psoKeyDefinition    * key,
                        psoUint32             numFields,
                        psoFieldDefinition  * fields );
 
@@ -276,6 +277,7 @@ public:
    void GetDefinition( const char          * objectName,
                        psoUint32             nameLengthInBytes,
                        psoObjectDefinition & definition,
+                       psoKeyDefinition    * key,
                        psoUint32             numFields,
                        psoFieldDefinition  * fields );
 

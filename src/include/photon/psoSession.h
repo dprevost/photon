@@ -283,6 +283,7 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       psoUint32             nameLengthInBytes,
                       psoObjectDefinition * definition,
+                      psoKeyDefinition    * key,
                       psoUint32             numFields,
                       psoFieldDefinition  * fields );
 
