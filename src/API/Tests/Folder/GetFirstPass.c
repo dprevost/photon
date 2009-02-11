@@ -55,6 +55,7 @@ int main( int argc, char * argv[] )
                               "/afgfp",
                               strlen("/afgfp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -64,6 +65,7 @@ int main( int argc, char * argv[] )
                               "/afgfp/f1",
                               strlen("/afgfp/f1"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

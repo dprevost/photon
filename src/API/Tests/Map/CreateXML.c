@@ -76,6 +76,7 @@ int main( int argc, char * argv[] )
                               "/ammcx",
                               strlen("/ammcx"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

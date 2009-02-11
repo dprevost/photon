@@ -144,6 +144,13 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
    
+   if ( pDefinition->type == PSO_HASH_MAP || pDefinition->type == PSO_FAST_MAP ) {
+      if ( pKey == NULL ) {
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+         return PSO_NULL_POINTER;
+      }
+   }
+   
    errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
    if ( errcode != PSO_OK ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );

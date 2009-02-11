@@ -55,6 +55,7 @@ int main( int argc, char * argv[] )
                               "/accp",
                               strlen("/accp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

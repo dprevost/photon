@@ -33,6 +33,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def = { PSO_FOLDER, 0 };
    psoObjectDefinition definition;
    psoFieldDefinition fields[2];
+   psoKeyDefinition keyDef;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -55,6 +56,7 @@ int main( int argc, char * argv[] )
                               "/ahmcr",
                               strlen("/ahmcr"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -73,12 +75,14 @@ int main( int argc, char * argv[] )
    /* Invalid definition. */
    
    memset( &definition, 0, sizeof(psoObjectDefinition) );
+   memset( &keyDef, 0, sizeof(psoKeyDefinition) );
    memset( fields, 0, 2*sizeof(psoFieldDefinition) );
    
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -90,74 +94,92 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   definition.key.type = PSO_KEY_INTEGER;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    NULL,
+                                    fields );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   keyDef.type = PSO_KEY_INTEGER;
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "ahmcr",
+                                    strlen("ahmcr"),
+                                    &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   definition.key.type = PSO_KEY_STRING;
+   keyDef.type = PSO_KEY_STRING;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   definition.key.type = PSO_KEY_VAR_STRING;
+   keyDef.type = PSO_KEY_VAR_STRING;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   definition.key.length = 100;
+   keyDef.length = 100;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   definition.key.length = 0;
-   definition.key.minLength = 10;
-   definition.key.maxLength = 8;
+   keyDef.length = 0;
+   keyDef.minLength = 10;
+   keyDef.maxLength = 8;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   definition.key.minLength = 1;
-   definition.key.maxLength = 0;
+   keyDef.minLength = 1;
+   keyDef.maxLength = 0;
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_NUM_FIELDS ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -169,6 +191,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -180,6 +203,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -191,6 +215,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -202,6 +227,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -214,6 +240,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -226,6 +253,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -239,6 +267,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -252,6 +281,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -263,6 +293,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -275,6 +306,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -288,6 +320,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_SCALE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -303,6 +336,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
+                                    &keyDef,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -314,6 +348,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &def,
+                                    &keyDef,
                                     NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -331,6 +366,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr2",
                                     strlen("ahmcr2"),
                                     &def,
+                                    &keyDef,
                                     NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -353,6 +389,7 @@ int main( int argc, char * argv[] )
                                     "ahmcr3",
                                     strlen("ahmcr3"),
                                     &def,
+                                    &keyDef,
                                     NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );

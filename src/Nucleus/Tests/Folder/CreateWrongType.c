@@ -30,12 +30,8 @@ int main()
    psonFolder * pFolder;
    psonSessionContext context;
  
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { 0, 0 };
 
-   psoFieldDefinition fields[1] =  { 
-      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
-   };
-   
    pFolder = initTopFolderTest( expectedToPass, &context );
 
    psonFolderCreateObject( pFolder,
@@ -43,7 +39,7 @@ int main()
                            strlen("Test1"),
                            &def,
                            NULL,
-                           fields,
+                           NULL,
                            &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

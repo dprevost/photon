@@ -32,11 +32,8 @@ int main()
    bool ok;
    psonTxStatus status;
    char * key  = "my key";
-   psoObjectDefinition def = { 
-      PSO_FAST_MAP, 
-      1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 100 }
-   };
+   psoObjectDefinition def = { PSO_FAST_MAP, 1 };
+   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
    psoFieldDefinition fields[1] =  { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
    };
@@ -46,7 +43,7 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                     SET_OFFSET(pHashMap), &def, fields, &context );
+                     SET_OFFSET(pHashMap), &def, &keyDef, fields, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

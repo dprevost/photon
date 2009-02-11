@@ -48,6 +48,7 @@ int main()
                      "Map1", 
                      SET_OFFSET(pHashMap),
                      NULL,
+                     NULL,
                      fields,
                      &context );
 

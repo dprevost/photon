@@ -50,6 +50,7 @@ int main()
                          "Map1", 
                          SET_OFFSET(pHashMap), 
                          &def, 
+                         &keyDef,
                          fields,
                          &context );
    if ( ok != true ) {

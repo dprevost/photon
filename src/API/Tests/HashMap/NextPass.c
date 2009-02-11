@@ -36,11 +36,8 @@ int main( int argc, char * argv[] )
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
    psoaHashMapEntry entry;
-   psoObjectDefinition mapDef = { 
-      PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_VAR_STRING, 0, 4, 10 }
-   };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 1 };
+   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 4, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -67,6 +64,7 @@ int main( int argc, char * argv[] )
                               "/ahnp",
                               strlen("/ahnp"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -77,6 +75,7 @@ int main( int argc, char * argv[] )
                               "/ahnp/test",
                               strlen("/ahnp/test"),
                               &mapDef,
+                              &keyDef,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -105,6 +105,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
 
 int psoFastMapDefinition( PSO_HANDLE            objectHandle,
                           psoObjectDefinition * pDefinition,
+                          psoKeyDefinition    * pKey,
                           psoUint32             numFields,
                           psoFieldDefinition  * pFields )
 {
@@ -125,6 +126,11 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
 
+   if ( pKey == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
    if ( numFields > 0 && pFields == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
@@ -135,7 +141,7 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
          pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
       
          pDefinition->type = PSO_FAST_MAP;
-         memcpy( &pDefinition->key, 
+         memcpy( pKey, 
                  &pMemHashMap->keyDef, 
                  sizeof(psoKeyDefinition) );
          pDefinition->numFields = pMemHashMap->numFields;

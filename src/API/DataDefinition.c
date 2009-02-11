@@ -334,33 +334,34 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition,
    case PSO_HASH_MAP:
    case PSO_FAST_MAP:
 
+      PSO_PRE_CONDITION( pKey != NULL );
       /* We do the key and let the queue case test the rest */
-      switch( pDefinition->key.type ) {
+      switch( pKey->type ) {
 
       case PSO_KEY_INTEGER:
-         if ( pDefinition->key.length != 1 &&
-              pDefinition->key.length != 2 &&
-              pDefinition->key.length != 4 &&
-              pDefinition->key.length != 8 ) {
+         if ( pKey->length != 1 &&
+              pKey->length != 2 &&
+              pKey->length != 4 &&
+              pKey->length != 8 ) {
             return PSO_INVALID_FIELD_LENGTH_INT;
          }
          break;
 
       case PSO_KEY_BINARY:
       case PSO_KEY_STRING:
-         if ( pDefinition->key.length == 0 ) {
+         if ( pKey->length == 0 ) {
             return PSO_INVALID_FIELD_LENGTH;
          }
          break;
 
       case PSO_KEY_VAR_BINARY:
       case PSO_KEY_VAR_STRING:
-         if ( pDefinition->key.minLength == 0 ) {
+         if ( pKey->minLength == 0 ) {
             return PSO_INVALID_FIELD_LENGTH;
          }
-         if ( pDefinition->key.maxLength != 0 ) {
-            if ( pDefinition->key.minLength > 
-                 pDefinition->key.maxLength ) {
+         if ( pKey->maxLength != 0 ) {
+            if ( pKey->minLength > 
+                 pKey->maxLength ) {
                return PSO_INVALID_FIELD_LENGTH;
             }
          }
@@ -675,8 +676,8 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               pDefinition->key.type = PSO_KEY_INTEGER;
-               sscanf( (char*)prop, "%ud", &pDefinition->key.length );
+               pKey->type = PSO_KEY_INTEGER;
+               sscanf( (char*)prop, "%ud", &pKey->length );
                xmlFree(prop);
                prop = NULL;
             }
@@ -686,8 +687,8 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               pDefinition->key.type = PSO_KEY_STRING;
-               sscanf( (char*)prop, "%ud", &pDefinition->key.length );
+               pKey->type = PSO_KEY_STRING;
+               sscanf( (char*)prop, "%ud", &pKey->length );
                xmlFree(prop);
                prop = NULL;
             }
@@ -697,8 +698,8 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               pDefinition->key.type = PSO_KEY_BINARY;
-               sscanf( (char*)prop, "%ud", &pDefinition->key.length );
+               pKey->type = PSO_KEY_BINARY;
+               sscanf( (char*)prop, "%ud", &pKey->length );
                xmlFree(prop);
                prop = NULL;
             }
@@ -708,17 +709,17 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &pDefinition->key.minLength );
+               sscanf( (char*)prop, "%ud", &pKey->minLength );
                xmlFree(prop);
                prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                if ( prop == NULL ) {
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &pDefinition->key.maxLength );
+               sscanf( (char*)prop, "%ud", &pKey->maxLength );
                xmlFree(prop);               
                prop = NULL;
-               pDefinition->key.type = PSO_KEY_VAR_STRING;
+               pKey->type = PSO_KEY_VAR_STRING;
             }
             else if ( xmlStrcmp( nodeType->name, BAD_CAST "varBinary") == 0 ) {
                prop = xmlGetProp( nodeType, BAD_CAST "minLength" );
@@ -726,17 +727,17 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &pDefinition->key.minLength );
+               sscanf( (char*)prop, "%ud", &pKey->minLength );
                xmlFree(prop);
                prop = xmlGetProp( nodeType, BAD_CAST "maxLength" );
                if ( prop == NULL ) {
                   errcode = PSO_INVALID_KEY_DEF;
                   goto cleanup;
                }
-               sscanf( (char*)prop, "%ud", &pDefinition->key.maxLength );
+               sscanf( (char*)prop, "%ud", &pKey->maxLength );
                xmlFree(prop);               
                prop = NULL;
-               pDefinition->key.type = PSO_KEY_VAR_BINARY;
+               pKey->type = PSO_KEY_VAR_BINARY;
             }
             else {
                errcode = PSO_INVALID_KEY_DEF;

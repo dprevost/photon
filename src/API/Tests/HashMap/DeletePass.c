@@ -36,11 +36,8 @@ int main( int argc, char * argv[] )
    const char * data = "My Data";
    uint32_t length, keyLength;
    char buffer[20], keyBuff[20];
-   psoObjectDefinition mapDef = { 
-      PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_VAR_STRING, 0, 4, 10 }
-   };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 1 };
+   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 4, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -72,6 +69,7 @@ int main( int argc, char * argv[] )
                               "/ahdp",
                               strlen("/ahdp"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -82,6 +80,7 @@ int main( int argc, char * argv[] )
                               "/ahdp/test",
                               strlen("/ahdp/test"),
                               &mapDef,
+                              &keyDef,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

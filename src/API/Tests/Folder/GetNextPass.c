@@ -55,6 +55,7 @@ int main( int argc, char * argv[] )
                               "/afgnp",
                               strlen("/afgnp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -64,6 +65,7 @@ int main( int argc, char * argv[] )
                               "/afgnp/f1",
                               strlen("/afgnp/f1"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -73,6 +75,7 @@ int main( int argc, char * argv[] )
                               "/afgnp/f2",
                               strlen("/afgnp/f2"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

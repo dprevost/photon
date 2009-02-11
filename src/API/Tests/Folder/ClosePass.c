@@ -54,6 +54,7 @@ int main( int argc, char * argv[] )
                               "/afcp",
                               strlen("/afcp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -34,11 +34,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    char buffer[200];
    uint32_t length;
-   psoObjectDefinition defLilo = { 
-      PSO_LIFO,
-      1, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition defLilo = { PSO_LIFO, 1 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -65,6 +61,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_gf",
                               strlen("/api_lifo_gf"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -75,6 +72,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_gf/test",
                               strlen("/api_lifo_gf/test"),
                               &defLilo,
+                              NULL,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

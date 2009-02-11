@@ -55,6 +55,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_cr",
                               strlen("/api_lifo_cr"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -79,6 +80,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -90,6 +92,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_NUM_FIELDS ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -101,6 +104,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -112,6 +116,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -123,6 +128,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -134,6 +140,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -146,6 +153,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -158,6 +166,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -171,6 +180,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -184,6 +194,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -195,6 +206,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -207,6 +219,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -220,6 +233,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_SCALE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -235,6 +249,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
+                                    NULL,
                                     fields );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -246,6 +261,7 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &def,
+                                    NULL,
                                     NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -263,6 +279,7 @@ int main( int argc, char * argv[] )
                                     "aqcr2",
                                     strlen("aqcr2"),
                                     &def,
+                                    NULL,
                                     NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -285,6 +302,7 @@ int main( int argc, char * argv[] )
                                     "aqcr3",
                                     strlen("aqcr3"),
                                     &def,
+                                    NULL,
                                     NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );

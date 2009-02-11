@@ -76,6 +76,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_cx",
                               strlen("/api_lifo_cx"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

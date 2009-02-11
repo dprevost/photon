@@ -58,6 +58,7 @@ int main( int argc, char * argv[] )
                               "/ascp",
                               strlen("/ascp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -68,6 +69,7 @@ int main( int argc, char * argv[] )
                               NULL,
                               strlen("/ascp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -78,6 +80,7 @@ int main( int argc, char * argv[] )
                               "/ascp",
                               0,
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -89,6 +92,7 @@ int main( int argc, char * argv[] )
                               "/ascp",
                               strlen("/ascp"),
                               &def,
+                              NULL,
                               fields );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -99,6 +103,7 @@ int main( int argc, char * argv[] )
                               "/ascp",
                               strlen("/ascp"),
                               &def,
+                              NULL,
                               NULL ); /* can only be NULL for folders */
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -109,6 +114,7 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
+                              NULL,
                               NULL,
                               fields );
    if ( errcode != PSO_NULL_POINTER ) {
@@ -121,6 +127,7 @@ int main( int argc, char * argv[] )
                               "/ascp",
                               strlen("/ascp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -135,6 +142,7 @@ int main( int argc, char * argv[] )
                               "/ascp",
                               strlen("/ascp"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );

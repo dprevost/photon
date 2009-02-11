@@ -54,6 +54,7 @@ int main( int argc, char * argv[] )
                               "/afons",
                               strlen("/afons"),
                               &def,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK && errcode != PSO_OBJECT_ALREADY_PRESENT ) {
       fprintf( stderr, "err: %d\n", errcode );

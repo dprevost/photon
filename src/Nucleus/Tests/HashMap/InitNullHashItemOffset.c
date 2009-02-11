@@ -51,6 +51,7 @@ int main()
                               "Map1", 
                               PSON_NULL_OFFSET,
                               &def,
+                              &keyDef,
                               fields,
                               &context );
 

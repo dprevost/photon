@@ -33,11 +33,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   psoObjectDefinition defLilo = { 
-      PSO_LIFO,
-      1, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition defLilo = { PSO_LIFO, 1 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -71,6 +67,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_op",
                               strlen("/api_lifo_op"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -81,6 +78,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_op/test",
                               strlen("/api_lifo_op/test"),
                               &defLilo,
+                              NULL,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

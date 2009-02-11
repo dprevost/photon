@@ -51,6 +51,7 @@ int main()
                               NULL, /* Null name */ 
                               SET_OFFSET(pHashMap),
                               &def,
+                              &keyDef,
                               fields,
                               &context );
 

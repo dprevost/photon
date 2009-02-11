@@ -84,6 +84,7 @@ int psoHashMapClose( PSO_HANDLE objectHandle );
 PHOTON_EXPORT
 int psoHashMapDefinition( PSO_HANDLE            objectHandle, 
                           psoObjectDefinition * definition,
+                          psoKeyDefinition    * pKey,
                           psoUint32             numFields,
                           psoFieldDefinition  * fields );
 

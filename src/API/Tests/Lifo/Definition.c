@@ -43,11 +43,7 @@ int main( int argc, char * argv[] )
    size_t lenData;
 
    psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
-   psoObjectDefinition lifoDef = {
-      PSO_LIFO, 
-      5, 
-      { 0, 0, 0, 0}
-   };
+   psoObjectDefinition lifoDef = { PSO_LIFO, 5 };
 
    psoFieldDefinition fields[5] = {
       { "field1", PSO_INTEGER,     1, 0, 0, 0, 0 },
@@ -87,6 +83,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_sp",
                               strlen("/api_lifo_sp"),
                               &folderDef,
+                              NULL,
                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -97,6 +94,7 @@ int main( int argc, char * argv[] )
                               "/api_lifo_sp/test",
                               strlen("/api_lifo_sp/test"),
                               &lifoDef,
+                              NULL,
                               fields );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
