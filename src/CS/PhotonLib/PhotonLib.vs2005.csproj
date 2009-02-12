@@ -44,10 +44,8 @@
     <Compile Include="Folder.cs" />
     <Compile Include="HashMap.cs" />
     <Compile Include="Lifo.cs" />
-    <Compile Include="ObjectDefinition.cs" />
     <Compile Include="PrivateFolder.cs" />
     <Compile Include="PrivateLifo.cs" />
-    <Compile Include="PrivateObjectDefinition.cs" />
     <Compile Include="PrivateProcess.cs" />
     <Compile Include="PrivateQueue.cs" />
     <Compile Include="PrivateSession.cs" />

@@ -179,7 +179,7 @@ namespace Photon
      * 
      */
     [StructLayout(LayoutKind.Sequential)]
-    public struct BasicObjectDef
+    public struct ObjectDefinition
     {
         /** The object type. */
         public ObjectType type;
@@ -187,8 +187,6 @@ namespace Photon
         /** The number of fields in the definition. */
         public UInt32 numFields;
 
-        /** The data definition of the key (hash map/fast map only) */
-        public KeyDefinition key;
     }
 
 }

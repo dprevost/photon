@@ -42,7 +42,8 @@ namespace Photon
             IntPtr sessionHandle,
             string objectName,
             UInt32 nameLengthInBytes,
-            ref BasicObjectDef definition,
+            ref ObjectDefinition definition,
+            ref KeyDefinition    key,
             FieldDefinition[]  fields );
 
         [DllImport("photon.dll", CallingConvention = CallingConvention.Cdecl)]

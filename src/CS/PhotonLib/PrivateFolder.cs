@@ -40,10 +40,12 @@ namespace Photon
 
         [DllImport("photon.dll", EntryPoint = "psoFolderCreateObject", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoFolderCreateObject( 
-            IntPtr           folderHandle,
-            string           objectName,
-            UInt32           nameLengthInBytes,
-            ObjectDefinition pDefinition);
+            IntPtr               folderHandle,
+            string               objectName,
+            UInt32               nameLengthInBytes,
+            ref ObjectDefinition pDefinition,
+            ref KeyDefinition    pKey,
+            FieldDefinition []     pFields );
 
         [DllImport("photon.dll", EntryPoint = "psoFolderCreateObjectXML", CallingConvention = CallingConvention.Cdecl)]
         private static extern int psoFolderCreateObjectXML( 

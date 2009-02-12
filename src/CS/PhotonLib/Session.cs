@@ -76,9 +76,10 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public void CreateObject( String             objectName,
-                                  ref BasicObjectDef definition,
-                                  FieldDefinition[]  fields )
+        public void CreateObject( String               objectName,
+                                  ref ObjectDefinition definition,
+                                  ref KeyDefinition    key,
+                                  FieldDefinition[]    fields )
         {
             int rc;
 
@@ -92,6 +93,7 @@ namespace Photon
                                  objectName,
                                  (UInt32)objectName.Length,
                                  ref definition,
+                                 ref key,
                                  fields );
             if (rc != 0)
             {

@@ -35,6 +35,31 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+        public Folder(Session session, String folderName )
+        {
+            int rc;
+
+            handle = (IntPtr)0;
+            sessionHandle = session.handle;
+
+            if (sessionHandle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.Folder", rc), rc);
+            }
+
+            rc = psoFolderOpen(sessionHandle,
+                               folderName,
+                               (UInt32)folderName.Length,
+                               ref handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.Folder"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
         public void Dispose()
         {
             Dispose(true);
@@ -43,16 +68,32 @@ namespace Photon
 
         // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-        public void Close() { Dispose(); }
-
-        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-        public void CreateObject(String           objectName,
-                                 ObjectDefinition definition)
+        public void Close()
         {
             int rc;
 
-            if (sessionHandle == (IntPtr)0 || handle == (IntPtr)0)
+            if (handle == (IntPtr)0)
+            {
+                rc = (int)PhotonErrors.NULL_HANDLE;
+                throw new PhotonException(PhotonException.PrepareException("Folder.CreateObject", rc), rc);
+            }
+            rc = psoFolderClose(handle);
+            if (rc != 0)
+            {
+                throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.CreateObject"), rc);
+            }
+        }
+
+        // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+        public void CreateObject(String               objectName,
+                                 ref ObjectDefinition pDefinition,
+                                 ref KeyDefinition    pKey,
+                                 FieldDefinition []   pFields )
+        {
+            int rc;
+
+            if (handle == (IntPtr)0)
             {
                 rc = (int)PhotonErrors.NULL_HANDLE;
                 throw new PhotonException(PhotonException.PrepareException("Folder.CreateObject", rc), rc);
@@ -61,7 +102,9 @@ namespace Photon
             rc = psoFolderCreateObject(handle, 
                                        objectName, 
                                        (UInt32)objectName.Length,
-                                       definition);
+                                       ref pDefinition,
+                                       ref pKey,
+                                       pFields );
             if (rc != 0)
             {
                 throw new PhotonException(PhotonException.PrepareException(sessionHandle, "Folder.CreateObject"), rc);
