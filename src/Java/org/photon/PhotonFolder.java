@@ -126,7 +126,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    private native int  folderCreateObject( long              h, 
                                            String            objectName, 
-                                           BaseObjDefinition definition, 
+                                           ObjectDefinition  definition, 
                                            KeyDefinition     key,
                                            FieldDefinition[] fields );
    private native int  folderCreateObjectXML( long h, String xmlBuffer );
@@ -150,7 +150,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void createObject( String            objectName,
-                             BaseObjDefinition definition, 
+                             ObjectDefinition  definition, 
                              KeyDefinition     key,
                              FieldDefinition[] fields ) throws PhotonException {
       int rc;

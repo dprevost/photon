@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/BaseObjDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_PhotonFolder_folderCreateObject
   (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobjectArray);

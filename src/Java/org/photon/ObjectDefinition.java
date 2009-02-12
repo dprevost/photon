@@ -19,4 +19,15 @@
 package org.photon;
 
 class ObjectDefinition {
+   
+   private int type = 0;
+   private int numFields = 0;
+   
+   public int getType() { return type; }
+   public int getNumFields() { return numFields; }
+   
+   public ObjectDefinition( int type, int numFields ) {
+      this.type = type;
+      this.numFields = numFields;
+   }
 }

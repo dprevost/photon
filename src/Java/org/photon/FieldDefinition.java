@@ -18,7 +18,53 @@
 
 package org.photon;
 
-class FieldDefinition {
+public class FieldDefinition {
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** The name of the field. */
+   private String name;
    
+   /** The data type of the field/ */
+   private FieldType type;
+   
+   /** For fixed-length data types */
+   private int length;
+
+   /** For variable-length data types */
+   private int minLength;
+
+   /** For variable-length data types */
+   private int maxLength;
+
+   /** Total number of digits in the decimal field. */
+   private int precision;
+
+   /** Number of digits following the decimal separator. */
+   private int scale;
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   FieldDefinition( String name, FieldType type, int length, 
+      int minLength, int maxLength, int precision, int scale ) {
+      this.name      = name;
+      this.type      = type;
+      this.length    = length;
+      this.minLength = minLength;
+      this.maxLength = maxLength;
+      this.precision = precision;
+      this.scale     = scale;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public String    getName()      { return name; }
+   public FieldType getType()      { return type; }
+   public int       getLength()    { return length; }
+   public int       getMinLength() { return minLength; }
+   public int       getMaxLength() { return maxLength; }
+   public int       getPrecision() { return precision; }
+   public int       getScale()     { return scale; }
+
 }
+

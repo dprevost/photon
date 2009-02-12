@@ -229,9 +229,6 @@ struct psoObjectDefinition
    /** The number of fields in the definition. */
    psoUint32 numFields;
    
-   /** The data definition of the key (hash map/fast map only) */
-//   psoKeyDefinition key;
-
 };
 
 typedef struct psoObjectDefinition psoObjectDefinition;

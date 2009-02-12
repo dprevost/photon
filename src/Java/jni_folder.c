@@ -29,7 +29,7 @@
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/BaseObjDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
  */
 JNIEXPORT jint JNICALL 
 Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
@@ -41,25 +41,40 @@ Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
                                                  jobjectArray jfields)
 {
    int errcode;
-   jclass myClass;
+
+   /* Native variables */
    size_t handle = (size_t)h;
    const char *objectName;
-   jfieldID id;
+   psoObjectDefinition definition;
+   psoKeyDefinition key;
+   psoFieldDefinition  * pFields = NULL;
+   
+   /* jni variables needed to access the jvm data */
+   jfieldID idType, idNum, idField;
+   jclass defClass, keyClass, fieldClass;
+   jsize  length;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( objectName == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
    
-   myClass = (*env)->FindClass( env, "org/photon/ObjectDefinition" );
+   length = (*env)->GetArrayLength( env, jfields );
+   
+   defClass   = (*env)->FindClass( env, "org/photon/ObjectDefinition" );
+   keyClass   = (*env)->FindClass( env, "org/photon/KeyDefinition" );
+   fieldClass = (*env)->FindClass( env, "org/photon/FieldDefinition" );
 
-   id = (*env)->GetFieldID( env, myClass, "handle", "J" );
+//   id = (*env)->GetFieldID( env, myClass, "handle", "J" );
+//jobject GetObjectArrayElement(JNIEnv *env,
+//jobjectArray array, jsize index);
 
-//   errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
-//                                    objectName,
-//                                    strlen(objectName),
-//                           psoObjectDefinition * pDefinition,
-//                           psoFieldDefinition  * pFields );
+   errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
+                                    objectName,
+                                    strlen(objectName),
+                                    &definition,
+                                    &key,
+                                    pFields );
 
    (*env)->ReleaseStringUTFChars( env, jname, objectName );
 
