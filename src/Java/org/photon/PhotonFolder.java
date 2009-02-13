@@ -124,6 +124,14 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    private native int  folderCreateObject( long              h, 
                                            String            objectName, 
                                            ObjectDefinition  definition, 

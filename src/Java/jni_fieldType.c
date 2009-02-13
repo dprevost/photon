@@ -16,30 +16,30 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.photon;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-class ObjectDefinition {
-   
-   private ObjectType type;
-   private int numFields = 0;
-   
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+#include <jni.h>
+#include <photon/photon.h>
+#include <string.h>
 
-   public ObjectType getType() { return type; }
-   public int getNumFields() { return numFields; }
-   
-   public ObjectDefinition( ObjectType type, int numFields ) {
-      this.type = type;
-      this.numFields = numFields;
-   }
+#include "jni_photon.h"
+#include "org_photon_FieldType.h"
 
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+jfieldID g_idFieldTypeType;
 
-   private static native void initIDs();
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-   static {
-      initIDs();
-   }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/*
+ * Class:     org_photon_FieldType
+ * Method:    initIDs
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL 
+Java_org_photon_FieldType_initIDs( JNIEnv * env , jclass typeClass )
+{
+   g_idFieldTypeType = (*env)->GetFieldID( env, typeClass, "type", "I" );
+   if ( g_idFieldTypeType == NULL ) return;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

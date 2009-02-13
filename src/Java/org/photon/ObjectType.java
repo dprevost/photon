@@ -49,6 +49,14 @@ public enum ObjectType {
 
    abstract String getText();
 
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
+
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

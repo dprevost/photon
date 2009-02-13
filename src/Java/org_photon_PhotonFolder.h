@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     org_photon_PhotonFolder
+ * Method:    initIDs
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_photon_PhotonFolder_initIDs
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_photon_PhotonFolder
  * Method:    folderCreateObject
  * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
  */

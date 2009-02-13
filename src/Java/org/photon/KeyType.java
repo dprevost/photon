@@ -18,28 +18,42 @@
 
 package org.photon;
 
-class ObjectDefinition {
+import java.util.*;
+
+public enum KeyType {
    
-   private ObjectType type;
-   private int numFields = 0;
+   INTEGER(101),
+   BINARY(102),
+   STRING(103),
+   VAR_BINARY(104),
+   VAR_STRING(105);
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public ObjectType getType() { return type; }
-   public int getNumFields() { return numFields; }
+   private int type;
    
-   public ObjectDefinition( ObjectType type, int numFields ) {
-      this.type = type;
-      this.numFields = numFields;
-   }
-
+   KeyType( int type ) { this.type = type; }
+   
+   public int getType() { return type; }
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static final HashMap<Integer,KeyType> reverseLookup 
+                  = new HashMap<Integer,KeyType>();
 
    private static native void initIDs();
 
    static {
+      for ( KeyType myType : KeyType.values() ) {
+         reverseLookup.put( myType.getType(), myType );
+      }
       initIDs();
+   }
+
+   public static KeyType getEnum(int type) {
+      return reverseLookup.get(type);
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
+

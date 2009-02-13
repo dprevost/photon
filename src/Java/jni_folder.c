@@ -22,7 +22,23 @@
 #include <photon/photon.h>
 #include <string.h>
 
+#include "jni_photon.h"
 #include "org_photon_PhotonFolder.h"
+
+jfieldID g_idFolderHandle;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_PhotonFolder
+ * Method:    initIDs
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL
+Java_org_photon_PhotonFolder_initIDs( JNIEnv * env, jclass folderClass )
+{
+   g_idFolderHandle = (*env)->GetFieldID( env, folderClass, "type", "J" );
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -44,39 +60,94 @@ Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
 
    /* Native variables */
    size_t handle = (size_t)h;
-   const char *objectName;
+   const char * name;
    psoObjectDefinition definition;
-   psoKeyDefinition key;
+   psoKeyDefinition key, * pKey = NULL;
    psoFieldDefinition  * pFields = NULL;
    
    /* jni variables needed to access the jvm data */
-   jfieldID idType, idNum, idField;
-   jclass defClass, keyClass, fieldClass;
-   jsize  length;
-   
-   objectName = (*env)->GetStringUTFChars( env, jname, NULL );
-   if ( objectName == NULL ) {
-      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
-   }
+   jsize  length, i;
+   jobject objField;
+   jstring jfieldName;
+   jobject jTypeObj;
    
    length = (*env)->GetArrayLength( env, jfields );
    
-   defClass   = (*env)->FindClass( env, "org/photon/ObjectDefinition" );
-   keyClass   = (*env)->FindClass( env, "org/photon/KeyDefinition" );
-   fieldClass = (*env)->FindClass( env, "org/photon/FieldDefinition" );
+   /*
+    * Note: types are usually set using an enum. So we must extract
+    * the enum object first before we can access the int field.
+    */
+   jTypeObj = (*env)->GetObjectField( env, jdef, g_idObjDefType );
+   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
+   (*env)->DeleteLocalRef( env, jTypeObj );
 
-//   id = (*env)->GetFieldID( env, myClass, "handle", "J" );
-//jobject GetObjectArrayElement(JNIEnv *env,
-//jobjectArray array, jsize index);
+   definition.numFields = (*env)->GetIntField( env, jdef, g_idObjDefNumFields );
+   
+   if ( jkey != NULL ) {
+      jTypeObj = (*env)->GetObjectField( env, jkey, g_idKeyDefType );
+      key.type = (*env)->GetIntField( env, jTypeObj, g_idKeyTypeType );
+      (*env)->DeleteLocalRef( env, jTypeObj );
+
+      key.length    = (*env)->GetIntField( env, jkey, g_idKeyDefLength );
+      key.minLength = (*env)->GetIntField( env, jkey, g_idKeyDefMinLength );
+      key.maxLength = (*env)->GetIntField( env, jkey, g_idKeyDefMaxLength );
+      
+      pKey = &key;
+   }
+
+   if ( (jsize)definition.numFields != length ) {
+      return PSO_INVALID_NUM_FIELDS;
+   }
+   else {
+      pFields = malloc( sizeof(psoFieldDefinition)*length );
+      if ( pFields == NULL ) { return PSO_NOT_ENOUGH_HEAP_MEMORY; }
+   }
+
+   /*
+    * Warning! At this point, memory leaks are possible. We have
+    * to be careful on errors.
+    */
+   
+   for ( i = 0; i < length; ++i ) {
+      objField = (*env)->GetObjectArrayElement( env, jfields, i );
+
+      jfieldName = (*env)->GetObjectField( env, objField, g_idFieldDefName );
+      name = (*env)->GetStringUTFChars( env, jfieldName, NULL );
+      if ( name == NULL ) {
+         free(pFields);
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      strncpy( pFields[i].name, name, PSO_MAX_FIELD_LENGTH );
+      (*env)->ReleaseStringUTFChars( env, jfieldName, name );
+
+      jTypeObj = (*env)->GetObjectField( env, objField, g_idFieldDefType );
+      pFields[i].type = (*env)->GetIntField( env, jTypeObj, g_idFieldTypeType );
+      (*env)->DeleteLocalRef( env, jTypeObj );
+      
+      pFields[i].length    = (*env)->GetIntField( env, objField, g_idFieldDefLength );
+      pFields[i].minLength = (*env)->GetIntField( env, objField, g_idFieldDefMinLength );
+      pFields[i].maxLength = (*env)->GetIntField( env, objField, g_idFieldDefMaxLength );
+      pFields[i].precision = (*env)->GetIntField( env, objField, g_idFieldDefPrecision );
+      pFields[i].scale     = (*env)->GetIntField( env, objField, g_idFieldDefScale );
+      (*env)->DeleteLocalRef( env, objField );
+   }
+
+   name = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( name == NULL ) {
+      free(pFields);
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
 
    errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
-                                    objectName,
-                                    strlen(objectName),
+                                    name,
+                                    strlen(name),
                                     &definition,
-                                    &key,
+                                    pKey,
                                     pFields );
 
-   (*env)->ReleaseStringUTFChars( env, jname, objectName );
+   (*env)->ReleaseStringUTFChars( env, jname, name );
+
+   free(pFields);
 
    return errcode;
 }
@@ -136,7 +207,7 @@ Java_org_photon_PhotonFolder_folderDestroyObject( JNIEnv * env,
    
    errcode = psoFolderDestroyObject( (PSO_HANDLE) handle,
                                      objectName,
-                                    strlen(objectName) );
+                                     strlen(objectName) );
 
    (*env)->ReleaseStringUTFChars( env, jname, objectName );
 
@@ -297,21 +368,15 @@ Java_org_photon_PhotonFolder_folderInit( JNIEnv * env,
                                          jstring  jstr )
 {
    int errcode;
-   jclass myClass;
    PSO_HANDLE handle;
    size_t sessionHandle = (size_t)h;
    const char *folderName;
-   jfieldID id;
    
    folderName = (*env)->GetStringUTFChars( env, jstr, NULL );
    if ( folderName == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
    
-   myClass = (*env)->FindClass( env, "org/photon/PhotonFolder" );
-
-   id = (*env)->GetFieldID( env, myClass, "handle", "J" );
-
    errcode = psoFolderOpen( (PSO_HANDLE) sessionHandle,
                             folderName,
                             strlen(folderName),
@@ -319,7 +384,7 @@ Java_org_photon_PhotonFolder_folderInit( JNIEnv * env,
    (*env)->ReleaseStringUTFChars( env, jstr, folderName );
 
    if ( errcode == PSO_OK ) {
-      (*env)->SetLongField( env, obj, id, (size_t) handle );
+      (*env)->SetLongField( env, obj, g_idFolderHandle, (size_t) handle );
    }
    
    return errcode;

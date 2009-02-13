@@ -24,4 +24,7 @@ package org.photon;
 
 class PhotonQueue {
 
+   /** To save the native pointer/handle. */
+   private long handle = 0;
+
 }

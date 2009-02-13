@@ -19,6 +19,7 @@ Java_Source =                             \
         org/photon/FieldType.java         \
         org/photon/FolderEntry.java       \
         org/photon/KeyDefinition.java     \
+        org/photon/KeyType.java           \
         org/photon/ObjectDefinition.java  \
         org/photon/ObjectType.java        \
         org/photon/ObjStatus.java         \
@@ -34,6 +35,7 @@ Java_Classes =                             \
         org/photon/FieldType.class         \
         org/photon/FolderEntry.class       \
         org/photon/KeyDefinition.class     \
+        org/photon/KeyType.class           \
         org/Photon/ObjectDefinition.class  \
         org/photon/ObjectType.class        \
         org/photon/ObjStatus.class         \
@@ -63,12 +65,28 @@ lib_LTLIBRARIES = libphoton_jni.la
 libphoton_jni_la_LDFLAGS = -version-info 1:0:0
 AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
-libphoton_jni_la_SOURCES = \
-        jni_folder.c  \
-        jni_hashmap.c \
-        jni_process.c \
-        jni_queue.c   \
-        jni_session.c 
+# javah org.photon.FieldType
+
+libphoton_jni_la_SOURCES =            \
+        jni_photon.h                  \
+        jni_fieldDef.c                \
+        jni_fieldType.c               \
+        jni_folder.c                  \
+        jni_hashmap.c                 \
+        jni_keyDefinition.c           \
+        jni_keyType.c                 \
+        jni_objDefinition.c           \
+        jni_objectType.c              \
+        jni_process.c                 \
+        jni_queue.c                   \
+        jni_session.c                 \
+        org_photon_FieldDefinition.h  \
+        org_photon_FieldType.h        \
+        org_photon_KeyDefinition.h    \
+        org_photon_KeyType.h          \
+        org_photon_ObjectDefinition.h \
+        org_photon_ObjectType.h       \
+        org_photon_PhotonFolder.h     
 
 libphoton_jni_la_LIBADD = \
    $(top_builddir)/src/API/libphoton.la 

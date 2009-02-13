@@ -36,23 +36,31 @@ public enum FieldType {
    /** Only valid for the last field of the data definition */
    VAR_STRING(7);
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    private int type;
    
    FieldType( int type ) { this.type = type; }
    
    public int getType() { return type; }
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    private static final HashMap<Integer,FieldType> reverseLookup 
                   = new HashMap<Integer,FieldType>();
+
+   private static native void initIDs();
 
    static {
       for ( FieldType myType : FieldType.values() ) {
          reverseLookup.put( myType.getType(), myType );
       }
+      initIDs();
    }
 
    public static FieldType getEnum(int type) {
       return reverseLookup.get(type);
    }
-   
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

@@ -66,5 +66,12 @@ public class FieldDefinition {
    public int       getPrecision() { return precision; }
    public int       getScale()     { return scale; }
 
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
 }
 
