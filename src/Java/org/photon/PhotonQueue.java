@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,10 +21,67 @@ package org.photon;
 /**
  * Queue class for the Photon library.
  */
+// getDeclaredFields
 
 class PhotonQueue {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public PhotonQueue( PhotonSession session, String name ) throws PhotonException {
+      
+      int rc;
+      
+      rc = init( session, name );
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private native int fini( long handle );
+   private native int getDefinition( long              handle, 
+                                     ObjectDefinition  definition,
+                                     int               numFields,
+                                     FieldDefinition[] fields );
+   private native int getFirst( long   handle,
+                                byte[] buffer,
+                                int    bufferLength,
+                                int[]  returnedLength );
+
+   private native int getNext( long   handle,
+                               byte[] buffer,
+                               int    bufferLength,
+                               int[]  returnedLength );
+
+   private native int init( PhotonSession session, String queueName );
+
+   private native int pop( long   handle,
+                           byte[] buffer,
+                           int    bufferLength,
+                           int[]  returnedLength );
+
+   private native int push( long   handle, 
+                            byte[] pItem, 
+                            int    length );
+
+   private native int pushNow( long   handle, 
+                               byte[] pItem, 
+                               int    length );
+   private native int getStatus( long      handle,
+                                 ObjStatus status );
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 }
