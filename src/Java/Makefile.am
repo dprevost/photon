@@ -15,6 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
 
 Java_Source =                             \
+        org/photon/DataRecord.java        \
         org/photon/FieldDefinition.java   \
         org/photon/FieldType.java         \
         org/photon/FolderEntry.java       \
@@ -31,6 +32,7 @@ Java_Source =                             \
         org/photon/PhotonSession.java     
 
 Java_Classes =                             \
+        org/photon/DataRecord.class        \
         org/photon/FieldDefinition.class   \
         org/photon/FieldType.class         \
         org/photon/FolderEntry.class       \

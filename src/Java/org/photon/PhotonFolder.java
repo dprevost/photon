@@ -35,7 +35,18 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    private FolderEntry entry;
    
    private boolean nextWasQueried = false;
-   
+   /* Iterations
+    * 
+    * Usage:
+    *
+    * while ( folder.getNext() ) {
+    *     type   = folder.entryType();
+    *     name   = folder.entryName();
+    *     status = folder.entryStatus();
+    * }
+    */
+   private boolean endIteration = true;
+
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    // The next three methods implement Iterator.
@@ -67,8 +78,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
          if ( getNext() ) {
             return entry;
          }
-      } catch (PhotonException e) {
-      }
+      } catch (PhotonException e) {}
 
       throw new NoSuchElementException();
    }
@@ -85,20 +95,6 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    public Iterator<FolderEntry> iterator() {
       return this;
    }
-   
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   /* Iterations
-    * 
-    * Usage:
-    *
-    * while ( folder.getNext() ) {
-    *     type   = folder.entryType();
-    *     name   = folder.entryName();
-    *     status = folder.entryStatus();
-    * }
-    */
-   private boolean endIteration = true;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
