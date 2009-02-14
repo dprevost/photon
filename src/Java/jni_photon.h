@@ -73,6 +73,14 @@ extern jfieldID g_idObjTypeType;
 
 extern jfieldID g_idFolderHandle;
 
+/* The Queue class */
+
+extern jfieldID g_idQueueHandle;
+
+/* The Session class */
+
+extern jfieldID g_idSessionHandle;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* JNI_PHOTON_H */

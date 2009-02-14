@@ -29,14 +29,33 @@ class PhotonSession {
    /** To save the native pointer/handle. */
    private long handle;
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    public PhotonSession() throws PhotonException {
 
-      handle = initSession();
+      int rc;
+      
+      rc = initSession();
+      if ( rc != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      }
    }
 
-   private native long initSession() throws PhotonException ;
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private native int initSession();
    
    public long Handle() {
       return handle;
    }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

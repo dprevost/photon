@@ -143,8 +143,13 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   protected void finalize() {
-      folderFini( handle );
+   protected void finalize() throws Throwable {     
+      
+      try {
+         folderFini(handle);
+      } finally {
+         super.finalize();
+      }
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

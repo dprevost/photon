@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -20,38 +20,49 @@
 
 #include <jni.h>
 #include <photon/photon.h>
+#include <string.h>
+
+#include "jni_photon.h"
+#include "org_photon_PhotonSession.h"
+
+jfieldID g_idSessionHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    initIDs
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL
+Java_org_photon_PhotonSession_initIDs( JNIEnv * env, jclass sessionClass )
+{
+   g_idSessionHandle = (*env)->GetFieldID( env, sessionClass, "handle", "J" );
+   if ( g_idSessionHandle == NULL ) return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_psoSession
+ * Class:     org_photon_PhotonSession
  * Method:    initSession
- * Signature: (Z)J
+ * Signature: ()I
  */
-JNIEXPORT jlong JNICALL Java_org_photon_psoSession_initSession (
-   JNIEnv * env, 
-   jobject  obj )
+JNIEXPORT jlong JNICALL
+Java_org_photon_PhotonSession_initSession( JNIEnv * env,
+                                           jobject  obj )
 {
    int errcode;
-   jclass exc;
-   char msg[100];
    PSO_HANDLE handle;
    
    errcode = psoInitSession( &handle );
 
    // Normal return
-   if ( errcode == PSO_OK ) return (size_t) handle;
-   
-   // Throw a java exception
-
-   exc = (*env)->FindClass( env, "org/photon/psoException" );
-   if ( exc  != NULL ) {
-      sprintf( msg, "photon Error = %d", errcode );
-      (*env)->ThrowNew( env, exc, msg );
+   if ( errcode == PSO_OK ) {
+      (*env)->SetLongField( env, obj, g_idSessionHandle, (size_t) handle );
    }
-
-   return (size_t) NULL; 
+   
+   return errcode;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
