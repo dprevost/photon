@@ -38,6 +38,7 @@ JNIEXPORT void JNICALL
 Java_org_photon_KeyType_initIDs( JNIEnv * env , jclass keyClass )
 {
    g_idKeyTypeType = (*env)->GetFieldID( env, keyClass, "type", "I" );
+   if ( g_idKeyTypeType == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

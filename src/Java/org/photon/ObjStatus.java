@@ -19,16 +19,16 @@
 package org.photon;
 
 /**
- * This data structure is used to retrieve the status of objects.
+ * This class/data structure is used to retrieve the status of objects.
  */
-class ObjStatus {
+public class ObjStatus {
 
    /** The object type. */
    public ObjectType type;
 
    /**
     * Status of the object.
-    *
+    * <p>
     * For example, created but not committed, etc.
     */
    public int status;
@@ -51,4 +51,19 @@ class ObjStatus {
    /** Maximum key length (in bytes) if keys are supported - zero otherwise */
    public int maxKeyLength;
 
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   ObjStatus() {}
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
+
 };
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

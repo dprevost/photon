@@ -85,21 +85,28 @@ libphoton_jni_la_SOURCES =            \
         jni_folder.c                  \
         jni_folderEntry.c             \
         jni_hashmap.c                 \
+        jni_info.c                    \
         jni_keyDefinition.c           \
         jni_keyType.c                 \
         jni_objDefinition.c           \
         jni_objectType.c              \
+        jni_objStatus.c               \
         jni_process.c                 \
         jni_queue.c                   \
         jni_session.c                 \
         org_photon_FieldDefinition.h  \
         org_photon_FieldType.h        \
         org_photon_FolderEntry.h      \
+        org_photon_Info.h             \
         org_photon_KeyDefinition.h    \
         org_photon_KeyType.h          \
         org_photon_ObjectDefinition.h \
         org_photon_ObjectType.h       \
-        org_photon_PhotonFolder.h     
+        org_photon_ObjStatus.h        \
+        org_photon_PhotonFolder.h     \
+        org_photon_PhotonProcess.h    \
+        org_photon_PhotonQueue.h      \
+        org_photon_PhotonSession.h    
 
 libphoton_jni_la_LIBADD = \
    $(top_builddir)/src/API/libphoton.la 

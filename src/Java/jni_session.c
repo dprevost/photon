@@ -241,8 +241,57 @@ JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetDefinition
  * Method:    psoGetInfo
  * Signature: (JLorg/photon/Info;)I
  */
-JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetInfo
-  (JNIEnv *, jobject, jlong, jobject);
+JNIEXPORT jint JNICALL 
+Java_org_photon_PhotonSession_psoGetInfo( JNIEnv  * env,
+                                          jobject   jobj,
+                                          jlong     jhandle,
+                                          jobject   jinfo )
+{
+   int errcode;
+   size_t handle = (size_t)jhandle;
+   psoInfo info;
+   jstring jstr;
+   
+   errcode = psoGetInfo( (PSO_HANDLE) handle, &info );
+   if ( errcode == 0 ) {
+
+      (*env)->SetLongField( env, jinfo, g_idInfoTotalSizeInBytes, info.totalSizeInBytes );
+      (*env)->SetLongField( env, jinfo, g_idInfoAllocatedSizeInBytes, info.allocatedSizeInBytes );
+      (*env)->SetLongField( env, jinfo, g_idInfoNumObjects, info.numObjects );
+      (*env)->SetLongField( env, jinfo, g_idInfoNumGroups, info.numGroups );
+      (*env)->SetLongField( env, jinfo, g_idInfoNumMallocs, info.numMallocs );
+      (*env)->SetLongField( env, jinfo, g_idInfoNumFrees, info.numFrees );
+      (*env)->SetLongField( env, jinfo, g_idInfoLargestFreeInBytes, info.largestFreeInBytes );
+      (*env)->SetIntField( env, jinfo, g_idInfoMemoryVersion, info.memoryVersion );
+      (*env)->SetIntField( env, jinfo, g_idInfoBigEndian, info.bigEndian );
+
+      jstr = getNotNullTerminatedString( env, info.compiler, 20 );
+      if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      (*env)->SetObjectField( env, jinfo, g_idInfoCompiler, jstr );
+
+      jstr = getNotNullTerminatedString( env, info.compilerVersion, 10 );
+      if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      (*env)->SetObjectField( env, jinfo, g_idInfoCompilerVersion, jstr );
+
+      jstr = getNotNullTerminatedString( env, info.platform, 20 );
+      if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      (*env)->SetObjectField( env, jinfo, g_idInfoPlatform, jstr );
+
+      jstr = getNotNullTerminatedString( env, info.dllVersion, 10 );
+      if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      (*env)->SetObjectField( env, jinfo, g_idInfoDllVersion, jstr );
+
+      jstr = getNotNullTerminatedString( env, info.quasarVersion, 10 );
+      if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      (*env)->SetObjectField( env, jinfo, g_idInfoQuasarVersion, jstr );
+
+      jstr = getNotNullTerminatedString( env, info.creationTime, 30 );
+      if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      (*env)->SetObjectField( env, jinfo, g_idInfoCreationTime, jstr );
+      
+   }
+   return errcode;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -251,8 +300,43 @@ JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetInfo
  * Method:    psoGetStatus
  * Signature: (JLjava/lang/String;Lorg/photon/ObjStatus;)I
  */
-JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetStatus
-  (JNIEnv *, jobject, jlong, jstring, jobject);
+JNIEXPORT jint JNICALL 
+Java_org_photon_PhotonSession_psoGetStatus( JNIEnv  * env,
+                                            jobject   jobj,
+                                            jlong     jhandle,
+                                            jstring   jname,
+                                            jobject   jstatus )
+{
+   int errcode;
+   size_t handle = (size_t)jhandle;
+   const char * objectName;
+   psoObjStatus status;
+   
+   objectName = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( objectName == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoGetStatus( (PSO_HANDLE) handle,
+                           objectName,
+                           strlen(objectName),
+                           &status );
+   (*env)->ReleaseStringUTFChars( env, jname, objectName );
+
+   if ( errcode == 0 ) {
+      (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
+
+      (*env)->SetIntField(  env, jstatus, g_idStatusStatus, status.status );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumBlocks, status.numBlocks );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumDataItem, status.numDataItem );
+      (*env)->SetLongField( env, jstatus, g_idStatusFreeBytes, status.freeBytes );
+      (*env)->SetIntField(  env, jstatus, g_idStatusMaxDataLength, status.maxDataLength );
+      (*env)->SetIntField(  env, jstatus, g_idStatusMaxKeyLength, status.maxKeyLength );
+   }
+   
+   return errcode;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

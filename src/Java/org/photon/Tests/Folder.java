@@ -54,7 +54,7 @@ public class Folder {
                            null );
       for (FolderEntry entry : folder) {
          System.out.println( "Name: " + entry.getName() + ", Type: " 
-            + entry.getType() );
+            + entry.getType() + " or " + entry.getType().getText() );
       }
    }
 

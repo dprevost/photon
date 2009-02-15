@@ -260,12 +260,12 @@ public class PhotonSession {
    /**
     * Rollback all insertions and deletions (of the current session) executed 
     * since the previous call to commit or rollback.
-    *
+    * <p>
     * Insertions and deletions subjected to this call include both data items
     * inserted and deleted from data containers (maps, etc.) and objects 
     * themselves created with createObject and/or destroyed with 
     * destroyObject.
-    *
+    * <p>
     * Note: the internal calls executed by the engine to satisfy this 
     * request cannot fail. As such, you cannot find yourself with an 
     * ugly situation where some operations were rollbacked and others 

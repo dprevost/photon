@@ -88,7 +88,70 @@ extern jfieldID g_idEntryType;
 extern jfieldID g_idEntryName;
 extern jfieldID g_idEntryStatus;
 
+/* The Info class */
+
+extern jfieldID g_idInfoTotalSizeInBytes;
+extern jfieldID g_idInfoAllocatedSizeInBytes;
+extern jfieldID g_idInfoNumObjects;
+extern jfieldID g_idInfoNumGroups;
+extern jfieldID g_idInfoNumMallocs;
+extern jfieldID g_idInfoNumFrees;
+extern jfieldID g_idInfoLargestFreeInBytes;
+extern jfieldID g_idInfoMemoryVersion;
+extern jfieldID g_idInfoBigEndian;
+extern jfieldID g_idInfoCompiler;
+extern jfieldID g_idInfoCompilerVersion;
+extern jfieldID g_idInfoPlatform;
+extern jfieldID g_idInfoDllVersion;
+extern jfieldID g_idInfoQuasarVersion;
+extern jfieldID g_idInfoCreationTime;
+
+/* The ObjStatus class */
+
+extern jfieldID g_idStatusType;
+extern jfieldID g_idStatusStatus;
+extern jfieldID g_idStatusNumBlocks;
+extern jfieldID g_idStatusNumBlockGroup;
+extern jfieldID g_idStatusNumDataItem;
+extern jfieldID g_idStatusFreeBytes;
+extern jfieldID g_idStatusMaxDataLength;
+extern jfieldID g_idStatusMaxKeyLength;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static inline jstring getNotNullTerminatedString( JNIEnv * env, 
+                                                  char   * inStr,
+                                                  size_t   maxLength )
+{
+   char * s;
+   jstring jstr;
+   jclass exc;
+   
+   if ( inStr[maxLength-1] != 0 ) {
+      /* Special case - not null terminated string */
+      s = malloc( maxLength+1 );
+      if ( s == NULL ) {
+         exc = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
+         if ( exc != NULL ) {
+            (*env)->ThrowNew( env, exc, "malloc failed in jni code");
+         }
+         return NULL;
+      }
+      memcpy( s, inStr, maxLength );
+      s[maxLength] = 0;
+      jstr = (*env)->NewStringUTF( env, s );
+      free(s);
+   }
+   else {
+      jstr = (*env)->NewStringUTF( env, inStr );
+   }
+
+   return jstr;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #endif /* JNI_PHOTON_H */
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

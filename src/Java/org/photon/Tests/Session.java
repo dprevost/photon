@@ -23,8 +23,27 @@ import org.photon.*;
 public class Session {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public static void Info(PhotonSession session) throws PhotonException {
+      
+      Info info;
+      
+      info = session.getInfo();
+      System.out.println( "Compiler: " + info.compiler );
+      System.out.println( "Compiler Version: " + info.compilerVersion );
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
    public static void tests() throws PhotonException {
+      
+      PhotonSession session;
+      
+      /* Starts with tests on the creation/use of sessions */
+      
+      /* Tests for the other session methods */
+      session = new PhotonSession();
+      Info(session);
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

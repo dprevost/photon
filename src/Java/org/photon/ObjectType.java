@@ -29,19 +29,19 @@ public enum ObjectType {
     * references to the static instances of this class.
     */
    FOLDER(1) {
-      String getText() { return "Folder"; } },
+      public String getText() { return "Folder"; } },
 
    HASH_MAP(2) {
-      String getText() { return "Hash Map"; } },
+      public String getText() { return "Hash Map"; } },
 
    LIFO(3) {
-      String getText() { return "LIFO Queue"; } },
+      public String getText() { return "LIFO Queue"; } },
 
    FAST_MAP(4) {
-      String getText() { return "Read-only Hash Map"; } },
+      public String getText() { return "Read-only Hash Map"; } },
 
    QUEUE(5) {
-      String getText() { return "FIFO Queue"; } };
+      public String getText() { return "FIFO Queue"; } };
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -53,7 +53,7 @@ public enum ObjectType {
 
    public int getValue() { return type; }
 
-   abstract String getText();
+   public abstract String getText();
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
