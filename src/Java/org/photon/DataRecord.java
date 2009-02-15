@@ -35,6 +35,7 @@ public abstract class DataRecord {
    private FieldDescription[] fields;
 
    public Boolean getBool  ( int i ) { return (Boolean) fields[i].obj; }
+   public byte[]  getBytes ( int i ) { return  (byte[]) fields[i].obj; }
    public Integer getInt   ( int i ) { return (Integer) fields[i].obj; }
    public Long    getLong  ( int i ) { return    (Long) fields[i].obj; }
    public Short   getShort ( int i ) { return   (Short) fields[i].obj; }

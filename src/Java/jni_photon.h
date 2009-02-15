@@ -68,6 +68,7 @@ extern jfieldID g_idKeyTypeType;
 /* The ObjectType class (enum) */
 
 extern jfieldID g_idObjTypeType;
+extern jweak *  g_weakObjType;
 
 /* The folder class */
 
@@ -80,6 +81,12 @@ extern jfieldID g_idQueueHandle;
 /* The Session class */
 
 extern jfieldID g_idSessionHandle;
+
+/* The FolderEntry class */
+
+extern jfieldID g_idEntryType;
+extern jfieldID g_idEntryName;
+extern jfieldID g_idEntryStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

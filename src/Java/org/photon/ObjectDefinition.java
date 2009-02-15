@@ -18,7 +18,7 @@
 
 package org.photon;
 
-class ObjectDefinition {
+public class ObjectDefinition {
    
    private ObjectType type;
    private int numFields = 0;

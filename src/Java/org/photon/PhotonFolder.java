@@ -27,24 +27,15 @@ import java.util.*;
  * Folder class for the Photon library.
  */
 
-class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
+public class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
-   private long sessionHandle = 0;
+   private PhotonSession session;
    private FolderEntry entry;
    
    private boolean nextWasQueried = false;
-   /* Iterations
-    * 
-    * Usage:
-    *
-    * while ( folder.getNext() ) {
-    *     type   = folder.entryType();
-    *     name   = folder.entryName();
-    *     status = folder.entryStatus();
-    * }
-    */
+
    private boolean endIteration = true;
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -70,15 +61,18 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    public FolderEntry next() {
       
-      nextWasQueried = false;
-      
-      if ( nextWasQueried ) { return entry; }
+      if ( nextWasQueried ) {
+         nextWasQueried = false;
+         return entry; 
+      }
       
       try {
          if ( getNext() ) {
             return entry;
          }
-      } catch (PhotonException e) {}
+      } catch (PhotonException e) {
+         System.out.println( e.getMessage() );
+      }
 
       throw new NoSuchElementException();
    }
@@ -99,7 +93,8 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public PhotonFolder( PhotonSession session ) {
-      sessionHandle = session.Handle();
+
+      this.session = session;
       
       entry = new FolderEntry();
    }
@@ -108,9 +103,9 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       
       int rc;
       
-      sessionHandle = session.Handle();
+      this.session = session;
       
-      rc = folderInit( sessionHandle, name );
+      rc = folderInit( session, name );
       if ( rc != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(rc) );
       }
@@ -138,7 +133,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    private native void folderFini( long h );
    private native int  folderGetFirst( long h, FolderEntry e );
    private native int  folderGetNext( long h, FolderEntry e );
-   private native int  folderInit( long h, String s );
+   private native int  folderInit( PhotonSession session, String s );
    private native int  folderStatus( long h, ObjStatus status );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -164,7 +159,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
                              FieldDefinition[] fields ) throws PhotonException {
       int rc;
 
-      if ( sessionHandle == 0 || handle == 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -184,7 +179,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
       int rc;
 
-      if ( sessionHandle == 0 || handle == 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -200,7 +195,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
       int rc;
 
-      if ( sessionHandle == 0 || handle == 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -212,11 +207,11 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public boolean getNext() throws PhotonException {
+   private boolean getNext() throws PhotonException {
    
       int rc;
 
-      if ( sessionHandle == 0 || handle == 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -244,11 +239,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
       int rc;
       
-      if ( sessionHandle == 0 ) {
-         throw new PhotonException( PhotonErrors.NULL_HANDLE );
-      }
-   
-      rc = folderInit( sessionHandle, folderName );
+      rc = folderInit( session, folderName );
       if ( rc != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(rc) );
       }
@@ -260,7 +251,7 @@ class PhotonFolder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
       int rc;
 
-      if ( sessionHandle == 0 || handle == 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 

@@ -22,7 +22,7 @@ package org.photon;
  * Exception class for the Photon library.
  */
 
-class PhotonException extends Exception {
+public class PhotonException extends Exception {
 
    private PhotonErrors theErrorCode;
    

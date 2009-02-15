@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -16,34 +16,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.photon;
+package org.photon.Tests;
 
-public class PhotonProcess {
+import org.photon.*;
 
-   static {
-      System.loadLibrary("photon_jni");
-   }
+public class Session {
 
-   public PhotonProcess( String psoAddress ) throws PhotonException {
-      
-      int errcode;
-      
-      errcode = init( psoAddress );
-      if ( errcode != 0 ) {
-         throw new PhotonException( PhotonErrors.getEnum(errcode) );
-      }
-   }
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
-   public void exit(){
-      fini();
+   public static void tests() throws PhotonException {
    }
 
-   protected void finalize() {
-      fini();
-   }
-   
-   private native int init( String psoAddress );
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private native void fini();
 }
-

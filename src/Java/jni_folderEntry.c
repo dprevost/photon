@@ -25,43 +25,26 @@
 #include "jni_photon.h"
 #include "org_photon_PhotonProcess.h"
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonProcess
- * Method:    init
- * Signature: (Ljava/lang/String;)I
- */
-JNIEXPORT int JNICALL
-Java_org_photon_PhotonProcess_init( JNIEnv  * env,
-                                    jobject   obj, 
-                                    jstring   jaddress )
-{
-   int errcode;
-   const char * address;
-   
-   address = (*env)->GetStringUTFChars( env, jaddress, NULL );
-   if ( address == NULL ) {
-      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
-   }
-   
-   errcode = psoInit( address, 0 );
-   (*env)->ReleaseStringUTFChars( env, jaddress, address );
-   
-   return errcode;
-}
+jfieldID g_idEntryType;
+jfieldID g_idEntryName;
+jfieldID g_idEntryStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonProcess
- * Method:    fini
+ * Class:     org_photon_FolderEntry
+ * Method:    initIDs
  * Signature: ()V
  */
-JNIEXPORT void JNICALL 
-Java_org_photon_PhotonProcess_fini( JNIEnv * env, jobject obj )
+JNIEXPORT void JNICALL
+Java_org_photon_FolderEntry_initIDs( JNIEnv * env, jclass entryClass )
 {
-   psoExit();
+   g_idEntryType   = (*env)->GetFieldID( env, entryClass, "type", "Lorg/photon/ObjectType;");
+   if ( g_idEntryType == NULL ) return;
+   g_idEntryName   = (*env)->GetFieldID( env, entryClass, "name", "Ljava/lang/String;" );
+   if ( g_idEntryName == NULL ) return;
+   g_idEntryStatus = (*env)->GetFieldID( env, entryClass, "status", "I" );
+   if ( g_idEntryStatus == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

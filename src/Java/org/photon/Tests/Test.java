@@ -16,34 +16,36 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.photon;
+package org.photon.Tests;
 
-public class PhotonProcess {
+import org.photon.*;
 
-   static {
-      System.loadLibrary("photon_jni");
-   }
+public class Test {
 
-   public PhotonProcess( String psoAddress ) throws PhotonException {
+   public static void main( String args[] ) {
       
-      int errcode;
+      PhotonProcess process;
+      PhotonSession session;
       
-      errcode = init( psoAddress );
-      if ( errcode != 0 ) {
-         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      try {
+         process = new PhotonProcess( "10701" );
+
+         Session.tests();
+         
+         session = new PhotonSession();
+
+         Folder.test1( session );
+         Folder.test2( session );
+         Folder.createFolders( session );
+         
+         /* The GC might not call finalize() - safer to cleanup ourselves */
+         process.exit();
+
+      } catch ( PhotonException e ) {
+         e.printStackTrace();
+         System.exit(1);
       }
+      
    }
-   
-   public void exit(){
-      fini();
-   }
-
-   protected void finalize() {
-      fini();
-   }
-   
-   private native int init( String psoAddress );
-
-   private native void fini();
 }
 

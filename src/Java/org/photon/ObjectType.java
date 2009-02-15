@@ -22,6 +22,12 @@ package org.photon;
 
 public enum ObjectType {
 
+   /*
+    * Warning for maintainers: the jni must be updated if the enum values
+    * are modified (for example if LIFO -> LIFO_QUEUE or new ones are 
+    * added. Explanation: the values are hardcoded to generate weak 
+    * references to the static instances of this class.
+    */
    FOLDER(1) {
       String getText() { return "Folder"; } },
 

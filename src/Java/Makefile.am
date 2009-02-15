@@ -12,7 +12,12 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
-CLEANFILES = *~ ./org/photon/*~  $(top_builddir)/src/Java/org/photon/*.class
+CLEANFILES = \
+        *~                                                \
+        ./org/photon/*~                                   \
+        $(top_builddir)/src/Java/org/photon/*.class       \
+        ./org/photon/Tests/*~                             \
+        $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
 Java_Source =                             \
         org/photon/DataRecord.java        \
@@ -21,6 +26,7 @@ Java_Source =                             \
         org/photon/FolderEntry.java       \
         org/photon/KeyDefinition.java     \
         org/photon/KeyType.java           \
+        org/photon/Info.java              \
         org/photon/ObjectDefinition.java  \
         org/photon/ObjectType.java        \
         org/photon/ObjStatus.java         \
@@ -29,7 +35,10 @@ Java_Source =                             \
         org/photon/PhotonFolder.java      \
         org/photon/PhotonProcess.java     \
         org/photon/PhotonQueue.java       \
-        org/photon/PhotonSession.java     
+        org/photon/PhotonSession.java     \
+        org/photon/Tests/Folder.java      \
+        org/photon/Tests/Session.java     \
+        org/photon/Tests/Test.java        
 
 Java_Classes =                             \
         org/photon/DataRecord.class        \
@@ -74,6 +83,7 @@ libphoton_jni_la_SOURCES =            \
         jni_fieldDef.c                \
         jni_fieldType.c               \
         jni_folder.c                  \
+        jni_folderEntry.c             \
         jni_hashmap.c                 \
         jni_keyDefinition.c           \
         jni_keyType.c                 \
@@ -84,6 +94,7 @@ libphoton_jni_la_SOURCES =            \
         jni_session.c                 \
         org_photon_FieldDefinition.h  \
         org_photon_FieldType.h        \
+        org_photon_FolderEntry.h      \
         org_photon_KeyDefinition.h    \
         org_photon_KeyType.h          \
         org_photon_ObjectDefinition.h \

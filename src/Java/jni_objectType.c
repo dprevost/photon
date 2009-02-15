@@ -26,6 +26,7 @@
 #include "org_photon_ObjectType.h"
 
 jfieldID g_idObjTypeType;
+jweak *  g_weakObjType;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,7 +38,52 @@ jfieldID g_idObjTypeType;
 JNIEXPORT void JNICALL 
 Java_org_photon_ObjectType_initIDs( JNIEnv * env , jclass objClass )
 {
+   jobject jobj;
+   jfieldID id;
+   
    g_idObjTypeType = (*env)->GetFieldID( env, objClass, "type", "I" );
+   if ( g_idObjTypeType == NULL ) return;
+
+   g_weakObjType = malloc( sizeof(jweak)*(PSO_LAST_OBJECT_TYPE-1) );
+   if ( g_weakObjType == NULL ) {
+      exit(1);
+   }
+   
+   id = (*env)->GetStaticFieldID(env, objClass, "FOLDER", "Lorg/photon/ObjectType;");
+   if ( id == NULL ) return;
+   jobj = (*env)->GetStaticObjectField( env, objClass, id );
+   if ( jobj == NULL ) return;
+   g_weakObjType[PSO_FOLDER-1] = (*env)->NewWeakGlobalRef( env, jobj );
+   if ( g_weakObjType[PSO_FOLDER-1] == NULL ) return;
+
+   id = (*env)->GetStaticFieldID(env, objClass, "HASH_MAP", "Lorg/photon/ObjectType;");
+   if ( id == NULL ) return;
+   jobj = (*env)->GetStaticObjectField( env, objClass, id );
+   if ( jobj == NULL ) return;
+   g_weakObjType[PSO_HASH_MAP-1] = (*env)->NewWeakGlobalRef( env, jobj );
+   if ( g_weakObjType[PSO_HASH_MAP-1] == NULL ) return;
+
+   id = (*env)->GetStaticFieldID(env, objClass, "LIFO", "Lorg/photon/ObjectType;");
+   if ( id == NULL ) return;
+   jobj = (*env)->GetStaticObjectField( env, objClass, id );
+   if ( jobj == NULL ) return;
+   g_weakObjType[PSO_LIFO-1] = (*env)->NewWeakGlobalRef( env, jobj );
+   if ( g_weakObjType[PSO_LIFO-1] == NULL ) return;
+   
+   id = (*env)->GetStaticFieldID(env, objClass, "FAST_MAP", "Lorg/photon/ObjectType;");
+   if ( id == NULL ) return;
+   jobj = (*env)->GetStaticObjectField( env, objClass, id );
+   if ( jobj == NULL ) return;
+   g_weakObjType[PSO_FAST_MAP-1] = (*env)->NewWeakGlobalRef( env, jobj );
+   if ( g_weakObjType[PSO_FAST_MAP-1] == NULL ) return;
+
+   id = (*env)->GetStaticFieldID(env, objClass, "QUEUE", "Lorg/photon/ObjectType;");
+   if ( id == NULL ) return;
+   jobj = (*env)->GetStaticObjectField( env, objClass, id );
+   if ( jobj == NULL ) return;
+   g_weakObjType[PSO_QUEUE-1] = (*env)->NewWeakGlobalRef( env, jobj );
+   if ( g_weakObjType[PSO_QUEUE-1] == NULL ) return;
+
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

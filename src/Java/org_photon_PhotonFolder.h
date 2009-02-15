@@ -66,10 +66,10 @@ JNIEXPORT jint JNICALL Java_org_photon_PhotonFolder_folderGetNext
 /*
  * Class:     org_photon_PhotonFolder
  * Method:    folderInit
- * Signature: (JLjava/lang/String;)I
+ * Signature: (Lorg/photon/PhotonSession;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_PhotonFolder_folderInit
-  (JNIEnv *, jobject, jlong, jstring);
+  (JNIEnv *, jobject, jobject, jstring);
 
 /*
  * Class:     org_photon_PhotonFolder

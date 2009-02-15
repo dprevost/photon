@@ -25,21 +25,30 @@ import java.util.*;
 
 public class FolderEntry {
    
-   private int    type = -1;
-   private String name;
-   private int    status = -1;
+   private ObjectType type;
+   private String     name;
+   private int        status = -1;
 
-   public int    getType()   { return type; }
-   public String getName()   { return name; }
-   public int    getStatus() { return status; }
+   public ObjectType getType()   { return type; }
+   public String     getName()   { return name; }
+   public int        getStatus() { return status; }
 
-   private FolderEntry( int entryType, String entryName, int entryStatus ) {
+   private FolderEntry( ObjectType entryType, String entryName, int entryStatus ) {
       type = entryType;
       name = entryName;
       status = entryStatus;
    }
    
    public FolderEntry() {}
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
+
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

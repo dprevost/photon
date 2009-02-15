@@ -9,19 +9,83 @@ extern "C" {
 #endif
 /*
  * Class:     org_photon_PhotonSession
- * Method:    initSession
- * Signature: ()J
- */
-JNIEXPORT jlong JNICALL Java_org_photon_PhotonSession_initSession
-  (JNIEnv *, jobject);
-
-/*
- * Class:     org_photon_PhotonSession
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_photon_PhotonSession_initIDs
   (JNIEnv *, jclass);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoCommit
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoCommit
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoCreateObject
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoCreateObject
+  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobjectArray);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoDestroyObject
+ * Signature: (JLjava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoDestroyObject
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoFini
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoFini
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoGetDefinition
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetDefinition
+  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobjectArray);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoGetInfo
+ * Signature: (JLorg/photon/Info;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetInfo
+  (JNIEnv *, jobject, jlong, jobject);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoGetStatus
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjStatus;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetStatus
+  (JNIEnv *, jobject, jlong, jstring, jobject);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoInit
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoInit
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_photon_PhotonSession
+ * Method:    psoRollback
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoRollback
+  (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
 }
