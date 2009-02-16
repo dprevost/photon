@@ -58,6 +58,8 @@ extern jweak g_FieldDefClass;
 
 extern jfieldID g_idFieldTypeType;
 
+extern jweak *  g_weakFieldType;
+
 /* The ObjectDefinition class */
 
 extern jfieldID g_idObjDefType;
@@ -67,9 +69,12 @@ extern jfieldID g_idObjDefNumFields;
 
 extern jfieldID g_idKeyTypeType;
 
+extern jweak * g_weakKeyType;
+
 /* The ObjectType class (enum) */
 
 extern jfieldID g_idObjTypeType;
+
 extern jweak *  g_weakObjType;
 
 /* The folder class */

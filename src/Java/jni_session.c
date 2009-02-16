@@ -249,7 +249,7 @@ Java_org_photon_PhotonSession_psoGetDefinition( JNIEnv  * env,
    jobject jfield;
    jobjectArray jarray;
    jstring jstr;
-   unsigned int numFields, i;
+   unsigned int numFields = 0, i;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( objectName == NULL ) {
@@ -293,6 +293,15 @@ Java_org_photon_PhotonSession_psoGetDefinition( JNIEnv  * env,
    
       /* Warning: new type using a key must be added here */
       if ( definition.type == PSO_HASH_MAP || definition.type == PSO_FAST_MAP ) {
+
+         (*env)->SetObjectField( env, jkey, g_idKeyDefType, 
+            g_weakKeyType[key.type-PSO_KEY_INTEGER] );
+
+         (*env)->SetIntField( env, jkey, g_idKeyDefLength,    key.length );
+         (*env)->SetIntField( env, jkey, g_idKeyDefMinLength, key.minLength );
+         (*env)->SetIntField( env, jkey, g_idKeyDefMaxLength, key.maxLength );
+
+         (*env)->SetObjectField( env, jdef, g_idDefinitionDef, jkey );
       }
 
       if ( definition.type != PSO_FOLDER ) {
@@ -316,39 +325,29 @@ Java_org_photon_PhotonSession_psoGetDefinition( JNIEnv  * env,
                return PSO_NOT_ENOUGH_HEAP_MEMORY;
             }
             (*env)->SetObjectField( env, jfield, g_idFieldDefName, jstr );
-            
-            
-   /** The data type of the field/ */
-   private FieldType type;
-   
-   /** For fixed-length data types */
-   private int length;
-extern jfieldID g_idFieldDefName;
-extern jfieldID g_idFieldDefType;
-extern jfieldID g_idFieldDefLength;
-extern jfieldID g_idFieldDefMinLength;
-extern jfieldID g_idFieldDefMaxLength;
-extern jfieldID g_idFieldDefPrecision;
-extern jfieldID g_idFieldDefScale;
+            (*env)->DeleteLocalRef( env, jstr );
 
-   /** For variable-length data types */
-   private int minLength;
+            (*env)->SetObjectField( env, jfield, g_idFieldDefType, 
+               g_weakFieldType[pFields[i].type-1] );
 
-   /** For variable-length data types */
-   private int maxLength;
-
-   /** Total number of digits in the decimal field. */
-   private int precision;
-
-   /** Number of digits following the decimal separator. */
-   private int scale;
-              
+            (*env)->SetIntField( env, jfield, g_idFieldDefLength,
+               pFields[i].length );
+            (*env)->SetIntField( env, jfield, g_idFieldDefMinLength,
+               pFields[i].minLength );
+            (*env)->SetIntField( env, jfield, g_idFieldDefMaxLength,
+               pFields[i].maxLength );
+            (*env)->SetIntField( env, jfield, g_idFieldDefPrecision,
+               pFields[i].precision );
+            (*env)->SetIntField( env, jfield, g_idFieldDefScale,
+               pFields[i].scale );
+            (*env)->SetObjectArrayElement( env, jarray, i, jfield );
+            (*env)->DeleteLocalRef( env, jfield );
          }
+         (*env)->SetObjectField( env, jdef, g_idDefinitionDef, jarray );
       }
-
-
-      
    }
+
+   if ( pFields != NULL ) free(pFields);
    
    return errcode;
 }
@@ -387,26 +386,32 @@ Java_org_photon_PhotonSession_psoGetInfo( JNIEnv  * env,
       jstr = getNotNullTerminatedString( env, info.compiler, 20 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       (*env)->SetObjectField( env, jinfo, g_idInfoCompiler, jstr );
+      (*env)->DeleteLocalRef( env, jstr );
 
       jstr = getNotNullTerminatedString( env, info.compilerVersion, 10 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       (*env)->SetObjectField( env, jinfo, g_idInfoCompilerVersion, jstr );
+      (*env)->DeleteLocalRef( env, jstr );
 
       jstr = getNotNullTerminatedString( env, info.platform, 20 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       (*env)->SetObjectField( env, jinfo, g_idInfoPlatform, jstr );
+      (*env)->DeleteLocalRef( env, jstr );
 
       jstr = getNotNullTerminatedString( env, info.dllVersion, 10 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       (*env)->SetObjectField( env, jinfo, g_idInfoDllVersion, jstr );
+      (*env)->DeleteLocalRef( env, jstr );
 
       jstr = getNotNullTerminatedString( env, info.quasarVersion, 10 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       (*env)->SetObjectField( env, jinfo, g_idInfoQuasarVersion, jstr );
+      (*env)->DeleteLocalRef( env, jstr );
 
       jstr = getNotNullTerminatedString( env, info.creationTime, 30 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       (*env)->SetObjectField( env, jinfo, g_idInfoCreationTime, jstr );
+      (*env)->DeleteLocalRef( env, jstr );
       
    }
    return errcode;

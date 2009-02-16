@@ -24,8 +24,15 @@ public class Test {
 
    public static void main( String args[] ) {
       
+      System.out.println("Total Memory"+Runtime.getRuntime().totalMemory());    
+      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+       
       PhotonProcess process;
       PhotonSession session;
+
+      System.gc();
+      System.out.println("Total Memory"+Runtime.getRuntime().totalMemory());    
+      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
       
       try {
          process = new PhotonProcess( "10701" );
@@ -43,8 +50,14 @@ public class Test {
 
       } catch ( PhotonException e ) {
          e.printStackTrace();
-         System.exit(1);
+//         System.exit(1);
       }
+      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+      System.gc();
+      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+//      System.runFinalization();
+//      System.gc();
+      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
       
    }
 }

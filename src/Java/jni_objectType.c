@@ -40,13 +40,18 @@ Java_org_photon_ObjectType_initIDs( JNIEnv * env , jclass objClass )
 {
    jobject jobj;
    jfieldID id;
+   jclass exc;
    
    g_idObjTypeType = (*env)->GetFieldID( env, objClass, "type", "I" );
    if ( g_idObjTypeType == NULL ) return;
 
    g_weakObjType = malloc( sizeof(jweak)*(PSO_LAST_OBJECT_TYPE-1) );
    if ( g_weakObjType == NULL ) {
-      exit(1);
+      exc = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
+      if ( exc != NULL ) {
+         (*env)->ThrowNew( env, exc, "malloc failed in jni code");
+      }
+      return;
    }
    
    id = (*env)->GetStaticFieldID(env, objClass, "FOLDER", "Lorg/photon/ObjectType;");
