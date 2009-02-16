@@ -229,10 +229,129 @@ Java_org_photon_PhotonSession_psoFini( JNIEnv  * env,
 /*
  * Class:     org_photon_PhotonSession
  * Method:    psoGetDefinition
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/Definition;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;)I
  */
-JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetDefinition
-  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobjectArray);
+JNIEXPORT jint JNICALL 
+Java_org_photon_PhotonSession_psoGetDefinition( JNIEnv  * env,
+                                                jobject   jobj,
+                                                jlong     jhandle,
+                                                jstring   jname,
+                                                jobject   jdef,
+                                                jobject   jbase,
+                                                jobject   jkey )
+{
+   int errcode;
+   size_t handle = (size_t)jhandle;
+   psoObjectDefinition definition;
+   psoKeyDefinition key;
+   psoFieldDefinition  * pFields = NULL;
+   const char * objectName;
+   jobject jfield;
+   jobjectArray jarray;
+   jstring jstr;
+   unsigned int numFields, i;
+   
+   objectName = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( objectName == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   /*
+    * We call it a first time with numFields set to zero to retrieve the
+    * number of fields.
+    */
+   errcode = psoGetDefinition( (PSO_HANDLE) handle,
+                               objectName,
+                               strlen(objectName),
+                               &definition,
+                               &key,
+                               0,
+                               NULL );
+   if ( errcode == 0 && definition.numFields > 0 ) {
+      numFields = definition.numFields;
+      pFields = malloc( sizeof(psoFieldDefinition)*numFields );
+      if ( pFields == NULL ) {
+         (*env)->ReleaseStringUTFChars( env, jname, objectName );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      errcode = psoGetDefinition( (PSO_HANDLE) handle,
+                                  objectName,
+                                  strlen(objectName),
+                                  &definition,
+                                  &key,
+                                  numFields,
+                                  pFields );
+   }
+   (*env)->ReleaseStringUTFChars( env, jname, objectName );
+
+   if ( errcode == 0 ) {
+      
+      (*env)->SetObjectField( env, jbase, g_idObjDefType, g_weakObjType[definition.type-1] );
+      (*env)->SetIntField( env, jbase, g_idObjDefNumFields, definition.numFields );
+
+      (*env)->SetObjectField( env, jdef, g_idDefinitionDef, jbase );
+   
+      /* Warning: new type using a key must be added here */
+      if ( definition.type == PSO_HASH_MAP || definition.type == PSO_FAST_MAP ) {
+      }
+
+      if ( definition.type != PSO_FOLDER ) {
+         jarray = (*env)->NewObjectArray( env, 
+                                          (jsize) numFields,
+                                          g_FieldDefClass,
+                                          NULL );
+         if ( jarray == NULL ) {
+            free(pFields);
+            return PSO_NOT_ENOUGH_HEAP_MEMORY;
+         }
+         for ( i = 0; i < numFields; ++i ) {
+            jfield = (*env)->AllocObject( env, g_FieldDefClass );
+            if ( jfield == NULL ) {
+               free(pFields);
+               return PSO_NOT_ENOUGH_HEAP_MEMORY;
+            }
+            jstr = getNotNullTerminatedString( env, pFields[i].name, PSO_MAX_FIELD_LENGTH );
+            if ( jstr == NULL ) {
+               free(pFields);
+               return PSO_NOT_ENOUGH_HEAP_MEMORY;
+            }
+            (*env)->SetObjectField( env, jfield, g_idFieldDefName, jstr );
+            
+            
+   /** The data type of the field/ */
+   private FieldType type;
+   
+   /** For fixed-length data types */
+   private int length;
+extern jfieldID g_idFieldDefName;
+extern jfieldID g_idFieldDefType;
+extern jfieldID g_idFieldDefLength;
+extern jfieldID g_idFieldDefMinLength;
+extern jfieldID g_idFieldDefMaxLength;
+extern jfieldID g_idFieldDefPrecision;
+extern jfieldID g_idFieldDefScale;
+
+   /** For variable-length data types */
+   private int minLength;
+
+   /** For variable-length data types */
+   private int maxLength;
+
+   /** Total number of digits in the decimal field. */
+   private int precision;
+
+   /** Number of digits following the decimal separator. */
+   private int scale;
+              
+         }
+      }
+
+
+      
+   }
+   
+   return errcode;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

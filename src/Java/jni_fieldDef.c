@@ -33,6 +33,8 @@ jfieldID g_idFieldDefMaxLength;
 jfieldID g_idFieldDefPrecision;
 jfieldID g_idFieldDefScale;
 
+jweak g_FieldDefClass;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
@@ -57,6 +59,9 @@ Java_org_photon_FieldDefinition_initIDs(JNIEnv * env, jclass fieldClass )
    if ( g_idFieldDefPrecision == NULL ) return;
    g_idFieldDefScale = (*env)->GetFieldID( env, fieldClass, "", "scale" );
    if ( g_idFieldDefScale == NULL ) return;
+
+   g_FieldDefClass = (*env)->NewWeakGlobalRef( env, fieldClass );
+   if ( g_FieldDefClass == NULL ) return;
 
 }
 

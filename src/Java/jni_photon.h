@@ -40,7 +40,7 @@ extern jfieldID g_idKeyDefType;
 extern jfieldID g_idKeyDefLength;
 extern jfieldID g_idKeyDefMinLength;
 extern jfieldID g_idKeyDefMaxLength;
-extern jclass   g_keyDefClass;
+//extern jclass   g_keyDefClass;
 
 /* The FieldDefinition class */
 
@@ -51,6 +51,8 @@ extern jfieldID g_idFieldDefMinLength;
 extern jfieldID g_idFieldDefMaxLength;
 extern jfieldID g_idFieldDefPrecision;
 extern jfieldID g_idFieldDefScale;
+
+extern jweak g_FieldDefClass;
 
 /* The FieldType class (enum) */
 
@@ -116,6 +118,12 @@ extern jfieldID g_idStatusNumDataItem;
 extern jfieldID g_idStatusFreeBytes;
 extern jfieldID g_idStatusMaxDataLength;
 extern jfieldID g_idStatusMaxKeyLength;
+
+/* The Definition class */
+
+extern jfieldID g_idDefinitionDef;
+extern jfieldID g_idDefinitionKey;
+extern jfieldID g_idDefinitionFields;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

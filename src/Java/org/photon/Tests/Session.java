@@ -24,6 +24,25 @@ public class Session {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   public static void Commit() throws PhotonException {
+
+      PhotonSession session = new PhotonSession();
+      
+      session.commit();
+      session.close();
+
+      try {
+         session.commit();
+      } catch ( PhotonException e ) {
+         System.out.println( e.getMessage() );
+         if ( e.getErrorCode() != PhotonErrors.NULL_HANDLE ) {
+            throw e;
+         }
+      }
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    public static void Info(PhotonSession session) throws PhotonException {
       
       Info info;
@@ -34,16 +53,42 @@ public class Session {
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public static void Status(PhotonSession session) throws PhotonException {
+      
+      ObjStatus status;
+      
+      try {
+         status = session.getStatus( "/SessionTest1" );
+      } catch ( PhotonException e ) {
+         System.out.println( e.getMessage() );
+         if ( e.getErrorCode() != PhotonErrors.NO_SUCH_OBJECT ) {
+            throw e;
+         }
+      }
+      
+      session.createObject( "/SessionTest1",
+                            new ObjectDefinition(ObjectType.FOLDER, 0),
+                            null,
+                            null );
+      status = session.getStatus( "/SessionTest1" );
+      System.out.println( "Object Type: " + status.type );
+      
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
    public static void tests() throws PhotonException {
       
       PhotonSession session;
       
       /* Starts with tests on the creation/use of sessions */
+      Commit();
       
       /* Tests for the other session methods */
       session = new PhotonSession();
       Info(session);
+      Status(session);
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

@@ -18,23 +18,30 @@
 
 package org.photon;
 
-public class ObjectDefinition {
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+/**
+ * A simple wrapper for the three objects, some optionals, that defines
+ * a Photon object.
+ * <p>
+ * Objects of this class are returned by the "getDefinition" functions of
+ * the different classes of Photon.
+ */
+public class Definition {
    
-   private ObjectType type;
-   private int numFields = 0;
+   /** The ObjectDefinition is a common field used by all Photon objects. */
+   public ObjectDefinition definition;
+
+   /** Only for Photon containers using keys (hash maps, etc. */
+   public KeyDefinition key;
+
+   /** Photon folders do not use this attribute. */
+   public FieldDefinition[] fields;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public ObjectType getType() { return type; }
-   public int getNumFields() { return numFields; }
-   
-   public ObjectDefinition( ObjectType type, int numFields ) {
-      this.type = type;
-      this.numFields = numFields;
-   }
-
-   ObjectDefinition() {}
-
+   Definition() {}
+ 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    private static native void initIDs();
@@ -42,6 +49,6 @@ public class ObjectDefinition {
    static {
       initIDs();
    }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

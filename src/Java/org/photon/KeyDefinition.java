@@ -18,7 +18,7 @@
 
 package org.photon;
 
-class KeyDefinition {
+public class KeyDefinition {
 
    /** The data type of the key. */
    private KeyType type;
@@ -34,14 +34,23 @@ class KeyDefinition {
  
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public KeyType getType()      { return type; }
-   public int getLength()    { return length; }
-   public int getMinLength() { return minLength; }
-   public int getMaxLength() { return maxLength; }
+   /** The data type of the key (integer, string, etc). */
+   public KeyType getType() { return type; }
+   
+   /** The length of the key for fixed length data types. */
+   public int     getLength()    { return length; }
+
+   /** The minimum length of the key for variable length data types. */
+   public int     getMinLength() { return minLength; }
+
+   /** The maximum length of the key for variable length data types. */
+   public int     getMaxLength() { return maxLength; }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   KeyDefinition( KeyType type, int length, int minLength, int maxLength ) {
+   KeyDefinition() {}
+
+   public KeyDefinition( KeyType type, int length, int minLength, int maxLength ) {
       this.type = type;
       this.length = length;
       this.minLength = minLength;

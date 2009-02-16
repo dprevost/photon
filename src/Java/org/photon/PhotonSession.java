@@ -26,7 +26,7 @@ package org.photon;
 
 public class PhotonSession {
 
-   /** To save the native pointer/handle. */
+   /* To save the native pointer/handle of the C struct. */
    private long handle;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -63,11 +63,11 @@ public class PhotonSession {
 
    private native int psoFini( long handle );
 
-   private native int psoGetDefinition( long handle,
-                                        String objectName,
-                                        ObjectDefinition  definition, 
-                                        KeyDefinition     key,
-                                        FieldDefinition[] fields );
+   private native int psoGetDefinition( long             handle,
+                                        String           objectName,
+                                        Definition       definition,
+                                        ObjectDefinition objectDef,
+                                        KeyDefinition    key );
 
    private native int psoGetInfo( long handle,
                                   Info info );
@@ -183,7 +183,7 @@ public class PhotonSession {
 
    /**
     * Terminate the current session. 
-    *
+    * 
     * An implicit call to rollback is executed by this method.
     */
    public void close() { 
@@ -197,15 +197,27 @@ public class PhotonSession {
     * Retrieve the data definition of the named object.
     *
     * @param objectName The fully qualified name of the object. 
-    * @param definition The definition of the object.
-    * @param key        The key definition.
-    * @param fields     The definition of all the fields.
+    * @return A new Definition object.
     * @exception PhotonException On an error with the Photon library.
     */
-   public void getDefinition( String objectName,
-                              ObjectDefinition  definition, 
-                              KeyDefinition     key,
-                              FieldDefinition[] fields ) throws PhotonException {
+   public Definition getDefinition( String objectName ) throws PhotonException {
+
+      int errcode;
+      Definition definition = new Definition();
+      /* Simplify the jni by preallocating some objects */
+      ObjectDefinition objectDef = new ObjectDefinition();
+      KeyDefinition key = new KeyDefinition();
+      
+      errcode = psoGetDefinition( handle, 
+                                  objectName, 
+                                  definition,
+                                  objectDef,
+                                  key );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+      
+      return definition;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

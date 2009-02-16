@@ -50,10 +50,10 @@ JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoFini
 /*
  * Class:     org_photon_PhotonSession
  * Method:    psoGetDefinition
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/Definition;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_PhotonSession_psoGetDefinition
-  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobjectArray);
+  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobject);
 
 /*
  * Class:     org_photon_PhotonSession

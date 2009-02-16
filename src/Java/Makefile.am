@@ -21,6 +21,7 @@ CLEANFILES = \
 
 Java_Source =                             \
         org/photon/DataRecord.java        \
+        org/photon/Definition.java        \
         org/photon/FieldDefinition.java   \
         org/photon/FieldType.java         \
         org/photon/FolderEntry.java       \
@@ -42,6 +43,7 @@ Java_Source =                             \
 
 Java_Classes =                             \
         org/photon/DataRecord.class        \
+        org/photon/Definition.class        \
         org/photon/FieldDefinition.class   \
         org/photon/FieldType.class         \
         org/photon/FolderEntry.class       \
@@ -80,6 +82,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
+        jni_definition.c              \
         jni_fieldDef.c                \
         jni_fieldType.c               \
         jni_folder.c                  \
@@ -94,6 +97,7 @@ libphoton_jni_la_SOURCES =            \
         jni_process.c                 \
         jni_queue.c                   \
         jni_session.c                 \
+        org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \
         org_photon_FieldType.h        \
         org_photon_FolderEntry.h      \

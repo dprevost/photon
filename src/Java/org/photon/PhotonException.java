@@ -26,7 +26,7 @@ public class PhotonException extends Exception {
 
    private PhotonErrors theErrorCode;
    
-   public int getErrorCode() { return theErrorCode.getErrorNumber(); }
+   public PhotonErrors getErrorCode() { return theErrorCode; }
         
    public PhotonException( PhotonErrors errcode ) { 
       super( errcode.getMessage() );
