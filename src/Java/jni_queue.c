@@ -30,12 +30,12 @@ jfieldID g_idQueueHandle;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonQueue
+ * Class:     org_photon_Queue
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_org_photon_PhotonQueue_initIDs( JNIEnv * env, jclass queueClass )
+Java_org_photon_Queue_initIDs( JNIEnv * env, jclass queueClass )
 {
    g_idQueueHandle = (*env)->GetFieldID( env, queueClass, "handle", "J" );
    if ( g_idQueueHandle == NULL ) return;
@@ -44,122 +44,115 @@ Java_org_photon_PhotonQueue_initIDs( JNIEnv * env, jclass queueClass )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonQueue
- * Method:    fini
+ * Class:     org_photon_Queue
+ * Method:    psoFini
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL 
+Java_org_photon_Queue_psoFini( JNIEnv  * env,
+                               jobject   jobj,
+                               jlong     jhandle )
+{
+   int errcode;
+   size_t handle = (size_t) jhandle;
+   
+   errcode = psoQueueClose( (PSO_HANDLE)handle );
+
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Queue
+ * Method:    psoGetFirst
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_fini( JNIEnv * env, jobject obj, jlong h );
+JNIEXPORT jint JNICALL 
+Java_org_photon_Queue_psoGetFirst( JNIEnv  * env,
+                                   jobject   jobj,
+                                   jlong     jhandle,
+                                   jobject   jrecord );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonQueue
- * Method:    init
- * Signature: (Lorg/photon/Session;Ljava/lang/String;)I
- */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_init( JNIEnv  * env,
-                                  jobject   obj,
-                                  jobject   jsession,
-                                  jstring   jname );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonQueue
- * Method:    pop
- * Signature: (J[BI[I)I
- */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_pop( JNIEnv  * env,
-                                 jobject   obj,
-                                 jlong     h,
-                                 jbyteArray,
-                                 jint,
-                                 jintArray );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonQueue
- * Method:    push
- * Signature: (J[BI)I
- */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_push( JNIEnv  * env,
-                                  jobject   obj,
-                                  jlong     h,
-                                  jbyteArray, 
-                                  jint );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonQueue
- * Method:    pushNow
- * Signature: (J[BI)I
- */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_pushNow( JNIEnv  * env,
-                                     jobject   obj,
-                                     jlong     h,
-                                     jbyteArray, 
-                                     jint );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonQueue
- * Method:    retrieveDefinition
- * Signature: (JLorg/photon/ObjectDefinition;I[Lorg/photon/FieldDefinition;)I
- */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_retrieveDefinition( JNIEnv     * env, 
-                                                jobject      obj,
-                                                jlong        h,
-                                                jobject      jdef,
-                                                jint         numFields,
-                                                jobjectArray jfields );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonQueue
- * Method:    retrieveFirst
+ * Class:     org_photon_Queue
+ * Method:    psoGetNext
  * Signature: (J)I
  */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_retrieveFirst( JNIEnv  * env,
-                                           jobject   obj,
-                                           jlong     h,
-                                           jobject   jrecord );
+JNIEXPORT jint JNICALL 
+Java_org_photon_Queue_psoGetNext( JNIEnv  * env,
+                                  jobject   jobj,
+                                  jlong     jhandle,
+                                  jobject   jrecord );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonQueue
- * Method:    retrieveNext
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_retrieveNext( JNIEnv  * env,
-                                          jobject   obj,
-                                          jlong     h,
-                                          jobject   jrecord );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_PhotonQueue
- * Method:    retrieveStatus
+ * Class:     org_photon_Queue
+ * Method:    psoGetStatus
  * Signature: (JLorg/photon/ObjectStatus;)I
  */
+JNIEXPORT jint JNICALL 
+Java_org_photon_Queue_psoGetStatus( JNIEnv  * env,
+                                    jobject   jobj,
+                                    jlong     jhandle,
+                                    jobject   jstatus );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Queue
+ * Method:    psoInit
+ * Signature: (Lorg/photon/Session;Ljava/lang/String;Lorg/photon/Definition;Lorg/photon/ObjectDefinition;)I
+ */
+JNIEXPORT jint JNICALL 
+Java_org_photon_Queue_psoInit( JNIEnv  * env,
+                               jobject   jobj,
+                               jobject   jhandle,
+                               jstring   jname,
+                               jobject   jdef,
+                               jobject   jbase );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Queue
+ * Method:    psoPop
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL 
+Java_org_photon_Queue_psoPop( JNIEnv  * env,
+                              jobject   jobj,
+                              jlong     jhandle,
+                              jobject   jrecord );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Queue
+ * Method:    psoPush
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL 
+Java_org_photon_Queue_psoPush( JNIEnv  * env,
+                               jobject   jobj,
+                               jlong     jhandle,
+                               jobject   jrecord );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Queue
+ * Method:    psoPushNow
+ * Signature: (J)I
+ */
 JNIEXPORT jint JNICALL
-Java_org_photon_PhotonQueue_retrieveStatus( JNIEnv * env,
-                                            jobject  obj,
-                                            jlong    h,
-                                            jobject  jstatus );
+Java_org_photon_Queue_psoPushNow( JNIEnv  * env,
+                                  jobject   jobj,
+                                  jlong     jhandle,
+                                  jobject   jrecord );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

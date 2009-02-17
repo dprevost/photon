@@ -41,7 +41,7 @@ package org.photon;
 public class Session {
 
    /* To save the native pointer/handle of the C struct. */
-   private long handle;
+   private long handle = 0;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -103,6 +103,18 @@ public class Session {
    private native int psoInit();
 
    private native int psoRollback( long handle );
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   protected void finalize() throws Throwable {     
+      
+      try {
+         psoFini(handle);
+      } finally {
+         handle = 0;
+         super.finalize();
+      }
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

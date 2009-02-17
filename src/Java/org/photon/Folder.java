@@ -34,7 +34,7 @@ import java.util.*;
  */
 public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
-   /** To save the native pointer/handle. */
+   /* To save the native pointer/handle of the C struct. */
    private long handle = 0;
    private Session session;
    private FolderEntry entry;
@@ -160,6 +160,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       try {
          psoFini(handle);
       } finally {
+         handle = 0;
          super.finalize();
       }
    }
