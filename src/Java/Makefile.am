@@ -83,6 +83,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
+        jni_dataRecord.c              \
         jni_definition.c              \
         jni_fieldDef.c                \
         jni_fieldType.c               \
@@ -98,6 +99,7 @@ libphoton_jni_la_SOURCES =            \
         jni_photon.c                  \
         jni_queue.c                   \
         jni_session.c                 \
+        org_photon_DataRecord.h       \
         org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \
         org_photon_FieldType.h        \
@@ -108,7 +110,7 @@ libphoton_jni_la_SOURCES =            \
         org_photon_KeyType.h          \
         org_photon_ObjectDefinition.h \
         org_photon_ObjectType.h       \
-        org_photon_ObjectStatus.h        \
+        org_photon_ObjectStatus.h     \
         org_photon_Photon.h           \
         org_photon_Queue.h            \
         org_photon_Session.h          

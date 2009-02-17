@@ -23,8 +23,10 @@ package org.photon;
  * class of all Photon containers.
  */
 // getDeclaredFields
+//  [Lorg/photon/DataRecord$FieldDescription;
 
-public abstract class DataRecord {
+
+public class DataRecord {
    
    class FieldDescription {
       Object obj;
@@ -40,5 +42,12 @@ public abstract class DataRecord {
    public Long    getLong  ( int i ) { return    (Long) fields[i].obj; }
    public Short   getShort ( int i ) { return   (Short) fields[i].obj; }
    public String  getString( int i ) { return  (String) fields[i].obj; }
-   
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   static {
+      initIDs();
+   }
 }

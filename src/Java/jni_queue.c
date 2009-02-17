@@ -98,7 +98,28 @@ JNIEXPORT jint JNICALL
 Java_org_photon_Queue_psoGetStatus( JNIEnv  * env,
                                     jobject   jobj,
                                     jlong     jhandle,
-                                    jobject   jstatus );
+                                    jobject   jstatus )
+{
+   int errcode;
+   size_t handle = (size_t)jhandle;
+   psoObjStatus status;
+
+   errcode = psoQueueStatus( (PSO_HANDLE) handle, &status );
+
+   if ( errcode == 0 ) {
+      (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
+
+      (*env)->SetIntField(  env, jstatus, g_idStatusStatus,        status.status );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumBlocks,     status.numBlocks );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumDataItem,   status.numDataItem );
+      (*env)->SetLongField( env, jstatus, g_idStatusFreeBytes,     status.freeBytes );
+      (*env)->SetIntField(  env, jstatus, g_idStatusMaxDataLength, status.maxDataLength );
+      (*env)->SetIntField(  env, jstatus, g_idStatusMaxKeyLength,  status.maxKeyLength );
+   }
+   
+   return errcode;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -110,10 +131,115 @@ Java_org_photon_Queue_psoGetStatus( JNIEnv  * env,
 JNIEXPORT jint JNICALL 
 Java_org_photon_Queue_psoInit( JNIEnv  * env,
                                jobject   jobj,
-                               jobject   jhandle,
+                               jobject   jsession,
                                jstring   jname,
                                jobject   jdef,
-                               jobject   jbase );
+                               jobject   jbase )
+{
+   int errcode;
+   PSO_HANDLE handle;
+   size_t sessionHandle;
+   const char * queueName;
+   psoObjectDefinition definition;
+   jobject jfield;
+   jobjectArray jarray;
+   jstring jstr;
+   unsigned int numFields = 0, i;
+   psoFieldDefinition  * pFields = NULL;
+
+   queueName = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( queueName == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+   sessionHandle = (*env)->GetLongField( env, jsession, g_idSessionHandle );
+
+   errcode = psoQueueOpen( (PSO_HANDLE) sessionHandle,
+                           queueName,
+                           strlen(queueName),
+                           &handle );
+   (*env)->ReleaseStringUTFChars( env, jname, queueName );
+
+   if ( errcode != PSO_OK ) return errcode;
+   
+   /*
+    * Cache the queue definition of our object.
+    *
+    * We call GetDef a first time with numFields set to zero to retrieve the
+    * number of fields.
+    */
+   errcode = psoQueueDefinition( (PSO_HANDLE) handle,
+                                 &definition,
+                                 0,
+                                 NULL );
+   if ( errcode == 0 && definition.numFields > 0 ) {
+      numFields = definition.numFields;
+      pFields = malloc( sizeof(psoFieldDefinition)*numFields );
+      if ( pFields == NULL ) {
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      errcode = psoQueueDefinition( (PSO_HANDLE) handle,
+                                    &definition,
+                                    numFields,
+                                    pFields );
+   }
+
+   if ( errcode == 0 ) {
+      
+      (*env)->SetObjectField( env, jbase, g_idObjDefType, g_weakObjType[definition.type-1] );
+      (*env)->SetIntField( env, jbase, g_idObjDefNumFields, definition.numFields );
+
+      (*env)->SetObjectField( env, jdef, g_idDefinitionDef, jbase );
+   
+      jarray = (*env)->NewObjectArray( env, 
+                                       (jsize) numFields,
+                                       g_FieldDefClass,
+                                       NULL );
+      if ( jarray == NULL ) {
+         free(pFields);
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      for ( i = 0; i < numFields; ++i ) {
+         jfield = (*env)->AllocObject( env, g_FieldDefClass );
+         if ( jfield == NULL ) {
+            free(pFields);
+            return PSO_NOT_ENOUGH_HEAP_MEMORY;
+         }
+         jstr = getNotNullTerminatedString( env, pFields[i].name, PSO_MAX_FIELD_LENGTH );
+         if ( jstr == NULL ) {
+            free(pFields);
+            return PSO_NOT_ENOUGH_HEAP_MEMORY;
+         }
+         (*env)->SetObjectField( env, jfield, g_idFieldDefName, jstr );
+         (*env)->DeleteLocalRef( env, jstr );
+
+         (*env)->SetObjectField( env, jfield, g_idFieldDefType, 
+            g_weakFieldType[pFields[i].type-1] );
+
+         (*env)->SetIntField( env, jfield, g_idFieldDefLength,
+            pFields[i].length );
+         (*env)->SetIntField( env, jfield, g_idFieldDefMinLength,
+            pFields[i].minLength );
+         (*env)->SetIntField( env, jfield, g_idFieldDefMaxLength,
+            pFields[i].maxLength );
+         (*env)->SetIntField( env, jfield, g_idFieldDefPrecision,
+            pFields[i].precision );
+         (*env)->SetIntField( env, jfield, g_idFieldDefScale,
+            pFields[i].scale );
+         (*env)->SetObjectArrayElement( env, jarray, i, jfield );
+         (*env)->DeleteLocalRef( env, jfield );
+      }
+      (*env)->SetObjectField( env, jdef, g_idDefinitionDef, jarray );
+   }
+
+   if ( pFields != NULL ) free(pFields);
+   
+   // Normal return
+   if ( errcode == PSO_OK ) {
+      (*env)->SetLongField( env, jobj, g_idQueueHandle, (size_t) handle );
+   }
+   
+   return errcode;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
