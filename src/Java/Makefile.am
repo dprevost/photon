@@ -24,21 +24,21 @@ Java_Source =                             \
         org/photon/Definition.java        \
         org/photon/FieldDefinition.java   \
         org/photon/FieldType.java         \
+        org/photon/Folder.java            \
         org/photon/FolderEntry.java       \
         org/photon/KeyDefinition.java     \
         org/photon/KeyType.java           \
         org/photon/Info.java              \
         org/photon/ObjectDefinition.java  \
         org/photon/ObjectType.java        \
-        org/photon/ObjStatus.java         \
+        org/photon/ObjectStatus.java      \
+        org/photon/Photon.java            \
         org/photon/PhotonErrors.java      \
         org/photon/PhotonException.java   \
-        org/photon/PhotonFolder.java      \
-        org/photon/PhotonProcess.java     \
-        org/photon/PhotonQueue.java       \
-        org/photon/PhotonSession.java     \
-        org/photon/Tests/Folder.java      \
-        org/photon/Tests/Session.java     \
+        org/photon/Queue.java             \
+        org/photon/Session.java           \
+        org/photon/Tests/FolderTest.java  \
+        org/photon/Tests/SessionTest.java \
         org/photon/Tests/Test.java        
 
 Java_Classes =                             \
@@ -46,18 +46,19 @@ Java_Classes =                             \
         org/photon/Definition.class        \
         org/photon/FieldDefinition.class   \
         org/photon/FieldType.class         \
+        org/photon/Folder.class            \
         org/photon/FolderEntry.class       \
         org/photon/KeyDefinition.class     \
         org/photon/KeyType.class           \
+        org/photon/Info.java               \
         org/Photon/ObjectDefinition.class  \
         org/photon/ObjectType.class        \
-        org/photon/ObjStatus.class         \
+        org/photon/ObjectStatus.class      \
+        org/photon/Photon.class            \
         org/photon/PhotonErrors.class      \
         org/photon/PhotonException.class   \
-        org/photon/PhotonFolder.class      \
-        org/photon/PhotonProcess.class     \
-        org/photon/PhotonQueue.class       \
-        org/photon/PhotonSession.class     
+        org/photon/Queue.class             \
+        org/photon/Session.class           
 
 org_photondir = $(top_builddir)/src/Java
 JAVAROOT      = $(top_builddir)/src/Java
@@ -94,23 +95,23 @@ libphoton_jni_la_SOURCES =            \
         jni_objDefinition.c           \
         jni_objectType.c              \
         jni_objStatus.c               \
-        jni_process.c                 \
+        jni_photon.c                  \
         jni_queue.c                   \
         jni_session.c                 \
         org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \
         org_photon_FieldType.h        \
+        org_photon_Folder.h           \
         org_photon_FolderEntry.h      \
         org_photon_Info.h             \
         org_photon_KeyDefinition.h    \
         org_photon_KeyType.h          \
         org_photon_ObjectDefinition.h \
         org_photon_ObjectType.h       \
-        org_photon_ObjStatus.h        \
-        org_photon_PhotonFolder.h     \
-        org_photon_PhotonProcess.h    \
-        org_photon_PhotonQueue.h      \
-        org_photon_PhotonSession.h    
+        org_photon_ObjectStatus.h        \
+        org_photon_Photon.h           \
+        org_photon_Queue.h            \
+        org_photon_Session.h          
 
 libphoton_jni_la_LIBADD = \
    $(top_builddir)/src/API/libphoton.la 

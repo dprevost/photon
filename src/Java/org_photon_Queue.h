@@ -50,7 +50,7 @@ JNIEXPORT jint JNICALL Java_org_photon_PhotonQueue_getNext
 /*
  * Class:     org_photon_PhotonQueue
  * Method:    init
- * Signature: (Lorg/photon/PhotonSession;Ljava/lang/String;)I
+ * Signature: (Lorg/photon/Session;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_PhotonQueue_init
   (JNIEnv *, jobject, jobject, jstring);
@@ -82,7 +82,7 @@ JNIEXPORT jint JNICALL Java_org_photon_PhotonQueue_pushNow
 /*
  * Class:     org_photon_PhotonQueue
  * Method:    getStatus
- * Signature: (JLorg/photon/ObjStatus;)I
+ * Signature: (JLorg/photon/ObjectStatus;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_PhotonQueue_getStatus
   (JNIEnv *, jobject, jlong, jobject);

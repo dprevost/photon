@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_PhotonProcess.h"
+#include "org_photon_FolderEntry.h"
 
 jfieldID g_idEntryType;
 jfieldID g_idEntryName;

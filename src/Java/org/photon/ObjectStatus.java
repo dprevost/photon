@@ -21,7 +21,7 @@ package org.photon;
 /**
  * This class/data structure is used to retrieve the status of objects.
  */
-public class ObjStatus {
+public class ObjectStatus {
 
    /** The object type. */
    public ObjectType type;
@@ -53,7 +53,7 @@ public class ObjStatus {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   ObjStatus() {}
+   ObjectStatus() {}
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

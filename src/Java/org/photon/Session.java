@@ -21,23 +21,47 @@ package org.photon;
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /**
- * 
+ * Sessions exist mainly to support multi-threaded (MT) programs in C,
+ * C++, Java, C#, Python, etc.
+ * <p>
+ * Each thread of an MT program should have its own session, making it
+ * independent of the other threads. You must not share Photon objects 
+ * across threads.
+ * <p>
+ * If you need to access the same Photon object in multiple threads,
+ * simply create multiple instances of it, one for each session/thread
+ * of interest.
+ * <p>
+ * Explanation: Photon Java objects are just proxies for the real 
+ * objects sitting in shared memory. Proper synchronization is already done 
+ * in shared memory and it is best to avoid the additional synchronization 
+ * of these proxy objects.
  */
 
-public class PhotonSession {
+public class Session {
 
    /* To save the native pointer/handle of the C struct. */
    private long handle;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public PhotonSession() throws PhotonException {
+   /**
+    * This function initializes a Photon session. 
+    * <p>
+    * This function will also initiate a new transaction.
+    * <p>
+    * Upon normal termination, the current transaction is rolled back. You
+    * MUST explicitly call commit to save your changes.
+    *
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public Session() throws PhotonException {
 
-      int rc;
+      int errcode;
       
-      rc = psoInit();
-      if ( rc != 0 ) {
-         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      errcode = psoInit();
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
    }
 
@@ -74,7 +98,7 @@ public class PhotonSession {
 
    private native int psoGetStatus( long      handle,
                                     String    objectName,
-                                    ObjStatus status );
+                                    ObjectStatus status );
 
    private native int psoInit();
 
@@ -130,7 +154,6 @@ public class PhotonSession {
     *                   keys (queues, etc.).
     * @param fields     An array of field definitions. It can be set to
     *                   null when creating a Folder.
-    *
     * @exception PhotonException On an error with the Photon library.
     */
    public void createObject( String objectName,
@@ -184,7 +207,8 @@ public class PhotonSession {
    /**
     * Terminate the current session. 
     * 
-    * An implicit call to rollback is executed by this method.
+    * An implicit call to rollback is executed by this method. You must
+    * call commit to save any pending operations.
     */
    public void close() { 
       psoFini(handle); 
@@ -250,14 +274,13 @@ public class PhotonSession {
     * Return the status of the named object.
     *
     * @param objectName The fully qualified name of the object. 
-    *
     * @return A new status object.
     * @exception PhotonException On an error with the Photon library.
     */
-   public ObjStatus getStatus( String objectName ) throws PhotonException {
+   public ObjectStatus getStatus( String objectName ) throws PhotonException {
       
       int errcode;
-      ObjStatus status = new ObjStatus();
+      ObjectStatus status = new ObjectStatus();
       
       errcode = psoGetStatus( handle, objectName, status );
       if ( errcode != 0 ) {

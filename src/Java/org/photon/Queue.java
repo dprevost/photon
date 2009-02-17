@@ -26,7 +26,7 @@ import java.util.*;
  */
 // getDeclaredFields
 
-class PhotonQueue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRecord> {
+public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRecord> {
 
    /** To save the native pointer/handle. */
    private long handle = 0;
@@ -87,13 +87,13 @@ class PhotonQueue<DataRecord> implements Iterable<DataRecord>, Iterator<DataReco
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public PhotonQueue( PhotonSession session, String name ) throws PhotonException {
+   public Queue( Session session, String name ) throws PhotonException {
       
-      int rc;
+      int errcode;
       
-      rc = init( session, name );
-      if ( rc != 0 ) {
-         throw new PhotonException( PhotonErrors.getEnum(rc) );
+      errcode = psoInit( session, name );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
    }
 
@@ -107,28 +107,36 @@ class PhotonQueue<DataRecord> implements Iterable<DataRecord>, Iterator<DataReco
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private native int doPop( long handle, DataRecord record ) throws PhotonException;
-   private native int doPush( long   handle, DataRecord record );
-   private native int doPushNow( long   handle, DataRecord record );
-   private native int fini( long handle );
-   private native int init( PhotonSession session, String queueName );
-   private native int retrieveDefinition( long              handle, 
-                                          ObjectDefinition  definition,
-                                          int               numFields,
-                                          FieldDefinition[] fields );
-   private native int retrieveFirst( long       handle,
-                                     DataRecord record );
-   private native int retrieveNext( long       handle,
-                                    DataRecord record );
-   private native int retrieveStatus( long      handle,
-                                      ObjStatus status );
+   private native int psoPop( long handle, DataRecord record ) throws PhotonException;
+
+   private native int psoPush( long   handle, DataRecord record );
+
+   private native int psoPushNow( long   handle, DataRecord record );
+
+   private native int psoFini( long handle );
+
+   private native int psoInit( Session session, String queueName );
+
+   private native int psoGetDefinition( long              handle, 
+                                        ObjectDefinition  definition,
+                                        int               numFields,
+                                        FieldDefinition[] fields );
+
+   private native int psoGetFirst( long       handle,
+                                   DataRecord record );
+
+   private native int psoGetNext( long       handle,
+                                  DataRecord record );
+
+   private native int psoGetStatus( long      handle,
+                                    ObjectStatus status );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    protected void finalize() throws Throwable {     
       
       try {
-         fini(handle);
+         psoFini(handle);
       } finally {
          super.finalize();
       }
@@ -136,7 +144,10 @@ class PhotonQueue<DataRecord> implements Iterable<DataRecord>, Iterator<DataReco
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void close() { fini(handle); }
+   public void close() { 
+      psoFini(handle);
+      handle = 0;
+   }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -149,7 +160,7 @@ class PhotonQueue<DataRecord> implements Iterable<DataRecord>, Iterator<DataReco
 
    boolean getNextRecord() throws PhotonException {
       
-      int rc;
+      int errcode;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
@@ -157,82 +168,83 @@ class PhotonQueue<DataRecord> implements Iterable<DataRecord>, Iterator<DataReco
 
       if ( endIteration ) {
          endIteration = false;
-         rc = retrieveFirst( handle, record );
+         errcode = psoGetFirst( handle, record );
       } else {
-         rc = retrieveNext( handle, record );
+         errcode = psoGetNext( handle, record );
       }
-      if ( rc == 0 ) { 
+      if ( errcode == 0 ) { 
          return true;
       }
       endIteration = true;
-      if ( rc == PhotonErrors.IS_EMPTY.getErrorNumber() || 
-           rc == PhotonErrors.REACHED_THE_END.getErrorNumber() ) {
+      if ( errcode == PhotonErrors.IS_EMPTY.getErrorNumber() || 
+           errcode == PhotonErrors.REACHED_THE_END.getErrorNumber() ) {
          return false;
       }
       
-      throw new PhotonException( PhotonErrors.getEnum(rc) );
+      throw new PhotonException( PhotonErrors.getEnum(errcode) );
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public ObjStatus getStatus() throws PhotonException {
+   public ObjectStatus getStatus() throws PhotonException {
       
-      int rc;
-      ObjStatus status = new ObjStatus();
+      int errcode;
+      ObjectStatus status = new ObjectStatus();
       
-      rc = retrieveStatus( handle, status );
-      if ( rc == 0 ) return status;
+      errcode = psoGetStatus( handle, status );
+      if ( errcode == 0 ) return status;
 
-      throw new PhotonException( PhotonErrors.getEnum(rc) );
+      throw new PhotonException( PhotonErrors.getEnum(errcode) );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void pop( DataRecord record ) throws PhotonException {
       
-      int rc;
+      int errcode;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      rc = doPop( handle, record );
-      if ( rc == 0 ) return;
+      errcode = psoPop( handle, record );
+      if ( errcode == 0 ) return;
 
-      throw new PhotonException( PhotonErrors.getEnum(rc) );
+      throw new PhotonException( PhotonErrors.getEnum(errcode) );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void push( DataRecord record ) throws PhotonException {
 
-      int rc;
+      int errcode;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      rc = doPush( handle, record );
-      if ( rc == 0 ) return;
+      errcode = psoPush( handle, record );
+      if ( errcode == 0 ) return;
 
-      throw new PhotonException( PhotonErrors.getEnum(rc) );
+      throw new PhotonException( PhotonErrors.getEnum(errcode) );
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public void pushNow( DataRecord record ) throws PhotonException {
 
-      int rc;
+      int errcode;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      rc = doPushNow( handle, record );
-      if ( rc == 0 ) return;
+      errcode = psoPushNow( handle, record );
+      if ( errcode == 0 ) return;
 
-      throw new PhotonException( PhotonErrors.getEnum(rc) );
+      throw new PhotonException( PhotonErrors.getEnum(errcode) );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
+

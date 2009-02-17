@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_PhotonQueue.h"
+#include "org_photon_Queue.h"
 
 jfieldID g_idQueueHandle;
 
@@ -56,7 +56,7 @@ Java_org_photon_PhotonQueue_fini( JNIEnv * env, jobject obj, jlong h );
 /*
  * Class:     org_photon_PhotonQueue
  * Method:    init
- * Signature: (Lorg/photon/PhotonSession;Ljava/lang/String;)I
+ * Signature: (Lorg/photon/Session;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL
 Java_org_photon_PhotonQueue_init( JNIEnv  * env,
@@ -153,7 +153,7 @@ Java_org_photon_PhotonQueue_retrieveNext( JNIEnv  * env,
 /*
  * Class:     org_photon_PhotonQueue
  * Method:    retrieveStatus
- * Signature: (JLorg/photon/ObjStatus;)I
+ * Signature: (JLorg/photon/ObjectStatus;)I
  */
 JNIEXPORT jint JNICALL
 Java_org_photon_PhotonQueue_retrieveStatus( JNIEnv * env,

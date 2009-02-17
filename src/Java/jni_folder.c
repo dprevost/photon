@@ -23,19 +23,19 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_PhotonFolder.h"
+#include "org_photon_Folder.h"
 
 jfieldID g_idFolderHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
+ * Class:     org_photon_Folder
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_org_photon_PhotonFolder_initIDs( JNIEnv * env, jclass folderClass )
+Java_org_photon_Folder_initIDs( JNIEnv * env, jclass folderClass )
 {
    g_idFolderHandle = (*env)->GetFieldID( env, folderClass, "handle", "J" );
 }
@@ -43,23 +43,23 @@ Java_org_photon_PhotonFolder_initIDs( JNIEnv * env, jclass folderClass )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderCreateObject
+ * Class:     org_photon_Folder
+ * Method:    psoCreateObject
  * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
-                                                 jobject      obj,
-                                                 jlong        h,
-                                                 jstring      jname, 
-                                                 jobject      jdef,
-                                                 jobject      jkey,
-                                                 jobjectArray jfields)
+Java_org_photon_Folder_psoCreateObject( JNIEnv     * env,
+                                        jobject      jobj,
+                                        jlong        jhandle,
+                                        jstring      jname, 
+                                        jobject      jdef,
+                                        jobject      jkey,
+                                        jobjectArray jfields)
 {
    int errcode;
 
    /* Native variables */
-   size_t handle = (size_t)h;
+   size_t handle = (size_t) jhandle;
    const char * name;
    psoObjectDefinition definition;
    psoKeyDefinition key, * pKey = NULL;
@@ -155,18 +155,18 @@ Java_org_photon_PhotonFolder_folderCreateObject( JNIEnv     * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderCreateObjectXML
+ * Class:     org_photon_Folder
+ * Method:    psoCreateObjectXML
  * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderCreateObjectXML( JNIEnv * env, 
-                                                    jobject  obj, 
-                                                    jlong    h, 
-                                                    jstring  jxml )
+Java_org_photon_Folder_psoCreateObjectXML( JNIEnv * env, 
+                                           jobject  jobj, 
+                                           jlong    jhandle, 
+                                           jstring  jxml )
 {
    int errcode;
-   size_t handle = (size_t)h;
+   size_t handle = (size_t) jhandle;
    const char *xmlDef;
    
    xmlDef = (*env)->GetStringUTFChars( env, jxml, NULL );
@@ -186,18 +186,18 @@ Java_org_photon_PhotonFolder_folderCreateObjectXML( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderDestroyObject
+ * Class:     org_photon_Folder
+ * Method:    psoDestroyObject
  * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderDestroyObject( JNIEnv * env, 
-                                                  jobject  obj, 
-                                                  jlong    h, 
-                                                  jstring  jname )
+Java_org_photon_Folder_psoDestroyObject( JNIEnv * env, 
+                                         jobject  jobj, 
+                                         jlong    jhandle, 
+                                         jstring  jname )
 {
    int errcode;
-   size_t handle = (size_t)h;
+   size_t handle = (size_t) jhandle;
    const char * objectName;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
@@ -217,17 +217,17 @@ Java_org_photon_PhotonFolder_folderDestroyObject( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderFini
+ * Class:     org_photon_Folder
+ * Method:    psoFini
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL 
-Java_org_photon_PhotonFolder_folderFini( JNIEnv * env, 
-                                         jobject  obj, 
-                                         jlong    h )
+Java_org_photon_Folder_psoFini( JNIEnv * env, 
+                                jobject  jobj, 
+                                jlong    jhandle )
 {
    int errcode;
-   size_t handle = (size_t) h;
+   size_t handle = (size_t) jhandle;
    
    errcode = psoFolderClose( (PSO_HANDLE)handle );
 
@@ -237,47 +237,30 @@ Java_org_photon_PhotonFolder_folderFini( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderGetFirst
+ * Class:     org_photon_Folder
+ * Method:    psoGetFirst
  * Signature: (JLorg/photon/FolderEntry;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderGetFirst( JNIEnv * env, 
-                                             jobject  obj, 
-                                             jlong    h,
-                                             jobject  entry )
+Java_org_photon_Folder_psoGetFirst( JNIEnv * env, 
+                                    jobject  jobj, 
+                                    jlong    jhandle,
+                                    jobject  jentry )
 {
    int errcode;
-   size_t handle = (size_t) h;
+   size_t handle = (size_t) jhandle;
    psoFolderEntry cEntry;
-   jclass exc;
    jstring jname;
    
    errcode = psoFolderGetFirst( (PSO_HANDLE)handle, &cEntry );
    if ( errcode == PSO_OK ) {
-      if ( cEntry.nameLengthInBytes == PSO_MAX_NAME_LENGTH ) {
-         /* Special case - not null terminated string */
-         char * s = malloc( PSO_MAX_NAME_LENGTH+1);
-         if ( s == NULL ) {
-            exc = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
-            if ( exc != NULL ) {
-               (*env)->ThrowNew( env, exc, "malloc failed in jni code");
-            }
-            return PSO_NOT_ENOUGH_HEAP_MEMORY;
-         }
-         memcpy( s, cEntry.name, PSO_MAX_NAME_LENGTH );
-         s[PSO_MAX_NAME_LENGTH] = 0;
-         jname = (*env)->NewStringUTF( env, s );
-         free(s);
-      }
-      else {
-         jname = (*env)->NewStringUTF( env, cEntry.name );
-      }
+      jname = getNotNullTerminatedString( env, 
+         cEntry.name, PSO_MAX_NAME_LENGTH );
       if ( jname == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
-      
-      (*env)->SetObjectField( env, entry, g_idEntryName,   jname );
-      (*env)->SetObjectField( env, entry, g_idEntryType,   g_weakObjType[cEntry.type-1] );
-      (*env)->SetIntField(    env, entry, g_idEntryStatus, cEntry.status );
+
+      (*env)->SetObjectField( env, jentry, g_idEntryName,   jname );
+      (*env)->SetObjectField( env, jentry, g_idEntryType,   g_weakObjType[cEntry.type-1] );
+      (*env)->SetIntField(    env, jentry, g_idEntryStatus, cEntry.status );
    }
    
    return errcode;
@@ -286,47 +269,30 @@ Java_org_photon_PhotonFolder_folderGetFirst( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderGetNext
+ * Class:     org_photon_Folder
+ * Method:    psoGetNext
  * Signature: (JLorg/photon/FolderEntry;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderGetNext( JNIEnv * env, 
-                                            jobject  obj, 
-                                            jlong    h,
-                                            jobject  entry )
+Java_org_photon_Folder_psoGetNext( JNIEnv * env, 
+                                   jobject  jobj, 
+                                   jlong    jhandle,
+                                   jobject  jentry )
 {
    int errcode;
-   size_t handle = (size_t) h;
+   size_t handle = (size_t) jhandle;
    psoFolderEntry cEntry;
-   jclass exc;
    jstring jname;
    
    errcode = psoFolderGetNext( (PSO_HANDLE)handle, &cEntry );
    if ( errcode == PSO_OK ) {
-      if ( cEntry.nameLengthInBytes == PSO_MAX_NAME_LENGTH ) {
-         /* Special case - not null terminated string */
-         char * s = malloc( PSO_MAX_NAME_LENGTH+1);
-         if ( s == NULL ) {
-            exc = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
-            if ( exc != NULL ) {
-               (*env)->ThrowNew( env, exc, "malloc failed in jni code");
-            }
-            return PSO_NOT_ENOUGH_HEAP_MEMORY;
-         }
-         memcpy( s, cEntry.name, PSO_MAX_NAME_LENGTH );
-         s[PSO_MAX_NAME_LENGTH] = 0;
-         jname = (*env)->NewStringUTF( env, s );
-         free(s);
-      }
-      else {
-         jname = (*env)->NewStringUTF( env, cEntry.name );
-      }
+      jname = getNotNullTerminatedString( env, 
+         cEntry.name, PSO_MAX_NAME_LENGTH );
       if ( jname == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
       
-      (*env)->SetObjectField( env, entry, g_idEntryName,   jname );
-      (*env)->SetObjectField( env, entry, g_idEntryType,   g_weakObjType[cEntry.type-1] );
-      (*env)->SetIntField(    env, entry, g_idEntryStatus, cEntry.status );
+      (*env)->SetObjectField( env, jentry, g_idEntryName,   jname );
+      (*env)->SetObjectField( env, jentry, g_idEntryType,   g_weakObjType[cEntry.type-1] );
+      (*env)->SetIntField(    env, jentry, g_idEntryStatus, cEntry.status );
    }
    
    return errcode;
@@ -335,15 +301,15 @@ Java_org_photon_PhotonFolder_folderGetNext( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderInit
- * Signature: (Lorg/photon/PhotonSession;Ljava/lang/String;)I
+ * Class:     org_photon_Folder
+ * Method:    psoInit
+ * Signature: (Lorg/photon/Session;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderInit( JNIEnv * env, 
-                                         jobject  obj, 
-                                         jobject  jsession, 
-                                         jstring  jstr )
+Java_org_photon_Folder_psoInit( JNIEnv * env, 
+                                jobject  jobj, 
+                                jobject  jsession, 
+                                jstring  jstr )
 {
    int errcode;
    PSO_HANDLE handle;
@@ -365,7 +331,7 @@ Java_org_photon_PhotonFolder_folderInit( JNIEnv * env,
    (*env)->ReleaseStringUTFChars( env, jstr, folderName );
 
    if ( errcode == PSO_OK ) {
-      (*env)->SetLongField( env, obj, g_idFolderHandle, (size_t) handle );
+      (*env)->SetLongField( env, jobj, g_idFolderHandle, (size_t) handle );
    }
    
    return errcode;
@@ -374,17 +340,35 @@ Java_org_photon_PhotonFolder_folderInit( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonFolder
- * Method:    folderStatus
- * Signature: (JLorg/photon/ObjStatus;)I
+ * Class:     org_photon_Folder
+ * Method:    psoStatus
+ * Signature: (JLorg/photon/ObjectStatus;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonFolder_folderStatus( JNIEnv * env, 
-                                           jobject  obj, 
-                                           jlong    h, 
-                                           jobject  jstatus )
+Java_org_photon_Folder_psoStatus( JNIEnv * env, 
+                                  jobject  jobj, 
+                                  jlong    jhandle, 
+                                  jobject  jstatus )
 {
-   return 0;
+   int errcode;
+   size_t handle = (size_t)jhandle;
+   psoObjStatus status;
+
+   errcode = psoFolderStatus( (PSO_HANDLE) handle, &status );
+
+   if ( errcode == 0 ) {
+      (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
+
+      (*env)->SetIntField(  env, jstatus, g_idStatusStatus,        status.status );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumBlocks,     status.numBlocks );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );
+      (*env)->SetLongField( env, jstatus, g_idStatusNumDataItem,   status.numDataItem );
+      (*env)->SetLongField( env, jstatus, g_idStatusFreeBytes,     status.freeBytes );
+      (*env)->SetIntField(  env, jstatus, g_idStatusMaxDataLength, status.maxDataLength );
+      (*env)->SetIntField(  env, jstatus, g_idStatusMaxKeyLength,  status.maxKeyLength );
+   }
+   
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

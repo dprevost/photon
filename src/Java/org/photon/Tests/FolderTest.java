@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -20,25 +20,25 @@ package org.photon.Tests;
 
 import org.photon.*;
 
-public class Folder {
+public class FolderTest {
 
    
-   public static void test1( PhotonSession session ) throws PhotonException {
+   public static void test1( org.photon.Session session ) throws PhotonException {
       
-      PhotonFolder folder = new PhotonFolder( session );
+      org.photon.Folder folder = new org.photon.Folder( session );
 
       folder.open( "/" );
       folder.close();
    }
 
-   public static void test2( PhotonSession session ) throws PhotonException {
+   public static void test2( org.photon.Session session ) throws PhotonException {
       
-      PhotonFolder folder = new PhotonFolder( session, "/" );
+      org.photon.Folder folder = new org.photon.Folder( session, "/" );
    }
    
-   public static void createFolders( PhotonSession session ) throws PhotonException {
+   public static void createFolders( org.photon.Session session ) throws PhotonException {
 
-      PhotonFolder folder = new PhotonFolder( session, "/" );
+      org.photon.Folder folder = new org.photon.Folder( session, "/" );
       
       folder.createObject( "java1",
                            new ObjectDefinition(ObjectType.FOLDER, 0),

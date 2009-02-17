@@ -113,7 +113,7 @@ extern jfieldID g_idInfoDllVersion;
 extern jfieldID g_idInfoQuasarVersion;
 extern jfieldID g_idInfoCreationTime;
 
-/* The ObjStatus class */
+/* The ObjectStatus class */
 
 extern jfieldID g_idStatusType;
 extern jfieldID g_idStatusStatus;

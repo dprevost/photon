@@ -20,13 +20,13 @@ package org.photon.Tests;
 
 import org.photon.*;
 
-public class Session {
+public class SessionTest {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public static void Commit() throws PhotonException {
 
-      PhotonSession session = new PhotonSession();
+      Session session = new Session();
       
       session.commit();
       session.close();
@@ -43,7 +43,7 @@ public class Session {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public static void Info(PhotonSession session) throws PhotonException {
+   public static void Info(Session session) throws PhotonException {
       
       Info info;
       
@@ -54,9 +54,9 @@ public class Session {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public static void Status(PhotonSession session) throws PhotonException {
+   public static void Status(Session session) throws PhotonException {
       
-      ObjStatus status;
+      ObjectStatus status;
       
       try {
          status = session.getStatus( "/SessionTest1" );
@@ -80,13 +80,13 @@ public class Session {
    
    public static void tests() throws PhotonException {
       
-      PhotonSession session;
+      Session session;
       
       /* Starts with tests on the creation/use of sessions */
       Commit();
       
       /* Tests for the other session methods */
-      session = new PhotonSession();
+      session = new Session();
       Info(session);
       Status(session);
    }

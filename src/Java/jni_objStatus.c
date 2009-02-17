@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_ObjStatus.h"
+#include "org_photon_ObjectStatus.h"
 
 jfieldID g_idStatusType;
 jfieldID g_idStatusStatus;
@@ -37,12 +37,12 @@ jfieldID g_idStatusMaxKeyLength;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_ObjStatus
+ * Class:     org_photon_ObjectStatus
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_org_photon_ObjStatus_initIDs( JNIEnv * env, jclass statusClass )
+Java_org_photon_ObjectStatus_initIDs( JNIEnv * env, jclass statusClass )
 {
    g_idStatusType = (*env)->GetFieldID( env, statusClass, "type", "Lorg/photon/ObjectType;" );
    if ( g_idStatusType == NULL ) return;

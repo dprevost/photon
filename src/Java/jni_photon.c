@@ -23,19 +23,19 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_PhotonProcess.h"
+#include "org_photon_Photon.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonProcess
- * Method:    init
+ * Class:     org_photon_Photon
+ * Method:    psoInit
  * Signature: (Ljava/lang/String;)I
  */
 JNIEXPORT int JNICALL
-Java_org_photon_PhotonProcess_init( JNIEnv  * env,
-                                    jobject   obj, 
-                                    jstring   jaddress )
+Java_org_photon_Photon_psoInit( JNIEnv  * env,
+                                jobject   obj, 
+                                jstring   jaddress )
 {
    int errcode;
    const char * address;
@@ -54,12 +54,12 @@ Java_org_photon_PhotonProcess_init( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonProcess
- * Method:    fini
+ * Class:     org_photon_Photon
+ * Method:    psoFini
  * Signature: ()V
  */
 JNIEXPORT void JNICALL 
-Java_org_photon_PhotonProcess_fini( JNIEnv * env, jobject obj )
+Java_org_photon_Photon_psoFini( JNIEnv * env, jobject obj )
 {
    psoExit();
 }

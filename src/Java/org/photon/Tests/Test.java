@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -24,40 +24,38 @@ public class Test {
 
    public static void main( String args[] ) {
       
-      System.out.println("Total Memory"+Runtime.getRuntime().totalMemory());    
-      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+      System.out.println("Total Memory "+Runtime.getRuntime().totalMemory());    
+      System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());
        
-      PhotonProcess process;
-      PhotonSession session;
+      Session session;
 
       System.gc();
-      System.out.println("Total Memory"+Runtime.getRuntime().totalMemory());    
-      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+      System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());
       
       try {
-         process = new PhotonProcess( "10701" );
+         Photon.init( "10701" );
 
-         Session.tests();
+         SessionTest.tests();
          
-         session = new PhotonSession();
+         session = new Session();
 
-         Folder.test1( session );
-         Folder.test2( session );
-         Folder.createFolders( session );
+         FolderTest.test1( session );
+         FolderTest.test2( session );
+         FolderTest.createFolders( session );
          
          /* The GC might not call finalize() - safer to cleanup ourselves */
-         process.exit();
+         Photon.exit();
 
       } catch ( PhotonException e ) {
          e.printStackTrace();
 //         System.exit(1);
       }
-      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+      System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());
       System.gc();
-      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+      System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());
 //      System.runFinalization();
 //      System.gc();
-      System.out.println("Free Memory"+Runtime.getRuntime().freeMemory());
+      System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());
       
    }
 }

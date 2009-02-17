@@ -23,19 +23,19 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_PhotonSession.h"
+#include "org_photon_Session.h"
 
 jfieldID g_idSessionHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_org_photon_PhotonSession_initIDs( JNIEnv * env, jclass sessionClass )
+Java_org_photon_Session_initIDs( JNIEnv * env, jclass sessionClass )
 {
    g_idSessionHandle = (*env)->GetFieldID( env, sessionClass, "handle", "J" );
    if ( g_idSessionHandle == NULL ) return;
@@ -44,14 +44,14 @@ Java_org_photon_PhotonSession_initIDs( JNIEnv * env, jclass sessionClass )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoCommit
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoCommit( JNIEnv  * env, 
-                                         jobject   jobj, 
-                                         jlong     jhandle )
+Java_org_photon_Session_psoCommit( JNIEnv  * env, 
+                                   jobject   jobj, 
+                                   jlong     jhandle )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -64,18 +64,18 @@ Java_org_photon_PhotonSession_psoCommit( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoCreateObject
  * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoCreateObject( JNIEnv     * env,
-                                               jobject      jobj,
-                                               jlong        jhandle,
-                                               jstring      jname,
-                                               jobject      jdef,
-                                               jobject      jkey,
-                                               jobjectArray jfields )
+Java_org_photon_Session_psoCreateObject( JNIEnv     * env,
+                                         jobject      jobj,
+                                         jlong        jhandle,
+                                         jstring      jname,
+                                         jobject      jdef,
+                                         jobject      jkey,
+                                         jobjectArray jfields )
 {
    int errcode;
 
@@ -176,18 +176,18 @@ Java_org_photon_PhotonSession_psoCreateObject( JNIEnv     * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoDestroyObject
  * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoDestroyObject( JNIEnv  * env,
-                                                jobject   jobj,
-                                                jlong     jhandle,
-                                                jstring   jname )
+Java_org_photon_Session_psoDestroyObject( JNIEnv  * env,
+                                          jobject   jobj,
+                                          jlong     jhandle,
+                                          jstring   jname )
 {
    int errcode;
-   size_t handle = (size_t)jhandle;
+   size_t handle = (size_t) jhandle;
    const char * objectName;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
@@ -207,14 +207,14 @@ Java_org_photon_PhotonSession_psoDestroyObject( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoFini
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoFini( JNIEnv  * env,
-                                       jobject   jobj,
-                                       jlong     jhandle )
+Java_org_photon_Session_psoFini( JNIEnv  * env,
+                                 jobject   jobj,
+                                 jlong     jhandle )
 {
    int errcode;
    size_t handle = (size_t)jhandle;
@@ -227,21 +227,21 @@ Java_org_photon_PhotonSession_psoFini( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoGetDefinition
  * Signature: (JLjava/lang/String;Lorg/photon/Definition;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoGetDefinition( JNIEnv  * env,
-                                                jobject   jobj,
-                                                jlong     jhandle,
-                                                jstring   jname,
-                                                jobject   jdef,
-                                                jobject   jbase,
-                                                jobject   jkey )
+Java_org_photon_Session_psoGetDefinition( JNIEnv  * env,
+                                          jobject   jobj,
+                                          jlong     jhandle,
+                                          jstring   jname,
+                                          jobject   jdef,
+                                          jobject   jbase,
+                                          jobject   jkey )
 {
    int errcode;
-   size_t handle = (size_t)jhandle;
+   size_t handle = (size_t) jhandle;
    psoObjectDefinition definition;
    psoKeyDefinition key;
    psoFieldDefinition  * pFields = NULL;
@@ -355,18 +355,18 @@ Java_org_photon_PhotonSession_psoGetDefinition( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoGetInfo
  * Signature: (JLorg/photon/Info;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoGetInfo( JNIEnv  * env,
-                                          jobject   jobj,
-                                          jlong     jhandle,
-                                          jobject   jinfo )
+Java_org_photon_Session_psoGetInfo( JNIEnv  * env,
+                                    jobject   jobj,
+                                    jlong     jhandle,
+                                    jobject   jinfo )
 {
    int errcode;
-   size_t handle = (size_t)jhandle;
+   size_t handle = (size_t) jhandle;
    psoInfo info;
    jstring jstr;
    
@@ -380,8 +380,8 @@ Java_org_photon_PhotonSession_psoGetInfo( JNIEnv  * env,
       (*env)->SetLongField( env, jinfo, g_idInfoNumMallocs, info.numMallocs );
       (*env)->SetLongField( env, jinfo, g_idInfoNumFrees, info.numFrees );
       (*env)->SetLongField( env, jinfo, g_idInfoLargestFreeInBytes, info.largestFreeInBytes );
-      (*env)->SetIntField( env, jinfo, g_idInfoMemoryVersion, info.memoryVersion );
-      (*env)->SetIntField( env, jinfo, g_idInfoBigEndian, info.bigEndian );
+      (*env)->SetIntField ( env, jinfo, g_idInfoMemoryVersion, info.memoryVersion );
+      (*env)->SetIntField ( env, jinfo, g_idInfoBigEndian, info.bigEndian );
 
       jstr = getNotNullTerminatedString( env, info.compiler, 20 );
       if ( jstr == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
@@ -420,19 +420,19 @@ Java_org_photon_PhotonSession_psoGetInfo( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoGetStatus
- * Signature: (JLjava/lang/String;Lorg/photon/ObjStatus;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectStatus;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoGetStatus( JNIEnv  * env,
-                                            jobject   jobj,
-                                            jlong     jhandle,
-                                            jstring   jname,
-                                            jobject   jstatus )
+Java_org_photon_Session_psoGetStatus( JNIEnv  * env,
+                                      jobject   jobj,
+                                      jlong     jhandle,
+                                      jstring   jname,
+                                      jobject   jstatus )
 {
    int errcode;
-   size_t handle = (size_t)jhandle;
+   size_t handle = (size_t) jhandle;
    const char * objectName;
    psoObjStatus status;
    
@@ -450,13 +450,13 @@ Java_org_photon_PhotonSession_psoGetStatus( JNIEnv  * env,
    if ( errcode == 0 ) {
       (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
 
-      (*env)->SetIntField(  env, jstatus, g_idStatusStatus, status.status );
+      (*env)->SetIntField ( env, jstatus, g_idStatusStatus, status.status );
       (*env)->SetLongField( env, jstatus, g_idStatusNumBlocks, status.numBlocks );
       (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );
       (*env)->SetLongField( env, jstatus, g_idStatusNumDataItem, status.numDataItem );
       (*env)->SetLongField( env, jstatus, g_idStatusFreeBytes, status.freeBytes );
-      (*env)->SetIntField(  env, jstatus, g_idStatusMaxDataLength, status.maxDataLength );
-      (*env)->SetIntField(  env, jstatus, g_idStatusMaxKeyLength, status.maxKeyLength );
+      (*env)->SetIntField ( env, jstatus, g_idStatusMaxDataLength, status.maxDataLength );
+      (*env)->SetIntField ( env, jstatus, g_idStatusMaxKeyLength, status.maxKeyLength );
    }
    
    return errcode;
@@ -465,12 +465,12 @@ Java_org_photon_PhotonSession_psoGetStatus( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoInit
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_PhotonSession_psoInit( JNIEnv * env, jobject jobj )
+Java_org_photon_Session_psoInit( JNIEnv * env, jobject jobj )
 {
    int errcode;
    PSO_HANDLE handle;
@@ -488,14 +488,14 @@ Java_org_photon_PhotonSession_psoInit( JNIEnv * env, jobject jobj )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_PhotonSession
+ * Class:     org_photon_Session
  * Method:    psoRollback
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_PhotonSession_psoRollback( JNIEnv  * env, 
-                                           jobject   jobj, 
-                                           jlong     jhandle )
+Java_org_photon_Session_psoRollback( JNIEnv  * env, 
+                                     jobject   jobj, 
+                                     jlong     jhandle )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
