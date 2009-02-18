@@ -133,7 +133,11 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
 
    private native int psoPop( long handle, DataRecord record );
 
-   private native int psoPush( long handle, DataRecord record );
+//   private native int psoPush( long handle, DataRecord record );
+
+   private native int psoPush( long handle, 
+                               int numFields, 
+                               Object[] objects );
 
    private native int psoPushNow( long handle, DataRecord record );
 
@@ -228,7 +232,27 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void push( DataRecord record ) throws PhotonException {
+//   public void push( DataRecord qrecord ) throws PhotonException {
+
+//      int errcode;
+      
+ //     push( 45, "test", 333, "QQQ" );
+//      java.lang.Object[] q = qrecord.QQQ();
+//      if ( handle == 0 ) {
+//         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+//      }
+
+//      errcode = psoPush( handle, 
+//                         definition.definition.numFields,
+//                         q );
+ //     if ( errcode == 0 ) return;
+
+ //     throw new PhotonException( PhotonErrors.getEnum(errcode) );
+//   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public void push( Object ... objects ) throws PhotonException {
 
       int errcode;
       
@@ -236,7 +260,9 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      errcode = psoPush( handle, record );
+      errcode = psoPush( handle, 
+                         definition.definition.numFields,
+                         objects );
       if ( errcode == 0 ) return;
 
       throw new PhotonException( PhotonErrors.getEnum(errcode) );

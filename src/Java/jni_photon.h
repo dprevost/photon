@@ -130,6 +130,12 @@ extern jfieldID g_idDefinitionDef;
 extern jfieldID g_idDefinitionKey;
 extern jfieldID g_idDefinitionFields;
 
+/* The DataRecord class */
+extern jfieldID g_idRecordFields;
+extern jfieldID g_idRecordObj;
+extern jfieldID g_idRecordconversionType;
+extern jfieldID g_idRecordOffset;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static inline jstring getNotNullTerminatedString( JNIEnv * env, 

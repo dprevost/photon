@@ -21,7 +21,7 @@ package org.photon;
 public class ObjectDefinition {
    
    private ObjectType type;
-   private int numFields = 0;
+   protected int numFields = 0;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -38,6 +38,7 @@ Java_Source =                             \
         org/photon/Queue.java             \
         org/photon/Session.java           \
         org/photon/Tests/FolderTest.java  \
+        org/photon/Tests/QueueTest.java   \
         org/photon/Tests/SessionTest.java \
         org/photon/Tests/Test.java        
 

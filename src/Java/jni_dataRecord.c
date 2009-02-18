@@ -25,6 +25,9 @@
 #include "jni_photon.h"
 #include "org_photon_DataRecord.h"
 
+jfieldID g_idRecordFields;
+jfieldID g_idRecordObj;
+jfieldID g_idRecordconversionType;
 jfieldID g_idRecordOffset;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -38,10 +41,20 @@ JNIEXPORT void JNICALL
 Java_org_photon_DataRecord_initIDs( JNIEnv * env, jclass recordClass )
 {
    jclass descClass;
+
+   g_idRecordFields = (*env)->GetFieldID( env, recordClass, "fields",
+      "[Lorg/photon/DataRecord$FieldDescription;" );
+   if ( g_idRecordFields == NULL ) return;
    
    descClass = (*env)->FindClass( env, "org.photon.DataRecord$FieldDescription" );
    if ( descClass == NULL ) return;
    
+   g_idRecordObj = (*env)->GetFieldID( env, descClass, "obj", 
+      "Ljava.lang.Object;" );
+   if ( g_idRecordObj == NULL ) return;
+   g_idRecordconversionType = (*env)->GetFieldID( env, descClass, 
+      "conversionType", "I" );
+   if ( g_idRecordconversionType == NULL ) return;
    g_idRecordOffset = (*env)->GetFieldID( env, descClass, "offset", "I" );
    if ( g_idRecordOffset == NULL ) return;
 }

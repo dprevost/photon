@@ -23,7 +23,7 @@ package org.photon;
  * class of all Photon containers.
  */
 // getDeclaredFields
-//  [Lorg/photon/DataRecord$FieldDescription;
+//  [Lorg/photon/DataRecord$FieldDescription; 
 
 
 public class DataRecord {
@@ -35,6 +35,8 @@ public class DataRecord {
    }
    
    private FieldDescription[] fields;
+   public java.lang.Object[] q; // objects;
+   public java.lang.Object[] QQQ() { return q; }
 
    public Boolean getBool  ( int i ) { return (Boolean) fields[i].obj; }
    public byte[]  getBytes ( int i ) { return  (byte[]) fields[i].obj; }

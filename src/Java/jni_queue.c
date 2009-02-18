@@ -252,7 +252,14 @@ JNIEXPORT jint JNICALL
 Java_org_photon_Queue_psoPop( JNIEnv  * env,
                               jobject   jobj,
                               jlong     jhandle,
-                              jobject   jrecord );
+                              jobject   jrecord )
+{
+   int errcode;
+   size_t handle = (size_t) jhandle;
+
+//   length = (*env)->GetArrayLength( env, jfields );
+   return 666;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -262,10 +269,18 @@ Java_org_photon_Queue_psoPop( JNIEnv  * env,
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_Queue_psoPush( JNIEnv  * env,
-                               jobject   jobj,
-                               jlong     jhandle,
-                               jobject   jrecord );
+Java_org_photon_Queue_psoPush( JNIEnv     * env,
+                               jobject      jobj,
+                               jlong        jhandle,
+                               jobjectArray jarray )
+{
+   int errcode;
+   size_t handle = (size_t) jhandle;
+//   jsize length;
+   
+//   length = (*env)->GetArrayLength( env, jfields );
+   return 666;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

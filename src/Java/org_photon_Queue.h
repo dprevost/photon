@@ -66,10 +66,10 @@ JNIEXPORT jint JNICALL Java_org_photon_Queue_psoPop
 /*
  * Class:     org_photon_Queue
  * Method:    psoPush
- * Signature: (J)I
+ * Signature: (J[Ljava/lang/Object;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Queue_psoPush
-  (JNIEnv *, jobject, jlong, jobject);
+  (JNIEnv *, jobject, jlong, jobjectArray);
 
 /*
  * Class:     org_photon_Queue
