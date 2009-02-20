@@ -128,6 +128,18 @@ typedef enum psoIteratorType psoIteratorType;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * Photon supported definitions
+ */
+ 
+enum psoDefinitionType
+{
+   /** A simplified version of ODBC. */
+   PSO_PHOTON_ODBC = 1,
+   /** Google Protocol Buffer */
+   PSO_PROTO_BUF
+};
+
+/**
  * Photon supported data types.
  */
 enum psoFieldType
