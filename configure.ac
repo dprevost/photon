@@ -53,6 +53,7 @@ AC_PROG_CXX
 AC_DEFINE_UNQUOTED(MYCXX, "$CXX", The C++ Compiler)
 
 AC_PROG_LIBTOOL
+AC_PROG_AWK
 
 # Not sure  which version is needed to run the tests.
 AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
