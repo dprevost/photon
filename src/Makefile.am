@@ -26,6 +26,7 @@ endif
 SUBDIRS =             \
         Errors        \
         Common        \
+        Proto         \
         Nucleus       \
         Quasar        \
         API           \

@@ -59,6 +59,11 @@ AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
 # Any version before 2.2 won't work (how to define new types waschanged then).
 # AC_PYTHON_DEVEL(">= '2.2'")
 
+# Tell our makefiles that we can use protoc-c to regenerate some of 
+# the generated code, as needed.
+AC_CHECK_PROG([PROTOC_C_IS_PRESENT], [protoc-c], [yes], [no])
+AM_CONDITIONAL([COND_USE_PROTOC_C], [test "$PROTOC_C_IS_PRESENT" = yes])
+
 # Tell our makefiles that we can use doxygen and latex to regenerate some of 
 # the documentation, as needed.
 AC_CHECK_PROG([DOXY_IS_PRESENT], [doxygen], [yes], [no])
@@ -532,6 +537,7 @@ AC_CONFIG_FILES([
    src/Nucleus/Tests/Queue/Makefile
    src/Nucleus/Tests/Session/Makefile
    src/Nucleus/Tests/Transaction/Makefile
+   src/Proto/Makefile
    src/Quasar/Makefile
    src/Quasar/Tests/Makefile
    src/Java/Makefile

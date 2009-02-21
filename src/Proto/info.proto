@@ -1,0 +1,55 @@
+/**
+ * This data structure is used to retrieve the status of the Photon 
+ * shared memory.
+ */
+
+package pso;
+
+message Info {
+
+   /** Total size of the virtual data space. */
+   required uint64 total_size_in_bytes = 1;
+   
+   /** Total size of the allocated blocks. */
+   required uint64 allocated_size_in_bytes = 2;
+   
+   /** Number of API objects in the pso (internal objects are not counted). */
+   required uint64 num_objects = 3;
+   
+   /** Total number of groups of blocks. */
+   required uint64 num_groups = 4;
+   
+   /** Number of calls to allocate groups of blocks. */
+   optional uint64 num_mallocs = 5;
+   
+   /** Number of calls to free groups of blocks. */
+   optional uint64 num_frees = 6;
+   
+   /** Largest contiguous group of free blocks. */
+   required uint64 largest_free_in_bytes = 7;
+   
+   /** Shared-memory version. */
+   required int32 memory_version = 8;
+
+   /** Endianess (0 for little endian, 1 for big endian). */
+   required bool big_endian = 9;
+   
+   /** Compiler name. */
+   required string compiler = 10;
+
+   /** Compiler version (if available). */
+   optional string compiler_version = 11;
+   
+   /** Platform. */
+   required string platform = 12;
+   
+   /** Shared lib version. */
+   required string dll_version = 13;
+   
+   /** The server version (of the pso creator). */
+   required string quasar_version = 14;
+   
+   /** Timestamp of creation of the shared memory. */
+   required string creation_time = 15;
+}
+
