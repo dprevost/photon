@@ -19,18 +19,20 @@ EXTRA_DIST =       \
 
 PROTO_FILES =                                       \
         $(top_srcdir)/src/include/photon/psoInfo.h  \
-        $(top_srcdir)/src/Nucleus/Info.c            \
-        $(top_srcdir)/src/Nucleus/Info.h            
+        $(top_srcdir)/src/API/info.pb-c.c       \
+        $(top_srcdir)/src/API/info.pb-c.h       
 
 if COND_USE_PROTOC_C
-all-local: $(PROTO_FILES)
+all-local: 
+
+# $(PROTO_FILES)
 
 $(PROTO_FILES): info.proto
 	-rm -rf output
 	mkdir output
 	protoc-c --c_out=output info.proto 
-	cp output/info.pb-c.c ../Nucleus/Info.c
-	$(AWK) -f t1.awk output/info.pb-c.h > ../Nucleus/Info.h
+	cp output/info.pb-c.c ../API/
+	$(AWK) -f t1.awk output/info.pb-c.h > ../API/info.pb-c.h 
 	$(AWK) -f t2.awk output/info.pb-c.h --proto=info.proto --guard=PSO_INFO_H > ../include/photon/psoInfo.h
 endif
 

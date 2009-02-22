@@ -293,7 +293,7 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
  * Return information on the current status of the shared memory.
  *
  * The fetched information is mainly about the current status of the memory 
- * allocator.
+ * allocator and information needed to provide better support (compiler, etc.).
  *
  * \param[in]  sessionHandle Handle to the current session.
  * \param[out] pInfo      A pointer to the ::psoInfo structure.

@@ -90,6 +90,7 @@ struct psoInfo
    /** Timestamp of the creation of the shared memory. */
    char *creation_time;
 
+};
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

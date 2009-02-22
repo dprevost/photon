@@ -317,7 +317,8 @@ typedef struct psoObjStatus psoObjStatus;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * This data structure is used to retrieve the status of the Photon shared memory.
+ * This data structure is used to retrieve the status of the Photon 
+ * shared memory.
  */
 struct psoInfo
 {
@@ -327,7 +328,11 @@ struct psoInfo
    /** Total size of the allocated blocks. */
    size_t allocatedSizeInBytes;
    
-   /** Number of API objects in the pso (internal objects are not counted). */
+   /** 
+    * Number of API objects in the Photon shared memory.
+    *
+    * Internal objects are not counted. 
+    */
    size_t numObjects;
    
    /** Total number of groups of blocks. */
@@ -360,10 +365,10 @@ struct psoInfo
    /** Shared lib version. */
    char dllVersion[10];
    
-   /** The server version (of the pso creator). */
+   /** The version of quasar used to create the shared memory. */
    char quasarVersion[10];
    
-   /** Timestamp of creation of the shared memory. */
+   /** Timestamp of the creation of the shared memory. */
    char creationTime[30];
 };
 

@@ -3,15 +3,18 @@ BEGIN {
       print "Error: no input filename!" > "/dev/stderr"
       exit(1)
    }
-   prefix = "Photon/"
+}
+
+/^typedef struct/ {
+   next
 }
 
 /^struct/ {
    
    split($2, a, "_")
-   print "#include <photon/" prefix tolower(a[2]) a[4] ".h>"
+   print "#include <photon/" tolower(a[2]) a[4] ".h>"
    
-   print "typedef struct " tolower(a[2]) a[4] " " $2
+   print "typedef struct " tolower(a[2]) a[4] " " a[2] "__" a[4] ";"
 
    
    while ( $0 !~ /};/ ) {

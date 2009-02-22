@@ -94,6 +94,7 @@ BEGIN {
          print ""
       }
    }
+   print "};"
    
    next
 }
@@ -136,7 +137,7 @@ function readProto( proto )
 function stripVar()
 {
    myVar = $2
-   sub(/^*/, "", myVar)
+   sub(/^\*/, "", myVar)
    sub(/;/, "", myVar)
    return myVar
 }
