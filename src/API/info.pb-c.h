@@ -8,7 +8,6 @@
 PROTOBUF_C_BEGIN_DECLS
 
 
-typedef struct _Pso__Info Pso__Info;
 
 
 /* --- enums --- */
@@ -16,8 +15,8 @@ typedef struct _Pso__Info Pso__Info;
 
 /* --- messages --- */
 
-#include <photon/Photon/psoInfo.h>
-typedef struct psoInfo _Pso__Info
+#include <photon/psoInfo.h>
+typedef struct psoInfo Pso__Info;
 #define PSO__INFO__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pso__info__descriptor) \
     , 0, 0, 0, 0, 0,0, 0,0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL }
