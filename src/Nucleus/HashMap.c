@@ -591,12 +591,11 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
                       psoKeyDefinition    * pKey,
-                      psoFieldDefinition  * pFields,
+                      const char          * pFields,
                       psonSessionContext  * pContext )
 {
    psoErrors errcode;
-   psonFieldDef * ptr;
-   unsigned int i;
+   char * ptr;
    
    PSO_PRE_CONDITION( pHashMap     != NULL );
    PSO_PRE_CONDITION( pContext     != NULL );
@@ -641,38 +640,15 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    
    pHashMap->numFields = (uint16_t) pDefinition->numFields;
 
-   ptr = (psonFieldDef*) psonMalloc( &pHashMap->memObject, 
-                                     pHashMap->numFields* sizeof(psonFieldDef),
-                                     pContext );
+   ptr = (char *)psonMalloc( &pHashMap->memObject, strlen(pFields)+1, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
+   strcpy( ptr, pFields );
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
 
-   for ( i = 0; i < pHashMap->numFields; ++i) {
-      memcpy( ptr[i].name, pFields[i].name, PSO_MAX_FIELD_LENGTH );
-      ptr[i].type = pFields[i].type;
-      switch( ptr[i].type ) {
-      case PSO_INTEGER:
-      case PSO_BINARY:
-      case PSO_STRING:
-         ptr[i].length1 = pFields[i].length;
-         break;
-      case PSO_DECIMAL:
-         ptr[i].length1 = pFields[i].precision;
-         ptr[i].length2 = pFields[i].scale;         
-         break;
-      case PSO_BOOLEAN:
-         break;
-      case PSO_VAR_BINARY:
-      case PSO_VAR_STRING:
-         ptr[i].length1 = pFields[i].minLength;
-         ptr[i].length2 = pFields[i].maxLength;
-         
-      }
-   }
    memcpy( &pHashMap->keyDef, pKey, sizeof(psoKeyDefinition) );
 
    return true;

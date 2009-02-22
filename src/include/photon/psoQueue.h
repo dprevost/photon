@@ -66,24 +66,42 @@ int psoQueueClose( PSO_HANDLE objectHandle );
 /**
  * \brief Retrieve the data definition of the queue.
  *
- * You can call this function twice - the first time with numFields set
- * to \em zero and \em fields set to NULL to retrieve the actual number
- * of fields. This allows you to allocate the proper size for \em fields.
+ * You can call the function ::psoQueueDefLength to retrieve the 
+ * length of the field definitions. This allows you to allocate 
+ * the proper size for \em fields.
  *
- * \param[in]   objectHandle The handle to the queue (see ::psoQueueOpen).
+ * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[out] definition The definition of the object.
- * \param[in]  numFields The length of the array \em fields. Can be set to 
- *             zero to get the actual number of fields.
- * \param[out] fields The definition of all the fields. It can be set to NULL
- *             if \em numFields is set to zero.
+ * \param[in]  fields An opaque definition of the data fields of the object.
+ *             It can be set to NULL if you do not want to retrieve the
+ *             definition.
+ * \param[in]  fieldsLength The length, in bytes, of the buffer \em fields.
+ *             It should be set to zero if \em fields is NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoQueueDefinition( PSO_HANDLE            objectHandle, 
                         psoObjectDefinition * definition,
-                        psoUint32             numFields,
-                        psoFieldDefinition  * fields );
+                        psoFieldDefinition  * fields,
+                        psoUint32             fieldsLength );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * \brief Retrieve the length of the fields definition of the queue.
+ *
+ * This function is a helper function for ::psoQueueDefinition. 
+ * It allows you to allocate the proper size for \em fields.
+ *
+ * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
+ * \param[out] fieldsLength The length in bytes of the fields buffer.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoQueueDefLength( PSO_HANDLE   objectHandle, 
+                       psoUint32  * fieldsLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

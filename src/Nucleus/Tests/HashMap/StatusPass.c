@@ -38,9 +38,7 @@ int main()
    psoObjectDefinition def = { PSO_HASH_MAP, 1 };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
    
-   psoFieldDefinition fields[1] =  { 
-      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
-   };
+   const char * fields =  "A dummy definition";
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 

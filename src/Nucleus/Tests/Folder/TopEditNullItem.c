@@ -34,9 +34,7 @@ int main()
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 1 };
    psoKeyDefinition key = { PSO_KEY_VAR_STRING, 0, 1, 100 };
    
-   psoFieldDefinition fields[1] =  { 
-      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
-   };
+   const char * fields =  "A dummy definition";
 
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 

@@ -45,9 +45,7 @@ int main()
    psoObjectDefinition def = { PSO_HASH_MAP, 1 };
    psoKeyDefinition key = { 0, 0, 0, 0} ;
 
-   psoFieldDefinition fields[1] =  { 
-      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
-   };
+   const char * fields =  "A dummy definition";
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;

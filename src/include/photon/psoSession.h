@@ -146,11 +146,16 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
  *            counting the null terminator (null-terminators are not used by
  *            the Photon engine).
- * \param[in] pDefinition The type of object to create (folder, queue, etc.)
+ * \param[in] definition The type of object to create (folder, queue, etc.)
  *            and additional fields (the number of data fields, for example).
- * \param[in] pKey The definition of the key or NULL if the object has no key.
- * \param[in] fields An array of field definitions. It can be set to
- *            NULL when creating a Folder.
+ * \param[in] key An opaque definition of the key. You can set this field
+ *            to NULL if the object has no key.
+ * \param[in] keyLength The length in bytes of the buffer \em key. 
+ *            It should be set to zero if \em key is NULL.
+ * \param[in] fields An opaque definition of the data fields of the object.
+ *            It can be set to NULL when creating a Folder.
+ * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
+ *            It should be set to zero if \em fields is NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -158,37 +163,11 @@ PHOTON_EXPORT
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
-                     psoObjectDefinition * pDefinition,
-                     psoKeyDefinition    * pKey,
-                     psoFieldDefinition  * fields );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-#if 0
-Not sure yet how this will be implemented. If at all...
-/*
- * Create one or more new objects in shared memory. All parent folders will be 
- * created if they do not exist.
- *
- * The creation of the objects only becomes permanent after a call to 
- * ::psoCommit.
- *
- * This function does not provide a handle to the newly created objects. Use
- * psoQueueOpen and similar functions to get the handles.
- *
- * \param[in] sessionHandle Handle to the current session.
- * \param[in] xmlBuffer     The XML buffer containing all the required
- *                          information. 
- * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
- *                          counting the null terminator.
- *
- * \return 0 on success or a ::psoErrors on error.
- */
-PHOTON_EXPORT
-int psoCreateObjectXML( PSO_HANDLE   sessionHandle,
-                        const char * xmlBuffer,
-                        psoUint32    lengthInBytes );
-#endif
+                     psoObjectDefinition * definition,
+                     const unsigned char * key,
+                     psoUnit32             keyLength,
+                     const unsigned char * fields,
+                     psoUint32             fieldsLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -260,10 +239,9 @@ int psoExitSession( PSO_HANDLE sessionHandle );
 /**
  * \brief Retrieve the data definition of the named object.
  *
- * You can call this function twice - the first time with numFields set
- * to \em zero and \em fields set to NULL to retrieve the actual number
- * of fields. This allows you to allocate the proper size for \em fields.
- *
+ * You can call the function ::psoGetDefLength to retrieve the 
+ * lengths of the key and the field definitions. This allows you to allocate 
+ * the proper size for \em key and \em fields.
  *
  * \param[in]  sessionHandle Handle to the current session.
  * \param[in]  objectName The fully qualified name of the object. 
@@ -271,10 +249,16 @@ int psoExitSession( PSO_HANDLE sessionHandle );
  *             counting the null terminator (null-terminators are not used by
  *             the Photon engine).
  * \param[out] definition The definition of the object.
- * \param[in]  numFields The length of the array \em fields. Can be set to 
- *             zero to get the actual number of fields.
- * \param[out] fields The definition of all the fields. It can be set to NULL
- *             if \em numFields is set to zero.
+ * \param[in]  key An opaque definition of the key. You can set this field
+ *             to NULL if the object has no key or if you do not want to 
+ *             retrieve the key definition.
+ * \param[in]  keyLength The length in bytes of the buffer \em key. 
+ *             It should be set to zero if \em key is NULL.
+ * \param[in]  fields An opaque definition of the data fields of the object.
+ *             It can be set to NULL if you do not want to retrieve the
+ *             definition.
+ * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
+ *             It should be set to zero if \em fields is NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -283,9 +267,36 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       psoUint32             nameLengthInBytes,
                       psoObjectDefinition * definition,
-                      psoKeyDefinition    * key,
-                      psoUint32             numFields,
-                      psoFieldDefinition  * fields );
+                      unsigned char       * key,
+                      psoUint32             keyLength,
+                      unsigned char       * fields,
+                      psoUint32             fieldsLength );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * \brief Retrieve the lengths of the variable elements of the definition 
+ *        of the named object.
+ *
+ * This function is a helper function for ::psoGetDefinition. 
+ * It allows you to allocate the proper size for \em key and \em fields.
+ *
+ * \param[in]  sessionHandle Handle to the current session.
+ * \param[in]  objectName The fully qualified name of the object. 
+ * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+ *             counting the null terminator (null-terminators are not used by
+ *             the Photon engine).
+ * \param[out] keyLength The length in bytes of the key buffer.
+ * \param[out] fieldsLength The length in bytes of the fields buffer.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoGetDefLength( PSO_HANDLE   sessionHandle,
+                     const char * objectName,
+                     psoUint32    nameLengthInBytes,
+                     psoUint32  * keyLength,
+                     psoUint32  * fieldsLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -132,7 +132,7 @@ bool psonMapInit( psonMap             * pHashMap,
                   ptrdiff_t             hashItemOffset,
                   psoObjectDefinition * pDefinition,
                   psoKeyDefinition    * pKey,
-                  psoFieldDefinition  * pFields,
+                  const char          * pFields,
                   psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

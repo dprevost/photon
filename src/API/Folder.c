@@ -103,7 +103,7 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            uint32_t              nameLengthInBytes,
                            psoObjectDefinition * pDefinition,
                            psoKeyDefinition    * pKey,
-                           psoFieldDefinition  * pFields )
+                           const char          * pFields )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -151,11 +151,11 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
       }
    }
    
-   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
-   if ( errcode != PSO_OK ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
-      return errcode;
-   }
+//   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
+//   if ( errcode != PSO_OK ) {
+//      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+//      return errcode;
+//   }
 
    if ( ! pSession->terminated ) {
       if ( psoaCommonLock( &pFolder->object ) ) {
@@ -192,6 +192,7 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if 0
 int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
                               const char * xmlBuffer,
                               uint32_t     lengthInBytes )
@@ -247,6 +248,7 @@ int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
    }
    return errcode;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

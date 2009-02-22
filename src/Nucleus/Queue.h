@@ -107,7 +107,7 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    psoFieldDefinition  * pFields,
+                    const char          * pFields,
                     psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

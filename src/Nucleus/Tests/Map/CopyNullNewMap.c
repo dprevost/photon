@@ -36,9 +36,7 @@ int main()
    char * data2 = "my data2";
    psoObjectDefinition def = { PSO_FAST_MAP, 1 };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
-   psoFieldDefinition fields[1] =  { 
-      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
-   };
+   const char * fields =  "A dummy definition";
    psonHashTxItem   hashItem;
    
    initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );

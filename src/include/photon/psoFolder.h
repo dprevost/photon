@@ -76,11 +76,15 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
  *            counting the null terminator (null-terminators are not used by
  *            the Photon engine).
- * \param[in] pDefinition The type of object to create (folder, queue, etc.),
- *            the number of fields and the "optional" key definition 
- *            (for hash maps and similar).
- * \param[in] pFields An array of field definitions. It can be set to
- *            NULL when creating a Folder.
+ * \param[in] definition The type of object to create (folder, queue, etc.),
+ *            the type of the fields definition, etc.
+ * \param[in] key The definition of the key or NULL if the object has no key.
+ * \param[in] keyLength The length in bytes of the buffer \em key. 
+ *            It should be set to zero if \em key is NULL.
+ * \param[in] fields An opaque definition of the data field of the object.
+ *            It can be set to NULL when creating a Folder.
+ * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
+ *            It should be set to zero if \em fields is NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -88,33 +92,11 @@ PHOTON_EXPORT
 int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char          * objectName,
                            psoUint32             nameLengthInBytes,
-                           psoObjectDefinition * pDefinition,
-                           psoKeyDefinition    * pKey,
-                           psoFieldDefinition  * pFields );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/**
- * Create a new object in shared memory as a child of the current folder.
- *
- * The creation of the object only becomes permanent after a call to 
- * ::psoCommit.
- *
- * This function does not provide a handle to the newly created object. Use
- * psoQueueOpen and similar functions to get the handle.
- *
- * \param[in] folderHandle Handle to the current folder.
- * \param[in] xmlBuffer    The XML buffer (string) containing all the required
- *                         information. 
- * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
- *                          counting the null terminator.
- *
- * \return 0 on success or a ::psoErrors on error.
- */
-PHOTON_EXPORT
-int psoFolderCreateObjectXML( PSO_HANDLE   folderHandle,
-                              const char * xmlBuffer,
-                              psoUint32    lengthInBytes );
+                           psoObjectDefinition * definition,
+                           const unsigned char * key,
+                           psoUnit32             keyLength,
+                           const unsigned char * fields,
+                           psoUint32             fieldsLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

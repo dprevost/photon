@@ -105,7 +105,7 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                      uint32_t              nameLengthInBytes,
                      psoObjectDefinition * pDefinition,
                      psoKeyDefinition    * pKey,
-                     psoFieldDefinition  * pFields )
+                     const char          * pFields )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -149,11 +149,11 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
       }
    }
 
-   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
-   if ( errcode != PSO_OK ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
-      return errcode;
-   }
+//   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
+//   if ( errcode != PSO_OK ) {
+//      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+//      return errcode;
+//   }
    
    if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
@@ -366,7 +366,7 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       psoObjectDefinition * pDefinition,
                       psoKeyDefinition    * key,
                       psoUint32             numFields,
-                      psoFieldDefinition  * pFields )
+                      const char          * pFields )
 {
    psoaSession * pSession;
    int errcode = PSO_OK;

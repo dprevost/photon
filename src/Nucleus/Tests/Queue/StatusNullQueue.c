@@ -33,9 +33,7 @@ int main()
    psonTxStatus txStatus;
    psoObjStatus status;
    psoObjectDefinition def = { PSO_QUEUE, 1 };
-   psoFieldDefinition fields[1] =  { 
-      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
-   };
+   const char * fields =  "A dummy definition";
    
    pQueue = initQueueTest( expectedToPass, &context );
 
