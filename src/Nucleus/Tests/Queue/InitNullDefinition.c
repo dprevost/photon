@@ -30,7 +30,7 @@ int main()
    psonQueue * pQueue;
    psonSessionContext context;
    psonTxStatus status;
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
    
    pQueue = initQueueTest( expectedToPass, &context );
 

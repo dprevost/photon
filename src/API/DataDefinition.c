@@ -34,6 +34,7 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if 0
 /* 
  * Note: the type of object must be filled by the caller.
  */
@@ -83,6 +84,7 @@ int psoaGetDefinition( psonFieldDef       * pInternalDef,
 
    return 0;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

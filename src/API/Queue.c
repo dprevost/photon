@@ -91,10 +91,10 @@ int psoQueueClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoQueueDefinition( PSO_HANDLE            objectHandle,
+int psoQueueDefinition( PSO_HANDLE            objectHandle, 
                         psoObjectDefinition * pDefinition,
-                        psoUint32             numFields,
-                        psoFieldDefinition  * pFields )
+                        unsigned char       * pFields,
+                        uint32_t              fieldsLength )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
@@ -113,9 +113,9 @@ int psoQueueDefinition( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
 
-   if ( numFields > 0 && pFields == NULL ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
+   if ( pFields != NULL && fieldsLength < pQueue->object.definitionLength ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
@@ -124,10 +124,9 @@ int psoQueueDefinition( PSO_HANDLE            objectHandle,
       
          pDefinition->type = PSO_QUEUE;
          pDefinition->numFields = pMemQueue->numFields;
-         if ( numFields > 0 ) {
-            errcode = psoaGetDefinition( pQueue->pDefinition,
-                                         pMemQueue->numFields,
-                                         pFields );
+         if ( pFields != NULL ) {
+            memcpy( pFields, pQueue->object.pDefinition, 
+               pQueue->object.definitionLength );
          }
          psoaCommonUnlock( &pQueue->object );
       }
@@ -348,10 +347,10 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pQueue->pDefinition, 
                   pMemQueue->dataDefOffset,
                   psonFieldDef );
-         psoaGetLimits( pQueue->pDefinition,
-                        pMemQueue->numFields,
-                        &pQueue->minLength,
-                        &pQueue->maxLength );
+//         psoaGetLimits( pQueue->pDefinition,
+//                        pMemQueue->numFields,
+//                        &pQueue->minLength,
+//                        &pQueue->maxLength );
       }
    }
    else {

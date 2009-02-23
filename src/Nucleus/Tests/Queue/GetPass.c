@@ -34,7 +34,7 @@ int main()
    psonQueueItem * pItem = NULL;
    psonTxStatus * txItemStatus;
    psoObjectDefinition def = { PSO_QUEUE, 1 };
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
    
    pQueue = initQueueTest( expectedToPass, &context );
 

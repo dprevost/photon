@@ -42,8 +42,11 @@ typedef struct psoaHashMap
     */
    psonHashMapItem iterator;
 
-   /** A pointer to the data definition of the queue. */
-   psonFieldDef * pDefinition;
+   /** A pointer to the key definition of the object. */
+   unsigned char * keyDef;
+
+   /** The length of the key definition of the object. */
+   uint32_t keyLength;
    
    uint32_t minLength;
    uint32_t maxLength;

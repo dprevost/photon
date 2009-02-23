@@ -41,36 +41,36 @@ BEGIN_C_DECLS
  * 
  * The memory must be free by the calling program.
  */
-PHOTON_API_EXPORT
-int psoaGetDefinition( psonFieldDef       * pInternalDef,
-                       uint16_t             numFields,
-                       psoFieldDefinition * pFields );
+//PHOTON_API_EXPORT
+//int psoaGetDefinition( psonFieldDef       * pInternalDef,
+//                       uint16_t             numFields,
+//                       psoFieldDefinition * pFields );
 
-PHOTON_API_EXPORT
-void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
-                       uint32_t         * pMinLength,
-                       uint32_t         * pMaxLength );
+//PHOTON_API_EXPORT
+//void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
+//                       uint32_t         * pMinLength,
+//                       uint32_t         * pMaxLength );
 
-PHOTON_API_EXPORT
-void psoaGetLimits( psonFieldDef * pDefinition,
-                    uint16_t       numFields,
-                    uint32_t     * pMinLength,
-                    uint32_t     * pMaxLength );
+//PHOTON_API_EXPORT
+//void psoaGetLimits( psonFieldDef * pDefinition,
+//                    uint16_t       numFields,
+//                    uint32_t     * pMinLength,
+//                    uint32_t     * pMaxLength );
 
 /*
  * Similar to psoaGetLimits (but using the api struct), it calculates the 
  * offsets for each data field.
  * The array of offsets must be allocated by the caller.
  */
-PHOTON_API_EXPORT
-void psoaGetOffsets( psoObjectDefinition * pDefinition,
-                     psoFieldDefinition  * pFields,
-                     uint32_t            * pOffsets );
+//PHOTON_API_EXPORT
+//void psoaGetOffsets( psoObjectDefinition * pDefinition,
+//                     psoFieldDefinition  * pFields,
+//                     uint32_t            * pOffsets );
 
-PHOTON_API_EXPORT
-int psoaValidateDefinition( psoObjectDefinition * pDefinition,
-                            psoKeyDefinition    * pKey,
-                            psoFieldDefinition  * pFields );
+//PHOTON_API_EXPORT
+//int psoaValidateDefinition( psoObjectDefinition * pDefinition,
+//                            psoKeyDefinition    * pKey,
+//                            psoFieldDefinition  * pFields );
 
 PHOTON_API_EXPORT
 int psoaXmlToDefinition( const char           * xmlBuffer,

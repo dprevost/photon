@@ -33,7 +33,7 @@ int main()
    psonTxStatus status;
    psoObjectDefinition def = { PSO_FOLDER, 0 };
    
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
 
    pFolder = initFolderTest( expectedToPass, &context );
 

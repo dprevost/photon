@@ -249,7 +249,8 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    const char          * pFields,
+                    const unsigned char * pFields,
+                    uint32_t              fieldsLength,
                     psonSessionContext  * pContext )
 {
    psoErrors errcode;
@@ -289,15 +290,16 @@ bool psonQueueInit( psonQueue           * pQueue,
 
    pQueue->numFields = (uint16_t) pDefinition->numFields;
 
-   ptr = (char *)psonMalloc( &pQueue->memObject, strlen(pFields)+1, pContext );
+   ptr = (char *)psonMalloc( &pQueue->memObject, fieldsLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   strcpy( ptr, pFields );
+   memcpy( ptr, pFields, fieldsLength );
    pQueue->dataDefOffset = SET_OFFSET(ptr);
-
+   pQueue->fieldsLength = fieldsLength;
+   
    return true;
 }
 

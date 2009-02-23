@@ -63,6 +63,12 @@ struct psonMap
    /** Offset to the data definition */
    ptrdiff_t            dataDefOffset;
 
+   /** Offset to the key definition */
+   ptrdiff_t keyDefOffset;
+
+   uint32_t keyDefLength;
+   uint32_t fieldsLength;
+
    ptrdiff_t latestVersion;
 
    ptrdiff_t editVersion;
@@ -131,8 +137,10 @@ bool psonMapInit( psonMap             * pHashMap,
                   char                * origName,
                   ptrdiff_t             hashItemOffset,
                   psoObjectDefinition * pDefinition,
-                  psoKeyDefinition    * pKey,
-                  const char          * pFields,
+                  const unsigned char * pKey,
+                  uint32_t              keyLength,
+                  const unsigned char * pFields,
+                  uint32_t              fieldsLength,
                   psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

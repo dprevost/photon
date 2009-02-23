@@ -45,7 +45,7 @@ int main()
    psoObjectDefinition def = { PSO_HASH_MAP, 1 };
    psoKeyDefinition key = { 0, 0, 0, 0} ;
 
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -63,8 +63,10 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
-                                &key,
+                                (unsigned char *)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );

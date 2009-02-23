@@ -36,7 +36,7 @@ int main()
    psoKeyDefinition key = { 0, 0, 0, 0};
    psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
 
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -55,7 +55,9 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                0,
                                 NULL,
+                                0,
                                 1,
                                 0,
                                 &context );
@@ -68,8 +70,10 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
+                                (unsigned char*)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );
@@ -106,7 +110,9 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                0,
                                 NULL,
+                                0,
                                 1,
                                 0,
                                 &context );
@@ -119,8 +125,10 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
+                                (unsigned char *)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );
@@ -209,7 +217,9 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                0,
                                 NULL,
+                                0,
                                 1,
                                 0,
                                 &context );
@@ -222,8 +232,10 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
+                                (unsigned char *)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );
@@ -267,7 +279,9 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
+                                0,
                                 NULL,
+                                0,
                                 1,
                                 0,
                                 &context );
@@ -280,8 +294,10 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
+                                (unsigned char *)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );

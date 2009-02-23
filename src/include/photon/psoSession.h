@@ -165,7 +165,7 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                      psoUint32             nameLengthInBytes,
                      psoObjectDefinition * definition,
                      const unsigned char * key,
-                     psoUnit32             keyLength,
+                     psoUint32             keyLength,
                      const unsigned char * fields,
                      psoUint32             fieldsLength );
 

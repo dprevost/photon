@@ -91,10 +91,10 @@ int psoLifoClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoLifoDefinition( PSO_HANDLE            objectHandle,
+int psoLifoDefinition( PSO_HANDLE            objectHandle, 
                        psoObjectDefinition * pDefinition,
-                       psoUint32             numFields,
-                       psoFieldDefinition  * pFields )
+                       unsigned char       * pFields,
+                       uint32_t              fieldsLength )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
@@ -113,9 +113,9 @@ int psoLifoDefinition( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
 
-   if ( numFields > 0 && pFields == NULL ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
+   if ( pFields != NULL && fieldsLength < pLifo->object.definitionLength ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
@@ -124,10 +124,9 @@ int psoLifoDefinition( PSO_HANDLE            objectHandle,
       
          pDefinition->type = PSO_LIFO;
          pDefinition->numFields = pMemLifo->numFields;
-         if ( numFields > 0 ) {
-            errcode = psoaGetDefinition( pLifo->pDefinition,
-                                         pMemLifo->numFields,
-                                         pFields );
+         if ( pFields != NULL ) {
+            memcpy( pFields, pLifo->object.pDefinition, 
+               pLifo->object.definitionLength );
          }
          psoaCommonUnlock( &pLifo->object );
       }
@@ -348,10 +347,10 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pLifo->pDefinition, 
                   pMemLifo->dataDefOffset,
                   psonFieldDef );
-         psoaGetLimits( pLifo->pDefinition,
-                        pMemLifo->numFields,
-                        &pLifo->minLength,
-                        &pLifo->maxLength );
+//         psoaGetLimits( pLifo->pDefinition,
+//                        pMemLifo->numFields,
+//                        &pLifo->minLength,
+//                        &pLifo->maxLength );
       }
    }
    else {

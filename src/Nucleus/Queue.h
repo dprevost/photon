@@ -80,6 +80,9 @@ struct psonQueue
    /** Offset to the data definition */
    ptrdiff_t  dataDefOffset;
 
+   /** Length of dataDefOffset */
+   uint32_t fieldsLength;
+
    uint16_t numFields;
 
    /**
@@ -107,7 +110,8 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    const char          * pFields,
+                    const unsigned char * pFields,
+                    uint32_t              fieldsLength,
                     psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

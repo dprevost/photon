@@ -36,7 +36,7 @@ int main()
    psonHashItem * pItem;
    psoObjectDefinition def = { PSO_FAST_MAP, 1 };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 

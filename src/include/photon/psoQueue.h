@@ -83,7 +83,7 @@ int psoQueueClose( PSO_HANDLE objectHandle );
 PHOTON_EXPORT
 int psoQueueDefinition( PSO_HANDLE            objectHandle, 
                         psoObjectDefinition * definition,
-                        psoFieldDefinition  * fields,
+                        unsigned char       * fields,
                         psoUint32             fieldsLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -102,8 +102,10 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
-                             psoKeyDefinition    * pKey,
-                             const char          * pFields,
+                             const unsigned char * pKey,
+                             uint32_t              keyLength,
+                             const unsigned char * pFields,
+                             uint32_t              fieldsLength,
                              psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -162,7 +164,9 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                                    strLength, 
                                    pDefinition,
                                    pKey,
+                                   keyLength,
                                    pFields,
+                                   fieldsLength,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
@@ -758,8 +762,10 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
-                              psoKeyDefinition    * key,
-                              const char         ** ppFieldDef,
+                              unsigned char      ** ppKey,
+                              uint32_t            * pKeyLength,
+                              unsigned char      ** ppFieldDef,
+                              uint32_t            * pFieldsLength,
                               psonSessionContext  * pContext )
 {
    bool lastIteration = true;
@@ -779,7 +785,6 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
    PSO_PRE_CONDITION( pFolder       != NULL );
    PSO_PRE_CONDITION( objectName    != NULL )
    PSO_PRE_CONDITION( pDefinition   != NULL );
-   PSO_PRE_CONDITION( ppFieldDef != NULL );
    PSO_PRE_CONDITION( pContext      != NULL );
    PSO_PRE_CONDITION( strLength > 0 );
    PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
@@ -829,40 +834,36 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
          case PSO_FOLDER:
             break;
          case PSO_HASH_MAP:
-            /*
-             * This test cannot be done in the API since we don't know the
-             * object type. The other alternative is to force a key- def 
-             * parameter on GetDefinition for queues and folder. It would
-             * make the code simpler but the API more rigid.
-             */
-            if ( key == NULL ) {
-               errcode = PSO_NULL_POINTER;
-               break;
+            {
+               psonHashMap * p = GET_PTR_FAST( pDesc->offset, psonHashMap);
+               
+               *ppKey = GET_PTR_FAST( p->keyDefOffset, unsigned char );
+               *pKeyLength = p->keyDefLength;
+               *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
+               *pFieldsLength = p->fieldsLength;
+               pDefinition->numFields = p->numFields;
             }
-            *ppFieldDef = GET_PTR_FAST(
-               GET_PTR_FAST( pDesc->offset, psonHashMap)->dataDefOffset,
-               char );
-            pDefinition->numFields = 
-               GET_PTR_FAST( pDesc->offset, psonHashMap)->numFields;
             break;
          case PSO_QUEUE:
          case PSO_LIFO:
-            *ppFieldDef = GET_PTR_FAST(
-               GET_PTR_FAST( pDesc->offset, psonQueue)->dataDefOffset,
-               char );
-            pDefinition->numFields = 
-               GET_PTR_FAST( pDesc->offset, psonQueue)->numFields;
+            {
+               psonQueue * p = GET_PTR_FAST( pDesc->offset, psonQueue);
+               
+               *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
+               *pFieldsLength = p->fieldsLength;
+               pDefinition->numFields = p->numFields;
+            }
             break;
          case PSO_FAST_MAP:
-            if ( key == NULL ) {
-               errcode = PSO_NULL_POINTER;
-               break;
+            {
+               psonMap * p = GET_PTR_FAST( pDesc->offset, psonMap);
+               
+               *ppKey = GET_PTR_FAST( p->keyDefOffset, unsigned char );
+               *pKeyLength = p->keyDefLength;
+               *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
+               *pFieldsLength = p->fieldsLength;
+               pDefinition->numFields = p->numFields;
             }
-            *ppFieldDef = GET_PTR_FAST(
-               GET_PTR_FAST( pDesc->offset, psonMap)->dataDefOffset,
-               char );
-            pDefinition->numFields = 
-               GET_PTR_FAST( pDesc->offset, psonMap)->numFields;
             break;
          default:
             PSO_INV_CONDITION( pDesc_invalid_api_type );
@@ -904,8 +905,10 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                                  &objectName[partialLength+1], 
                                  strLength - partialLength - 1, 
                                  pDefinition,
-                                 key,
+                                 ppKey,
+                                 pKeyLength,
                                  ppFieldDef,
+                                 pFieldsLength,
                                  pContext );
    PSO_POST_CONDITION( ok == true || ok == false );
 
@@ -1398,8 +1401,10 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * originalName,
                              uint32_t              strLength, 
                              psoObjectDefinition * pDefinition,
-                             psoKeyDefinition    * pKey,
-                             const char          * pFields,
+                             const unsigned char * pKey,
+                             uint32_t              keyLength,
+                             const unsigned char * pFields,
+                             uint32_t              fieldsLength,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psonSessionContext  * pContext )
@@ -1563,6 +1568,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              SET_OFFSET(pHashItem),
                              pDefinition,
                              pFields,
+                             fieldsLength,
                              pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonQueue,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonQueue,memObject);
@@ -1593,7 +1599,9 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                SET_OFFSET(pHashItem),
                                pDefinition,
                                pKey,
+                               keyLength,
                                pFields,
+                               fieldsLength,
                                pContext );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonHashMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonHashMap,memObject);
@@ -1610,7 +1618,9 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                            SET_OFFSET(pHashItem),
                            pDefinition,
                            pKey,
+                           keyLength,
                            pFields,
+                           fieldsLength,
                            pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonMap,nodeObject);
@@ -1684,7 +1694,9 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                 strLength - partialLength - 1,
                                 pDefinition,
                                 pKey,
+                                keyLength,
                                 pFields,
+                                fieldsLength,
                                 numBlocks,
                                 expectedNumOfChilds,
                                 pContext );
@@ -2014,8 +2026,10 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
-                                psoKeyDefinition    * pKey,
-                                const char          * pFields,
+                                const unsigned char * pKey,
+                                uint32_t              keyLength,
+                                const unsigned char * pFields,
+                                uint32_t              fieldsLength,
                                 psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -2080,7 +2094,9 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                    strLength, 
                                    pDefinition,
                                    pKey,
+                                   keyLength,
                                    pFields,
+                                   fieldsLength,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
@@ -2308,8 +2324,10 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
-                          psoKeyDefinition    * key,
-                          const char         ** ppFieldDef,
+                          unsigned char      ** ppKey,
+                          uint32_t            * pKeyLength,
+                          unsigned char      ** ppFieldDef,
+                          uint32_t            * pFieldsLength,
                           psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -2380,8 +2398,10 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                                        &(lowerName[first]), 
                                        strLength, 
                                        pDefinition,
-                                       key,
+                                       ppKey,
+                                       pKeyLength,
                                        ppFieldDef,
+                                       pFieldsLength,
                                        pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) goto error_handler;

@@ -102,8 +102,10 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            const char          * objectName,
                            uint32_t              nameLengthInBytes,
                            psoObjectDefinition * pDefinition,
-                           psoKeyDefinition    * pKey,
-                           const char          * pFields )
+                           const unsigned char * pKey,
+                           uint32_t              keyLength,
+                           const unsigned char * pFields,
+                           uint32_t              fieldsLength )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -166,7 +168,9 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                                       nameLengthInBytes,
                                       pDefinition,
                                       pKey,
+                                      keyLength,
                                       pFields,
+                                      fieldsLength,
                                       &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          psoaCommonUnlock( &pFolder->object );

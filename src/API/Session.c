@@ -99,13 +99,15 @@ int psoCommit( PSO_HANDLE sessionHandle )
 }
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-   
+
 int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      uint32_t              nameLengthInBytes,
                      psoObjectDefinition * pDefinition,
-                     psoKeyDefinition    * pKey,
-                     const char          * pFields )
+                     const unsigned char * pKey,
+                     uint32_t              keyLength,
+                     const unsigned char * pFields,
+                     uint32_t              fieldsLength )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -163,7 +165,9 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                                          nameLengthInBytes,
                                          pDefinition,
                                          pKey,
+                                         keyLength,
                                          pFields,
+                                         fieldsLength,
                                          &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
       }
@@ -364,16 +368,17 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       uint32_t              nameLengthInBytes,
                       psoObjectDefinition * pDefinition,
-                      psoKeyDefinition    * key,
-                      psoUint32             numFields,
-                      const char          * pFields )
+                      unsigned char       * key,
+                      uint32_t              keyLength,
+                      unsigned char       * pFields,
+                      uint32_t              fieldsLength )
 {
    psoaSession * pSession;
    int errcode = PSO_OK;
    psonFolder * pTree;
-   psonFieldDef * pInternalDef;
    bool ok = true;
-   
+   unsigned char * retKey = NULL, * retFields = NULL;
+   uint32_t retKeyLength = 0, retFieldsLength = 0;
    pSession = (psoaSession*) sessionHandle;
 
    if ( pSession == NULL ) return PSO_NULL_HANDLE;   
@@ -394,10 +399,15 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
       return PSO_NULL_POINTER;
    }
    
-   if ( numFields > 0 && pFields == NULL ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
+//   if ( pKey != NULL && keyLength < pHashMap->keyLength ) {
+//      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+//      return PSO_INVALID_LENGTH;
+//   }
+
+//   if ( numFields > 0 && pFields == NULL ) {
+//      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+//      return PSO_NULL_POINTER;
+//   }
    
    if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
@@ -406,16 +416,18 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition,
-                                   key,
-                                   &pInternalDef,
+                                   &retKey,
+                                   &retKeyLength,
+                                   &retFields,
+                                   &retFieldsLength,
                                    &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
-            if ( pDefinition->type != PSO_FOLDER && numFields > 0 ) {
-               errcode = psoaGetDefinition( pInternalDef,
-                                            (uint16_t)pDefinition->numFields,
-                                            pFields );
-            }
+//            if ( pDefinition->type != PSO_FOLDER && numFields > 0 ) {
+//               errcode = psoaGetDefinition( pInternalDef,
+//                                            (uint16_t)pDefinition->numFields,
+//                                            pFields );
+//            }
          }
       }
       else {

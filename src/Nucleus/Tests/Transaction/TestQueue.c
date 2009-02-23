@@ -41,7 +41,7 @@ int main()
    psonQueueItem * pQueueItem;
    psoObjectDefinition def = { PSO_QUEUE, 1 };
 
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -60,7 +60,9 @@ int main()
                                 5,
                                 &def,
                                 NULL,
+                                0,
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );

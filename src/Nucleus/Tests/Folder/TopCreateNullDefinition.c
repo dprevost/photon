@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    
-   const char * fields =  "A dummy definition";
+   const unsigned char * fields =  (unsigned char *)"A dummy definition";
 
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
