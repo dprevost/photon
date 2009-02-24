@@ -69,8 +69,8 @@ int psoHashMapClose( PSO_HANDLE objectHandle );
  * \brief Retrieve the data definition of the hash map.
  *
  * You can call the function ::psoHashMapDefLength to retrieve the 
- * length of the field definitions. This allows you to allocate 
- * the proper size for \em fields.
+ * length of the key and field definitions. This allows you to allocate 
+ * the proper size for both \em key and \em fields.
  *
  * \param[in]  objectHandle The handle to the hash map (see ::psoHashMapOpen).
  * \param[out] definition The definition of the object.
