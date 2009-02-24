@@ -70,7 +70,9 @@ int main( int argc, char * argv[] )
                               strlen("/ahip"),
                               &folderDef,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -80,8 +82,10 @@ int main( int argc, char * argv[] )
                               "/ahip/test",
                               strlen("/ahip/test"),
                               &mapDef,
-                              &keyDef,
-                              fields );
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyDefinition),
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -167,50 +171,6 @@ int main( int argc, char * argv[] )
                                6,
                                data,
                                0 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* 1 under the data minimum length */
-   errcode = psoHashMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               3 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* 1 over the data maximum length */
-   errcode = psoHashMapInsert( objHandle,
-                               key,
-                               6,
-                               "12345678901", 
-                               11 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   // 1 under the key minimum length
-   errcode = psoHashMapInsert( objHandle,
-                               key,
-                               3,
-                               data,
-                               7 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* 1 over the key maximum length */
-   errcode = psoHashMapInsert( objHandle,
-                               "12345678901",
-                               11,
-                               data, 
-                               7 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

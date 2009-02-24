@@ -68,7 +68,9 @@ int main( int argc, char * argv[] )
                               strlen("/api_lifo_Pushp"),
                               &folderDef,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -79,7 +81,9 @@ int main( int argc, char * argv[] )
                               strlen("/api_lifo_Pushp/test"),
                               &defLilo,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -129,20 +133,6 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoPush( objHandle, data1, 0 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* 1 under the minimum length */
-   errcode = psoLifoPush( objHandle, data1, 3 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* 1 over the maximum length */
-   errcode = psoLifoPush( objHandle, "12345678901", 11 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

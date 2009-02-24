@@ -57,7 +57,9 @@ int main( int argc, char * argv[] )
                               strlen("/afcr"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -79,7 +81,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -90,7 +94,9 @@ int main( int argc, char * argv[] )
                                     0,
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -102,7 +108,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr"),
                                     &def,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    sizeof(fields) );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -113,7 +121,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr"),
                                     &def,
                                     NULL,
-                                    NULL ); /* can only be NULL for folders */
+                                    0,
+                                    NULL, /* can only be NULL for folders */
+                                    0 );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -125,7 +135,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr"),
                                     NULL,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -137,7 +149,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -155,7 +169,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr2"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -178,7 +194,9 @@ int main( int argc, char * argv[] )
                                     strlen("afcr3"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

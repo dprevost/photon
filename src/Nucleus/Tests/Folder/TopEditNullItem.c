@@ -43,7 +43,9 @@ int main()
                                    strlen("Test1"),
                                    &folderDef,
                                    NULL,
+                                   0,
                                    NULL,
+                                   0,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -53,8 +55,10 @@ int main()
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
-                                   &key,
+                                   (unsigned char *)&key,
+                                   sizeof(key),
                                    fields,
+                                   sizeof(fields),
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

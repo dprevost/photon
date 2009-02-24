@@ -62,11 +62,11 @@ typedef struct psoaCommonObject
    /** A folder item. It contains a pointer to the hash item in memory. */
    psonFolderItem  folderItem;
 
-   /** A pointer to the data definition of the object. */
-   unsigned char * pDefinition;
+//   /** A pointer to the data definition of the object. */
+//   unsigned char * pDefinition;
 
-   /** The length of the data definition of the object. */
-   uint32_t definitionLength;
+//   /** The length of the data definition of the object. */
+//   uint32_t definitionLength;
    
    /** A pointer to the object in shared memory. */   
    void * pMyMemObject;

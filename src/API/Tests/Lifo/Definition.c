@@ -84,7 +84,9 @@ int main( int argc, char * argv[] )
                               strlen("/api_lifo_sp"),
                               &folderDef,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -95,7 +97,9 @@ int main( int argc, char * argv[] )
                               strlen("/api_lifo_sp/test"),
                               &lifoDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -118,26 +122,23 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoLifoDefinition( NULL, &retDef, 5, retFields );
+   errcode = psoLifoDefinition( NULL, &retDef, 
+                                (unsigned char *)retFields, 
+                                5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoDefinition( objHandle, NULL, 5, retFields );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoLifoDefinition( objHandle, &retDef, 5, NULL );
+   errcode = psoLifoDefinition( objHandle, NULL, (unsigned char *)retFields, 
+                                5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoLifoDefinition( objHandle, &retDef, 0, NULL );
+   errcode = psoLifoDefinition( objHandle, &retDef, NULL, 0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -147,7 +148,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoDefinition( objHandle, &retDef, 5, retFields );
+   errcode = psoLifoDefinition( objHandle, &retDef, 
+                                (unsigned char *)retFields,
+                                5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -168,7 +171,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoDefinition( objHandle, &retDef, 0, NULL );
+   errcode = psoLifoDefinition( objHandle, &retDef, NULL, 0 );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

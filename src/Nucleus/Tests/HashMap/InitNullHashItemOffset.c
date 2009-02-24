@@ -49,8 +49,10 @@ int main()
                               "Map1", 
                               PSON_NULL_OFFSET,
                               &def,
-                              &keyDef,
+                              (unsigned char *)&keyDef,
+                              sizeof(keyDef),
                               fields,
+                              sizeof(fields),
                               &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

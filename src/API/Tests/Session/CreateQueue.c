@@ -58,7 +58,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq"),
                               &folderDef,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -71,7 +73,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -83,7 +87,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -96,7 +102,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -108,7 +116,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -120,7 +130,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -132,7 +144,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -145,7 +159,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_SCALE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -159,7 +175,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -171,7 +189,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -184,7 +204,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -196,7 +218,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -208,7 +232,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -226,7 +252,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -241,7 +269,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_DUPLICATE_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -256,7 +286,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

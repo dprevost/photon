@@ -597,7 +597,7 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       psonSessionContext  * pContext )
 {
    psoErrors errcode;
-   char * ptr;
+   unsigned char * ptr;
    
    PSO_PRE_CONDITION( pHashMap     != NULL );
    PSO_PRE_CONDITION( pContext     != NULL );
@@ -642,7 +642,8 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    
    pHashMap->numFields = (uint16_t) pDefinition->numFields;
 
-   ptr = (char *)psonMalloc( &pHashMap->memObject, fieldsLength, pContext );
+   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
+                                      fieldsLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
@@ -652,7 +653,8 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
    pHashMap->fieldsLength = fieldsLength;
    
-   ptr = (char *)psonMalloc( &pHashMap->memObject, keyLength, pContext );
+   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
+                                      keyLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );

@@ -19,7 +19,6 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 check_PROGRAMS =            \
         ClosePass           \
         Create              \
-        CreateXML           \
         DeletePass          \
         Definition          \
         FirstNullEntry      \
@@ -45,6 +44,8 @@ check_PROGRAMS =            \
         RetrieveWrongHandle \
         RetrieveZeroLength  \
         StatusPass          
+
+#        CreateXML           
 
 ClosePass_SOURCES           = ClosePass.c
 Create_SOURCES              = Create.c
@@ -118,7 +119,6 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                        \
         ClosePass.sh           \
         Create.sh              \
-        CreateXML.sh           \
         DeletePass.sh          \
         Definition.sh          \
         FirstNullEntry.sh      \
@@ -144,6 +144,8 @@ TESTS =                        \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \
         StatusPass.sh          
+
+#        CreateXML.sh           
 
 XFAIL_TESTS = 
 

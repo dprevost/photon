@@ -45,6 +45,7 @@ int main()
                   SET_OFFSET(pQueue),
                   NULL,
                   fields,
+                  sizeof(fields),
                   &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

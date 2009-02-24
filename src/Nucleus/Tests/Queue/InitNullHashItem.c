@@ -46,6 +46,7 @@ int main()
                   PSON_NULL_OFFSET,
                   &def,
                   fields,
+                  sizeof(fields),
                   &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

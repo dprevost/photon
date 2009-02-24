@@ -53,8 +53,10 @@ int main()
                                 "Test2",
                                 5,
                                 &mapDef,
-                                &key,
+                                (unsigned char *)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );
@@ -103,8 +105,10 @@ int main()
                                 "Test4",
                                 5,
                                 &mapDef,
-                                &key,
+                                (unsigned char *)&key,
+                                sizeof(key),
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );

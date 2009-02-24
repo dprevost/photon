@@ -43,7 +43,7 @@ int main()
    ok = psonQueueInit( pQueue, 
                        0, 1, &status, 6, 
                        "Queue1", SET_OFFSET(pQueue), 
-                       &def, fields, &context );
+                       &def, fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

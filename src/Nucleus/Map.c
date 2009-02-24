@@ -41,7 +41,7 @@ bool psonMapCopy( psonMap            * pOldMap,
                   psonSessionContext * pContext )
 {
    int errcode;
-   char * oldDef, * newDef;
+   unsigned char * oldDef, * newDef;
    
    PSO_PRE_CONDITION( pOldMap   != NULL );
    PSO_PRE_CONDITION( pNewMap   != NULL );
@@ -66,19 +66,34 @@ bool psonMapCopy( psonMap            * pOldMap,
                      pOldMap->nodeObject.myParentOffset,
                      SET_OFFSET(pHashItem) );
 
-   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, char );
-
    pNewMap->numFields = pOldMap->numFields;
-   newDef = (char *) psonMalloc( &pNewMap->memObject, strlen(oldDef), pContext );
+
+   // Copy the data field definition
+   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, unsigned char );
+   newDef = (unsigned char *) psonMalloc( &pNewMap->memObject, 
+                                          pOldMap->fieldsLength, pContext );
    if ( newDef == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
    pNewMap->dataDefOffset = SET_OFFSET(newDef);
-   strcpy( newDef, oldDef );
-   memcpy( &pNewMap->keyDef, &pOldMap->keyDef, sizeof(psoKeyDefinition) );
+   pNewMap->fieldsLength = pOldMap->fieldsLength;
+   memcpy( newDef, oldDef, pNewMap->fieldsLength );
 
+   // Copy the key definition
+   oldDef = GET_PTR_FAST( pOldMap->keyDefOffset, unsigned char );
+   newDef = (unsigned char *) psonMalloc( &pNewMap->memObject, 
+                                          pOldMap->keyDefLength, pContext );
+   if ( newDef == NULL ) {
+      psocSetError( &pContext->errorHandler, 
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
+      return false;
+   }
+   pNewMap->keyDefOffset = SET_OFFSET(newDef);
+   pNewMap->keyDefLength = pOldMap->keyDefLength;
+   memcpy( newDef, oldDef, pNewMap->keyDefLength );
+   
    errcode = psonHashInit( &pNewMap->hashObj,
                            SET_OFFSET(&pNewMap->memObject),
                            pOldMap->hashObj.numberOfItems,
@@ -394,7 +409,7 @@ bool psonMapInit( psonMap             * pHashMap,
                   psonSessionContext  * pContext )
 {
    psoErrors errcode;
-   char * ptr;
+   unsigned char * ptr;
    
    PSO_PRE_CONDITION( pHashMap     != NULL );
    PSO_PRE_CONDITION( pContext     != NULL );
@@ -439,7 +454,7 @@ bool psonMapInit( psonMap             * pHashMap,
    
    pHashMap->numFields = (uint16_t) pDefinition->numFields;
 
-   ptr = (char *)psonMalloc( &pHashMap->memObject, fieldsLength, pContext );
+   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, fieldsLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
@@ -449,7 +464,7 @@ bool psonMapInit( psonMap             * pHashMap,
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
    pHashMap->fieldsLength = fieldsLength;
    
-   ptr = (char *)psonMalloc( &pHashMap->memObject, keyLength, pContext );
+   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, keyLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );

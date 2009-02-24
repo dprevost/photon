@@ -88,7 +88,9 @@ int main( int argc, char * argv[] )
                               strlen("/ahmd"),
                               &folderDef,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -98,8 +100,10 @@ int main( int argc, char * argv[] )
                               "/ahmd/test",
                               strlen("/ahmd/test"),
                               &hashMapDef,
-                              &keyDef,
-                              fields );
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyDefinition),
+                              (unsigned char *)fields,
+                              5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -122,32 +126,48 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoHashMapDefinition( NULL, &retDef, &retKeyDef, 5, retFields );
+   errcode = psoHashMapDefinition( NULL, &retDef,
+                                   (unsigned char *)&retKeyDef, 
+                                   sizeof(psoKeyDefinition),
+                                   (unsigned char *)retFields,
+                                   5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapDefinition( objHandle, NULL, &retKeyDef, 5, retFields );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoHashMapDefinition( objHandle, &retDef, &retKeyDef, 5, NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoHashMapDefinition( objHandle, &retDef, NULL, 5, retFields );
+   errcode = psoHashMapDefinition( objHandle, NULL,
+                                   (unsigned char *)&retKeyDef,
+                                   sizeof(psoKeyDefinition),
+                                   (unsigned char *)retFields,
+                                   5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoHashMapDefinition( objHandle, &retDef, &retKeyDef, 0, NULL );
+   errcode = psoHashMapDefinition( objHandle, &retDef,
+                                   NULL,
+                                   0,
+                                   (unsigned char *)retFields,
+                                   5*sizeof(psoFieldDefinition) );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapDefinition( objHandle, &retDef,
+                                   (unsigned char *)&retKeyDef,
+                                   sizeof(psoKeyDefinition),
+                                   NULL,
+                                   0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -160,7 +180,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapDefinition( objHandle, &retDef, &retKeyDef, 5, retFields );
+   errcode = psoHashMapDefinition( objHandle, &retDef,
+                                   (unsigned char *)&retKeyDef,
+                                   sizeof(psoKeyDefinition),
+                                   (unsigned char *)retFields,
+                                   5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -184,7 +208,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapDefinition( objHandle, &retDef, &retKeyDef, 0, NULL );
+   errcode = psoHashMapDefinition( objHandle, &retDef,
+                                   (unsigned char *)&retKeyDef,
+                                   sizeof(psoKeyDefinition),
+                                   NULL,
+                                   0 );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

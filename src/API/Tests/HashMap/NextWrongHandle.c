@@ -66,7 +66,9 @@ int main( int argc, char * argv[] )
                               strlen("/ahnwh"),
                               &folderDef,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -76,8 +78,10 @@ int main( int argc, char * argv[] )
                               "/ahnwh/test",
                               strlen("/ahnwh/test"),
                               &mapDef,
-                              &keyDef,
-                              fields );
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyDefinition),
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

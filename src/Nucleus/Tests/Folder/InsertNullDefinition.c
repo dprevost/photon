@@ -49,7 +49,9 @@ int main()
                                 5,
                                 NULL,
                                 NULL,
+                                0,
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );

@@ -19,7 +19,6 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 check_PROGRAMS =     \
         ClosePass    \
         Create       \
-        CreateXML    \
         Destroy      \
         GetFirstPass \
         GetNextPass  \
@@ -27,9 +26,11 @@ check_PROGRAMS =     \
         OpenPass     \
         StatusPass   
 
+#        CreateXML    
+
 ClosePass_SOURCES    = ClosePass.c
 Create_SOURCES       = Create.c
-CreateXML_SOURCES    = CreateXML.c
+#CreateXML_SOURCES    = CreateXML.c
 Destroy_SOURCES      = Destroy.c
 GetFirstPass_SOURCES = GetFirstPass.c
 GetNextPass_SOURCES  = GetNextPass.c
@@ -61,13 +62,14 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                 \
         ClosePass.sh    \
         Create.sh       \
-        CreateXML.sh    \
         Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
         OpenNoSess.sh   \
         OpenPass.sh     \
         StatusPass.sh   
+
+#        CreateXML.sh    
 
 XFAIL_TESTS = 
 

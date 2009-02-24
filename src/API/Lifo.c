@@ -61,7 +61,6 @@ int psoLifoClose( PSO_HANDLE objectHandle )
 
          if ( errcode == PSO_OK ) {
             errcode = psoaCommonObjClose( &pLifo->object );
-            pLifo->pDefinition = NULL;
          }
          psoaCommonUnlock( &pLifo->object );
       }
@@ -113,7 +112,7 @@ int psoLifoDefinition( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
 
-   if ( pFields != NULL && fieldsLength < pLifo->object.definitionLength ) {
+   if ( pFields != NULL && fieldsLength < pLifo->fieldsDefLength ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
@@ -125,8 +124,8 @@ int psoLifoDefinition( PSO_HANDLE            objectHandle,
          pDefinition->type = PSO_LIFO;
          pDefinition->numFields = pMemLifo->numFields;
          if ( pFields != NULL ) {
-            memcpy( pFields, pLifo->object.pDefinition, 
-               pLifo->object.definitionLength );
+            memcpy( pFields, pLifo->fieldsDef, 
+               pLifo->fieldsDefLength );
          }
          psoaCommonUnlock( &pLifo->object );
       }
@@ -344,9 +343,10 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
       if ( errcode == PSO_OK ) {
          *objectHandle = (PSO_HANDLE) pLifo;
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
-         GET_PTR( pLifo->pDefinition, 
+         GET_PTR( pLifo->fieldsDef, 
                   pMemLifo->dataDefOffset,
-                  psonFieldDef );
+                  unsigned char );
+         pLifo->fieldsDefLength = pMemLifo->fieldsLength;
 //         psoaGetLimits( pLifo->pDefinition,
 //                        pMemLifo->numFields,
 //                        &pLifo->minLength,
@@ -459,11 +459,16 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
       return PSO_NULL_POINTER;
    }
    
-   if ( dataLength < pLifo->minLength || dataLength > pLifo->maxLength ) {
+   if ( dataLength == 0 ) {
       psocSetError( &pLifo->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
+//   if ( dataLength < pLifo->minLength || dataLength > pLifo->maxLength ) {
+//      psocSetError( &pLifo->object.pSession->context.errorHandler, 
+//         g_psoErrorHandle, PSO_INVALID_LENGTH );
+//      return PSO_INVALID_LENGTH;
+//   }
    
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psoaCommonLock( &pLifo->object ) ) {

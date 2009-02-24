@@ -42,11 +42,14 @@ typedef struct psoaQueue
     */
    psonQueueItem * iterator;
    
-   /** A pointer to the data definition of the queue. */
-   psonFieldDef * pDefinition;
+   /** A pointer to the data definition of the object. */
+   unsigned char * fieldsDef;
+
+   /** The length of the data definition of the object. */
+   uint32_t fieldsDefLength;
    
-   uint32_t minLength;
-   uint32_t maxLength;
+//   uint32_t minLength;
+//   uint32_t maxLength;
    
 } psoaQueue;
 

@@ -46,12 +46,18 @@ typedef struct psoaHashMap
    unsigned char * keyDef;
 
    /** The length of the key definition of the object. */
-   uint32_t keyLength;
+   uint32_t keyDefLength;
+
+   /** A pointer to the data definition of the object. */
+   unsigned char * fieldsDef;
+
+   /** The length of the data definition of the object. */
+   uint32_t fieldsDefLength;
    
-   uint32_t minLength;
-   uint32_t maxLength;
-   uint32_t minKeyLength;
-   uint32_t maxKeyLength;
+//   uint32_t minLength;
+//   uint32_t maxLength;
+//   uint32_t minKeyLength;
+//   uint32_t maxKeyLength;
 
 } psoaHashMap;
 

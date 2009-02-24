@@ -57,7 +57,9 @@ int main( int argc, char * argv[] )
                               strlen("/accno"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

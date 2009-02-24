@@ -49,8 +49,10 @@ int main()
                               NULL, /* Null name */ 
                               SET_OFFSET(pHashMap),
                               &def,
-                              &keyDef,
+                              (unsigned char *)&keyDef,
+                              sizeof(keyDef),
                               fields,
+                              sizeof(fields),
                               &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

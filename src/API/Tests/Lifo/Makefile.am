@@ -19,7 +19,6 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 check_PROGRAMS =          \
         Close             \
         Create            \
-        CreateXML         \
         Definition        \
         FirstNullEntry    \
         FirstNullHandle   \
@@ -42,9 +41,10 @@ check_PROGRAMS =          \
         RemoveWrongHandle \
         Status            
 
+#        CreateXML         
 Close_SOURCES             = Close.c
 Create_SOURCES            = Create.c
-CreateXML_SOURCES         = CreateXML.c
+#CreateXML_SOURCES         = CreateXML.c
 Definition_SOURCES        = Definition.c
 FirstNullEntry_SOURCES    = FirstNullEntry.c
 FirstNullHandle_SOURCES   = FirstNullHandle.c
@@ -106,7 +106,6 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                      \
         Close.sh             \
         Create.sh            \
-        CreateXML.sh         \
         Definition.sh        \
         FirstNullEntry.sh    \
         FirstNullHandle.sh   \
@@ -128,6 +127,8 @@ TESTS =                      \
         RemovePass.sh        \
         RemoveWrongHandle.sh \
         Status.sh            
+
+#        CreateXML.sh         
 
 XFAIL_TESTS = 
 

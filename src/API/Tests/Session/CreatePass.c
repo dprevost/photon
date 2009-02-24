@@ -57,9 +57,12 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( NULL,
                               "/ascp",
                               strlen("/ascp"),
+                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -68,9 +71,12 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               NULL,
                               strlen("/ascp"),
+                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -79,9 +85,12 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               0,
+                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -93,7 +102,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -116,7 +127,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               NULL,
                               NULL,
-                              fields );
+                              0,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -126,9 +139,12 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
+                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -141,9 +157,12 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
+                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -54,9 +54,12 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/aqcr",
                               strlen("/aqcr"),
+                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
-                              NULL );
+                              0,
+                              NULL,
+                              0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -81,7 +84,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -93,7 +98,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_NUM_FIELDS ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -105,7 +112,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -117,7 +126,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -129,7 +140,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -141,7 +154,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -154,7 +169,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -167,7 +184,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -181,7 +200,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -195,7 +216,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -207,7 +230,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -220,7 +245,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_PRECISION ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -234,7 +261,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_SCALE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -250,7 +279,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    fields );
+                                    0,
+                                    (unsigned char *)fields,
+                                    2*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -262,7 +293,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -280,7 +313,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr2"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -303,7 +338,9 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr3"),
                                     &def,
                                     NULL,
-                                    NULL );
+                                    0,
+                                    NULL,
+                                    0 );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

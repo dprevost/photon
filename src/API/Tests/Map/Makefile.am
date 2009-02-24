@@ -19,7 +19,6 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 check_PROGRAMS =            \
         Close               \
         Create              \
-        CreateXML           \
         Delete              \
         Definition          \
         Edit                \
@@ -49,9 +48,11 @@ check_PROGRAMS =            \
         Status              \
         Tests               
 
+#        CreateXML           
+
 Close_SOURCES               = Close.c
 Create_SOURCES              = Create.c
-CreateXML_SOURCES           = CreateXML.c
+#CreateXML_SOURCES           = CreateXML.c
 Delete_SOURCES              = Delete.c
 Definition_SOURCES          = Definition.c
 Edit_SOURCES                = Edit.c
@@ -84,7 +85,6 @@ Tests_SOURCES               = Tests.c
 EXTRA_DIST =                   \
         Close.sh               \
         Create.sh              \
-        CreateXML.sh           \
         Delete.sh              \
         Definition.sh          \
         Edit.sh                \
@@ -116,6 +116,8 @@ EXTRA_DIST =                   \
         Status.sh              \
         Tests.sh               
 
+#        CreateXML.sh           
+
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
         top_srcdir=$(top_srcdir)     \
@@ -127,7 +129,6 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                        \
         Close.sh               \
         Create.sh              \
-        CreateXML.sh           \
         Definition.sh          \
         Delete.sh              \
         Edit.sh                \
@@ -156,6 +157,8 @@ TESTS =                        \
         RetrieveZeroLength.sh  \
         Status.sh              \
         Tests.sh               
+
+#        CreateXML.sh           
 
 XFAIL_TESTS = 
 

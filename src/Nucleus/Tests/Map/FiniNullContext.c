@@ -40,7 +40,8 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                     SET_OFFSET(pHashMap), &def, &keyDef, fields, &context );
+                     SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
+                     sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

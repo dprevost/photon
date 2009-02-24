@@ -40,7 +40,9 @@ int main()
                                    strlen("Test1"),
                                    NULL,
                                    NULL,
+                                   0,
                                    fields,
+                                   sizeof(fields),
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

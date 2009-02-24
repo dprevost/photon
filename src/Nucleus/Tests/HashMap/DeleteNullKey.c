@@ -45,7 +45,8 @@ int main()
    
    ok = psonHashMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
                          SET_OFFSET(pHashMap), 
-                         &def, &keyDef, fields, &context );
+                         &def, (unsigned char *)&keyDef, sizeof(keyDef),
+                         fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

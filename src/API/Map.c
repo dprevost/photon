@@ -127,12 +127,12 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
 
-   if ( pKey != NULL && keyLength < pHashMap->keyLength ) {
+   if ( pKey != NULL && keyLength < pHashMap->keyDefLength ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    
-   if ( pFields != NULL && fieldsLength < pHashMap->object.definitionLength ) {
+   if ( pFields != NULL && fieldsLength < pHashMap->fieldsDefLength ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
@@ -143,13 +143,12 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
       
          pDefinition->type = PSO_FAST_MAP;
          if ( pKey != NULL ) {
-            memcpy( pKey, &pHashMap->keyDef, keyLength );
+            memcpy( pKey, pHashMap->keyDef, pHashMap->keyDefLength );
          }
          pDefinition->numFields = pMemHashMap->numFields;
 
          if ( pFields != NULL ) {
-            memcpy( pFields, pHashMap->object.pDefinition, 
-               pHashMap->object.definitionLength );
+            memcpy( pFields, pHashMap->fieldsDef, pHashMap->fieldsDefLength );
          }
          psoaCommonUnlock( &pHashMap->object );
       }
@@ -286,9 +285,15 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
          pHashMap->editMode = 1;
          
          pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
-         GET_PTR( pHashMap->pDefinition, 
+         GET_PTR( pHashMap->fieldsDef, 
                   pMemHashMap->dataDefOffset,
-                  psonFieldDef );
+                  unsigned char );
+         GET_PTR( pHashMap->keyDef, 
+                  pMemHashMap->keyDefOffset,
+                  unsigned char );
+         pHashMap->keyDefLength = pMemHashMap->keyDefLength;
+         pHashMap->fieldsDefLength = pMemHashMap->fieldsLength;
+
 //         psoaGetLimits( pHashMap->pDefinition,
 //                        pMemHashMap->numFields,
 //                        &pHashMap->minLength,
@@ -661,17 +666,24 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
-   if ( keyLength < pHashMap->minKeyLength || keyLength > pHashMap->maxKeyLength ) {
+
+   if ( dataLength == 0 ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
 
-   if ( dataLength < pHashMap->minLength || dataLength > pHashMap->maxLength ) {
-      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
-   }
+//   if ( keyLength < pHashMap->minKeyLength || keyLength > pHashMap->maxKeyLength ) {
+//      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+//         g_psoErrorHandle, PSO_INVALID_LENGTH );
+//      return PSO_INVALID_LENGTH;
+//   }
+
+//   if ( dataLength < pHashMap->minLength || dataLength > pHashMap->maxLength ) {
+//      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+//         g_psoErrorHandle, PSO_INVALID_LENGTH );
+//      return PSO_INVALID_LENGTH;
+//   }
 
    if ( pHashMap->editMode == 0 ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
@@ -769,9 +781,14 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
          pHashMap->reader.address = pHashMap;
          psoaListReadersPut( &pHashMap->object.pSession->listReaders, 
                              &pHashMap->reader );
-         GET_PTR( pHashMap->pDefinition, 
+         GET_PTR( pHashMap->fieldsDef, 
                   pMemHashMap->dataDefOffset,
-                  psonFieldDef );
+                  unsigned char );
+         GET_PTR( pHashMap->keyDef, 
+                  pMemHashMap->keyDefOffset,
+                  unsigned char );
+         pHashMap->keyDefLength = pMemHashMap->keyDefLength;
+         pHashMap->fieldsDefLength = pMemHashMap->fieldsLength;
 //         psoaGetLimits( pHashMap->pDefinition,
 //                        pMemHashMap->numFields,
 //                        &pHashMap->minLength,

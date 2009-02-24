@@ -50,7 +50,9 @@ int main()
                                 5,
                                 &def,
                                 NULL,
+                                0,
                                 fields,
+                                sizeof(fields),
                                 1,
                                 0,
                                 &context );

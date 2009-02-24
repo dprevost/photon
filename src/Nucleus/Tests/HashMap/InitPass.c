@@ -48,8 +48,10 @@ int main()
                          "Map1", 
                          SET_OFFSET(pHashMap), 
                          &def, 
-                         &keyDef,
+                         (unsigned char *)&keyDef,
+                         sizeof(keyDef),
                          fields,
+                         sizeof(fields),
                          &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
