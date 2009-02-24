@@ -132,7 +132,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle );
  *
  * You can call the function ::psoFastMapDefLength to retrieve the 
  * length of the field definitions. This allows you to allocate 
- * the proper size for \em fields.
+ * the proper size for \em key and \em fields.
  *
  * \param[in]  objectHandle The handle to the hash map (see ::psoFastMapOpen 
  *                          or ::psoFastMapEdit).

@@ -138,20 +138,6 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   /* 1 under the minimum length */
-   errcode = psoQueuePushNow( objHandle, data1, 3 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* 1 over the maximum length */
-   errcode = psoQueuePushNow( objHandle, "12345678901", 11 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
    /* End of invalid args. This call should succeed. */
    errcode = psoQueuePushNow( objHandle, data1, strlen(data1) );
    if ( errcode != PSO_OK ) {

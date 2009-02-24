@@ -65,6 +65,7 @@ void FastMap::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void FastMap::Definition( ObjDefinition & definition )
 {
    int rc;
@@ -103,6 +104,7 @@ void FastMap::Definition( ObjDefinition & definition )
    
    free( fields );
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

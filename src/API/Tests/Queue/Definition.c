@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
                               NULL,
                               0,
                               (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -122,26 +122,23 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoQueueDefinition( NULL, &retDef, 5, retFields );
+   errcode = psoQueueDefinition( NULL, &retDef, 
+                                 (unsigned char *)retFields, 
+                                 5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, NULL, 5, retFields );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoQueueDefinition( objHandle, &retDef, 5, NULL );
+   errcode = psoQueueDefinition( objHandle, NULL, (unsigned char *)retFields, 
+                                 5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoQueueDefinition( objHandle, &retDef, 0, NULL );
+   errcode = psoQueueDefinition( objHandle, &retDef, NULL, 0 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -151,7 +148,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, &retDef, 5, retFields );
+   errcode = psoQueueDefinition( objHandle, &retDef, 
+                                 (unsigned char *)retFields,
+                                 5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -172,7 +171,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, &retDef, 0, NULL );
+   errcode = psoQueueDefinition( objHandle, &retDef, NULL, 0 );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

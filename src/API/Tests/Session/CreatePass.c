@@ -57,7 +57,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( NULL,
                               "/ascp",
                               strlen("/ascp"),
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,
@@ -71,7 +70,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               NULL,
                               strlen("/ascp"),
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,
@@ -85,7 +83,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               0,
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,
@@ -115,7 +112,9 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              NULL ); /* can only be NULL for folders */
+                              0,
+                              NULL, /* can only be NULL for folders */
+                              0 );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -139,7 +138,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,
@@ -157,7 +155,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ascp",
                               strlen("/ascp"),
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,

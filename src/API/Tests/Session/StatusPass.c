@@ -54,7 +54,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/ASSP",
                               strlen("/assp"),
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,
