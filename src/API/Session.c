@@ -399,16 +399,6 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
       return PSO_NULL_POINTER;
    }
    
-//   if ( pKey != NULL && keyLength < pHashMap->keyLength ) {
-//      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-//      return PSO_INVALID_LENGTH;
-//   }
-
-//   if ( numFields > 0 && pFields == NULL ) {
-//      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-//      return PSO_NULL_POINTER;
-//   }
-   
    if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
@@ -423,11 +413,81 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                                    &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ok ) {
-//            if ( pDefinition->type != PSO_FOLDER && numFields > 0 ) {
-//               errcode = psoaGetDefinition( pInternalDef,
-//                                            (uint16_t)pDefinition->numFields,
-//                                            pFields );
-//            }
+            if ( keyLength < retKeyLength || fieldsLength < retFieldsLength ) {
+               errcode = PSO_INVALID_LENGTH;
+            }
+            else {
+               memcpy( key, retKey, retKeyLength );
+               memcpy( pFields, retFields, retFieldsLength );
+            }
+         }
+      }
+      else {
+         errcode = PSO_SESSION_IS_TERMINATED;
+      }
+      psoaSessionUnlock( pSession );
+   }
+   else {
+      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+   }
+   
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+   }
+   if ( ! ok ) {
+      errcode = psocGetLastError( &pSession->context.errorHandler );
+   }
+   
+   return errcode;
+}   
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoGetDefLength( PSO_HANDLE   sessionHandle,
+                     const char * objectName,
+                     psoUint32    nameLengthInBytes,
+                     psoUint32  * keyLength,
+                     psoUint32  * fieldsLength )
+{
+   psoaSession * pSession;
+   int errcode = PSO_OK;
+   psonFolder * pTree;
+   bool ok = true;
+   unsigned char * retKey = NULL, * retFields = NULL;
+   psoObjectDefinition definition;
+   uint32_t retKeyLength = 0, retFieldsLength = 0;
+
+   pSession = (psoaSession*) sessionHandle;
+
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;   
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+   
+   if ( objectName == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
+   }
+
+   if ( nameLengthInBytes == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   
+   if ( psoaSessionLock( pSession ) ) {
+      if ( ! pSession->terminated ) {
+         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+         ok = psonTopFolderGetDef( pTree, 
+                                   objectName,
+                                   nameLengthInBytes,
+                                   &definition,
+                                   &retKey,
+                                   &retKeyLength,
+                                   &retFields,
+                                   &retFieldsLength,
+                                   &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) {
+            *keyLength = retKeyLength;
+            *fieldsLength = retFieldsLength;
          }
       }
       else {
