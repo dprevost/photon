@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/afons",
-                              strlen("/afons"),
+                              "/api_folder_open_nosess",
+                              strlen("/api_folder_open_nosess"),
                               &def,
                               NULL,
                               0,
@@ -82,8 +82,8 @@ int main( int argc, char * argv[] )
     * error or we crash!
     */
    errcode = psoFolderOpen( sessionHandle,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_op",
+                            strlen("/api_folder_op"),
                             &objHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );

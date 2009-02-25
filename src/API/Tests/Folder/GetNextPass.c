@@ -52,8 +52,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/afgnp",
-                              strlen("/afgnp"),
+                              "/api_folder_getnext",
+                              strlen("/api_folder_getnext"),
                               &def,
                               NULL,
                               0,
@@ -64,8 +64,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoCreateObject( sessionHandle,
-                              "/afgnp/f1",
-                              strlen("/afgnp/f1"),
+                              "/api_folder_getnext/f1",
+                              strlen("/api_folder_getnext/f1"),
                               &def,
                               NULL,
                               0,
@@ -76,8 +76,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoCreateObject( sessionHandle,
-                              "/afgnp/f2",
-                              strlen("/afgnp/f2"),
+                              "/api_folder_getnext/f2",
+                              strlen("/api_folder_getnext/f2"),
                               &def,
                               NULL,
                               0,
@@ -89,8 +89,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afgnp",
-                            strlen("/afgnp"),
+                            "/api_folder_getnext",
+                            strlen("/api_folder_getnext"),
                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

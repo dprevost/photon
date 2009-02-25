@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/afcp",
-                              strlen("/afcp"),
+                              "/api_folder_close",
+                              strlen("/api_folder_close"),
                               &def,
                               NULL,
                               0,
@@ -64,8 +64,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afcp",
-                            strlen("/afcp"),
+                            "/api_folder_close",
+                            strlen("/api_folder_close"),
                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -96,8 +96,8 @@ int main( int argc, char * argv[] )
    /* Close the session and try to act on the object */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afcp",
-                            strlen("/afcp"),
+                            "/api_folder_close",
+                            strlen("/api_folder_close"),
                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

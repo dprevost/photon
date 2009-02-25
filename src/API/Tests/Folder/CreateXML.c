@@ -56,8 +56,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/afcx",
-                              strlen("/afcx"),
+                              "/api_folder_cx",
+                              strlen("/api_folder_cx"),
                               &def,
                               NULL,
                               0,
@@ -69,8 +69,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afcx",
-                            strlen("/afcx"),
+                            "/api_folder_cx",
+                            strlen("/api_folder_cx"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
