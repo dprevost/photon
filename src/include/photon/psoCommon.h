@@ -81,21 +81,6 @@ typedef void * PSO_HANDLE;
  */ 
 #define PSO_MAX_FULL_NAME_LENGTH 1024
 
-/** 
- * Maximum number of bytes of the name of a field of a pso object.
- */
-#define PSO_MAX_FIELD_LENGTH 32
-
-/** 
- * Maximum number of fields (including the last one).
- */
-#define PSO_MAX_FIELDS 65535
-
-/**
- * Maximum size of a decimal field.
- */
-#define PSO_FIELD_MAX_PRECISION 30
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
@@ -139,89 +124,6 @@ enum psoDefinitionType
 };
 
 /**
- * Photon supported data types.
- */
-enum psoFieldType
-{
-   PSO_INTEGER = 1,
-   PSO_BINARY,
-   PSO_STRING,
-   /** The decimal type should be mapped to an array of bytes of length
-    *  precision + 2 (optional sign and the decimal separator).
-    */
-   PSO_DECIMAL,
-   /** The boolean type should be mapped to a single byte in a C struct. */
-   PSO_BOOLEAN,
-   /** Only valid for the last field of the data definition */
-   PSO_VAR_BINARY,
-   /** Only valid for the last field of the data definition */
-   PSO_VAR_STRING
-};
-
-/**
- * Photon supported data types for keys.
- */
-enum psoKeyType
-{
-   PSO_KEY_INTEGER = 101,
-   PSO_KEY_BINARY,
-   PSO_KEY_STRING,
-   /** Only valid for the last field of the data definition */
-   PSO_KEY_VAR_BINARY,
-   /** Only valid for the last field of the data definition */
-   PSO_KEY_VAR_STRING
-};
-
-/**
- * Description of the structure of the hash map key.
- */
-struct psoKeyDefinition
-{
-   /** The data type of the key. */
-   enum psoKeyType type;
-
-   /** For fixed-length data types */
-   psoUint32 length;
-
-   /** For variable-length data types */
-   psoUint32 minLength;
-
-   /** For variable-length data types */
-   psoUint32 maxLength;
-};
-
-typedef struct psoKeyDefinition psoKeyDefinition;
-
-/**
- * Description of the structure of the data.
- */
-struct psoFieldDefinition
-{
-   /** The name of the field. */
-   char name[PSO_MAX_FIELD_LENGTH];
-   
-   /** The data type of the field/ */
-   enum psoFieldType type;
-   
-   /** For fixed-length data types */
-   psoUint32 length;
-
-   /** For variable-length data types */
-   psoUint32 minLength;
-
-   /** For variable-length data types */
-   psoUint32 maxLength;
-
-   /** Total number of digits in the decimal field. */
-   psoUint32 precision;
-
-   /** Number of digits following the decimal separator. */
-   psoUint32 scale;
-};
-
-typedef struct psoFieldDefinition psoFieldDefinition;
-
-/**
  * This struct contains the basic elements defining an object (type, 
  * number of fields, etc).
  *
@@ -239,9 +141,6 @@ struct psoObjectDefinition
 
    /** The type of the field definition (metadata) */
    enum psoDefinitionType definitionType;
-
-   /** The number of fields in the definition. */
-//   psoUint32 numFields;
    
 };
 

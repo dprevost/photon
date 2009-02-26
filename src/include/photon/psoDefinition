@@ -33,6 +33,7 @@
 #include <string>
 
 #include <photon/psoCommon.h>
+#include <photon/psoPhotonODBC.h>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

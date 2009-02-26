@@ -25,6 +25,7 @@
 
 #include <photon/psoErrors.h>
 #include <photon/psoCommon.h>
+#include <photon/psoPhotonODBC.h>
 
 #include <photon/psoProcess.h>
 #include <photon/psoSession.h>
