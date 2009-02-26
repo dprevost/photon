@@ -18,7 +18,6 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =   \
         Close      \
-        Definition \
         Delete     \
         Get        \
         GetFirst   \
@@ -28,8 +27,9 @@ check_PROGRAMS =   \
         Replace    \
         Status     
 
+#        Definition 
 Close_SOURCES      = Close.cpp
-Definition_SOURCES = Definition.cpp
+#Definition_SOURCES = Definition.cpp
 Delete_SOURCES     = Delete.cpp
 Get_SOURCES        = Get.cpp
 GetFirst_SOURCES   = GetFirst.cpp
@@ -63,7 +63,6 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =               \
         Close.sh      \
-        Definition.sh \
         Delete.sh     \
         Get.sh        \
         GetFirst.sh   \
@@ -73,6 +72,7 @@ TESTS =               \
         Replace.sh    \
         Status.sh     
 
+#        Definition.sh 
 XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/C++/libphotoncpp.la 

@@ -33,7 +33,7 @@ int main()
    psonTxStatus status;
    psonObjectDescriptor* pDescriptor = NULL;
    psonFolderItem folderItem;
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    
    /* Create "/" */
    pFolder1 = initFolderTest( expectedToPass, &context );

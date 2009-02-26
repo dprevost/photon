@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    psoObjectDefinition definition;
    psoFieldDefinition fields[2];
    psoKeyDefinition keyDef;
@@ -93,7 +93,7 @@ int main( int argc, char * argv[] )
    }
 
    definition.type = PSO_FAST_MAP;
-   definition.numFields = 2;
+   definition.definitionType = PSO_DEF_USER_DEFINED;
 
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",

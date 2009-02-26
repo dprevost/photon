@@ -78,10 +78,6 @@ typedef void * PSO_HANDLE;
 /** 
  * Maximum number of bytes of the fully qualified name of a pso object 
  * (including the name(s) of its parent folder(s)).
- *
- * Note: setting this value eliminates a possible loophole since some
- * heap memory must be allocated to hold the wide characters string 
- * for the duration of the operation (open, close, create or destroy).
  */ 
 #define PSO_MAX_FULL_NAME_LENGTH 1024
 
@@ -132,12 +128,14 @@ typedef enum psoIteratorType psoIteratorType;
  */
 enum psoDefinitionType
 {
-   /** A simplified version of ODBC. */
-   PSO_DEF_PHOTON_ODBC = 1,
-   /** Google Protocol Buffer */
-   PSO_DEF_PROTO_BUF,
    /** User-defined */
-   PSO_DEF_USER_DEFINED
+   PSO_DEF_USER_DEFINED = 11,
+   /** A simplified version of ODBC. */
+   PSO_DEF_PHOTON_ODBC = 12,
+   /** Google Protocol Buffer */
+   PSO_DEF_PROTO_BUF = 13,
+   /** Last type (for boundary checking) */
+   PSO_DEF_LAST_TYPE
 };
 
 /**
@@ -239,8 +237,11 @@ struct psoObjectDefinition
    /** The object type. */
    enum psoObjectType type;
 
+   /** The type of the field definition (metadata) */
+   enum psoDefinitionType definitionType;
+
    /** The number of fields in the definition. */
-   psoUint32 numFields;
+//   psoUint32 numFields;
    
 };
 

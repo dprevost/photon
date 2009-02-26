@@ -31,11 +31,11 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE objHandle,  sessionHandle;
    int errcode;
-   psoObjectDefinition defLilo = { PSO_LIFO, 1 };
+   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

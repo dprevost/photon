@@ -83,8 +83,13 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, NULL );
-      session.CreateObject( hname, mapDef );
+      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session.CreateObject( hname,
+                            mapDef, 
+                            (unsigned char *)&keyDef,
+                            sizeof(psoKeyDefinition),
+                            (unsigned char *)fields,
+                            sizeof(psoFieldDefinition) );
       hashmap.Open( hname );
    }
    catch( pso::Exception exc ) {

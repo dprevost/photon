@@ -18,7 +18,6 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =   \
         Close      \
-        Definition \
         Delete     \
         Empty      \
         Get        \
@@ -29,8 +28,10 @@ check_PROGRAMS =   \
         Replace    \
         Status     
 
+#        Definition 
+
 Close_SOURCES      = Close.cpp
-Definition_SOURCES = Definition.cpp
+#Definition_SOURCES = Definition.cpp
 Delete_SOURCES     = Delete.cpp
 Empty_SOURCES      = Empty.cpp
 Get_SOURCES        = Get.cpp
@@ -66,7 +67,6 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =               \
         Close.sh      \
-        Definition.sh \
         Delete.sh     \
         Empty.sh      \
         Get.sh        \
@@ -76,6 +76,8 @@ TESTS =               \
         Open.sh       \
         Replace.sh    \
         Status.sh     
+
+#        Definition.sh 
 
 XFAIL_TESTS = 
 

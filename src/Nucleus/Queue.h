@@ -83,7 +83,8 @@ struct psonQueue
    /** Length of dataDefOffset */
    uint32_t fieldsLength;
 
-   uint16_t numFields;
+   /** The type of the field definition (metadata) */
+   enum psoDefinitionType definitionType;
 
    /**
     * Number of valid items. Valid items are the number of items NOT counting

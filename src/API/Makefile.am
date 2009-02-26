@@ -36,8 +36,6 @@ libphoton_la_SOURCES =   \
         CommonObject.h   \
         Connector.c      \
         Connector.h      \
-        DataDefinition.c \
-        DataDefinition.h \
         Folder.c         \
         Folder.h         \
         HashMap.c        \
@@ -55,6 +53,9 @@ libphoton_la_SOURCES =   \
         Session.c        \
         Session.h        \
         Standalone.c     
+
+#        DataDefinition.c 
+#        DataDefinition.h 
 
 libphoton_la_LIBADD =                             \
         $(top_builddir)/src/Nucleus/libNucleus.la \

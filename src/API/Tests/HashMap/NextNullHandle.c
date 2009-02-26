@@ -37,12 +37,12 @@ int main( int argc, char * argv[] )
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
    psoaHashMapEntry entry;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, 1 };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 4, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

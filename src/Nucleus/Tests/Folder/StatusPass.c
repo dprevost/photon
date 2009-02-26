@@ -31,7 +31,7 @@ int main()
    bool ok;
    psonTxStatus status;
    psoObjStatus objStatus;
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    
    pFolder = initFolderTest( expectedToPass, &context );
 

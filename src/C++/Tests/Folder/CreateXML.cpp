@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
          strcat( src_path, "/src/XML/photon_meta10.xsd" );
       }
       session.Init();
-      session.CreateObject( name, def, NULL, NULL );
+      session.CreateObject( name, def, NULL, 0, NULL, 0 );
       folder.Open( name );
    }
    catch( pso::Exception exc ) {

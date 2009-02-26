@@ -34,7 +34,7 @@
 namespace pso {
 
 // Forward declarations
-class pso::Session;
+//class pso::Session;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

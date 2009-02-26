@@ -59,7 +59,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session.CreateObject( NULL, strlen(c_name), folderDef, NULL, NULL );
+      session.CreateObject( NULL, strlen(c_name), folderDef, NULL, 0, NULL, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -72,7 +72,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( c_name, 0, folderDef, NULL, NULL );
+      session.CreateObject( c_name, 0, folderDef, NULL, 0, NULL, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -85,7 +85,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( "", folderDef, NULL, NULL );
+      session.CreateObject( "", folderDef, NULL, 0, NULL, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -100,7 +100,12 @@ int main( int argc, char * argv[] )
    try {
       folderDef.type = (psoObjectType)0;
       // The last argument cannot be NULL since we are not creating a folder.
-      session.CreateObject( name, folderDef, NULL, fields );
+      session.CreateObject( name,
+                            folderDef,
+                            NULL,
+                            0, 
+                            (unsigned char *)fields, 
+                            sizeof(psoFieldDefinition) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -115,7 +120,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      session.CreateObject( name, folderDef, NULL, NULL );
+      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

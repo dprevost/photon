@@ -47,7 +47,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, NULL );
+      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

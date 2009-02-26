@@ -69,7 +69,8 @@ struct psonHashMap
    uint32_t keyDefLength;
    uint32_t fieldsLength;
    
-   uint16_t numFields;
+   /** The type of the field definition (metadata) */
+   enum psoDefinitionType definitionType;
    
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;

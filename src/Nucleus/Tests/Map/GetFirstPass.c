@@ -34,7 +34,7 @@ int main()
    char * data = "my data";
    psonFashMapItem item;
    char * ptr;
-   psoObjectDefinition def = { PSO_FAST_MAP, 1 };
+   psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
    

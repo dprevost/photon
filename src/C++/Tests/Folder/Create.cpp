@@ -51,7 +51,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( name, def, NULL, NULL );
+      session.CreateObject( name, def, NULL, 0, NULL, 0 );
       folder.Open( name );
    }
    catch( pso::Exception exc ) {
@@ -63,7 +63,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      folder.CreateObject( NULL, subname.length(), def, NULL, NULL );
+      folder.CreateObject( NULL, subname.length(), def, NULL, 0, NULL, 0 );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -75,7 +75,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.CreateObject( subname.c_str(), 0, def, NULL, NULL );
+      folder.CreateObject( subname.c_str(), 0, def, NULL, 0, NULL, 0 );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -89,7 +89,12 @@ int main( int argc, char * argv[] )
    def.type = (psoObjectType)0;
    try {
       // The last argument cannot be NULL since we are not creating a folder.
-      folder.CreateObject( subname, def, &keyDef, fields );
+      folder.CreateObject( subname,
+                           def,
+                           (unsigned char *)&keyDef,
+                           sizeof(psoKeyDefinition),
+                           (unsigned char *)fields,
+                           sizeof(psoFieldDefinition) );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -103,7 +108,7 @@ int main( int argc, char * argv[] )
    
    // End of invalid args. This call should succeed.
    try {
-      folder.CreateObject( subname, def, NULL, NULL );
+      folder.CreateObject( subname, def, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

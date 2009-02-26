@@ -43,8 +43,8 @@ int main( int argc, char * argv[] )
    char key[] = "My Key";
    size_t lenData;
 
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
-   psoObjectDefinition hashMapDef = { PSO_FAST_MAP, 5 };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition hashMapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 0 };
 
    psoFieldDefinition fields[5] = {

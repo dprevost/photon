@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle;
    int errcode;
    char msg[256];
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

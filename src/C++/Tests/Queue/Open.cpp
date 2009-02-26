@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    string qname = fname + "/test";
    const char * c_name = "/cpp_queue_open/test";
    psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { PSO_QUEUE, 1 };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -53,8 +53,13 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, folderDef, NULL, NULL );
-      session1.CreateObject( qname, queueDef, NULL, fields );
+      session1.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session1.CreateObject( qname,
+                            queueDef,
+                            NULL,
+                            0,
+                            (unsigned char *)fields,
+                            sizeof(psoFieldDefinition) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
