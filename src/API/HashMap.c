@@ -159,6 +159,56 @@ int psoHashMapDefinition( PSO_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int psoHashMapDefLength( PSO_HANDLE   objectHandle, 
+                         psoUint32  * keyLength,
+                         psoUint32  * fieldsLength )
+{
+   psoaHashMap * pHashMap;
+   int errcode = 0;
+   psonSessionContext * pContext;
+
+   pHashMap = (psoaHashMap *) objectHandle;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pHashMap->object.type != PSOA_HASH_MAP ) {
+      return PSO_WRONG_TYPE_HANDLE;
+   }
+
+   pContext = &pHashMap->object.pSession->context;
+
+   if ( keyLength == NULL ) {
+      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( fieldsLength == NULL ) {
+      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   if ( ! pHashMap->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pHashMap->object ) ) {
+         *keyLength = pHashMap->keyDefLength;
+         *fieldsLength = pHashMap->fieldsDefLength;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != 0 ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int psoHashMapDelete( PSO_HANDLE   objectHandle,
                       const void * key,
                       uint32_t     keyLength )

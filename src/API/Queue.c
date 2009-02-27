@@ -145,6 +145,49 @@ int psoQueueDefinition( PSO_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int psoQueueDefLength( PSO_HANDLE   objectHandle, 
+                       psoUint32  * fieldsLength )
+{
+   psoaQueue * pQueue;
+   int errcode = 0;
+   psonSessionContext * pContext;
+
+   pQueue = (psoaQueue *) objectHandle;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pQueue->object.type != PSOA_LIFO ) {
+      return PSO_WRONG_TYPE_HANDLE;
+   }
+
+   pContext = &pQueue->object.pSession->context;
+
+   if ( fieldsLength == NULL ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   if ( ! pQueue->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         *fieldsLength = pQueue->fieldsDefLength;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != 0 ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       void       * buffer,
                       uint32_t     bufferLength,
