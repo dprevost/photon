@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, NULL );
+      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
       session.CreateObject( hname, queueDef );
       queue.Open( hname );
       queue.Push( &data, sizeof(data) );

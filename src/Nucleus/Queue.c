@@ -266,7 +266,8 @@ bool psonQueueInit( psonQueue           * pQueue,
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
-   PSO_PRE_CONDITION( pDefinition->numFields > 0 );
+   PSO_PRE_CONDITION( pDefinition->definitionType > 0 && 
+                      pDefinition->definitionType < PSO_DEF_LAST_TYPE );
    
    errcode = psonMemObjectInit( &pQueue->memObject, 
                                 PSON_IDENT_QUEUE,
@@ -288,7 +289,7 @@ bool psonQueueInit( psonQueue           * pQueue,
 
    psonLinkedListInit( &pQueue->listOfElements );
 
-   pQueue->numFields = (uint16_t) pDefinition->numFields;
+   pQueue->definitionType = pDefinition->definitionType;
 
    ptr = (char *)psonMalloc( &pQueue->memObject, fieldsLength, pContext );
    if ( ptr == NULL ) {

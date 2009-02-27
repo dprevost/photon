@@ -37,7 +37,7 @@ int main( int argc, char * argv[] )
    string name = "/cpp_session_destroy";
    const char * c_name = "/cpp_session_destroy";
    psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { PSO_QUEUE, 1 };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
    };
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      session1.CreateObject( name, folderDef, NULL, NULL );
+      session1.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -205,7 +205,12 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session1.CreateObject( name, queueDef, NULL, fields );
+      session1.CreateObject( name,
+                             queueDef,
+                             NULL,
+                             0, 
+                             (unsigned char *)fields,
+                             sizeof(psoFieldDefinition) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

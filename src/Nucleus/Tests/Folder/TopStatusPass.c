@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psoObjStatus status;
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 

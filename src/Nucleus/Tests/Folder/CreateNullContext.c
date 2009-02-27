@@ -29,7 +29,7 @@ int main()
 #if defined(USE_DBC)
    psonFolder * pFolder;
    psonSessionContext context;
-   psoObjectDefinition def = { PSO_FOLDER, 0 };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 

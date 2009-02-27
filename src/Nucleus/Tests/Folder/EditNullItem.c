@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, 1 };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition key = { PSO_KEY_VAR_STRING, 0, 1, 100 };
    
    const unsigned char * fields =  (unsigned char *)"A dummy definition";

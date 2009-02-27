@@ -122,7 +122,7 @@ int psoQueueDefinition( PSO_HANDLE            objectHandle,
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
          pDefinition->type = PSO_QUEUE;
-         pDefinition->numFields = pMemQueue->numFields;
+         pDefinition->definitionType = pMemQueue->definitionType;
          if ( pFields != NULL ) {
             memcpy( pFields, pQueue->fieldsDef, pQueue->fieldsDefLength );
          }

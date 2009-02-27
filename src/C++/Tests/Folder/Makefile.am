@@ -19,13 +19,13 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 check_PROGRAMS =     \
         ClosePass    \
         Create       \
-        CreateXML    \
         Destroy      \
         GetFirstPass \
         GetNextPass  \
         OpenPass     \
         StatusPass   
 
+#        CreateXML    
 ClosePass_SOURCES    = ClosePass.cpp
 Create_SOURCES       = Create.cpp
 CreateXML_SOURCES    = CreateXML.cpp
@@ -58,12 +58,13 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                 \
         ClosePass.sh    \
         Create.sh       \
-        CreateXML.sh    \
         Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
         OpenPass.sh     \
         StatusPass.sh   
+
+#        CreateXML.sh    
 
 XFAIL_TESTS = 
 

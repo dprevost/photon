@@ -59,7 +59,7 @@ int main()
    int countIn = 0, countOut = 0, errcode;
    Queue q1(session), q2(session);
 
-   psoObjectDefinition queueDef = { PSO_QUEUE, 1 };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = { 
       { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
    };

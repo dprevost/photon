@@ -145,7 +145,7 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
          if ( pKey != NULL ) {
             memcpy( pKey, pHashMap->keyDef, pHashMap->keyDefLength );
          }
-         pDefinition->numFields = pMemHashMap->numFields;
+         pDefinition->definitionType = pMemHashMap->definitionType;
 
          if ( pFields != NULL ) {
             memcpy( pFields, pHashMap->fieldsDef, pHashMap->fieldsDefLength );

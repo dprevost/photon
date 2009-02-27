@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    string hname = fname + "/test";
    const char * c_name = "/cpp_hashmap_open/test";
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, 1 };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
@@ -54,8 +54,13 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, folderDef, NULL, NULL );
-      session1.CreateObject( hname, mapDef, &keyDef, fields );
+      session1.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session1.CreateObject( hname,
+                             mapDef, 
+                             (unsigned char *)&keyDef,
+                             sizeof(psoKeyDefinition),
+                             (unsigned char *)fields,
+                             sizeof(psoFieldDefinition) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

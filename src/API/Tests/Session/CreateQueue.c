@@ -30,8 +30,8 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle;
    int errcode;
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0 };
-   psoObjectDefinition queueDef = { PSO_QUEUE, 1 };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[2] = {
       { "field1", PSO_INTEGER, 3, 0, 0, 0, 0 },
       { "dummy",  PSO_INTEGER, 1, 0, 0, 0, 0 }

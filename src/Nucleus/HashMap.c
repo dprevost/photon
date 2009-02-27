@@ -609,7 +609,8 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks  > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
-   PSO_PRE_CONDITION( pDefinition->numFields > 0 );
+   PSO_PRE_CONDITION( pDefinition->definitionType > 0 && 
+                      pDefinition->definitionType < PSO_DEF_LAST_TYPE );
    
    errcode = psonMemObjectInit( &pHashMap->memObject, 
                                 PSON_IDENT_HASH_MAP,
@@ -640,7 +641,7 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
       return false;
    }
    
-   pHashMap->numFields = (uint16_t) pDefinition->numFields;
+   pHashMap->definitionType = pDefinition->definitionType;
 
    ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
                                       fieldsLength, pContext );

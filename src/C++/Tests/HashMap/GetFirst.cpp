@@ -41,7 +41,7 @@ int main( int argc, char * argv[] )
    char buffKey[50];
    uint32_t dataLength, keyLength;
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, 1 };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 } 
@@ -58,8 +58,13 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, NULL );
-      session.CreateObject( hname, mapDef, &keyDef, fields );
+      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session.CreateObject( hname,
+                            mapDef,
+                            (unsigned char *)&keyDef,
+                            sizeof(psoKeyDefinition),
+                            (unsigned char *)fields,
+                            sizeof(psoFieldDefinition) );
       hashmap.Open( hname );
       hashmap.Insert( key, 6, data, 7 );
    }

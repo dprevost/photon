@@ -41,7 +41,7 @@ int main( int argc, char * argv[] )
    uint32_t length;
    char buffer[50];
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, 1 };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
@@ -59,8 +59,13 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session2.CreateObject( fname, folderDef, NULL, NULL );
-      session2.CreateObject( hname, mapDef, &keyDef, fields );
+      session2.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session2.CreateObject( hname,
+                             mapDef, 
+                             (unsigned char *)&keyDef,
+                             sizeof(psoKeyDefinition),
+                             (unsigned char *)fields,
+                             sizeof(psoFieldDefinition) );
       session2.Commit();
       hashmap.Open( hname );
       editor.Open( hname );
