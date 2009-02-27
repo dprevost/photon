@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 4, 10 };
    psoFieldDefinition fields[1] = {
-      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
+      { "Field_1", PSO_VARCHAR, {10} }
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
    

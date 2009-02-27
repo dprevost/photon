@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    psoaDataEntry entry;
    psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
-      { "Field_1", PSO_VAR_STRING, 0, 4, 10, 0, 0 }
+      { "Field_1", PSO_VARCHAR, {10} }
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
 

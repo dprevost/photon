@@ -59,9 +59,9 @@ int main( int argc, char * argv[] )
    try {
       queueDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
       queueDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
-      queueDef.AddField( "field3", 6, PSO_STRING,    30, 0, 0, 0, 0 );
+      queueDef.AddField( "field3", 6, PSO_CHAR,    30, 0, 0, 0, 0 );
       queueDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
-      queueDef.AddField( "field5", 6, PSO_VAR_BINARY, 0, 0, 0, 0, 0 );
+      queueDef.AddField( "field5", 6, PSO_VARBINARY, 0, 0, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

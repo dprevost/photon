@@ -113,7 +113,7 @@ psoCommon.h \-
 .RI "enum \fBpsoIteratorType\fP { \fBPSO_FIRST\fP =  1, \fBPSO_NEXT\fP =  2 }"
 .br
 .ti -1c
-.RI "enum \fBpsoFieldType\fP { \fBPSO_INTEGER\fP =  1, \fBPSO_BINARY\fP, \fBPSO_STRING\fP, \fBPSO_DECIMAL\fP, \fBPSO_BOOLEAN\fP, \fBPSO_VAR_BINARY\fP, \fBPSO_VAR_STRING\fP }"
+.RI "enum \fBpsoFieldType\fP { \fBPSO_INTEGER\fP =  1, \fBPSO_BINARY\fP, \fBPSO_CHAR\fP, \fBPSO_DECIMAL\fP, \fBPSO_TINYINT\fP, \fBPSO_VARBINARY\fP, \fBPSO_VARCHAR\fP }"
 .br
 .RI "\fIPhoton supported data types. \fP"
 .ti -1c
@@ -202,20 +202,20 @@ Photon supported data types.
 .TP
 \fB\fIPSO_BINARY \fP\fP
 .TP
-\fB\fIPSO_STRING \fP\fP
+\fB\fIPSO_CHAR \fP\fP
 .TP
 \fB\fIPSO_DECIMAL \fP\fP
 The decimal type should be mapped to an array of bytes of length precision + 2 (optional sign and the decimal separator). 
 .TP
-\fB\fIPSO_BOOLEAN \fP\fP
+\fB\fIPSO_TINYINT \fP\fP
 The boolean type should be mapped to a single byte in a C struct. 
 .PP
 
 .TP
-\fB\fIPSO_VAR_BINARY \fP\fP
+\fB\fIPSO_VARBINARY \fP\fP
 Only valid for the last field of the data definition. 
 .TP
-\fB\fIPSO_VAR_STRING \fP\fP
+\fB\fIPSO_VARCHAR \fP\fP
 Only valid for the last field of the data definition. 
 .PP
 Definition at line 133 of file psoCommon.h.

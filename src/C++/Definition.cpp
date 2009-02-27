@@ -130,7 +130,7 @@ void ObjDefinition::AddField( const char   * name,
       break;
 
    case PSO_BINARY:
-   case PSO_STRING:
+   case PSO_CHAR:
       if ( length == 0 ) {
          throw pso::Exception( "ObjDefinition::AddField",
                                PSO_INVALID_FIELD_LENGTH );
@@ -140,8 +140,8 @@ void ObjDefinition::AddField( const char   * name,
       currentField++;
       break;
 
-   case PSO_VAR_BINARY:
-   case PSO_VAR_STRING:
+   case PSO_VARBINARY:
+   case PSO_VARCHAR:
       if ( currentField != definition.numFields-1 ) {
          throw pso::Exception( "ObjDefinition::AddField",
                                PSO_INVALID_FIELD_TYPE );
@@ -156,7 +156,7 @@ void ObjDefinition::AddField( const char   * name,
       currentField++;
       break;
 
-   case PSO_BOOLEAN:
+   case PSO_TINYINT:
       fields[currentField].type = type;
       currentField++;
       break;

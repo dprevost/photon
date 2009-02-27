@@ -114,7 +114,7 @@ int main( int argc, char * argv[] )
    name = "abcd2";
    
    try {
-      def.AddField( name, PSO_STRING, 0, 0, 0, 0, 0 );
+      def.AddField( name, PSO_CHAR, 0, 0, 0, 0, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -127,7 +127,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      def.AddField( name, PSO_STRING, 12, 0, 0, 0, 0 );
+      def.AddField( name, PSO_CHAR, 12, 0, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -160,7 +160,7 @@ int main( int argc, char * argv[] )
    name = "abcd4";
    
    try {
-      def.AddField( name, PSO_VAR_BINARY, 0, 10, 20, 0, 0 );
+      def.AddField( name, PSO_VARBINARY, 0, 10, 20, 0, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -173,7 +173,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      def.AddField( name, PSO_VAR_STRING, 0, 10, 20, 0, 0 );
+      def.AddField( name, PSO_VARCHAR, 0, 10, 20, 0, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -187,7 +187,7 @@ int main( int argc, char * argv[] )
    
 ///
    try {
-      def.AddField( name, PSO_BOOLEAN, 0, 0, 0, 0, 0 );
+      def.AddField( name, PSO_TINYINT, 0, 0, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -233,7 +233,7 @@ int main( int argc, char * argv[] )
    name = "abcd6";
 
    try {
-      def.AddField( name, PSO_VAR_BINARY, 0, 20, 10, 0, 0 );
+      def.AddField( name, PSO_VARBINARY, 0, 20, 10, 0, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -246,7 +246,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      def.AddField( name, PSO_VAR_BINARY, 0, 20, 0, 0, 0 );
+      def.AddField( name, PSO_VARBINARY, 0, 20, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

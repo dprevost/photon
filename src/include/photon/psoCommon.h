@@ -29,9 +29,13 @@
  * and possibly client code using Photon.
  */
 #ifdef _MSC_VER
+typedef          __int16 psoInt16;
+typedef unsigned __int16 psoUint16;
 typedef unsigned __int32 psoUint32;
 #else
 #  include <stdint.h>
+typedef  int16_t psoInt16;
+typedef uint16_t psoUint16;
 typedef uint32_t psoUint32;
 #endif
 

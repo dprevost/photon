@@ -90,8 +90,8 @@ int initObjects()
    pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
    pDefQueue->type = PSO_QUEUE;
    pDefQueue->numFields = 2;
-   pDefQueue->fields[0].type = PSO_STRING;
-   pDefQueue->fields[1].type = PSO_VAR_STRING;
+   pDefQueue->fields[0].type = PSO_CHAR;
+   pDefQueue->fields[1].type = PSO_VARCHAR;
 
    pDefQueue->fields[0].length = 2;
    pDefQueue->fields[1].minLength = 1;
