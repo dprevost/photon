@@ -85,8 +85,6 @@ public:
     * the proper size for \em fields.
     *
     * \param[out] definition The definition of the object.
-    * \param[in]  numFields The length of the array \em fields. Can be set to 
-    *             zero to get the actual number of fields.
     * \param[in]  fields An opaque definition of the data fields of the object.
     *             It can be set to NULL if you do not want to retrieve the
     *             definition.
@@ -96,7 +94,6 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Definition( psoObjectDefinition & definition,
-                    psoUint32             numFields,
                     unsigned char       * fields,
                     psoUint32             fieldsLength );
 

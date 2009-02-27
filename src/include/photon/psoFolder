@@ -84,12 +84,12 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      const unsigned char * key,
-                      psoUint32             keyLength,
-                      const unsigned char * fields,
-                      psoUint32             fieldsLength );
+   void CreateObject( const std::string         & objectName,
+                      const psoObjectDefinition & definition,
+                      const unsigned char       * key,
+                      psoUint32                   keyLength,
+                      const unsigned char       * fields,
+                      psoUint32                   fieldsLength );
 
    /**
     * Create a new object in shared memory as a child of the current folder.

@@ -65,10 +65,12 @@ void Folder::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Folder::CreateObject( const std::string   & objectName,
-                           psoObjectDefinition & definition,
-                           psoKeyDefinition    * pKey,
-                           psoFieldDefinition  * fields )
+void Folder::CreateObject( const std::string         & objectName,
+                           const psoObjectDefinition & definition,
+                           const unsigned char       * key,
+                           psoUint32                   keyLength,
+                           const unsigned char       * fields,
+                           psoUint32                   fieldsLength )
 {
    int rc;
    
@@ -79,9 +81,11 @@ void Folder::CreateObject( const std::string   & objectName,
    rc = psoFolderCreateObject( m_objectHandle,
                                objectName.c_str(),
                                objectName.length(),
-                               &definition,
-                               pKey,
-                               fields );
+                               (psoObjectDefinition *)&definition,
+                               key,
+                               keyLength,
+                               fields,
+                               fieldsLength );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
    }
@@ -92,8 +96,10 @@ void Folder::CreateObject( const std::string   & objectName,
 void Folder::CreateObject( const char          * objectName,
                            uint32_t              nameLengthInBytes,
                            psoObjectDefinition & definition,
-                           psoKeyDefinition    * pKey,
-                           psoFieldDefinition  * fields )
+                           const unsigned char * key,
+                           psoUint32             keyLength,
+                           const unsigned char * fields,
+                           psoUint32             fieldsLength )
 {
    int rc;
    
@@ -105,8 +111,10 @@ void Folder::CreateObject( const char          * objectName,
                                objectName,
                                nameLengthInBytes,
                                &definition,
-                               pKey,
-                               fields );
+                               key,
+                               keyLength,
+                               fields,
+                               fieldsLength );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
    }
@@ -114,6 +122,7 @@ void Folder::CreateObject( const char          * objectName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void Folder::CreateObjectXML( const std::string & xmlBuffer )
 {
    int rc;
@@ -148,6 +157,7 @@ void Folder::CreateObjectXML( const char * xmlBuffer,
       throw pso::Exception( m_sessionHandle, "Folder::CreateObjectXML" );
    }
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

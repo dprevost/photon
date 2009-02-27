@@ -65,6 +65,7 @@ void HashMap::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void HashMap::Definition( ObjDefinition & definition )
 {
    int rc;
@@ -103,13 +104,15 @@ void HashMap::Definition( ObjDefinition & definition )
    
    free( fields );
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void HashMap::Definition( psoObjectDefinition & definition,
-                          psoKeyDefinition    & key,
-                          psoUint32             numFields,
-                          psoFieldDefinition  * fields )
+                          unsigned char       * key,
+                          psoUint32             keyLength,
+                          unsigned char       * fields,
+                          psoUint32             fieldsLength )
 {
    int rc;
    
@@ -119,9 +122,10 @@ void HashMap::Definition( psoObjectDefinition & definition,
 
    rc = psoHashMapDefinition( m_objectHandle, 
                               &definition,
-                              &key,
-                              numFields,
-                              fields );   
+                              key,
+                              keyLength,
+                              fields,
+                              fieldsLength );   
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
    }

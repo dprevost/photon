@@ -66,6 +66,7 @@ void Queue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void Queue::Definition( ObjDefinition & definition )
 {
    int rc;
@@ -102,12 +103,13 @@ void Queue::Definition( ObjDefinition & definition )
    
    free( fields );
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Queue::Definition( psoObjectDefinition & definition,
-                        psoUint32             numFields,
-                        psoFieldDefinition  * fields )
+                        unsigned char       * fields,
+                        psoUint32             fieldsLength )
 {
    int rc;
    
@@ -117,8 +119,8 @@ void Queue::Definition( psoObjectDefinition & definition,
 
    rc = psoQueueDefinition( m_objectHandle, 
                            &definition,
-                           numFields,
-                           fields );
+                           fields,
+                           fieldsLength );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Queue::Definition" );
    }

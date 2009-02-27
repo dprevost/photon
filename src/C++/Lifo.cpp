@@ -66,6 +66,7 @@ void Lifo::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void Lifo::Definition( ObjDefinition & definition )
 {
    int rc;
@@ -102,12 +103,13 @@ void Lifo::Definition( ObjDefinition & definition )
    
    free( fields );
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Lifo::Definition( psoObjectDefinition & definition,
-                       psoUint32             numFields,
-                       psoFieldDefinition  * fields )
+                       unsigned char       * fields,
+                       psoUint32             fieldsLength )
 {
    int rc;
    
@@ -117,8 +119,8 @@ void Lifo::Definition( psoObjectDefinition & definition,
 
    rc = psoLifoDefinition( m_objectHandle, 
                            &definition,
-                           numFields,
-                           fields );
+                           fields,
+                           fieldsLength );
    
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Lifo::Definition" );
