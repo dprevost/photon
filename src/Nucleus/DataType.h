@@ -32,6 +32,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if 0
 /**
  * Structure used to describe the data. If you modify this struct and its
  * length is not a multiple of sizeof(void*), you might have an alignment
@@ -51,6 +52,8 @@ typedef struct psonFieldDef psonFieldDef;
 
 #define PSON_GET_SCALE(ptr,i) (ptr[i].length2)
 #define PSON_GET_PRECISION(ptr,i) (ptr[i].length1)
+
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -72,6 +72,7 @@ BEGIN_C_DECLS
 //                            psoKeyDefinition    * pKey,
 //                            psoFieldDefinition  * pFields );
 
+#if 0
 PHOTON_API_EXPORT
 int psoaXmlToDefinition( const char           * xmlBuffer,
                          uint32_t               lengthInBytes,
@@ -80,7 +81,7 @@ int psoaXmlToDefinition( const char           * xmlBuffer,
                          psoFieldDefinition  ** ppFields,
                          char                ** objectName,
                          uint32_t             * nameLengthInBytes );
-
+#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

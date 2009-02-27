@@ -58,7 +58,7 @@ struct psonHashMap
 
    struct psonHashTx      hashObj;
 
-   struct psoKeyDefinition keyDef;
+//   struct psoKeyDefinition keyDef;
    
    /** Offset to the data definition */
    ptrdiff_t            dataDefOffset;
