@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/afcr",
-                              strlen("/afcr"),
+                              "/api_folder_create",
+                              strlen("/api_folder_create"),
                               &def,
                               NULL,
                               0,
@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afcr",
-                            strlen("/afcr"),
+                            "/api_folder_create",
+                            strlen("/api_folder_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoFolderCreateObject( folderHandle,
                                     NULL,
-                                    strlen("afcr"),
+                                    strlen("api_folder_create"),
                                     &def,
                                     NULL,
                                     0,
@@ -90,7 +90,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr",
+                                    "api_folder_create",
                                     0,
                                     &def,
                                     NULL,
@@ -104,8 +104,8 @@ int main( int argc, char * argv[] )
 
    def.type = 0;
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
                                     &def,
                                     NULL,
                                     0,
@@ -117,8 +117,8 @@ int main( int argc, char * argv[] )
    }
    def.type = PSO_QUEUE;
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
                                     &def,
                                     NULL,
                                     0,
@@ -131,8 +131,8 @@ int main( int argc, char * argv[] )
    def.type = PSO_FOLDER;
    
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
                                     NULL,
                                     NULL,
                                     0,
@@ -145,8 +145,8 @@ int main( int argc, char * argv[] )
    
    /* End of invalid args. This call should succeed. */
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr",
-                                    strlen("afcr"),
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
                                     &def,
                                     NULL,
                                     0,
@@ -165,8 +165,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr2",
-                                    strlen("afcr2"),
+                                    "api_folder_create2",
+                                    strlen("api_folder_create2"),
                                     &def,
                                     NULL,
                                     0,
@@ -180,8 +180,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afcr",
-                            strlen("/afcr"),
+                            "/api_folder_create",
+                            strlen("/api_folder_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -190,8 +190,8 @@ int main( int argc, char * argv[] )
    psoExit();
    
    errcode = psoFolderCreateObject( folderHandle,
-                                    "afcr3",
-                                    strlen("afcr3"),
+                                    "api_folder_create3",
+                                    strlen("api_folder_create3"),
                                     &def,
                                     NULL,
                                     0,

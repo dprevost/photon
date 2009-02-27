@@ -60,8 +60,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/afop",
-                              strlen("/afop"),
+                              "/api_folder_open",
+                              strlen("/api_folder_open"),
                               &def,
                               NULL,
                               0,
@@ -75,8 +75,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoFolderOpen( NULL,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_open",
+                            strlen("/api_folder_open"),
                             &objHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -85,8 +85,8 @@ int main( int argc, char * argv[] )
 
    objHandle = (PSO_HANDLE) junk;
    errcode = psoFolderOpen( objHandle,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_open",
+                            strlen("/api_folder_open"),
                             &objHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -95,7 +95,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoFolderOpen( sessionHandle,
                             NULL,
-                            strlen("/afop"),
+                            strlen("/api_folder_open"),
                             &objHandle );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -103,7 +103,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afop",
+                            "/api_folder_open",
                             0,
                             &objHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
@@ -112,8 +112,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_open",
+                            strlen("/api_folder_open"),
                             NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -122,8 +122,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoFolderOpen( sessionHandle,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_open",
+                            strlen("/api_folder_open"),
                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -131,8 +131,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle2,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_open",
+                            strlen("/api_folder_open"),
                             &objHandle2 );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -158,8 +158,8 @@ int main( int argc, char * argv[] )
     * a bit dangerous to use it.
     */
    errcode = psoFolderOpen( sessionHandle,
-                            "/afop",
-                            strlen("/afop"),
+                            "/api_folder_open",
+                            strlen("/api_folder_open"),
                             &objHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );

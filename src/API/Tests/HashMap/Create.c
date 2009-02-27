@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ahmcr",
-                              strlen("/ahmcr"),
+                              "/api_hashmap_create",
+                              strlen("/api_hashmap_create"),
                               &def,
                               NULL,
                               0,
@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/ahmcr",
-                            strlen("/ahmcr"),
+                            "/api_hashmap_create",
+                            strlen("/api_hashmap_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -81,8 +81,8 @@ int main( int argc, char * argv[] )
    memset( fields, 0, 2*sizeof(psoFieldDefinition) );
    
    errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr",
-                                    strlen("ahmcr"),
+                                    "my_map",
+                                    strlen("my_map"),
                                     &definition,
                                     (unsigned char *)&keyDef,
                                     sizeof(psoKeyDefinition),
@@ -95,8 +95,8 @@ int main( int argc, char * argv[] )
 
    definition.type = PSO_HASH_MAP;   
    errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr",
-                                    strlen("ahmcr"),
+                                    "my_map",
+                                    strlen("my_map"),
                                     &definition,
                                     (unsigned char *)&keyDef,
                                     sizeof(psoKeyDefinition),
@@ -108,8 +108,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr",
-                                    strlen("ahmcr"),
+                                    "my_map",
+                                    strlen("my_map"),
                                     &definition,
                                     NULL,
                                     0,
@@ -122,8 +122,8 @@ int main( int argc, char * argv[] )
    
    /* End of invalid args. This call should succeed. */
    errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr",
-                                    strlen("ahmcr"),
+                                    "my_map",
+                                    strlen("my_map"),
                                     &def,
                                     (unsigned char *)&keyDef,
                                     sizeof(psoKeyDefinition),
@@ -142,8 +142,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr2",
-                                    strlen("ahmcr2"),
+                                    "my_map2",
+                                    strlen("my_map2"),
                                     &def,
                                     (unsigned char *)&keyDef,
                                     sizeof(psoKeyDefinition),
@@ -157,8 +157,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/ahmcr",
-                            strlen("/ahmcr"),
+                            "/api_hashmap_create",
+                            strlen("/api_hashmap_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -167,8 +167,8 @@ int main( int argc, char * argv[] )
    psoExit();
    
    errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr3",
-                                    strlen("ahmcr3"),
+                                    "my_map3",
+                                    strlen("my_map3"),
                                     &def,
                                     (unsigned char *)&keyDef,
                                     sizeof(psoKeyDefinition),

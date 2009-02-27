@@ -56,8 +56,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ahcp",
-                              strlen("/ahcp"),
+                              "/api_hashmap_close",
+                              strlen("/api_hashmap_close"),
                               &folderDef,
                               NULL,
                               0,
@@ -69,8 +69,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ahcp/test",
-                              strlen("/ahcp/test"),
+                              "/api_hashmap_close/test",
+                              strlen("/api_hashmap_close/test"),
                               &mapDef,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyDefinition),
@@ -82,8 +82,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahcp/test",
-                             strlen("/ahcp/test"),
+                             "/api_hashmap_close/test",
+                             strlen("/api_hashmap_close/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -114,8 +114,8 @@ int main( int argc, char * argv[] )
    /* Close the session and try to act on the object */
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahcp/test",
-                             strlen("/ahcp/test"),
+                             "/api_hashmap_close/test",
+                             strlen("/api_hashmap_close/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

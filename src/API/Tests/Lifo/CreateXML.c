@@ -75,7 +75,6 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_cx",
                               strlen("/api_lifo_cx"),
-                              strlen("/afgnp/f1"),
                               &def,
                               NULL,
                               0,
