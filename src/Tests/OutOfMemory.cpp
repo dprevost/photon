@@ -61,7 +61,7 @@ int main()
 
    psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = { 
-      { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } 
+      { "Field_1", PSO_VARCHAR, 0, 1, 100, 0, 0 } 
    };
    psoObjectDefinition folderDef;
 

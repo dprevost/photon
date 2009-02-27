@@ -471,7 +471,7 @@ void shellBuffToOut( string        & outStr,
                      fields[i].length,
                      &buffer[offsets[i]] );
          break;
-      case PSO_STRING:
+      case PSO_CHAR:
          readString( s,
                      fields[i].length,
                      &buffer[offsets[i]] );
@@ -481,15 +481,15 @@ void shellBuffToOut( string        & outStr,
                       fields[i].precision,
                       &buffer[offsets[i]] );
          break;
-      case PSO_BOOLEAN:
+      case PSO_TINYINT:
          readBool( s, &buffer[offsets[i]] );
          break;
-      case PSO_VAR_STRING:
+      case PSO_VARCHAR:
          readString( s,
                      length - offsets[i],
                      &buffer[offsets[i]] );
          break;
-      case PSO_VAR_BINARY:
+      case PSO_VARBINARY:
          readBinary( s,
                      length - offsets[i],
                      &buffer[offsets[i]] );
@@ -558,7 +558,7 @@ unsigned char * shellInToBuff( string        & inStr,
    switch( fields[i].type ) {
 
    case PSO_BINARY:
-   case PSO_STRING:
+   case PSO_CHAR:
    case PSO_INTEGER:
       length += fields[i].length;
       break;
@@ -567,11 +567,11 @@ unsigned char * shellInToBuff( string        & inStr,
       length += fields[i].precision + 2;
       break;
 
-   case PSO_BOOLEAN:
+   case PSO_TINYINT:
       length++;
       break;
 
-   case PSO_VAR_STRING:
+   case PSO_VARCHAR:
       if ( inData[i].length() > fields[i].minLength ) {
          length += inData[i].length();
       }
@@ -580,7 +580,7 @@ unsigned char * shellInToBuff( string        & inStr,
       }
       break;
 
-   case PSO_VAR_BINARY:
+   case PSO_VARBINARY:
       // the input of binary data  is hexadecimal - possibly preceded with
       // 0x or 0X
       size_t z = inData[i].length() / 2;
@@ -613,7 +613,7 @@ unsigned char * shellInToBuff( string        & inStr,
                               fields[i].length,
                               &buffer[offsets[i]] );
          break;
-      case PSO_STRING:
+      case PSO_CHAR:
          ok = writeFixString( inData[i],
                               fields[i].length,
                               &buffer[offsets[i]] );
@@ -625,16 +625,16 @@ unsigned char * shellInToBuff( string        & inStr,
                             fields[i].scale,
                             &buffer[offsets[i]] );
          break;
-      case PSO_BOOLEAN:
+      case PSO_TINYINT:
          ok = writeBool( inData[i], &buffer[offsets[i]] );
          break;
-      case PSO_VAR_STRING:
+      case PSO_VARCHAR:
          ok = writeVarString( inData[i],
                               fields[i].minLength,
                               fields[i].maxLength,
                               &buffer[offsets[i]] );
          break;
-      case PSO_VAR_BINARY:
+      case PSO_VARBINARY:
          ok = writeVarBinary( inData[i],
                               fields[i].minLength,
                               fields[i].maxLength,

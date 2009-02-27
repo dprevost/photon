@@ -63,19 +63,46 @@ extern "C" {
  */
 enum psoFieldType
 {
-   PSO_INTEGER = 1,
-   PSO_BINARY,
-   PSO_STRING,
-   /** The decimal type should be mapped to an array of bytes of length
-    *  precision + 2 (optional sign and the decimal separator).
+   PSO_CHAR = 10001,
+   PSO_VARCHAR,
+   PSO_LONGVARCHAR,
+   
+   /** A one-byte integer. */
+   PSO_TINYINT,
+   
+   /** A two-bytes integer. */
+   PSO_SMALLINT,
+   
+   /** A four-bytes integer. */
+   PSO_INTEGER,
+   
+   PSO_BIGINT,
+   /** 
+    * The decimal type should be mapped to the psoNumericStruct struct.
     */
-   PSO_DECIMAL,
-   /** The boolean type should be mapped to a single byte in a C struct. */
-   PSO_BOOLEAN,
+   PSO_NUMERIC,
+   
+   PSO_REAL,
+   PSO_DOUBLE,
+   
+   /** An opaque type of fixed length. */
+   PSO_BINARY,
+
+   /** A variable length opaque type with a maximum length. */
+   PSO_VARBINARY,
+   
+   /**
+    * A variable length opaque type with no maximum length constraint.
+    *
+    * The length of that field is constrained by the maximum length
+    * of a data record.
+    */
    /** Only valid for the last field of the data definition */
-   PSO_VAR_BINARY,
-   /** Only valid for the last field of the data definition */
-   PSO_VAR_STRING
+   PSO_LONGVARBINARY,
+   
+   PSO_DATE,
+   PSO_TIME,
+   PSO_TIMESTAMP
 };
 
 /**
@@ -126,25 +153,69 @@ struct psoFieldDefinition
    /** The data type of the field/ */
    enum psoFieldType type;
    
-   /** For fixed-length data types */
-   psoUint32 length;
+   union {
+      psoUint32 length;
+
+      struct {
+         psoUint16 precision;
+         
+         psoUint32 scale;
+
+      } decimal;
+      
+   } vals;
+
+//   psoUint32 minLength;
 
    /** For variable-length data types */
-   psoUint32 minLength;
-
-   /** For variable-length data types */
-   psoUint32 maxLength;
+//   psoUint32 maxLength;
 
    /** Total number of digits in the decimal field. */
-   psoUint32 precision;
+//   psoUint32 precision;
 
    /** Number of digits following the decimal separator. */
-   psoUint32 scale;
+//   psoUint32 scale;
 };
 
 typedef struct psoFieldDefinition psoFieldDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * The following structures should be compatible with the C data types
+ * expected by ODBC drivers as described by the MSDN documentation.
+ */
+ 
+struct psoDateStruct {
+   psoInt16  year;
+   psoUint16 month;
+   psoUint16 day;  
+};
+
+struct psoTimeStruct {
+   psoUint16 hour;
+   psoUint16 minute;
+   psoUint16 second;
+}
+
+struct psoTimestampStruct {
+   psoInt16  year;
+   psoUint16 month;
+   psoUint16 day;
+   psoUint16 hour;
+   psoUint16 minute;
+   psoUint16 second;
+   psoUint32 fraction;
+}
+
+#define PSO_MAX_NUMERIC_LEN 16
+
+struct psoNumericStruct {
+   unsigned char precision;
+   signed char   scale;
+   unsigned char sign; // [g]
+   unsigned char val[PSO_MAX_NUMERIC_LEN]; // [e], [f] 
+}
 
 #ifdef __cplusplus
 }

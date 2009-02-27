@@ -43,7 +43,7 @@ int createMap()
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_STRING, 2, 0, 0}, 
-      { { "CountryName", PSO_VAR_STRING, 0, 1, 100, 0, 0} } 
+      { { "CountryName", PSO_VARCHAR, 0, 1, 100, 0, 0} } 
    };
 
    // If the map already exists, we remove it.

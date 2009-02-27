@@ -38,7 +38,7 @@ int main()
       PSO_HASH_MAP, 
       1, 
       { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
-      { { "Field_1", PSO_VAR_STRING, 0, 1, 100, 0, 0 } } 
+      { { "Field_1", PSO_VARCHAR, 0, 1, 100, 0, 0 } } 
    };
    
    pHashMap = initHashMapTest( expectedToPass, &context );

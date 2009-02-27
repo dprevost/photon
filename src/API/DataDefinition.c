@@ -56,7 +56,7 @@ int psoaGetDefinition( psonFieldDef       * pInternalDef,
       switch( pInternalDef[i].type ) {
 
       case PSO_BINARY:
-      case PSO_STRING:
+      case PSO_CHAR:
       case PSO_INTEGER:
          pFields[i].length = pInternalDef[i].length1;
          
@@ -68,12 +68,12 @@ int psoaGetDefinition( psonFieldDef       * pInternalDef,
 
          break;
 
-      case PSO_BOOLEAN:
+      case PSO_TINYINT:
 
          break;
 
-      case PSO_VAR_BINARY:
-      case PSO_VAR_STRING:
+      case PSO_VARBINARY:
+      case PSO_VARCHAR:
 
          pFields[i].minLength = pInternalDef[i].length1;
          pFields[i].maxLength = pInternalDef[i].length2;
@@ -102,7 +102,7 @@ void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
       *pMinLength = *pMaxLength = pKeyDef->length;
    }
    else {
-      /* PSO_KEY_VAR_BINARY || PSO_VAR_STRING */
+      /* PSO_KEY_VAR_BINARY || PSO_VARCHAR */
       *pMinLength = pKeyDef->minLength;
       *pMaxLength = pKeyDef->maxLength;
       if ( *pMaxLength == 0 ) *pMaxLength = (uint32_t) -1;
@@ -135,7 +135,7 @@ void psoaGetLimits( psonFieldDef * pDefinition,
       break;
 
    case PSO_BINARY:
-   case PSO_STRING:
+   case PSO_CHAR:
       minLength = pDefinition[0].length1;
       break;
 
@@ -143,12 +143,12 @@ void psoaGetLimits( psonFieldDef * pDefinition,
       minLength = pDefinition[0].length1 + 2;
       break;
 
-   case PSO_BOOLEAN:
+   case PSO_TINYINT:
       minLength = sizeof(bool);
       break;
 
-   case PSO_VAR_BINARY:
-   case PSO_VAR_STRING:
+   case PSO_VARBINARY:
+   case PSO_VARCHAR:
       minLength = pDefinition[0].length1;
       maxLength = pDefinition[0].length2;
       if ( maxLength == 0 ) maxLength = (uint32_t) -1;
@@ -178,7 +178,7 @@ void psoaGetLimits( psonFieldDef * pDefinition,
          break;
 
       case PSO_BINARY:
-      case PSO_STRING:
+      case PSO_CHAR:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
@@ -190,13 +190,13 @@ void psoaGetLimits( psonFieldDef * pDefinition,
 
          break;
 
-      case PSO_BOOLEAN:
+      case PSO_TINYINT:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_BOOL + 1)*PSOC_ALIGNMENT_BOOL;
          minLength += sizeof(bool);
          break;
 
-      case PSO_VAR_BINARY:
-      case PSO_VAR_STRING:
+      case PSO_VARBINARY:
+      case PSO_VARCHAR:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          minLength += pDefinition[i].length1;
 
@@ -240,7 +240,7 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
 
    case PSO_INTEGER:
    case PSO_BINARY:
-   case PSO_STRING:
+   case PSO_CHAR:
       minLength = pFields[0].length;
       break;
 
@@ -248,12 +248,12 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
       minLength = pFields[0].precision + 2;
       break;
 
-   case PSO_BOOLEAN:
+   case PSO_TINYINT:
       minLength = sizeof(bool);
       break;
 
-   case PSO_VAR_BINARY:
-   case PSO_VAR_STRING:
+   case PSO_VARBINARY:
+   case PSO_VARCHAR:
       /* A single field - a single offset ! */
       break;
    }
@@ -282,7 +282,7 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
          break;
 
       case PSO_BINARY:
-      case PSO_STRING:
+      case PSO_CHAR:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          pOffsets[i] = minLength;
 
@@ -298,15 +298,15 @@ void psoaGetOffsets( psoObjectDefinition * pDefinition,
 
          break;
 
-      case PSO_BOOLEAN:
+      case PSO_TINYINT:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_BOOL + 1)*PSOC_ALIGNMENT_BOOL;
          pOffsets[i] = minLength;
 
          minLength += sizeof(bool);
          break;
 
-      case PSO_VAR_BINARY:
-      case PSO_VAR_STRING:
+      case PSO_VARBINARY:
+      case PSO_VARCHAR:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          pOffsets[i] = minLength;
 
@@ -393,7 +393,7 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition,
             break;
 
          case PSO_BINARY:
-         case PSO_STRING:
+         case PSO_CHAR:
             if ( pFields[i].length == 0 ) {
                return PSO_INVALID_FIELD_LENGTH;
             }
@@ -410,11 +410,11 @@ int psoaValidateDefinition( psoObjectDefinition * pDefinition,
             }
             break;
 
-         case PSO_BOOLEAN:
+         case PSO_TINYINT:
             break;
 
-         case PSO_VAR_BINARY:
-         case PSO_VAR_STRING:
+         case PSO_VARBINARY:
+         case PSO_VARCHAR:
             /* These 2 types are only valid for the last field. */
             if ( i != (pDefinition->numFields-1) ) return PSO_INVALID_FIELD_TYPE;
             /* BIG WARNING: this rule is not captured by the XML schema */
@@ -797,7 +797,7 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   (*ppFields)[numFields].type = PSO_INTEGER;
                }
                else if ( xmlStrcmp( nodeType->name, BAD_CAST "boolean") == 0 ) {
-                  (*ppFields)[numFields].type = PSO_BOOLEAN;
+                  (*ppFields)[numFields].type = PSO_TINYINT;
                }
                else if ( (xmlStrcmp(nodeType->name, BAD_CAST "string") == 0) ||
                          (xmlStrcmp(nodeType->name, BAD_CAST "binary") == 0) ) {
@@ -812,7 +812,7 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   prop = NULL;
                   
                   if ( xmlStrcmp( nodeType->name, BAD_CAST "string") == 0 ) {
-                     (*ppFields)[numFields].type = PSO_STRING;
+                     (*ppFields)[numFields].type = PSO_CHAR;
                   }
                   else {
                      (*ppFields)[numFields].type = PSO_BINARY;
@@ -843,10 +843,10 @@ int psoaXmlToDefinition( const char          * xmlBuffer,
                   prop = NULL;
                   
                   if ( xmlStrcmp( nodeType->name, BAD_CAST "varString") == 0 ) {
-                     (*ppFields)[numFields].type = PSO_VAR_STRING;
+                     (*ppFields)[numFields].type = PSO_VARCHAR;
                   }
                   else {
-                     (*ppFields)[numFields].type = PSO_VAR_BINARY;
+                     (*ppFields)[numFields].type = PSO_VARBINARY;
                   }
                }
                else if ( xmlStrcmp(nodeType->name, BAD_CAST "decimal") == 0 ) {

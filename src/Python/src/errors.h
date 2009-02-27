@@ -2002,10 +2002,10 @@ PyObject * AddErrors(void)
     /*
      * The data type of the field definition does not correspond to one 
      * of the data type defined in the enum psoFieldType 
-     * (photon/psoCommon.h). or you've used PSO_VAR_STRING or 
-     * PSO_VAR_BINARY at the wrong place.
+     * (photon/psoCommon.h). or you've used PSO_VARCHAR or 
+     * PSO_VARBINARY at the wrong place.
      *
-     * Do not forget that PSO_VAR_STRING and PSO_VAR_BINAR can only be 
+     * Do not forget that PSO_VARCHAR and PSO_VAR_BINAR can only be 
      * used for the last field of your data definition.
      */
     value = PyInt_FromLong(102);

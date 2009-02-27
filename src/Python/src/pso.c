@@ -148,11 +148,11 @@ initpso(void)
    /* Field types */
    PyModule_AddIntConstant( m, "INTEGER",    PSO_INTEGER );
    PyModule_AddIntConstant( m, "BINARY",     PSO_BINARY );
-   PyModule_AddIntConstant( m, "STRING",     PSO_STRING );
+   PyModule_AddIntConstant( m, "STRING",     PSO_CHAR );
    PyModule_AddIntConstant( m, "DECIMAL",    PSO_DECIMAL );
-   PyModule_AddIntConstant( m, "BOOLEAN",    PSO_BOOLEAN );
-   PyModule_AddIntConstant( m, "VAR_BINARY", PSO_VAR_BINARY );
-   PyModule_AddIntConstant( m, "VAR_STRING", PSO_VAR_STRING );
+   PyModule_AddIntConstant( m, "BOOLEAN",    PSO_TINYINT );
+   PyModule_AddIntConstant( m, "VAR_BINARY", PSO_VARBINARY );
+   PyModule_AddIntConstant( m, "VAR_STRING", PSO_VARCHAR );
 
    /* Key types */
    PyModule_AddIntConstant( m, "KEY_INTEGER",    PSO_KEY_INTEGER );

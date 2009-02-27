@@ -64,15 +64,15 @@ PyObject * GetFieldType( enum psoFieldType type )
       return PyString_FromString( "Integer" );
    case PSO_BINARY:
       return PyString_FromString( "Binary" );
-   case PSO_STRING:
+   case PSO_CHAR:
       return PyString_FromString( "String" );
    case PSO_DECIMAL:
       return PyString_FromString( "Decimal" );
-   case PSO_BOOLEAN:
+   case PSO_TINYINT:
       return PyString_FromString( "Boolean" );
-   case PSO_VAR_BINARY:
+   case PSO_VARBINARY:
       return PyString_FromString( "Variable Binary" );
-   case PSO_VAR_STRING:
+   case PSO_VARCHAR:
       return PyString_FromString( "Variable String" );
    }
 

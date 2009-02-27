@@ -84,10 +84,10 @@ int main( int argc, char * argv[] )
 
    strcpy( fields[0].name, "Field_1" );
    queueDef.numFields = 2;
-   fields[0].type = PSO_VAR_BINARY;
+   fields[0].type = PSO_VARBINARY;
    fields[0].maxLength = 0;
    fields[0].minLength = 200;
-   fields[1].type = PSO_BOOLEAN;
+   fields[1].type = PSO_TINYINT;
    strcpy( fields[1].name, "Field_2" );
    errcode = psoCreateObject( sessionHandle,
                               "/ascq/test",
@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
 
    fields[0].type = PSO_BINARY;
    fields[0].length = 10;
-   fields[1].type = PSO_BOOLEAN;
+   fields[1].type = PSO_TINYINT;
    strcpy( fields[1].name, "Field_2" );
    errcode = psoCreateObject( sessionHandle,
                               "/ascq/test",
