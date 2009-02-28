@@ -25,8 +25,11 @@
 
 /*
  * We use our own type instead of one of the defined types to avoid
- * redefinition of the same symbol, either in building Photon itself
- * and possibly client code using Photon.
+ * redefinition of the same symbol.
+ *
+ * In other words, typedef unsigned __int32 uint32_t; on windows might 
+ * lead to compilation errors if uint32_t is already defined by the
+ * client program.
  */
 #ifdef _MSC_VER
 typedef          __int16 psoInt16;
@@ -119,8 +122,13 @@ enum psoDefinitionType
 {
    /** User-defined */
    PSO_DEF_USER_DEFINED = 11,
-   /** A simplified version of ODBC. */
-   PSO_DEF_PHOTON_ODBC = 12,
+   /**
+    * A simplified version of ODBC. 
+    * 
+    * The fields must all have a fixed length except for the last one. 
+    * This condition makes it easy to map the data record with a C struct.
+    */
+   PSO_DEF_PHOTON_ODBC_SIMPLE = 12,
    /** Google Protocol Buffer */
    PSO_DEF_PROTO_BUF = 13,
    /** Last type (for boundary checking) */

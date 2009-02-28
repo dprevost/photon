@@ -20,7 +20,7 @@
  * \file
  *
  * This file provides the basic data structures needed to implement 
- * the definition type PSO_DEF_PHOTON_ODBC.
+ * the definition type PSO_DEF_PHOTON_ODBC_SIMPLE.
  */
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -196,7 +196,7 @@ struct psoTimeStruct {
    psoUint16 hour;
    psoUint16 minute;
    psoUint16 second;
-}
+};
 
 struct psoTimestampStruct {
    psoInt16  year;
@@ -206,16 +206,16 @@ struct psoTimestampStruct {
    psoUint16 minute;
    psoUint16 second;
    psoUint32 fraction;
-}
+};
 
 #define PSO_MAX_NUMERIC_LEN 16
 
 struct psoNumericStruct {
    unsigned char precision;
-   signed char   scale;
+//   signed char   scale;
    unsigned char sign; // [g]
    unsigned char val[PSO_MAX_NUMERIC_LEN]; // [e], [f] 
-}
+};
 
 #ifdef __cplusplus
 }

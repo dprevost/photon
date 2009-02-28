@@ -20,7 +20,7 @@ CLEANFILES = *~ Packages\*~
 #   Last- Tests
 
 if COND_USE_JAVA
-  MAYBE_Java = Java
+#  MAYBE_Java = Java
 endif
 
 SUBDIRS =             \
