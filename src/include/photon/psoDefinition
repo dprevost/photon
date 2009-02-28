@@ -46,7 +46,7 @@ namespace pso {
  */
 class PHOTON_EXPORT ObjDefinition
 {
-public:
+protected:
 
    /**
     * Construct a data-container definition.
@@ -54,8 +54,22 @@ public:
     * This constructor is useful to query existing definitions but the
     * new object cannot be used to create new data containers (without 
     * calling ::Reset() - which is equivalent to the other constructor).
+    *
+    * \param[in] serializedKeyDef The serialized key definition as an 
+    *            array of bytes. This parameter can be NULL if the object
+    *            has no key.
+    * \param[in] keyDefLength The length in bytes of serializedKeyDef. 
+    *            Should be set to zero if serializedKeyDef is NULL.
+    * \param[in] serializedFieldDef The serialized definition of the data
+    *            fields as an array of bytes. It cannot be NULL.
+    * \param[in] fieldDefLength The length in bytes of serializedFieldDef.
+    *
+    * \exception pso::Exception An abnormal error occured.
     */
-   ObjDefinition();
+   ObjDefinition( unsigned char * serializedKeyDef,
+                  psoUint32       keydefLength,
+                  unsigned char * serializedFieldDef,
+                  psoUint32       fieldDefLength );
 
    /**
     * Construct a data-container definition.
@@ -66,6 +80,8 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    ObjDefinition( psoUint32 numberOfFields, enum psoObjectType type );
+
+public:
    
    virtual ~ObjDefinition();
 
@@ -216,6 +232,12 @@ private:
    
    /// was the key added?
    bool keyAdded;
+   
+   unsigned char * serializedKeyDef;
+   psoUint32       keydefLength;
+   unsigned char * serializedFieldDef;
+   psoUint32       fieldDefLength;
+
 };
 
 } // End of namespace
