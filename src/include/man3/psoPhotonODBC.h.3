@@ -1,0 +1,196 @@
+.TH "psoPhotonODBC.h" 3 "28 Feb 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+psoPhotonODBC.h \- 
+.SH "Detailed Description"
+.PP 
+This file provides the basic data structures needed to implement the definition type PSO_DEF_PHOTON_ODBC_SIMPLE. 
+
+
+.PP
+Definition in file \fBpsoPhotonODBC.h\fP.
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <photon/psoCommon.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBpsoKeyDefinition\fP"
+.br
+.RI "\fIDescription of the structure of the hash map key. \fP"
+.ti -1c
+.RI "struct \fBpsoFieldDefinition\fP"
+.br
+.RI "\fIThe number of fields in the definition. \fP"
+.ti -1c
+.RI "struct \fBpsoDateStruct\fP"
+.br
+.ti -1c
+.RI "struct \fBpsoTimeStruct\fP"
+.br
+.ti -1c
+.RI "struct \fBpsoTimestampStruct\fP"
+.br
+.ti -1c
+.RI "struct \fBpsoNumericStruct\fP"
+.br
+.in -1c
+.SS "Defines"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPSO_MAX_FIELD_LENGTH\fP   32"
+.br
+.RI "\fIMaximum number of bytes of the name of a field of a pso object. \fP"
+.ti -1c
+.RI "#define \fBPSO_MAX_FIELDS\fP   65535"
+.br
+.RI "\fIMaximum number of fields (including the last one). \fP"
+.ti -1c
+.RI "#define \fBPSO_FIELD_MAX_PRECISION\fP   30"
+.br
+.RI "\fIMaximum size of a decimal field. \fP"
+.ti -1c
+.RI "#define \fBPSO_MAX_NUMERIC_LEN\fP   16"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBpsoFieldType\fP { \fBPSO_CHAR\fP =  10001, \fBPSO_VARCHAR\fP, \fBPSO_LONGVARCHAR\fP, \fBPSO_TINYINT\fP, \fBPSO_SMALLINT\fP, \fBPSO_INTEGER\fP, \fBPSO_BIGINT\fP, \fBPSO_NUMERIC\fP, \fBPSO_REAL\fP, \fBPSO_DOUBLE\fP, \fBPSO_BINARY\fP, \fBPSO_VARBINARY\fP, \fBPSO_LONGVARBINARY\fP, \fBPSO_DATE\fP, \fBPSO_TIME\fP, \fBPSO_TIMESTAMP\fP }"
+.br
+.RI "\fIPhoton supported data types. \fP"
+.ti -1c
+.RI "enum \fBpsoKeyType\fP { \fBPSO_KEY_INTEGER\fP =  101, \fBPSO_KEY_BINARY\fP, \fBPSO_KEY_STRING\fP, \fBPSO_KEY_VAR_BINARY\fP, \fBPSO_KEY_VAR_STRING\fP }"
+.br
+.RI "\fIPhoton supported data types for keys. \fP"
+.in -1c
+.SH "Define Documentation"
+.PP 
+.SS "#define PSO_FIELD_MAX_PRECISION   30"
+.PP
+Maximum size of a decimal field. 
+.PP
+Definition at line 57 of file psoPhotonODBC.h.
+.SS "#define PSO_MAX_FIELD_LENGTH   32"
+.PP
+Maximum number of bytes of the name of a field of a pso object. 
+.PP
+Definition at line 47 of file psoPhotonODBC.h.
+.SS "#define PSO_MAX_FIELDS   65535"
+.PP
+Maximum number of fields (including the last one). 
+.PP
+Definition at line 52 of file psoPhotonODBC.h.
+.SS "#define PSO_MAX_NUMERIC_LEN   16"
+.PP
+Definition at line 211 of file psoPhotonODBC.h.
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
+.PP
+Definition at line 180 of file psoPhotonODBC.h.
+.SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
+.PP
+Definition at line 140 of file psoPhotonODBC.h.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBpsoFieldType\fP"
+.PP
+Photon supported data types. 
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_CHAR \fP\fP
+.TP
+\fB\fIPSO_VARCHAR \fP\fP
+.TP
+\fB\fIPSO_LONGVARCHAR \fP\fP
+.TP
+\fB\fIPSO_TINYINT \fP\fP
+A one-byte integer. 
+.PP
+
+.TP
+\fB\fIPSO_SMALLINT \fP\fP
+A two-bytes integer. 
+.PP
+
+.TP
+\fB\fIPSO_INTEGER \fP\fP
+A four-bytes integer. 
+.PP
+
+.TP
+\fB\fIPSO_BIGINT \fP\fP
+.TP
+\fB\fIPSO_NUMERIC \fP\fP
+The decimal type should be mapped to the \fBpsoNumericStruct\fP struct. 
+.TP
+\fB\fIPSO_REAL \fP\fP
+.TP
+\fB\fIPSO_DOUBLE \fP\fP
+.TP
+\fB\fIPSO_BINARY \fP\fP
+An opaque type of fixed length. 
+.PP
+
+.TP
+\fB\fIPSO_VARBINARY \fP\fP
+A variable length opaque type with a maximum length. 
+.PP
+
+.TP
+\fB\fIPSO_LONGVARBINARY \fP\fP
+A variable length opaque type with no maximum length constraint. 
+.PP
+The length of that field is constrained by the maximum length of a data record. Only valid for the last field of the data definition 
+.TP
+\fB\fIPSO_DATE \fP\fP
+.TP
+\fB\fIPSO_TIME \fP\fP
+.TP
+\fB\fIPSO_TIMESTAMP \fP\fP
+
+.PP
+Definition at line 64 of file psoPhotonODBC.h.
+.SS "enum \fBpsoKeyType\fP"
+.PP
+Photon supported data types for keys. 
+.PP
+\fBEnumerator: \fP
+.in +1c
+.TP
+\fB\fIPSO_KEY_INTEGER \fP\fP
+.TP
+\fB\fIPSO_KEY_BINARY \fP\fP
+.TP
+\fB\fIPSO_KEY_STRING \fP\fP
+.TP
+\fB\fIPSO_KEY_VAR_BINARY \fP\fP
+Only valid for the last field of the data definition. 
+.TP
+\fB\fIPSO_KEY_VAR_STRING \fP\fP
+Only valid for the last field of the data definition. 
+.PP
+Definition at line 111 of file psoPhotonODBC.h.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon Software from the source code.

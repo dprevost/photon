@@ -122,10 +122,6 @@ enum psoDefinitionType
 {
    /** User-defined */
    PSO_DEF_USER_DEFINED = 11,
-<<<<<<< HEAD:src/include/photon/psoCommon.h
-   /** A simplified version of ODBC. */
-   PSO_DEF_PHOTON_ODBC = 12,
-=======
    /**
     * A simplified version of ODBC. 
     * 
@@ -133,7 +129,6 @@ enum psoDefinitionType
     * This condition makes it easy to map the data record with a C struct.
     */
    PSO_DEF_PHOTON_ODBC_SIMPLE = 12,
->>>>>>> 6083d923425186e3abfd44bf661089462c5e0792:src/include/photon/psoCommon.h
    /** Google Protocol Buffer */
    PSO_DEF_PROTO_BUF = 13,
    /** Last type (for boundary checking) */
