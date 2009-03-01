@@ -34,7 +34,7 @@
 
 #include <photon/psoCommon.h>
 #include <photon/psoPhotonODBC.h>
-
+#include <photon/psoDefinition>
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 namespace pso {
@@ -44,7 +44,7 @@ namespace pso {
  *
  * It's main pupose is to encapsulate the memory management of the C struct.
  */
-class PHOTON_EXPORT DefinitionODBCSimple
+ class PHOTON_EXPORT DefinitionODBCSimple : public ObjDefinition
 {
 public:
 

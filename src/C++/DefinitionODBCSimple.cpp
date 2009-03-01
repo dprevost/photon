@@ -20,6 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
+#include <photon/psoDefinitionODBCSimple>
 
 using namespace std;
 using namespace pso;
@@ -27,16 +28,13 @@ using namespace pso;
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 DefinitionODBCSimple::DefinitionODBCSimple( unsigned char * serialKeyDef,
-                              uint32_t        keydefLen,
-                              unsigned char * serialFieldDef,
-                              uint32_t        fieldDefLen )
-   : fields       ( NULL ),
+                                            uint32_t        keyDefLen,
+                                            unsigned char * serialFieldDef,
+                                            uint32_t        fieldDefLen )
+   : ObjDefinition( serialKeyDef, keyDefLen, serialFieldDef, fieldDefLen ),
+     fields       ( NULL ),
      currentField ( 0 ),
-     keyAdded     ( false ),
-     serializedKeyDef   ( serialKeyDef ),
-     keydefLength       ( keyDefLen ),
-     serializedFieldDef ( serialFieldDef ),
-     fieldDefLength     ( fieldDefLen )
+     keyAdded     ( false )
 {
    memset( &definition, 0, sizeof(psoObjectDefinition) );
    memset( &key, 0, sizeof(psoKeyDefinition) );
@@ -45,6 +43,7 @@ DefinitionODBCSimple::DefinitionODBCSimple( unsigned char * serialKeyDef,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 DefinitionODBCSimple::DefinitionODBCSimple()
    : fields       ( NULL ),
      currentField ( 0 ),
@@ -53,11 +52,13 @@ DefinitionODBCSimple::DefinitionODBCSimple()
    memset( &definition, 0, sizeof(psoObjectDefinition) );
    memset( &key, 0, sizeof(psoKeyDefinition) );
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 DefinitionODBCSimple::DefinitionODBCSimple( uint32_t numberOfFields, enum psoObjectType type )
-   : fields       ( NULL ),
+   : ObjDefinition( NULL, 0, NULL, 0),
+     fields       ( NULL ),
      currentField ( 0 ),
      keyAdded     ( false )
 {
