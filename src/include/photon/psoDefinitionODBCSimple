@@ -107,16 +107,10 @@ public:
     *
     * \param[in]  name The name of the field
     * \param[in]  type The data type of the field. 
-    * \param[in]  length The length of the field for fixed-length data types.
-    * \param[in]  minLength The minimal length of the field for 
-    *             variable-length data types.
-    * \param[in]  maxLength The maximal length of the field for 
-    *             variable-length data types. A value of zero indicates an
-    *             infinite value (limited by the amount of shared memory, 
-    *             evidently).
-    * \param[in]  precision The number of digits of a decimal field (not 
+    * \param[in]  length The length of the field  - only used for some data types.
+    * \param[in]  precision The number of digits of a numeric field (not 
     *             counting the separator or the sign).
-    * \param[in]  scale The number of digits after the separator of a decimal
+    * \param[in]  scale The number of digits after the separator of a numeric
     *             field.
     *
     * \exception pso::Exception An abnormal error occured.
@@ -124,8 +118,6 @@ public:
    void AddField( std::string  & name,
                   psoFieldType   type,
                   psoUint32      length,
-                  psoUint32      minLength,
-                  psoUint32      maxLength,
                   psoUint32      precision,
                   psoUint32      scale );
 
@@ -135,16 +127,10 @@ public:
     * \param[in]  name The name of the field
     * \param[in]  nameLength The length of the name (in bytes).
     * \param[in]  type The data type of the field. 
-    * \param[in]  length The length of the field for fixed-length data types.
-    * \param[in]  minLength The minimal length of the field for 
-    *             variable-length data types.
-    * \param[in]  maxLength The maximal length of the field for 
-    *             variable-length data types. A value of zero indicates an
-    *             infinite value (limited by the amount of shared memory, 
-    *             evidently).
-    * \param[in]  precision The number of digits of a decimal field (not 
+    * \param[in]  length The length of the field  - only used for some data types.
+    * \param[in]  precision The number of digits of a numeric field (not 
     *             counting the separator or the sign).
-    * \param[in]  scale The number of digits after the separator of a decimal
+    * \param[in]  scale The number of digits after the separator of a numeric
     *             field.
     *
     * \exception pso::Exception An abnormal error occured.
@@ -153,8 +139,6 @@ public:
                   psoUint32      nameLength,
                   psoFieldType   type,
                   psoUint32      length,
-                  psoUint32      minLength,
-                  psoUint32      maxLength,
                   psoUint32      precision,
                   psoUint32      scale );
 
@@ -224,6 +208,9 @@ private:
 
    /// The C struct array holding the definition of the fields
    psoFieldDefinition * fields;
+   
+   /// Number of fields in the definition
+   psoUint32 numFields;
    
    /// Iterator
    psoUint32 currentField;

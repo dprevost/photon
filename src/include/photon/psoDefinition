@@ -79,86 +79,11 @@ protected:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   ObjDefinition( psoUint32 numberOfFields, enum psoObjectType type );
+   ObjDefinition( enum psoObjectType type );
 
 public:
    
    virtual ~ObjDefinition();
-
-   /**
-    * Add a key to the definition.
-    *
-    * \param[in]  type The data type of the key. 
-    * \param[in]  length The length of the key for fixed-length data types.
-    * \param[in]  minLength The minimal length of the key for 
-    *             variable-length data types.
-    * \param[in]  maxLength The maximal length of the key for 
-    *             variable-length data types. A value of zero indicates an
-    *             infinite value (limited by the amount of shared memory, 
-    *             evidently).
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void AddKey( psoKeyType type,
-                psoUint32  length,
-                psoUint32  minLength,
-                psoUint32  maxLength );
-
-   /**
-    * Add a field to the definition. Fields must be added in order.
-    *
-    * \param[in]  name The name of the field
-    * \param[in]  type The data type of the field. 
-    * \param[in]  length The length of the field for fixed-length data types.
-    * \param[in]  minLength The minimal length of the field for 
-    *             variable-length data types.
-    * \param[in]  maxLength The maximal length of the field for 
-    *             variable-length data types. A value of zero indicates an
-    *             infinite value (limited by the amount of shared memory, 
-    *             evidently).
-    * \param[in]  precision The number of digits of a decimal field (not 
-    *             counting the separator or the sign).
-    * \param[in]  scale The number of digits after the separator of a decimal
-    *             field.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void AddField( std::string  & name,
-                  psoFieldType   type,
-                  psoUint32      length,
-                  psoUint32      minLength,
-                  psoUint32      maxLength,
-                  psoUint32      precision,
-                  psoUint32      scale );
-
-   /**
-    * Add a field to the definition. Fields must be added in order.
-    *
-    * \param[in]  name The name of the field
-    * \param[in]  nameLength The length of the name (in bytes).
-    * \param[in]  type The data type of the field. 
-    * \param[in]  length The length of the field for fixed-length data types.
-    * \param[in]  minLength The minimal length of the field for 
-    *             variable-length data types.
-    * \param[in]  maxLength The maximal length of the field for 
-    *             variable-length data types. A value of zero indicates an
-    *             infinite value (limited by the amount of shared memory, 
-    *             evidently).
-    * \param[in]  precision The number of digits of a decimal field (not 
-    *             counting the separator or the sign).
-    * \param[in]  scale The number of digits after the separator of a decimal
-    *             field.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void AddField( const char   * name,
-                  psoUint32      nameLength,
-                  psoFieldType   type,
-                  psoUint32      length,
-                  psoUint32      minLength,
-                  psoUint32      maxLength,
-                  psoUint32      precision,
-                  psoUint32      scale );
 
    /**
     * Set the type of the object.
@@ -188,7 +113,7 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
+//   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
 
    /**
     * Reset the object to be reused for the definition of another data 
@@ -204,37 +129,28 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Reset( psoObjectDefinition & definition,
-               psoKeyDefinition    * inputKey,
-               psoFieldDefinition  * inputFields );
+//   void Reset( psoObjectDefinition & definition,
+//               psoKeyDefinition    * inputKey,
+//               psoFieldDefinition  * inputFields );
    
    /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();
 
    /** Returns a reference to the C struct definition. */
-   const psoFieldDefinition * GetFields();
+   const unsigned char * GetFields();
 
    /** Returns a reference to the C struct definition. */
-   const psoKeyDefinition & GetKey();
+   const unsigned char * GetKey();
 
 private:
 
    /// The C struct holding the definition itself
    psoObjectDefinition definition;
 
-   psoKeyDefinition key;
-
-   /// The C struct array holding the definition of the fields
-   psoFieldDefinition * fields;
-   
-   /// Iterator
-   psoUint32 currentField;
-   
-   /// was the key added?
-   bool keyAdded;
+   unsigned char * key;
    
    unsigned char * serializedKeyDef;
-   psoUint32       keydefLength;
+   psoUint32       keyDefLength;
    unsigned char * serializedFieldDef;
    psoUint32       fieldDefLength;
 

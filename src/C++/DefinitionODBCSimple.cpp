@@ -59,6 +59,7 @@ DefinitionODBCSimple::DefinitionODBCSimple()
 DefinitionODBCSimple::DefinitionODBCSimple( uint32_t numberOfFields, enum psoObjectType type )
    : ObjDefinition( NULL, 0, NULL, 0),
      fields       ( NULL ),
+     numFields    ( numberOfFields ),
      currentField ( 0 ),
      keyAdded     ( false )
 {
@@ -80,8 +81,9 @@ DefinitionODBCSimple::DefinitionODBCSimple( uint32_t numberOfFields, enum psoObj
       throw pso::Exception( "DefinitionODBCSimple::DefinitionODBCSimple",
                             PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
-   definition.numFields = numberOfFields;
+//   definition.numFields = numberOfFields;
    definition.type = type;
+   definition.definitionType = PSO_DEF_PHOTON_ODBC_SIMPLE;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -97,8 +99,6 @@ DefinitionODBCSimple::~DefinitionODBCSimple()
 void DefinitionODBCSimple::AddField( std::string  & name,
                               psoFieldType   type,
                               uint32_t       length,
-                              uint32_t       minLength,
-                              uint32_t       maxLength,
                               uint32_t       precision,
                               uint32_t       scale )
 {
@@ -106,8 +106,6 @@ void DefinitionODBCSimple::AddField( std::string  & name,
              name.length(),
              type,
              length,
-             minLength,
-             maxLength,
              precision,
              scale );
 }
@@ -115,19 +113,17 @@ void DefinitionODBCSimple::AddField( std::string  & name,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void DefinitionODBCSimple::AddField( const char   * name,
-                              uint32_t       nameLength,
-                              psoFieldType   type,
-                              uint32_t       length,
-                              uint32_t       minLength,
-                              uint32_t       maxLength,
-                              uint32_t       precision,
-                              uint32_t       scale )
+                                     uint32_t       nameLength,
+                                     psoFieldType   type,
+                                     uint32_t       length,
+                                     uint32_t       precision,
+                                     uint32_t       scale )
 {
    if ( fields == NULL ) {
       throw pso::Exception( "DefinitionODBCSimple::AddField", PSO_NULL_POINTER );
    }
 
-   if ( currentField >= definition.numFields ) {
+   if ( currentField >= numFields ) {
       throw pso::Exception( "DefinitionODBCSimple::AddField",
                             PSO_INVALID_NUM_FIELDS );
    }
@@ -140,12 +136,16 @@ void DefinitionODBCSimple::AddField( const char   * name,
    
    switch ( type ) {
    case PSO_INTEGER:
-      if ( length != 1 && length != 2 && length != 4 && length != 8 ) {
-      throw pso::Exception( "DefinitionODBCSimple::AddField",
-                            PSO_INVALID_FIELD_LENGTH_INT );
-      }
+   case PSO_TINYINT:
+   case PSO_SMALLINT:
+   case PSO_BIGINT:
+   case PSO_REAL:
+   case PSO_DOUBLE:
+   case PSO_DATE:
+   case PSO_TIME:
+   case PSO_TIMESTAMP:
       fields[currentField].type = type;
-      fields[currentField].length = length;
+      fields[currentField].vals.length = 0;
       currentField++;
       break;
 
@@ -156,32 +156,37 @@ void DefinitionODBCSimple::AddField( const char   * name,
                                PSO_INVALID_FIELD_LENGTH );
       }
       fields[currentField].type = type;
-      fields[currentField].length = length;
+      fields[currentField].vals.length = length;
       currentField++;
       break;
 
    case PSO_VARBINARY:
    case PSO_VARCHAR:
-      if ( currentField != definition.numFields-1 ) {
+      if ( currentField != numFields-1 ) {
          throw pso::Exception( "DefinitionODBCSimple::AddField",
                                PSO_INVALID_FIELD_TYPE );
       }
-      if ( maxLength != 0 && maxLength < minLength ) {
+      if ( length == 0 ) {
          throw pso::Exception( "DefinitionODBCSimple::AddField",
                                PSO_INVALID_FIELD_LENGTH );
       }
       fields[currentField].type = type;
-      fields[currentField].minLength = minLength;
-      fields[currentField].maxLength = maxLength;
+      fields[currentField].vals.length = length;
       currentField++;
       break;
 
-   case PSO_TINYINT:
+   case PSO_LONGVARBINARY:
+   case PSO_LONGVARCHAR:
+      if ( currentField != numFields-1 ) {
+         throw pso::Exception( "DefinitionODBCSimple::AddField",
+                               PSO_INVALID_FIELD_TYPE );
+      }
       fields[currentField].type = type;
+      fields[currentField].vals.length = 0;
       currentField++;
       break;
 
-   case PSO_DECIMAL:
+   case PSO_NUMERIC:
       if ( precision == 0 || precision > PSO_FIELD_MAX_PRECISION ) {
          throw pso::Exception( "DefinitionODBCSimple::AddField",
                                PSO_INVALID_PRECISION );
@@ -191,8 +196,8 @@ void DefinitionODBCSimple::AddField( const char   * name,
                                PSO_INVALID_SCALE );
       }
       fields[currentField].type = type;
-      fields[currentField].precision = precision;
-      fields[currentField].scale = scale;
+      fields[currentField].vals.decimal.precision = precision;
+      fields[currentField].vals.decimal.scale = scale;
       currentField++;
       break;
 
@@ -313,7 +318,7 @@ void DefinitionODBCSimple::Reset( uint32_t numberOfFields, enum psoObjectType ty
    if ( fields != NULL ) free( fields );
    fields = tmp;
    
-   definition.numFields = numberOfFields;
+   numFields = numberOfFields;
    definition.type = type;
    currentField = 0;
    keyAdded = false;
@@ -321,6 +326,7 @@ void DefinitionODBCSimple::Reset( uint32_t numberOfFields, enum psoObjectType ty
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void DefinitionODBCSimple::Reset( psoObjectDefinition & inputDef,
                            psoKeyDefinition    * inputKey,
                            psoFieldDefinition  * inputFields )
@@ -360,6 +366,7 @@ void DefinitionODBCSimple::Reset( psoObjectDefinition & inputDef,
       keyAdded = true;
    }
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

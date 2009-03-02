@@ -154,27 +154,20 @@ struct psoFieldDefinition
    enum psoFieldType type;
    
    union {
+      /** For some of the fixed and variable-length data types */
       psoUint32 length;
 
+      /** For numeric data */
       struct {
+         /** Total number of digits in the decimal field. */
          psoUint16 precision;
          
+         /** Number of digits following the decimal separator. */
          psoUint32 scale;
 
       } decimal;
       
    } vals;
-
-//   psoUint32 minLength;
-
-   /** For variable-length data types */
-//   psoUint32 maxLength;
-
-   /** Total number of digits in the decimal field. */
-//   psoUint32 precision;
-
-   /** Number of digits following the decimal separator. */
-//   psoUint32 scale;
 };
 
 typedef struct psoFieldDefinition psoFieldDefinition;
