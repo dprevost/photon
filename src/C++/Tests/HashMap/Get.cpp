@@ -40,7 +40,7 @@ int main( int argc, char * argv[] )
    uint32_t length;
    char buffer[50];
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 

@@ -841,7 +841,8 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                *pKeyLength = p->keyDefLength;
                *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
                *pFieldsLength = p->fieldsLength;
-               pDefinition->definitionType = p->definitionType;
+               pDefinition->fieldDefType = p->fieldDefType;
+               pDefinition->keyDefType = p->keyDefType;
             }
             break;
          case PSO_QUEUE:
@@ -851,7 +852,8 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                
                *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
                *pFieldsLength = p->fieldsLength;
-               pDefinition->definitionType = p->definitionType;
+               pDefinition->fieldDefType = p->fieldDefType;
+               pDefinition->keyDefType = PSO_DEF_NONE;
             }
             break;
          case PSO_FAST_MAP:
@@ -862,7 +864,8 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                *pKeyLength = p->keyDefLength;
                *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
                *pFieldsLength = p->fieldsLength;
-               pDefinition->definitionType = p->definitionType;
+               pDefinition->fieldDefType = p->fieldDefType;
+               pDefinition->keyDefType = p->keyDefType;
             }
             break;
          default:

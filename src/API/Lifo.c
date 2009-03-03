@@ -122,7 +122,9 @@ int psoLifoDefinition( PSO_HANDLE            objectHandle,
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
       
          pDefinition->type = PSO_LIFO;
-         pDefinition->definitionType = pMemLifo->definitionType;
+         pDefinition->fieldDefType = pMemLifo->fieldDefType;
+         pDefinition->keyDefType   = PSO_DEF_NONE;
+
          if ( pFields != NULL ) {
             memcpy( pFields, pLifo->fieldsDef, 
                pLifo->fieldsDefLength );

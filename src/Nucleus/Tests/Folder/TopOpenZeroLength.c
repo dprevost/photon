@@ -31,7 +31,7 @@ int main()
    int errcode;
    bool ok;
    psonFolderItem folderItem;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 

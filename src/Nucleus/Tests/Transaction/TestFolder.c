@@ -32,9 +32,9 @@ int main()
    bool ok;
    psonFolderItem item;
    psonTxStatus status;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition key = { 0, 0, 0, 0};
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
 
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
 

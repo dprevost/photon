@@ -36,7 +36,6 @@ ObjDefinition::ObjDefinition( unsigned char * serialKeyDef,
      fieldDefLength     ( fieldDefLen )
 {
    memset( &definition, 0, sizeof(psoObjectDefinition) );
-   memset( &key, 0, sizeof(psoKeyDefinition) );
 }
 
 

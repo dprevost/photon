@@ -42,15 +42,15 @@ int main( int argc, char * argv[] )
    struct dummy * data1 = NULL;
    size_t lenData;
 
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
 
    psoFieldDefinition fields[5] = {
-      { "field1", PSO_TINYINT,   0 },
-      { "field2", PSO_INTEGER,   0 },
-      { "field3", PSO_CHAR,     30 },
-      { "field4", PSO_SMALLINT,  0 },
-      { "field5", PSO_LONGVARBINARY, 0 }
+      { "field1", PSO_TINYINT,   {0} },
+      { "field2", PSO_INTEGER,   {0} },
+      { "field3", PSO_CHAR,      {30} },
+      { "field4", PSO_SMALLINT,  {0} },
+      { "field5", PSO_LONGVARBINARY, {0} }
    };
    
    psoFieldDefinition retFields[5];

@@ -136,10 +136,10 @@ public:
    /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();
 
-   /** Returns a reference to the C struct definition. */
+   /** Returns the fields definition. */
    const unsigned char * GetFields();
 
-   /** Returns a reference to the C struct definition. */
+   /** Returns the definition of the key. */
    const unsigned char * GetKey();
 
 private:
@@ -147,7 +147,7 @@ private:
    /// The C struct holding the definition itself
    psoObjectDefinition definition;
 
-   unsigned char * key;
+//   unsigned char * key;
    
    unsigned char * serializedKeyDef;
    psoUint32       keyDefLength;

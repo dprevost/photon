@@ -73,8 +73,11 @@ struct psonMap
 
    ptrdiff_t editVersion;
    
+   /** The type of the key definition (metadata) */
+   enum psoDefinitionType keyDefType;
+   
    /** The type of the field definition (metadata) */
-   enum psoDefinitionType definitionType;
+   enum psoDefinitionType fieldDefType;
    
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;

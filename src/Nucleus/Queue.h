@@ -84,7 +84,7 @@ struct psonQueue
    uint32_t fieldsLength;
 
    /** The type of the field definition (metadata) */
-   enum psoDefinitionType definitionType;
+   enum psoDefinitionType fieldDefType;
 
    /**
     * Number of valid items. Valid items are the number of items NOT counting

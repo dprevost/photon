@@ -33,11 +33,13 @@ DefinitionODBCSimple::DefinitionODBCSimple( unsigned char * serialKeyDef,
                                             uint32_t        fieldDefLen )
    : ObjDefinition( serialKeyDef, keyDefLen, serialFieldDef, fieldDefLen ),
      fields       ( NULL ),
+     numFields    ( 0 ),
+     numKeys      ( 0 ),
      currentField ( 0 ),
-     keyAdded     ( false )
+     currentKey   ( 0 )
 {
    memset( &definition, 0, sizeof(psoObjectDefinition) );
-   memset( &key, 0, sizeof(psoKeyDefinition) );
+//   memset( &key, 0, sizeof(psoKeyDefinition) );
 }
 
 
@@ -60,8 +62,9 @@ DefinitionODBCSimple::DefinitionODBCSimple( uint32_t numberOfFields, enum psoObj
    : ObjDefinition( NULL, 0, NULL, 0),
      fields       ( NULL ),
      numFields    ( numberOfFields ),
+     numKeys      ( 0 ),
      currentField ( 0 ),
-     keyAdded     ( false )
+     currentKey   ( 0 )
 {
    if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
       throw pso::Exception( "DefinitionODBCSimple::DefinitionODBCSimple",
@@ -83,7 +86,7 @@ DefinitionODBCSimple::DefinitionODBCSimple( uint32_t numberOfFields, enum psoObj
    }
 //   definition.numFields = numberOfFields;
    definition.type = type;
-   definition.definitionType = PSO_DEF_PHOTON_ODBC_SIMPLE;
+   definition.fieldDefType = PSO_DEF_PHOTON_ODBC_SIMPLE;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -210,17 +213,12 @@ void DefinitionODBCSimple::AddField( const char   * name,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void DefinitionODBCSimple::AddKey( psoKeyType type,
-                            uint32_t   length,
-                            uint32_t   minLength,
-                            uint32_t   maxLength )
+                                   uint32_t   length,
+                                   uint32_t   minLength,
+                                   uint32_t   maxLength )
 {
    if ( fields == NULL ) {
       throw pso::Exception( "DefinitionODBCSimple::AddKey", PSO_NULL_POINTER );
-   }
-
-   if ( keyAdded ) {
-      throw pso::Exception( "DefinitionODBCSimple::AddKey",
-                            PSO_INVALID_KEY_DEF );
    }
 
    switch ( type ) {

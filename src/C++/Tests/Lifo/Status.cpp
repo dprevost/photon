@@ -40,7 +40,7 @@ int main( int argc, char * argv[] )
    const char * data3 = "My Data3";
    psoObjStatus status;
    psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { PSO_LIFO, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition queueDef = { PSO_LIFO, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };

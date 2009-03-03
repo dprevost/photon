@@ -33,11 +33,11 @@ int main( int argc, char * argv[] )
    PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
    
    memset( junk, 0, 12 );
 

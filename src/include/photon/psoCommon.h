@@ -120,17 +120,23 @@ typedef enum psoIteratorType psoIteratorType;
  */
 enum psoDefinitionType
 {
+   /** First type (for boundary checking) */
+   PSO_DEF_FIRST_TYPE = 1,
+
+   /** No type (no key type for queues, for example) */
+   PSO_DEF_NONE,
+   
    /** User-defined */
-   PSO_DEF_USER_DEFINED = 11,
+   PSO_DEF_USER_DEFINED,
    /**
     * A simplified version of ODBC. 
     * 
     * The fields must all have a fixed length except for the last one. 
     * This condition makes it easy to map the data record with a C struct.
     */
-   PSO_DEF_PHOTON_ODBC_SIMPLE = 12,
+   PSO_DEF_PHOTON_ODBC_SIMPLE,
    /** Google Protocol Buffer */
-   PSO_DEF_PROTO_BUF = 13,
+   PSO_DEF_PROTO_BUF,
    /** Last type (for boundary checking) */
    PSO_DEF_LAST_TYPE
 };
@@ -152,7 +158,10 @@ struct psoObjectDefinition
    enum psoObjectType type;
 
    /** The type of the field definition (metadata) */
-   enum psoDefinitionType definitionType;
+   enum psoDefinitionType fieldDefType;
+
+   /** The type of the key definition (metadata) */
+   enum psoDefinitionType keyDefType;
    
 };
 

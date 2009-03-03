@@ -36,7 +36,7 @@ int main()
    char * data1 = "my data1";
    char * data2 = "my data2";
    psonHashMapItem item;
-   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
    
    const unsigned char * fields =  (unsigned char *)"A dummy definition";

@@ -33,11 +33,11 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    psoaDataEntry entry;
-   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

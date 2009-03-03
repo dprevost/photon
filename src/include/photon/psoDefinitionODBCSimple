@@ -186,25 +186,25 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Reset( psoObjectDefinition & definition,
-               psoKeyDefinition    * inputKey,
-               psoFieldDefinition  * inputFields );
+//   void Reset( psoObjectDefinition & definition,
+//               psoKeyDefinition    * inputKey,
+//               psoFieldDefinition  * inputFields );
    
    /** Returns a reference to the C struct definition. */
    const psoObjectDefinition & GetDef();
 
    /** Returns a reference to the C struct definition. */
-   const psoFieldDefinition * GetFields();
+   const unsigned char * GetFieldDef();
 
    /** Returns a reference to the C struct definition. */
-   const psoKeyDefinition & GetKey();
+   onst unsigned char * GetKey();
 
 private:
 
    /// The C struct holding the definition itself
    psoObjectDefinition definition;
 
-   psoKeyDefinition key;
+//   psoKeyDefinition key;
 
    /// The C struct array holding the definition of the fields
    psoFieldDefinition * fields;
@@ -212,11 +212,15 @@ private:
    /// Number of fields in the definition
    psoUint32 numFields;
    
+   /// Number of keys in the definition
+   psoUint32 numKeys;
+
    /// Iterator
    psoUint32 currentField;
    
-   /// was the key added?
-   bool keyAdded;
+   /// Iterator
+   psoUint32 currentKey;
+
 };
 
 } // End of namespace
