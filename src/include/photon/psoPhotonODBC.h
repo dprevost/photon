@@ -63,7 +63,7 @@ extern "C" {
  */
 enum psoFieldType
 {
-   PSO_CHAR = 10001,
+   PSO_CHAR = 101,
    PSO_VARCHAR,
    PSO_LONGVARCHAR,
    
@@ -110,13 +110,33 @@ enum psoFieldType
  */
 enum psoKeyType
 {
-   PSO_KEY_INTEGER = 101,
+   PSO_KEY_CHAR = 1001,
+   PSO_KEY_VARCHAR,
+   PSO_KEY_LONGVARCHAR,
+   
+   /** A four-bytes integer. */
+   PSO_KEY_INTEGER,
+   
+   PSO_KEY_BIGINT,
+   
+   /** An opaque type of fixed length. */
    PSO_KEY_BINARY,
-   PSO_KEY_STRING,
+
+   /** A variable length opaque type with a maximum length. */
+   PSO_KEY_VARBINARY,
+   
+   /**
+    * A variable length opaque type with no maximum length constraint.
+    *
+    * The length of that field is constrained by the maximum length
+    * of a data record.
+    */
    /** Only valid for the last field of the data definition */
-   PSO_KEY_VAR_BINARY,
-   /** Only valid for the last field of the data definition */
-   PSO_KEY_VAR_STRING
+   PSO_KEY_LONGVARBINARY,
+   
+   PSO_KEY_DATE,
+   PSO_KEY_TIME,
+   PSO_KEY_TIMESTAMP
 };
 
 /**
@@ -124,23 +144,18 @@ enum psoKeyType
  */
 struct psoKeyDefinition
 {
+   /** The name of a field of the key. */
+   char name[PSO_MAX_FIELD_LENGTH];
+
    /** The data type of the key. */
    enum psoKeyType type;
 
-   /** For fixed-length data types */
+   /** For some of the fixed and variable-length data types */
    psoUint32 length;
 
-   /** For variable-length data types */
-   psoUint32 minLength;
-
-   /** For variable-length data types */
-   psoUint32 maxLength;
 };
 
 typedef struct psoKeyDefinition psoKeyDefinition;
-
-   /** The number of fields in the definition. */
-//   psoUint32 numFields;
 
 /**
  * Description of the structure of the data.
