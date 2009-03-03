@@ -33,7 +33,7 @@ int main()
    psonFolderItem item;
    psonTxStatus status;
    psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { 0, 0, 0, 0};
+   psoKeyDefinition key = { "MyKey", PSO_KEY_LONGVARBINARY, 0};
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
 
    const unsigned char * fields =  (unsigned char *)"A dummy definition";

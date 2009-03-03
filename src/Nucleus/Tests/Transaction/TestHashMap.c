@@ -43,7 +43,7 @@ int main()
    char * data3 = "My data3";
    psonHashTxItem * pHashItem;
    psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { 0, 0, 0, 0} ;
+   psoKeyDefinition key = { "MyKey", PSO_KEY_LONGVARBINARY, 0};
 
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
 

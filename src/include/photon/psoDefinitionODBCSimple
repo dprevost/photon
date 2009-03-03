@@ -197,14 +197,14 @@ public:
    const unsigned char * GetFieldDef();
 
    /** Returns a reference to the C struct definition. */
-   onst unsigned char * GetKey();
+   const unsigned char * GetKey();
 
 private:
 
    /// The C struct holding the definition itself
    psoObjectDefinition definition;
 
-//   psoKeyDefinition key;
+   psoKeyDefinition *  key;
 
    /// The C struct array holding the definition of the fields
    psoFieldDefinition * fields;

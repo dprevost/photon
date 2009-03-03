@@ -44,7 +44,7 @@ int main( int argc, char * argv[] )
    psoInfo baseline1, baseline2, baseline3, info;
    psoObjStatus status;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 4, 10 };
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

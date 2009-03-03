@@ -38,7 +38,7 @@ int main( int argc, char * argv[] )
    uint32_t length;
    char buffer[20];
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 4, 10 };
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

@@ -33,7 +33,7 @@ int main()
    psonFolderItem folderItem;
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { PSO_KEY_VAR_STRING, 0, 1, 100 };
+   psoKeyDefinition key = { "MyKey", PSO_KEY_VARCHAR, 100 };
    
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
 

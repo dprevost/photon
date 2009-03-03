@@ -32,6 +32,7 @@ DefinitionODBCSimple::DefinitionODBCSimple( unsigned char * serialKeyDef,
                                             unsigned char * serialFieldDef,
                                             uint32_t        fieldDefLen )
    : ObjDefinition( serialKeyDef, keyDefLen, serialFieldDef, fieldDefLen ),
+     key          ( NULL ),
      fields       ( NULL ),
      numFields    ( 0 ),
      numKeys      ( 0 ),
@@ -60,6 +61,7 @@ DefinitionODBCSimple::DefinitionODBCSimple()
 
 DefinitionODBCSimple::DefinitionODBCSimple( uint32_t numberOfFields, enum psoObjectType type )
    : ObjDefinition( NULL, 0, NULL, 0),
+     key          ( NULL ),
      fields       ( NULL ),
      numFields    ( numberOfFields ),
      numKeys      ( 0 ),
@@ -222,42 +224,56 @@ void DefinitionODBCSimple::AddKey( psoKeyType type,
    }
 
    switch ( type ) {
-   case PSO_KEY_INTEGER:
-      if ( length != 1 && length != 2 && length != 4 && length != 8 ) {
-         throw pso::Exception( "DefinitionODBCSimple::AddKey",
-                               PSO_INVALID_KEY_DEF );
-      }
-      key.type = type;
-      key.length = length;
-      keyAdded = true;
+   case PSO_INTEGER:
+   case PSO_BIGINT:
+   case PSO_DATE:
+   case PSO_TIME:
+   case PSO_TIMESTAMP:
+      key[currentKey].type = type;
+      key[currentKey].length = 0;
+      currentKey++;
       break;
 
-   case PSO_KEY_BINARY:
-   case PSO_KEY_STRING:
+   case PSO_BINARY:
+   case PSO_CHAR:
       if ( length == 0 ) {
          throw pso::Exception( "DefinitionODBCSimple::AddKey",
-                               PSO_INVALID_KEY_DEF );
+                               PSO_INVALID_FIELD_LENGTH );
       }
-      key.type = type;
-      key.length = length;
-      keyAdded = true;
+      key[currentKey].type = type;
+      key[currentKey].length = length;
+      currentKey++;
       break;
 
-   case PSO_KEY_VAR_BINARY:
-   case PSO_KEY_VAR_STRING:
-      if ( maxLength != 0 && maxLength < minLength ) {
+   case PSO_VARBINARY:
+   case PSO_VARCHAR:
+      if ( currentKey != numKeys-1 ) {
          throw pso::Exception( "DefinitionODBCSimple::AddKey",
-                               PSO_INVALID_KEY_DEF );
+                               PSO_INVALID_FIELD_TYPE );
       }
-      key.type = type;
-      key.minLength = minLength;
-      key.maxLength = maxLength;
-      keyAdded = true;
+      if ( length == 0 ) {
+         throw pso::Exception( "DefinitionODBCSimple::AddKey",
+                               PSO_INVALID_FIELD_LENGTH );
+      }
+      key[currentKey].type = type;
+      key[currentKey].length = length;
+      currentKey++;
+      break;
+
+   case PSO_LONGVARBINARY:
+   case PSO_LONGVARCHAR:
+      if ( currentKey != numKeys-1 ) {
+         throw pso::Exception( "DefinitionODBCSimple::AddKey",
+                               PSO_INVALID_FIELD_TYPE );
+      }
+      key[currentKey].type = type;
+      key[currentKey].length = 0;
+      currentKey++;
       break;
 
    default:
       throw pso::Exception( "DefinitionODBCSimple::AddKey",
-                            PSO_INVALID_KEY_DEF );
+                            PSO_INVALID_FIELD_TYPE );
    }
 }
 
@@ -289,6 +305,7 @@ enum psoObjectType DefinitionODBCSimple::ObjectType()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void DefinitionODBCSimple::Reset( uint32_t numberOfFields, enum psoObjectType type )
 {
    psoFieldDefinition * tmp;
@@ -321,6 +338,7 @@ void DefinitionODBCSimple::Reset( uint32_t numberOfFields, enum psoObjectType ty
    currentField = 0;
    keyAdded = false;
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -375,17 +393,19 @@ const psoObjectDefinition & DefinitionODBCSimple::GetDef()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-const psoKeyDefinition & DefinitionODBCSimple::GetKey()
+#if 0
+const unsigned char * DefinitionODBCSimple::GetKey()
 {
    return key;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
-const psoFieldDefinition * DefinitionODBCSimple::GetFields()
+const unsigned char * DefinitionODBCSimple::GetFields()
 {
    return fields;
 }
-   
+#endif
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

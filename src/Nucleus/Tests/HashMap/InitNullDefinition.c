@@ -32,7 +32,7 @@ int main()
    int errcode;
    psonTxStatus status;
    
-   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
 
    

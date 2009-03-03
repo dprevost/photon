@@ -37,7 +37,7 @@ int main( int argc, char * argv[] )
    const char * c_name = "/cpp_fastmap_open/test";
    psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { PSO_KEY_VAR_BINARY, 0, 1, 20 };
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

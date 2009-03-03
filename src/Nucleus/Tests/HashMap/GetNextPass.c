@@ -37,7 +37,7 @@ int main()
    psonHashMapItem item;
    char * ptr1, * ptr2;
    psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 100 };
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
    
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
 

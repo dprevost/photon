@@ -37,7 +37,7 @@ int main()
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
       1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 100 }, 
+      { "MyKey", PSO_KEY_VARCHAR, 100 }, 
       { { "Field_1", PSO_VARCHAR, 0, 1, 100, 0, 0 } } 
    };
    
