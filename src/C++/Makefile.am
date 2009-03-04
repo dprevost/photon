@@ -33,6 +33,8 @@ libphotoncpp_la_SOURCES =        \
         Exception.cpp            \
         FastMap.cpp              \
         FastMapEditor.cpp        \
+        FieldDefinition.cpp      \
+        FieldDefinitionODBC.cpp  \
         Folder.cpp               \
         HashMap.cpp              \
         KeyDefinition.cpp        \

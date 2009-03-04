@@ -122,6 +122,12 @@ private:
    unsigned char * serializedKeyDef;
    psoUint32       keyDefLength;
 
+   /**
+    * Set by the constructor to true if we are using this object to read 
+    * an existing definition. Or false if we are using this object to 
+    * create new Photon objects.
+    */
+   bool readOnly;
 };
 
 } // End of namespace

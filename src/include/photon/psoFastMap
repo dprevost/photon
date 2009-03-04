@@ -97,21 +97,11 @@ public:
    /**
     * \brief Retrieve the data definition of the hash map.
     *
-    * This function uses the optional class ObjDefinition. This class 
-    * simplify the management of the array of field definitions.
-    *
-    * \param[out] definition The definition of the object (accessed through
-    *             the definition "helper object".
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-//   void Definition( ObjDefinition & definition );
-
-   /**
-    * \brief Retrieve the data definition of the hash map.
+    * Use this method if you cannot use GetKeyDefinition/GetFieldDefinition,
+    * for example if you define your own definitions.
     *
     * You can call the function ::DefinitionLength to retrieve the 
-    * length of the field definitions. This allows you to allocate 
+    * length of the field and key definitions. This allows you to allocate 
     * the proper size for \em key and \em fields.
     *
     * \param[out] definition The definition of the object.
@@ -152,7 +142,7 @@ public:
     * \brief Retrieve the key definition of the hash map.
     *
     * This function returns a new object. It is the responsability of the
-    * caller to delete the object (using delete).
+    * caller to delete the object.
     *
     * \return definition A new key definition of the hash map.
     *
@@ -164,7 +154,7 @@ public:
     * \brief Retrieve the field definition of the hash map.
     *
     * This function returns a new object. It is the responsability of the
-    * caller to delete the object (using delete).
+    * caller to delete the object.
     *
     * \return definition A new field definition of the hash map.
     *

@@ -106,7 +106,7 @@ public:
 //               psoFieldDefinition  * inputFields );
    
    /** Returns the fields definition. */
-   const unsigned char * GetFields();
+   const unsigned char * GetField();
 
    /** Returns the length, in bytes, of the definition. */
    psoUint32 GetFieldLength();
@@ -116,6 +116,12 @@ private:
    unsigned char * serializedFieldDef;
    psoUint32       fieldDefLength;
 
+   /**
+    * Set by the constructor to true if we are using this object to read 
+    * an existing definition. Or false if we are using this object to 
+    * create new Photon objects.
+    */
+   bool readOnly;
 };
 
 } // End of namespace
