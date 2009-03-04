@@ -35,6 +35,8 @@ libphotoncpp_la_SOURCES =        \
         FastMapEditor.cpp        \
         Folder.cpp               \
         HashMap.cpp              \
+        KeyDefinition.cpp        \
+        KeyDefinitionODBC.cpp    \
         Lifo.cpp                 \
         Process.cpp              \
         Queue.cpp                \

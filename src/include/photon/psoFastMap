@@ -20,8 +20,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef PSO_FAST_MAP_H_CPP
-#define PSO_FAST_MAP_H_CPP
+#ifndef PHOTON_FAST_MAP_H_CPP
+#define PHOTON_FAST_MAP_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -35,6 +35,8 @@ namespace pso {
 // Forward declarations
 class Session;
 class ObjDefinition;
+class FieldDefinition;
+class KeyDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -146,6 +148,31 @@ public:
    void DefinitionLength( psoUint32 * keyLength,
                           psoUint32 * fieldsLength );
 
+   /**
+    * \brief Retrieve the key definition of the hash map.
+    *
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object (using delete).
+    *
+    * \return definition A new key definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinition * GetKeyDefinition();
+
+   /**
+    * \brief Retrieve the field definition of the hash map.
+    *
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object (using delete).
+    *
+    * \return definition A new field definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   FieldDefinition * GetFieldDefinition();
+                          
+                          
    /** 
     * Retrieve the data item identified by the given key from the hash map.
     *
@@ -283,7 +310,7 @@ protected:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif // PSO_FAST_MAP_H_CPP
+#endif // PHOTON_FAST_MAP_H_CPP
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

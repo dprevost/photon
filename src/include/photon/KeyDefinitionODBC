@@ -1,0 +1,161 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+ *
+ * This file is part of Photon (photonsoftware.org).
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 or version 3 as published by the 
+ * Free Software Foundation and appearing in the file COPYING.GPL2 and 
+ * COPYING.GPL3 included in the packaging of this software.
+ *
+ * Licensees holding a valid Photon Commercial license can use this file 
+ * in accordance with the terms of their license.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef KEY_DEFINITION_ODBC
+#define KEY_DEFINITION_ODBC
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <stdlib.h>
+#include <string>
+
+#include <photon/psoCommon.h>
+#include <photon/psoPhotonODBC.h>
+#include <photon/KeyDefinition>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+namespace pso {
+
+/** 
+ * This class is a wrapper for the C struct psoObjectDefinition.
+ *
+ * It's main pupose is to encapsulate the memory management of the C struct.
+ */
+class PHOTON_EXPORT KeyDefinitionODBC : public KeyDefinition
+{
+public:
+
+   /**
+    * Construct a data-container definition.
+    *
+    * This constructor is useful to query existing definitions but the
+    * new object cannot be used to create new data containers (without 
+    * calling ::Reset() - which is equivalent to the other constructor).
+    *
+    * \param[in] serializedKeyDef The serialized key definition as an 
+    *            array of bytes. 
+    * \param[in] keyDefLength The length in bytes of serializedKeyDef. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinitionODBC( unsigned char * serializedKeyDef,
+                      psoUint32       keydefLength );
+
+   /**
+    * Construct a data-container definition.
+    *
+    * \param[in] numKeyFields The number of key fields.
+    * \param[in] simple Set this to true if the definition type is "simple"
+    *            (fixed length fields) or false if not.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinitionODBC( psoUint32 numKeyFields, bool simple = true );
+   
+   virtual ~KeyDefinitionODBC();
+
+   /**
+    * Add a key field to the definition.
+    *
+    * \param[in]  name The name of the field
+    * \param[in]  type The data type of the field. 
+    * \param[in]  length The length of the key (needed for some data types).
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void AddKeyField( std::string & name,
+                     psoKeyType    type,
+                     psoUint32     length );
+
+
+   /**
+    * Add a field to the definition. Fields must be added in order.
+    *
+    * \param[in]  name The name of the field
+    * \param[in]  nameLength The length of the name (in bytes).
+    * \param[in]  type The data type of the field. 
+    * \param[in]  length The length of the key (needed for some data types).
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void AddKeyField( const char * name,
+                     psoUint32    nameLength,
+                     psoKeyType   type,
+                     psoUint32    length );
+
+   /**
+    * Reset the object to be reused for the definition of another data 
+    * container.
+    *
+    * \param[in] numberOfFields The number of data fields of the new data
+    *            container.
+    * \param[in] type The type of the object.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+//   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
+
+   /**
+    * Reset the object to be reused for the definition of another data 
+    * container.
+    *
+    * This version of reset is used internally by the C++ API to populate
+    * the C++ class from the C structs.
+    *
+    * \param[in] definition The object definition C struct
+    * \param[in] inputKey   The key definition. Set it to NULL for objects
+    *                       not using keys (FIFO Queues, etc.).
+    * \param[in] inputFields The field definition array
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+//   void Reset( psoObjectDefinition & definition,
+//               psoKeyDefinition    * inputKey,
+//               psoFieldDefinition  * inputFields );
+   
+   /** Returns a reference to the C struct definition. */
+   const unsigned char * GetKey();
+
+private:
+
+   /// The C struct array holding the definition of the key fields
+   psoKeyDefinition *  key;
+
+   /// Number of keys in the definition
+   psoUint32 numKeys;
+
+   /// Iterator
+   psoUint32 currentKey;
+
+   /// true if the definition type is odbc simple, false otherwise.
+   bool simpleDef;
+};
+
+} // End of namespace
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif // KEY_DEFINITION_ODBC
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

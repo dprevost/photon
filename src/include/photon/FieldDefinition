@@ -1,0 +1,128 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+ *
+ * This file is part of Photon (photonsoftware.org).
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 or version 3 as published by the 
+ * Free Software Foundation and appearing in the file COPYING.GPL2 and 
+ * COPYING.GPL3 included in the packaging of this software.
+ *
+ * Licensees holding a valid Photon Commercial license can use this file 
+ * in accordance with the terms of their license.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef PHOTON_FIELD_DEFINITION
+#define PHOTON_FIELD_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <stdlib.h>
+#if defined(WIN32)
+#  pragma warning(disable: 4786)
+#  pragma warning(disable: 4251)
+#endif
+#include <string>
+
+#include <photon/psoCommon.h>
+#include <photon/psoPhotonODBC.h>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+namespace pso {
+
+/** 
+ * This class is a wrapper for the C struct psoObjectDefinition.
+ *
+ * It's main pupose is to encapsulate the memory management of the C struct.
+ */
+class PHOTON_EXPORT FieldDefinition
+{
+protected:
+
+   /**
+    * Construct a field definition.
+    *
+    * This constructor is useful to query existing definitions but the
+    * new object cannot be used to create new data containers (without 
+    * calling ::Reset() - which is equivalent to the other constructor).
+    *
+    * \param[in] serializedFieldDef The serialized definition of the data
+    *            fields as an array of bytes. It cannot be NULL.
+    * \param[in] fieldDefLength The length in bytes of serializedFieldDef.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   FieldDefinition( unsigned char * serializedFieldDef,
+                    psoUint32       fieldDefLength );
+
+   /**
+    * Construct a data-container definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   FieldDefinition();
+
+public:
+   
+   virtual ~FieldDefinition();
+
+   /**
+    * Reset the object to be reused for the definition of another data 
+    * container.
+    *
+    * \param[in] numberOfFields The number of data fields of the new data
+    *            container.
+    * \param[in] type The type of the object.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+//   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
+
+   /**
+    * Reset the object to be reused for the definition of another data 
+    * container.
+    *
+    * This version of reset is used internally by the C++ API to populate
+    * the C++ class from the C structs.
+    *
+    * \param[in] definition The object definition C struct
+    * \param[in] inputKey   The key definition. Set it to NULL for objects
+    *                       not using keys (FIFO Queues, etc.).
+    * \param[in] inputFields The field definition array
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+//   void Reset( psoObjectDefinition & definition,
+//               psoKeyDefinition    * inputKey,
+//               psoFieldDefinition  * inputFields );
+   
+   /** Returns the fields definition. */
+   const unsigned char * GetFields();
+
+   /** Returns the length, in bytes, of the definition. */
+   psoUint32 GetFieldLength();
+
+private:
+
+   unsigned char * serializedFieldDef;
+   psoUint32       fieldDefLength;
+
+};
+
+} // End of namespace
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif // PHOTON_FIELD_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
