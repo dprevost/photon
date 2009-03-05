@@ -491,11 +491,11 @@ AC_CONFIG_FILES([
    src/API/Tests/Makefile
    src/API/Tests/Api/Makefile
    src/API/Tests/CommonObject/Makefile
+   src/API/Tests/FastMap/Makefile
    src/API/Tests/Folder/Makefile
    src/API/Tests/HashMap/Makefile
    src/API/Tests/Lifo/Makefile
    src/API/Tests/ListReaders/Makefile
-   src/API/Tests/Map/Makefile
    src/API/Tests/Process/Makefile
    src/API/Tests/Queue/Makefile
    src/API/Tests/Session/Makefile
@@ -522,13 +522,13 @@ AC_CONFIG_FILES([
    src/Nucleus/Makefile
    src/Nucleus/Tests/Makefile
    src/Nucleus/Tests/BlockGroup/Makefile
+   src/Nucleus/Tests/FastMap/Makefile
    src/Nucleus/Tests/Folder/Makefile
    src/Nucleus/Tests/Hash/Makefile
    src/Nucleus/Tests/HashTx/Makefile
    src/Nucleus/Tests/HashMap/Makefile
    src/Nucleus/Tests/List/Makefile
    src/Nucleus/Tests/LogFile/Makefile
-   src/Nucleus/Tests/Map/Makefile
    src/Nucleus/Tests/MemAlloc/Makefile
    src/Nucleus/Tests/MemBitmap/Makefile
    src/Nucleus/Tests/MemObject/Makefile
