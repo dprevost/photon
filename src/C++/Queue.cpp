@@ -19,12 +19,8 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/psoQueue>
+#include <photon/photon>
 #include <photon/psoQueue.h>
-#include <photon/psoSession>
-#include <photon/psoErrors.h>
-#include <photon/psoException>
-#include <photon/psoDefinition>
 
 using namespace pso;
 
@@ -63,47 +59,6 @@ void Queue::Close()
    
    m_objectHandle = NULL;   
 }
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-#if 0
-void Queue::Definition( ObjDefinition & definition )
-{
-   int rc;
-   psoObjectDefinition def;
-   psoFieldDefinition * fields;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "Queue::Definition", PSO_NULL_HANDLE );
-   }
-   
-   memset( &def, 0, sizeof(psoObjectDefinition) );
-   rc = psoQueueDefinition( m_objectHandle, &def, 0, NULL );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Queue::Definition" );
-   }
-   fields = (psoFieldDefinition *) 
-      calloc(sizeof(psoFieldDefinition) * def.numFields, 1);
-   if ( fields == NULL ) {
-      throw pso::Exception( "Queue::Definition", PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   rc = psoQueueDefinition( m_objectHandle, &def, def.numFields, fields );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Queue::Definition" );
-   }
-   
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      definition.Reset( def, NULL, fields );
-   }
-   catch( pso::Exception exc ) {
-      free( fields );
-      throw exc;
-   }
-   
-   free( fields );
-}
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -19,16 +19,8 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/psoFastMap>
+#include <photon/photon>
 #include <photon/psoFastMap.h>
-#include <photon/psoSession>
-#include <photon/psoErrors.h>
-#include <photon/psoException>
-#include <photon/psoDefinition>
-#include <photon/KeyDefinition>
-#include <photon/KeyDefinitionODBC>
-#include <photon/FieldDefinition>
-#include <photon/FieldDefinitionODBC>
 #include "API/Map.h"
 #include "API/Session.h"
 
@@ -68,49 +60,6 @@ void FastMap::Close()
    }
    m_objectHandle = NULL;   
 }
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-#if 0
-void FastMap::Definition( ObjDefinition & definition )
-{
-   int rc;
-   psoObjectDefinition def;
-   psoKeyDefinition key;
-   psoFieldDefinition * fields;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "FastMap::Definition", PSO_NULL_HANDLE );
-   }
-   
-   memset( &def, 0, sizeof(psoObjectDefinition) );
-   memset( &key, 0, sizeof(psoKeyDefinition) );
-   rc = psoFastMapDefinition( m_objectHandle, &def, &key, 0, NULL );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
-   }
-   fields = (psoFieldDefinition *) 
-      calloc(sizeof(psoFieldDefinition) * def.numFields, 1);
-   if ( fields == NULL ) {
-      throw pso::Exception( "FastMap::Definition", PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   rc = psoFastMapDefinition( m_objectHandle, &def, &key, def.numFields, fields );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
-   }
-   
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      definition.Reset( def, &key, fields );
-   }
-   catch( pso::Exception exc ) {
-      free( fields );
-      throw exc;
-   }
-   
-   free( fields );
-}
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

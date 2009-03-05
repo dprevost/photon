@@ -19,12 +19,8 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/psoHashMap>
+#include <photon/photon>
 #include <photon/psoHashMap.h>
-#include <photon/psoSession>
-#include <photon/psoErrors.h>
-#include <photon/psoException>
-#include <photon/psoDefinition>
 
 using namespace pso;
 
@@ -62,49 +58,6 @@ void HashMap::Close()
    }
    m_objectHandle = NULL;   
 }
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-#if 0
-void HashMap::Definition( ObjDefinition & definition )
-{
-   int rc;
-   psoObjectDefinition def;
-   psoKeyDefinition key;
-   psoFieldDefinition * fields;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "HashMap::Definition", PSO_NULL_HANDLE );
-   }
-   
-   memset( &def, 0, sizeof(psoObjectDefinition) );
-   memset( &key, 0, sizeof(psoKeyDefinition) );
-   rc = psoHashMapDefinition( m_objectHandle, &def, &key, 0, NULL );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
-   }
-   fields = (psoFieldDefinition *) 
-      calloc(sizeof(psoFieldDefinition) * def.numFields, 1);
-   if ( fields == NULL ) {
-      throw pso::Exception( "HashMap::Definition", PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   rc = psoHashMapDefinition( m_objectHandle, &def, &key, def.numFields, fields );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
-   }
-   
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      definition.Reset( def, &key, fields );
-   }
-   catch( pso::Exception exc ) {
-      free( fields );
-      throw exc;
-   }
-   
-   free( fields );
-}
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

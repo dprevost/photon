@@ -29,7 +29,13 @@
 #include <photon/psoCommon.h>
 #include <photon/psoPhotonODBC.h>
 
-#include <photon/psoDefinition>
+#include <photon/psoException>
+
+#include <photon/FieldDefinition>
+#include <photon/FieldDefinitionODBC>
+#include <photon/KeyDefinition>
+#include <photon/KeyDefinitionODBC>
+
 #include <photon/psoProcess>
 #include <photon/psoSession>
 #include <photon/psoFolder>
@@ -47,7 +53,6 @@
 #include <photon/psoFastMapEditor>
 #include <photon/psoLifo>
 #include <photon/psoQueue>
-#include <photon/psoException>
 
 /**
  *
