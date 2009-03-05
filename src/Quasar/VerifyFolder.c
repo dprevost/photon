@@ -72,7 +72,7 @@ qsrCheckFolderContent( qsrVerifyStruct   * pVerify,
             break;
          case PSO_FAST_MAP:
             valid = qsrVerifyFastMap( pVerify,
-                                       (struct psonMap *)pObject, 
+                                       (struct psonFastMap *)pObject, 
                                        pContext );
             break;
          default:

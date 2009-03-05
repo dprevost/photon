@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaMapNext( objHandle, &entry );
+   errcode = psoaFastMapNext( objHandle, &entry );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

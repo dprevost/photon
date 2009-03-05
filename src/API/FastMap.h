@@ -33,7 +33,7 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psoaMap
+typedef struct psoaFastMap
 {
    psoaCommonObject object;
    
@@ -64,20 +64,20 @@ typedef struct psoaMap
 
    psoaReader reader;
    
-} psoaMap;
+} psoaFastMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-int psoaMapFirst( psoaMap          * pHashMap,
+int psoaFastMapFirst( psoaFastMap          * pHashMap,
                   psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psoaMapNext( psoaMap          * pHashMap,
+int psoaFastMapNext( psoaFastMap          * pHashMap,
                  psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psoaMapRetrieve( psoaMap      * pHashMap,
+int psoaFastMapRetrieve( psoaFastMap      * pHashMap,
                     const void    * key,
                     uint32_t        keyLength,
                     psoaDataEntry * pEntry );

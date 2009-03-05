@@ -27,7 +27,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psonMap * pHashMap;
+   psonFastMap * pHashMap;
    psonSessionContext context;
    bool ok;
    psonTxStatus txStatus;
@@ -41,14 +41,14 @@ int main()
 
    psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
+   ok = psonFastMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
                      SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
                      sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonMapInsert( pHashMap,
+   ok = psonFastMapInsert( pHashMap,
                        (const void *) key,
                        6,
                        (const void *) data,
@@ -58,7 +58,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonMapStatus( pHashMap, NULL );
+   psonFastMapStatus( pHashMap, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

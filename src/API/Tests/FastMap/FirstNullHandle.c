@@ -104,7 +104,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaMapFirst( NULL, &entry );
+   errcode = psoaFastMapFirst( NULL, &entry );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

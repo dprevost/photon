@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psonMap * pHashMap;
+   psonFastMap * pHashMap;
    psonSessionContext context;
    bool ok;
    psonTxStatus txStatus;
@@ -43,14 +43,14 @@ int main()
 
    psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
+   ok = psonFastMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
                      SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
                      sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonMapInsert( pHashMap,
+   ok = psonFastMapInsert( pHashMap,
                        (const void *) key1,
                        7,
                        (const void *) data,
@@ -60,7 +60,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonMapInsert( pHashMap,
+   ok = psonFastMapInsert( pHashMap,
                        (const void *) key2,
                        7,
                        (const void *) data,
@@ -70,7 +70,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonMapInsert( pHashMap,
+   ok = psonFastMapInsert( pHashMap,
                        (const void *) key3,
                        7,
                        (const void *) data,
@@ -80,7 +80,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonMapStatus( pHashMap, &status );
+   psonFastMapStatus( pHashMap, &status );
 
    if ( status.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

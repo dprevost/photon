@@ -28,14 +28,14 @@
 /* Forward declaration of static functions */
 
 static
-void psonMapReleaseNoLock( psonMap            * pHashMap,
+void psonFastMapReleaseNoLock( psonFastMap            * pHashMap,
                            psonHashItem       * pHashItem,
                            psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapCopy( psonMap            * pOldMap, 
-                  psonMap            * pNewMap,
+bool psonFastMapCopy( psonFastMap            * pOldMap, 
+                  psonFastMap            * pNewMap,
                   psonHashTxItem     * pHashItem,
                   const char         * origName,
                   psonSessionContext * pContext )
@@ -120,7 +120,7 @@ bool psonMapCopy( psonMap            * pOldMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapDelete( psonMap            * pHashMap,
+bool psonFastMapDelete( psonFastMap            * pHashMap,
                     const void         * pKey,
                     uint32_t             keyLength, 
                     psonSessionContext * pContext )
@@ -157,7 +157,7 @@ bool psonMapDelete( psonMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonMapEmpty( psonMap            * pHashMap,
+void psonFastMapEmpty( psonFastMap            * pHashMap,
                    psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pHashMap != NULL );
@@ -179,7 +179,7 @@ void psonMapEmpty( psonMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonMapFini( psonMap        * pHashMap,
+void psonFastMapFini( psonFastMap        * pHashMap,
                       psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pHashMap != NULL );
@@ -198,7 +198,7 @@ void psonMapFini( psonMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapGet( psonMap            * pHashMap,
+bool psonFastMapGet( psonFastMap            * pHashMap,
                  const void         * pKey,
                  uint32_t             keyLength, 
                  psonHashItem      ** ppHashItem,
@@ -271,7 +271,7 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapGetFirst( psonMap            * pHashMap,
+bool psonFastMapGetFirst( psonFastMap            * pHashMap,
                       psonFashMapItem    * pItem,
                       uint32_t             keyLength,
                       uint32_t             bufferLength,
@@ -326,7 +326,7 @@ bool psonMapGetFirst( psonMap            * pHashMap,
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapGetNext( psonMap            * pHashMap,
+bool psonFastMapGetNext( psonFastMap            * pHashMap,
                      psonFashMapItem    * pItem,
                      uint32_t             keyLength,
                      uint32_t             bufferLength,
@@ -364,7 +364,7 @@ bool psonMapGetNext( psonMap            * pHashMap,
        * at this point.
        */
       pItem->pHashItem = NULL;
-      psonMapReleaseNoLock( pHashMap, previousHashItem, pContext );
+      psonFastMapReleaseNoLock( pHashMap, previousHashItem, pContext );
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
       return false;
    }
@@ -387,14 +387,14 @@ bool psonMapGetNext( psonMap            * pHashMap,
 
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
-   psonMapReleaseNoLock( pHashMap, previousHashItem, pContext );
+   psonFastMapReleaseNoLock( pHashMap, previousHashItem, pContext );
 
    return true;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapInit( psonMap             * pHashMap,
+bool psonFastMapInit( psonFastMap             * pHashMap,
                   ptrdiff_t             parentOffset,
                   size_t                numberOfBlocks,
                   size_t                expectedNumOfItems,
@@ -487,7 +487,7 @@ bool psonMapInit( psonMap             * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapInsert( psonMap            * pHashMap,
+bool psonFastMapInsert( psonFastMap            * pHashMap,
                     const void         * pKey,
                     uint32_t             keyLength, 
                     const void         * pItem,
@@ -520,7 +520,7 @@ bool psonMapInsert( psonMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapRelease( psonMap            * pHashMap,
+bool psonFastMapRelease( psonFastMap            * pHashMap,
                      psonHashItem       * pHashItem,
                      psonSessionContext * pContext )
 {
@@ -529,7 +529,7 @@ bool psonMapRelease( psonMap            * pHashMap,
    PSO_PRE_CONDITION( pContext  != NULL );
    PSO_PRE_CONDITION( pHashMap->memObject.objType == PSON_IDENT_MAP );
 
-   psonMapReleaseNoLock( pHashMap,
+   psonFastMapReleaseNoLock( pHashMap,
                          pHashItem,
                          pContext );
    return true;
@@ -542,7 +542,7 @@ bool psonMapRelease( psonMap            * pHashMap,
  * object. Always use the standard one when calling from the API.
  */
 static
-void psonMapReleaseNoLock( psonMap            * pHashMap,
+void psonFastMapReleaseNoLock( psonFastMap            * pHashMap,
                            psonHashItem       * pHashItem,
                            psonSessionContext * pContext )
 {
@@ -578,7 +578,7 @@ void psonMapReleaseNoLock( psonMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonMapReplace( psonMap            * pHashMap,
+bool psonFastMapReplace( psonFastMap            * pHashMap,
                      const void         * pKey,
                      uint32_t             keyLength, 
                      const void         * pData,
@@ -611,7 +611,7 @@ bool psonMapReplace( psonMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonMapStatus( psonMap      * pHashMap,
+void psonFastMapStatus( psonFastMap      * pHashMap,
                     psoObjStatus * pStatus )
 {
    psonHashItem * pHashItem = NULL;

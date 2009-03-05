@@ -104,7 +104,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaMapRetrieve( objHandle,
+   errcode = psoaFastMapRetrieve( objHandle,
                               NULL,
                               6,
                               &entry );

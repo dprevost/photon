@@ -38,7 +38,7 @@ struct psonFolder;
 struct psonHashMap;
 struct psonHash;
 struct psonHashTx;
-struct psonMap;
+struct psonFastMap;
 struct psonQueue;
 struct psonMemObject;
 
@@ -115,7 +115,7 @@ qsrPopulateBitmap( struct qsrVerifyStruct   * pVerify,
 
 enum qsrRecoverError
 qsrVerifyFastMap( qsrVerifyStruct   * pVerify,
-                   struct psonMap     * pHashMap, 
+                   struct psonFastMap     * pHashMap, 
                    psonSessionContext * pContext  );
 
 enum qsrRecoverError

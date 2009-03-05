@@ -115,8 +115,8 @@ void FastMap::Get( const void * key,
 
 FieldDefinition * FastMap::GetFieldDefinition()
 {
-   psoaMap * pHashMap;
-   psonMap * pMemHashMap;
+   psoaFastMap * pHashMap;
+   psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
    psonSessionContext * pContext;
    FieldDefinition * pFieldDef = NULL;
@@ -125,12 +125,12 @@ FieldDefinition * FastMap::GetFieldDefinition()
       throw pso::Exception( "FastMap::GetFieldDefinition", PSO_NULL_HANDLE );
    }
 
-   pHashMap = (psoaMap *) m_objectHandle;
+   pHashMap = (psoaFastMap *) m_objectHandle;
    pContext = &pHashMap->object.pSession->context;
 
    if ( ! pHashMap->object.pSession->terminated ) {
       if ( psoaCommonLock( &pHashMap->object ) ) {
-         pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
+         pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
       
          switch( pMemHashMap->fieldDefType ) {
          case PSO_DEF_PHOTON_ODBC_SIMPLE:
@@ -163,8 +163,8 @@ FieldDefinition * FastMap::GetFieldDefinition()
 
 KeyDefinition * FastMap::GetKeyDefinition()
 {
-   psoaMap * pHashMap;
-   psonMap * pMemHashMap;
+   psoaFastMap * pHashMap;
+   psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
    psonSessionContext * pContext;
    KeyDefinition * pKeyDef = NULL;
@@ -173,12 +173,12 @@ KeyDefinition * FastMap::GetKeyDefinition()
       throw pso::Exception( "FastMap::GetKeyDefinition", PSO_NULL_HANDLE );
    }
 
-   pHashMap = (psoaMap *) m_objectHandle;
+   pHashMap = (psoaFastMap *) m_objectHandle;
    pContext = &pHashMap->object.pSession->context;
 
    if ( ! pHashMap->object.pSession->terminated ) {
       if ( psoaCommonLock( &pHashMap->object ) ) {
-         pMemHashMap = (psonMap *) pHashMap->object.pMyMemObject;
+         pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
       
          switch( pMemHashMap->keyDefType ) {
          case PSO_DEF_PHOTON_ODBC_SIMPLE:

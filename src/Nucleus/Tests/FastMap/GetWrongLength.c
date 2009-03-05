@@ -26,7 +26,7 @@ const bool expectedToPass = true;
 
 int main()
 {
-   psonMap * pHashMap;
+   psonFastMap * pHashMap;
    psonSessionContext context;
    bool ok;
    int errcode;
@@ -45,14 +45,14 @@ int main()
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonMapInit( pHashMap, 
+   ok = psonFastMapInit( pHashMap, 
                      0, 1, 0, &status, 4, 
                      "Map1", SET_OFFSET(pHashMap), &def, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonMapInsert( pHashMap,
+   ok = psonFastMapInsert( pHashMap,
                        (const void *) key,
                        6,
                        (const void *) data,
@@ -62,7 +62,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonMapGet( pHashMap,
+   ok = psonFastMapGet( pHashMap,
                     (const void *) key,
                     6,
                     &pItem,

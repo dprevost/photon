@@ -27,7 +27,7 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psonMap * pHashMap;
+   psonFastMap * pHashMap;
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
@@ -37,7 +37,7 @@ int main()
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonMapInit( pHashMap, 
+   ok = psonFastMapInit( pHashMap, 
                      0, 
                      1, 
                      0, 

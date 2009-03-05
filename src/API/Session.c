@@ -35,7 +35,7 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaMapResetReader( void * map );
+void psoaFastMapResetReader( void * map );
 
 static inline
 void psoaResetReaders( psoaSession * pSession )
@@ -45,7 +45,7 @@ void psoaResetReaders( psoaSession * pSession )
    if ( psoaListReadersPeakFirst( &pSession->listReaders, &reader ) ) {
       do {
          if ( reader->type == PSOA_MAP ) {
-            psoaMapResetReader( reader->address );
+            psoaFastMapResetReader( reader->address );
          }
       } while (psoaListReadersPeakNext(&pSession->listReaders, reader, &reader) );
    }

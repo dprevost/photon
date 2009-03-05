@@ -50,7 +50,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
                            psonSessionContext * pContext )
 {
    psonObjectDescriptor * pDesc, * pDescLatest;
-   psonMap * pMapLatest, * pMapEdit;
+   psonFastMap * pMapLatest, * pMapEdit;
    psonHashTxItem * pHashItemLatest;
    psonTreeNode * node;
    psonTxStatus * tx;
@@ -64,7 +64,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
    GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
 
    /* The edit version which is about to become the latest */
-   pMapEdit = GET_PTR_FAST( pDesc->offset, psonMap );
+   pMapEdit = GET_PTR_FAST( pDesc->offset, psonFastMap );
    
    PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
@@ -72,7 +72,7 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                                psonObjectDescriptor );
    /* The current latest which is about to become old. */
-   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonMap );
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonFastMap );
 
    pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
    pMapLatest->editVersion = PSON_NULL_OFFSET;
@@ -495,7 +495,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
    psonMemObject * pMemObject;
    unsigned char * ptr;
    psonMemObjIdent memObjType = PSON_IDENT_LAST;
-   psonMap * pMap;
+   psonFastMap * pMap;
    bool found, ok;
    
    PSO_PRE_CONDITION( pFolder     != NULL );
@@ -578,7 +578,7 @@ bool psonFolderEditObject( psonFolder         * pFolder,
 
       switch( pDescOld->apiType ) {
       case PSO_FAST_MAP:
-         pMap = GET_PTR_FAST( pDescOld->offset, psonMap );
+         pMap = GET_PTR_FAST( pDescOld->offset, psonFastMap );
          if ( pMap->editVersion != PSON_NULL_OFFSET ) {
             errcode = PSO_A_SINGLE_UPDATER_IS_ALLOWED;
             goto the_exit;
@@ -657,14 +657,14 @@ bool psonFolderEditObject( psonFolder         * pFolder,
       
       switch ( memObjType ) {
       case PSON_IDENT_MAP:
-         ok = psonMapCopy( pMap, /* old, */
-                           (psonMap *)ptr,
+         ok = psonFastMapCopy( pMap, /* old, */
+                           (psonFastMap *)ptr,
                            pHashItemNew,
                            pDescNew->originalName,
                            pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
-         pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(psonMap,nodeObject);
-         pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(psonMap,memObject);
+         pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(psonFastMap,nodeObject);
+         pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(psonFastMap,memObject);
          break;
 
       default:
@@ -858,7 +858,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
             break;
          case PSO_FAST_MAP:
             {
-               psonMap * p = GET_PTR_FAST( pDesc->offset, psonMap);
+               psonFastMap * p = GET_PTR_FAST( pDesc->offset, psonFastMap);
                
                *ppKey = GET_PTR_FAST( p->keyDefOffset, unsigned char );
                *pKeyLength = p->keyDefLength;
@@ -1281,7 +1281,7 @@ bool psonFolderGetStatus( psonFolder         * pFolder,
                              pStatus );
             break;
          case PSO_FAST_MAP:
-            psonMapStatus( GET_PTR_FAST( pDesc->memOffset, psonMap ), pStatus );
+            psonFastMapStatus( GET_PTR_FAST( pDesc->memOffset, psonFastMap ), pStatus );
             break;
          default:
             PSO_INV_CONDITION( pDesc_invalid_api_type );
@@ -1611,7 +1611,7 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
          break;
 
       case PSON_IDENT_MAP:
-         ok = psonMapInit( (psonMap *)ptr,
+         ok = psonFastMapInit( (psonFastMap *)ptr,
                            SET_OFFSET(pFolder),
                            numBlocks,
                            expectedNumOfChilds,
@@ -1626,8 +1626,8 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                            fieldsLength,
                            pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
-         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonMap,nodeObject);
-         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonMap,memObject);
+         pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonFastMap,nodeObject);
+         pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonFastMap,memObject);
          break;
 
       default:
@@ -1876,7 +1876,7 @@ void psonFolderRemoveObject( psonFolder         * pFolder,
       psonQueueFini( (psonQueue *)ptrObject, pContext );
       break;
    case PSO_FAST_MAP:
-      psonMapFini( (psonMap *)ptrObject, pContext );
+      psonFastMapFini( (psonFastMap *)ptrObject, pContext );
       break;
    case PSO_LAST_OBJECT_TYPE:
       ;
@@ -1918,7 +1918,7 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
                              psonSessionContext * pContext )
 {
    psonObjectDescriptor * pDesc, * pDescLatest;
-   psonMap * pMapLatest, * pMapEdit;
+   psonFastMap * pMapLatest, * pMapEdit;
    psonHashTxItem * pHashItemLatest;
    psonTreeNode * tree;
    psonTxStatus * tx;
@@ -1930,14 +1930,14 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
 
    GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
 
-   pMapEdit = GET_PTR_FAST( pDesc->offset, psonMap );
+   pMapEdit = GET_PTR_FAST( pDesc->offset, psonFastMap );
    
    PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    
    pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashTxItem );
    pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
                                psonObjectDescriptor );
-   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonMap );
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonFastMap );
    
    pMapLatest->editVersion = PSON_NULL_OFFSET;
 
@@ -1951,7 +1951,7 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
    /* If needed */
    psonFolderResize( pFolder, pContext );
 
-   psonMapFini( pMapEdit, pContext );
+   psonFastMapFini( pMapEdit, pContext );
       
    tree = GET_PTR_FAST( pDescLatest->nodeOffset, psonTreeNode );
    tx = GET_PTR_FAST( tree->txStatusOffset, psonTxStatus );

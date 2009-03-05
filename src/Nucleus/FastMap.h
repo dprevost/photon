@@ -48,7 +48,7 @@ typedef struct psonFashMapItem psonFashMapItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psonMap
+struct psonFastMap
 {
    /** Always first */
    struct psonMemObject memObject;
@@ -84,33 +84,33 @@ struct psonMap
 
 };
 
-typedef struct psonMap psonMap;
+typedef struct psonFastMap psonFastMap;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psonMapCopy( psonMap            * pHashMap, 
-                  psonMap            * pNewMap,
+bool psonFastMapCopy( psonFastMap            * pHashMap, 
+                  psonFastMap            * pNewMap,
                   psonHashTxItem     * pHashItem,
                   const char         * origName,
                   psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapDelete( psonMap            * pHashMap,
+bool psonFastMapDelete( psonFastMap            * pHashMap,
                     const void         * key,
                     uint32_t             keyLength, 
                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psonMapEmpty( psonMap            * pHashMap,
+void psonFastMapEmpty( psonFastMap            * pHashMap,
                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psonMapFini( psonMap            * pHashMap,
+void psonFastMapFini( psonFastMap            * pHashMap,
                   psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapGet( psonMap            * pHashMap,
+bool psonFastMapGet( psonFastMap            * pHashMap,
                  const void         * pKey,
                  uint32_t             keyLength, 
                  psonHashItem      ** ppItem,
@@ -118,21 +118,21 @@ bool psonMapGet( psonMap            * pHashMap,
                  psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapGetFirst( psonMap            * pHashMap,
+bool psonFastMapGetFirst( psonFastMap            * pHashMap,
                       psonFashMapItem    * pItem,
                       uint32_t             keyLength,
                       uint32_t             bufferLength,
                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapGetNext( psonMap            * pHashMap,
+bool psonFastMapGetNext( psonFastMap            * pHashMap,
                      psonFashMapItem    * pItem,
                      uint32_t             keyLength,
                      uint32_t             bufferLength,
                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapInit( psonMap             * pHashMap,
+bool psonFastMapInit( psonFastMap             * pHashMap,
                   ptrdiff_t             parentOffset,
                   size_t                numberOfBlocks,
                   size_t                expectedNumOfChilds,
@@ -148,7 +148,7 @@ bool psonMapInit( psonMap             * pHashMap,
                   psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapInsert( psonMap            * pHashMap,
+bool psonFastMapInsert( psonFastMap            * pHashMap,
                     const void         * pKey,
                     uint32_t             keyLength,
                     const void         * pItem,
@@ -156,12 +156,12 @@ bool psonMapInsert( psonMap            * pHashMap,
                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapRelease( psonMap            * pHashMap,
+bool psonFastMapRelease( psonFastMap            * pHashMap,
                      psonHashItem       * pHashItem,
                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonMapReplace( psonMap            * pHashMap,
+bool psonFastMapReplace( psonFastMap            * pHashMap,
                      const void         * pKey,
                      uint32_t             keyLength,
                      const void         * pItem,
@@ -169,7 +169,7 @@ bool psonMapReplace( psonMap            * pHashMap,
                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-void psonMapStatus( psonMap      * pHashMap,
+void psonFastMapStatus( psonFastMap      * pHashMap,
                     psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -26,7 +26,7 @@
 
 enum qsrRecoverError
 qsrCheckFastMapContent( qsrVerifyStruct   * pVerify,
-                         psonMap            * pHashMap, 
+                         psonFastMap            * pHashMap, 
                          psonSessionContext * pContext )
 {
    enum qsrRecoverError rc = QSR_REC_OK;
@@ -41,7 +41,7 @@ qsrCheckFastMapContent( qsrVerifyStruct   * pVerify,
 
 enum qsrRecoverError 
 qsrVerifyFastMap( qsrVerifyStruct   * pVerify,
-                   psonMap            * pHashMap,
+                   psonFastMap            * pHashMap,
                    psonSessionContext * pContext )
 {
    psonTxStatus * txHashMapStatus;
