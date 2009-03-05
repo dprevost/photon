@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include "Quasar/VerifyCommon.h"
-#include "Nucleus/Map.h"
+#include "Nucleus/FastMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

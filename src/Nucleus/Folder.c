@@ -22,7 +22,7 @@
 #include "Nucleus/Transaction.h"
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/HashMap.h"
-#include "Nucleus/Map.h"
+#include "Nucleus/FastMap.h"
 #include "Nucleus/Queue.h"
 #include "Nucleus/MemoryHeader.h"
 

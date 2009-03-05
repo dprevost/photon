@@ -36,6 +36,8 @@ libphoton_la_SOURCES =   \
         CommonObject.h   \
         Connector.c      \
         Connector.h      \
+        FastMap.c        \
+        FastMap.h        \
         Folder.c         \
         Folder.h         \
         HashMap.c        \
@@ -43,8 +45,6 @@ libphoton_la_SOURCES =   \
         Lifo.c           \
         Lifo.h           \
         ListReaders.h    \
-        Map.c            \
-        Map.h            \
         Process.c        \
         Process.h        \
         QuasarCommon.h   \

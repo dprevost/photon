@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/psoFastMap.h>
-#include "API/Map.h"
+#include "API/FastMap.h"
 #include "API/Session.h"
 
 using namespace pso;

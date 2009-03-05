@@ -17,11 +17,11 @@ CLEANFILES = *~ core
 SUBDIRS =            \
         Api          \
         CommonObject \
+        FastMap      \
         Folder       \
         HashMap      \
         Lifo         \
         ListReaders  \
-        Map          \
         Process      \
         Queue        \
         Session      

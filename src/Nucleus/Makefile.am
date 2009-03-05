@@ -31,6 +31,8 @@ libNucleus_la_SOURCES =   \
         BlockGroup.h      \
         DataType.h        \
         Engine.h          \
+        FastMap.c         \
+        FastMap.h         \
         Folder.c          \
         Folder.h          \
         HashCommon.h      \
@@ -50,8 +52,6 @@ libNucleus_la_SOURCES =   \
         LinkNode.h        \
         LogFile.c         \
         LogFile.h         \
-        Map.c             \
-        Map.h             \
         MemBitmap.c       \
         MemBitmap.h       \
         MemBitmap.inl     \
