@@ -33,42 +33,51 @@ C_INSTALLED_FILES =         \
         photon/psoProcess.h \
         photon/psoSession.h 
 
-CPP_INSTALLED_FILES =           \
-        photon/photon           \
-        photon/psoDefinition    \
-        photon/psoException     \
-        photon/psoFastMap       \
-        photon/psoFastMapEditor \
-        photon/psoFolder        \
-        photon/psoHashMap       \
-        photon/psoLifo          \
-        photon/psoProcess       \
-        photon/psoQueue         \
-        photon/psoSession       
+CPP_INSTALLED_FILES =              \
+        photon/photon              \
+        photon/FieldDefinition     \
+        photon/FieldDefinitionODBC \
+        photon/KeyDefinition       \
+        photon/KeyDefinitionODBC   \
+        photon/psoException        \
+        photon/psoFastMap          \
+        photon/psoFastMapEditor    \
+        photon/psoFolder           \
+        photon/psoHashMap          \
+        photon/psoLifo             \
+        photon/psoProcess          \
+        photon/psoQueue            \
+        photon/psoSession          
 
-CPP_DOXY_FILES =  \
-        $(top_srcdir)/src/include/Doxygen/psoDefinition.in    \
-        $(top_srcdir)/src/include/Doxygen/psoException.in     \
-        $(top_srcdir)/src/include/Doxygen/psoFastMap.in       \
-        $(top_srcdir)/src/include/Doxygen/psoFastMapEditor.in \
-        $(top_srcdir)/src/include/Doxygen/psoFolder.in        \
-        $(top_srcdir)/src/include/Doxygen/psoHashMap.in       \
-        $(top_srcdir)/src/include/Doxygen/psoLifo.in          \
-        $(top_srcdir)/src/include/Doxygen/psoProcess.in       \
-        $(top_srcdir)/src/include/Doxygen/psoQueue.in         \
-        $(top_srcdir)/src/include/Doxygen/psoSession.in       
+CPP_DOXY_FILES =                                                 \
+        $(top_srcdir)/src/include/Doxygen/FieldDefinition.in     \
+        $(top_srcdir)/src/include/Doxygen/FieldDefinitionODBc.in \
+        $(top_srcdir)/src/include/Doxygen/KeyDefinition.in       \
+        $(top_srcdir)/src/include/Doxygen/KeyDefinitionODBC.in   \
+        $(top_srcdir)/src/include/Doxygen/psoException.in        \
+        $(top_srcdir)/src/include/Doxygen/psoFastMap.in          \
+        $(top_srcdir)/src/include/Doxygen/psoFastMapEditor.in    \
+        $(top_srcdir)/src/include/Doxygen/psoFolder.in           \
+        $(top_srcdir)/src/include/Doxygen/psoHashMap.in          \
+        $(top_srcdir)/src/include/Doxygen/psoLifo.in             \
+        $(top_srcdir)/src/include/Doxygen/psoProcess.in          \
+        $(top_srcdir)/src/include/Doxygen/psoQueue.in            \
+        $(top_srcdir)/src/include/Doxygen/psoSession.in          
 
-CPP_MAN_PAGES =                 \
-        man3/psoDefinition.3    \
-        man3/psoException.3     \
-        man3/psoFastMap.3       \
-        man3/psoFastMapEditor.3 \
-        man3/psoFolder.3        \
-        man3/psoHashMap.3       \
-        man3/psoLifo.3          \
-        man3/psoProcess.3       \
-        man3/psoQueue.3         \
-        man3/psoSession.3       
+CPP_MAN_PAGES =                    \
+        man3/FieldDefinition.3     \
+        man3/FieldDefinitionODBC.3 \
+        man3/KeyDefinition.3       \
+        man3/KeyDefinitionODBC.3   \
+        man3/psoException.3        \
+        man3/psoFastMap.3          \
+        man3/psoFastMapEditor.3    \
+        man3/psoFolder.3           \
+        man3/psoHashMap.3          \
+        man3/psoLifo.3             \
+        man3/psoProcess.3          \
+        man3/psoQueue.3            \
+        man3/psoSession.3          
 
 # Sadly, this list must be edited by hand (it will vary if functions are
 # added or removed from the C API).
@@ -181,9 +190,21 @@ nobase_include_HEADERS =       \
 #
 if COND_USE_DOXYGEN
 
-man3/psoDefinition.3: $(top_srcdir)/src/include/Doxygen/psoDefinition.in $(top_srcdir)/src/include/photon/psoDefinition
-	doxygen $(top_srcdir)/src/include/Doxygen/psoDefinition 
-	cp dummy/man/man3/psoDefinition.3 man3/psoDefinition.3
+man3/FieldDefinition.3: $(top_srcdir)/src/include/Doxygen/FieldDefinition.in $(top_srcdir)/src/include/photon/FieldDefinition
+	doxygen $(top_srcdir)/src/include/Doxygen/FieldDefinition 
+	cp dummy/man/man3/FieldDefinition.3 man3/FieldDefinition.3
+	-rm -rf dummy
+man3/FieldDefinitionODBC.3: $(top_srcdir)/src/include/Doxygen/FieldDefinitionODBC.in $(top_srcdir)/src/include/photon/FieldDefinitionODBC
+	doxygen $(top_srcdir)/src/include/Doxygen/FieldDefinitionODBC 
+	cp dummy/man/man3/FieldDefinitionODBC.3 man3/FieldDefinitionODBC.3
+	-rm -rf dummy
+man3/KeyDefinition.3: $(top_srcdir)/src/include/Doxygen/KeyDefinition.in $(top_srcdir)/src/include/photon/KeyDefinition
+	doxygen $(top_srcdir)/src/include/Doxygen/KeyDefinition 
+	cp dummy/man/man3/KeyDefinition.3 man3/KeyDefinition.3
+	-rm -rf dummy
+man3/KeyDefinitionODBC.3: $(top_srcdir)/src/include/Doxygen/KeyDefinitionODBC.in $(top_srcdir)/src/include/photon/KeyDefinitionODBC
+	doxygen $(top_srcdir)/src/include/Doxygen/KeyDefinitionODBC 
+	cp dummy/man/man3/KeyDefinitionODBC.3 man3/KeyDefinitionODBC.3
 	-rm -rf dummy
 man3/psoException.3: $(top_srcdir)/src/include/Doxygen/psoException.in $(top_srcdir)/src/include/photon/psoException
 	doxygen $(top_srcdir)/src/include/Doxygen/psoException 

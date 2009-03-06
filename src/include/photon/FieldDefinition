@@ -40,9 +40,8 @@
 namespace pso {
 
 /** 
- * This class is a wrapper for the C struct psoObjectDefinition.
- *
- * It's main pupose is to encapsulate the memory management of the C struct.
+ * This abstract base class provides the "interface" needed to both define 
+ * and retrieve the definition of the fields of a data record.
  */
 class PHOTON_EXPORT FieldDefinition
 {
@@ -74,6 +73,16 @@ protected:
 public:
    
    virtual ~FieldDefinition();
+
+   /**
+    * Iterates through the definition.
+    *
+    * \return A formatted string containing the information on an item of 
+    *         the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   virtual std::string GetNext() = 0;
 
    /**
     * Reset the object to be reused for the definition of another data 
@@ -111,7 +120,7 @@ public:
    /** Returns the length, in bytes, of the definition. */
    psoUint32 GetFieldLength();
 
-private:
+protected:
 
    unsigned char * serializedFieldDef;
    psoUint32       fieldDefLength;

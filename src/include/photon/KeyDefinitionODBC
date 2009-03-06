@@ -104,6 +104,16 @@ public:
                      psoUint32    length );
 
    /**
+    * Iterates through the definition.
+    *
+    * \return A formatted string containing the information on an item of 
+    *         the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   virtual std::string GetNext();
+
+   /**
     * Reset the object to be reused for the definition of another data 
     * container.
     *
