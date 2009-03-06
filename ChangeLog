@@ -10,7 +10,7 @@
 
 	* photon: first beta version
 
-2008-11-??  Daniel Prevost  <dprevost@photonsoftware.org>
+2008-12-06  Daniel Prevost  <dprevost@photonsoftware.org>
 
 	* photon: second beta version
      - Transactions are now fully atomic.
@@ -20,4 +20,19 @@
      - Quasar can be used to create/verify a backstore file and then exit
        (with the new -e, --exit option). This can be use to prepare the
        software to be used standalone.
+
+2009-03-??  Daniel Prevost  <dprevost@photonsoftware.org>
+
+	* photon: version 0.5.0
+     - Major update to field and key definitions. Instead of using our
+       home-made approach, this update will let programmers use their
+       choice of metadata to define the data records and keys.
+     - Some predefined metadata approaches are offered as options:
+         - Simple ODBC: fixed length fields except for the last one.
+           Ideal for mapping to C structs.
+         - ODBC: serialized with protobuf. Not done yet.
+         - User Defined
+     - Serious progress was made with Java, Python and C# but these
+       interfacs are not completely ready and will be made available
+       in subsequent minor releases.
 

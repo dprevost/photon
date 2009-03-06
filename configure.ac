@@ -62,8 +62,8 @@ AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
 
 # Tell our makefiles that we can use protoc-c to regenerate some of 
 # the generated code, as needed.
-AC_CHECK_PROG([PROTOC_C_IS_PRESENT], [protoc-c], [yes], [no])
-AM_CONDITIONAL([COND_USE_PROTOC_C], [test "$PROTOC_C_IS_PRESENT" = yes])
+##AC_CHECK_PROG([PROTOC_C_IS_PRESENT], [protoc-c], [yes], [no])
+##AM_CONDITIONAL([COND_USE_PROTOC_C], [test "$PROTOC_C_IS_PRESENT" = yes])
 
 # Tell our makefiles that we can use doxygen and latex to regenerate some of 
 # the documentation, as needed.
