@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -14,17 +14,16 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =            \
-        FastMap      \
-        FieldDefODBC \
-        Folder       \
-        HashMap      \
-        Lifo         \
-        Queue        \
-        Process      \
-        Session      
+check_PROGRAMS =   \
+        AddField   \
+        Construct  
 
-EXTRA_DIST = 
+AddField_SOURCES   = AddField.cpp
+Construct_SOURCES  = Construct.cpp
+
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -32,7 +31,13 @@ TESTS_ENVIRONMENT =                  \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
         verbose=1                    \
-        PYTHON=$(PYTHON)             
+        PYTHON=$(PYTHON)
 
-LDADD = $(top_builddir)/src/C++/libphotoncpp.la
+TESTS =            \
+        AddField   \
+        Construct  
+
+XFAIL_TESTS = 
+
+LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 

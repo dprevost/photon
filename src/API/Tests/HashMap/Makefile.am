@@ -46,10 +46,10 @@ check_PROGRAMS =            \
         StatusPass          
 
 #        CreateXML           
+#CreateXML_SOURCES           = CreateXML.c
 
 ClosePass_SOURCES           = ClosePass.c
 Create_SOURCES              = Create.c
-CreateXML_SOURCES           = CreateXML.c
 DeletePass_SOURCES          = DeletePass.c
 Definition_SOURCES          = Definition.c
 FirstNullEntry_SOURCES      = FirstNullEntry.c

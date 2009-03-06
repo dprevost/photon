@@ -513,8 +513,8 @@ AC_CONFIG_FILES([
    src/Common/Tests/ThreadLock/Makefile
    src/C++/Makefile
    src/C++/Tests/Makefile
-   src/C++/Tests/Definition/Makefile
    src/C++/Tests/FastMap/Makefile
+   src/C++/Tests/FieldDefODBC/Makefile
    src/C++/Tests/Folder/Makefile
    src/C++/Tests/HashMap/Makefile
    src/C++/Tests/Lifo/Makefile
@@ -541,7 +541,6 @@ AC_CONFIG_FILES([
    src/Nucleus/Tests/Queue/Makefile
    src/Nucleus/Tests/Session/Makefile
    src/Nucleus/Tests/Transaction/Makefile
-   src/Proto/Makefile
    src/Quasar/Makefile
    src/Quasar/Tests/Makefile
    src/Java/Makefile
@@ -554,6 +553,7 @@ AC_CONFIG_FILES([
    src/XML/Tests/Makefile
 ])
 
+#   src/Proto/Makefile
 # src/Tools/xml2c/Makefile
 
 AC_OUTPUT

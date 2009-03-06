@@ -26,9 +26,10 @@ check_PROGRAMS =     \
         StatusPass   
 
 #        CreateXML    
+#CreateXML_SOURCES    = CreateXML.cpp
+
 ClosePass_SOURCES    = ClosePass.cpp
 Create_SOURCES       = Create.cpp
-CreateXML_SOURCES    = CreateXML.cpp
 Destroy_SOURCES      = Destroy.cpp
 GetFirstPass_SOURCES = GetFirstPass.cpp
 GetNextPass_SOURCES  = GetNextPass.cpp

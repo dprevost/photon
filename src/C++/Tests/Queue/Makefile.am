@@ -27,8 +27,8 @@ check_PROGRAMS =   \
         Status     
 
 #        Definition 
+# Definition_SOURCES = Definition.cpp
 Close_SOURCES      = Close.cpp
-Definition_SOURCES = Definition.cpp
 GetFirst_SOURCES   = GetFirst.cpp
 GetNext_SOURCES    = GetNext.cpp
 Open_SOURCES       = Open.cpp

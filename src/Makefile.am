@@ -26,7 +26,6 @@ endif
 SUBDIRS =             \
         Errors        \
         Common        \
-        Proto         \
         Nucleus       \
         Quasar        \
         API           \
@@ -37,8 +36,7 @@ SUBDIRS =             \
         Tests         \
         Tools         
 
-# To be added after the C++ subdir
-# $(MAYBE_Java) 
+#        Proto         
 
 EXAMPLES_FILES =                                      \
         Examples/iso_3166.tab                         \
