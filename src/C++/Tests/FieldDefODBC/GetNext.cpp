@@ -30,40 +30,66 @@ using namespace pso;
 
 int main( int argc, char * argv[] )
 {
-   try {
-      FieldDefinitionODBC def(0);
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_NUM_FIELDS ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
-      FieldDefinitionODBC def( PSO_MAX_FIELDS + 1 );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_NUM_FIELDS ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
+   FieldDefinitionODBC def(2);
+   string name;
+   psoFieldDefinition fields[6] = {
+      { "abcd1", PSO_INTEGER,   {0}  },
+      { "abcd2", PSO_CHAR,      {12} },
+      { "abcd3", PSO_BINARY,    {12} },
+      { "abcd4", PSO_TINYINT,   {0}  },
+      { "abcd5", PSO_NUMERIC,   {0}  },
+      { "abcd6", PSO_VARBINARY, {20} }
+   };
    
+   fields[4].vals.decimal.precision = PSO_FIELD_MAX_PRECISION;
+   fields[4].vals.decimal.scale = PSO_FIELD_MAX_PRECISION;
+   
+   FieldDefinitionODBC defOK( (unsigned char *) fields, 
+      6*sizeof(psoFieldDefinition));
+
+   name = "abcd1";
    try {
-      FieldDefinitionODBC def( 1 );
+      def.AddField( name, PSO_INTEGER, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   name = "abcd2";
+   try {
+      def.AddField( name, PSO_CHAR, 12, 0, 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   try {
+      def.GetNext();
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_DEF_OPERATION ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
+   try {
+      string s;
+      do {
+         s = defOK.GetNext();
+         cout << s << endl;
+      } while (s.length() > 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   
    return 0;
 }
 

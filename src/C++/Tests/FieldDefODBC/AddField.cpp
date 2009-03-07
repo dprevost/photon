@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -31,8 +31,22 @@ using namespace pso;
 int main( int argc, char * argv[] )
 {
    FieldDefinitionODBC def(6);
+   FieldDefinitionODBC def2(5, false);
    string name;
    
+   try {
+      def.AddField( NULL, 5, PSO_INTEGER, 0, 0, 0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
    try {
       def.AddField( "abc", 0, PSO_INTEGER, 0, 0, 0 );
       // Should never come here
@@ -158,8 +172,33 @@ int main( int argc, char * argv[] )
          return 1;
       }
    }
+
+   try {
+      def.AddField( name, PSO_LONGVARBINARY, 0, 0, 0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_FIELD_TYPE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
    
-///
+   try {
+      def.AddField( name, PSO_LONGVARCHAR, 0, 0, 0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_FIELD_TYPE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+   
    try {
       def.AddField( name, PSO_TINYINT, 0, 0, 0 );
    }
@@ -221,6 +260,67 @@ int main( int argc, char * argv[] )
 
    try {
       def.AddField( name, PSO_VARBINARY, 20, 0, 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   name = "abcd7";
+   try {
+      def.AddField( name, PSO_INTEGER, 0, 0, 0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_NUM_FIELDS ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
+   ////////////////////////////////
+
+   name = "efgh1";   
+   try {
+      def2.AddField( name, PSO_VARBINARY, 20, 0, 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   
+   name = "efgh2";
+   try {
+      def2.AddField( name, PSO_VARCHAR, 20, 0, 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   name = "efgh3";
+   try {
+      def2.AddField( name, PSO_LONGVARBINARY, 0, 0, 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   
+   name = "efgh4";
+   try {
+      def2.AddField( name, PSO_LONGVARCHAR, 0, 0, 0 );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   name = "efgh5";
+   try {
+      def2.AddField( name, PSO_INTEGER, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

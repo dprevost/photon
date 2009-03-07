@@ -14,12 +14,14 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =   \
-        AddField   \
-        Construct  
+check_PROGRAMS =  \
+        AddField  \
+        Construct \
+        GetNext   
 
-AddField_SOURCES   = AddField.cpp
-Construct_SOURCES  = Construct.cpp
+AddField_SOURCES  = AddField.cpp
+Construct_SOURCES = Construct.cpp
+GetNext_SOURCES   = GetNext.cpp
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -33,9 +35,10 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =            \
-        AddField   \
-        Construct  
+TESTS =           \
+        AddField  \
+        Construct \
+        GetNext   
 
 XFAIL_TESTS = 
 

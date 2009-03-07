@@ -115,12 +115,16 @@ void FieldDefinitionODBC::AddField( const char * name,
                             PSO_INVALID_NUM_FIELDS );
    }
    
+   if ( name == NULL ) {
+      throw pso::Exception( "FieldDefinitionODBC::AddField",
+                            PSO_NULL_POINTER );
+   }
+   
    if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
       throw pso::Exception( "FieldDefinitionODBC::AddField",
                             PSO_INVALID_FIELD_NAME );
    }
    memcpy( field[currentField].name, name, nameLength );
-   
    
    switch ( type ) {
    case PSO_TINYINT:
@@ -150,7 +154,7 @@ void FieldDefinitionODBC::AddField( const char * name,
 
    case PSO_VARBINARY:
    case PSO_VARCHAR:
-      if ( currentField != numFields-1 ) {
+      if ( simpleDef && currentField != numFields-1 ) {
          throw pso::Exception( "FieldDefinitionODBC::AddField",
                                PSO_INVALID_FIELD_TYPE );
       }
@@ -165,7 +169,7 @@ void FieldDefinitionODBC::AddField( const char * name,
 
    case PSO_LONGVARBINARY:
    case PSO_LONGVARCHAR:
-      if ( currentField != numFields-1 ) {
+      if ( simpleDef && currentField != numFields-1 ) {
          throw pso::Exception( "FieldDefinitionODBC::AddField",
                                PSO_INVALID_FIELD_TYPE );
       }
