@@ -138,18 +138,6 @@ public:
                           psoUint32 * fieldsLength );
 
    /**
-    * \brief Retrieve the key definition of the hash map.
-    *
-    * This function returns a new object. It is the responsability of the
-    * caller to delete the object.
-    *
-    * \return definition A new key definition of the hash map.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   KeyDefinition * GetKeyDefinition();
-
-   /**
     * \brief Retrieve the field definition of the hash map.
     *
     * This function returns a new object. It is the responsability of the
@@ -160,7 +148,18 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    FieldDefinition * GetFieldDefinition();
-                          
+
+   /**
+    * \brief Retrieve the key definition of the hash map.
+    *
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return definition A new key definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinition * GetKeyDefinition();
                           
    /** 
     * Retrieve the data item identified by the given key from the hash map.

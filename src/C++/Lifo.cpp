@@ -21,6 +21,8 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/psoLifo.h>
+#include "API/Lifo.h"
+#include "API/Session.h"
 
 using namespace pso;
 
@@ -80,6 +82,54 @@ void Lifo::Definition( psoObjectDefinition & definition,
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Lifo::Definition" );
    }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+FieldDefinition * Lifo::GetFieldDefinition()
+{
+   psoaLifo * pLifo;
+   psonQueue * pMemLifo;
+   int errcode = PSO_OK;
+   psonSessionContext * pContext;
+   FieldDefinition * pFieldDef = NULL;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "Lifo::GetFieldDefinition", PSO_NULL_HANDLE );
+   }
+
+   pLifo = (psoaLifo *) m_objectHandle;
+   pContext = &pLifo->object.pSession->context;
+
+   if ( ! pLifo->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pLifo->object ) ) {
+         pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
+      
+         switch( pMemLifo->fieldDefType ) {
+         case PSO_DEF_PHOTON_ODBC_SIMPLE:
+            pFieldDef = new FieldDefinitionODBC( pLifo->fieldsDef, 
+                                                 pLifo->fieldsDefLength );
+            break;
+         default:
+            break;
+         }
+         
+         psoaCommonUnlock( &pLifo->object );
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      throw pso::Exception( m_sessionHandle, "Lifo::GetFieldDefinition" );
+   }   
+   
+   return pFieldDef;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

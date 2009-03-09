@@ -21,6 +21,8 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/psoHashMap.h>
+#include "API/HashMap.h"
+#include "API/Session.h"
 
 using namespace pso;
 
@@ -128,6 +130,102 @@ void HashMap::Get( const void * key,
    }
 }
 
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+FieldDefinition * HashMap::GetFieldDefinition()
+{
+   psoaHashMap * pHashMap;
+   psonHashMap * pMemHashMap;
+   int errcode = PSO_OK;
+   psonSessionContext * pContext;
+   FieldDefinition * pFieldDef = NULL;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "HashMap::GetFieldDefinition", PSO_NULL_HANDLE );
+   }
+
+   pHashMap = (psoaHashMap *) m_objectHandle;
+   pContext = &pHashMap->object.pSession->context;
+
+   if ( ! pHashMap->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pHashMap->object ) ) {
+         pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
+      
+         switch( pMemHashMap->fieldDefType ) {
+         case PSO_DEF_PHOTON_ODBC_SIMPLE:
+            pFieldDef = new FieldDefinitionODBC( pHashMap->fieldsDef, 
+                                                 pHashMap->fieldsDefLength );
+            break;
+         default:
+            break;
+         }
+         
+         psoaCommonUnlock( &pHashMap->object );
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      throw pso::Exception( m_sessionHandle, "HashMap::GetFieldDefinition" );
+   }   
+   
+   return pFieldDef;
+}
+   
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+KeyDefinition * HashMap::GetKeyDefinition()
+{
+   psoaHashMap * pHashMap;
+   psonHashMap * pMemHashMap;
+   int errcode = PSO_OK;
+   psonSessionContext * pContext;
+   KeyDefinition * pKeyDef = NULL;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "HashMap::GetKeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   pHashMap = (psoaHashMap *) m_objectHandle;
+   pContext = &pHashMap->object.pSession->context;
+
+   if ( ! pHashMap->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pHashMap->object ) ) {
+         pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
+      
+         switch( pMemHashMap->keyDefType ) {
+         case PSO_DEF_PHOTON_ODBC_SIMPLE:
+            pKeyDef = new KeyDefinitionODBC( pHashMap->keyDef, 
+                                             pHashMap->keyDefLength );
+            break;
+         default:
+            break;
+         }
+         
+         psoaCommonUnlock( &pHashMap->object );
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      throw pso::Exception( m_sessionHandle, "HashMap::GetKeyDefinition" );
+   }   
+   
+   return pKeyDef;
+}
+   
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int HashMap::GetFirst( void     * key,
