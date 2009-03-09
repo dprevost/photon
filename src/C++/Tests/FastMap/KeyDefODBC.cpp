@@ -45,14 +45,14 @@ int main( int argc, char * argv[] )
    psoObjectDefinition mapDef = { 
       PSO_FAST_MAP, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_PHOTON_ODBC_SIMPLE };
    FieldDefinitionODBC fieldDef( 1 );
-   FieldDefinition * returnedDef;
+   KeyDefinition * returnedDef;
    KeyDefinitionODBC keyDef( 3 );
    
    try {
       fieldDef.AddField( "field1", 6, PSO_TINYINT, 0, 0, 0 );
-      keyDef.AddField( "keyfield1", 9, PSO_INTEGER,       0 );
-      keyDef.AddField( "keyfield2", 9, PSO_CHAR,         30 );
-      keyDef.AddField( "keyfield3", 9, PSO_LONGVARBINARY, 0 );
+      keyDef.AddKeyField( "keyfield1", 9, PSO_KEY_INTEGER,       0 );
+      keyDef.AddKeyField( "keyfield2", 9, PSO_KEY_CHAR,         30 );
+      keyDef.AddKeyField( "keyfield3", 9, PSO_KEY_LONGVARBINARY, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef, NULL, &fieldDef );
+      session.CreateObject( hname, mapDef, &keyDef, &fieldDef );
       map.Open( hname );
    }
    catch( pso::Exception exc ) {
@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      returnedDef = queue.GetKeyDefinition();
+      returnedDef = map.GetKeyDefinition();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

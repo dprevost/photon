@@ -29,32 +29,24 @@ using namespace pso;
 
 const bool expectedToPass = true;
 
-struct dummy {
-   char c;
-   uint32_t u32;
-   char str[30];
-   uint16_t u16;
-   unsigned char bin[10];
-};
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Queue queue(session);
-   string fname = "/cpp_queue_fielddefODBC";
+   FastMap map(session);
+   string fname = "/cpp_fastmap_fielddefODBC";
    string hname = fname + "/test";
 
-   struct dummy data;
    size_t len;
    psoObjectDefinition folderDef = {
       PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   psoObjectDefinition queueDef = { 
-      PSO_QUEUE, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_NONE };
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_PHOTON_ODBC_SIMPLE };
    FieldDefinitionODBC fieldDef( 5 );
    FieldDefinition * returnedDef;
+   KeyDefinitionODBC keyDef( 3 );
    
    try {
       fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
@@ -62,6 +54,9 @@ int main( int argc, char * argv[] )
       fieldDef.AddField( "field3", 6, PSO_CHAR,         30, 0, 0 );
       fieldDef.AddField( "field4", 6, PSO_SMALLINT,      0, 0, 0 );
       fieldDef.AddField( "field5", 6, PSO_LONGVARBINARY, 0, 0, 0 );
+      keyDef.AddKeyField( "keyfield1", 9, PSO_KEY_INTEGER,       0 );
+      keyDef.AddKeyField( "keyfield2", 9, PSO_KEY_CHAR,         30 );
+      keyDef.AddKeyField( "keyfield3", 9, PSO_KEY_LONGVARBINARY, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -77,9 +72,8 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue.Open( hname );
-      queue.Push( &data, sizeof(data) );
+      session.CreateObject( hname, mapDef, &keyDef, &fieldDef );
+      map.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -88,7 +82,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      returnedDef = queue.GetFieldDefinition();
+      returnedDef = map.GetFieldDefinition();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

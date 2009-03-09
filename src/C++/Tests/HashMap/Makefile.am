@@ -16,42 +16,48 @@ CLEANFILES = *~ core
 
 AM_LDFLAGS = @LIBXML2_LIBS@
 
-check_PROGRAMS =   \
-        Close      \
-        Delete     \
-        Get        \
-        GetFirst   \
-        GetNext    \
-        Insert     \
-        Open       \
-        Replace    \
-        Status     
+check_PROGRAMS =     \
+        Close        \
+        Definition   \
+        Delete       \
+        FieldDefODBC \
+        Get          \
+        GetFirst     \
+        GetNext      \
+        Insert       \
+        KeyDefODBC   \
+        Open         \
+        Replace      \
+        Status       
 
-#        Definition 
-Close_SOURCES      = Close.cpp
-#Definition_SOURCES = Definition.cpp
-Delete_SOURCES     = Delete.cpp
-Get_SOURCES        = Get.cpp
-GetFirst_SOURCES   = GetFirst.cpp
-GetNext_SOURCES    = GetNext.cpp
-Insert_SOURCES     = Insert.cpp
-Open_SOURCES       = Open.cpp
-Replace_SOURCES    = Replace.cpp
-Status_SOURCES     = Status.cpp
+Close_SOURCES        = Close.cpp
+Definition_SOURCES   = Definition.cpp
+Delete_SOURCES       = Delete.cpp
+FieldDefODBC_SOURCES = FieldDefODBC.cpp
+Get_SOURCES          = Get.cpp
+GetFirst_SOURCES     = GetFirst.cpp
+GetNext_SOURCES      = GetNext.cpp
+Insert_SOURCES       = Insert.cpp
+KeyDefODBC_SOURCES   = KeyDefODBC.cpp
+Open_SOURCES         = Open.cpp
+Replace_SOURCES      = Replace.cpp
+Status_SOURCES       = Status.cpp
 
-EXTRA_DIST =           \
-        Close.sh       \
-        Definition.sh  \
-        Delete.sh      \
-        Get.sh         \
-        GetFirst.sh    \
-        GetNext.sh     \
-        Insert.sh      \
-        Makefile.win32 \
-        Open.sh        \
-        Replace.sh     \
-        RunTests.vbs   \
-        Status.sh      
+EXTRA_DIST =            \
+        Close.sh        \
+        Definition.sh   \
+        Delete.sh       \
+        FieldDefODBC.sh \
+        Get.sh          \
+        GetFirst.sh     \
+        GetNext.sh      \
+        Insert.sh       \
+        KeyDefODBC.sh   \
+        Makefile.win32  \
+        Open.sh         \
+        Replace.sh      \
+        RunTests.vbs    \
+        Status.sh       
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -61,18 +67,19 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =               \
-        Close.sh      \
-        Delete.sh     \
-        Get.sh        \
-        GetFirst.sh   \
-        GetNext.sh    \
-        Insert.sh     \
-        Open.sh       \
-        Replace.sh    \
-        Status.sh     
+TESTS =                 \
+        Close.sh        \
+        Definition.sh   \
+        Delete.sh       \
+        FieldDefODBC.sh \
+        Get.sh          \
+        GetFirst.sh     \
+        GetNext.sh      \
+        Insert.sh       \
+        Open.sh         \
+        Replace.sh      \
+        Status.sh       
 
-#        Definition.sh 
 XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/C++/libphotoncpp.la 

@@ -29,14 +29,6 @@ using namespace pso;
 
 const bool expectedToPass = true;
 
-struct dummy {
-   char c;
-   uint32_t u32;
-   char str[30];
-   uint16_t u16;
-   unsigned char bin[10];
-};
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
@@ -47,18 +39,23 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_hashmap_definition";
    string hname = fname + "/test";
 
-   struct dummy data;
-   char key[] = "My Key";
-   size_t len;
-   psoObjectDefinition folderDef;
-   ObjDefinition mapDef( 5, PSO_HASH_MAP );
-   ObjDefinition returnedDef;
+   size_t len1, len2;
+   psoObjectDefinition folderDef = {
+      PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition mapDef = { 
+      PSO_HASH_MAP, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_PHOTON_ODBC_SIMPLE };
+   FieldDefinitionODBC fieldDef( 5 );
+   KeyDefinitionODBC keyDef( 2 );
    
-   memset( &folderDef, 0, sizeof(folderDef) );
-   folderDef.type = PSO_FOLDER;
-   
+   unsigned char * fields = NULL;
+   uint32_t fieldsLength = 0;
+   unsigned char * key = NULL;
+   uint32_t keyLength = 0;
+   psoObjectDefinition retDef;
+
    try {
-      mapDef.AddKey( PSO_KEY_VAR_STRING, 0, 1, 0 );
+      keyDef.AddKeyField( "LastName",  8, PSO_KEY_CHAR,    30 );
+      keyDef.AddKeyField( "FirstName", 9, PSO_KEY_VARCHAR, 30 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -66,16 +63,28 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      mapDef.ObjectType( PSO_HASH_MAP );
-      mapDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
-      mapDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
-      mapDef.AddField( "field3", 6, PSO_CHAR,    30, 0, 0, 0, 0 );
-      mapDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
-      mapDef.AddField( "field5", 6, PSO_VARBINARY, 0, 0, 0, 0, 0 );
+      fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
+      fieldDef.AddField( "field2", 6, PSO_INTEGER,       0, 0, 0 );
+      fieldDef.AddField( "field3", 6, PSO_CHAR,         30, 0, 0 );
+      fieldDef.AddField( "field4", 6, PSO_SMALLINT,      0, 0, 0 );
+      fieldDef.AddField( "field5", 6, PSO_LONGVARBINARY, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
+   }
+   
+   try {
+      hashmap.Definition( retDef, key, keyLength, fields, fieldsLength );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
    }
 
    try {
@@ -87,14 +96,8 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname,
-                            mapDef, 
-                            (unsigned char *)&keyDef,
-                            sizeof(psoKeyDefinition),
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
+      session.CreateObject( hname, mapDef, &keyDef, &fieldDef );
       hashmap.Open( hname );
-      hashmap.Insert( key, strlen(key), &data, sizeof(data) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -102,22 +105,42 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-
    try {
-      hashmap.Definition( returnedDef );
+      // This is valid
+      hashmap.Definition( retDef, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = sizeof( psoObjectDefinition );
-   if ( memcmp( &mapDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
+   len1 = 2 * sizeof( psoKeyDefinition );
+   len2 = 5 * sizeof(psoFieldDefinition);
+   try {
+      hashmap.DefinitionLength( &keyLength, &fieldsLength );
+      if ( keyLength != len1 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      if ( fieldsLength != len2 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      fields = new unsigned char [fieldsLength];
+      key    = new unsigned char [keyLength];
+      hashmap.Definition( retDef, key, keyLength, fields, fieldsLength );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   if ( memcmp( fieldDef.GetDefinition(), fields, len2 ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
-   len = 5 * sizeof(psoFieldDefinition);
-   if ( memcmp( mapDef.GetFields(), returnedDef.GetFields(), len ) != 0 ) {
+
+   if ( memcmp( keyDef.GetDefinition(), key, len1 ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

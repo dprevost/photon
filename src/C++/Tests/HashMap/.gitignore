@@ -5,10 +5,12 @@
 /Close
 /Definition
 /Delete
+/FieldDefODBC
 /Get
 /GetFirst
 /GetNext
 /Insert
+/KeyDefODBC
 /Open
 /Replace
 /Status

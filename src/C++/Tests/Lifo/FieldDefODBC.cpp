@@ -29,14 +29,6 @@ using namespace pso;
 
 const bool expectedToPass = true;
 
-struct dummy {
-   char c;
-   uint32_t u32;
-   char str[30];
-   uint16_t u16;
-   unsigned char bin[10];
-};
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
@@ -47,7 +39,6 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_lifo_fielddefODBC";
    string hname = fname + "/test";
 
-   struct dummy data;
    size_t len;
    psoObjectDefinition folderDef = {
       PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
@@ -79,7 +70,6 @@ int main( int argc, char * argv[] )
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
       session.CreateObject( hname, queueDef, NULL, &fieldDef );
       queue.Open( hname );
-      queue.Push( &data, sizeof(data) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

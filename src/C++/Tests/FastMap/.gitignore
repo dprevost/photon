@@ -6,10 +6,12 @@
 /Definition
 /Delete
 /Empty
+/FieldDefODBC
 /Get
 /GetFirst
 /GetNext
 /Insert
+/KeyDefODBC
 /Open
 /Replace
 /Status
