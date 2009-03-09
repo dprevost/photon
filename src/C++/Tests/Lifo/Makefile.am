@@ -14,39 +14,39 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
+check_PROGRAMS =     \
+        Close        \
+        Definition   \
+        FieldDefODBC \
+        GetFirst     \
+        GetNext      \
+        Open         \
+        Pop          \
+        Push         \
+        Status       
 
-check_PROGRAMS =   \
-        Close      \
-        GetFirst   \
-        GetNext    \
-        Open       \
-        Pop        \
-        Push       \
-        Status     
+Close_SOURCES        = Close.cpp
+Definition_SOURCES   = Definition.cpp
+FieldDefODBC_SOURCES = FieldDefODBC.cpp
+GetFirst_SOURCES     = GetFirst.cpp
+GetNext_SOURCES      = GetNext.cpp
+Open_SOURCES         = Open.cpp
+Pop_SOURCES          = Pop.cpp
+Push_SOURCES         = Push.cpp
+Status_SOURCES       = Status.cpp
 
-#        Definition 
-#Definition_SOURCES = Definition.cpp
-
-Close_SOURCES      = Close.cpp
-GetFirst_SOURCES   = GetFirst.cpp
-GetNext_SOURCES    = GetNext.cpp
-Open_SOURCES       = Open.cpp
-Pop_SOURCES        = Pop.cpp
-Push_SOURCES       = Push.cpp
-Status_SOURCES     = Status.cpp
-
-EXTRA_DIST =           \
-        Close.sh       \
-        Definition.sh  \
-        GetFirst.sh    \
-        GetNext.sh     \
-        Makefile.win32 \
-        Open.sh        \
-        Pop.sh         \
-        Push.sh        \
-        RunTests.vbs   \
-        Status.sh      
+EXTRA_DIST =            \
+        Close.sh        \
+        Definition.sh   \
+        FieldDefODBC.sh \
+        GetFirst.sh     \
+        GetNext.sh      \
+        Makefile.win32  \
+        Open.sh         \
+        Pop.sh          \
+        Push.sh         \
+        RunTests.vbs    \
+        Status.sh       
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -56,16 +56,17 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =               \
-        Close.sh      \
-        GetFirst.sh   \
-        GetNext.sh    \
-        Open.sh       \
-        Pop.sh        \
-        Push.sh       \
-        Status.sh     
+TESTS =                 \
+        Close.sh        \
+        Definition.sh   \
+        FieldDefODBC.sh \
+        GetFirst.sh     \
+        GetNext.sh      \
+        Open.sh         \
+        Pop.sh          \
+        Push.sh         \
+        Status.sh       
 
-#        Definition.sh 
 XFAIL_TESTS = 
 
 LDADD = $(top_builddir)/src/C++/libphotoncpp.la 

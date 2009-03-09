@@ -88,6 +88,23 @@ void HashMap::Definition( psoObjectDefinition & definition,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void HashMap::DefinitionLength( psoUint32 * keyLength,
+                                psoUint32 * fieldsLength )
+{
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "HashMap::DefinitionLength", PSO_NULL_HANDLE );
+   }
+
+   rc = psoHashMapDefLength( m_objectHandle, keyLength, fieldsLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "HashMap::DefinitionLength" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void HashMap::Delete( const void * key,
                       uint32_t     keyLength )
 {

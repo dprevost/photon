@@ -86,6 +86,22 @@ void Lifo::Definition( psoObjectDefinition & definition,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void Lifo::DefinitionLength( psoUint32 * fieldsLength )
+{
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "Lifo::DefinitionLength", PSO_NULL_HANDLE );
+   }
+
+   rc = psoLifoDefLength( m_objectHandle, fieldsLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Lifo::DefinitionLength" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 FieldDefinition * Lifo::GetFieldDefinition()
 {
    psoaLifo * pLifo;

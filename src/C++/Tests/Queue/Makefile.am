@@ -18,6 +18,7 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =     \
         Close        \
+        Definition   \
         FieldDefODBC \
         GetFirst     \
         GetNext      \
@@ -27,8 +28,9 @@ check_PROGRAMS =     \
         PushNow      \
         Status       
 
-FieldDefODBC_SOURCES = FieldDefODBC.cpp
 Close_SOURCES        = Close.cpp
+Definition_SOURCES   = Definition.cpp
+FieldDefODBC_SOURCES = FieldDefODBC.cpp
 GetFirst_SOURCES     = GetFirst.cpp
 GetNext_SOURCES      = GetNext.cpp
 Open_SOURCES         = Open.cpp
@@ -39,6 +41,7 @@ Status_SOURCES       = Status.cpp
 
 EXTRA_DIST =            \
         Close.sh        \
+        Definition.sh   \
         FieldDefODBC.sh \
         GetFirst.sh     \
         GetNext.sh      \
@@ -60,6 +63,7 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                 \
         Close.sh        \
+        Definition.sh   \
         FieldDefODBC.sh \
         GetFirst.sh     \
         GetNext.sh      \

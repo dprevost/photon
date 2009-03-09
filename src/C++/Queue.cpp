@@ -85,6 +85,22 @@ void Queue::Definition( psoObjectDefinition & definition,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void Queue::DefinitionLength( psoUint32 * fieldsLength )
+{
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "Queue::DefinitionLength", PSO_NULL_HANDLE );
+   }
+
+   rc = psoQueueDefLength( m_objectHandle, fieldsLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Queue::DefinitionLength" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 FieldDefinition * Queue::GetFieldDefinition()
 {
    psoaQueue * pQueue;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -29,58 +29,34 @@ using namespace pso;
 
 const bool expectedToPass = true;
 
-struct dummy {
-   char c;
-   uint32_t u32;
-   char str[30];
-   uint16_t u16;
-   unsigned char bin[10];
-};
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Lifo queue(session);
-   string fname = "/cpp_lifo_definition";
+   FastMap map(session);
+   string fname = "/cpp_fastmap_keydefODBC";
    string hname = fname + "/test";
 
-   struct dummy data;
    size_t len;
    psoObjectDefinition folderDef = {
       PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   psoObjectDefinition queueDef = { 
-      PSO_LIFO, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_NONE };
-   FieldDefinitionODBC fieldDef( 5 );
-   unsigned char * fields = NULL;
-   uint32_t fieldsLength = 0;
-   psoObjectDefinition retDef;
+   psoObjectDefinition mapDef = { 
+      PSO_FAST_MAP, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_PHOTON_ODBC_SIMPLE };
+   FieldDefinitionODBC fieldDef( 1 );
+   FieldDefinition * returnedDef;
+   KeyDefinitionODBC keyDef( 3 );
    
    try {
-      fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
-      fieldDef.AddField( "field2", 6, PSO_INTEGER,       0, 0, 0 );
-      fieldDef.AddField( "field3", 6, PSO_CHAR,         30, 0, 0 );
-      fieldDef.AddField( "field4", 6, PSO_SMALLINT,      0, 0, 0 );
-      fieldDef.AddField( "field5", 6, PSO_LONGVARBINARY, 0, 0, 0 );
+      fieldDef.AddField( "field1", 6, PSO_TINYINT, 0, 0, 0 );
+      keyDef.AddField( "keyfield1", 9, PSO_INTEGER,       0 );
+      keyDef.AddField( "keyfield2", 9, PSO_CHAR,         30 );
+      keyDef.AddField( "keyfield3", 9, PSO_LONGVARBINARY, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
-   }
-
-   try {
-      queue.Definition( retDef, fields, fieldsLength );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
    }
 
    try {
@@ -93,8 +69,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
       session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue.Open( hname );
-      queue.Push( &data, sizeof(data) );
+      map.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -103,30 +78,15 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      // This is valid
-      queue.Definition( retDef, NULL, 0 );
+      returnedDef = queue.GetKeyDefinition();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = 5 * sizeof(psoFieldDefinition);
-   try {
-      queue.DefinitionLength( &fieldsLength );
-      if ( fieldsLength != len ) {
-         cerr << "Test failed - line " << __LINE__ << endl;
-         return 1;
-      }
-      fields = new unsigned char [fieldsLength];
-      queue.Definition( retDef, fields, fieldsLength );
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   if ( memcmp( fieldDef.GetDefinition(), fields, len ) != 0 ) {
+   len = 3 * sizeof(psoKeyDefinition);
+   if ( memcmp( keyDef.GetDefinition(), returnedDef->GetDefinition(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

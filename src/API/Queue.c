@@ -157,7 +157,7 @@ int psoQueueDefLength( PSO_HANDLE   objectHandle,
    pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pQueue->object.type != PSOA_LIFO ) {
+   if ( pQueue->object.type != PSOA_QUEUE ) {
       return PSO_WRONG_TYPE_HANDLE;
    }
 
