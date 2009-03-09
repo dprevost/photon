@@ -32,6 +32,10 @@
 
 namespace pso {
 
+// Forward declarations
+class FieldDefinition;
+class KeyDefinition;
+
 /**
  * Sessions exist mainly to support multi-threaded (MT) programs. 
  *
@@ -104,12 +108,18 @@ public:
     * ::Commit.
     *
     * \param[in] objectName The fully qualified name of the object. 
-    * \param[in] definition The definition "helper object".
+    * \param[in] definition The type of object to create (folder, queue, etc.),
+    *            the type of field definition, etc.
+    * \param[in] keyDefinition   The definition of the key. Set it to NULL
+    *                            for objects without keys.
+    * \param[in] fieldDefinition The definition of the data fields.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-//   void CreateObject( const std::string & objectName,
-//                      ObjDefinition     & definition );
+   void CreateObject( const std::string   & objectName,
+                      psoObjectDefinition & definition,
+                      KeyDefinition       * keyDefinition,
+                      FieldDefinition     * fieldDefinition );
 
    /**
     * Create a new object in shared memory.

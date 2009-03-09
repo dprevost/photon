@@ -29,19 +29,39 @@ using namespace pso;
 
 KeyDefinitionODBC::KeyDefinitionODBC( unsigned char * serialKeyDef,
                                       uint32_t        keyDefLen )
-   : KeyDefinition( serialKeyDef, keyDefLen ),
+   : KeyDefinition( true ),
      key          ( NULL ),
-     numKeys      ( 0 ),
      currentKey   ( 0 ),
      simpleDef    ( true )
 {
+   if ( serialKeyDef == NULL ) {
+      throw pso::Exception( "KeyDefinitionODBC::KeyDefinitionODBC", 
+                            PSO_NULL_POINTER );
+   }
+   if ( keyDefLen == 0 ) {
+      throw pso::Exception( "KeyDefinitionODBC::KeyDefinitionODBC", 
+                            PSO_INVALID_LENGTH );
+   }
+   if ( (keyDefLen%sizeof(psoKeyDefinition)) != 0 ) {
+      throw pso::Exception( "KeyDefinitionODBC::KeyDefinitionODBC", 
+                            PSO_INVALID_LENGTH );
+   }
+
+   numKeys = keyDefLen / sizeof(psoKeyDefinition);
+
+   key = (psoKeyDefinition *) malloc( keyDefLen );
+   if ( key == NULL ) {
+      throw pso::Exception( "KeyDefinitionODBC::KeyDefinitionODBC",
+                            PSO_NOT_ENOUGH_HEAP_MEMORY );
+   }
+   memcpy( key, serialKeyDef, keyDefLen );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 KeyDefinitionODBC::KeyDefinitionODBC( uint32_t numKeyFields,
                                       bool     simple /* = true */ )
-   : KeyDefinition(),
+   : KeyDefinition( false ),
      key          ( NULL ),
      numKeys      ( numKeyFields ),
      currentKey   ( 0 ),
@@ -88,6 +108,11 @@ void KeyDefinitionODBC::AddKeyField( const char * name,
                                      psoKeyType   type,
                                      uint32_t     length )
 {
+   if ( readOnly ) {
+      throw pso::Exception( "KeyDefinitionODBC::AddKeyField",
+                            PSO_INVALID_DEF_OPERATION );
+   }
+
    if ( key == NULL ) {
       throw pso::Exception( "KeyDefinitionODBC::AddKeyField", PSO_NULL_POINTER );
    }
@@ -97,6 +122,11 @@ void KeyDefinitionODBC::AddKeyField( const char * name,
                             PSO_INVALID_NUM_FIELDS );
    }
    
+   if ( name == NULL ) {
+      throw pso::Exception( "KeyDefinitionODBC::AddKeyField",
+                            PSO_NULL_POINTER );
+   }
+
    if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
       throw pso::Exception( "KeyDefinitionODBC::AddKeyField",
                             PSO_INVALID_FIELD_NAME );
@@ -128,7 +158,7 @@ void KeyDefinitionODBC::AddKeyField( const char * name,
 
    case PSO_KEY_VARBINARY:
    case PSO_KEY_VARCHAR:
-      if ( currentKey != numKeys-1 ) {
+      if ( simpleDef && currentKey != numKeys-1 ) {
          throw pso::Exception( "KeyDefinitionODBC::AddKeyField",
                                PSO_INVALID_FIELD_TYPE );
       }
@@ -143,7 +173,7 @@ void KeyDefinitionODBC::AddKeyField( const char * name,
 
    case PSO_KEY_LONGVARBINARY:
    case PSO_KEY_LONGVARCHAR:
-      if ( currentKey != numKeys-1 ) {
+      if ( simpleDef && currentKey != numKeys-1 ) {
          throw pso::Exception( "KeyDefinitionODBC::AddKeyField",
                                PSO_INVALID_FIELD_TYPE );
       }
@@ -242,94 +272,18 @@ string KeyDefinitionODBC::GetNext()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#if 0
-void KeyDefinitionODBC::Reset( uint32_t numberOfFields, enum psoObjectType type )
+const unsigned char * KeyDefinitionODBC::GetDefinition()
 {
-   psoFieldDefinition * tmp;
-   
-   if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_INVALID_NUM_FIELDS );
-   }
-   if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_WRONG_OBJECT_TYPE );
-   }
-   currentField = numberOfFields;
-   
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
-   memset( &key, 0, sizeof(psoKeyDefinition) );
-   
-   // using calloc - being lazy...
-   size_t len = numberOfFields * sizeof(psoFieldDefinition);
-   tmp = (psoFieldDefinition *)calloc( len, 1 );
-   if ( tmp == NULL ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   if ( fields != NULL ) free( fields );
-   fields = tmp;
-   
-   numFields = numberOfFields;
-   definition.type = type;
-   currentField = 0;
-   keyAdded = false;
+   return (unsigned char *)key;
 }
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#if 0
-void KeyDefinitionODBC::Reset( psoObjectDefinition & inputDef,
-                           psoKeyDefinition    * inputKey,
-                           psoFieldDefinition  * inputFields )
+/* Returns the length, in bytes, of the definition. */
+uint32_t KeyDefinitionODBC::GetDefLength()
 {
-   psoFieldDefinition * tmp;
-   
-   if ( inputDef.numFields == 0 || inputDef.numFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_INVALID_NUM_FIELDS );
-   }
-   if ( inputFields == NULL ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_NULL_POINTER );
-   }
-   if ( inputDef.type < PSO_FOLDER || inputDef.type >= PSO_LAST_OBJECT_TYPE ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_WRONG_OBJECT_TYPE );
-   }
-   
-   size_t len = inputDef.numFields * sizeof(psoFieldDefinition);
-   tmp = (psoFieldDefinition *)calloc( len, 1 );
-   if ( tmp == NULL ) {
-      throw pso::Exception( "KeyDefinitionODBC::Reset",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   if ( fields != NULL ) free( fields );
-   fields = tmp;
-
-   memcpy( &definition, &inputDef, sizeof(psoObjectDefinition) );
-   memcpy( fields, inputFields, len );
-   
-   currentField = inputDef.numFields;
-   
-   keyAdded = false;
-   if ( inputKey != NULL ) {
-      memcpy( &key, inputKey, sizeof(psoKeyDefinition) );
-      keyAdded = true;
-   }
+   return numKeys * sizeof(psoKeyDefinition);
 }
-#endif
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-#if 0
-const unsigned char * KeyDefinitionODBC::GetKey()
-{
-   return key;
-}
-
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

@@ -29,11 +29,24 @@ using namespace pso;
 
 FieldDefinitionODBC::FieldDefinitionODBC( unsigned char * serialFieldDef,
                                           uint32_t        fieldDefLen )
-   : FieldDefinition( serialFieldDef, fieldDefLen ),
+   : FieldDefinition( true ),
      field        ( NULL ),
      currentField ( 0 ),
      simpleDef    ( true )
 {
+   if ( serialFieldDef == NULL ) {
+      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC", 
+                            PSO_NULL_POINTER );
+   }
+   if ( fieldDefLen == 0 ) {
+      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC", 
+                            PSO_INVALID_LENGTH );
+   }
+   if ( (fieldDefLen%sizeof(psoFieldDefinition)) != 0 ) {
+      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC", 
+                            PSO_INVALID_LENGTH );
+   }
+
    numFields = fieldDefLen / sizeof(psoFieldDefinition);
 
    field = (psoFieldDefinition *) malloc( fieldDefLen );
@@ -48,7 +61,7 @@ FieldDefinitionODBC::FieldDefinitionODBC( unsigned char * serialFieldDef,
 
 FieldDefinitionODBC::FieldDefinitionODBC( uint32_t numFieldFields,
                                           bool     simple /* = true */ )
-   : FieldDefinition(),
+   : FieldDefinition( false ),
      field        ( NULL ),
      numFields    ( numFieldFields ),
      currentField ( 0 ),
@@ -302,94 +315,18 @@ string FieldDefinitionODBC::GetNext()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#if 0
-void FieldDefinitionODBC::Reset( uint32_t numberOfFields, enum psoObjectType type )
+const unsigned char * FieldDefinitionODBC::GetDefinition()
 {
-   psoFieldDefinition * tmp;
-   
-   if ( numberOfFields == 0 || numberOfFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_INVALID_NUM_FIELDS );
-   }
-   if ( type < PSO_FOLDER || type >= PSO_LAST_OBJECT_TYPE ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_WRONG_OBJECT_TYPE );
-   }
-   currentField = numberOfFields;
-   
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
-   memset( &field, 0, sizeof(psoFieldDefinition) );
-   
-   // using calloc - being lazy...
-   size_t len = numberOfFields * sizeof(psoFieldDefinition);
-   tmp = (psoFieldDefinition *)calloc( len, 1 );
-   if ( tmp == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   if ( fields != NULL ) free( fields );
-   fields = tmp;
-   
-   numFields = numberOfFields;
-   definition.type = type;
-   currentField = 0;
-   fieldAdded = false;
+   return (unsigned char *)field;
 }
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#if 0
-void FieldDefinitionODBC::Reset( psoObjectDefinition & inputDef,
-                           psoFieldDefinition    * inputField,
-                           psoFieldDefinition  * inputFields )
+/* Returns the length, in bytes, of the definition. */
+uint32_t FieldDefinitionODBC::GetDefLength()
 {
-   psoFieldDefinition * tmp;
-   
-   if ( inputDef.numFields == 0 || inputDef.numFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_INVALID_NUM_FIELDS );
-   }
-   if ( inputFields == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_NULL_POINTER );
-   }
-   if ( inputDef.type < PSO_FOLDER || inputDef.type >= PSO_LAST_OBJECT_TYPE ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_WRONG_OBJECT_TYPE );
-   }
-   
-   size_t len = inputDef.numFields * sizeof(psoFieldDefinition);
-   tmp = (psoFieldDefinition *)calloc( len, 1 );
-   if ( tmp == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::Reset",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   if ( fields != NULL ) free( fields );
-   fields = tmp;
-
-   memcpy( &definition, &inputDef, sizeof(psoObjectDefinition) );
-   memcpy( fields, inputFields, len );
-   
-   currentField = inputDef.numFields;
-   
-   fieldAdded = false;
-   if ( inputField != NULL ) {
-      memcpy( &field, inputField, sizeof(psoFieldDefinition) );
-      fieldAdded = true;
-   }
+   return numFields * sizeof(psoFieldDefinition);
 }
-#endif
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-#if 0
-const unsigned char * FieldDefinitionODBC::GetField()
-{
-   return field;
-}
-
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

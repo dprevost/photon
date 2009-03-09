@@ -517,6 +517,7 @@ AC_CONFIG_FILES([
    src/C++/Tests/FieldDefODBC/Makefile
    src/C++/Tests/Folder/Makefile
    src/C++/Tests/HashMap/Makefile
+   src/C++/Tests/KeyDefODBC/Makefile
    src/C++/Tests/Lifo/Makefile
    src/C++/Tests/Process/Makefile
    src/C++/Tests/Queue/Makefile

@@ -64,6 +64,8 @@ public:
    /**
     * Construct a data-container definition.
     *
+    * Use this constructor to build a definition to create new Photon objects.
+    *
     * \param[in] numberOfFields The number of data fields.
     * \param[in] simple Set this to true if the definition type is "simple"
     *            (fixed length fields) or false if not.
@@ -92,7 +94,6 @@ public:
                   psoUint32      length,
                   psoUint32      precision,
                   psoUint32      scale );
-
 
    /**
     * Add a field to the definition. Fields must be added in order.
@@ -125,38 +126,17 @@ public:
     */
    virtual std::string GetNext();
 
-   /**
-    * Reset the object to be reused for the definition of another data 
-    * container.
+   /** Retrieve the fields definition.
     *
-    * \param[in] numberOfFields The number of data fields of the new data
-    *            container.
-    * \param[in] type The type of the object.
-    *
-    * \exception pso::Exception An abnormal error occured.
+    * \return The definition of the fields as an array of bytes.
     */
-//   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
+   virtual const unsigned char * GetDefinition();
 
-   /**
-    * Reset the object to be reused for the definition of another data 
-    * container.
+   /** Returns the length, in bytes, of the definition.
     *
-    * This version of reset is used internally by the C++ API to populate
-    * the C++ class from the C structs.
-    *
-    * \param[in] definition The object definition C struct
-    * \param[in] inputKey   The key definition. Set it to NULL for objects
-    *                       not using keys (FIFO Queues, etc.).
-    * \param[in] inputFields The field definition array
-    *
-    * \exception pso::Exception An abnormal error occured.
+    * \return The length, in bytes, of the definition
     */
-//   void Reset( psoObjectDefinition & definition,
-//               psoKeyDefinition    * inputKey,
-//               psoFieldDefinition  * inputFields );
-   
-   /** Returns the fields definition. */
-   const unsigned char * GetFields();
+   virtual psoUint32 GetDefLength();
 
 private:
 

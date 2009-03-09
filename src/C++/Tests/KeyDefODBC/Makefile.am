@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -14,20 +14,14 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
+check_PROGRAMS =    \
+        AddKeyField \
+        Construct   \
+        GetNext     
 
-check_PROGRAMS =   \
-        AddField   \
-        AddKey     \
-        Construct  \
-        ObjectType \
-        Reset      
-
-AddKey_SOURCES     = AddKey.cpp
-AddField_SOURCES   = AddField.cpp
-Construct_SOURCES  = Construct.cpp
-ObjectType_SOURCES = ObjectType.cpp
-Reset_SOURCES      = Reset.cpp
+AddKeyField_SOURCES = AddKeyField.cpp
+Construct_SOURCES   = Construct.cpp
+GetNext_SOURCES     = GetNext.cpp
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -41,12 +35,10 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =            \
-        AddField   \
-        AddKey     \
-        Construct  \
-        ObjectType \
-        Reset      
+TESTS =             \
+        AddKeyField \
+        Construct   \
+        GetNext     
 
 XFAIL_TESTS = 
 

@@ -24,6 +24,8 @@
 #include <photon/psoErrors.h>
 #include "API/Session.h"
 #include <photon/psoException>
+#include <photon/FieldDefinition>
+#include <photon/KeyDefinition>
 
 using namespace pso;
 
@@ -60,27 +62,43 @@ void Session::Commit()
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#if 0
 void Session::CreateObject( const std::string   & objectName,
-                            ObjDefinition       & definition )
+                            psoObjectDefinition & definition,
+                            KeyDefinition       * keyDefinition,
+                            FieldDefinition     * fieldDefinition )
 {
    int rc;
 
-      if ( m_sessionHandle == NULL ) {
+   if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
-
-   rc = psoCreateObject( m_sessionHandle,
-                         objectName.c_str(),
-                         objectName.length(),
-                         (psoObjectDefinition *)&(definition.GetDef()),
-                         (psoKeyDefinition *)   &(definition.GetKey()),
-                         (psoFieldDefinition *) definition.GetFields() );
+   if ( fieldDefinition == NULL ) {
+      throw pso::Exception( "Session::CreateObject", PSO_NULL_POINTER );
+   }
+   if ( keyDefinition ) {
+      rc = psoCreateObject( m_sessionHandle,
+                            objectName.c_str(),
+                            objectName.length(),
+                            &definition,
+                            keyDefinition->GetDefinition(),
+                            keyDefinition->GetDefLength(),
+                            fieldDefinition->GetDefinition(),
+                            fieldDefinition->GetDefLength() );
+   }
+   else {
+      rc = psoCreateObject( m_sessionHandle,
+                            objectName.c_str(),
+                            objectName.length(),
+                            &definition,
+                            NULL,
+                            0,
+                            fieldDefinition->GetDefinition(),
+                            fieldDefinition->GetDefLength() );
+   }
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 }
-#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

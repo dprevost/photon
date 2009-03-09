@@ -21,6 +21,8 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/psoQueue.h>
+#include "API/Queue.h"
+#include "API/Session.h"
 
 using namespace pso;
 
@@ -62,25 +64,51 @@ void Queue::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Queue::Definition( psoObjectDefinition & definition,
-                        unsigned char       * fields,
-                        psoUint32             fieldsLength )
+FieldDefinition * Queue::GetFieldDefinition()
 {
-   int rc;
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
+   int errcode = PSO_OK;
+   psonSessionContext * pContext;
+   FieldDefinition * pFieldDef = NULL;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "Queue::Definition", PSO_NULL_HANDLE );
+      throw pso::Exception( "Queue::GetFieldDefinition", PSO_NULL_HANDLE );
    }
 
-   rc = psoQueueDefinition( m_objectHandle, 
-                           &definition,
-                           fields,
-                           fieldsLength );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Queue::Definition" );
+   pQueue = (psoaQueue *) m_objectHandle;
+   pContext = &pQueue->object.pSession->context;
+
+   if ( ! pQueue->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      
+         switch( pMemQueue->fieldDefType ) {
+         case PSO_DEF_PHOTON_ODBC_SIMPLE:
+            pFieldDef = new FieldDefinitionODBC( pQueue->fieldsDef, 
+                                                 pQueue->fieldsDefLength );
+            break;
+         default:
+            break;
+         }
+         
+         psoaCommonUnlock( &pQueue->object );
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
    }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+      throw pso::Exception( m_sessionHandle, "Queue::GetFieldDefinition" );
+   }   
+   
+   return pFieldDef;
 }
-
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

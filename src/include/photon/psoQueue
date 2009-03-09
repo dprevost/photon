@@ -110,6 +110,18 @@ public:
     */
    void DefinitionLength( psoUint32 * fieldsLength );
 
+   /**
+    * \brief Retrieve the field definition of the queue.
+    *
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return definition A new field definition of the queue.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   FieldDefinition * GetFieldDefinition();
+
    /** 
     * Iterate through the queue - no data items are removed from the queue
     * by this function.

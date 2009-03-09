@@ -31,7 +31,7 @@ using namespace pso;
 int main( int argc, char * argv[] )
 {
    try {
-      FieldDefinitionODBC def(0);
+      KeyDefinitionODBC def(0);
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -44,7 +44,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      FieldDefinitionODBC def( PSO_MAX_FIELDS + 1 );
+      KeyDefinitionODBC def( PSO_MAX_FIELDS + 1 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -59,7 +59,7 @@ int main( int argc, char * argv[] )
    // Second constructor
    try {
       unsigned char * z = NULL;
-      FieldDefinitionODBC def( z, 25 );
+      KeyDefinitionODBC def( z, 25 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -73,7 +73,7 @@ int main( int argc, char * argv[] )
    
    try {
       unsigned char z[20];
-      FieldDefinitionODBC def( z, 0 );
+      KeyDefinitionODBC def( z, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -86,7 +86,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      FieldDefinitionODBC def( 1 );
+      KeyDefinitionODBC def( 1 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -44,24 +44,24 @@ int main( int argc, char * argv[] )
    Process process;
    Session session;
    Queue queue(session);
-   string fname = "/cpp_queue_definition";
+   string fname = "/cpp_queue_fielddefODBC";
    string hname = fname + "/test";
 
    struct dummy data;
    size_t len;
-   psoObjectDefinition folderDef;
-   ObjDefinition queueDef( 5, PSO_QUEUE );
-   ObjDefinition returnedDef;
-   
-   memset( &folderDef, 0, sizeof(folderDef) );
-   folderDef.type = PSO_FOLDER;
+   psoObjectDefinition folderDef = {
+      PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition queueDef = { 
+      PSO_QUEUE, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_NONE };
+   FieldDefinitionODBC fieldDef( 5 );
+   FieldDefinition * returnedDef;
    
    try {
-      queueDef.AddField( "field1", 6, PSO_INTEGER,    1, 0, 0, 0, 0 );
-      queueDef.AddField( "field2", 6, PSO_INTEGER,    4, 0, 0, 0, 0 );
-      queueDef.AddField( "field3", 6, PSO_CHAR,    30, 0, 0, 0, 0 );
-      queueDef.AddField( "field4", 6, PSO_INTEGER,    2, 0, 0, 0, 0 );
-      queueDef.AddField( "field5", 6, PSO_VARBINARY, 0, 0, 0, 0, 0 );
+      fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
+      fieldDef.AddField( "field2", 6, PSO_INTEGER,       0, 0, 0 );
+      fieldDef.AddField( "field3", 6, PSO_CHAR,         30, 0, 0 );
+      fieldDef.AddField( "field4", 6, PSO_SMALLINT,      0, 0, 0 );
+      fieldDef.AddField( "field5", 6, PSO_LONGVARBINARY, 0, 0, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -77,7 +77,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef );
+      session.CreateObject( hname, queueDef, NULL, &fieldDef );
       queue.Open( hname );
       queue.Push( &data, sizeof(data) );
    }
@@ -88,20 +88,15 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      queue.Definition( returnedDef );
+      returnedDef = queue.GetFieldDefinition();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = sizeof( psoObjectDefinition );
-   if ( memcmp( &queueDef.GetDef(), &returnedDef.GetDef(), len ) != 0 ) {
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
    len = 5 * sizeof(psoFieldDefinition);
-   if ( memcmp( queueDef.GetFields(), returnedDef.GetFields(), len ) != 0 ) {
+   if ( memcmp( fieldDef.GetDefinition(), returnedDef->GetDefinition(), len ) != 0 ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

@@ -32,6 +32,8 @@ namespace pso {
 
 // Forward declarations
 class Session;
+class FieldDefinition;
+class KeyDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -59,6 +61,23 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void Close();
+
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * Session::Commit.
+    *
+    * \param[in] objectName The name of the object. 
+    * \param[in] fieldDefinition The definition of the data fields.
+    * \param[in] keyDefinition   The definition of the key. Set it to NULL
+    *                            for objects without keys.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void CreateObject( const std::string & objectName,
+                      FieldDefinition   * fieldDefinition,
+                      KeyDefinition     * keyDefinition );
 
    /**
     * Create a new object in shared memory as a child of the current folder.

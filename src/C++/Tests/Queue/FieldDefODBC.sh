@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=Definition
+test_name=FieldDefODBC
 test_dir=src/C++/Tests/Queue
 errcode=0
 

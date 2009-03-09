@@ -113,38 +113,17 @@ public:
     */
    virtual std::string GetNext();
 
-   /**
-    * Reset the object to be reused for the definition of another data 
-    * container.
+   /** Retrieve the key definition.
     *
-    * \param[in] numberOfFields The number of data fields of the new data
-    *            container.
-    * \param[in] type The type of the object.
-    *
-    * \exception pso::Exception An abnormal error occured.
+    * \return The definition of the key as an array of bytes.
     */
-//   void Reset( psoUint32 numberOfFields, enum psoObjectType type );
+   virtual const unsigned char * GetDefinition();
 
-   /**
-    * Reset the object to be reused for the definition of another data 
-    * container.
+   /** Returns the length, in bytes, of the definition.
     *
-    * This version of reset is used internally by the C++ API to populate
-    * the C++ class from the C structs.
-    *
-    * \param[in] definition The object definition C struct
-    * \param[in] inputKey   The key definition. Set it to NULL for objects
-    *                       not using keys (FIFO Queues, etc.).
-    * \param[in] inputFields The field definition array
-    *
-    * \exception pso::Exception An abnormal error occured.
+    * \return The length, in bytes, of the definition
     */
-//   void Reset( psoObjectDefinition & definition,
-//               psoKeyDefinition    * inputKey,
-//               psoFieldDefinition  * inputFields );
-   
-   /** Returns a reference to the C struct definition. */
-   const unsigned char * GetKey();
+   virtual psoUint32 GetDefLength();
 
 private:
 
