@@ -121,6 +121,10 @@ FieldDefinition * Queue::GetFieldDefinition()
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
          switch( pMemQueue->fieldDefType ) {
+         case PSO_DEF_USER_DEFINED:
+            pFieldDef = new FieldDefinitionUser( pQueue->fieldsDef, 
+                                                 pQueue->fieldsDefLength );
+            break;
          case PSO_DEF_PHOTON_ODBC_SIMPLE:
             pFieldDef = new FieldDefinitionODBC( pQueue->fieldsDef, 
                                                  pQueue->fieldsDefLength );

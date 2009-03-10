@@ -1,0 +1,132 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+ *
+ * This file is part of Photon (photonsoftware.org).
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 or version 3 as published by the 
+ * Free Software Foundation and appearing in the file COPYING.GPL2 and 
+ * COPYING.GPL3 included in the packaging of this software.
+ *
+ * Licensees holding a valid Photon Commercial license can use this file 
+ * in accordance with the terms of their license.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef KEY_DEFINITION_USER
+#define KEY_DEFINITION_USER
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <stdlib.h>
+#include <string>
+
+#include <photon/psoCommon.h>
+#include <photon/KeyDefinition>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+namespace pso {
+
+/** 
+ * This class is a helper class to retrieve/create the definition of
+ * Photon objects when the definition is user-defined.
+ *
+ * It should be noted that you do not have to use this class, the key 
+ * definition can be set or retrieved directly as an array of bytes.
+ */
+class PHOTON_EXPORT KeyDefinitionUser : public KeyDefinition
+{
+public:
+
+   /**
+    * Construct a key definition.
+    *
+    * This constructor is used to query existing definitions.
+    *
+    * \param[in] serializedKeyDef The serialized key definition as an 
+    *            array of bytes. 
+    * \param[in] keyDefLength The length in bytes of serializedKeyDef. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinitionUser( unsigned char * serializedKeyDef,
+                      psoUint32       keydefLength );
+
+   /**
+    * Construct a data-container definition.
+    *
+    * Use this constructor to build a definition to create new Photon objects.
+    *
+    * \param[in] numFields The number of data fields.
+    * \param[in] separator The character to use as a separator.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinitionUser( psoUint32 numFields, char separator = '\0' );
+
+   virtual ~KeyDefinitionUser();
+
+   /**
+    * Add a field to the definition. Fields must be added in order.
+    *
+    * \param[in]  fieldDescription Your description/definition of the field.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void AddField( std::string fieldDescription );
+
+   /**
+    * Iterates through the definition.
+    *
+    * For user-defined definitions, the iteration is done by searching
+    * for the separator. If none are found, the whole definition is returned.
+    *
+    * \return A formatted string containing the information on an item of 
+    *         the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   virtual std::string GetNext();
+
+   /** 
+    * Retrieve the key definition.
+    *
+    * \return The definition of the key as an array of bytes.
+    */
+   virtual const unsigned char * GetDefinition();
+
+   /**
+    * Returns the length, in bytes, of the definition.
+    *
+    * \return The length, in bytes, of the definition
+    */
+   virtual psoUint32 GetDefLength();
+
+private:
+
+   /// The definition of the key fields
+   unsigned char * key;
+
+   /// Iterator
+   psoUint32 currentKey;
+
+   /// Separator between the description of the fields.
+   char separator;
+};
+
+} // End of namespace
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif // KEY_DEFINITION_USER
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

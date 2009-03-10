@@ -33,8 +33,10 @@
 
 #include <photon/FieldDefinition>
 #include <photon/FieldDefinitionODBC>
+#include <photon/FieldDefinitionUser>
 #include <photon/KeyDefinition>
 #include <photon/KeyDefinitionODBC>
+#include <photon/KeyDefinitionUser>
 
 #include <photon/psoProcess>
 #include <photon/psoSession>
