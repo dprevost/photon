@@ -42,10 +42,12 @@ int createMap()
     */
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_STRING, 2, 0, 0}, 
-      { { "CountryName", PSO_VARCHAR, 0, 1, 100, 0, 0} } 
+      PSO_DEF_PHOTON_ODBC_SIMPLE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE 
    };
+   
+   psoKeyDefinition keyDef     = { "CountryCode", PSO_KEY_CHAR, 2 };
+   psoFieldDefinition fieldDef = { "CountryName", PSO_VARCHAR, {100} };
 
    // If the map already exists, we remove it.
    try { 
@@ -60,7 +62,12 @@ int createMap()
    }
    
    try { 
-      session1.CreateObject( mapName, def );
+      session1.CreateObject( mapName,
+                             def,
+                             (unsigned char *)&keyDef,
+                             sizeof(psoKeyDefinition),
+                             (unsigned char *)&fieldDef,
+                             sizeof(psoFieldDefinition) );
       session1.Commit();
       map1.Open( mapName );
       /*
@@ -127,7 +134,7 @@ int main( int argc, char *argv[] )
    try { map2.Get("FM", 2, description, 80, length ); }
    catch( Exception exc ) {
       rc = exc.ErrorCode();
-      cerr << "Code = " << exc.ErrorCode() << endl;
+//      cerr << "Code = " << exc.ErrorCode() << endl;
       if ( rc != PSO_ITEM_IS_IN_USE ) {
          cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
          return 1;
@@ -151,8 +158,7 @@ int main( int argc, char *argv[] )
       return 1;
    }
    
-   if ( fp != NULL )
-      fclose( fp );
+   if ( fp != NULL ) fclose( fp );
 
    return 0;
 

@@ -61,23 +61,33 @@ void initObjects()
 {
    int controlData;
    
-   psoObjectDefinition defFolder;
-   memset( &defFolder, 0, sizeof(psoObjectDefinition) );
-   defFolder.type = PSO_FOLDER;
-
+   psoObjectDefinition defFolder = { 
+      PSO_FOLDER,
+      PSO_DEF_NONE,
+      PSO_DEF_NONE 
+   };
+   
    psoObjectDefinition defMap = { 
       PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 20}, 
-      { { "Status", PSO_INTEGER, 4, 0, 0, 0, 0} } 
+      PSO_DEF_PHOTON_ODBC_SIMPLE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE 
    };
+   
+   psoKeyDefinition keyDef     = { "ControlCode", PSO_KEY_VARCHAR, 20 };
+   psoFieldDefinition fieldDef = { "Status",      PSO_INTEGER,    {0} };
+
    /*
     *
     */
-   pso::ObjDefinition defQueue( 2, PSO_QUEUE );
+   psoObjectDefinition defQueue = { 
+      PSO_QUEUE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE 
+   };
+   pso::FieldDefinitionODBC fieldDefQueue( 2 );
 
-   defQueue.AddField( "CountryCode", 11, PSO_CHAR,     2, 0,  0, 0, 0 );
-   defQueue.AddField( "CountryName", 11, PSO_VARCHAR, 0, 1, 80, 0, 0 );
+   fieldDefQueue.AddField( "CountryCode", 11, PSO_CHAR,     2, 0, 0 );
+   fieldDefQueue.AddField( "CountryName", 11, PSO_VARCHAR, 80, 0, 0 );
 
    // If the objects already exist, we remove them.
    try {
@@ -93,10 +103,15 @@ void initObjects()
    catch(...) {} 
    
    // Create the folder first, evidently
-   session.CreateObject( folderName,   defFolder );
-   session.CreateObject( controlName,  defMap );
-   session.CreateObject( inQueueName,  defQueue.GetDef() );
-   session.CreateObject( outQueueName, defQueue.GetDef() );
+   session.CreateObject( folderName,   defFolder, NULL, 0, NULL, 0 );
+   session.CreateObject( controlName,
+                         defMap,
+                         (unsigned char *)&keyDef,
+                         sizeof(psoKeyDefinition),
+                         (unsigned char *)&fieldDef,
+                         sizeof(psoFieldDefinition) );
+   session.CreateObject( inQueueName,  defQueue, NULL, &fieldDefQueue );
+   session.CreateObject( outQueueName, defQueue, NULL, &fieldDefQueue );
 
    control.Open( controlName );
    // Initialize the control object

@@ -9,8 +9,7 @@
 # The additional library path is for photon developers (who may not have
 # installed photon).
 LDFLAGS += -L../../C++/.libs -lphotoncpp
-# The additional include path is for photon developers (who may not have
-# installed photon).
+
 CPPFLAGS += -g -I../../include -Wall
 
 TARGETS = HashMap     \

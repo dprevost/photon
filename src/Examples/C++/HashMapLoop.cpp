@@ -39,12 +39,12 @@ int createMap()
     * The content of the hash map is simple: a fixed length key, the country 
     * code, and the country name (a variable string - max length of 100).
     */
-   psoObjectDefinition def = { 
-      PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_STRING, 2, 0, 0}, 
-      { { "CountryName", PSO_VARCHAR, 0, 1, 100, 0, 0} } 
-   };
+   psoObjectDefinition def = { PSO_HASH_MAP, 
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               PSO_DEF_PHOTON_ODBC_SIMPLE };
+   
+   psoKeyDefinition keyDef     = { "CountryCode", PSO_KEY_CHAR, 2 };
+   psoFieldDefinition fieldDef = { "CountryName", PSO_VARCHAR, {100} };
 
    // If the map already exists, we remove it.
    try { 
@@ -59,7 +59,12 @@ int createMap()
    }
 
    try { 
-      session.CreateObject( mapName, def );
+      session.CreateObject( mapName,
+                            def,
+                            (unsigned char *)&keyDef,
+                            sizeof(psoKeyDefinition),
+                            (unsigned char *)&fieldDef,
+                            sizeof(psoFieldDefinition) );
       session.Commit();
       theMap.Open( mapName );
       /*
