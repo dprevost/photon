@@ -27,12 +27,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefinitionODBC::KeyDefinitionUser( unsigned char * serialKeyDef,
+KeyDefinitionUser::KeyDefinitionUser( unsigned char * serialKeyDef,
                                       uint32_t        keyDefLen )
    : KeyDefinition( true ),
      key          ( NULL ),
-     currentKey   ( 0 ),
-     simpleDef    ( true )
+     numKeys       ( 0 ),
+     currentKey    ( 0 ),
+     currentLength ( 0 ),
+     maxLength     ( keyDefLen )
 {
    if ( serialKeyDef == NULL ) {
       throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser", 
@@ -42,42 +44,24 @@ KeyDefinitionODBC::KeyDefinitionUser( unsigned char * serialKeyDef,
       throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser", 
                             PSO_INVALID_LENGTH );
    }
-   if ( (keyDefLen%sizeof(psoKeyDefinition)) != 0 ) {
-      throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser", 
-                            PSO_INVALID_LENGTH );
-   }
 
-   numKeys = keyDefLen / sizeof(psoKeyDefinition);
-
-   key = (psoKeyDefinition *) malloc( keyDefLen );
-   if ( key == NULL ) {
-      throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
+   key = new unsigned char [keyDefLen];
    memcpy( key, serialKeyDef, keyDefLen );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefinitionUser::KeyDefinitionUser( uint32_t numKeyFields,
-                                      bool     simple /* = true */ )
+KeyDefinitionUser::KeyDefinitionUser( uint32_t numKeyFields )
    : KeyDefinition( false ),
-     key          ( NULL ),
-     numKeys      ( numKeyFields ),
-     currentKey   ( 0 ),
-     simpleDef    ( simple )
+     key           ( NULL ),
+     numKeys       ( numKeyFields ),
+     currentKey    ( 0 ),
+     currentLength ( 0 ),
+     maxLength     ( 0 )
 {
    if ( numKeyFields == 0 || numKeyFields > PSO_MAX_FIELDS ) {
       throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser",
                             PSO_INVALID_NUM_FIELDS );
-   }
-   
-   // using calloc - being lazy...
-   size_t len = numKeyFields * sizeof(psoKeyDefinition);
-   key = (psoKeyDefinition *)calloc( len, 1 );
-   if ( key == NULL ) {
-      throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
 }
 
@@ -85,36 +69,20 @@ KeyDefinitionUser::KeyDefinitionUser( uint32_t numKeyFields,
 
 KeyDefinitionUser::~KeyDefinitionUser()
 {
-   if ( key ) free( key );
+   if ( key ) delete [] key;
    key = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void KeyDefinitionUser::AddKeyField( std::string & name,
-                                     psoKeyType    type,
-                                     uint32_t      length )
+void KeyDefinitionUser::AddKeyField( std::string fieldDescriptor )
 {
-   AddKeyField( name.c_str(),
-                name.length(),
-                type,
-                length );
-}
+   unsigned char * tmp = NULL;
+   size_t length;
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void KeyDefinitionUser::AddKeyField( const char * name,
-                                     uint32_t     nameLength,
-                                     psoKeyType   type,
-                                     uint32_t     length )
-{
    if ( readOnly ) {
       throw pso::Exception( "KeyDefinitionUser::AddKeyField",
                             PSO_INVALID_DEF_OPERATION );
-   }
-
-   if ( key == NULL ) {
-      throw pso::Exception( "KeyDefinitionUser::AddKeyField", PSO_NULL_POINTER );
    }
 
    if ( currentKey >= numKeys ) {
@@ -122,70 +90,22 @@ void KeyDefinitionUser::AddKeyField( const char * name,
                             PSO_INVALID_NUM_FIELDS );
    }
    
-   if ( name == NULL ) {
-      throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                            PSO_NULL_POINTER );
+   if ( currentLength == 0 ) {
+      length = fieldDescriptor.length();
+      tmp = new unsigned char [length];
    }
-
-   if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
-      throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                            PSO_INVALID_FIELD_NAME );
+   else {
+      length = currentLength + fieldDescriptor.length() + 1;
+      tmp = new unsigned char [length];
+      memcpy( tmp, key, currentLength );
+      tmp[currentLength] = '\0';
+      currentLength++;
+      delete [] key;
    }
-   memcpy( key[currentKey].name, name, nameLength );
-   
-   
-   switch ( type ) {
-   case PSO_KEY_INTEGER:
-   case PSO_KEY_BIGINT:
-   case PSO_KEY_DATE:
-   case PSO_KEY_TIME:
-   case PSO_KEY_TIMESTAMP:
-      key[currentKey].type = type;
-      key[currentKey].length = 0;
-      currentKey++;
-      break;
+   memcpy( &tmp[currentLength], fieldDescriptor.c_str(), fieldDescriptor.length() );
 
-   case PSO_KEY_BINARY:
-   case PSO_KEY_CHAR:
-      if ( length == 0 ) {
-         throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                               PSO_INVALID_FIELD_LENGTH );
-      }
-      key[currentKey].type = type;
-      key[currentKey].length = length;
-      currentKey++;
-      break;
-
-   case PSO_KEY_VARBINARY:
-   case PSO_KEY_VARCHAR:
-      if ( simpleDef && currentKey != numKeys-1 ) {
-         throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                               PSO_INVALID_FIELD_TYPE );
-      }
-      if ( length == 0 ) {
-         throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                               PSO_INVALID_FIELD_LENGTH );
-      }
-      key[currentKey].type = type;
-      key[currentKey].length = length;
-      currentKey++;
-      break;
-
-   case PSO_KEY_LONGVARBINARY:
-   case PSO_KEY_LONGVARCHAR:
-      if ( simpleDef && currentKey != numKeys-1 ) {
-         throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                               PSO_INVALID_FIELD_TYPE );
-      }
-      key[currentKey].type = type;
-      key[currentKey].length = 0;
-      currentKey++;
-      break;
-
-   default:
-      throw pso::Exception( "KeyDefinitionUser::AddKeyLength",
-                            PSO_INVALID_FIELD_TYPE );
-   }
+   key = tmp;
+   maxLength = currentLength = length;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -193,7 +113,7 @@ void KeyDefinitionUser::AddKeyField( const char * name,
 string KeyDefinitionUser::GetNext() 
 {
    string s;
-   char name [PSO_MAX_FIELD_LENGTH+1];
+   uint32_t i;
    
    if ( ! readOnly ) {
       throw pso::Exception( "KeyDefinitionUser::GetNext",
@@ -203,69 +123,15 @@ string KeyDefinitionUser::GetNext()
       throw pso::Exception( "KeyDefinitionUser::GetNext", PSO_NULL_POINTER );
    }
 
-   if ( currentKey >= numKeys ) return s;
+   if ( currentLength >= maxLength ) return s;
 
-   s += "Name: ";   
-   if ( key[currentKey].name[PSO_MAX_FIELD_LENGTH-1] == '\0' ) {
-      s += key[currentKey].name;
+   for ( i = currentLength; i < maxLength; ++i ) {
+      if ( key[i] == 0 ) {
+         currentLength = i + 1;
+         break;
+      }
+      s += key[i];
    }
-   else {
-      memcpy( name, key[currentKey].name, PSO_MAX_FIELD_LENGTH );
-      name[PSO_MAX_FIELD_LENGTH] = '\0';
-      s += name;
-   }
-      
-   s += ", Type: ";
-   switch ( key[currentKey].type ) {
-
-   case PSO_KEY_INTEGER:
-      s += "Integer";
-      break;
-   case PSO_KEY_BIGINT:
-      s += "BigInt";
-      break;
-   case PSO_KEY_DATE:
-      s += "Date";
-      break;
-   case PSO_KEY_TIME:
-      s += "Time";
-      break;
-   case PSO_KEY_TIMESTAMP:
-      s += "TimeStamp";
-      break;
-
-   case PSO_KEY_BINARY:
-      s += "Binary, Length: ";
-      s += key[currentKey].length;
-      break;
-   case PSO_KEY_CHAR:
-      s += "Char, Length: ";
-      s += key[currentKey].length;
-      break;
-
-   case PSO_KEY_VARBINARY:
-      s += "VarBinary, Length: ";
-      s += key[currentKey].length;
-      break;
-
-   case PSO_KEY_VARCHAR:
-      s += "VarChar, Length: ";
-      s += key[currentKey].length;
-      break;
-
-   case PSO_KEY_LONGVARBINARY:
-      s += "LongVarBinary";
-      break;
-   case PSO_KEY_LONGVARCHAR:
-      s += "LongVarChar";
-      break;
-
-   default:
-      throw pso::Exception( "KeyDefinitionUser::GetNext",
-                            PSO_INVALID_FIELD_TYPE );
-   }
-
-   currentKey++;
 
    return s;
 }
@@ -274,7 +140,7 @@ string KeyDefinitionUser::GetNext()
 
 const unsigned char * KeyDefinitionUser::GetDefinition()
 {
-   return (unsigned char *)key;
+   return key;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -282,7 +148,7 @@ const unsigned char * KeyDefinitionUser::GetDefinition()
 /* Returns the length, in bytes, of the definition. */
 uint32_t KeyDefinitionUser::GetDefLength()
 {
-   return numKeys * sizeof(psoKeyDefinition);
+   return maxLength;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

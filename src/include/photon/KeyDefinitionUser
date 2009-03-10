@@ -66,11 +66,10 @@ public:
     * Use this constructor to build a definition to create new Photon objects.
     *
     * \param[in] numFields The number of data fields.
-    * \param[in] separator The character to use as a separator.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   KeyDefinitionUser( psoUint32 numFields, char separator = '\0' );
+   KeyDefinitionUser( psoUint32 numFields );
 
    virtual ~KeyDefinitionUser();
 
@@ -81,7 +80,7 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void AddField( std::string fieldDescription );
+   void AddKeyField( std::string fieldDescription );
 
    /**
     * Iterates through the definition.
@@ -115,11 +114,15 @@ private:
    /// The definition of the key fields
    unsigned char * key;
 
+   /// Number of fields in the definition
+   psoUint32 numKeys;
+
    /// Iterator
    psoUint32 currentKey;
 
-   /// Separator between the description of the fields.
-   char separator;
+   psoUint32 currentLength;
+
+   psoUint32 maxLength;
 };
 
 } // End of namespace

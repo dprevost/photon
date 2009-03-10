@@ -30,9 +30,11 @@ using namespace pso;
 FieldDefinitionUser::FieldDefinitionUser( unsigned char * serialFieldDef,
                                           uint32_t        fieldDefLen )
    : FieldDefinition( true ),
-     field        ( NULL ),
-     numFields    ( 0 ),
-     currentField ( 0 )
+     field         ( NULL ),
+     numFields     ( 0 ),
+     currentField  ( 0 ),
+     currentLength ( 0 ),
+     maxLength     ( fieldDefLen )
 {
    if ( serialFieldDef == NULL ) {
       throw pso::Exception( "FieldDefinitionUser::FieldDefinitionUser", 
@@ -43,11 +45,7 @@ FieldDefinitionUser::FieldDefinitionUser( unsigned char * serialFieldDef,
                             PSO_INVALID_LENGTH );
    }
 
-   field = (unsigned char *)malloc( fieldDefLen );
-   if ( field == NULL ) {
-      throw pso::Exception( "FieldDefinitionUser::FieldDefinitionUser",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
+   field = new unsigned char [fieldDefLen];
    memcpy( field, serialFieldDef, fieldDefLen );
 }
 
@@ -55,9 +53,11 @@ FieldDefinitionUser::FieldDefinitionUser( unsigned char * serialFieldDef,
 
 FieldDefinitionUser::FieldDefinitionUser( uint32_t numFieldFields )
    : FieldDefinition( false ),
-     field        ( NULL ),
-     numFields    ( numFieldFields ),
-     currentField ( 0 )
+     field         ( NULL ),
+     numFields     ( numFieldFields ),
+     currentField  ( 0 ),
+     currentLength ( 0 ),
+     maxLength     ( 0 )
 {
    if ( numFieldFields == 0 || numFieldFields > PSO_MAX_FIELDS ) {
       throw pso::Exception( "FieldDefinitionUser::FieldDefinitionUser",
@@ -69,7 +69,7 @@ FieldDefinitionUser::FieldDefinitionUser( uint32_t numFieldFields )
 
 FieldDefinitionUser::~FieldDefinitionUser()
 {
-   if ( field ) free( field );
+   if ( field ) delete [] field;
    field = NULL;
 }
 
@@ -77,13 +77,12 @@ FieldDefinitionUser::~FieldDefinitionUser()
 
 void FieldDefinitionUser::AddField( std::string fieldDescriptor )
 {
+   unsigned char * tmp = NULL;
+   size_t length;
+   
    if ( readOnly ) {
       throw pso::Exception( "FieldDefinitionUser::AddField",
                             PSO_INVALID_DEF_OPERATION );
-   }
-
-   if ( field == NULL ) {
-      throw pso::Exception( "FieldDefinitionUser::AddField", PSO_NULL_POINTER );
    }
 
    if ( currentField >= numFields ) {
@@ -91,88 +90,22 @@ void FieldDefinitionUser::AddField( std::string fieldDescriptor )
                             PSO_INVALID_NUM_FIELDS );
    }
    
-   if ( name == NULL ) {
-      throw pso::Exception( "FieldDefinitionUser::AddField",
-                            PSO_NULL_POINTER );
+   if ( currentLength == 0 ) {
+      length = fieldDescriptor.length();
+      tmp = new unsigned char [length];
    }
-   
-   if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
-      throw pso::Exception( "FieldDefinitionUser::AddField",
-                            PSO_INVALID_FIELD_NAME );
+   else {
+      length = currentLength + fieldDescriptor.length() + 1;
+      tmp = new unsigned char [length];
+      memcpy( tmp, field, currentLength );
+      tmp[currentLength] = '\0';
+      currentLength++;
+      delete [] field;
    }
-   memcpy( field[currentField].name, name, nameLength );
-   
-   switch ( type ) {
-   case PSO_TINYINT:
-   case PSO_SMALLINT:
-   case PSO_INTEGER:
-   case PSO_BIGINT:
-   case PSO_REAL:
-   case PSO_DOUBLE:
-   case PSO_DATE:
-   case PSO_TIME:
-   case PSO_TIMESTAMP:
-      field[currentField].type = type;
-      field[currentField].vals.length = 0;
-      currentField++;
-      break;
+   memcpy( &tmp[currentLength], fieldDescriptor.c_str(), fieldDescriptor.length() );
 
-   case PSO_BINARY:
-   case PSO_CHAR:
-      if ( length == 0 ) {
-         throw pso::Exception( "FieldDefinitionUser::AddField",
-                               PSO_INVALID_FIELD_LENGTH );
-      }
-      field[currentField].type = type;
-      field[currentField].vals.length = length;
-      currentField++;
-      break;
-
-   case PSO_VARBINARY:
-   case PSO_VARCHAR:
-      if ( simpleDef && currentField != numFields-1 ) {
-         throw pso::Exception( "FieldDefinitionUser::AddField",
-                               PSO_INVALID_FIELD_TYPE );
-      }
-      if ( length == 0 ) {
-         throw pso::Exception( "FieldDefinitionUser::AddField",
-                               PSO_INVALID_FIELD_LENGTH );
-      }
-      field[currentField].type = type;
-      field[currentField].vals.length = length;
-      currentField++;
-      break;
-
-   case PSO_LONGVARBINARY:
-   case PSO_LONGVARCHAR:
-      if ( simpleDef && currentField != numFields-1 ) {
-         throw pso::Exception( "FieldDefinitionUser::AddField",
-                               PSO_INVALID_FIELD_TYPE );
-      }
-      field[currentField].type = type;
-      field[currentField].vals.length = 0;
-      currentField++;
-      break;
-
-   case PSO_NUMERIC:
-      if ( precision == 0 || precision > PSO_FIELD_MAX_PRECISION ) {
-         throw pso::Exception( "FieldDefinitionUser::AddField",
-                               PSO_INVALID_PRECISION );
-      }
-      if ( scale > precision ) {
-         throw pso::Exception( "FieldDefinitionUser::AddField",
-                               PSO_INVALID_SCALE );
-      }
-      field[currentField].type = type;
-      field[currentField].vals.decimal.precision = precision;
-      field[currentField].vals.decimal.scale = scale;
-      currentField++;
-      break;
-
-   default:
-      throw pso::Exception( "FieldDefinitionUser::AddField",
-                            PSO_INVALID_FIELD_TYPE );
-   }
+   field = tmp;
+   maxLength = currentLength = length;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -180,7 +113,7 @@ void FieldDefinitionUser::AddField( std::string fieldDescriptor )
 string FieldDefinitionUser::GetNext() 
 {
    string s;
-   char name [PSO_MAX_FIELD_LENGTH+1];
+   uint32_t i;
    
    if ( ! readOnly ) {
       throw pso::Exception( "FieldDefinitionUser::GetNext",
@@ -190,88 +123,15 @@ string FieldDefinitionUser::GetNext()
       throw pso::Exception( "FieldDefinitionUser::GetNext", PSO_NULL_POINTER );
    }
 
-   if ( currentField >= numFields ) return s;
+   if ( currentLength >= maxLength ) return s;
 
-   s += "Name: ";   
-   if ( field[currentField].name[PSO_MAX_FIELD_LENGTH-1] == '\0' ) {
-      s += field[currentField].name;
+   for ( i = currentLength; i < maxLength; ++i ) {
+      if ( field[i] == 0 ) {
+         currentLength = i + 1;
+         break;
+      }
+      s += field[i];
    }
-   else {
-      memcpy( name, field[currentField].name, PSO_MAX_FIELD_LENGTH );
-      name[PSO_MAX_FIELD_LENGTH] = '\0';
-      s += name;
-   }
-      
-   s += ", Type: ";
-   switch ( field[currentField].type ) {
-
-   case PSO_TINYINT:
-      s += "TinyInt";
-      break;
-   case PSO_SMALLINT:
-      s += "SmallInt";
-      break;
-   case PSO_INTEGER:
-      s += "Integer";
-      break;
-   case PSO_BIGINT:
-      s += "BigInt";
-      break;
-   case PSO_REAL:
-      s += "Real";
-      break;
-   case PSO_DOUBLE:
-      s += "Double";
-      break;
-   case PSO_DATE:
-      s += "Date";
-      break;
-   case PSO_TIME:
-      s += "Time";
-      break;
-   case PSO_TIMESTAMP:
-      s += "TimeStamp";
-      break;
-
-   case PSO_BINARY:
-      s += "Binary, Length: ";
-      s += field[currentField].vals.length;
-      break;
-   case PSO_CHAR:
-      s += "Char, Length: ";
-      s += field[currentField].vals.length;
-      break;
-
-   case PSO_VARBINARY:
-      s += "VarBinary, Length: ";
-      s += field[currentField].vals.length;
-      break;
-
-   case PSO_VARCHAR:
-      s += "VarChar, Length: ";
-      s += field[currentField].vals.length;
-      break;
-
-   case PSO_LONGVARBINARY:
-      s += "LongVarBinary";
-      break;
-   case PSO_LONGVARCHAR:
-      s += "LongVarChar";
-      break;
-
-   case PSO_NUMERIC:
-      s += "Numeric, Precision = ";
-      s += field[currentField].vals.decimal.precision;
-      s += ", Scale = ";
-      s += field[currentField].vals.decimal.scale;
-      break;
-
-   default:
-      throw pso::Exception( "FieldDefinitionUser::GetNext",
-                            PSO_INVALID_FIELD_TYPE );
-   }
-
-   currentField++;
 
    return s;
 }
@@ -280,7 +140,7 @@ string FieldDefinitionUser::GetNext()
 
 const unsigned char * FieldDefinitionUser::GetDefinition()
 {
-   return (unsigned char *)field;
+   return field;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -288,7 +148,7 @@ const unsigned char * FieldDefinitionUser::GetDefinition()
 /* Returns the length, in bytes, of the definition. */
 uint32_t FieldDefinitionUser::GetDefLength()
 {
-   return numFields * sizeof(psoFieldDefinition);
+   return maxLength;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

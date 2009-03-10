@@ -117,9 +117,10 @@ private:
 
    /// Iterator
    psoUint32 currentField;
-   
-   /// Separator between the description of the fields.
-   char separator;
+
+   psoUint32 currentLength;
+
+   psoUint32 maxLength;
 };
 
 } // End of namespace
