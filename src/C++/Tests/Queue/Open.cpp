@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    string qname = fname + "/test";
    const char * c_name = "/cpp_queue_open/test";
    psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

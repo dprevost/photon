@@ -40,7 +40,7 @@ int main( int argc, char * argv[] )
    uint32_t length;
    int rc;
    psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

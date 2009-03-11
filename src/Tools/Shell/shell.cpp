@@ -256,7 +256,7 @@ void psoShell::Cat()
    uint32_t keyLength, dataLength;
    psoObjectDefinition * pDefinition = NULL;
    uint32_t * offsets;
-   ObjDefinition definition;
+//   ObjDefinition definition;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -266,6 +266,7 @@ void psoShell::Cat()
       objectName = currentLocation + tokens[1];
    }
    
+#if 0
    // Must check if object exists (and its type)
    try {
       session.GetStatus( objectName, status );
@@ -427,6 +428,7 @@ void psoShell::Cat()
    }
 
    if ( pDefinition != NULL ) free(pDefinition);
+#endif
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -477,8 +479,10 @@ void psoShell::Cp()
    unsigned char * key, * buffer;
    int rc;
    uint32_t keyLength, dataLength;
-//   psoObjectDefinition definition;
-   ObjDefinition definition;
+   psoObjectDefinition definition;
+   uint32_t keyDefLength, fieldDefLength;
+   unsigned char * keyDef = NULL;
+   unsigned char * fieldDef = NULL;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -511,9 +515,19 @@ void psoShell::Cp()
    }
    
    try {
-      session.GetDefinition( srcName, definition );
-//      definition.type = status.type;
-      session.CreateObject( destName, definition );
+      session.GetDefinitionLength( srcName, &keyDefLength, &fieldDefLength );
+
+      if ( keyDefLength > 0 ) {
+         keyDef = new unsigned char [keyDefLength];
+      }
+      fieldDef = new unsigned char [fieldDefLength];
+      
+      session.GetDefinition( srcName, definition, keyDef, keyDefLength,
+         fieldDef, fieldDefLength );
+
+      session.CreateObject( destName, definition, keyDef, keyDefLength,
+         fieldDef, fieldDefLength );
+
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
          

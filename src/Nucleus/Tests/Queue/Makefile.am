@@ -241,7 +241,6 @@ XFAIL_TESTS =                    \
         InitNullStatus           \
         InitZeroBlocks           \
         InitZeroLength           \
-        InitZeroNumFields        \
         InsertNowNullContext     \
         InsertNowNullItem        \
         InsertNowNullQueue       \
@@ -269,6 +268,8 @@ XFAIL_TESTS =                    \
         RollbackRemoveNullQueue  \
         StatusNullQueue          \
         StatusNullStatus         
+
+#        InitZeroNumFields        
 
 LDADD = $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la

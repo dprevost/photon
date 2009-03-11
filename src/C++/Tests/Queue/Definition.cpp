@@ -43,7 +43,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition folderDef = {
       PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
    psoObjectDefinition queueDef = { 
-      PSO_QUEUE, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_NONE };
+      PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_PHOTON_ODBC_SIMPLE };
    FieldDefinitionODBC fieldDef( 5 );
    unsigned char * fields = NULL;
    uint32_t fieldsLength = 0;

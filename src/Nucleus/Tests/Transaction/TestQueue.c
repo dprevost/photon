@@ -39,7 +39,7 @@ int main()
    char * data2 = "My data2";
    char * data3 = "My data3";
    psonQueueItem * pQueueItem;
-   psoObjectDefinition def = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
 
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
 

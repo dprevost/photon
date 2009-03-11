@@ -759,13 +759,17 @@ void PopulateHashMaps( Session & session, vector<myMap> & h )
    string data, key;
    char s[4];
    psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { PSO_KEY_VAR_STRING, 0, 1, 200 };
+   psoKeyDefinition keyDef = { "key1", PSO_KEY_VARCHAR, 200 };
    psoFieldDefinition fields[1] = { 
-      { "Field_1", PSO_VARCHAR, 0, 1, 200, 0, 0 } 
+      { "Field_1", PSO_VARCHAR, {200} } 
    };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      session.CreateObject( h[i].name, mapDef, &keyDef, fields );
+      session.CreateObject( h[i].name, mapDef,
+                            (unsigned char *)&keyDef,
+                            sizeof(psoKeyDefinition),
+                            (unsigned char *)fields,
+                            sizeof(psoFieldDefinition) );
       h[i].map.Open( h[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -788,13 +792,14 @@ void PopulateLifos( Session & session, vector<myLifo> & l )
    int i, j;
    string data;
    char s[4];
-   psoObjectDefinition queueDef = { PSO_LIFO, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition queueDef = { PSO_LIFO, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = { 
-      { "Field_1", PSO_VARCHAR, 0, 4, 100, 0, 0 } 
+      { "Field_1", PSO_VARCHAR, {100} } 
    };
    
    for ( i = 0; i < NUM_LIFOS; ++i ) {
-      session.CreateObject( l[i].name, queueDef, NULL, fields );
+      session.CreateObject( l[i].name, queueDef, NULL, 0, 
+         (unsigned char *)fields, sizeof(psoFieldDefinition) );
       l[i].queue.Open( l[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -816,14 +821,15 @@ void PopulateQueues( Session & session, vector<myQueue> & q )
    int i, j;
    string data;
    char s[4];
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = { 
-      { "Field_1", PSO_VARCHAR, 0, 4, 100, 0, 0 } 
+      { "Field_1", PSO_VARCHAR, {100} } 
    };
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
       cout << " i = " << i << ", " << q[i].name << ", " << &session << endl;
-      session.CreateObject( q[i].name, queueDef, NULL, fields );
+      session.CreateObject( q[i].name, queueDef, NULL, 0, 
+         (unsigned char *)fields, sizeof(psoFieldDefinition) );
       q[i].queue.Open( q[i].name );
 
       for ( j = 0; j < 20; ++j ) {

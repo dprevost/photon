@@ -55,10 +55,12 @@ int createMap()
     */
    psoObjectDefinition def = { 
       PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_STRING, 2, 0, 0}, 
-      { { "CountryName", PSO_VARCHAR, 0, 1, 100, 0, 0} } 
+      PSO_DEF_PHOTON_ODBC_SIMPLE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE 
    };
+   
+   psoKeyDefinition keyDef     = { "CountryCode", PSO_KEY_CHAR, 2 };
+   psoFieldDefinition fieldDef = { "CountryName", PSO_VARCHAR, {100} };
 
    /* If the map already exists, we remove it. */
    rc = psoDestroyObject( session1, mapName, strlen(mapName) );
@@ -74,7 +76,14 @@ int createMap()
          return -1;
       }
       
-      rc = psoCreateObject( session1, mapName, strlen(mapName), &def );
+      rc = psoCreateObject( session1,
+                            mapName,
+                            strlen(mapName),
+                            &def,
+                            (unsigned char *)&keyDef,
+                            sizeof(psoKeyDefinition),
+                            (unsigned char *)&fieldDef,
+                            sizeof(psoFieldDefinition) );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );

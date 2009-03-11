@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
-   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

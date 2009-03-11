@@ -43,7 +43,7 @@ int main( int argc, char * argv[] )
    size_t lenData;
 
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   psoObjectDefinition lifoDef = { PSO_LIFO, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition lifoDef = { PSO_LIFO, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
 
    psoFieldDefinition fields[5] = {
       { "field1", PSO_TINYINT,       {0} },

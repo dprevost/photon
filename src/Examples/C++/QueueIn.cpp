@@ -81,7 +81,7 @@ void initObjects()
     */
    psoObjectDefinition defQueue = { 
       PSO_QUEUE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE,
+      PSO_DEF_NONE,
       PSO_DEF_PHOTON_ODBC_SIMPLE 
    };
    pso::FieldDefinitionODBC fieldDefQueue( 2 );

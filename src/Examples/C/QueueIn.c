@@ -68,39 +68,32 @@ int initObjects()
    int rc;
    char msg[256];
    int controlData;
-   size_t len;
    
    psoObjectDefinition defFolder = { 
-      PSO_FOLDER, 
-      0, 
-      { 0, 0, 0, 0}, 
-      { { "", 0, 0, 0, 0, 0, 0} } 
+      PSO_FOLDER,
+      PSO_DEF_NONE,
+      PSO_DEF_NONE
    };
 
    psoObjectDefinition defMap = { 
       PSO_HASH_MAP, 
-      1, 
-      { PSO_KEY_VAR_STRING, 0, 1, 20}, 
-      { { "Status", PSO_INTEGER, 4, 0, 0, 0, 0} } 
+      PSO_DEF_PHOTON_ODBC_SIMPLE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE 
    };
-   psoObjectDefinition * pDefQueue = NULL;
+   
+   psoKeyDefinition keyDef     = { "ControlCode", PSO_KEY_VARCHAR, 20 };
+   psoFieldDefinition fieldDef = { "Status",      PSO_INTEGER,    {0} };
 
-   len = offsetof( psoObjectDefinition, fields ) + 
-      2 * sizeof(psoFieldDefinition);
-   pDefQueue = (psoObjectDefinition *)calloc( len, 1 );
-   pDefQueue->type = PSO_QUEUE;
-   pDefQueue->numFields = 2;
-   pDefQueue->fields[0].type = PSO_CHAR;
-   pDefQueue->fields[1].type = PSO_VARCHAR;
-
-   pDefQueue->fields[0].length = 2;
-   pDefQueue->fields[1].minLength = 1;
-   pDefQueue->fields[1].maxLength = 80;
-
-   strcpy( pDefQueue->fields[0].name, "Countrycode" );
-   strcpy( pDefQueue->fields[1].name, "CountryName" );
-
-
+   psoObjectDefinition defQueue = { 
+      PSO_QUEUE,
+      PSO_DEF_NONE,
+      PSO_DEF_PHOTON_ODBC_SIMPLE 
+   };
+   psoFieldDefinition fieldDefQueue[2] = {
+      { "CountryCode", PSO_CHAR,     {2} },
+      { "CountryName", PSO_VARCHAR, {80} }
+   };
+   
    /* If the objects already exist, we remove them. */
    psoDestroyObject( session, inQueueName,  strlen(inQueueName)  );
    psoDestroyObject( session, outQueueName, strlen(outQueueName) );
@@ -116,26 +109,53 @@ int initObjects()
    }
 
    /* Create the folder first, evidently */
-   rc = psoCreateObject( session, folderName, strlen(folderName), &defFolder );
+   rc = psoCreateObject( session,
+                         folderName,
+                         strlen(folderName),
+                         &defFolder,
+                         NULL, 0, NULL, 0 );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = psoCreateObject( session, controlName, strlen(controlName), &defMap );
+   rc = psoCreateObject( session,
+                         controlName,
+                         strlen(controlName),
+                         &defMap,
+                         (unsigned char *)&keyDef,
+                         sizeof(psoKeyDefinition),
+                         (unsigned char *)&fieldDef,
+                         sizeof(psoFieldDefinition) );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = psoCreateObject( session, inQueueName, strlen(inQueueName), pDefQueue );
+
+   rc = psoCreateObject( session,
+                         inQueueName,
+                         strlen(inQueueName),
+                         &defQueue,
+                         NULL,
+                         0,
+                         (unsigned char *)fieldDefQueue,
+                         2*sizeof(psoFieldDefinition) );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
-   rc = psoCreateObject( session, outQueueName, strlen(outQueueName), pDefQueue );
+
+   rc = psoCreateObject( session,
+                         outQueueName,
+                         strlen(outQueueName),
+                         &defQueue,
+                         NULL,
+                         0,
+                         (unsigned char *)fieldDefQueue,
+                         2*sizeof(psoFieldDefinition) );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );

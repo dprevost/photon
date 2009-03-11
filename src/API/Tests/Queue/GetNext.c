@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data2";
    char buffer[200];
    uint32_t length;
-   psoObjectDefinition defQueue = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+   psoObjectDefinition defQueue = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

@@ -26,9 +26,9 @@
 
 PSO_HANDLE g_session1, g_session2;
 
-psoObjectDefinition g_queueDef = { PSO_QUEUE, PSO_DEF_USER_DEFINED, PSO_DEF_NONE };
+psoObjectDefinition g_queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
 psoFieldDefinition g_fields[1] = { 
-   { "Field_1", PSO_VARCHAR, 0, 1, 200, 0, 0 } 
+   { "Field_1", PSO_VARCHAR, {200} } 
 };
 psoObjectDefinition g_folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
 
@@ -100,7 +100,8 @@ int Test1()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), 
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -129,7 +130,8 @@ int Test2()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -166,7 +168,8 @@ int Test3()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -198,7 +201,8 @@ int Test4()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoRollback( g_session1 );
@@ -232,7 +236,8 @@ int Test5()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -267,7 +272,8 @@ int Test6()
    int errcode = 0;
    PSO_HANDLE q1 = NULL; 
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -304,7 +310,8 @@ int Test7()
    int errcode = 0;
    PSO_HANDLE q1 = NULL; 
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -339,7 +346,8 @@ int Test8()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -379,7 +387,8 @@ int Test9()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -417,7 +426,8 @@ int Test10()
    int errcode = 0;
    PSO_HANDLE q1 = NULL;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -454,10 +464,13 @@ int Test11()
 {
    int errcode = 0;
 
-   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef, NULL, NULL );
+   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"),
+      &g_folderDef, NULL, 0, NULL, 0 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", 
+      strlen("A_Folder/A_Queue"), &g_queueDef, 
+      NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_NO_SUCH_FOLDER,
@@ -486,13 +499,16 @@ int Test12()
 {
    int errcode = 0;
 
-   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef, NULL, NULL );
+   errcode = psoCreateObject( g_session1, "A_Folder",
+      strlen("A_Folder"), &g_folderDef, NULL, 0, NULL, 0 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue",
+      strlen("A_Folder/A_Queue"), &g_queueDef, 
+      NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -519,13 +535,16 @@ int Test13()
 {
    int errcode = 0;
 
-   errcode = psoCreateObject( g_session1, "A_Folder", strlen("A_Folder"), &g_folderDef, NULL, NULL );
+   errcode = psoCreateObject( g_session1, "A_Folder",
+      strlen("A_Folder"), &g_folderDef, NULL, 0, NULL, 0 );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoRollback( g_session1 );
    if ( errcode != PSO_OK ) goto end;
 
-   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue", strlen("A_Folder/A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session2, "A_Folder/A_Queue",
+      strlen("A_Folder/A_Queue"), &g_queueDef, 
+      NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_NO_SUCH_FOLDER,
@@ -557,7 +576,9 @@ int Test21()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue",
+      strlen("A_Queue"), &g_queueDef,
+      NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -595,7 +616,8 @@ int Test22()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -637,7 +659,8 @@ int Test23()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -684,7 +707,8 @@ int Test24()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -734,7 +758,8 @@ int Test25()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );   
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );   
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -780,7 +805,8 @@ int Test26()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -826,7 +852,8 @@ int Test27()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -875,7 +902,8 @@ int Test28()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -924,7 +952,8 @@ int Test29()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -976,7 +1005,8 @@ int Test30()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -1022,7 +1052,8 @@ int Test31()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
@@ -1072,7 +1103,8 @@ int Test32()
    char str[25];
    uint32_t returnLength;
    
-   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"), &g_queueDef, NULL, g_fields );
+   errcode = psoCreateObject( g_session1, "A_Queue", strlen("A_Queue"),
+      &g_queueDef, NULL, 0, (unsigned char *)g_fields, sizeof(psoFieldDefinition) );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoQueueOpen( g_session1, "A_Queue", strlen("A_Queue"), &q1 );
