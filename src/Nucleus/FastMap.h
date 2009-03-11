@@ -24,7 +24,6 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Nucleus/Engine.h"
-#include "Nucleus/DataType.h"
 #include "Nucleus/MemoryObject.h"
 #include "Nucleus/TreeNode.h"
 #include "Nucleus/BlockGroup.h"

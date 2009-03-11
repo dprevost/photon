@@ -238,68 +238,6 @@ void Session::ErrorMsg( char   * message,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#if 0
-void Session::GetDefinition( const std::string & objectName,
-                             ObjDefinition     & definition )
-{
-   int rc;
-   psoObjectDefinition def;
-   psoKeyDefinition key;
-   psoFieldDefinition * fields;
-   
-   if ( m_sessionHandle == NULL ) {
-      throw pso::Exception( "Session::GetDefinition", PSO_NULL_HANDLE );
-   }
-   
-   memset( &def, 0, sizeof(psoObjectDefinition) );
-   memset( &key, 0, sizeof(psoKeyDefinition) );
-   rc = psoGetDefinition( m_sessionHandle,
-                          objectName.c_str(),
-                          objectName.length(),
-                          &def,
-                          &key,
-                          0,
-                          NULL );
-   //psoHashMapDefinition( m_objectHandle, &def, 0, NULL );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
-   }
-   fields = (psoFieldDefinition *) 
-      calloc(sizeof(psoFieldDefinition) * def.numFields, 1);
-   if ( fields == NULL ) {
-      throw pso::Exception( "Session::GetDefinition", PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   rc = psoGetDefinition( m_sessionHandle,
-                          objectName.c_str(),
-                          objectName.length(),
-                          &def,
-                          &key,
-                          def.numFields, 
-                          fields );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
-   }
-   
-   // We catch and rethrow the exception to avoid a memory leak
-   try {
-      if ( key.type == 0 ) {
-         definition.Reset( def, NULL, fields );
-      }
-      else {
-         definition.Reset( def, &key, fields );
-      }
-   }
-   catch( pso::Exception exc ) {
-      free( fields );
-      throw exc;
-   }
-   
-   free( fields );
-}
-#endif
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
 void Session::GetDefinition( const std::string   & objectName,
                              psoObjectDefinition & definition,
                              unsigned char       * key,

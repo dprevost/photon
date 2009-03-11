@@ -34,60 +34,6 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if 0
-/* 
- * Note: the type of object must be filled by the caller.
- */
-int psoaGetDefinition( psonFieldDef       * pInternalDef,
-                       uint16_t             numFields,
-                       psoFieldDefinition * pFields )
-{
-   unsigned int i;
-   
-   PSO_PRE_CONDITION( pInternalDef != NULL );
-   PSO_PRE_CONDITION( pFields      != NULL );
-   PSO_PRE_CONDITION( numFields > 0 );
-
-   for ( i = 0; i < numFields; ++i ) {
-
-      pFields[i].type = pInternalDef[i].type;
-      memcpy( pFields[i].name, pInternalDef[i].name, PSO_MAX_FIELD_LENGTH );
-
-      switch( pInternalDef[i].type ) {
-
-      case PSO_BINARY:
-      case PSO_CHAR:
-      case PSO_INTEGER:
-         pFields[i].length = pInternalDef[i].length1;
-         
-         break;
-
-      case PSO_DECIMAL:
-         pFields[i].precision = pInternalDef[i].length1;
-         pFields[i].scale     = pInternalDef[i].length2;
-
-         break;
-
-      case PSO_TINYINT:
-
-         break;
-
-      case PSO_VARBINARY:
-      case PSO_VARCHAR:
-
-         pFields[i].minLength = pInternalDef[i].length1;
-         pFields[i].maxLength = pInternalDef[i].length2;
-
-         break;
-      }
-   }
-
-   return 0;
-}
-#endif
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
                        uint32_t         * pMinLength,
                        uint32_t         * pMaxLength )
@@ -111,10 +57,10 @@ void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaGetLimits( psonFieldDef * pDefinition,
-                    uint16_t       numFields,
-                    uint32_t     * pMinLength,
-                    uint32_t     * pMaxLength )
+void psoaGetLimits( psoFieldDefinition * pDefinition,
+                    uint16_t             numFields,
+                    uint32_t           * pMinLength,
+                    uint32_t           * pMaxLength )
 {
    unsigned int i;
    uint32_t minLength = 0, maxLength = 0;

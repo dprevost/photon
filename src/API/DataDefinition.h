@@ -24,7 +24,6 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include <photon/psoCommon.h>
-#include "Nucleus/DataType.h"
 #include "API/api.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -33,29 +32,16 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/**
- * Extract the definition from the internal definition.
- *
- * Explanation: the internal representation is more compact to minimize
- * the footprint in shared memory.
- * 
- * The memory must be free by the calling program.
- */
-//PHOTON_API_EXPORT
-//int psoaGetDefinition( psonFieldDef       * pInternalDef,
-//                       uint16_t             numFields,
-//                       psoFieldDefinition * pFields );
-
 //PHOTON_API_EXPORT
 //void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
 //                       uint32_t         * pMinLength,
 //                       uint32_t         * pMaxLength );
 
 //PHOTON_API_EXPORT
-//void psoaGetLimits( psonFieldDef * pDefinition,
-//                    uint16_t       numFields,
-//                    uint32_t     * pMinLength,
-//                    uint32_t     * pMaxLength );
+//void psoaGetLimits( psoFieldDefinition * pDefinition,
+//                    uint16_t             numFields,
+//                    uint32_t           * pMinLength,
+//                    uint32_t           * pMaxLength );
 
 /*
  * Similar to psoaGetLimits (but using the api struct), it calculates the 
