@@ -21,6 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/FieldDefinitionODBC>
+#include <sstream>
 
 using namespace std;
 using namespace pso;
@@ -216,6 +217,7 @@ void FieldDefinitionODBC::AddField( const char * name,
 
 string FieldDefinitionODBC::GetNext() 
 {
+   stringstream stream;
    string s;
    char name [PSO_MAX_FIELD_LENGTH+1];
    
@@ -229,78 +231,78 @@ string FieldDefinitionODBC::GetNext()
 
    if ( currentField >= numFields ) return s;
 
-   s += "Name: ";   
+   stream << "Name: ";   
    if ( field[currentField].name[PSO_MAX_FIELD_LENGTH-1] == '\0' ) {
-      s += field[currentField].name;
+      stream << field[currentField].name;
    }
    else {
       memcpy( name, field[currentField].name, PSO_MAX_FIELD_LENGTH );
       name[PSO_MAX_FIELD_LENGTH] = '\0';
-      s += name;
+      stream << name;
    }
       
-   s += ", Type: ";
+   stream << ", Type: ";
    switch ( field[currentField].type ) {
 
    case PSO_TINYINT:
-      s += "TinyInt";
+      stream << "TinyInt";
       break;
    case PSO_SMALLINT:
-      s += "SmallInt";
+      stream << "SmallInt";
       break;
    case PSO_INTEGER:
-      s += "Integer";
+      stream << "Integer";
       break;
    case PSO_BIGINT:
-      s += "BigInt";
+      stream << "BigInt";
       break;
    case PSO_REAL:
-      s += "Real";
+      stream << "Real";
       break;
    case PSO_DOUBLE:
-      s += "Double";
+      stream << "Double";
       break;
    case PSO_DATE:
-      s += "Date";
+      stream << "Date";
       break;
    case PSO_TIME:
-      s += "Time";
+      stream << "Time";
       break;
    case PSO_TIMESTAMP:
-      s += "TimeStamp";
+      stream << "TimeStamp";
       break;
 
    case PSO_BINARY:
-      s += "Binary, Length: ";
-      s += field[currentField].vals.length;
+      stream << "Binary, Length: ";
+      stream << field[currentField].vals.length;
       break;
    case PSO_CHAR:
-      s += "Char, Length: ";
-      s += field[currentField].vals.length;
+      stream << "Char, Length: ";
+      stream << field[currentField].vals.length;
       break;
 
    case PSO_VARBINARY:
-      s += "VarBinary, Length: ";
-      s += field[currentField].vals.length;
+      stream << "VarBinary, Length: ";
+      stream << field[currentField].vals.length;
       break;
 
    case PSO_VARCHAR:
-      s += "VarChar, Length: ";
-      s += field[currentField].vals.length;
+      stream << "VarChar, Length: ";
+      stream << field[currentField].vals.length;
       break;
 
    case PSO_LONGVARBINARY:
-      s += "LongVarBinary";
+      stream << "LongVarBinary";
       break;
    case PSO_LONGVARCHAR:
-      s += "LongVarChar";
+      stream << "LongVarChar";
       break;
 
    case PSO_NUMERIC:
-      s += "Numeric, Precision = ";
-      s += field[currentField].vals.decimal.precision;
-      s += ", Scale = ";
-      s += field[currentField].vals.decimal.scale;
+      stream << "Numeric, Precision = ";
+      stream << field[currentField].vals.decimal.precision;
+      stream << ", Scale = ";
+      stream << field[currentField].vals.decimal.scale;
       break;
 
    default:
@@ -309,7 +311,8 @@ string FieldDefinitionODBC::GetNext()
    }
 
    currentField++;
-
+   s = stream.str();
+   
    return s;
 }
 
