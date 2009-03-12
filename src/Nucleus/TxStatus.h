@@ -217,7 +217,8 @@ bool psonTxStatusIsRemoveCommitted( psonTxStatus * pStatus )
 {
    PSO_PRE_CONDITION( pStatus != NULL );
 
-   return (pStatus->status & PSON_TXS_DESTROYED_COMMITTED);
+   if (pStatus->status & PSON_TXS_DESTROYED_COMMITTED) return true;
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -229,6 +229,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\FastMap.c"
+				>
+			</File>
+			<File
 				RelativePath="Folder.c"
 				>
 				<FileConfiguration
@@ -366,28 +370,6 @@
 			</File>
 			<File
 				RelativePath="LogFile.c"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Map.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -653,10 +635,6 @@
 			</File>
 			<File
 				RelativePath="LogFile.h"
-				>
-			</File>
-			<File
-				RelativePath="Map.h"
 				>
 			</File>
 			<File

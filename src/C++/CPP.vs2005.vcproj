@@ -205,10 +205,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath=".\Definition.cpp"
-				>
-			</File>
-			<File
 				RelativePath="Exception.cpp"
 				>
 				<FileConfiguration
@@ -275,6 +271,18 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\FieldDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FieldDefinitionODBC.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FieldDefinitionUser.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Folder.cpp"
 				>
 				<FileConfiguration
@@ -317,6 +325,18 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\KeyDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KeyDefinitionODBC.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KeyDefinitionUser.cpp"
+				>
 			</File>
 			<File
 				RelativePath="Lifo.cpp"
