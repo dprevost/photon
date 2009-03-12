@@ -21,6 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/KeyDefinitionODBC>
+#include <sstream>
 
 using namespace std;
 using namespace pso;
@@ -192,6 +193,7 @@ void KeyDefinitionODBC::AddKeyField( const char * name,
 
 string KeyDefinitionODBC::GetNext() 
 {
+   stringstream stream;
    string s;
    char name [PSO_MAX_FIELD_LENGTH+1];
    
@@ -205,59 +207,59 @@ string KeyDefinitionODBC::GetNext()
 
    if ( currentKey >= numKeys ) return s;
 
-   s += "Name: ";   
+   stream << "Name: ";   
    if ( key[currentKey].name[PSO_MAX_FIELD_LENGTH-1] == '\0' ) {
-      s += key[currentKey].name;
+      stream << key[currentKey].name;
    }
    else {
       memcpy( name, key[currentKey].name, PSO_MAX_FIELD_LENGTH );
       name[PSO_MAX_FIELD_LENGTH] = '\0';
-      s += name;
+      stream << name;
    }
       
-   s += ", Type: ";
+   stream << ", Type: ";
    switch ( key[currentKey].type ) {
 
    case PSO_KEY_INTEGER:
-      s += "Integer";
+      stream << "Integer";
       break;
    case PSO_KEY_BIGINT:
-      s += "BigInt";
+      stream << "BigInt";
       break;
    case PSO_KEY_DATE:
-      s += "Date";
+      stream << "Date";
       break;
    case PSO_KEY_TIME:
-      s += "Time";
+      stream << "Time";
       break;
    case PSO_KEY_TIMESTAMP:
-      s += "TimeStamp";
+      stream << "TimeStamp";
       break;
 
    case PSO_KEY_BINARY:
-      s += "Binary, Length: ";
-      s += key[currentKey].length;
+      stream << "Binary, Length: ";
+      stream << key[currentKey].length;
       break;
    case PSO_KEY_CHAR:
-      s += "Char, Length: ";
-      s += key[currentKey].length;
+      stream << "Char, Length: ";
+      stream << key[currentKey].length;
       break;
 
    case PSO_KEY_VARBINARY:
-      s += "VarBinary, Length: ";
-      s += key[currentKey].length;
+      stream << "VarBinary, Length: ";
+      stream << key[currentKey].length;
       break;
 
    case PSO_KEY_VARCHAR:
-      s += "VarChar, Length: ";
-      s += key[currentKey].length;
+      stream << "VarChar, Length: ";
+      stream << key[currentKey].length;
       break;
 
    case PSO_KEY_LONGVARBINARY:
-      s += "LongVarBinary";
+      stream << "LongVarBinary";
       break;
    case PSO_KEY_LONGVARCHAR:
-      s += "LongVarChar";
+      stream << "LongVarChar";
       break;
 
    default:
@@ -266,6 +268,7 @@ string KeyDefinitionODBC::GetNext()
    }
 
    currentKey++;
+   s = stream.str();
 
    return s;
 }

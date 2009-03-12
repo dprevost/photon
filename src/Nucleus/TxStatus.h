@@ -48,21 +48,6 @@ BEGIN_C_DECLS
 #define PSON_TXS_DESTROYED_COMMITTED  0x10
 #define PSON_TXS_EDIT_COMMITTED       0x20
 
-#if 0
-enum psonTxStatusEnum
-{
-   PSON_TXS_OK = 0,
-   PSON_TXS_DESTROYED,
-   PSON_TXS_ADDED,
-   PSON_TXS_EDIT,
-   PSON_TXS_REPLACED, /* When a data item is replaced */
-   PSON_TXS_DESTROYED_COMMITTED,
-   /* When a new version of an object is committed */
-   PSON_TXS_VERSION_REPLACED 
-};
-typedef enum psonTxStatusEnum psonTxStatusEnum;
-#endif
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 struct psonTxStatus
