@@ -1,6 +1,7 @@
 /Makefile
 /Makefile.in
 /psosh
-/Debug
-/Release
-/vc60.pdb
+/Debug2005
+/Debug2008
+/Release2005
+/Release2008

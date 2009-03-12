@@ -1,13 +1,7 @@
 /Makefile
 /Makefile.in
 /quasar
-/*.a
-/Debug
-/Release
-/vc60.pdb
-/vc60.idb
-/Watchdog.mak
-/Watchdog.ncb
-/Watchdog.opt
-/Watchdog.dep
-/Watchdog.plg
+/Debug2005
+/Debug2008
+/Release2005
+/Release2008

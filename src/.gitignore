@@ -2,7 +2,8 @@
 /Makefile
 /config.h
 /stamp-h*
-/Debug
-/Release
-/vdsf.opt
-/vdsf.ncb
+/Debug2005
+/Debug2008
+/Release2005
+/Release2008
+/*.ncb
