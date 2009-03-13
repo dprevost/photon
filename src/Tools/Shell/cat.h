@@ -18,8 +18,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef PSO_SHELL_SHELL_H
-#define PSO_SHELL_SHELL_H
+#ifndef PSO_SHELL_CAT_H
+#define PSO_SHELL_CAT_H
 
 #include "Common/Common.h"
 #include <photon/photon>
@@ -36,66 +36,38 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-class psoShell
+class psoCat
 {
 public:
-   psoShell(Session & s);
-   ~psoShell();
 
+   psoCat( Session s, string name );
+   
+   ~psoCat();
+
+   // Returns an error string on error
+   string Init();
+   
    void Run();
    
 private:
 
-   string currentLocation;
-   Session & session;
-   vector<string> tokens;
-   psoConstants constants;
+   Session session;
+   string objectName;
+   psoObjStatus status;
+   unsigned char * key;
+   unsigned char * buffer;
+   uint32_t * keyOffsets;
+   uint32_t * fieldOffsets;
+   psoObjectDefinition objDefinition;
+   unsigned char * fieldDef;
+   unsigned char * keyDef;
+   uint32_t fieldDefLength;
+   uint32_t keyDefLength;
    
-   bool Dispatch();
-   
-   void Parse( string & inStr );
-
-   string & Trim( string & inStr );
-   
-   // The "list" of currently implemented pseudo-shell commands starts here.
-
-   // cat is complex. It is implemented using an object (see code for details).
-   void Cat();
-   
-   void Cd();
-
-   void Cp();
-   
-   void Echo();
-   
-   void Free();
-   
-   void Ls();
-   
-public:
-   // man is public so that it can be use if the user do psosh --help (or
-   // variants).
-   void Man();
-   
-private:
-   void Mkdir();
-   
-   void Rm();
-   
-   void Rmdir();
-
-   void Stat();
-   
-   void Touch();
-      
-   // mv, file, history(?), wc, vi/ed(?), chmod
-   // cmp, grep, diff, head, tail, du, df, uname, ln, find,
-   // uptime
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif // PSO_SHELL_SHELL_H
+#endif // PSO_SHELL_CAT_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-

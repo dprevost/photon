@@ -599,6 +599,8 @@ int psoGetStatus( PSO_HANDLE     sessionHandle,
       return PSO_NULL_POINTER;
    }
 
+   memset( pStatus, 0, sizeof(psoObjStatus) );
+
    if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
          GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )

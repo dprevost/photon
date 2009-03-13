@@ -21,6 +21,275 @@
 #include "Common/Common.h"
 #include "API/DataDefinition.h"
 
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
+                        int                numKeys,
+                        uint32_t         * pOffsets )
+{
+   int i;
+   uint32_t minLength = 0;
+
+   PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pOffsets    != NULL );
+   PSO_PRE_CONDITION( numKeys > 0 );
+   
+   /*
+    * The first field is special - the alignment offset is always zero
+    * since we just started.
+    */
+   pOffsets[0] = 0;
+
+   switch( pDefinition[0].type ) {
+
+   case PSO_KEY_CHAR:
+   case PSO_KEY_BINARY:
+      minLength = pDefinition[0].length;
+      break;
+      
+   case PSO_KEY_VARCHAR:
+   case PSO_KEY_LONGVARCHAR:
+   case PSO_KEY_VARBINARY:
+   case PSO_KEY_LONGVARBINARY:
+      /* A single field - a single offset ! */
+      break;
+
+   case PSO_KEY_INTEGER:
+      minLength = 4;
+      break;
+      
+   case PSO_KEY_BIGINT:
+      minLength = 8;
+      break;
+   
+   case PSO_KEY_DATE:
+      minLength = sizeof(struct psoDateStruct);
+      break;
+
+   case PSO_KEY_TIME:
+      minLength = sizeof(struct psoTimeStruct);
+      break;
+
+   case PSO_KEY_TIMESTAMP:
+      minLength = sizeof(struct psoTimestampStruct);
+      break;
+   }
+   
+   for ( i = 1; i < numKeys; ++i ) {
+
+      switch( pDefinition[i].type ) {
+
+      case PSO_KEY_CHAR:
+      case PSO_KEY_BINARY:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+         minLength += pDefinition[i].length;
+         break;
+         
+      case PSO_KEY_VARCHAR:
+      case PSO_KEY_LONGVARCHAR:
+      case PSO_KEY_VARBINARY:
+      case PSO_KEY_LONGVARBINARY:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+         break;
+      
+      case PSO_KEY_INTEGER:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
+         pOffsets[i] = minLength;
+         minLength += 4;
+         break;
+         
+      case PSO_KEY_BIGINT:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
+         pOffsets[i] = minLength;
+         minLength += 8;
+         break;
+
+      case PSO_KEY_DATE:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoDateStruct);
+         break;
+
+      case PSO_KEY_TIME:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoTimeStruct);
+         break;
+
+      case PSO_KEY_TIMESTAMP:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoTimestampStruct);
+         break;
+
+      }
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
+                          int                  numFields,
+                          uint32_t           * pOffsets )
+{
+   int i;
+   uint32_t minLength = 0;
+
+   PSO_PRE_CONDITION( pDefinition != NULL );
+   PSO_PRE_CONDITION( pOffsets    != NULL );
+   PSO_PRE_CONDITION( numFields > 0 );
+   
+   /*
+    * The first field is special - the alignment offset is always zero
+    * since we just started.
+    */
+   pOffsets[0] = 0;
+
+   switch( pDefinition[0].type ) {
+
+   case PSO_CHAR:
+   case PSO_BINARY:
+      minLength = pDefinition[0].vals.length;
+      break;
+      
+   case PSO_VARCHAR:
+   case PSO_LONGVARCHAR:
+   case PSO_VARBINARY:
+   case PSO_LONGVARBINARY:
+      /* A single field - a single offset ! */
+      break;
+
+   case PSO_TINYINT:
+      minLength = 1;
+      break;
+
+   case PSO_SMALLINT:
+      minLength = 4;
+      break;
+
+   case PSO_INTEGER:
+      minLength = 4;
+      break;
+      
+   case PSO_BIGINT:
+      minLength = 8;
+      break;
+   
+   case PSO_REAL:
+      minLength = 4;
+      break;
+   
+   case PSO_DOUBLE:
+      minLength = 8;
+      break;
+   
+   case PSO_NUMERIC:
+      minLength = sizeof(struct psoNumericStruct);
+      break;
+   
+   case PSO_DATE:
+      minLength = sizeof(struct psoDateStruct);
+      break;
+
+   case PSO_TIME:
+      minLength = sizeof(struct psoTimeStruct);
+      break;
+
+   case PSO_TIMESTAMP:
+      minLength = sizeof(struct psoTimestampStruct);
+      break;
+   }
+   
+   for ( i = 1; i < numFields; ++i ) {
+
+      switch( pDefinition[i].type ) {
+
+      case PSO_CHAR:
+      case PSO_BINARY:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+         minLength += pDefinition[i].vals.length;
+         break;
+         
+      case PSO_VARCHAR:
+      case PSO_LONGVARCHAR:
+      case PSO_VARBINARY:
+      case PSO_LONGVARBINARY:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+         break;
+      
+      case PSO_TINYINT:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
+         pOffsets[i] = minLength;
+         minLength += 1;
+         break;
+      
+      case PSO_SMALLINT:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
+         pOffsets[i] = minLength;
+         minLength += 2;
+         break;
+
+      case PSO_INTEGER:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
+         pOffsets[i] = minLength;
+         minLength += 4;
+         break;
+         
+      case PSO_BIGINT:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
+         pOffsets[i] = minLength;
+         minLength += 8;
+         break;
+
+      case PSO_REAL:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
+         pOffsets[i] = minLength;
+         minLength += 4;
+         break;
+
+      case PSO_DOUBLE:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
+         pOffsets[i] = minLength;
+         minLength += 8;
+         break;
+
+      case PSO_NUMERIC:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoNumericStruct);
+         break;
+
+      case PSO_DATE:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoDateStruct);
+         break;
+
+      case PSO_TIME:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoTimeStruct);
+         break;
+
+      case PSO_TIMESTAMP:
+         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
+         pOffsets[i] = minLength;
+         minLength += sizeof(struct psoTimestampStruct);
+         break;
+
+      }
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if 0
+
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
 
@@ -161,104 +430,6 @@ void psoaGetLimits( psoFieldDefinition * pDefinition,
    if ( maxLength == 0 ) maxLength = minLength;
    *pMinLength = minLength;
    *pMaxLength = maxLength;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void psoaGetOffsets( psoObjectDefinition * pDefinition,
-                     psoFieldDefinition  * pFields,
-                     uint32_t            * pOffsets )
-{
-   unsigned int i;
-   uint32_t minLength = 0;
-
-   PSO_PRE_CONDITION( pDefinition != NULL );
-   PSO_PRE_CONDITION( pFields     != NULL );
-   PSO_PRE_CONDITION( pOffsets    != NULL );
-   
-   /*
-    * The first field is special - the alignment offset is always zero
-    * since we just started.
-    */
-   pOffsets[0] = 0;
-
-   switch( pFields[0].type ) {
-
-   case PSO_INTEGER:
-   case PSO_BINARY:
-   case PSO_CHAR:
-      minLength = pFields[0].length;
-      break;
-
-   case PSO_DECIMAL:
-      minLength = pFields[0].precision + 2;
-      break;
-
-   case PSO_TINYINT:
-      minLength = sizeof(bool);
-      break;
-
-   case PSO_VARBINARY:
-   case PSO_VARCHAR:
-      /* A single field - a single offset ! */
-      break;
-   }
-   
-   for ( i = 1; i < pDefinition->numFields; ++i ) {
-
-      switch( pFields[i].type ) {
-
-      case PSO_INTEGER:
-         if ( pFields[i].length == 1 ) {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         }
-         else if ( pFields[i].length == 2 ) {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
-         }
-         else if ( pFields[i].length == 4 ) {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
-         }
-         else {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
-         }
-         pOffsets[i] = minLength;
-         
-         minLength += pFields[i].length;
-
-         break;
-
-      case PSO_BINARY:
-      case PSO_CHAR:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         pOffsets[i] = minLength;
-
-         minLength += pFields[i].length;
-
-         break;
-
-      case PSO_DECIMAL:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         pOffsets[i] = minLength;
-
-         minLength += pFields[i].precision + 2;
-
-         break;
-
-      case PSO_TINYINT:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_BOOL + 1)*PSOC_ALIGNMENT_BOOL;
-         pOffsets[i] = minLength;
-
-         minLength += sizeof(bool);
-         break;
-
-      case PSO_VARBINARY:
-      case PSO_VARCHAR:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         pOffsets[i] = minLength;
-
-         break;
-      }
-   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -841,6 +1012,7 @@ cleanup:
 
    return errcode;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

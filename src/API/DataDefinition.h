@@ -25,6 +25,7 @@
 
 #include <photon/psoCommon.h>
 #include "API/api.h"
+#include <photon/psoPhotonODBC.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -48,10 +49,15 @@ BEGIN_C_DECLS
  * offsets for each data field.
  * The array of offsets must be allocated by the caller.
  */
-//PHOTON_API_EXPORT
-//void psoaGetOffsets( psoObjectDefinition * pDefinition,
-//                     psoFieldDefinition  * pFields,
-//                     uint32_t            * pOffsets );
+PHOTON_API_EXPORT
+void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
+                        int                numKeys,
+                        uint32_t         * pOffsets );
+
+PHOTON_API_EXPORT
+void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
+                          int                  numFields,
+                          uint32_t           * pOffsets );
 
 //PHOTON_API_EXPORT
 //int psoaValidateDefinition( psoObjectDefinition * pDefinition,

@@ -26,6 +26,7 @@
 #include <vector>
 #include "API/DataDefinition.h" // for psoaGetOffsets
 #include "Tools/Shell/util.h"
+#include "Tools/Shell/cat.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -250,13 +251,17 @@ string & psoShell::Trim( string & s )
 void psoShell::Cat()
 {
    string objectName, str;
-   psoObjStatus status;
-   unsigned char * key, * buffer;
-   int rc;
-   uint32_t keyLength, dataLength;
-   psoObjectDefinition * pDefinition = NULL;
-   uint32_t * offsets;
-//   ObjDefinition definition;
+//   psoObjStatus status;
+//   unsigned char * key = NULL, * buffer = NULL;
+//   int rc;
+//   uint32_t keyLength, dataLength;
+////   psoObjectDefinition * pDefinition = NULL;
+//   uint32_t * keyOffsets = NULL;
+//   uint32_t * fieldOffsets = NULL;
+//   psoObjectDefinition objDefinition;
+//   unsigned char * fieldDef = NULL;
+//   unsigned char * keyDef   = NULL;
+//   uint32_t fieldDefLength = 0, keyDefLength = 0;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -265,9 +270,21 @@ void psoShell::Cat()
    else {
       objectName = currentLocation + tokens[1];
    }
+
+   psoCat catObj( session, objectName );
+   
+   str = catObj.Init();
+   if ( str.length() > 0 ) {
+      cerr << str << endl;
+      return;
+   }
+
+//   try {
+//      catObj.Run();
+//   }
    
 #if 0
-   // Must check if object exists (and its type)
+   // Must check if object exists, its type and the number of records
    try {
       session.GetStatus( objectName, status );
    }
@@ -281,8 +298,12 @@ void psoShell::Cat()
       return;
    }
    
+   if ( status.numDataItem == 0 ) {
+      cerr << "psosh: cat: " << objectName << ": is empty" << endl;
+   }
+   
    try {
-      session.GetDefinition( objectName, definition );
+      session.GetDefinitionLength( objectName, &keyDefLength, &fieldDefLength );
    }
    catch ( Exception exc ) {
       cerr << "psosh: cat: " << exc.Message() << endl;
@@ -290,61 +311,107 @@ void psoShell::Cat()
    }
 
    try {
-      offsets = new uint32_t[pDefinition->numFields];
+      if ( keyDefLength > 0 ) {
+         keyDef = new unsigned char [keyDefLength];
+      }
+      if ( fieldDefLength > 0 ) {
+         fieldDef = new unsigned char [fieldDefLength];
+      }
    }
    catch ( ... ) {
       cerr << "psosh: cat: Not enough memory " << endl;
-      cerr << "Number of fields in data definition = " << pDefinition->numFields << endl;
+      // The first new might have succeeded
+      if ( keyDef != NULL ) delete [] keyDef;
       return;
    }
    
-   psoaGetOffsets( (psoObjectDefinition *)&(definition.GetDef()), 
-                   (psoFieldDefinition *)definition.GetFields(), 
-                   offsets );
-   for ( uint32_t i = 0; i < pDefinition->numFields; ++i ) {
-      cout << "offsets[" << i << "] = " << offsets[i] << endl;
+   try {
+      session.GetDefinition( objectName,
+                             objDefinition,
+                             keyDef,
+                             keyDefLength,
+                             fieldDef,
+                             fieldDefLength );
+   }
+   catch ( Exception exc ) {
+      cerr << "psosh: cat: " << exc.Message() << endl;
+      return;
+   }
+
+   if ( objDefinition.keyDefType == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
+      try {
+         keyOffsets = new uint32_t[keyDefLength/sizeof(psoKeyDefinition)];
+      }
+      catch ( ... ) {
+         cerr << "psosh: cat: Not enough memory " << endl;
+         cerr << "Number of keys in data definition = " << keyDefLength/sizeof(psoKeyDefinition) << endl;
+         return;
+      }
+      psoaGetKeyOffsets( (psoKeyDefinition *)keyDef, keyOffsets );
+   }
+
+   if ( objDefinition.fieldDefType == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
+      try {
+         fieldOffsets = new uint32_t[fieldDefLength/sizeof(psoFieldDefinition)];
+      }
+      catch ( ... ) {
+         cerr << "psosh: cat: Not enough memory " << endl;
+         cerr << "Number of fields in data definition = " << fieldDefLength/sizeof(psoFieldDefinition) << endl;
+         return;
+      }
+      psoaGetFieldOffsets( (psoFieldDefinition *)fieldDef, fieldOffsets );
+   }
+
+   try {
+      if ( status.maxDataLength > 0 ) {
+         buffer = new unsigned char[status.maxDataLength];
+      }
+      if ( status.maxKeyLength > 0 ) {
+         key = new unsigned char[status.maxKeyLength];
+      }
+   }
+   catch ( ... ) {
+      cerr << "psosh: cat: Not enough memory " << endl;
+      return;
    }
    
    try {
-      // Do we have some data to copy?
-      if ( status.numDataItem > 0 ) {
-         
-         buffer = new unsigned char[status.maxDataLength];
+      buffer = new unsigned char[status.maxDataLength];
 
-         if ( status.type == PSO_HASH_MAP ) {
-            HashMap hashMap(session);
+      if ( status.type == PSO_HASH_MAP ) {
+         HashMap hashMap(session);
          
-            key = new unsigned char[status.maxKeyLength];
+         key = new unsigned char[status.maxKeyLength];
          
-            hashMap.Open( objectName );
+         hashMap.Open( objectName );
          
+         memset( key, 0, status.maxKeyLength );
+         memset( buffer, 0, status.maxDataLength );
+         rc = hashMap.GetFirst( key, status.maxKeyLength, 
+                                buffer, status.maxDataLength,
+                                keyLength, dataLength );
+         while ( rc == 0 ) {
+            string keyStr, dataStr;
+               
+            shellBuffToOut( dataStr,
+                            definition,
+                            buffer,
+                            dataLength );
+            shellKeyToOut( keyStr,
+                           definition,
+                           key,
+                           keyLength );               
+            cout << "key : " << keyStr << endl;
+            cout << "data: " << dataStr << endl;
             memset( key, 0, status.maxKeyLength );
             memset( buffer, 0, status.maxDataLength );
-            rc = hashMap.GetFirst( key, status.maxKeyLength, 
-                                   buffer, status.maxDataLength,
-                                   keyLength, dataLength );
-            while ( rc == 0 ) {
-               string keyStr, dataStr;
-               
-               shellBuffToOut( dataStr,
-                               definition,
-                               buffer,
-                               dataLength );
-               shellKeyToOut( keyStr,
-                              definition,
-                              key,
-                              keyLength );               
-               cout << "key : " << keyStr << endl;
-               cout << "data: " << dataStr << endl;
-               memset( key, 0, status.maxKeyLength );
-               memset( buffer, 0, status.maxDataLength );
-               rc = hashMap.GetNext( key, status.maxKeyLength, 
-                                     buffer, status.maxDataLength,
-                                     keyLength, dataLength );
-            }
-            hashMap.Close();
+            rc = hashMap.GetNext( key, status.maxKeyLength, 
+                                  buffer, status.maxDataLength,
+                                  keyLength, dataLength );
          }
-         else if ( status.type == PSO_FAST_MAP ) {
+         hashMap.Close();
+      }
+      else if ( status.type == PSO_FAST_MAP ) {
             FastMap hashMap(session);
          
             key = new unsigned char[status.maxKeyLength];
@@ -582,6 +649,7 @@ void psoShell::Cp()
 
 void psoShell::Echo()
 {
+#if 0
    string objectName;
    psoObjStatus status;
    unsigned char * key = NULL, * buffer = NULL;
@@ -719,6 +787,7 @@ void psoShell::Echo()
    if ( pDefinition != NULL ) free(pDefinition);
    if ( key    != NULL ) delete [] key;
    if ( buffer != NULL ) delete [] buffer;
+#endif
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -967,6 +1036,7 @@ void psoShell::Stat()
 
 void psoShell::Touch()
 {
+#if 0
    string objectName;
    string option, filename;
    psoObjectDefinition definition;
@@ -1035,6 +1105,7 @@ void psoShell::Touch()
          cerr << "psosh: touch: " << exc.Message() << endl;
       }
    }
+#endif
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

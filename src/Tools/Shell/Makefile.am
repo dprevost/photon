@@ -38,6 +38,8 @@ EXTRA_DIST =                \
         psosh.vs2008.vcproj 
 
 psosh_SOURCES =       \
+        cat.cpp       \
+        cat.h         \
         constants.cpp \
         constants.h   \
         shell.cpp     \

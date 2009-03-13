@@ -444,6 +444,7 @@ bool writeVarBinary( string        & inStr,
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+#if 0
 void shellBuffToOut( string        & outStr, 
                      ObjDefinition & definition,
                      unsigned char * buffer,
@@ -731,6 +732,7 @@ unsigned char * shellInToKey( string        & inKey,
    
    return key;
 }
+#endif
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

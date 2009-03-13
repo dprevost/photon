@@ -295,6 +295,28 @@ void Session::GetDefinition( const char          * objectName,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void Session::GetDefinitionLength( const std::string & objectName,
+                                   psoUint32         * keyLength,
+                                   psoUint32         * fieldsLength )
+{
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "Session::GetDefinitionLength", PSO_NULL_HANDLE );
+   }
+
+   rc = psoGetDefLength( m_sessionHandle,
+                         objectName.c_str(),
+                         objectName.length(),
+                         keyLength,
+                         fieldsLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::GetDefinitionLength" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void Session::GetInfo( psoInfo & info )
 {
    int rc;
