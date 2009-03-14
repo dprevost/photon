@@ -72,7 +72,7 @@ void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
       break;
 
    case PSO_KEY_TIMESTAMP:
-      minLength = sizeof(struct psoTimestampStruct);
+      minLength = sizeof(struct psoTimeStampStruct);
       break;
    }
    
@@ -122,7 +122,7 @@ void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
       case PSO_KEY_TIMESTAMP:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
          pOffsets[i] = minLength;
-         minLength += sizeof(struct psoTimestampStruct);
+         minLength += sizeof(struct psoTimeStampStruct);
          break;
 
       }
@@ -199,7 +199,7 @@ void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
       break;
 
    case PSO_TIMESTAMP:
-      minLength = sizeof(struct psoTimestampStruct);
+      minLength = sizeof(struct psoTimeStampStruct);
       break;
    }
    
@@ -279,7 +279,7 @@ void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
       case PSO_TIMESTAMP:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
          pOffsets[i] = minLength;
-         minLength += sizeof(struct psoTimestampStruct);
+         minLength += sizeof(struct psoTimeStampStruct);
          break;
 
       }

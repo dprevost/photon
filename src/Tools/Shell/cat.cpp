@@ -321,19 +321,19 @@ string psoCat::odbcFieldToStr( uint32_t length )
       switch( fieldODBC[i].type ) {
 
       case PSO_TINYINT:
-         readInt( s, 1, &buffer[fieldOffsets[i]] );
+         s = readInt8( &buffer[fieldOffsets[i]] );
          break;
 
       case PSO_SMALLINT:
-         readInt( s, 2, &buffer[fieldOffsets[i]] );
+         s = readInt16( &buffer[fieldOffsets[i]] );
          break;
 
       case PSO_INTEGER:
-         readInt( s, 4, &buffer[fieldOffsets[i]] );
+         s = readInt32( &buffer[fieldOffsets[i]] );
          break;
 
       case PSO_BIGINT:
-         readInt( s, 8, &buffer[fieldOffsets[i]] );
+         s = readInt64( &buffer[fieldOffsets[i]] );
          break;
 
       case PSO_BINARY:
@@ -349,9 +349,9 @@ string psoCat::odbcFieldToStr( uint32_t length )
          break;
 
       case PSO_NUMERIC:
-         readDecimal( s,
-                      fieldODBC[i].vals.decimal.precision,
-                      &buffer[fieldOffsets[i]] );
+         s = readDecimal( fieldODBC[i].vals.decimal.precision,
+                          fieldODBC[i].vals.decimal.scale,
+                          &buffer[fieldOffsets[i]] );
          break;
 
       case PSO_VARCHAR:
@@ -368,11 +368,11 @@ string psoCat::odbcFieldToStr( uint32_t length )
          break;
 
       case PSO_REAL:
-         readFloat( s, 4, &buffer[fieldOffsets[i]] );
+         s = readFloat32( &buffer[fieldOffsets[i]] );
          break;
 
       case PSO_DOUBLE:
-         readFloat( s, 4, &buffer[fieldOffsets[i]] );
+         s = readFloat64( &buffer[fieldOffsets[i]] );
          break;
       
       case PSO_DATE:
@@ -413,11 +413,11 @@ string psoCat::odbcKeyToStr( uint32_t length )
       switch( keyODBC[i].type ) {
 
       case PSO_KEY_INTEGER:
-         readInt( s, 4, &key[keyOffsets[i]] );
+         s = readInt32( &key[keyOffsets[i]] );
          break;
 
       case PSO_KEY_BIGINT:
-         readInt( s, 8, &key[keyOffsets[i]] );
+         s = readInt64( &key[keyOffsets[i]] );
          break;
 
       case PSO_KEY_BINARY:
@@ -466,53 +466,148 @@ string psoCat::odbcKeyToStr( uint32_t length )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void psoCat::readInt( string        & outStr,
-                      size_t          intLength,
-                      unsigned char * buffer )
+string psoCat::readDate( unsigned char * buffer )
 {
    ostringstream oss;
-   
-   int8_t  i8;
-   int16_t i16;
-   int32_t i32;
-#if ! defined (WIN32)
-   int64_t i64;
-#endif
+   psoDateStruct * pDate = (psoDateStruct *) buffer;
 
-   switch( intLength ) {
-   case 1:
-      i8 = buffer[0];
-      oss << (int) i8; // Not a single character, force it to be an int.
-      break;
-   case 2:
-      i16 = *( (int16_t *)buffer);
-      oss << i16;
-      break;
-   case 4:
-      i32 = *( (int32_t *)buffer);
-      oss << i32;
-      break;
-   case 8:
-#if defined (WIN32)
-      /*
-       * On some versions of VC++, the overloaded << operator does not
-       * work for 64 bits integer. 
-       *
-       * \todo: To make sure that this #if only applies to the versions
-       * without the appropriate support.
-       */
-      i32 = *( (int32_t *)&buffer[4]);
-      oss << i32;
-      i32 = *( (int32_t *)buffer);
-      oss << i32;
-#else
-      i64 = *( (int64_t *)buffer);
-      oss << i64;
-#endif
-      break;
+   oss.width(4);
+   oss << pDate->year << "-";
+   oss.width(2);
+   oss << pDate->month << "-" << pDate->day;
+   
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readDecimal( int precision, int scale, unsigned char * buffer )
+{
+   int i;
+   ostringstream oss;
+   psoNumericStruct * pNumeric = (psoNumericStruct *) buffer;
+   uint64_t value = 0, shift = 1;
+   int8_t  i8low, i8high;
+   
+   if ( pNumeric->sign != 1 ) oss << "-";
+   
+   for ( i = PSO_MAX_NUMERIC_LEN-1; i >= 0; i-- ) {
+      i8low = buffer[i] / 16;
+      i8high = buffer[i] % 16;
+      value = value * 256 + i8low + i8high * 16;
    }
    
-   outStr = oss.str();
+   if ( scale == 0 ) {
+      oss << value;
+   }
+   else if ( scale < 0 ) {
+      oss << value;
+      for ( i = 0; i < scale; --i ) oss << "0";
+   }
+   else {
+      for ( i = 0; i < scale; ++i ) {
+         shift *= 10;
+      }
+      oss << value / shift << "." << value % shift;
+   }
+
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readFloat32( unsigned char * buffer )
+{
+   ostringstream oss;
+   psoFloat32 f32;
+   
+   f32 = *( (psoFloat32 *)buffer);
+   oss << f32;
+   
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readFloat64( unsigned char * buffer )
+{
+   ostringstream oss;
+   psoFloat32 f64;
+   
+   f64 = *( (psoFloat64 *)buffer);
+   oss << f64;
+   
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readInt8( unsigned char * buffer )
+{
+   ostringstream oss;
+   int8_t i8;
+   
+   i8 = buffer[0];
+   oss << (int) i8; // Not a single character, force it to be an int.
+
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readInt16( unsigned char * buffer )
+{
+   ostringstream oss;
+   int16_t i16;
+   
+   i16 = *( (int16_t *)buffer);
+   oss << i16;
+
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readInt32( unsigned char * buffer )
+{
+   ostringstream oss;
+   int32_t i32;
+   
+   i32 = *( (int32_t *)buffer);
+   oss << i32;
+
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readInt64( unsigned char * buffer )
+{
+   ostringstream oss;
+#if ! defined (WIN32)
+   int64_t i64;
+#else
+   int32_t i32;
+#endif
+
+#if defined (WIN32)
+   /*
+    * On some versions of VC++, the overloaded << operator does not
+    * work for 64 bits integer. 
+    *
+    * \todo: To make sure that this #if only applies to the versions
+    * without the appropriate support.
+    */
+   i32 = *( (int32_t *)&buffer[4]);
+   oss << i32;
+   i32 = *( (int32_t *)buffer);
+   oss << i32;
+#else
+   i64 = *( (int64_t *)buffer);
+   oss << i64;
+#endif
+   
+   return oss.str();
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -547,6 +642,45 @@ void psoCat::readBinary( string        & outStr,
       if ( x > 9 ) outStr += (char) (x + 'a' - 10);
       else outStr += (char) (x + '0');
    }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readTime( unsigned char * buffer )
+{
+   ostringstream oss;
+   psoTimeStruct * pTime = (psoTimeStruct *) buffer;
+
+   oss.width(4);
+   oss << pTime->hour << ":";
+   oss.width(2);
+   oss << pTime->minute << ":" << pTime->second;
+   
+   return oss.str();
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string psoCat::readTimeStamp( unsigned char * buffer )
+{
+   ostringstream oss;
+   psoTimeStampStruct * pStamp = (psoTimeStampStruct *) buffer;
+
+   oss.width(4);
+   oss << pStamp->year << "-";
+   oss.width(2);
+   oss << pStamp->month << ":" << pStamp->day << " ";
+
+   oss.width(4);
+   oss << pStamp->hour << ":";
+   oss.width(2);
+   oss << pStamp->minute << ":" << pStamp->second << ".";
+
+   // Showing the fraction in millisecs. Not sure this is ok.
+   oss.width(3);
+   oss << pStamp->fraction/1000000;
+
+   return oss.str();
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

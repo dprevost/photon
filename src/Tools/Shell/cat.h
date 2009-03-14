@@ -1,3 +1,5 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
 /*
  * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
@@ -42,13 +44,24 @@ public:
 
    psoCat( Session s, string name );
    
-   ~psoCat();
+   virtual ~psoCat();
 
    // Returns an error string on error
    string Init();
    
    void Run();
    
+protected:
+   /*
+    * Making these methods virtual so that they can be overriden 
+    * eventually (for example, to use the North-American format for dates).
+    */
+   virtual string readDate( unsigned char * buffer );
+
+   virtual string readTime( unsigned char * buffer );
+   
+   virtual string readTimeStamp( unsigned char * buffer );
+
 private:
 
    Session session;
@@ -73,28 +86,27 @@ private:
    void readBinary( string        & outStr,
                     size_t          binLength,
                     unsigned char * buffer );
-
-   string readDate( unsigned char * buffer );
    
-   void readDecimal( string        & outStr,
-                     size_t          precision,
-                     unsigned char * buffer );
+   string readDecimal( int precision,
+                       int scale,
+                       unsigned char * buffer );
 
-   void readFloat( string        & outStr,
-                   size_t          binLength,
-                   unsigned char * buffer );
+   string readFloat32( unsigned char * buffer );
 
-   void readInt( string        & outStr,
-                 size_t          intLength,
-                 unsigned char * buffer );
+   string readFloat64( unsigned char * buffer );
+
+   string readInt8( unsigned char * buffer );
+
+   string readInt16( unsigned char * buffer );
+
+   string readInt32( unsigned char * buffer );
+
+   string readInt64( unsigned char * buffer );
 
    void readString( string        & outStr,
                     size_t          strLength,
                     unsigned char * buffer );
 
-   string readTime( unsigned char * buffer );
-   
-   string readTimeStamp( unsigned char * buffer );
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

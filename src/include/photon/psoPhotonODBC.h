@@ -206,7 +206,7 @@ struct psoTimeStruct {
    psoUint16 second;
 };
 
-struct psoTimestampStruct {
+struct psoTimeStampStruct {
    psoInt16  year;
    psoUint16 month;
    psoUint16 day;
@@ -216,7 +216,7 @@ struct psoTimestampStruct {
    psoUint32 fraction;
 };
 
-#define PSO_MAX_NUMERIC_LEN 16
+#define PSO_MAX_NUMERIC_LEN 8
 
 struct psoNumericStruct {
    unsigned char precision;

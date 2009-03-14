@@ -176,6 +176,9 @@ AC_TYPE_SIGNAL
 
 ETR_STRUCT_SEMUN
 
+AC_CHECK_SIZEOF(float)
+AC_CHECK_SIZEOF(double)
+AC_CHECK_SIZEOF(long double)
 AC_CHECK_SIZEOF(void *)
 
 ###################################

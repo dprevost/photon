@@ -405,6 +405,25 @@ typedef int bool;
 #  define PSO_MAP_FAILED MAP_FAILED
 #endif
 
+/****************************************************************/
+
+/* Defined fixed types floating points */
+
+#if SIZEOF_FLOAT == 4
+typedef float psoFloat32;
+#else
+#error "Don't know how to handle 32-bits floating point"
+#endif
+
+#if SIZEOF_DOUBLE == 8
+typedef double psoFloat64;
+#elif SIZEOF_LONG_DOUBLE == 8
+typedef long double psoFloat64;
+#error "Don't know how to handle 64-bits floating point"
+#endif
+
+/****************************************************************/
+
 struct psocTestAlignmentStruct
 {
    unsigned char c;
