@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -64,6 +64,37 @@ private:
    uint32_t fieldDefLength;
    uint32_t keyDefLength;
    
+   string binToStr( unsigned char * buff, uint32_t length );
+
+   string odbcFieldToStr( uint32_t length );
+
+   string odbcKeyToStr( uint32_t length );
+
+   void readBinary( string        & outStr,
+                    size_t          binLength,
+                    unsigned char * buffer );
+
+   string readDate( unsigned char * buffer );
+   
+   void readDecimal( string        & outStr,
+                     size_t          precision,
+                     unsigned char * buffer );
+
+   void readFloat( string        & outStr,
+                   size_t          binLength,
+                   unsigned char * buffer );
+
+   void readInt( string        & outStr,
+                 size_t          intLength,
+                 unsigned char * buffer );
+
+   void readString( string        & outStr,
+                    size_t          strLength,
+                    unsigned char * buffer );
+
+   string readTime( unsigned char * buffer );
+   
+   string readTimeStamp( unsigned char * buffer );
 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -71,3 +102,5 @@ private:
 #endif // PSO_SHELL_CAT_H
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+
