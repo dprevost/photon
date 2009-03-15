@@ -41,20 +41,6 @@ using namespace std;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void shellBuffToOut( string               & outStr, 
-                     pso::FieldDefinition & definition,
-                     unsigned char        * buffer,
-                     uint32_t               length );
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void shellKeyToOut( string             & outStr, 
-                    pso::KeyDefinition & definition,
-                    unsigned char      * key,
-                    uint32_t             length );
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
 unsigned char * shellInToBuff( string               & inData, 
                                pso::FieldDefinition & definition,
                                uint32_t             & length );
