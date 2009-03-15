@@ -32,7 +32,7 @@ int main()
    psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psonFashMapItem item;
+   psonFastMapItem item;
    char * ptr;
    psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
@@ -43,27 +43,27 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                     SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
-                     sizeof(keyDef), fields, sizeof(fields), &context );
+                         SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
+                         sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psonFastMapInsert( pHashMap,
-                       (const void *) key,
-                       6,
-                       (const void *) data,
-                       7,
-                       &context );
+                           (const void *) key,
+                           6,
+                           (const void *) data,
+                           7,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psonFastMapGetFirst( pHashMap,
-                         &item,
-                         6,
-                         20,
-                         &context );
+                             &item,
+                             6,
+                             20,
+                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -41,7 +41,7 @@ typedef struct psoaFastMap
     * This struct holds both the result of the iteration (the pointer to
     * the current psonHashItem) and the values needed to get the next item.
     */
-   psonFashMapItem iterator;
+   psonFastMapItem iterator;
 
    /** A pointer to the key definition of the object. */
    unsigned char * keyDef;

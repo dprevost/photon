@@ -35,7 +35,7 @@ int main()
    char * key2  = "my key2";
    char * data1 = "my data1";
    char * data2 = "my data2";
-   psonFashMapItem item;
+   psonFastMapItem item;
    psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
@@ -45,45 +45,45 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                     SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
-                     sizeof(keyDef), fields, sizeof(fields), &context );
+                         SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
+                         sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psonFastMapInsert( pHashMap,
-                       (const void *) key1,
-                       7,
-                       (const void *) data1,
-                       8,
-                       &context );
+                           (const void *) key1,
+                           7,
+                           (const void *) data1,
+                           8,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    ok = psonFastMapInsert( pHashMap,
-                       (const void *) key2,
-                       7,
-                       (const void *) data2,
-                       8,
-                       &context );
+                           (const void *) key2,
+                           7,
+                           (const void *) data2,
+                           8,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psonFastMapGetFirst( pHashMap,
-                         &item,
-                         7,
-                         20,
-                         &context );
+                             &item,
+                             7,
+                             20,
+                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psonFastMapGetNext( pHashMap,
-                        &item,
-                        7,
-                        20,
-                        NULL );
+                            &item,
+                            7,
+                            20,
+                            NULL );
  
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

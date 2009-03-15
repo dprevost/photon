@@ -43,18 +43,18 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                     SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
-                     sizeof(keyDef), fields, sizeof(fields), &context );
+                         SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
+                         sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
    ok = psonFastMapInsert( pHashMap,
-                       (const void *) key,
-                       6,
-                       (const void *) data,
-                       7,
-                       &context );
+                           (const void *) key,
+                           6,
+                           (const void *) data,
+                           7,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

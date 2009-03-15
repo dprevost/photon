@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -27,39 +27,53 @@ const bool expectedToPass = false;
 int main()
 {
 #if defined(USE_DBC)
-   psonFastMap * pHashMap;
+   psonFastMap * pOldMap, * pNewMap;
    psonSessionContext context;
    bool ok;
-   psonTxStatus txStatus;
-   char * key  = "my key";
-   char * data = "my data";
-   psoObjStatus status;
+   char * key1  = "my key1";
+   char * key2  = "my key2";
+   char * data1 = "my data1";
+   char * data2 = "my data2";
    psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonHashTxItem   hashItem;
    
-   pHashMap = initHashMapTest( expectedToPass, &context );
+   initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );
 
-   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonFastMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
-                         SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
+   ok = psonFastMapInit( pOldMap, 0, 1, 0, &hashItem.txStatus, 4, "Map1", 
+                         SET_OFFSET(pOldMap), &def, (unsigned char *)&keyDef, 
                          sizeof(keyDef), fields, sizeof(fields), &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFastMapInsert( pHashMap,
-                           (const void *) key,
-                           6,
-                           (const void *) data,
+   ok = psonFastMapInsert( pOldMap,
+                           (const void *) key1,
                            7,
+                           (const void *) data1,
+                           8,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   
-   psonFastMapStatus( NULL, &status );
+   ok = psonFastMapInsert( pOldMap,
+                           (const void *) key2,
+                           7,
+                           (const void *) data2,
+                           8,
+                           &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+
+   ok = psonFastMapCopy( pOldMap, 
+                         pNewMap,
+                         &hashItem,
+                         NULL,
+                         &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

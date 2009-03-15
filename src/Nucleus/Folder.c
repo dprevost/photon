@@ -863,7 +863,7 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                *ppKey = GET_PTR_FAST( p->keyDefOffset, unsigned char );
                *pKeyLength = p->keyDefLength;
                *ppFieldDef = GET_PTR_FAST( p->dataDefOffset, unsigned char );
-               *pFieldsLength = p->fieldsLength;
+               *pFieldsLength = p->dataDefLength;
                pDefinition->fieldDefType = p->fieldDefType;
                pDefinition->keyDefType = p->keyDefType;
             }

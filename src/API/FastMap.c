@@ -55,7 +55,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
             if ( psonFastMapRelease( pMemHashMap,
                                  pHashMap->iterator.pHashItem,
                                  &pHashMap->object.pSession->context ) ) {
-               memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+               memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
             }
             else {
                errcode = PSO_OBJECT_CANNOT_GET_LOCK;
@@ -405,7 +405,7 @@ int psoFastMapEmpty( PSO_HANDLE objectHandle )
 
       if ( ! ok ) goto error_handler_unlock;
       
-      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
    }
 
    psonFastMapEmpty( pMemHashMap, &pHashMap->object.pSession->context );
@@ -481,7 +481,7 @@ int psoFastMapGet( PSO_HANDLE   objectHandle,
 
       if ( ! ok ) goto error_handler_unlock;
       
-      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
    }
 
    ok = psonFastMapGet( pMemHashMap,
@@ -570,7 +570,7 @@ int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
 
       if ( ! ok ) goto error_handler_unlock;
 
-      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
    }
 
    ok = psonFastMapGetFirst( pMemHashMap,
@@ -1020,7 +1020,7 @@ int psoaFastMapFirst( psoaFastMap          * pHashMap,
       
       if ( ! ok ) goto error_handler_unlock;
 
-      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
    }
 
    ok = psonFastMapGetFirst( pMemHashMap,
@@ -1138,7 +1138,7 @@ void psoaFastMapResetReader( void * map )
          psonFastMapRelease( pMemHashMap,
                          pHashMap->iterator.pHashItem,
                          &pHashMap->object.pSession->context );
-         memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+         memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
       }
       pHashMap->object.pMyMemObject = pMapLatest;
    }
@@ -1182,7 +1182,7 @@ int psoaFastMapRetrieve( psoaFastMap      * pHashMap,
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
-      memset( &pHashMap->iterator, 0, sizeof(psonFashMapItem) );
+      memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
    }
 
    ok = psonFastMapGet( pMemHashMap,

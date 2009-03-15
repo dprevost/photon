@@ -40,19 +40,19 @@ int main()
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pHashMap, 
-                     0,
-                     0, /* Zero blocks */
-                     0, 
-                     &status, 
-                     4, 
-                     "Map1", 
-                     SET_OFFSET(pHashMap),
-                     &def,
-                     (unsigned char *)&keyDef,
-                     sizeof(keyDef),
-                     fields,
-                     sizeof(fields),
-                     &context );
+                         0,
+                         0, /* Zero blocks */
+                         0, 
+                         &status, 
+                         4, 
+                         "Map1", 
+                         SET_OFFSET(pHashMap),
+                         &def,
+                         (unsigned char *)&keyDef,
+                         sizeof(keyDef),
+                         fields,
+                         sizeof(fields),
+                         &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else

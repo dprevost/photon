@@ -28,17 +28,17 @@
 /* Forward declaration of static functions */
 
 static
-void psonFastMapReleaseNoLock( psonFastMap            * pHashMap,
-                           psonHashItem       * pHashItem,
-                           psonSessionContext * pContext );
+void psonFastMapReleaseNoLock( psonFastMap        * pHashMap,
+                               psonHashItem       * pHashItem,
+                               psonSessionContext * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapCopy( psonFastMap            * pOldMap, 
-                  psonFastMap            * pNewMap,
-                  psonHashTxItem     * pHashItem,
-                  const char         * origName,
-                  psonSessionContext * pContext )
+bool psonFastMapCopy( psonFastMap        * pOldMap, 
+                      psonFastMap        * pNewMap,
+                      psonHashTxItem     * pHashItem,
+                      const char         * origName,
+                      psonSessionContext * pContext )
 {
    int errcode;
    unsigned char * oldDef, * newDef;
@@ -46,6 +46,7 @@ bool psonFastMapCopy( psonFastMap            * pOldMap,
    PSO_PRE_CONDITION( pOldMap   != NULL );
    PSO_PRE_CONDITION( pNewMap   != NULL );
    PSO_PRE_CONDITION( pHashItem != NULL );
+   PSO_PRE_CONDITION( origName  != NULL );
    PSO_PRE_CONDITION( pContext  != NULL );
    
    errcode = psonMemObjectInit( &pNewMap->memObject, 
@@ -72,15 +73,15 @@ bool psonFastMapCopy( psonFastMap            * pOldMap,
    // Copy the data field definition
    oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, unsigned char );
    newDef = (unsigned char *) psonMalloc( &pNewMap->memObject, 
-                                          pOldMap->fieldsLength, pContext );
+                                          pOldMap->dataDefLength, pContext );
    if ( newDef == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
    pNewMap->dataDefOffset = SET_OFFSET(newDef);
-   pNewMap->fieldsLength = pOldMap->fieldsLength;
-   memcpy( newDef, oldDef, pNewMap->fieldsLength );
+   pNewMap->dataDefLength = pOldMap->dataDefLength;
+   memcpy( newDef, oldDef, pNewMap->dataDefLength );
 
    // Copy the key definition
    oldDef = GET_PTR_FAST( pOldMap->keyDefOffset, unsigned char );
@@ -120,10 +121,10 @@ bool psonFastMapCopy( psonFastMap            * pOldMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapDelete( psonFastMap            * pHashMap,
-                    const void         * pKey,
-                    uint32_t             keyLength, 
-                    psonSessionContext * pContext )
+bool psonFastMapDelete( psonFastMap        * pHashMap,
+                        const void         * pKey,
+                        uint32_t             keyLength, 
+                        psonSessionContext * pContext )
 {
    bool found;
    
@@ -157,8 +158,8 @@ bool psonFastMapDelete( psonFastMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonFastMapEmpty( psonFastMap            * pHashMap,
-                   psonSessionContext * pContext )
+void psonFastMapEmpty( psonFastMap        * pHashMap,
+                       psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
@@ -198,12 +199,12 @@ void psonFastMapFini( psonFastMap        * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapGet( psonFastMap            * pHashMap,
-                 const void         * pKey,
-                 uint32_t             keyLength, 
-                 psonHashItem      ** ppHashItem,
-                 uint32_t             bufferLength,
-                 psonSessionContext * pContext )
+bool psonFastMapGet( psonFastMap        * pHashMap,
+                     const void         * pKey,
+                     uint32_t             keyLength, 
+                     psonHashItem      ** ppHashItem,
+                     uint32_t             bufferLength,
+                     psonSessionContext * pContext )
 {
    psonHashItem* pHashItem = NULL;
    psoErrors errcode;
@@ -271,11 +272,11 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapGetFirst( psonFastMap            * pHashMap,
-                      psonFashMapItem    * pItem,
-                      uint32_t             keyLength,
-                      uint32_t             bufferLength,
-                      psonSessionContext * pContext )
+bool psonFastMapGetFirst( psonFastMap        * pHashMap,
+                          psonFastMapItem    * pItem,
+                          uint32_t             keyLength,
+                          uint32_t             bufferLength,
+                          psonSessionContext * pContext )
 {
    psonHashItem * pHashItem = NULL;
    psonTxStatus * txHashMapStatus;
@@ -319,18 +320,17 @@ bool psonFastMapGetFirst( psonFastMap            * pHashMap,
 
    txHashMapStatus->usageCounter++;
    pItem->pHashItem = pHashItem;
-//   pItem->itemOffset = firstItemOffset;
 
    return true;
 }
    
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapGetNext( psonFastMap            * pHashMap,
-                     psonFashMapItem    * pItem,
-                     uint32_t             keyLength,
-                     uint32_t             bufferLength,
-                     psonSessionContext * pContext )
+bool psonFastMapGetNext( psonFastMap        * pHashMap,
+                         psonFastMapItem    * pItem,
+                         uint32_t             keyLength,
+                         uint32_t             bufferLength,
+                         psonSessionContext * pContext )
 {
    psonHashItem * pHashItem = NULL;
    psonHashItem * previousHashItem = NULL;
@@ -394,20 +394,20 @@ bool psonFastMapGetNext( psonFastMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapInit( psonFastMap             * pHashMap,
-                  ptrdiff_t             parentOffset,
-                  size_t                numberOfBlocks,
-                  size_t                expectedNumOfItems,
-                  psonTxStatus        * pTxStatus,
-                  uint32_t              origNameLength,
-                  char                * origName,
-                  ptrdiff_t             hashItemOffset,
-                  psoObjectDefinition * pDefinition,
-                  const unsigned char * pKey,
-                  uint32_t              keyLength,
-                  const unsigned char * pFields,
-                  uint32_t              fieldsLength,
-                  psonSessionContext  * pContext )
+bool psonFastMapInit( psonFastMap         * pHashMap,
+                      ptrdiff_t             parentOffset,
+                      size_t                numberOfBlocks,
+                      size_t                expectedNumOfItems,
+                      psonTxStatus        * pTxStatus,
+                      uint32_t              origNameLength,
+                      char                * origName,
+                      ptrdiff_t             hashItemOffset,
+                      psoObjectDefinition * pDefinition,
+                      const unsigned char * pKey,
+                      uint32_t              keyLength,
+                      const unsigned char * dataDef,
+                      uint32_t              dataDefLength,
+                      psonSessionContext  * pContext )
 {
    psoErrors errcode;
    unsigned char * ptr;
@@ -417,11 +417,14 @@ bool psonFastMapInit( psonFastMap             * pHashMap,
    PSO_PRE_CONDITION( pTxStatus    != NULL );
    PSO_PRE_CONDITION( origName     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pFields      != NULL );
+   PSO_PRE_CONDITION( pKey         != NULL );
+   PSO_PRE_CONDITION( dataDef      != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
-   PSO_PRE_CONDITION( numberOfBlocks  > 0 );
+   PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
+   PSO_PRE_CONDITION( keyLength      > 0 );
+   PSO_PRE_CONDITION( dataDefLength  > 0 );
    PSO_PRE_CONDITION( pDefinition->fieldDefType > PSO_DEF_FIRST_TYPE && 
                       pDefinition->fieldDefType < PSO_DEF_LAST_TYPE );
    PSO_PRE_CONDITION( pDefinition->keyDefType > PSO_DEF_FIRST_TYPE && 
@@ -459,15 +462,15 @@ bool psonFastMapInit( psonFastMap             * pHashMap,
    pHashMap->fieldDefType = pDefinition->fieldDefType;
    pHashMap->keyDefType = pDefinition->keyDefType;
 
-   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, fieldsLength, pContext );
+   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, dataDefLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   memcpy( ptr, pFields, fieldsLength );
+   memcpy( ptr, dataDef, dataDefLength );
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
-   pHashMap->fieldsLength = fieldsLength;
+   pHashMap->dataDefLength = dataDefLength;
    
    ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, keyLength, pContext );
    if ( ptr == NULL ) {
@@ -487,12 +490,12 @@ bool psonFastMapInit( psonFastMap             * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapInsert( psonFastMap            * pHashMap,
-                    const void         * pKey,
-                    uint32_t             keyLength, 
-                    const void         * pItem,
-                    uint32_t             itemLength,
-                    psonSessionContext * pContext )
+bool psonFastMapInsert( psonFastMap        * pHashMap,
+                        const void         * pKey,
+                        uint32_t             keyLength, 
+                        const void         * pItem,
+                        uint32_t             itemLength,
+                        psonSessionContext * pContext )
 {
    psoErrors errcode;
    
@@ -520,9 +523,9 @@ bool psonFastMapInsert( psonFastMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapRelease( psonFastMap            * pHashMap,
-                     psonHashItem       * pHashItem,
-                     psonSessionContext * pContext )
+bool psonFastMapRelease( psonFastMap        * pHashMap,
+                         psonHashItem       * pHashItem,
+                         psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pHashMap  != NULL );
    PSO_PRE_CONDITION( pHashItem != NULL );
@@ -542,9 +545,9 @@ bool psonFastMapRelease( psonFastMap            * pHashMap,
  * object. Always use the standard one when calling from the API.
  */
 static
-void psonFastMapReleaseNoLock( psonFastMap            * pHashMap,
-                           psonHashItem       * pHashItem,
-                           psonSessionContext * pContext )
+void psonFastMapReleaseNoLock( psonFastMap        * pHashMap,
+                               psonHashItem       * pHashItem,
+                               psonSessionContext * pContext )
 {
    psonTxStatus * txHashMapStatus;
    
@@ -578,12 +581,12 @@ void psonFastMapReleaseNoLock( psonFastMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFastMapReplace( psonFastMap            * pHashMap,
-                     const void         * pKey,
-                     uint32_t             keyLength, 
-                     const void         * pData,
-                     uint32_t             dataLength,
-                     psonSessionContext * pContext )
+bool psonFastMapReplace( psonFastMap        * pHashMap,
+                         const void         * pKey,
+                         uint32_t             keyLength, 
+                         const void         * pData,
+                         uint32_t             dataLength,
+                         psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
    
@@ -611,8 +614,8 @@ bool psonFastMapReplace( psonFastMap            * pHashMap,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonFastMapStatus( psonFastMap      * pHashMap,
-                    psoObjStatus * pStatus )
+void psonFastMapStatus( psonFastMap  * pHashMap,
+                        psoObjStatus * pStatus )
 {
    psonHashItem * pHashItem = NULL;
    psonTxStatus  * txStatus;

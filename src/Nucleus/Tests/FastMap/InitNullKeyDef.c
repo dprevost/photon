@@ -30,38 +30,31 @@ int main()
    psonFastMap * pHashMap;
    psonSessionContext context;
    bool ok;
-   psonTxStatus txStatus;
-   char * key  = "my key";
-   char * data = "my data";
-   psoObjStatus status;
+   psonTxStatus status;
    psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
    const unsigned char * fields =  (unsigned char *)"A dummy definition";
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
-   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonFastMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
-                         SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef, 
-                         sizeof(keyDef), fields, sizeof(fields), &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonFastMapInsert( pHashMap,
-                           (const void *) key,
-                           6,
-                           (const void *) data,
-                           7,
-                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   psonFastMapStatus( NULL, &status );
+   ok = psonFastMapInit( pHashMap, 
+                         0, 
+                         1, 
+                         0, 
+                         &status, 
+                         4, 
+                         "Map1", 
+                         SET_OFFSET(pHashMap),
+                         &def,
+                         NULL,
+                         sizeof(keyDef),
+                         fields,
+                         sizeof(fields),
+                         &context );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
 #else
    return 1;
 #endif
