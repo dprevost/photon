@@ -227,6 +227,9 @@ void psonFolderRollbackEdit( psonFolder         * pFolder,
 /*
  * The next 7 functions should only be used by the API, to create, destroy,
  * open or close a memory object. Or to obtain its status or definition.
+ *
+ * The body of these functions is in TopFolder.c instead of Folder.c (Folder.c
+ * is getting quite large and has too many unit tests...).
  */
 
 PHOTON_ENGINE_EXPORT

@@ -544,6 +544,7 @@ AC_CONFIG_FILES([
    src/Nucleus/Tests/ProcessManager/Makefile
    src/Nucleus/Tests/Queue/Makefile
    src/Nucleus/Tests/Session/Makefile
+   src/Nucleus/Tests/TopFolder/Makefile
    src/Nucleus/Tests/Transaction/Makefile
    src/Quasar/Makefile
    src/Quasar/Tests/Makefile

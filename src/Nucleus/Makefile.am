@@ -69,6 +69,7 @@ libNucleus_la_SOURCES =   \
         SessionContext.h  \
         Session.c         \
         Session.h         \
+        TopFolder.c       \
         Transaction.c     \
         Transaction.h     \
         TransactionHash.h \

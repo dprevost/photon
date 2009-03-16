@@ -32,6 +32,7 @@ SUBDIRS =              \
         Process        \
         Session        \
         Folder         \
+        TopFolder      \
         HashMap        \
         FastMap        \
         Queue          \

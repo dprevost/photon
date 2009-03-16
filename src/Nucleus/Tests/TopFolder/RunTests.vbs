@@ -33,13 +33,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(96)
+Dim failed_tests(131)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(19)
-Dim fail_programs(76)
+Dim ok_programs(30)
+Dim fail_programs(100)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -72,7 +72,18 @@ ok_programs(15) = "RemovePass"
 ok_programs(16) = "ResizePass"
 ok_programs(17) = "StatusPass"
 ok_programs(18) = "Tests"
-ok_programs(19) = "ValidatePass"
+ok_programs(19) = "TopClosePass"
+ok_programs(20) = "TopCreateInvalidNameLength"
+ok_programs(21) = "TopCreatePass"
+ok_programs(22) = "TopDestroyPass"
+ok_programs(23) = "TopEditPass"
+ok_programs(24) = "TopEditWrongLength"
+ok_programs(25) = "TopEditZeroLength"
+ok_programs(26) = "TopOpenPass"
+ok_programs(27) = "TopOpenWrongLength"
+ok_programs(28) = "TopOpenZeroLength"
+ok_programs(29) = "TopStatusPass"
+ok_programs(30) = "ValidatePass"
 
 fail_programs(0)   = "CommitEditNullContext"
 fail_programs(1)   = "CommitEditNullFolder"
@@ -150,9 +161,33 @@ fail_programs(72)  = "ResizeNullContext"
 fail_programs(73)  = "ResizeNullFolder"
 fail_programs(74)  = "StatusNullFolder"
 fail_programs(75)  = "StatusNullStatus"
-fail_programs(76)  = "CommitEditNullMemObj"
+fail_programs(76)  = "TopCloseNullContext"
+fail_programs(77)  = "TopCloseNullItem"
+fail_programs(78)  = "TopCreateNullContext"
+fail_programs(79)  = "TopCreateNullDefinition"
+fail_programs(80)  = "TopCreateNullFolder"
+fail_programs(81)  = "TopCreateNullName"
+fail_programs(82)  = "TopCreateWrongType"
+fail_programs(83)  = "TopDestroyNullContext"
+fail_programs(84)  = "TopDestroyNullFolder"
+fail_programs(85)  = "TopDestroyNullName"
+fail_programs(86)  = "TopEditNullContext"
+fail_programs(87)  = "TopEditNullFolder"
+fail_programs(88)  = "TopEditNullItem"
+fail_programs(89)  = "TopEditNullName"
+fail_programs(90)  = "TopEditWrongType"
+fail_programs(91)  = "TopOpenNullContext"
+fail_programs(92)  = "TopOpenNullItem"
+fail_programs(93)  = "TopOpenNullFolder"
+fail_programs(94)  = "TopOpenNullName"
+fail_programs(95)  = "TopOpenWrongType"
+fail_programs(96)  = "TopStatusNullContext"
+fail_programs(97)  = "TopStatusNullFolder"
+fail_programs(98)  = "TopStatusNullName"
+fail_programs(99)  = "TopStatusNullStatus"
+fail_programs(100) = "CommitEditNullMemObj"
 
-numTests = 97                 ' Sum of length of both arrays 
+numTests = 132                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject
