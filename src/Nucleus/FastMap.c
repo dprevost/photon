@@ -403,8 +403,8 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKey,
-                      uint32_t              keyLength,
+                      const unsigned char * pKeyDef,
+                      uint32_t              keyDefLength,
                       const unsigned char * dataDef,
                       uint32_t              dataDefLength,
                       psonSessionContext  * pContext )
@@ -417,13 +417,13 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
    PSO_PRE_CONDITION( pTxStatus    != NULL );
    PSO_PRE_CONDITION( origName     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pKey         != NULL );
+   PSO_PRE_CONDITION( pKeyDef      != NULL );
    PSO_PRE_CONDITION( dataDef      != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
-   PSO_PRE_CONDITION( keyLength      > 0 );
+   PSO_PRE_CONDITION( keyDefLength   > 0 );
    PSO_PRE_CONDITION( dataDefLength  > 0 );
    PSO_PRE_CONDITION( pDefinition->fieldDefType > PSO_DEF_FIRST_TYPE && 
                       pDefinition->fieldDefType < PSO_DEF_LAST_TYPE );
@@ -472,15 +472,16 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
    pHashMap->dataDefLength = dataDefLength;
    
-   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, keyLength, pContext );
+   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
+                                      keyDefLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   memcpy( ptr, pKey, keyLength );
+   memcpy( ptr, pKeyDef, keyDefLength );
    pHashMap->keyDefOffset = SET_OFFSET(ptr);
-   pHashMap->keyDefLength = keyLength;
+   pHashMap->keyDefLength = keyDefLength;
 
    pHashMap->latestVersion = hashItemOffset;
    pHashMap->editVersion = PSON_NULL_OFFSET;

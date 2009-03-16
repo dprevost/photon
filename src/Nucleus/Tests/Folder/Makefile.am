@@ -18,6 +18,7 @@ check_PROGRAMS =                   \
         CommitEditNullContext      \
         CommitEditNullFolder       \
         CommitEditNullItem         \
+        CommitEditNullMemObj       \
         CommitEditPass             \
         CommitEditWrongObjType     \
         CreateInvalidNameLength    \
@@ -149,6 +150,12 @@ check_PROGRAMS =                   \
 
 COMMON_HEADER = folderTest.h
 
+CommitEditNullContext_SOURCES      = $(COMMON_HEADER) CommitEditNullContext.c
+CommitEditNullFolder_SOURCES       = $(COMMON_HEADER) CommitEditNullFolder.c
+CommitEditNullItem_SOURCES         = $(COMMON_HEADER) CommitEditNullItem.c
+CommitEditNullMemObj_SOURCES       = $(COMMON_HEADER) CommitEditNullMemObj.c
+CommitEditPass_SOURCES             = $(COMMON_HEADER) CommitEditPass.c
+CommitEditWrongObjType_SOURCES     = $(COMMON_HEADER) CommitEditWrongObjType.c
 CreateInvalidNameLength_SOURCES    = $(COMMON_HEADER) CreateInvalidNameLength.c
 CreateNullContext_SOURCES          = $(COMMON_HEADER) CreateNullContext.c
 CreateNullDefinition_SOURCES       = $(COMMON_HEADER) CreateNullDefinition.c
@@ -290,6 +297,7 @@ TESTS =                            \
         CommitEditNullContext      \
         CommitEditNullFolder       \
         CommitEditNullItem         \
+        CommitEditNullMemObj       \
         CommitEditPass             \
         CommitEditWrongObjType     \
         CreateInvalidNameLength    \
@@ -423,6 +431,7 @@ XFAIL_TESTS =                      \
         CommitEditNullContext      \
         CommitEditNullFolder       \
         CommitEditNullItem         \
+        CommitEditNullMemObj       \
         CommitEditWrongObjType     \
         CreateNullContext          \
         CreateNullDefinition       \

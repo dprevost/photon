@@ -81,7 +81,7 @@ struct psonQueue
    ptrdiff_t  dataDefOffset;
 
    /** Length of dataDefOffset */
-   uint32_t fieldsLength;
+   uint32_t dataDefLength;
 
    /** The type of the field definition (metadata) */
    enum psoDefinitionType fieldDefType;
@@ -111,8 +111,8 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    const unsigned char * pFields,
-                    uint32_t              fieldsLength,
+                    const unsigned char * pDataDef,
+                    uint32_t              dataDefLength,
                     psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

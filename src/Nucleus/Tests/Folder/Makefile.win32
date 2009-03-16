@@ -16,6 +16,7 @@ check_PROGRAMS =                                 \
         .\Release\CommitEditNullContext.exe      \
         .\Release\CommitEditNullFolder.exe       \
         .\Release\CommitEditNullItem.exe         \
+        .\Release\CommitEditNullMemObj.exe       \
         .\Release\CommitEditPass.exe             \
         .\Release\CommitEditWrongObjType.exe     \
         .\Release\CreateInvalidNameLength.exe    \

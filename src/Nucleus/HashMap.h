@@ -66,7 +66,7 @@ struct psonHashMap
    ptrdiff_t keyDefOffset;
 
    uint32_t keyDefLength;
-   uint32_t fieldsLength;
+   uint32_t dataDefLength;
    
    /** The type of the key definition (metadata) */
    enum psoDefinitionType keyDefType;
@@ -135,10 +135,10 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKey,
-                      uint32_t              keyLength,
-                      const unsigned char * pFields,
-                      uint32_t              fieldsLength,
+                      const unsigned char * pKeyDef,
+                      uint32_t              keyDefLength,
+                      const unsigned char * pDataDef,
+                      uint32_t              dataDefLength,
                       psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

@@ -590,10 +590,10 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKey,
-                      uint32_t              keyLength,
-                      const unsigned char * pFields,
-                      uint32_t              fieldsLength,
+                      const unsigned char * pKeyDef,
+                      uint32_t              keyDefLength,
+                      const unsigned char * pDataDef,
+                      uint32_t              dataDefLength,
                       psonSessionContext  * pContext )
 {
    psoErrors errcode;
@@ -604,7 +604,7 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    PSO_PRE_CONDITION( pTxStatus    != NULL );
    PSO_PRE_CONDITION( origName     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pFields      != NULL );
+   PSO_PRE_CONDITION( pDataDef     != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks  > 0 );
@@ -647,26 +647,26 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    pHashMap->keyDefType = pDefinition->keyDefType;
 
    ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
-                                      fieldsLength, pContext );
+                                      dataDefLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   memcpy( ptr, pFields, fieldsLength );
+   memcpy( ptr, pDataDef, dataDefLength );
    pHashMap->dataDefOffset = SET_OFFSET(ptr);
-   pHashMap->fieldsLength = fieldsLength;
+   pHashMap->dataDefLength = dataDefLength;
    
    ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
-                                      keyLength, pContext );
+                                      keyDefLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   memcpy( ptr, pKey, keyLength );
+   memcpy( ptr, pKeyDef, keyDefLength );
    pHashMap->keyDefOffset = SET_OFFSET(ptr);
-   pHashMap->keyDefLength = keyLength;
+   pHashMap->keyDefLength = keyDefLength;
 
    return true;
 }

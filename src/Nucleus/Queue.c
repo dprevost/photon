@@ -249,8 +249,8 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    const unsigned char * pFields,
-                    uint32_t              fieldsLength,
+                    const unsigned char * pDataDef,
+                    uint32_t              dataDefLength,
                     psonSessionContext  * pContext )
 {
    psoErrors errcode;
@@ -261,7 +261,7 @@ bool psonQueueInit( psonQueue           * pQueue,
    PSO_PRE_CONDITION( pTxStatus    != NULL );
    PSO_PRE_CONDITION( origName     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pFields      != NULL );
+   PSO_PRE_CONDITION( pDataDef     != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
@@ -291,15 +291,15 @@ bool psonQueueInit( psonQueue           * pQueue,
 
    pQueue->fieldDefType = pDefinition->fieldDefType;
 
-   ptr = (char *)psonMalloc( &pQueue->memObject, fieldsLength, pContext );
+   ptr = (char *)psonMalloc( &pQueue->memObject, dataDefLength, pContext );
    if ( ptr == NULL ) {
       psocSetError( &pContext->errorHandler, 
                     g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
       return false;
    }
-   memcpy( ptr, pFields, fieldsLength );
+   memcpy( ptr, pDataDef, dataDefLength );
    pQueue->dataDefOffset = SET_OFFSET(ptr);
-   pQueue->fieldsLength = fieldsLength;
+   pQueue->dataDefLength = dataDefLength;
    
    return true;
 }
