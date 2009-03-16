@@ -33,13 +33,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(96)
+Dim failed_tests(113)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(19)
-Dim fail_programs(76)
+Dim ok_programs(21)
+Dim fail_programs(91)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -73,6 +73,8 @@ ok_programs(16) = "ResizePass"
 ok_programs(17) = "StatusPass"
 ok_programs(18) = "Tests"
 ok_programs(19) = "ValidatePass"
+ok_programs(20) = "GetDefinitionPass"
+ok_programs(21) = "GetDefLengthPass"
 
 fail_programs(0)   = "CommitEditNullContext"
 fail_programs(1)   = "CommitEditNullFolder"
@@ -151,8 +153,23 @@ fail_programs(73)  = "ResizeNullFolder"
 fail_programs(74)  = "StatusNullFolder"
 fail_programs(75)  = "StatusNullStatus"
 fail_programs(76)  = "CommitEditNullMemObj"
+fail_programs(77)  = "GetDefinitionNullContext"
+fail_programs(78)  = "GetDefinitionNullDataDef"
+fail_programs(79)  = "GetDefinitionNullDataLen"
+fail_programs(80)  = "GetDefinitionNullDef"
+fail_programs(81)  = "GetDefinitionNullFolder"
+fail_programs(82)  = "GetDefinitionNullKey"
+fail_programs(83)  = "GetDefinitionNullKeyLen"
+fail_programs(84)  = "GetDefinitionNullName"
+fail_programs(85)  = "GetDefinitionZeroLength"
+fail_programs(86)  = "GetDefLengthNullContext"
+fail_programs(87)  = "GetDefLengthNullDataLen"
+fail_programs(88)  = "GetDefLengthNullFolder"
+fail_programs(89)  = "GetDefLengthNullKeyLen"
+fail_programs(90)  = "GetDefLengthNullName"
+fail_programs(91)  = "GetDefLengthZeroNameLen"
 
-numTests = 97                 ' Sum of length of both arrays 
+numTests = 114                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

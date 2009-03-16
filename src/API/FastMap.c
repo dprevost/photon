@@ -343,7 +343,7 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                   pMemHashMap->keyDefOffset,
                   unsigned char );
          pHashMap->keyDefLength = pMemHashMap->keyDefLength;
-         pHashMap->fieldsDefLength = pMemHashMap->fieldsLength;
+         pHashMap->fieldsDefLength = pMemHashMap->dataDefLength;
 
 //         psoaGetLimits( pHashMap->pDefinition,
 //                        pMemHashMap->numFields,
@@ -839,7 +839,7 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
                   pMemHashMap->keyDefOffset,
                   unsigned char );
          pHashMap->keyDefLength = pMemHashMap->keyDefLength;
-         pHashMap->fieldsDefLength = pMemHashMap->fieldsLength;
+         pHashMap->fieldsDefLength = pMemHashMap->dataDefLength;
 //         psoaGetLimits( pHashMap->pDefinition,
 //                        pMemHashMap->numFields,
 //                        &pHashMap->minLength,

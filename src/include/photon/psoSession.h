@@ -287,7 +287,9 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
  *             counting the null terminator (null-terminators are not used by
  *             the Photon engine).
  * \param[out] keyLength The length in bytes of the key buffer.
+ *             keyLength cannot be NULL even if the objects has no key.
  * \param[out] fieldsLength The length in bytes of the fields buffer.
+ *             This pointer cannot be NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */

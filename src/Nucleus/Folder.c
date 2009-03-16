@@ -935,6 +935,164 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+bool psonFolderGetDefLength( psonFolder          * pFolder,
+                             const char          * objectName,
+                             uint32_t              strLength,
+                             uint32_t            * pKeyDefLength,
+                             uint32_t            * pDataDefLength,
+                             psonSessionContext  * pContext )
+{
+   bool lastIteration = true;
+   uint32_t partialLength = 0;
+   psonObjectDescriptor * pDesc = NULL;
+   psonHashTxItem * pHashItem = NULL;
+   psoErrors errcode;
+   psonTxStatus * txStatus;
+   psonFolder * pNextFolder;
+   psonMemObject * pMemObject;
+   size_t bucket;
+   bool found, ok;
+#ifdef USE_DBC
+   int pDesc_invalid_api_type = 0;
+#endif
+   
+   PSO_PRE_CONDITION( pFolder        != NULL );
+   PSO_PRE_CONDITION( objectName     != NULL )
+   PSO_PRE_CONDITION( pKeyDefLength  != NULL );
+   PSO_PRE_CONDITION( pDataDefLength != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
+
+   errcode = psonValidateString( objectName, 
+                                 strLength, 
+                                 &partialLength, 
+                                 &lastIteration );
+   if ( errcode != PSO_OK ) goto the_exit;
+   
+   found = psonHashTxGet( &pFolder->hashObj, 
+                        (unsigned char *)objectName, 
+                        partialLength * sizeof(char), 
+                        &pHashItem,
+                        &bucket,
+                        pContext );
+   if ( ! found ) {
+      if (lastIteration) {
+         errcode = PSO_NO_SUCH_OBJECT;
+      }
+      else {
+         errcode = PSO_NO_SUCH_FOLDER;
+      }
+      goto the_exit;
+   }
+   while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
+   }
+
+   txStatus = &pHashItem->txStatus;
+
+   GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+   
+   if ( lastIteration ) {
+
+      errcode = psonTxTestObjectStatus( txStatus, 
+                                        SET_OFFSET(pContext->pTransaction) );
+      if ( errcode != PSO_OK ) goto the_exit;
+
+      GET_PTR( pMemObject, pDesc->memOffset, psonMemObject );
+      if ( psonLock( pMemObject, pContext ) ) {
+
+         switch( pDesc->apiType ) {
+
+         case PSO_FOLDER:
+            break;
+         case PSO_HASH_MAP:
+            {
+               psonHashMap * p = GET_PTR_FAST( pDesc->offset, psonHashMap);
+               
+               *pKeyDefLength = p->keyDefLength;
+               *pDataDefLength = p->dataDefLength;
+            }
+            break;
+         case PSO_QUEUE:
+         case PSO_LIFO:
+            {
+               psonQueue * p = GET_PTR_FAST( pDesc->offset, psonQueue);
+               
+               *pDataDefLength = p->dataDefLength;
+            }
+            break;
+         case PSO_FAST_MAP:
+            {
+               psonFastMap * p = GET_PTR_FAST( pDesc->offset, psonFastMap);
+               
+               *pKeyDefLength = p->keyDefLength;
+               *pDataDefLength = p->dataDefLength;
+            }
+            break;
+         default:
+            PSO_INV_CONDITION( pDesc_invalid_api_type );
+         }
+         psonUnlock( pMemObject, pContext );
+      }
+      else {
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
+         goto the_exit;
+      }
+      if ( errcode != PSO_OK ) goto the_exit;
+      
+      psonUnlock( &pFolder->memObject, pContext );
+
+      return true;
+   }
+   
+   /* This is not the last node. This node must be a folder, otherwise... */
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_OBJECT;
+      goto the_exit;
+   }
+
+   errcode = psonTxTestObjectStatus( txStatus, 
+                                     SET_OFFSET(pContext->pTransaction) );
+   if ( errcode != PSO_OK ) {
+      if ( errcode == PSO_NO_SUCH_OBJECT) errcode = PSO_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   GET_PTR( pNextFolder, pDesc->offset, psonFolder );
+   if ( ! psonLock( &pNextFolder->memObject, pContext ) ) {
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
+      goto the_exit;
+   }
+   psonUnlock( &pFolder->memObject, pContext );
+     
+   ok = psonFolderGetDefLength( pNextFolder,
+                                &objectName[partialLength+1], 
+                                strLength - partialLength - 1, 
+                                pKeyDefLength,
+                                pDataDefLength,
+                                pContext );
+   PSO_POST_CONDITION( ok == true || ok == false );
+
+   return ok;
+
+the_exit:
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called psocSetError. 
+    */
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   psonUnlock( &pFolder->memObject, pContext );
+   
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 bool psonFolderGetFirst( psonFolder         * pFolder,
                          psonFolderItem     * pItem,
                          psonSessionContext * pContext )

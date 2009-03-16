@@ -391,7 +391,7 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pLifo->fieldsDef, 
                   pMemLifo->dataDefOffset,
                   unsigned char );
-         pLifo->fieldsDefLength = pMemLifo->fieldsLength;
+         pLifo->fieldsDefLength = pMemLifo->dataDefLength;
 //         psoaGetLimits( pLifo->pDefinition,
 //                        pMemLifo->numFields,
 //                        &pLifo->minLength,

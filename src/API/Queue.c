@@ -390,7 +390,7 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pQueue->fieldsDef, 
                   pMemQueue->dataDefOffset,
                   unsigned char );
-         pQueue->fieldsDefLength = pMemQueue->fieldsLength;
+         pQueue->fieldsDefLength = pMemQueue->dataDefLength;
 //         psoaGetLimits( pQueue->pDefinition,
 //                        pMemQueue->numFields,
 //                        &pQueue->minLength,

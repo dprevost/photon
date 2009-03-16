@@ -141,6 +141,14 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                               psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
+bool psonFolderGetDefLength( psonFolder          * pFolder,
+                             const char          * objectName,
+                             uint32_t              strLength,
+                             uint32_t            * pKeyDefLength,
+                             uint32_t            * pDataDefLength,
+                             psonSessionContext  * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonFolderGetFirst( psonFolder         * pFolder,
                          psonFolderItem     * pItem,
                          psonSessionContext * pContext );
@@ -271,6 +279,14 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                           unsigned char      ** ppDataDef,
                           uint32_t            * pDataDefLength,
                           psonSessionContext  * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonTopFolderGetDefLength( psonFolder         * pFolder,
+                                const char         * objectName,
+                                uint32_t             nameLengthInBytes,
+                                uint32_t           * pKeyDefLength,
+                                uint32_t           * pDataDefLength,
+                                psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonTopFolderGetStatus( psonFolder         * pFolder,
