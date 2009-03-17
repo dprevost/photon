@@ -26,11 +26,11 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    psonFolder* pFolder;
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psonMemObject * pOldMemObj = NULL;
    psonFolderItem folderItem;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition key = { "MyKey", PSO_KEY_VARCHAR, 100 };
@@ -79,6 +79,9 @@ int main()
                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

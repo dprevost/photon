@@ -20,18 +20,16 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-#if defined(USE_DBC)
    psonFolder* pFolder;
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psonMemObject * pOldMemObj = NULL;
    psonFolderItem folderItem;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition key = { "MyKey", PSO_KEY_VARCHAR, 100 };
@@ -73,16 +71,15 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   psonFolderCommitEdit( pFolder,
-                         folderItem.pHashItem, 
-                         PSON_IDENT_MAP,
-                         &pOldMemObj,
-                         NULL );
+   psonFolderRollbackEdit( pFolder,
+                           folderItem.pHashItem, 
+                           PSON_IDENT_MAP,
+                           NULL,
+                           &context );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-   return 1;
-#endif
+   psonFolderFini( pFolder, &context );
+   
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -122,6 +122,11 @@ check_PROGRAMS =                               \
         .\Release\ResizeNullContext.exe        \
         .\Release\ResizeNullFolder.exe         \
         .\Release\ResizePass.exe               \
+        .\Release\RollbackEditNullContext.exe  \
+        .\Release\RollbackEditNullFolder.exe   \
+        .\Release\RollbackEditNullHashItem.exe \
+        .\Release\RollbackEditPass.exe         \
+        .\Release\RollbackEditWrongObjType.exe \        
         .\Release\StatusNullFolder.exe         \
         .\Release\StatusNullStatus.exe         \
         .\Release\StatusPass.exe               \

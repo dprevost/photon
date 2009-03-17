@@ -124,6 +124,11 @@ check_PROGRAMS =                 \
         ResizeNullContext        \
         ResizeNullFolder         \
         ResizePass               \
+        RollbackEditNullContext  \
+        RollbackEditNullFolder   \
+        RollbackEditNullHashItem \
+        RollbackEditPass         \
+        RollbackEditWrongObjType \
         StatusNullFolder         \
         StatusNullStatus         \
         StatusPass               \
@@ -241,6 +246,11 @@ RemoveWrongObjType_SOURCES       = $(COMMON_HEADER) RemoveWrongObjType.c
 ResizeNullContext_SOURCES        = $(COMMON_HEADER) ResizeNullContext.c
 ResizeNullFolder_SOURCES         = $(COMMON_HEADER) ResizeNullFolder.c
 ResizePass_SOURCES               = $(COMMON_HEADER) ResizePass.c
+RollbackEditNullContext_SOURCES  = $(COMMON_HEADER) RollbackEditNullContext.c
+RollbackEditNullFolder_SOURCES   = $(COMMON_HEADER) RollbackEditNullFolder.c
+RollbackEditNullHashItem_SOURCES = $(COMMON_HEADER) RollbackEditNullHashItem.c
+RollbackEditPass_SOURCES         = $(COMMON_HEADER) RollbackEditPass.c
+RollbackEditWrongObjType_SOURCES = $(COMMON_HEADER) RollbackEditWrongObjType.c
 StatusNullFolder_SOURCES         = $(COMMON_HEADER) StatusNullFolder.c
 StatusNullStatus_SOURCES         = $(COMMON_HEADER) StatusNullStatus.c
 StatusPass_SOURCES               = $(COMMON_HEADER) StatusPass.c
@@ -367,6 +377,11 @@ TESTS =                          \
         ResizeNullContext        \
         ResizeNullFolder         \
         ResizePass               \
+        RollbackEditNullContext  \
+        RollbackEditNullFolder   \
+        RollbackEditNullHashItem \
+        RollbackEditPass         \
+        RollbackEditWrongObjType \
         StatusNullFolder         \
         StatusNullStatus         \
         StatusPass               \
@@ -464,6 +479,10 @@ XFAIL_TESTS =                    \
         RemoveWrongObjType       \
         ResizeNullContext        \
         ResizeNullFolder         \
+        RollbackEditNullContext  \
+        RollbackEditNullFolder   \
+        RollbackEditNullHashItem \
+        RollbackEditWrongObjType \
         StatusNullFolder         \
         StatusNullStatus         
 

@@ -1978,7 +1978,7 @@ void psonFolderReleaseNoLock( psonFolder         * pFolder,
  * lock on the folder is the responsability of the caller.
  */
 void psonFolderRemoveObject( psonFolder         * pFolder,
-                             psonHashTxItem       * pHashItem,
+                             psonHashTxItem     * pHashItem,
                              psonSessionContext * pContext )
 {
    psonHashTxItem * previousItem = NULL;

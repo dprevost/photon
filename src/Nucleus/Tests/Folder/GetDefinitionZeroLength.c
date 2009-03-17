@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -31,13 +31,20 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psonMemObject * pOldMemObj = NULL;
-   psonFolderItem folderItem;
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { "MyKey", PSO_KEY_VARCHAR, 100 };
-
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
-
+   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoKeyDefinition keyDef[2] = {
+       { "MyKey1", PSO_KEY_CHAR,    20 },
+       { "MyKey2", PSO_KEY_VARCHAR, 30 }
+   };
+   psoFieldDefinition fieldDef[3] = {
+      { "Field_1", PSO_CHAR,    {10}  },
+      { "Field_1", PSO_INTEGER, {0}   },
+      { "Field_1", PSO_VARCHAR, {100} }
+   };
+   unsigned char * retKeyDef = NULL, * retDataDef = NULL;
+   psoObjectDefinition retDef;
+   uint32_t retKeyDefLength = 0, retDataDefLength = 0;
+   
    pFolder = initFolderTest( expectedToPass, &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
@@ -51,11 +58,11 @@ int main()
                                 "test2",
                                 "Test2",
                                 5,
-                                &mapDef,
-                                (unsigned char *)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &def,
+                                (unsigned char *)keyDef,
+                                2*sizeof(psoKeyDefinition),
+                                (unsigned char *)fieldDef,
+                                3*sizeof(psoFieldDefinition),
                                 1,
                                 0,
                                 &context );
@@ -63,21 +70,15 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderEditObject( pFolder,
-                              "test2",
-                              5,
-                              PSO_FAST_MAP,
-                              &folderItem,
-                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-
-   psonFolderCommitEdit( pFolder,
-                         folderItem.pHashItem, 
-                         PSON_IDENT_MAP,
-                         &pOldMemObj,
-                         NULL );
+   ok = psonFolderGetDefinition( pFolder,
+                                 "test2",
+                                 0,
+                                 &retDef,
+                                 &retKeyDef,
+                                 &retKeyDefLength,
+                                 &retDataDef,
+                                 &retDataDefLength,
+                                 &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

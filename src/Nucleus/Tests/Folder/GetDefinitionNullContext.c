@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -31,8 +31,19 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoObjStatus objStatus;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoKeyDefinition keyDef[2] = {
+       { "MyKey1", PSO_KEY_CHAR,    20 },
+       { "MyKey2", PSO_KEY_VARCHAR, 30 }
+   };
+   psoFieldDefinition fieldDef[3] = {
+      { "Field_1", PSO_CHAR,    {10}  },
+      { "Field_1", PSO_INTEGER, {0}   },
+      { "Field_1", PSO_VARCHAR, {100} }
+   };
+   unsigned char * retKeyDef = NULL, * retDataDef = NULL;
+   psoObjectDefinition retDef;
+   uint32_t retKeyDefLength = 0, retDataDefLength = 0;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -48,10 +59,10 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
-                                NULL,
-                                0,
-                                NULL,
-                                0,
+                                (unsigned char *)keyDef,
+                                2*sizeof(psoKeyDefinition),
+                                (unsigned char *)fieldDef,
+                                3*sizeof(psoFieldDefinition),
                                 1,
                                 0,
                                 &context );
@@ -59,11 +70,15 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderGetStatus( pFolder,
-                             "test2",
-                             5,
-                             &objStatus,
-                             NULL );
+   ok = psonFolderGetDefinition( pFolder,
+                                 "test2",
+                                 5,
+                                 &retDef,
+                                 &retKeyDef,
+                                 &retKeyDefLength,
+                                 &retDataDef,
+                                 &retDataDefLength,
+                                 NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

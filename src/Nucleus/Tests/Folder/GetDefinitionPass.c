@@ -30,12 +30,19 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoObjStatus objStatus;
-   psoObjectDefinition def = { PSO_HASHMAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psoKeyDefinition keyDef[2] = {
+       { "MyKey1", PSO_KEY_CHAR,    20 },
+       { "MyKey2", PSO_KEY_VARCHAR, 30 }
    };
    psoFieldDefinition fieldDef[3] = {
+      { "Field_1", PSO_CHAR,    {10}  },
+      { "Field_1", PSO_INTEGER, {0}   },
+      { "Field_1", PSO_VARCHAR, {100} }
    };
+   unsigned char * retKeyDef = NULL, * retDataDef = NULL;
+   psoObjectDefinition retDef;
+   uint32_t retKeyDefLength = 0, retDataDefLength = 0;
    
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -51,9 +58,9 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
-                                keyDef,
+                                (unsigned char *)keyDef,
                                 2*sizeof(psoKeyDefinition),
-                                fieldDef,
+                                (unsigned char *)fieldDef,
                                 3*sizeof(psoFieldDefinition),
                                 1,
                                 0,
@@ -65,24 +72,28 @@ int main()
    ok = psonFolderGetDefinition( pFolder,
                                  "test2",
                                  5,
-                                 &objStatus,
+                                 &retDef,
+                                 &retKeyDef,
+                                 &retKeyDefLength,
+                                 &retDataDef,
+                                 &retDataDefLength,
                                  &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-//   if ( objStatus.numDataItem != 1 ) {
-//      ERROR_EXIT( expectedToPass, NULL, ; );
-//   }
-//   if ( objStatus.numBlocks != 1 ) {
-//      ERROR_EXIT( expectedToPass, NULL, ; );
-//   }
-//   if ( objStatus.numBlockGroup != 1 ) {
-//      ERROR_EXIT( expectedToPass, NULL, ; );
-//   }
-//   if ( objStatus.freeBytes == 0 || objStatus.freeBytes >=PSON_BLOCK_SIZE ) {
-//      ERROR_EXIT( expectedToPass, NULL, ; );
-//   }
+   if ( retKeyDefLength != 2*sizeof(psoKeyDefinition) ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( retDataDefLength != 3*sizeof(psoFieldDefinition) ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp(retKeyDef, keyDef, retKeyDefLength) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   if ( memcmp(retDataDef, fieldDef, retDataDefLength) != 0 ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
    return 0;
 }

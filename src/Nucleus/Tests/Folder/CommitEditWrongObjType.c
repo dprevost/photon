@@ -26,6 +26,7 @@ const bool expectedToPass = false;
 
 int main()
 {
+#if defined(USE_DBC)
    psonFolder* pFolder;
    psonSessionContext context;
    bool ok;
@@ -79,6 +80,9 @@ int main()
                          &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
