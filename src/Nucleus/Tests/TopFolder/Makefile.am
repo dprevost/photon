@@ -14,80 +14,110 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =                   \
-        TopCloseNullContext        \
-        TopCloseNullItem           \
-        TopClosePass               \
-        TopCreateInvalidNameLength \
-        TopCreateNullContext       \
-        TopCreateNullDefinition    \
-        TopCreateNullFolder        \
-        TopCreateNullName          \
-        TopCreatePass              \
-        TopCreateWrongType         \
-        TopDestroyNullContext      \
-        TopDestroyNullFolder       \
-        TopDestroyNullName         \
-        TopDestroyPass             \
-        TopEditNullContext         \
-        TopEditNullFolder          \
-        TopEditNullItem            \
-        TopEditNullName            \
-        TopEditPass                \
-        TopEditWrongLength         \
-        TopEditWrongType           \
-        TopEditZeroLength          \
-        TopOpenNullContext         \
-        TopOpenNullItem            \
-        TopOpenNullFolder          \
-        TopOpenNullName            \
-        TopOpenPass                \
-        TopOpenWrongLength         \
-        TopOpenWrongType           \
-        TopOpenZeroLength          \
-        TopStatusNullContext       \
-        TopStatusNullFolder        \
-        TopStatusNullName          \
-        TopStatusNullStatus        \
-        TopStatusPass              
+check_PROGRAMS =                \
+        CloseNullContext        \
+        CloseNullItem           \
+        ClosePass               \
+        CreateInvalidNameLength \
+        CreateNullContext       \
+        CreateNullDefinition    \
+        CreateNullFolder        \
+        CreateNullName          \
+        CreatePass              \
+        CreateWrongType         \
+        DestroyNullContext      \
+        DestroyNullFolder       \
+        DestroyNullName         \
+        DestroyPass             \
+        EditNullContext         \
+        EditNullFolder          \
+        EditNullItem            \
+        EditNullName            \
+        EditPass                \
+        EditWrongLength         \
+        EditWrongType           \
+        EditZeroLength          \
+        GetDefLengthNullContext \
+        GetDefLengthNullDataLen \
+        GetDefLengthNullFolder  \
+        GetDefLengthNullKeyLen  \
+        GetDefLengthNullName    \
+        GetDefLengthPass        \
+        GetDefNullContext       \
+        GetDefNullDataDef       \
+        GetDefNullDataLength    \
+        GetDefNullDef           \
+        GetDefNullFolder        \
+        GetDefNullKeyDef        \
+        GetDefNullKeyLength     \
+        GetDefNullName          \
+        GetDefPass              \
+        OpenNullContext         \
+        OpenNullItem            \
+        OpenNullFolder          \
+        OpenNullName            \
+        OpenPass                \
+        OpenWrongLength         \
+        OpenWrongType           \
+        OpenZeroLength          \
+        StatusNullContext       \
+        StatusNullFolder        \
+        StatusNullName          \
+        StatusNullStatus        \
+        StatusPass              
 
 COMMON_HEADER = ../Folder/folderTest.h
 
-TopCloseNullContext_SOURCES        = $(COMMON_HEADER) TopCloseNullContext.c
-TopCloseNullItem_SOURCES           = $(COMMON_HEADER) TopCloseNullItem.c
-TopClosePass_SOURCES               = $(COMMON_HEADER) TopClosePass.c
-TopCreateInvalidNameLength_SOURCES = $(COMMON_HEADER) TopCreateInvalidNameLength.c
-TopCreateNullContext_SOURCES       = $(COMMON_HEADER) TopCreateNullContext.c
-TopCreateNullDefinition_SOURCES    = $(COMMON_HEADER) TopCreateNullDefinition.c
-TopCreateNullFolder_SOURCES        = $(COMMON_HEADER) TopCreateNullFolder.c
-TopCreateNullName_SOURCES          = $(COMMON_HEADER) TopCreateNullName.c
-TopCreatePass_SOURCES              = $(COMMON_HEADER) TopCreatePass.c
-TopCreateWrongType_SOURCES         = $(COMMON_HEADER) TopCreateWrongType.c
-TopDestroyNullContext_SOURCES      = $(COMMON_HEADER) TopDestroyNullContext.c
-TopDestroyNullFolder_SOURCES       = $(COMMON_HEADER) TopDestroyNullFolder.c
-TopDestroyNullName_SOURCES         = $(COMMON_HEADER) TopDestroyNullName.c
-TopDestroyPass_SOURCES             = $(COMMON_HEADER) TopDestroyPass.c
-TopEditNullContext_SOURCES         = $(COMMON_HEADER) TopEditNullContext.c
-TopEditNullFolder_SOURCES          = $(COMMON_HEADER) TopEditNullFolder.c
-TopEditNullItem_SOURCES            = $(COMMON_HEADER) TopEditNullItem.c
-TopEditNullName_SOURCES            = $(COMMON_HEADER) TopEditNullName.c
-TopEditPass_SOURCES                = $(COMMON_HEADER) TopEditPass.c
-TopEditWrongLength_SOURCES         = $(COMMON_HEADER) TopEditWrongLength.c
-TopEditWrongType_SOURCES           = $(COMMON_HEADER) TopEditWrongType.c
-TopEditZeroLength_SOURCES          = $(COMMON_HEADER) TopEditZeroLength.c
-TopOpenNullContext_SOURCES         = $(COMMON_HEADER) TopOpenNullContext.c
-TopOpenNullItem_SOURCES            = $(COMMON_HEADER) TopOpenNullItem.c
-TopOpenNullFolder_SOURCES          = $(COMMON_HEADER) TopOpenNullFolder.c
-TopOpenNullName_SOURCES            = $(COMMON_HEADER) TopOpenNullName.c
-TopOpenPass_SOURCES                = $(COMMON_HEADER) TopOpenPass.c
-TopOpenWrongLength_SOURCES         = $(COMMON_HEADER) TopOpenWrongLength.c
-TopOpenWrongType_SOURCES           = $(COMMON_HEADER) TopOpenWrongType.c
-TopOpenZeroLength_SOURCES          = $(COMMON_HEADER) TopOpenZeroLength.c
-TopStatusNullContext_SOURCES       = $(COMMON_HEADER) TopStatusNullContext.c
-TopStatusNullFolder_SOURCES        = $(COMMON_HEADER) TopStatusNullFolder.c
-TopStatusNullName_SOURCES          = $(COMMON_HEADER) TopStatusNullName.c
-TopStatusNullStatus_SOURCES        = $(COMMON_HEADER) TopStatusNullStatus.c
-TopStatusPass_SOURCES              = $(COMMON_HEADER) TopStatusPass.c
+CloseNullContext_SOURCES        = $(COMMON_HEADER) CloseNullContext.c
+CloseNullItem_SOURCES           = $(COMMON_HEADER) CloseNullItem.c
+ClosePass_SOURCES               = $(COMMON_HEADER) ClosePass.c
+CreateInvalidNameLength_SOURCES = $(COMMON_HEADER) CreateInvalidNameLength.c
+CreateNullContext_SOURCES       = $(COMMON_HEADER) CreateNullContext.c
+CreateNullDefinition_SOURCES    = $(COMMON_HEADER) CreateNullDefinition.c
+CreateNullFolder_SOURCES        = $(COMMON_HEADER) CreateNullFolder.c
+CreateNullName_SOURCES          = $(COMMON_HEADER) CreateNullName.c
+CreatePass_SOURCES              = $(COMMON_HEADER) CreatePass.c
+CreateWrongType_SOURCES         = $(COMMON_HEADER) CreateWrongType.c
+DestroyNullContext_SOURCES      = $(COMMON_HEADER) DestroyNullContext.c
+DestroyNullFolder_SOURCES       = $(COMMON_HEADER) DestroyNullFolder.c
+DestroyNullName_SOURCES         = $(COMMON_HEADER) DestroyNullName.c
+DestroyPass_SOURCES             = $(COMMON_HEADER) DestroyPass.c
+EditNullContext_SOURCES         = $(COMMON_HEADER) EditNullContext.c
+EditNullFolder_SOURCES          = $(COMMON_HEADER) EditNullFolder.c
+EditNullItem_SOURCES            = $(COMMON_HEADER) EditNullItem.c
+EditNullName_SOURCES            = $(COMMON_HEADER) EditNullName.c
+EditPass_SOURCES                = $(COMMON_HEADER) EditPass.c
+EditWrongLength_SOURCES         = $(COMMON_HEADER) EditWrongLength.c
+EditWrongType_SOURCES           = $(COMMON_HEADER) EditWrongType.c
+EditZeroLength_SOURCES          = $(COMMON_HEADER) EditZeroLength.c
+GetDefLengthNullContext_SOURCES = $(COMMON_HEADER) GetDefLengthNullContext.c
+GetDefLengthNullDataLen_SOURCES = $(COMMON_HEADER) GetDefLengthNullDataLen.c
+GetDefLengthNullFolder_SOURCES  = $(COMMON_HEADER) GetDefLengthNullFolder.c
+GetDefLengthNullKeyLen_SOURCES  = $(COMMON_HEADER) GetDefLengthNullKeyLen.c
+GetDefLengthNullName_SOURCES    = $(COMMON_HEADER) GetDefLengthNullName.c
+GetDefLengthPass_SOURCES        = $(COMMON_HEADER) GetDefLengthPass.c
+GetDefNullContext_SOURCES       = $(COMMON_HEADER) GetDefNullContext.c
+GetDefNullDataDef_SOURCES       = $(COMMON_HEADER) GetDefNullDataDef.c
+GetDefNullDataLength_SOURCES    = $(COMMON_HEADER) GetDefNullDataLength.c
+GetDefNullDef_SOURCES           = $(COMMON_HEADER) GetDefNullDef.c
+GetDefNullFolder_SOURCES        = $(COMMON_HEADER) GetDefNullFolder.c
+GetDefNullKeyDef_SOURCES        = $(COMMON_HEADER) GetDefNullKeyDef.c
+GetDefNullKeyLength_SOURCES     = $(COMMON_HEADER) GetDefNullKeyLength.c
+GetDefNullName_SOURCES          = $(COMMON_HEADER) GetDefNullName.c
+GetDefPass_SOURCES              = $(COMMON_HEADER) GetDefPass.c
+OpenNullContext_SOURCES         = $(COMMON_HEADER) OpenNullContext.c
+OpenNullItem_SOURCES            = $(COMMON_HEADER) OpenNullItem.c
+OpenNullFolder_SOURCES          = $(COMMON_HEADER) OpenNullFolder.c
+OpenNullName_SOURCES            = $(COMMON_HEADER) OpenNullName.c
+OpenPass_SOURCES                = $(COMMON_HEADER) OpenPass.c
+OpenWrongLength_SOURCES         = $(COMMON_HEADER) OpenWrongLength.c
+OpenWrongType_SOURCES           = $(COMMON_HEADER) OpenWrongType.c
+OpenZeroLength_SOURCES          = $(COMMON_HEADER) OpenZeroLength.c
+StatusNullContext_SOURCES       = $(COMMON_HEADER) StatusNullContext.c
+StatusNullFolder_SOURCES        = $(COMMON_HEADER) StatusNullFolder.c
+StatusNullName_SOURCES          = $(COMMON_HEADER) StatusNullName.c
+StatusNullStatus_SOURCES        = $(COMMON_HEADER) StatusNullStatus.c
+StatusPass_SOURCES              = $(COMMON_HEADER) StatusPass.c
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -99,68 +129,96 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                            \
-        TopCloseNullContext        \
-        TopCloseNullItem           \
-        TopClosePass               \
-        TopCreateInvalidNameLength \
-        TopCreateNullContext       \
-        TopCreateNullDefinition    \
-        TopCreateNullFolder        \
-        TopCreateNullName          \
-        TopCreatePass              \
-        TopCreateWrongType         \
-        TopDestroyNullContext      \
-        TopDestroyNullFolder       \
-        TopDestroyNullName         \
-        TopDestroyPass             \
-        TopEditNullContext         \
-        TopEditNullFolder          \
-        TopEditNullItem            \
-        TopEditNullName            \
-        TopEditPass                \
-        TopEditWrongLength         \
-        TopEditWrongType           \
-        TopEditZeroLength          \
-        TopOpenNullContext         \
-        TopOpenNullItem            \
-        TopOpenNullFolder          \
-        TopOpenNullName            \
-        TopOpenPass                \
-        TopOpenWrongLength         \
-        TopOpenWrongType           \
-        TopOpenZeroLength          \
-        TopStatusNullContext       \
-        TopStatusNullFolder        \
-        TopStatusNullName          \
-        TopStatusNullStatus        \
-        TopStatusPass              
+TESTS =                         \
+        CloseNullContext        \
+        CloseNullItem           \
+        ClosePass               \
+        CreateInvalidNameLength \
+        CreateNullContext       \
+        CreateNullDefinition    \
+        CreateNullFolder        \
+        CreateNullName          \
+        CreatePass              \
+        CreateWrongType         \
+        DestroyNullContext      \
+        DestroyNullFolder       \
+        DestroyNullName         \
+        DestroyPass             \
+        EditNullContext         \
+        EditNullFolder          \
+        EditNullItem            \
+        EditNullName            \
+        EditPass                \
+        EditWrongLength         \
+        EditWrongType           \
+        EditZeroLength          \
+        GetDefLengthNullContext \
+        GetDefLengthNullDataLen \
+        GetDefLengthNullFolder  \
+        GetDefLengthNullKeyLen  \
+        GetDefLengthNullName    \
+        GetDefLengthPass        \
+        GetDefNullContext       \
+        GetDefNullDataDef       \
+        GetDefNullDataLength    \
+        GetDefNullDef           \
+        GetDefNullFolder        \
+        GetDefNullKeyDef        \
+        GetDefNullKeyLength     \
+        GetDefNullName          \
+        GetDefPass              \
+        OpenNullContext         \
+        OpenNullItem            \
+        OpenNullFolder          \
+        OpenNullName            \
+        OpenPass                \
+        OpenWrongLength         \
+        OpenWrongType           \
+        OpenZeroLength          \
+        StatusNullContext       \
+        StatusNullFolder        \
+        StatusNullName          \
+        StatusNullStatus        \
+        StatusPass              
 
-XFAIL_TESTS =                      \
-        TopCloseNullContext        \
-        TopCloseNullItem           \
-        TopCreateNullContext       \
-        TopCreateNullDefinition    \
-        TopCreateNullFolder        \
-        TopCreateNullName          \
-        TopCreateWrongType         \
-        TopDestroyNullContext      \
-        TopDestroyNullFolder       \
-        TopDestroyNullName         \
-        TopEditNullContext         \
-        TopEditNullFolder          \
-        TopEditNullItem            \
-        TopEditNullName            \
-        TopEditWrongType           \
-        TopOpenNullContext         \
-        TopOpenNullItem            \
-        TopOpenNullFolder          \
-        TopOpenNullName            \
-        TopOpenWrongType           \
-        TopStatusNullContext       \
-        TopStatusNullFolder        \
-        TopStatusNullName          \
-        TopStatusNullStatus        
+XFAIL_TESTS =                   \
+        CloseNullContext        \
+        CloseNullItem           \
+        CreateNullContext       \
+        CreateNullDefinition    \
+        CreateNullFolder        \
+        CreateNullName          \
+        CreateWrongType         \
+        DestroyNullContext      \
+        DestroyNullFolder       \
+        DestroyNullName         \
+        EditNullContext         \
+        EditNullFolder          \
+        EditNullItem            \
+        EditNullName            \
+        EditWrongType           \
+        GetDefLengthNullContext \
+        GetDefLengthNullDataLen \
+        GetDefLengthNullFolder  \
+        GetDefLengthNullKeyLen  \
+        GetDefLengthNullName    \
+        GetDefNullContext       \
+        GetDefNullDataDef       \
+        GetDefNullDataLength    \
+        GetDefNullDef           \
+        GetDefNullFolder        \
+        GetDefNullKeyDef        \
+        GetDefNullKeyLength     \
+        GetDefNullName          \
+        OpenNullContext         \
+        OpenNullItem            \
+        OpenNullFolder          \
+        OpenNullName            \
+        OpenWrongType           \
+        StatusNullContext       \
+        StatusNullFolder        \
+        StatusNullName          \
+        StatusNullStatus        
 
 LDADD = $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la

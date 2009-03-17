@@ -783,10 +783,14 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
    int pDesc_invalid_api_type = 0;
 #endif
    
-   PSO_PRE_CONDITION( pFolder       != NULL );
-   PSO_PRE_CONDITION( objectName    != NULL )
-   PSO_PRE_CONDITION( pDefinition   != NULL );
-   PSO_PRE_CONDITION( pContext      != NULL );
+   PSO_PRE_CONDITION( pFolder        != NULL );
+   PSO_PRE_CONDITION( objectName     != NULL )
+   PSO_PRE_CONDITION( pDefinition    != NULL );
+   PSO_PRE_CONDITION( ppKeyDef       != NULL );
+   PSO_PRE_CONDITION( pKeyDefLength  != NULL );
+   PSO_PRE_CONDITION( ppDataDef      != NULL );
+   PSO_PRE_CONDITION( pDataDefLength != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
    PSO_PRE_CONDITION( strLength > 0 );
    PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
 
@@ -797,11 +801,11 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
    if ( errcode != PSO_OK ) goto the_exit;
    
    found = psonHashTxGet( &pFolder->hashObj, 
-                        (unsigned char *)objectName, 
-                        partialLength * sizeof(char), 
-                        &pHashItem,
-                        &bucket,
-                        pContext );
+                          (unsigned char *)objectName, 
+                          partialLength * sizeof(char), 
+                          &pHashItem,
+                          &bucket,
+                          pContext );
    if ( ! found ) {
       if (lastIteration) {
          errcode = PSO_NO_SUCH_OBJECT;

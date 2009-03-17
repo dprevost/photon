@@ -404,11 +404,14 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
    const char * name = objectName;
    char * lowerName = NULL;
 
-   PSO_PRE_CONDITION( pFolder       != NULL );
-   PSO_PRE_CONDITION( objectName    != NULL );
-   PSO_PRE_CONDITION( pDefinition   != NULL );
-   PSO_PRE_CONDITION( ppDataDef != NULL );
-   PSO_PRE_CONDITION( pContext      != NULL );
+   PSO_PRE_CONDITION( pFolder        != NULL );
+   PSO_PRE_CONDITION( objectName     != NULL );
+   PSO_PRE_CONDITION( pDefinition    != NULL );
+   PSO_PRE_CONDITION( ppKeyDef       != NULL );
+   PSO_PRE_CONDITION( pKeyDefLength  != NULL );
+   PSO_PRE_CONDITION( ppDataDef      != NULL );
+   PSO_PRE_CONDITION( pDataDefLength != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
 
    *ppDataDef = NULL;
    
