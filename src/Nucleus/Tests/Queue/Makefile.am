@@ -32,6 +32,7 @@ check_PROGRAMS =                 \
         GetWrongFlag             \
         GetWrongLength           \
         InitNullContext          \
+        InitNullDataDef          \
         InitNullDefinition       \
         InitNullHashItem         \
         InitNullQueue            \
@@ -40,8 +41,8 @@ check_PROGRAMS =                 \
         InitNullStatus           \
         InitPass                 \
         InitZeroBlocks           \
+        InitZeroDataDefLength    \
         InitZeroLength           \
-        InitZeroNumFields        \
         InsertNowNullContext     \
         InsertNowNullItem        \
         InsertNowNullQueue       \
@@ -98,6 +99,7 @@ GetPass_SOURCES                  = $(COMMON_HEADER) GetPass.c
 GetWrongFlag_SOURCES             = $(COMMON_HEADER) GetWrongFlag.c
 GetWrongLength_SOURCES           = $(COMMON_HEADER) GetWrongLength.c
 InitNullContext_SOURCES          = $(COMMON_HEADER) InitNullContext.c
+InitNullDataDef_SOURCES          = $(COMMON_HEADER) InitNullDataDef.c
 InitNullDefinition_SOURCES       = $(COMMON_HEADER) InitNullDefinition.c
 InitNullHashItem_SOURCES         = $(COMMON_HEADER) InitNullHashItem.c
 InitNullQueue_SOURCES            = $(COMMON_HEADER) InitNullQueue.c
@@ -106,8 +108,8 @@ InitNullParent_SOURCES           = $(COMMON_HEADER) InitNullParent.c
 InitNullStatus_SOURCES           = $(COMMON_HEADER) InitNullStatus.c
 InitPass_SOURCES                 = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES           = $(COMMON_HEADER) InitZeroBlocks.c
+InitZeroDataDefLength_SOURCES    = $(COMMON_HEADER) InitZeroDataDefLength.c
 InitZeroLength_SOURCES           = $(COMMON_HEADER) InitZeroLength.c
-InitZeroNumFields_SOURCES        = $(COMMON_HEADER) InitZeroNumFields.c
 InsertNowNullContext_SOURCES     = $(COMMON_HEADER) InsertNowNullContext.c
 InsertNowNullItem_SOURCES        = $(COMMON_HEADER) InsertNowNullItem.c
 InsertNowNullQueue_SOURCES       = $(COMMON_HEADER) InsertNowNullQueue.c
@@ -173,6 +175,7 @@ TESTS =                          \
         GetWrongFlag             \
         GetWrongLength           \
         InitNullContext          \
+        InitNullDataDef          \
         InitNullDefinition       \
         InitNullHashItem         \
         InitNullQueue            \
@@ -181,8 +184,8 @@ TESTS =                          \
         InitNullStatus           \
         InitPass                 \
         InitZeroBlocks           \
+        InitZeroDataDefLength    \
         InitZeroLength           \
-        InitZeroNumFields        \
         InsertNowNullContext     \
         InsertNowNullItem        \
         InsertNowNullQueue       \
@@ -233,6 +236,7 @@ XFAIL_TESTS =                    \
         GetNullIterator          \
         GetWrongFlag             \
         InitNullContext          \
+        InitNullDataDef          \
         InitNullDefinition       \
         InitNullHashItem         \
         InitNullQueue            \
@@ -240,6 +244,7 @@ XFAIL_TESTS =                    \
         InitNullParent           \
         InitNullStatus           \
         InitZeroBlocks           \
+        InitZeroDataDefLength    \
         InitZeroLength           \
         InsertNowNullContext     \
         InsertNowNullItem        \
@@ -269,7 +274,6 @@ XFAIL_TESTS =                    \
         StatusNullQueue          \
         StatusNullStatus         
 
-#        InitZeroNumFields        
 
 LDADD = $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la

@@ -19,6 +19,7 @@
 /GetWrongFlag
 /GetWrongLength
 /InitNullContext
+/InitNullDataDef
 /InitNullDefinition
 /InitNullHashItem
 /InitNullName
@@ -27,8 +28,8 @@
 /InitNullStatus
 /InitPass
 /InitZeroBlocks
+/InitZeroDataDefLength
 /InitZeroLength
-/InitZeroNumFields
 /InsertNowNullContext
 /InsertNowNullItem
 /InsertNowNullQueue
