@@ -49,18 +49,22 @@ check_PROGRAMS =                                \
         .\Release\GetWrongLength.exe            \
         .\Release\GetZeroKeyLength.exe          \
         .\Release\InitNullContext.exe           \
+        .\Release\InitNullDataDef.exe           \
         .\Release\InitNullDefinition.exe        \
         .\Release\InitNullHash.exe              \
         .\Release\InitNullHashItemOffset.exe    \
+        .\Release\InitNullKeyDef.exe            \
         .\Release\InitNullName.exe              \
         .\Release\InitNullParent.exe            \
         .\Release\InitNullStatus.exe            \
         .\Release\InitPass.exe                  \
         .\Release\InitZeroBlocks.exe            \
+        .\Release\InitZeroDataDefLength.exe     \
+        .\Release\InitZeroKeyDefLength.exe      \
         .\Release\InitZeroLength.exe            \
         .\Release\InsertNullContext.exe         \
+        .\Release\InsertNullData.exe            \
         .\Release\InsertNullHash.exe            \
-        .\Release\InsertNullItem.exe            \
         .\Release\InsertNullKey.exe             \
         .\Release\InsertPass.exe                \
         .\Release\InsertZeroLengthItem.exe      \
@@ -70,11 +74,11 @@ check_PROGRAMS =                                \
         .\Release\ReleaseNullItem.exe           \
         .\Release\ReleasePass.exe               \
         .\Release\ReplaceNullContext.exe        \
+        .\Release\ReplaceNullData.exe           \
         .\Release\ReplaceNullHash.exe           \
-        .\Release\ReplaceNullItem.exe           \
         .\Release\ReplaceNullKey.exe            \
         .\Release\ReplacePass.exe               \
-        .\Release\ReplaceZeroLengthItem.exe     \
+        .\Release\ReplaceZeroLengthData.exe     \
         .\Release\ReplaceZeroLengthKey.exe      \
         .\Release\RollbackAddNullContext.exe    \
         .\Release\RollbackAddNullHash.exe       \

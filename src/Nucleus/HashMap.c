@@ -244,7 +244,7 @@ void psonHashMapFini( psonHashMap        * pHashMap,
 bool psonHashMapGet( psonHashMap        * pHashMap,
                      const void         * pKey,
                      uint32_t             keyLength, 
-                     psonHashTxItem      ** ppHashItem,
+                     psonHashTxItem    ** ppHashItem,
                      uint32_t             bufferLength,
                      psonSessionContext * pContext )
 {
@@ -604,11 +604,14 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    PSO_PRE_CONDITION( pTxStatus    != NULL );
    PSO_PRE_CONDITION( origName     != NULL );
    PSO_PRE_CONDITION( pDefinition  != NULL );
+   PSO_PRE_CONDITION( pKeyDef      != NULL );
    PSO_PRE_CONDITION( pDataDef     != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
-   PSO_PRE_CONDITION( numberOfBlocks  > 0 );
+   PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
+   PSO_PRE_CONDITION( keyDefLength   > 0 );
+   PSO_PRE_CONDITION( dataDefLength  > 0 );
    PSO_PRE_CONDITION( pDefinition->fieldDefType > PSO_DEF_FIRST_TYPE && 
                       pDefinition->fieldDefType < PSO_DEF_LAST_TYPE );
    PSO_PRE_CONDITION( pDefinition->keyDefType > PSO_DEF_FIRST_TYPE && 
@@ -785,7 +788,7 @@ the_exit:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonHashMapRelease( psonHashMap        * pHashMap,
-                         psonHashTxItem       * pHashItem,
+                         psonHashTxItem     * pHashItem,
                          psonSessionContext * pContext )
 {
    PSO_PRE_CONDITION( pHashMap  != NULL );
@@ -818,7 +821,7 @@ bool psonHashMapRelease( psonHashMap        * pHashMap,
  */
 static
 void psonHashMapReleaseNoLock( psonHashMap        * pHashMap,
-                               psonHashTxItem       * pHashItem,
+                               psonHashTxItem     * pHashItem,
                                psonSessionContext * pContext )
 {
    psonTxStatus * txItemStatus, * txHashMapStatus;

@@ -51,18 +51,22 @@ check_PROGRAMS =                  \
         GetWrongLength            \
         GetZeroKeyLength          \
         InitNullContext           \
+        InitNullDataDef           \
         InitNullDefinition        \
         InitNullHash              \
         InitNullHashItemOffset    \
+        InitNullKeyDef            \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
         InitPass                  \
         InitZeroBlocks            \
+        InitZeroDataDefLength     \
+        InitZeroKeyDefLength      \
         InitZeroLength            \
         InsertNullContext         \
+        InsertNullData            \
         InsertNullHash            \
-        InsertNullItem            \
         InsertNullKey             \
         InsertPass                \
         InsertZeroLengthItem      \
@@ -72,11 +76,11 @@ check_PROGRAMS =                  \
         ReleaseNullItem           \
         ReleasePass               \
         ReplaceNullContext        \
+        ReplaceNullData           \
         ReplaceNullHash           \
-        ReplaceNullItem           \
         ReplaceNullKey            \
         ReplacePass               \
-        ReplaceZeroLengthItem     \
+        ReplaceZeroLengthData     \
         ReplaceZeroLengthKey      \
         RollbackAddNullContext    \
         RollbackAddNullHash       \
@@ -128,18 +132,22 @@ GetPass_SOURCES                   = $(COMMON_HEADER) GetPass.c
 GetWrongLength_SOURCES            = $(COMMON_HEADER) GetFirstWrongLength.c
 GetZeroKeyLength_SOURCES          = $(COMMON_HEADER) GetZeroKeyLength.c
 InitNullContext_SOURCES           = $(COMMON_HEADER) InitNullContext.c
+InitNullDataDef_SOURCES           = $(COMMON_HEADER) InitNullDataDef.c
 InitNullDefinition_SOURCES        = $(COMMON_HEADER) InitNullDefinition.c
 InitNullHash_SOURCES              = $(COMMON_HEADER) InitNullHash.c
 InitNullHashItemOffset_SOURCES    = $(COMMON_HEADER) InitNullHashItemOffset.c
+InitNullKeyDef_SOURCES            = $(COMMON_HEADER) InitNullKeyDef.c
 InitNullName_SOURCES              = $(COMMON_HEADER) InitNullName.c
 InitNullParent_SOURCES            = $(COMMON_HEADER) InitNullParent.c
 InitNullStatus_SOURCES            = $(COMMON_HEADER) InitNullStatus.c
 InitPass_SOURCES                  = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES            = $(COMMON_HEADER) InitZeroBlocks.c
+InitZeroDataDefLength_SOURCES     = $(COMMON_HEADER) InitZeroDataDefLength.c
+InitZeroKeyDefLength_SOURCES      = $(COMMON_HEADER) InitZeroKeyDefLength.c
 InitZeroLength_SOURCES            = $(COMMON_HEADER) InitZeroLength.c
 InsertNullContext_SOURCES         = $(COMMON_HEADER) InsertNullContext.c
+InsertNullData_SOURCES            = $(COMMON_HEADER) InsertNullData.c
 InsertNullHash_SOURCES            = $(COMMON_HEADER) InsertNullHash.c
-InsertNullItem_SOURCES            = $(COMMON_HEADER) InsertNullItem.c
 InsertNullKey_SOURCES             = $(COMMON_HEADER) InsertNullKey.c
 InsertPass_SOURCES                = $(COMMON_HEADER) InsertPass.c
 InsertZeroLengthItem_SOURCES      = $(COMMON_HEADER) InsertZeroLengthItem.c
@@ -149,11 +157,11 @@ ReleaseNullHash_SOURCES           = $(COMMON_HEADER) ReleaseNullHash.c
 ReleaseNullItem_SOURCES           = $(COMMON_HEADER) ReleaseNullItem.c
 ReleasePass_SOURCES               = $(COMMON_HEADER) ReleasePass.c
 ReplaceNullContext_SOURCES        = $(COMMON_HEADER) ReplaceNullContext.c
+ReplaceNullData_SOURCES           = $(COMMON_HEADER) ReplaceNullData.c
 ReplaceNullHash_SOURCES           = $(COMMON_HEADER) ReplaceNullHash.c
-ReplaceNullItem_SOURCES           = $(COMMON_HEADER) ReplaceNullItem.c
 ReplaceNullKey_SOURCES            = $(COMMON_HEADER) ReplaceNullKey.c
 ReplacePass_SOURCES               = $(COMMON_HEADER) ReplacePass.c
-ReplaceZeroLengthItem_SOURCES     = $(COMMON_HEADER) ReplaceZeroLengthItem.c
+ReplaceZeroLengthData_SOURCES     = $(COMMON_HEADER) ReplaceZeroLengthData.c
 ReplaceZeroLengthKey_SOURCES      = $(COMMON_HEADER) ReplaceZeroLengthKey.c
 RollbackAddNullContext_SOURCES    = $(COMMON_HEADER) RollbackAddNullContext.c
 RollbackAddNullHash_SOURCES       = $(COMMON_HEADER) RollbackAddNullHash.c
@@ -214,18 +222,22 @@ TESTS =                           \
         GetWrongLength            \
         GetZeroKeyLength          \
         InitNullContext           \
+        InitNullDataDef           \
         InitNullDefinition        \
         InitNullHash              \
         InitNullHashItemOffset    \
+        InitNullKeyDef            \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
         InitPass                  \
         InitZeroBlocks            \
+        InitZeroDataDefLength     \
+        InitZeroKeyDefLength      \
         InitZeroLength            \
         InsertNullContext         \
+        InsertNullData            \
         InsertNullHash            \
-        InsertNullItem            \
         InsertNullKey             \
         InsertPass                \
         InsertZeroLengthItem      \
@@ -235,11 +247,11 @@ TESTS =                           \
         ReleaseNullItem           \
         ReleasePass               \
         ReplaceNullContext        \
+        ReplaceNullData           \
         ReplaceNullHash           \
-        ReplaceNullItem           \
         ReplaceNullKey            \
         ReplacePass               \
-        ReplaceZeroLengthItem     \
+        ReplaceZeroLengthData     \
         ReplaceZeroLengthKey      \
         RollbackAddNullContext    \
         RollbackAddNullHash       \
@@ -278,17 +290,21 @@ XFAIL_TESTS =                     \
         GetNullKey                \
         GetZeroKeyLength          \
         InitNullContext           \
+        InitNullDataDef           \
         InitNullDefinition        \
         InitNullHash              \
         InitNullHashItemOffset    \
+        InitNullKeyDef            \
         InitNullName              \
         InitNullParent            \
         InitNullStatus            \
         InitZeroBlocks            \
+        InitZeroDataDefLength     \
+        InitZeroKeyDefLength      \
         InitZeroLength            \
         InsertNullContext         \
+        InsertNullData            \
         InsertNullHash            \
-        InsertNullItem            \
         InsertNullKey             \
         InsertZeroLengthItem      \
         InsertZeroLengthKey       \
@@ -296,10 +312,10 @@ XFAIL_TESTS =                     \
         ReleaseNullHash           \
         ReleaseNullItem           \
         ReplaceNullContext        \
+        ReplaceNullData           \
         ReplaceNullHash           \
-        ReplaceNullItem           \
         ReplaceNullKey            \
-        ReplaceZeroLengthItem     \
+        ReplaceZeroLengthData     \
         ReplaceZeroLengthKey      \
         RollbackAddNullContext    \
         RollbackAddNullHash       \
