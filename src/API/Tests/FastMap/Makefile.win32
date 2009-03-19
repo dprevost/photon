@@ -18,6 +18,7 @@ check_PROGRAMS =                           \
         .\Release\CreateXML.exe            \
         .\Release\Delete.exe               \
         .\Release\Definition.exe           \
+        .\Release\DefLength.exe            \
         .\Release\Edit.exe                 \
         .\Release\Empty.exe                \
         .\Release\FirstNullEntry.exe       \

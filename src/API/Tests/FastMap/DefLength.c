@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -55,14 +55,8 @@ int main( int argc, char * argv[] )
       { "field5", PSO_LONGVARBINARY, {0} }
    };
 
-   psoFieldDefinition retFields[5];
-   psoObjectDefinition retDef;
-   psoKeyDefinition retKeyDef;
+   uint32_t retKeyDefLength = 0, retDataDefLength = 0;
    
-   memset( &retDef,    0, sizeof(psoObjectDefinition) );
-   memset( &retKeyDef, 0, sizeof(psoKeyDefinition) );
-   memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
-
    lenData = offsetof(struct dummy, bin) + 10;
    data1 = (struct dummy *)malloc( lenData );
    
@@ -126,98 +120,42 @@ int main( int argc, char * argv[] )
    }
 
    /* Invalid arguments to tested function. */
-
-   errcode = psoFastMapDefinition( NULL, &retDef,
-                                   (unsigned char *)&retKeyDef, 
-                                   sizeof(psoKeyDefinition),
-                                   (unsigned char *)retFields,
-                                   5*sizeof(psoFieldDefinition) );
+   errcode = psoFastMapDefLength( NULL, 
+                                  &retKeyDefLength,
+                                  &retDataDefLength );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapDefinition( objHandle, NULL,
-                                   (unsigned char *)&retKeyDef,
-                                   sizeof(psoKeyDefinition),
-                                   (unsigned char *)retFields,
-                                   5*sizeof(psoFieldDefinition) );
+   errcode = psoFastMapDefLength( objHandle,
+                                  NULL,
+                                  &retDataDefLength );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapDefinition( objHandle, &retDef,
-                                   (unsigned char *)&retKeyDef,
-                                   0,
-                                   (unsigned char *)retFields,
-                                   5*sizeof(psoFieldDefinition) );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoFastMapDefinition( objHandle, &retDef,
-                                   (unsigned char *)&retKeyDef,
-                                   sizeof(psoKeyDefinition),
-                                   (unsigned char *)retFields,
-                                   0 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
+   errcode = psoFastMapDefLength( objHandle, 
+                                  &retKeyDefLength,
+                                  NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoFastMapDefinition( objHandle, &retDef,
-                                   NULL,
-                                   0,
-                                   (unsigned char *)retFields,
-                                   5*sizeof(psoFieldDefinition) );
+   errcode = psoFastMapDefLength( objHandle, 
+                                  &retKeyDefLength,
+                                  &retDataDefLength );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
+   if ( retKeyDefLength != sizeof(psoKeyDefinition) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoFastMapDefinition( objHandle, &retDef,
-                                   (unsigned char *)&retKeyDef,
-                                   sizeof(psoKeyDefinition),
-                                   NULL,
-                                   0 );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( memcmp( &keyDef, &retKeyDef, sizeof(psoKeyDefinition) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoFastMapDefinition( objHandle, &retDef,
-                                   (unsigned char *)&retKeyDef,
-                                   sizeof(psoKeyDefinition),
-                                   (unsigned char *)retFields,
-                                   5*sizeof(psoFieldDefinition) );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( memcmp( &keyDef, &retKeyDef, sizeof(psoKeyDefinition) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( memcmp( fields, retFields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
+   if ( retDataDefLength != 5*sizeof(psoFieldDefinition) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -229,11 +167,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapDefinition( objHandle, &retDef,
-                                   (unsigned char *)&retKeyDef,
-                                   sizeof(psoKeyDefinition),
-                                   NULL,
-                                   0 );
+   errcode = psoFastMapDefLength( objHandle, 
+                                  &retKeyDefLength,
+                                  &retDataDefLength );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

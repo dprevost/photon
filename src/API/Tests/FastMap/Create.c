@@ -32,8 +32,15 @@ int main( int argc, char * argv[] )
    int errcode;
    psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
    psoObjectDefinition definition;
-   psoFieldDefinition fields[2];
-   psoKeyDefinition keyDef;
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
+
+   psoFieldDefinition fields[5] = {
+      { "field1", PSO_TINYINT,   {0} },
+      { "field2", PSO_INTEGER,   {0} },
+      { "field3", PSO_CHAR,      {30} },
+      { "field4", PSO_SMALLINT,  {0} },
+      { "field5", PSO_LONGVARBINARY, {0} }
+   };
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -77,7 +84,6 @@ int main( int argc, char * argv[] )
    /* Invalid definition. */
    
    memset( &definition, 0, sizeof(psoObjectDefinition) );
-   memset( fields, 0, 2*sizeof(psoFieldDefinition) );
 
    errcode = psoFolderCreateObject( folderHandle,
                                     "ahmcr",
@@ -86,7 +92,7 @@ int main( int argc, char * argv[] )
                                     (unsigned char *)&keyDef,
                                     sizeof(psoKeyDefinition),
                                     (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -101,10 +107,49 @@ int main( int argc, char * argv[] )
                                     strlen("ahmcr"),
                                     &definition,
                                     NULL,
+                                    sizeof(psoKeyDefinition),
+                                    (unsigned char *)fields,
+                                    5*sizeof(psoFieldDefinition) );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "ahmcr",
+                                    strlen("ahmcr"),
+                                    &definition,
+                                    (unsigned char *)&keyDef,
                                     0,
                                     (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    5*sizeof(psoFieldDefinition) );
+   if ( errcode != PSO_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "ahmcr",
+                                    strlen("ahmcr"),
+                                    &definition,
+                                    (unsigned char *)&keyDef,
+                                    sizeof(psoKeyDefinition),
+                                    NULL,
+                                    5*sizeof(psoFieldDefinition) );
    if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "ahmcr",
+                                    strlen("ahmcr"),
+                                    &definition,
+                                    (unsigned char *)&keyDef,
+                                    sizeof(psoKeyDefinition),
+                                    (unsigned char *)fields,
+                                    0 );
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

@@ -153,6 +153,16 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
       }
    }
    
+   if ( pKey != NULL && keyLength == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+
+   if ( pFields != NULL && fieldsLength == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   
 //   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
 //   if ( errcode != PSO_OK ) {
 //      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
