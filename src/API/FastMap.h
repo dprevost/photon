@@ -18,8 +18,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOA_MAP_H
-#define PSOA_MAP_H
+#ifndef PSOA_FASTMAP_H
+#define PSOA_FASTMAP_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -69,18 +69,18 @@ typedef struct psoaFastMap
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-int psoaFastMapFirst( psoaFastMap          * pHashMap,
-                  psoaHashMapEntry * pEntry );
+int psoaFastMapFirst( psoaFastMap      * pHashMap,
+                      psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psoaFastMapNext( psoaFastMap          * pHashMap,
-                 psoaHashMapEntry * pEntry );
+int psoaFastMapNext( psoaFastMap      * pHashMap,
+                     psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psoaFastMapRetrieve( psoaFastMap      * pHashMap,
-                    const void    * key,
-                    uint32_t        keyLength,
-                    psoaDataEntry * pEntry );
+int psoaFastMapRetrieve( psoaFastMap   * pHashMap,
+                         const void    * key,
+                         uint32_t        keyLength,
+                         psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -88,7 +88,7 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSOA_MAP_H */
+#endif /* PSOA_FASTMAP_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -76,6 +76,32 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
+   errcode = psoFolderCreateObject( NULL,
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
+                                    &def,
+                                    NULL,
+                                    0,
+                                    NULL,
+                                    0 );
+   if ( errcode != PSO_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateObject( sessionHandle,
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
+                                    &def,
+                                    NULL,
+                                    0,
+                                    NULL,
+                                    0 );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = psoFolderCreateObject( folderHandle,
                                     NULL,
                                     strlen("api_folder_create"),
@@ -115,6 +141,7 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+
    def.type = PSO_QUEUE;
    errcode = psoFolderCreateObject( folderHandle,
                                     "api_folder_create",
@@ -128,8 +155,35 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
+                                    &def,
+                                    NULL,
+                                    0,
+                                    (unsigned char *)fields,
+                                    0 );
+   if ( errcode != PSO_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   def.type = PSO_HASH_MAP;
+   errcode = psoFolderCreateObject( folderHandle,
+                                    "api_folder_create",
+                                    strlen("api_folder_create"),
+                                    &def,
+                                    NULL,
+                                    0,
+                                    (unsigned char *)fields,
+                                    sizeof(fields) );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    def.type = PSO_FOLDER;
-   
    errcode = psoFolderCreateObject( folderHandle,
                                     "api_folder_create",
                                     strlen("api_folder_create"),

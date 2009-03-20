@@ -53,8 +53,8 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
          /* Reinitialize the iterator, if needed */
          if ( pHashMap->iterator.pHashItem != NULL ) {
             if ( psonFastMapRelease( pMemHashMap,
-                                 pHashMap->iterator.pHashItem,
-                                 &pHashMap->object.pSession->context ) ) {
+                                     pHashMap->iterator.pHashItem,
+                                     &pHashMap->object.pSession->context ) ) {
                memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
             }
             else {
@@ -95,7 +95,7 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
    }
    else {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, errcode );
+                    g_psoErrorHandle, errcode );
    }
    
    return errcode;
@@ -189,12 +189,12 @@ int psoFastMapDefLength( PSO_HANDLE   objectHandle,
 
    if ( keyLength == NULL ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, PSO_NULL_POINTER );
+                    g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    if ( fieldsLength == NULL ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, PSO_NULL_POINTER );
+                    g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    
@@ -238,17 +238,17 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
    
    if ( key == NULL ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, PSO_NULL_POINTER );
+                    g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    if ( keyLength == 0 ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, PSO_INVALID_LENGTH );
+                    g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
    if ( pHashMap->editMode == 0 ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
+                    g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
       return PSO_OBJECT_IS_READ_ONLY;
    }
    
@@ -258,9 +258,9 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
 
          ok = psonFastMapDelete( pMemHashMap,
-                             key,
-                             keyLength,
-                             &pHashMap->object.pSession->context );
+                                 key,
+                                 keyLength,
+                                 &pHashMap->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 
          psoaCommonUnlock( &pHashMap->object );
@@ -275,7 +275,7 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
 
    if ( errcode != PSO_OK ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-         g_psoErrorHandle, errcode );
+                    g_psoErrorHandle, errcode );
    }
    if ( ! ok ) {
       errcode = psocGetLastError( &pHashMap->object.pSession->context.errorHandler );
@@ -399,8 +399,8 @@ int psoFastMapEmpty( PSO_HANDLE objectHandle )
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
       ok = psonFastMapRelease( pMemHashMap,
-                           pHashMap->iterator.pHashItem,
-                           &pHashMap->object.pSession->context );
+                               pHashMap->iterator.pHashItem,
+                               &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) goto error_handler_unlock;
@@ -475,8 +475,8 @@ int psoFastMapGet( PSO_HANDLE   objectHandle,
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
       ok = psonFastMapRelease( pMemHashMap,
-                           pHashMap->iterator.pHashItem,
-                           &pHashMap->object.pSession->context );
+                               pHashMap->iterator.pHashItem,
+                               &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) goto error_handler_unlock;
@@ -485,11 +485,11 @@ int psoFastMapGet( PSO_HANDLE   objectHandle,
    }
 
    ok = psonFastMapGet( pMemHashMap,
-                    key,
-                    keyLength,
-                    &pHashMap->iterator.pHashItem,
-                    bufferLength,
-                    &pHashMap->object.pSession->context );
+                        key,
+                        keyLength,
+                        &pHashMap->iterator.pHashItem,
+                        bufferLength,
+                        &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
@@ -564,8 +564,8 @@ int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
       ok = psonFastMapRelease( pMemHashMap,
-                           pHashMap->iterator.pHashItem,
-                           &pHashMap->object.pSession->context );
+                               pHashMap->iterator.pHashItem,
+                               &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
 
       if ( ! ok ) goto error_handler_unlock;
@@ -574,10 +574,10 @@ int psoFastMapGetFirst( PSO_HANDLE   objectHandle,
    }
 
    ok = psonFastMapGetFirst( pMemHashMap,
-                         &pHashMap->iterator,
-                         keyLength,
-                         bufferLength,
-                         &pHashMap->object.pSession->context );
+                             &pHashMap->iterator,
+                             keyLength,
+                             bufferLength,
+                             &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
@@ -657,10 +657,10 @@ int psoFastMapGetNext( PSO_HANDLE   objectHandle,
    pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
 
    ok = psonFastMapGetNext( pMemHashMap,
-                        &pHashMap->iterator,
-                        keyLength,
-                        bufferLength,
-                        &pHashMap->object.pSession->context );
+                            &pHashMap->iterator,
+                            keyLength,
+                            bufferLength,
+                            &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
@@ -748,11 +748,11 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
 
          ok = psonFastMapInsert( pMemHashMap,
-                             key,
-                             keyLength,
-                             data,
-                             dataLength,
-                             &pHashMap->object.pSession->context );
+                                 key,
+                                 keyLength,
+                                 data,
+                                 dataLength,
+                                 &pHashMap->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 
          psoaCommonUnlock( &pHashMap->object );
@@ -897,11 +897,11 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
 
          ok = psonFastMapReplace( pMemHashMap,
-                              key,
-                              keyLength,
-                              data,
-                              dataLength,
-                              &pHashMap->object.pSession->context );
+                                  key,
+                                  keyLength,
+                                  data,
+                                  dataLength,
+                                  &pHashMap->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 
          psoaCommonUnlock( &pHashMap->object );
@@ -988,8 +988,8 @@ int psoFastMapStatus( PSO_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaFastMapFirst( psoaFastMap          * pHashMap,
-                 psoaHashMapEntry * pEntry )
+int psoaFastMapFirst( psoaFastMap      * pHashMap,
+                      psoaHashMapEntry * pEntry )
 {
    psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
@@ -1014,8 +1014,8 @@ int psoaFastMapFirst( psoaFastMap          * pHashMap,
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
       ok = psonFastMapRelease( pMemHashMap,
-                           pHashMap->iterator.pHashItem,
-                           &pHashMap->object.pSession->context );
+                               pHashMap->iterator.pHashItem,
+                               &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       
       if ( ! ok ) goto error_handler_unlock;
@@ -1024,10 +1024,10 @@ int psoaFastMapFirst( psoaFastMap          * pHashMap,
    }
 
    ok = psonFastMapGetFirst( pMemHashMap,
-                         &pHashMap->iterator,
-                         (uint32_t) -1,
-                         (uint32_t) -1,
-                         &pHashMap->object.pSession->context );
+                             &pHashMap->iterator,
+                             (uint32_t) -1,
+                             (uint32_t) -1,
+                             &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 
@@ -1057,8 +1057,8 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaFastMapNext( psoaFastMap          * pHashMap,
-                psoaHashMapEntry * pEntry )
+int psoaFastMapNext( psoaFastMap      * pHashMap,
+                     psoaHashMapEntry * pEntry )
 {
    psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
@@ -1082,10 +1082,10 @@ int psoaFastMapNext( psoaFastMap          * pHashMap,
    pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
 
    ok = psonFastMapGetNext( pMemHashMap,
-                        &pHashMap->iterator,
-                        (uint32_t) -1,
-                        (uint32_t) -1,
-                        &pHashMap->object.pSession->context );
+                            &pHashMap->iterator,
+                            (uint32_t) -1,
+                            (uint32_t) -1,
+                            &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
    
@@ -1136,8 +1136,8 @@ void psoaFastMapResetReader( void * map )
    if ( pMapLatest != pMemHashMap ) {
       if ( pHashMap->iterator.pHashItem != NULL ) {
          psonFastMapRelease( pMemHashMap,
-                         pHashMap->iterator.pHashItem,
-                         &pHashMap->object.pSession->context );
+                             pHashMap->iterator.pHashItem,
+                             &pHashMap->object.pSession->context );
          memset( &pHashMap->iterator, 0, sizeof(psonFastMapItem) );
       }
       pHashMap->object.pMyMemObject = pMapLatest;
@@ -1146,10 +1146,10 @@ void psoaFastMapResetReader( void * map )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaFastMapRetrieve( psoaFastMap      * pHashMap,
-                    const void    * key,
-                    uint32_t        keyLength,
-                    psoaDataEntry * pEntry )
+int psoaFastMapRetrieve( psoaFastMap   * pHashMap,
+                         const void    * key,
+                         uint32_t        keyLength,
+                         psoaDataEntry * pEntry )
 {
    psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
@@ -1177,8 +1177,8 @@ int psoaFastMapRetrieve( psoaFastMap      * pHashMap,
    /* Reinitialize the iterator, if needed */
    if ( pHashMap->iterator.pHashItem != NULL ) {
       ok = psonFastMapRelease( pMemHashMap,
-                           pHashMap->iterator.pHashItem,
-                           &pHashMap->object.pSession->context );
+                               pHashMap->iterator.pHashItem,
+                               &pHashMap->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) goto error_handler_unlock;
 
@@ -1186,11 +1186,11 @@ int psoaFastMapRetrieve( psoaFastMap      * pHashMap,
    }
 
    ok = psonFastMapGet( pMemHashMap,
-                    key,
-                    keyLength,
-                    &pHashItem,
-                    (uint32_t) -1,
-                    &pHashMap->object.pSession->context );
+                        key,
+                        keyLength,
+                        &pHashItem,
+                        (uint32_t) -1,
+                        &pHashMap->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler_unlock;
 

@@ -76,17 +76,17 @@ typedef struct psoaHashMapEntry
 
 PHOTON_API_EXPORT
 int psoaHashMapFirst( psoaHashMap      * pHashMap,
-                     psoaHashMapEntry * pEntry );
+                      psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
 int psoaHashMapNext( psoaHashMap      * pHashMap,
-                    psoaHashMapEntry * pEntry );
+                     psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
 int psoaHashMapRetrieve( psoaHashMap   * pHashMap,
-                        const void   * key,
-                        uint32_t       keyLength,
-                        psoaDataEntry * pEntry );
+                         const void    * key,
+                         uint32_t        keyLength,
+                         psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
