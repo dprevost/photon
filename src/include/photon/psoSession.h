@@ -48,7 +48,8 @@ extern "C" {
  *     If you need to open the same Photon object in multiple threads,
  *     simply open it multiple times, for each thread. The overhead of 
  *     having multiple handles to the same shared-memory data container 
- *     is minimal and increases the overall performance of the framework.
+ *     is minimal and using this technique instead of using multi-thread 
+ *     locks will increases the overall performance of the software.
  *   </li>
  *
  *   <li>
@@ -84,7 +85,8 @@ extern "C" {
  *     If you need to open the same Photon object in multiple threads,
  *     simply open it multiple times, for each thread. The overhead of 
  *     having multiple handles to the same shared-memory data container 
- *     is minimal and increases the overall performance of the framework.
+ *     is minimal and using this technique instead of using multi-thread 
+ *     locks will increases the overall performance of the software.
  *   </li>
  *
  *   <li>
@@ -113,9 +115,9 @@ extern "C" {
  * since the previous call to psoCommit or psoRollback.
  *
  * Insertions and deletions subjected to this call include both data items
- * inserted and deleted from data containers (maps, etc.) and objects 
- * themselves created with ::psoCreateObject and/or destroyed with 
- * ::psoDestroyObject.
+ * inserted, replaced and deleted from data containers (maps, etc.) and 
+ * the objects themselves created, for example, with ::psoCreateObject and/or 
+ * destroyed with ::psoDestroyObject.
  *
  * Note: the internal calls executed by the engine to satisfy this request
  * cannot fail. As such,
@@ -139,23 +141,26 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * ::psoCommit.
  *
  * This function does not provide a handle to the newly created object. Use
- * psoQueueOpen and similar functions to get the handle.
+ * ::psoQueueOpen and similar functions to get the handle.
  *
  * \param[in] sessionHandle Handle to the current session.
  * \param[in] objectName The fully qualified name of the object. 
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
  *            counting the null terminator (null-terminators are not used by
  *            the Photon engine).
- * \param[in] definition The type of object to create (folder, queue, etc.)
- *            and additional fields (the number of data fields, for example).
- * \param[in] key An opaque definition of the key. You can set this field
- *            to NULL if the object has no key.
- * \param[in] keyLength The length in bytes of the buffer \em key. 
- *            It should be set to zero if \em key is NULL.
- * \param[in] fields An opaque definition of the data fields of the object.
- *            It can be set to NULL when creating a Folder.
- * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
- *            It should be set to zero if \em fields is NULL.
+ * \param[in] definition The basic information needed to create the object:
+ *            the type of object to create (folder, queue, etc.), the type
+ *            of key definition, etc. 
+ * \param[in] keyDef An opaque definition of the key. You can set this field
+ *            to NULL if the object has no key. See ::psoDefinitionType
+ *            for a more in-depth explanation.
+ * \param[in] keyDefLength The length in bytes of the buffer \em keyDef. 
+ *            It should be set to zero if \em keyDef is NULL.
+ * \param[in] dataDef An opaque definition of the data fields of the object.
+ *            It can be set to NULL when creating a Folder. See 
+ *            ::psoDefinitionType for a more in-depth explanation.
+ * \param[in] dataDefLength The length in bytes of the buffer \em dataDef. 
+ *            It should be set to zero if \em dataDef is NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -164,10 +169,10 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
                      psoObjectDefinition * definition,
-                     const unsigned char * key,
-                     psoUint32             keyLength,
-                     const unsigned char * fields,
-                     psoUint32             fieldsLength );
+                     const unsigned char * keyDef,
+                     psoUint32             keyDefLength,
+                     const unsigned char * dataDef,
+                     psoUint32             dataDefLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

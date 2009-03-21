@@ -116,7 +116,22 @@ typedef enum psoIteratorType psoIteratorType;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * Photon supported data definitions
+ * Photon supported definitions for both keys and data fields.
+ *
+ * Definitions are not used by the core engine - the engine manipulates both
+ * the keys and the data records as arrays of bytes. 
+ *
+ * They are however essential at the interface level, mainly for object 
+ * oriented languages, to transform your objects to an array of bytes and back.
+ *
+ * Definitions can be divided in two categories, one where all the data fields
+ * have a fixed length (the last field can vary in size). This is ideal for
+ * mapping a data record (or key) to C and COBOL and can also be used by C
+
+ and one where the
+ * length of a data field is unknown (a Java string, for example). 
+ *
+ * Photon fully supports the first type natively by providing 
  */
 enum psoDefinitionType
 {
