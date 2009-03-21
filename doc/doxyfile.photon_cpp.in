@@ -423,16 +423,23 @@ WARN_LOGFILE =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT = ../src/include/photon/photon           \
-        ../src/include/photon/psoException     \
-        ../src/include/photon/psoFastMap       \
-        ../src/include/photon/psoFastMapEditor \
-        ../src/include/photon/psoFolder        \
-        ../src/include/photon/psoHashMap       \
-        ../src/include/photon/psoLifo          \
-        ../src/include/photon/psoQueue         \
-        ../src/include/photon/psoProcess       \
-        ../src/include/photon/psoSession
+INPUT =                                           \
+        ../src/include/photon/FieldDefinition     \
+        ../src/include/photon/FieldDefinitionODBC \
+        ../src/include/photon/FieldDefinitionUser \
+        ../src/include/photon/KeyDefinition       \
+        ../src/include/photon/KeyDefinitionODBC   \
+        ../src/include/photon/KeyDefinitionUser   \
+        ../src/include/photon/photon              \
+        ../src/include/photon/psoException        \
+        ../src/include/photon/psoFastMap          \
+        ../src/include/photon/psoFastMapEditor    \
+        ../src/include/photon/psoFolder           \
+        ../src/include/photon/psoHashMap          \
+        ../src/include/photon/psoLifo             \
+        ../src/include/photon/psoProcess          \
+        ../src/include/photon/psoQueue            \
+        ../src/include/photon/psoSession          
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
