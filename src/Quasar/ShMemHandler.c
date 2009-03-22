@@ -26,15 +26,160 @@
 #include "API/QuasarCommon.h"
 #include "Nucleus/SessionContext.h"
 #include "Nucleus/InitEngine.h"
+#include "Nucleus/Folder.h"
+#include "Nucleus/ProcessManager.h"
+#include "Nucleus/Session.h"
+#include "Nucleus/Transaction.h"
 
 extern psocErrMsgHandle g_qsrErrorHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool qsrHandlerInit( qsrHandler         * pHandler,
-                      struct ConfigParams * pConfig,
-                      psonMemoryHeader   ** ppMemoryAddress,
-                      bool                  verifyMemOnly )
+bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
+{
+   bool ok;
+   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psonFolder * pTree, * pFolder;
+   psonFolderItem folderItem;
+   psonObjectDescriptor * pDesc;
+
+   GET_PTR( pTree, pHandler->pMemHeader->treeMgrOffset, psonFolder )
+
+   ok = psonTopFolderCreateObject( pTree,
+                                   "system",
+                                   strlen("system"),
+                                   &def,
+                                   NULL,
+                                   0,
+                                   NULL,
+                                   0,
+                                   &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+   
+   ok = psonTopFolderCreateObject( pTree,
+                                   "proc",
+                                   strlen("proc"),
+                                   &def,
+                                   NULL,
+                                   0,
+                                   NULL,
+                                   0,
+                                   &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   ok = psonTopFolderOpenObject( pTree,
+                                 "system",
+                                 strlen("system"),
+                                 PSO_FOLDER,
+                                 &folderItem,
+                                 &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
+   GET_PTR( pFolder, pDesc->offset, psonFolder );
+   pFolder->isSystemFolder = true;
+   
+   ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+   
+   ok = psonTopFolderOpenObject( pTree,
+                                 "proc",
+                                 strlen("proc"),
+                                 PSO_FOLDER,
+                                 &folderItem,
+                                 &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
+   GET_PTR( pFolder, pDesc->offset, psonFolder );
+   pFolder->isSystemFolder = true;
+   
+   ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   ok = psonTxCommit( (psonTx*)pHandler->context.pTransaction, 
+                       &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   return ok;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool qsrHandlerCreateSession( qsrHandler * pHandler )
+{
+   psonProcMgr* pCleanupManager;
+   bool ok;
+   struct psonProcess * pCleanup;
+   void * pSession = (void *)pHandler;
+   struct psonSession * pSessionCleanup;
+
+   GET_PTR( pHandler->context.pAllocator, 
+            pHandler->pMemHeader->allocatorOffset, void );
+   GET_PTR( pCleanupManager, 
+            pHandler->pMemHeader->processMgrOffset, psonProcMgr );
+
+   ok = psonProcMgrAddProcess( pCleanupManager,
+                               getpid(), 
+                               &pCleanup,
+                               &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+
+//   psoErrors errcode = PSO_OK;
+//   psoaSession* pSession = NULL;
+//   void* ptr = NULL;
+//   bool ok;
+   
+//   if ( sessionHandle == NULL ) return PSO_NULL_HANDLE;
+   
+//   *sessionHandle = NULL;
+
+//   if ( g_pProcessInstance == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
+   
+//   pSession = (psoaSession*) malloc(sizeof(psoaSession));
+//   if ( pSession == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   
+//   memset( pSession, 0, sizeof(psoaSession) );
+//   pSession->type = PSOA_SESSION;
+
+   /*
+    * From this point we can use "goto error_handler" to recover
+    * from errors;
+    */
+   
+   ok = psonProcessAddSession( pCleanup, 
+                               pSession, 
+                               &pSessionCleanup, 
+                               &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   
+   return ok;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void qsrHandlerFini( qsrHandler * pHandler )
+{
+   PSO_PRE_CONDITION( pHandler != NULL );
+
+   pHandler->pConfig = NULL;
+   pHandler->pMemManager = NULL;
+   pHandler->pMemHeader = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool qsrHandlerInit( qsrHandler          * pHandler,
+                     struct ConfigParams * pConfig,
+                     psonMemoryHeader   ** ppMemoryAddress,
+                     bool                  verifyMemOnly )
 {
    bool ok;
    int errcode = 0;
@@ -104,11 +249,11 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
          return false;
       }
       ok = qsrCreateMem( pHandler->pMemManager,
-                               path,
-                               pConfig->memorySizekb,
-                               pConfig->filePerms,
-                               ppMemoryAddress,
-                               &pHandler->context );
+                         path,
+                         pConfig->memorySizekb,
+                         pConfig->filePerms,
+                         ppMemoryAddress,
+                         &pHandler->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ! ok ) return false;
       
@@ -267,19 +412,18 @@ bool qsrHandlerInit( qsrHandler         * pHandler,
    }
 
    pHandler->pMemHeader = *ppMemoryAddress;
+
+   ok = qsrHandlerCreateSession( pHandler );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+   
+   if ( ! fileStatus.fileExist ) {
+      ok = qsrHandlerAddSystemObjects( pHandler );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) return false;
+   }
    
    return true;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void qsrHandlerFini( qsrHandler * pHandler )
-{
-   PSO_PRE_CONDITION( pHandler != NULL );
-
-   pHandler->pConfig = NULL;
-   pHandler->pMemManager = NULL;
-   pHandler->pMemHeader = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -370,8 +514,6 @@ void qsrHandleCrash( qsrHandler * pHandler, pid_t pid )
    }
 #endif // #if 0
 }
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

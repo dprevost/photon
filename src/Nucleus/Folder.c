@@ -1557,6 +1557,8 @@ bool psonFolderInit( psonFolder         * pFolder,
       return false;
    }
    
+   pFolder->isSystemFolder = false;
+   
    return true;
 }
 
@@ -1609,6 +1611,10 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
    if ( errcode != PSO_OK ) goto the_exit;
    
    if ( lastIteration ) {
+      if ( pFolder->isSystemFolder ) {
+         errcode = PSO_OBJECT_ALREADY_PRESENT;
+         goto the_exit;
+      }
       /* 
        * We are now ready to create the object. The steps require for this
        * are:

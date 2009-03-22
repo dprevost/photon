@@ -58,14 +58,18 @@ typedef struct qsrHandler qsrHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool qsrHandlerInit( qsrHandler              * pHandler,
-                      struct ConfigParams      * pConfig,
-                      struct psonMemoryHeader ** ppMemoryAddress,
-                      bool                       verifyMemOnly );
+bool qsrHandlerInit( qsrHandler               * pHandler,
+                     struct ConfigParams      * pConfig,
+                     struct psonMemoryHeader ** ppMemoryAddress,
+                     bool                       verifyMemOnly );
 
 void qsrHandlerFini( qsrHandler * pHandler );
 
 void qsrHandleCrash( qsrHandler * pHandler, pid_t pid );
+
+bool qsrHandlerCreateSession( qsrHandler * pHandler );
+
+bool qsrHandlerSystemObjects( qsrHandler * pHandler );
 
 #if 0
    void CleanSession( psonSession* pSession );

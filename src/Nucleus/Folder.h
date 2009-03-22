@@ -63,6 +63,8 @@ struct psonFolder
    struct psonTreeNode  nodeObject;
 
    struct psonHashTx      hashObj;
+   
+   bool isSystemFolder;
 
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;
