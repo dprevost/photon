@@ -768,14 +768,16 @@
 
     <error>
       <errnumber> 73 </errnumber>
-      <errname> SYSTEM_FOLDER </errname>
+      <errname> SYSTEM_OBJECT </errname>
       <message_group>
         <message xml:lang="en">
           <errormsg>
-            You cannot add or remove an object in a system folder.
+            You cannot add or remove data if the object is a system object.
           </errormsg>
           <errordoc>
-            You cannot add or remove an object in a system folder.
+            You cannot add or remove data if the object is a system object.
+            As a consequence, you cannot add or remove an object if the 
+            folder is a system folder.
           </errordoc>
         </message>
       </message_group>

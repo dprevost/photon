@@ -671,6 +671,8 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    pHashMap->keyDefOffset = SET_OFFSET(ptr);
    pHashMap->keyDefLength = keyDefLength;
 
+   pHashMap->isSystemObject = false;
+
    return true;
 }
 

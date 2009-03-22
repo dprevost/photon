@@ -242,12 +242,16 @@ int psoHashMapDelete( PSO_HANDLE   objectHandle,
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
 
-         ok = psonHashMapDelete( pMemHashMap,
-                                 key,
-                                 keyLength,
-                                 &pHashMap->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         
+         if ( pMemHashMap->isSystemObject ) {
+            errcode = PSO_SYSTEM_OBJECT;
+         }
+         else {
+            ok = psonHashMapDelete( pMemHashMap,
+                                    key,
+                                    keyLength,
+                                    &pHashMap->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }         
          psoaCommonUnlock( &pHashMap->object );
       }
       else {
@@ -579,13 +583,18 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
 
-         ok = psonHashMapInsert( pMemHashMap,
-                                 key,
-                                 keyLength,
-                                 data,
-                                 dataLength,
-                                 &pHashMap->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
+         if ( pMemHashMap->isSystemObject ) {
+            errcode = PSO_SYSTEM_OBJECT;
+         }
+         else {
+            ok = psonHashMapInsert( pMemHashMap,
+                                    key,
+                                    keyLength,
+                                    data,
+                                    dataLength,
+                                    &pHashMap->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pHashMap->object );
       }
       else {
@@ -715,13 +724,18 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
 
-         ok = psonHashMapReplace( pMemHashMap,
-                                  key,
-                                  keyLength,
-                                  data,
-                                  dataLength,
-                                  &pHashMap->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
+         if ( pMemHashMap->isSystemObject ) {
+            errcode = PSO_SYSTEM_OBJECT;
+         }
+         else {
+            ok = psonHashMapReplace( pMemHashMap,
+                                     key,
+                                     keyLength,
+                                     data,
+                                     dataLength,
+                                     &pHashMap->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pHashMap->object );
       }
       else {

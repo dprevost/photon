@@ -30,6 +30,7 @@
 #include "Nucleus/ProcessManager.h"
 #include "Nucleus/Session.h"
 #include "Nucleus/Transaction.h"
+#include "Nucleus/HashMap.h"
 
 extern psocErrMsgHandle g_qsrErrorHandle;
 
@@ -39,7 +40,10 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
 {
    bool ok;
    psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition defMap = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
    psonFolder * pTree, * pFolder;
+   psonHashMap * pHashMap;
+   
    psonFolderItem folderItem;
    psonObjectDescriptor * pDesc;
 
@@ -69,6 +73,22 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;
 
+   ok = psonTopFolderCreateObject( pTree,
+                                   "system/Data_Definition",
+                                   strlen("system/Data_Definition"),
+                                   &defMap,
+                                   "",
+                                   1,
+                                   "",
+                                   1,
+                                   &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   /*
+    * Setting the field "isSystemObject" should only be done after all
+    * objects are created, specially folders.
+    */
    ok = psonTopFolderOpenObject( pTree,
                                  "system",
                                  strlen("system"),
@@ -80,7 +100,7 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
 
    GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
    GET_PTR( pFolder, pDesc->offset, psonFolder );
-   pFolder->isSystemFolder = true;
+   pFolder->isSystemObject = true;
    
    ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -97,7 +117,24 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
 
    GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
    GET_PTR( pFolder, pDesc->offset, psonFolder );
-   pFolder->isSystemFolder = true;
+   pFolder->isSystemObject = true;
+   
+   ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   ok = psonTopFolderOpenObject( pTree,
+                                 "system/Data_Definition",
+                                 strlen("system/Data_Definition"),
+                                 PSO_HASH_MAP,
+                                 &folderItem,
+                                 &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
+   GET_PTR( pHashMap, pDesc->offset, psonHashMap );
+   pHashMap->isSystemObject = true;
    
    ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );

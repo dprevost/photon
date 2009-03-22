@@ -64,7 +64,16 @@ struct psonFolder
 
    struct psonHashTx      hashObj;
    
-   bool isSystemFolder;
+   /*
+    * This field cannot be set or modified by the API. It is set to false
+    * by the "constructor". Quasar will set it to true when creating a new
+    * shared-memory and constructing its system objects.
+    *
+    * When this field is set to true, no data can be added or removed 
+    * directly by accessing the object through the API. Updates are done 
+    * indirectly as a consequence of some API functions.
+    */
+   bool isSystemObject;
 
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;

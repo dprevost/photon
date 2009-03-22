@@ -289,6 +289,11 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
    txStatus = &pHashItem->txStatus;
    
    if ( lastIteration ) {
+      if ( pFolder->isSystemObject ) {
+         errcode = PSO_SYSTEM_OBJECT;
+         goto the_exit;
+      }
+
       /* 
        * If the transaction id of the object is non-zero, a big no-no - 
        * we do not support two transactions on the same data
@@ -537,6 +542,10 @@ bool psonFolderEditObject( psonFolder         * pFolder,
    GET_PTR( pDescOld, pHashItemOld->dataOffset, psonObjectDescriptor );
    
    if ( lastIteration ) {
+      if ( pFolder->isSystemObject ) {
+         errcode = PSO_SYSTEM_OBJECT;
+         goto the_exit;
+      }
       GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
       /* 
        * If the transaction id of the object (to open) is equal to the 
@@ -1557,7 +1566,7 @@ bool psonFolderInit( psonFolder         * pFolder,
       return false;
    }
    
-   pFolder->isSystemFolder = false;
+   pFolder->isSystemObject = false;
    
    return true;
 }
@@ -1611,8 +1620,8 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
    if ( errcode != PSO_OK ) goto the_exit;
    
    if ( lastIteration ) {
-      if ( pFolder->isSystemFolder ) {
-         errcode = PSO_OBJECT_ALREADY_PRESENT;
+      if ( pFolder->isSystemObject ) {
+         errcode = PSO_SYSTEM_OBJECT;
          goto the_exit;
       }
       /* 
