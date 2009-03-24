@@ -50,6 +50,7 @@ struct psonMemoryHeader
    ptrdiff_t       treeMgrOffset;
    ptrdiff_t       processMgrOffset;
    ptrdiff_t       allocatorOffset;
+   ptrdiff_t       dataDefMapOffset;
    bool            logON;
    size_t          totalLength;
    

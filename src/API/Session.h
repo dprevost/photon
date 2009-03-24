@@ -56,6 +56,9 @@ typedef struct psoaSession
 
    struct psonSession* pCleanup;
 
+   /** Pointer to the hashmap holding the data definitions */
+   struct psonHashMap * pDataDefMap;
+   
    bool terminated;
    
    int numberOfObjects;

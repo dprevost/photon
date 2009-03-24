@@ -26,6 +26,7 @@
 #include <photon/psoCommon.h>
 #include "API/api.h"
 #include <photon/psoPhotonODBC.h>
+#include "Nucleus/Definitions.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -33,12 +34,15 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-typedef struct psoaDataDefinition
+struct psoaDataDefinition
 {
+   /* Key or data definition */
    psoaDefinitionType definitionType;
    
    psonDataDefinition * pMemDefinition;
 };
+
+typedef struct psoaDataDefinition psoaDataDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

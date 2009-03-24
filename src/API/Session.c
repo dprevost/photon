@@ -32,6 +32,7 @@
 #include "Nucleus/Transaction.h"
 #include "Nucleus/TreeNode.h"
 #include "Nucleus/Folder.h"
+#include "Nucleus/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -692,6 +693,9 @@ int psoInitSession( PSO_HANDLE * sessionHandle )
       if ( errcode != PSO_OK ) goto error_handler;
    }
    
+   /* Get the pointer to the map of data definitions */
+   GET_PTR( pSession->pDataDefMap, pSession->pHeader->dataDefMapOffset, psonHashMap );
+
    psoaListReadersInit( &pSession->listReaders );
    
    /*

@@ -20,6 +20,8 @@
 
 #include "Common/Common.h"
 #include "API/DataDefinition.h"
+#include <photon/DataDefinition.h>
+#include "API/Session.h"
 
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -30,20 +32,56 @@ int psoDataDefClose( PSO_HANDLE definitionHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefCreate( PSO_HANDLE            sessionHandle,
-                      const char          * definitionName,
-                      psoUint32             nameLengthInBytes,
-                      const unsigned char * dataDef,
-                      psoUint32             dataDefLength,
-                      PSO_HANDLE          * definitionHandle )
+int psoDataDefCreate( PSO_HANDLE               sessionHandle,
+                      const char             * definitionName,
+                      psoUint32                nameLengthInBytes,
+                      enum psoDefinitionType   type,
+                      const unsigned char    * dataDef,
+                      psoUint32                dataDefLength,
+                      PSO_HANDLE             * definitionHandle )
 {
+   int errcode = PSO_OK;
+   psoaSession* pSession;
+   bool ok;
+   
+   pSession = (psoaSession*) sessionHandle;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
+
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( definitionName == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( nameLengthInBytes == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   if ( type <= PSO_DEF_FIRST_TYPE || type >= PSO_DEF_LAST_TYPE ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_OBJECT_TYPE );
+      return PSO_WRONG_OBJECT_TYPE;
+   }
+   if ( dataDef == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( dataDefLength == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   if ( definitionHandle == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefGet( PSO_HANDLE      definitionHandle,
-                   unsigned char * dataDef,
-                   psoUint32       dataDefLength )
+int psoDataDefGet( PSO_HANDLE               definitionHandle,
+                   enum psoDefinitionType * type,
+                   unsigned char          * dataDef,
+                   psoUint32                dataDefLength )
 {
 }
 

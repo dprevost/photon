@@ -68,12 +68,13 @@ int psoDataDefClose( PSO_HANDLE definitionHandle );
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoDataDefCreate( PSO_HANDLE            sessionHandle,
-                      const char          * definitionName,
-                      psoUint32             nameLengthInBytes,
-                      const unsigned char * dataDef,
-                      psoUint32             dataDefLength,
-                      PSO_HANDLE          * definitionHandle );
+int psoDataDefCreate( PSO_HANDLE               sessionHandle,
+                      const char             * definitionName,
+                      psoUint32                nameLengthInBytes,
+                      enum psoDefinitionType   type,
+                      const unsigned char    * dataDef,
+                      psoUint32                dataDefLength,
+                      PSO_HANDLE             * definitionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -92,9 +93,10 @@ int psoDataDefCreate( PSO_HANDLE            sessionHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoDataDefGet( PSO_HANDLE      definitionHandle,
-                   unsigned char * dataDef,
-                   psoUint32       dataDefLength );
+int psoDataDefGet( PSO_HANDLE               definitionHandle,
+                   enum psoDefinitionType * type,
+                   unsigned char          * dataDef,
+                   psoUint32                dataDefLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -130,6 +132,14 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
                     const char * definitionName,
                     psoUint32    nameLengthInBytes,
                     PSO_HANDLE * definitionHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* PSO_DATA_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

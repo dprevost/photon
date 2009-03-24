@@ -77,9 +77,9 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
                                    "system/Data_Definition",
                                    strlen("system/Data_Definition"),
                                    &defMap,
-                                   "",
+                                   (unsigned char *)"",
                                    1,
-                                   "",
+                                   (unsigned char *)"",
                                    1,
                                    &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
@@ -135,6 +135,7 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
    GET_PTR( pHashMap, pDesc->offset, psonHashMap );
    pHashMap->isSystemObject = true;
+   pHandler->pMemHeader->dataDefMapOffset = pDesc->offset;
    
    ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
