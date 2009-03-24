@@ -33,6 +33,15 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+typedef struct psoaDataDefinition
+{
+   psoaDefinitionType definitionType;
+   
+   psonDataDefinition * pMemDefinition;
+};
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 //PHOTON_API_EXPORT
 //void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
 //                       uint32_t         * pMinLength,

@@ -41,6 +41,14 @@ enum psoaObjetType
 
 typedef enum psoaObjetType psoaObjetType;
 
+enum psoaDefinitionType
+{
+   PSOA_DEF_DATA = 0x222,
+   PSOA_DEF_KEY
+};
+
+typedef enum psoaDefinitionType psoaDefinitionType;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 enum psoaEditMode

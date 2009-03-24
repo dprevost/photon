@@ -24,6 +24,47 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int psoDataDefClose( PSO_HANDLE definitionHandle )
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoDataDefCreate( PSO_HANDLE            sessionHandle,
+                      const char          * definitionName,
+                      psoUint32             nameLengthInBytes,
+                      const unsigned char * dataDef,
+                      psoUint32             dataDefLength,
+                      PSO_HANDLE          * definitionHandle )
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoDataDefGet( PSO_HANDLE      definitionHandle,
+                   unsigned char * dataDef,
+                   psoUint32       dataDefLength )
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoDataDefGetLength( PSO_HANDLE   definitionHandle,
+                         psoUint32  * dataDefLength )
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoDataDefOpen( PSO_HANDLE   sessionHandle,
+                    const char * definitionName,
+                    psoUint32    nameLengthInBytes,
+                    PSO_HANDLE * definitionHandle )
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
                         int                numKeys,
                         uint32_t         * pOffsets )
