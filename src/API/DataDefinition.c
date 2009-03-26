@@ -184,6 +184,15 @@ int psoDataDefGet( PSO_HANDLE               definitionHandle,
    
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
 
+   if ( type == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( dataDef == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
    if ( dataDefLength < pDefinition->pMemDefinition->definitionLength ) {
       psocSetError( &pDefinition->pSession->context.errorHandler,
                     g_psoErrorHandle, PSO_INVALID_LENGTH );
@@ -208,6 +217,11 @@ int psoDataDefGetLength( PSO_HANDLE   definitionHandle,
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( dataDefLength == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
 
    *dataDefLength = pDefinition->pMemDefinition->definitionLength;
    

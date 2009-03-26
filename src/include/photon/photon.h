@@ -29,6 +29,7 @@
 
 #include <photon/psoProcess.h>
 #include <photon/psoSession.h>
+#include <photon/DataDefinition.h>
 #include <photon/psoFolder.h>
 /*
  * Hash maps and fast maps implements the same data container but differs 
