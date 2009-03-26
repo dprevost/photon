@@ -27,6 +27,7 @@
 #include "API/api.h"
 #include <photon/psoPhotonODBC.h>
 #include "Nucleus/Definitions.h"
+#include "API/Session.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,6 +39,8 @@ struct psoaDataDefinition
 {
    /* Key or data definition */
    psoaDefinitionType definitionType;
+   
+   psoaSession * pSession;
    
    psonDataDefinition * pMemDefinition;
 };

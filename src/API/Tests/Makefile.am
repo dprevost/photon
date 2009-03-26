@@ -14,17 +14,18 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =            \
-        Api          \
-        CommonObject \
-        FastMap      \
-        Folder       \
-        HashMap      \
-        Lifo         \
-        ListReaders  \
-        Process      \
-        Queue        \
-        Session      
+SUBDIRS =              \
+        Api            \
+        CommonObject   \
+        DataDefinition \
+        FastMap        \
+        Folder         \
+        HashMap        \
+        Lifo           \
+        ListReaders    \
+        Process        \
+        Queue          \
+        Session        
 
 EXTRA_DIST =               \
         Makefile.inc.win32 \

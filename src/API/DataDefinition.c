@@ -22,12 +22,27 @@
 #include "API/DataDefinition.h"
 #include <photon/DataDefinition.h>
 #include "API/Session.h"
-
+#include "Nucleus/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoDataDefClose( PSO_HANDLE definitionHandle )
 {
+   psoaDataDefinition * pDefinition;
+
+   pDefinition = (psoaDataDefinition *) definitionHandle;
+   if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+
+   /*
+    * Memory might still be around even after it is released, so we make 
+    * sure future access with the handle fails by setting the type wrong!
+    */
+   pDefinition->definitionType = 0; 
+   free( pDefinition );
+   
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -42,8 +57,12 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
 {
    int errcode = PSO_OK;
    psoaSession* pSession;
-   bool ok;
-   
+   bool ok = true;
+   psonDataDefinition * pMemDefinition = NULL;
+   uint32_t recLength;
+   psoaDataDefinition * pDefinition = NULL;
+   psonHashTxItem * pHashItem;
+
    pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
 
@@ -74,6 +93,81 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
       return PSO_NULL_POINTER;
    }
 
+   /* We need to serialize the inputs to insert the record in the hash map */
+   recLength = offsetof( psonDataDefinition, definition ) + dataDefLength;
+   pMemDefinition = malloc( recLength );
+   if ( pMemDefinition == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   pMemDefinition->type = type;
+   pMemDefinition->definitionLength = dataDefLength;
+   memcpy( pMemDefinition->definition, dataDef, dataDefLength );
+
+   /* Create our proxy object */
+   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDefinition == NULL ) {
+      free( pMemDefinition );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   
+   if ( ! pSession->terminated ) {
+      if ( psoaSessionLock( pSession ) ) {
+         ok = psonHashMapInsert( pSession->pDataDefMap,
+                                 definitionName,
+                                 nameLengthInBytes,
+                                 pMemDefinition,
+                                 recLength,
+                                 &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         
+         if ( ok ) {
+            ok = psonHashMapGet( pSession->pDataDefMap,
+                                 definitionName,
+                                 nameLengthInBytes,
+                                 &pHashItem,
+                                 (uint32_t) -1,
+                                 &pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
+         psoaSessionUnlock( pSession );
+         if ( ! ok ) goto error_handler;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+         goto error_handler;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+      goto error_handler;
+   }
+
+   free( pMemDefinition );
+   pDefinition->pSession = pSession;
+   pDefinition->definitionType = PSOA_DEF_DATA;
+   GET_PTR( pMemDefinition, pHashItem->dataOffset, psonDataDefinition );
+   pDefinition->pMemDefinition = pMemDefinition;
+   
+   *definitionHandle = (PSO_HANDLE) pDefinition;
+
+   return PSO_OK;
+   
+error_handler:
+
+   if ( pMemDefinition ) free( pMemDefinition );
+   free( pDefinition );
+   
+   if ( errcode != 0 ) {
+      psocSetError( &pSession->context.errorHandler, 
+         g_psoErrorHandle, errcode );
+   }
+   if ( ! ok ) {
+      errcode = psocGetLastError( &pSession->context.errorHandler );
+   }
+
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -83,6 +177,24 @@ int psoDataDefGet( PSO_HANDLE               definitionHandle,
                    unsigned char          * dataDef,
                    psoUint32                dataDefLength )
 {
+   psoaDataDefinition * pDefinition;
+
+   pDefinition = (psoaDataDefinition *) definitionHandle;
+   if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( dataDefLength < pDefinition->pMemDefinition->definitionLength ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   
+   *type = pDefinition->pMemDefinition->type;
+   memcpy( dataDef, pDefinition->pMemDefinition->definition,
+      pDefinition->pMemDefinition->definitionLength );
+   
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -90,6 +202,16 @@ int psoDataDefGet( PSO_HANDLE               definitionHandle,
 int psoDataDefGetLength( PSO_HANDLE   definitionHandle,
                          psoUint32  * dataDefLength )
 {
+   psoaDataDefinition * pDefinition;
+
+   pDefinition = (psoaDataDefinition *) definitionHandle;
+   if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+
+   *dataDefLength = pDefinition->pMemDefinition->definitionLength;
+   
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -99,6 +221,83 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
                     psoUint32    nameLengthInBytes,
                     PSO_HANDLE * definitionHandle )
 {
+   int errcode = PSO_OK;
+   psoaSession* pSession;
+   bool ok = true;
+   psonDataDefinition * pMemDefinition = NULL;
+   psoaDataDefinition * pDefinition = NULL;
+   psonHashTxItem * pHashItem;
+
+   pSession = (psoaSession*) sessionHandle;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
+
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( definitionName == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( nameLengthInBytes == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   if ( definitionHandle == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   /* Create our proxy object */
+   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDefinition == NULL ) {
+      free( pMemDefinition );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   
+   if ( ! pSession->terminated ) {
+      if ( psoaSessionLock( pSession ) ) {
+         ok = psonHashMapGet( pSession->pDataDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              &pHashItem,
+                              (uint32_t) -1,
+                              &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         psoaSessionUnlock( pSession );
+         if ( ! ok ) goto error_handler;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+         goto error_handler;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+      goto error_handler;
+   }
+
+   pDefinition->pSession = pSession;
+   pDefinition->definitionType = PSOA_DEF_DATA;
+   GET_PTR( pMemDefinition, pHashItem->dataOffset, psonDataDefinition );
+   pDefinition->pMemDefinition = pMemDefinition;
+   
+   *definitionHandle = (PSO_HANDLE) pDefinition;
+
+   return PSO_OK;
+   
+error_handler:
+
+   free( pDefinition );
+   
+   if ( errcode != 0 ) {
+      psocSetError( &pSession->context.errorHandler, 
+         g_psoErrorHandle, errcode );
+   }
+   if ( ! ok ) {
+      errcode = psocGetLastError( &pSession->context.errorHandler );
+   }
+
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
