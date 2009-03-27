@@ -1,0 +1,139 @@
+.TH "API functions for Photon data definitions." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+API functions for Photon data definitions. \- 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoDataDefClose\fP (\fBPSO_HANDLE\fP definitionHandle)"
+.br
+.RI "\fICloses the data definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoDataDefCreate\fP (\fBPSO_HANDLE\fP sessionHandle, const char *definitionName, \fBpsoUint32\fP nameLengthInBytes, enum \fBpsoDefinitionType\fP type, const unsigned char *dataDef, \fBpsoUint32\fP dataDefLength, \fBPSO_HANDLE\fP *definitionHandle)"
+.br
+.RI "\fICreates a new data definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoDataDefGet\fP (\fBPSO_HANDLE\fP definitionHandle, enum \fBpsoDefinitionType\fP *type, unsigned char *dataDef, \fBpsoUint32\fP dataDefLength)"
+.br
+.RI "\fIRetrieves a data definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoDataDefGetLength\fP (\fBPSO_HANDLE\fP definitionHandle, \fBpsoUint32\fP *dataDefLength)"
+.br
+.RI "\fIRetrieves the length of the data definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoDataDefOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *definitionName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *definitionHandle)"
+.br
+.RI "\fIOpen an existing data definition. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "PHOTON_EXPORT int psoDataDefClose (\fBPSO_HANDLE\fP definitionHandle)"
+.PP
+Closes the data definition. 
+.PP
+This function terminates the current access to the data definition. The definition itself is left untouched in shared memory. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinitionHandle\fP The handle to the data definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoDataDefCreate (\fBPSO_HANDLE\fP sessionHandle, const char * definitionName, \fBpsoUint32\fP nameLengthInBytes, enum \fBpsoDefinitionType\fP type, const unsigned char * dataDef, \fBpsoUint32\fP dataDefLength, \fBPSO_HANDLE\fP * definitionHandle)"
+.PP
+Creates a new data definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIdefinitionName\fP The name of the data definition. 
+.br
+\fInameLengthInBytes\fP The length of \fIdefinitionName\fP (in bytes). 
+.br
+\fItype\fP The type of definition (ODBC, user defined, etc.) 
+.br
+\fIdataDef\fP The data definition (as an opaque type) 
+.br
+\fIdataDefLength\fP The length in bytes of the buffer \fIdataDef\fP. 
+.br
+\fIdefinitionHandle\fP The handle to the data definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoDataDefGet (\fBPSO_HANDLE\fP definitionHandle, enum \fBpsoDefinitionType\fP * type, unsigned char * dataDef, \fBpsoUint32\fP dataDefLength)"
+.PP
+Retrieves a data definition. 
+.PP
+You can call the function \fBpsoDataDefGetLength\fP to retrieve the length of the data definition. This allows you to allocate the proper size for the \fIdataDef\fP buffer.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinitionHandle\fP The handle to the data definition. 
+.br
+\fItype\fP The type of definition (ODBC, user defined, etc.) 
+.br
+\fIdataDef\fP The data definition (as an opaque type). You are responsible for allocating the memory needed for this buffer. 
+.br
+\fIdataDefLength\fP The length in bytes of the buffer \fIdataDef\fP.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoDataDefGetLength (\fBPSO_HANDLE\fP definitionHandle, \fBpsoUint32\fP * dataDefLength)"
+.PP
+Retrieves the length of the data definition. 
+.PP
+This function is a helper function for \fBpsoDataDefGet\fP. It allows you to allocate the proper size for the data definition.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinitionHandle\fP The handle to the data definition. 
+.br
+\fIdataDefLength\fP The length in bytes of the data definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoDataDefOpen (\fBPSO_HANDLE\fP sessionHandle, const char * definitionName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * definitionHandle)"
+.PP
+Open an existing data definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIdefinitionName\fP The name of the data definition. 
+.br
+\fInameLengthInBytes\fP The length of \fIdefinitionName\fP (in bytes). 
+.br
+\fIdefinitionHandle\fP The handle to the data definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+

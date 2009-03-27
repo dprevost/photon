@@ -1,0 +1,139 @@
+.TH "API functions for Photon key definitions." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+API functions for Photon key definitions. \- 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoKeyDefClose\fP (\fBPSO_HANDLE\fP definitionHandle)"
+.br
+.RI "\fICloses the key definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoKeyDefCreate\fP (\fBPSO_HANDLE\fP sessionHandle, const char *definitionName, \fBpsoUint32\fP nameLengthInBytes, enum \fBpsoDefinitionType\fP type, const unsigned char *keyDef, \fBpsoUint32\fP keyDefLength, \fBPSO_HANDLE\fP *definitionHandle)"
+.br
+.RI "\fICreates a new key definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoKeyDefGet\fP (\fBPSO_HANDLE\fP definitionHandle, enum \fBpsoDefinitionType\fP *type, unsigned char *keyDef, \fBpsoUint32\fP keyDefLength)"
+.br
+.RI "\fIRetrieves a key definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoKeyDefGetLength\fP (\fBPSO_HANDLE\fP definitionHandle, \fBpsoUint32\fP *keyDefLength)"
+.br
+.RI "\fIRetrieves the length of the key definition. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoKeyDefOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *definitionName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *definitionHandle)"
+.br
+.RI "\fIOpen an existing key definition. \fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "PHOTON_EXPORT int psoKeyDefClose (\fBPSO_HANDLE\fP definitionHandle)"
+.PP
+Closes the key definition. 
+.PP
+This function terminates the current access to the key definition. The definition itself is left untouched in shared memory. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinitionHandle\fP The handle to the key definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoKeyDefCreate (\fBPSO_HANDLE\fP sessionHandle, const char * definitionName, \fBpsoUint32\fP nameLengthInBytes, enum \fBpsoDefinitionType\fP type, const unsigned char * keyDef, \fBpsoUint32\fP keyDefLength, \fBPSO_HANDLE\fP * definitionHandle)"
+.PP
+Creates a new key definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIdefinitionName\fP The name of the key definition. 
+.br
+\fInameLengthInBytes\fP The length of \fIdefinitionName\fP (in bytes). 
+.br
+\fItype\fP The type of definition (ODBC, user defined, etc.) 
+.br
+\fIkeyDef\fP The key definition (as an opaque type) 
+.br
+\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP. 
+.br
+\fIdefinitionHandle\fP The handle to the key definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoKeyDefGet (\fBPSO_HANDLE\fP definitionHandle, enum \fBpsoDefinitionType\fP * type, unsigned char * keyDef, \fBpsoUint32\fP keyDefLength)"
+.PP
+Retrieves a key definition. 
+.PP
+You can call the function \fBpsoKeyDefGetLength\fP to retrieve the length of the key definition. This allows you to allocate the proper size for the \fIkeyDef\fP buffer.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinitionHandle\fP The handle to the key definition. 
+.br
+\fItype\fP The type of definition (ODBC, user defined, etc.) 
+.br
+\fIkeyDef\fP The key definition (as an opaque type). You are responsible for allocating the memory needed for this buffer. 
+.br
+\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoKeyDefGetLength (\fBPSO_HANDLE\fP definitionHandle, \fBpsoUint32\fP * keyDefLength)"
+.PP
+Retrieves the length of the key definition. 
+.PP
+This function is a helper function for \fBpsoKeyDefGet\fP. It allows you to allocate the proper size for the key definition.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdefinitionHandle\fP The handle to the key definition. 
+.br
+\fIkeyDefLength\fP The length in bytes of the key definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoKeyDefOpen (\fBPSO_HANDLE\fP sessionHandle, const char * definitionName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * definitionHandle)"
+.PP
+Open an existing key definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP The handle to the current session. 
+.br
+\fIdefinitionName\fP The name of the key definition. 
+.br
+\fInameLengthInBytes\fP The length of \fIdefinitionName\fP (in bytes). 
+.br
+\fIdefinitionHandle\fP The handle to the key definition.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
