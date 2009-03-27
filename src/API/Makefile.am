@@ -44,6 +44,8 @@ libphoton_la_SOURCES =   \
         Folder.h         \
         HashMap.c        \
         HashMap.h        \
+        KeyDefinition.c  \
+        KeyDefinition.h  \
         Lifo.c           \
         Lifo.h           \
         ListReaders.h    \

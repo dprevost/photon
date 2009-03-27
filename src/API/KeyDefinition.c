@@ -19,18 +19,18 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include "API/DataDefinition.h"
-#include <photon/DataDefinition.h>
+#include "API/KeyDefinition.h"
+#include <photon/KeyDefinition.h>
 #include "API/Session.h"
 #include "Nucleus/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefClose( PSO_HANDLE definitionHandle )
+int psoKeyDefClose( PSO_HANDLE definitionHandle )
 {
-   psoaDataDefinition * pDefinition;
+   psoaKeyDefinition * pDefinition;
 
-   pDefinition = (psoaDataDefinition *) definitionHandle;
+   pDefinition = (psoaKeyDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
@@ -47,7 +47,7 @@ int psoDataDefClose( PSO_HANDLE definitionHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefCreate( PSO_HANDLE               sessionHandle,
+int psoKeyDefCreate( PSO_HANDLE               sessionHandle,
                       const char             * definitionName,
                       psoUint32                nameLengthInBytes,
                       enum psoDefinitionType   type,
@@ -58,9 +58,9 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    int errcode = PSO_OK;
    psoaSession* pSession;
    bool ok = true;
-   psonDataDefinition * pMemDefinition = NULL;
+   psonKeyDefinition * pMemDefinition = NULL;
    uint32_t recLength;
-   psoaDataDefinition * pDefinition = NULL;
+   psoaKeyDefinition * pDefinition = NULL;
    psonHashTxItem * pHashItem;
 
    pSession = (psoaSession*) sessionHandle;
@@ -94,7 +94,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    }
 
    /* We need to serialize the inputs to insert the record in the hash map */
-   recLength = offsetof( psonDataDefinition, definition ) + dataDefLength;
+   recLength = offsetof( psonKeyDefinition, definition ) + dataDefLength;
    pMemDefinition = malloc( recLength );
    if ( pMemDefinition == NULL ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
@@ -105,7 +105,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    memcpy( pMemDefinition->definition, dataDef, dataDefLength );
 
    /* Create our proxy object */
-   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   pDefinition = malloc( sizeof(psoaKeyDefinition) );
    if ( pDefinition == NULL ) {
       free( pMemDefinition );
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
@@ -114,7 +114,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    
    if ( ! pSession->terminated ) {
       if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapInsert( pSession->pDataDefMap,
+         ok = psonHashMapInsert( pSession->pKeyDefMap,
                                  definitionName,
                                  nameLengthInBytes,
                                  pMemDefinition,
@@ -123,7 +123,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
          PSO_POST_CONDITION( ok == true || ok == false );
          
          if ( ok ) {
-            ok = psonHashMapGet( pSession->pDataDefMap,
+            ok = psonHashMapGet( pSession->pKeyDefMap,
                                  definitionName,
                                  nameLengthInBytes,
                                  &pHashItem,
@@ -147,7 +147,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    free( pMemDefinition );
    pDefinition->pSession = pSession;
    pDefinition->definitionType = PSOA_DEF_DATA;
-   GET_PTR( pMemDefinition, pHashItem->dataOffset, psonDataDefinition );
+   GET_PTR( pMemDefinition, pHashItem->dataOffset, psonKeyDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
    
    *definitionHandle = (PSO_HANDLE) pDefinition;
@@ -172,14 +172,14 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefGet( PSO_HANDLE               definitionHandle,
+int psoKeyDefGet( PSO_HANDLE               definitionHandle,
                    enum psoDefinitionType * type,
                    unsigned char          * dataDef,
                    psoUint32                dataDefLength )
 {
-   psoaDataDefinition * pDefinition;
+   psoaKeyDefinition * pDefinition;
 
-   pDefinition = (psoaDataDefinition *) definitionHandle;
+   pDefinition = (psoaKeyDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
@@ -208,12 +208,12 @@ int psoDataDefGet( PSO_HANDLE               definitionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefGetLength( PSO_HANDLE   definitionHandle,
+int psoKeyDefGetLength( PSO_HANDLE   definitionHandle,
                          psoUint32  * dataDefLength )
 {
-   psoaDataDefinition * pDefinition;
+   psoaKeyDefinition * pDefinition;
 
-   pDefinition = (psoaDataDefinition *) definitionHandle;
+   pDefinition = (psoaKeyDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
@@ -230,7 +230,7 @@ int psoDataDefGetLength( PSO_HANDLE   definitionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoDataDefOpen( PSO_HANDLE   sessionHandle,
+int psoKeyDefOpen( PSO_HANDLE   sessionHandle,
                     const char * definitionName,
                     psoUint32    nameLengthInBytes,
                     PSO_HANDLE * definitionHandle )
@@ -238,8 +238,8 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
    int errcode = PSO_OK;
    psoaSession* pSession;
    bool ok = true;
-   psonDataDefinition * pMemDefinition = NULL;
-   psoaDataDefinition * pDefinition = NULL;
+   psonKeyDefinition * pMemDefinition = NULL;
+   psoaKeyDefinition * pDefinition = NULL;
    psonHashTxItem * pHashItem;
 
    pSession = (psoaSession*) sessionHandle;
@@ -261,7 +261,7 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
    }
 
    /* Create our proxy object */
-   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   pDefinition = malloc( sizeof(psoaKeyDefinition) );
    if ( pDefinition == NULL ) {
       free( pMemDefinition );
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
@@ -270,7 +270,7 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
    
    if ( ! pSession->terminated ) {
       if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapGet( pSession->pDataDefMap,
+         ok = psonHashMapGet( pSession->pKeyDefMap,
                               definitionName,
                               nameLengthInBytes,
                               &pHashItem,
@@ -292,7 +292,7 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
 
    pDefinition->pSession = pSession;
    pDefinition->definitionType = PSOA_DEF_DATA;
-   GET_PTR( pMemDefinition, pHashItem->dataOffset, psonDataDefinition );
+   GET_PTR( pMemDefinition, pHashItem->dataOffset, psonKeyDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
    
    *definitionHandle = (PSO_HANDLE) pDefinition;
@@ -316,16 +316,16 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
-                          int                  numFields,
-                          uint32_t           * pOffsets )
+void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
+                        int                numKeys,
+                        uint32_t         * pOffsets )
 {
    int i;
    uint32_t minLength = 0;
 
    PSO_PRE_CONDITION( pDefinition != NULL );
    PSO_PRE_CONDITION( pOffsets    != NULL );
-   PSO_PRE_CONDITION( numFields > 0 );
+   PSO_PRE_CONDITION( numKeys > 0 );
    
    /*
     * The first field is special - the alignment offset is always zero
@@ -335,133 +335,83 @@ void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
 
    switch( pDefinition[0].type ) {
 
-   case PSO_CHAR:
-   case PSO_BINARY:
-      minLength = pDefinition[0].vals.length;
+   case PSO_KEY_CHAR:
+   case PSO_KEY_BINARY:
+      minLength = pDefinition[0].length;
       break;
       
-   case PSO_VARCHAR:
-   case PSO_LONGVARCHAR:
-   case PSO_VARBINARY:
-   case PSO_LONGVARBINARY:
+   case PSO_KEY_VARCHAR:
+   case PSO_KEY_LONGVARCHAR:
+   case PSO_KEY_VARBINARY:
+   case PSO_KEY_LONGVARBINARY:
       /* A single field - a single offset ! */
       break;
 
-   case PSO_TINYINT:
-      minLength = 1;
-      break;
-
-   case PSO_SMALLINT:
-      minLength = 4;
-      break;
-
-   case PSO_INTEGER:
+   case PSO_KEY_INTEGER:
       minLength = 4;
       break;
       
-   case PSO_BIGINT:
+   case PSO_KEY_BIGINT:
       minLength = 8;
       break;
    
-   case PSO_REAL:
-      minLength = 4;
-      break;
-   
-   case PSO_DOUBLE:
-      minLength = 8;
-      break;
-   
-   case PSO_NUMERIC:
-      minLength = sizeof(struct psoNumericStruct);
-      break;
-   
-   case PSO_DATE:
+   case PSO_KEY_DATE:
       minLength = sizeof(struct psoDateStruct);
       break;
 
-   case PSO_TIME:
+   case PSO_KEY_TIME:
       minLength = sizeof(struct psoTimeStruct);
       break;
 
-   case PSO_TIMESTAMP:
+   case PSO_KEY_TIMESTAMP:
       minLength = sizeof(struct psoTimeStampStruct);
       break;
    }
    
-   for ( i = 1; i < numFields; ++i ) {
+   for ( i = 1; i < numKeys; ++i ) {
 
       switch( pDefinition[i].type ) {
 
-      case PSO_CHAR:
-      case PSO_BINARY:
+      case PSO_KEY_CHAR:
+      case PSO_KEY_BINARY:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          pOffsets[i] = minLength;
-         minLength += pDefinition[i].vals.length;
+         minLength += pDefinition[i].length;
          break;
          
-      case PSO_VARCHAR:
-      case PSO_LONGVARCHAR:
-      case PSO_VARBINARY:
-      case PSO_LONGVARBINARY:
+      case PSO_KEY_VARCHAR:
+      case PSO_KEY_LONGVARCHAR:
+      case PSO_KEY_VARBINARY:
+      case PSO_KEY_LONGVARBINARY:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
          pOffsets[i] = minLength;
          break;
       
-      case PSO_TINYINT:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         pOffsets[i] = minLength;
-         minLength += 1;
-         break;
-      
-      case PSO_SMALLINT:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
-         pOffsets[i] = minLength;
-         minLength += 2;
-         break;
-
-      case PSO_INTEGER:
+      case PSO_KEY_INTEGER:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
          pOffsets[i] = minLength;
          minLength += 4;
          break;
          
-      case PSO_BIGINT:
+      case PSO_KEY_BIGINT:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
          pOffsets[i] = minLength;
          minLength += 8;
          break;
 
-      case PSO_REAL:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
-         pOffsets[i] = minLength;
-         minLength += 4;
-         break;
-
-      case PSO_DOUBLE:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
-         pOffsets[i] = minLength;
-         minLength += 8;
-         break;
-
-      case PSO_NUMERIC:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
-         pOffsets[i] = minLength;
-         minLength += sizeof(struct psoNumericStruct);
-         break;
-
-      case PSO_DATE:
+      case PSO_KEY_DATE:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
          pOffsets[i] = minLength;
          minLength += sizeof(struct psoDateStruct);
          break;
 
-      case PSO_TIME:
+      case PSO_KEY_TIME:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
          pOffsets[i] = minLength;
          minLength += sizeof(struct psoTimeStruct);
          break;
 
-      case PSO_TIMESTAMP:
+      case PSO_KEY_TIMESTAMP:
          minLength = ((minLength-1)/PSOC_ALIGNMENT_STRUCT + 1)*PSOC_ALIGNMENT_STRUCT;
          pOffsets[i] = minLength;
          minLength += sizeof(struct psoTimeStampStruct);
@@ -488,110 +438,25 @@ static void dummyErrorFunc( void * ctx, const char * msg, ...)
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaGetLimits( psoFieldDefinition * pDefinition,
-                    uint16_t             numFields,
-                    uint32_t           * pMinLength,
-                    uint32_t           * pMaxLength )
+void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
+                       uint32_t         * pMinLength,
+                       uint32_t         * pMaxLength )
 {
-   unsigned int i;
-   uint32_t minLength = 0, maxLength = 0;
+   PSO_PRE_CONDITION( pKeyDef    != NULL );
+   PSO_PRE_CONDITION( pMinLength != NULL );
+   PSO_PRE_CONDITION( pMaxLength != NULL );
 
-   PSO_PRE_CONDITION( pDefinition != NULL );
-   PSO_PRE_CONDITION( pMinLength  != NULL );
-   PSO_PRE_CONDITION( pMaxLength  != NULL );
-   PSO_PRE_CONDITION( numFields > 0 );
-   
-   /*
-    * The first field is special - the alignment offset is always zero
-    * since we just started.
-    */
-   switch( pDefinition[0].type ) {
-
-   case PSO_INTEGER:
-      minLength = pDefinition[0].length1;
-      break;
-
-   case PSO_BINARY:
-   case PSO_CHAR:
-      minLength = pDefinition[0].length1;
-      break;
-
-   case PSO_DECIMAL:
-      minLength = pDefinition[0].length1 + 2;
-      break;
-
-   case PSO_TINYINT:
-      minLength = sizeof(bool);
-      break;
-
-   case PSO_VARBINARY:
-   case PSO_VARCHAR:
-      minLength = pDefinition[0].length1;
-      maxLength = pDefinition[0].length2;
-      if ( maxLength == 0 ) maxLength = (uint32_t) -1;
-      break;
+   if ( pKeyDef->type == PSO_KEY_INTEGER ||
+      pKeyDef->type == PSO_KEY_BINARY ||
+      pKeyDef->type == PSO_KEY_STRING ) {
+      *pMinLength = *pMaxLength = pKeyDef->length;
    }
-   
-   for ( i = 1; i < numFields; ++i ) {
-
-      switch( pDefinition[i].type ) {
-
-      case PSO_INTEGER:
-         if ( pDefinition[i].length1 == 1 ) {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         }
-         else if ( pDefinition[i].length1 == 2 ) {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT16 + 1)*PSOC_ALIGNMENT_INT16;
-         }
-         else if ( pDefinition[i].length1 == 4 ) {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT32 + 1)*PSOC_ALIGNMENT_INT32;
-         }
-         else {
-            minLength = ((minLength-1)/PSOC_ALIGNMENT_INT64 + 1)*PSOC_ALIGNMENT_INT64;
-         }
-         
-         minLength += pDefinition[i].length1;
-
-         break;
-
-      case PSO_BINARY:
-      case PSO_CHAR:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         minLength += pDefinition[i].length1;
-
-         break;
-
-      case PSO_DECIMAL:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         minLength += pDefinition[i].length1 + 2;
-
-         break;
-
-      case PSO_TINYINT:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_BOOL + 1)*PSOC_ALIGNMENT_BOOL;
-         minLength += sizeof(bool);
-         break;
-
-      case PSO_VARBINARY:
-      case PSO_VARCHAR:
-         minLength = ((minLength-1)/PSOC_ALIGNMENT_CHAR + 1)*PSOC_ALIGNMENT_CHAR;
-         minLength += pDefinition[i].length1;
-
-         if ( pDefinition[i].length2 == 0 ||
-            pDefinition[i].length2 >= ((uint32_t) -1) - minLength ) {
-            maxLength = (uint32_t) -1;
-         }
-         else {
-            maxLength = minLength + pDefinition[i].length2;
-         }
-         
-         break;
-      }
+   else {
+      /* PSO_KEY_VAR_BINARY || PSO_VARCHAR */
+      *pMinLength = pKeyDef->minLength;
+      *pMaxLength = pKeyDef->maxLength;
+      if ( *pMaxLength == 0 ) *pMaxLength = (uint32_t) -1;
    }
-   
-   if ( maxLength == 0 ) maxLength = minLength;
-   *pMinLength = minLength;
-   *pMaxLength = maxLength;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -1177,4 +1042,3 @@ cleanup:
 #endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

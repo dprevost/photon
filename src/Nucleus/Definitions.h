@@ -52,6 +52,17 @@ struct psonDataDefinition
 
 typedef struct psonDataDefinition psonDataDefinition;
 
+struct psonKeyDefinition
+{
+   enum psoDefinitionType type;
+   
+   uint32_t definitionLength;
+   
+   unsigned char definition[1];
+};
+
+typedef struct psonKeyDefinition psonKeyDefinition;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

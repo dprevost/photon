@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/DataDefinition.h"
+#include "API/KeyDefinition.h"
 
 const bool expectedToPass = true;
 
@@ -31,10 +31,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE defHandle, sessionHandle;
    int errcode;
-   psoFieldDefinition fields[1] = {
-      { "Field_1", PSO_VARCHAR, {10} }
-   };
-   uint32_t dataDefLength = 0;
+   psoKeyDefinition key = { "Key_1", PSO_KEY_VARCHAR, 10 };
   
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -53,47 +50,39 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
-                               PSO_DEF_USER_DEFINED,
-                               (const unsigned char *) fields,
-                               sizeof(psoFieldDefinition),
-                               &defHandle );
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "My Def",
+                              strlen("My Def"),
+                              PSO_DEF_USER_DEFINED,
+                              (const unsigned char *) &key,
+                              sizeof(psoKeyDefinition),
+                              &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Invalid arguments to tested function. */
-   errcode = psoDataDefGetLength( NULL, &dataDefLength );
+
+   errcode = psoKeyDefClose( NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoDataDefGetLength( sessionHandle, &dataDefLength );
+   errcode = psoKeyDefClose( sessionHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoDataDefGetLength( defHandle, NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
    /* End of invalid args. This call should succeed. */
-   errcode = psoDataDefGetLength( defHandle, &dataDefLength );
+   errcode = psoKeyDefClose( defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( dataDefLength != sizeof(psoFieldDefinition) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
+
    psoExit();
 
    return 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -18,8 +18,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#ifndef PSOA_DATA_DEFINITION_H
-#define PSOA_DATA_DEFINITION_H
+#ifndef PSOA_KEY_DEFINITION_H
+#define PSOA_KEY_DEFINITION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,36 +35,34 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-struct psoaDataDefinition
+struct psoaKeyDefinition
 {
    /* Key or data definition */
    psoaDefinitionType definitionType;
    
    psoaSession * pSession;
    
-   psonDataDefinition * pMemDefinition;
+   psonKeyDefinition * pMemDefinition;
 };
 
-typedef struct psoaDataDefinition psoaDataDefinition;
+typedef struct psoaKeyDefinition psoaKeyDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 //PHOTON_API_EXPORT
-//void psoaGetLimits( psoFieldDefinition * pDefinition,
-//                    uint16_t             numFields,
-//                    uint32_t           * pMinLength,
-//                    uint32_t           * pMaxLength );
+//void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
+//                       uint32_t         * pMinLength,
+//                       uint32_t         * pMaxLength );
 
 /*
  * Similar to psoaGetLimits (but using the api struct), it calculates the 
  * offsets for each data field.
  * The array of offsets must be allocated by the caller.
  */
-
 PHOTON_API_EXPORT
-void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
-                          int                  numFields,
-                          uint32_t           * pOffsets );
+void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
+                        int                numKeys,
+                        uint32_t         * pOffsets );
 
 //PHOTON_API_EXPORT
 //int psoaValidateDefinition( psoObjectDefinition * pDefinition,
@@ -87,6 +85,6 @@ END_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSOA_DATA_DEFINITION_H */
+#endif /* PSOA_KEY_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

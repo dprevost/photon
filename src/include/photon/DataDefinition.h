@@ -61,6 +61,7 @@ int psoDataDefClose( PSO_HANDLE definitionHandle );
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  definitionName The name of the data definition. 
  * \param[in]  nameLengthInBytes The length of \em definitionName (in bytes).
+ * \param[in]  type The type of definition (ODBC, user defined, etc.)
  * \param[in]  dataDef The data definition (as an opaque type)
  * \param[in]  dataDefLength The length in bytes of the buffer \em dataDef. 
  * \param[out] definitionHandle The handle to the data definition.
@@ -86,6 +87,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
  * the proper size for the \em dataDef buffer.
  *
  * \param[in]  definitionHandle The handle to the data definition.
+ * \param[out] type The type of definition (ODBC, user defined, etc.)
  * \param[out] dataDef The data definition (as an opaque type). You are
  *             responsible for allocating the memory needed for this buffer. 
  * \param[in]  dataDefLength The length in bytes of the buffer \em dataDef. 
@@ -103,7 +105,7 @@ int psoDataDefGet( PSO_HANDLE               definitionHandle,
 /**
  * \brief Retrieves the length of the data definition.
  * 
- * This function is a helper function for ::psodataDefGet. 
+ * This function is a helper function for ::psoDataDefGet. 
  * It allows you to allocate the proper size for the data definition.
  *
  * \param[in]  definitionHandle The handle to the data definition.

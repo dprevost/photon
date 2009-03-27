@@ -21,6 +21,7 @@ SUBDIRS =              \
         FastMap        \
         Folder         \
         HashMap        \
+        KeyDefinition  \
         Lifo           \
         ListReaders    \
         Process        \

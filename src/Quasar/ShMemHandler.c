@@ -85,6 +85,18 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;
 
+   ok = psonTopFolderCreateObject( pTree,
+                                   "system/Key_Definition",
+                                   strlen("system/Key_Definition"),
+                                   &defMap,
+                                   (unsigned char *)"",
+                                   1,
+                                   (unsigned char *)"",
+                                   1,
+                                   &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
    /*
     * Setting the field "isSystemObject" should only be done after all
     * objects are created, specially folders.
@@ -136,6 +148,24 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    GET_PTR( pHashMap, pDesc->offset, psonHashMap );
    pHashMap->isSystemObject = true;
    pHandler->pMemHeader->dataDefMapOffset = pDesc->offset;
+   
+   ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   ok = psonTopFolderOpenObject( pTree,
+                                 "system/Key_Definition",
+                                 strlen("system/Key_Definition"),
+                                 PSO_HASH_MAP,
+                                 &folderItem,
+                                 &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return false;
+
+   GET_PTR( pDesc, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
+   GET_PTR( pHashMap, pDesc->offset, psonHashMap );
+   pHashMap->isSystemObject = true;
+   pHandler->pMemHeader->keyDefMapOffset = pDesc->offset;
    
    ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
