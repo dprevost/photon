@@ -55,9 +55,7 @@ int main( int argc, char * argv[] )
                               strlen("/api_folder_open_nosess"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_OK && errcode != PSO_OBJECT_ALREADY_PRESENT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

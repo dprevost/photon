@@ -39,6 +39,7 @@ int main( int argc, char * argv[] )
       { "Field_1", PSO_VARCHAR, {10} }
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   PSO_HANDLE keyDefHandle, dataDefHandle;
    
    memset( junk, 0, 12 );
    
@@ -69,9 +70,30 @@ int main( int argc, char * argv[] )
                               strlen("/amop"),
                               &folderDef,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "Definition",
+                              strlen("Definition"),
+                              PSO_DEF_PHOTON_ODBC_SIMPLE,
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyDefinition),
+                              &keyDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -81,10 +103,8 @@ int main( int argc, char * argv[] )
                               "/amop/test",
                               strlen("/amop/test"),
                               &mapDef,
-                              (unsigned char *)&keyDef,
-                              sizeof(psoKeyDefinition),
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              keyDefHandle,
+                              dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

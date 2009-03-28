@@ -59,9 +59,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -72,9 +70,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -85,9 +81,7 @@ int main( int argc, char * argv[] )
                               0,
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -140,9 +134,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -157,9 +149,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

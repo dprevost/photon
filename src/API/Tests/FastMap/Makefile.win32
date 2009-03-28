@@ -15,10 +15,8 @@ all:
 check_PROGRAMS =                           \
         .\Release\Close.exe                \
         .\Release\Create.exe               \
-        .\Release\CreateXML.exe            \
         .\Release\Delete.exe               \
         .\Release\Definition.exe           \
-        .\Release\DefLength.exe            \
         .\Release\Edit.exe                 \
         .\Release\Empty.exe                \
         .\Release\FirstNullEntry.exe       \

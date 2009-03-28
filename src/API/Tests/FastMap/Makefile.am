@@ -21,7 +21,6 @@ check_PROGRAMS =            \
         Create              \
         Delete              \
         Definition          \
-        DefLength           \
         Edit                \
         Empty               \
         FirstNullEntry      \
@@ -49,14 +48,10 @@ check_PROGRAMS =            \
         Status              \
         Tests               
 
-#        CreateXML           
-
 Close_SOURCES               = Close.c
 Create_SOURCES              = Create.c
-#CreateXML_SOURCES           = CreateXML.c
 Delete_SOURCES              = Delete.c
 Definition_SOURCES          = Definition.c
-DefLength_SOURCES           = DefLength.c
 Edit_SOURCES                = Edit.c
 Empty_SOURCES               = Empty.c
 FirstNullEntry_SOURCES      = FirstNullEntry.c
@@ -89,7 +84,6 @@ EXTRA_DIST =                   \
         Create.sh              \
         Delete.sh              \
         Definition.sh          \
-        DefLength.sh           \
         Edit.sh                \
         Empty.sh               \
         FirstNullEntry.sh      \
@@ -119,8 +113,6 @@ EXTRA_DIST =                   \
         Status.sh              \
         Tests.sh               
 
-#        CreateXML.sh           
-
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
         top_srcdir=$(top_srcdir)     \
@@ -133,7 +125,6 @@ TESTS =                        \
         Close.sh               \
         Create.sh              \
         Definition.sh          \
-        DefLength.sh           \
         Delete.sh              \
         Edit.sh                \
         Empty.sh               \
@@ -161,8 +152,6 @@ TESTS =                        \
         RetrieveZeroLength.sh  \
         Status.sh              \
         Tests.sh               
-
-#        CreateXML.sh           
 
 XFAIL_TESTS = 
 

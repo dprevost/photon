@@ -56,9 +56,7 @@ int main( int argc, char * argv[] )
                               strlen("/api_folder_getfirst"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -68,9 +66,7 @@ int main( int argc, char * argv[] )
                               strlen("/api_folder_getfirst/f1"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

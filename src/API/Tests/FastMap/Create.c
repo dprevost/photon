@@ -41,6 +41,7 @@ int main( int argc, char * argv[] )
       { "field4", PSO_SMALLINT,  {0} },
       { "field5", PSO_LONGVARBINARY, {0} }
    };
+   PSO_HANDLE keyDefHandle, dataDefHandle;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -64,9 +65,7 @@ int main( int argc, char * argv[] )
                               strlen("/ammcr"),
                               &def,
                               NULL,
-                              0,
-                              NULL,
-                              0 );
+                              NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -81,6 +80,29 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "Definition",
+                              strlen("Definition"),
+                              PSO_DEF_PHOTON_ODBC_SIMPLE,
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyDefinition),
+                              &keyDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* Invalid definition. */
    
    memset( &definition, 0, sizeof(psoObjectDefinition) );
@@ -89,10 +111,8 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
-                                    (unsigned char *)&keyDef,
-                                    sizeof(psoKeyDefinition),
-                                    (unsigned char *)fields,
-                                    5*sizeof(psoFieldDefinition) );
+                                    keyDefHandle,
+                                    dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -107,9 +127,7 @@ int main( int argc, char * argv[] )
                                     strlen("ahmcr"),
                                     &definition,
                                     NULL,
-                                    sizeof(psoKeyDefinition),
-                                    (unsigned char *)fields,
-                                    5*sizeof(psoFieldDefinition) );
+                                    dataDefHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -119,23 +137,8 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
-                                    (unsigned char *)&keyDef,
-                                    0,
-                                    (unsigned char *)fields,
-                                    5*sizeof(psoFieldDefinition) );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "ahmcr",
-                                    strlen("ahmcr"),
-                                    &definition,
-                                    (unsigned char *)&keyDef,
-                                    sizeof(psoKeyDefinition),
-                                    NULL,
-                                    5*sizeof(psoFieldDefinition) );
+                                    keyDefHandle,
+                                    NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -145,11 +148,9 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
-                                    (unsigned char *)&keyDef,
-                                    sizeof(psoKeyDefinition),
-                                    (unsigned char *)fields,
-                                    0 );
-   if ( errcode != PSO_INVALID_LENGTH ) {
+                                    keyDefHandle,
+                                    keyDefHandle );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -159,10 +160,8 @@ int main( int argc, char * argv[] )
                                     "ahmcr",
                                     strlen("ahmcr"),
                                     &definition,
-                                    (unsigned char *)&keyDef,
-                                    sizeof(psoKeyDefinition),
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    keyDefHandle,
+                                    dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -179,10 +178,8 @@ int main( int argc, char * argv[] )
                                     "ahmcr2",
                                     strlen("ahmcr2"),
                                     &def,
-                                    (unsigned char *)&keyDef,
-                                    sizeof(psoKeyDefinition),
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    keyDefHandle,
+                                    dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -204,10 +201,8 @@ int main( int argc, char * argv[] )
                                     "ahmcr3",
                                     strlen("ahmcr3"),
                                     &def,
-                                    (unsigned char *)&keyDef,
-                                    sizeof(psoKeyDefinition),
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    keyDefHandle,
+                                    dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

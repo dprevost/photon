@@ -33,7 +33,7 @@ int psoKeyDefClose( PSO_HANDLE definitionHandle )
    pDefinition = (psoaKeyDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pDefinition->definitionType != PSOA_DEF_KEY ) return PSO_WRONG_TYPE_HANDLE;
 
    /*
     * Memory might still be around even after it is released, so we make 
@@ -146,7 +146,7 @@ int psoKeyDefCreate( PSO_HANDLE               sessionHandle,
 
    free( pMemDefinition );
    pDefinition->pSession = pSession;
-   pDefinition->definitionType = PSOA_DEF_DATA;
+   pDefinition->definitionType = PSOA_DEF_KEY;
    GET_PTR( pMemDefinition, pHashItem->dataOffset, psonKeyDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
    
@@ -182,7 +182,7 @@ int psoKeyDefGet( PSO_HANDLE               definitionHandle,
    pDefinition = (psoaKeyDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pDefinition->definitionType != PSOA_DEF_KEY ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( type == NULL ) {
       psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
@@ -216,7 +216,7 @@ int psoKeyDefGetLength( PSO_HANDLE   definitionHandle,
    pDefinition = (psoaKeyDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pDefinition->definitionType != PSOA_DEF_KEY ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( dataDefLength == NULL ) {
       psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
@@ -291,7 +291,7 @@ int psoKeyDefOpen( PSO_HANDLE   sessionHandle,
    }
 
    pDefinition->pSession = pSession;
-   pDefinition->definitionType = PSOA_DEF_DATA;
+   pDefinition->definitionType = PSOA_DEF_KEY;
    GET_PTR( pMemDefinition, pHashItem->dataOffset, psonKeyDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
    
