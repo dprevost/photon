@@ -41,7 +41,6 @@ bool psonFastMapCopy( psonFastMap        * pOldMap,
                       psonSessionContext * pContext )
 {
    int errcode;
-   unsigned char * oldDef, * newDef;
    
    PSO_PRE_CONDITION( pOldMap   != NULL );
    PSO_PRE_CONDITION( pNewMap   != NULL );
@@ -66,35 +65,6 @@ bool psonFastMapCopy( psonFastMap        * pOldMap,
                      SET_OFFSET(origName),
                      pOldMap->nodeObject.myParentOffset,
                      SET_OFFSET(pHashItem) );
-
-   pNewMap->fieldDefType = pOldMap->fieldDefType;
-   pNewMap->keyDefType = pOldMap->keyDefType;
-
-   // Copy the data field definition
-   oldDef = GET_PTR_FAST( pOldMap->dataDefOffset, unsigned char );
-   newDef = (unsigned char *) psonMalloc( &pNewMap->memObject, 
-                                          pOldMap->dataDefLength, pContext );
-   if ( newDef == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   pNewMap->dataDefOffset = SET_OFFSET(newDef);
-   pNewMap->dataDefLength = pOldMap->dataDefLength;
-   memcpy( newDef, oldDef, pNewMap->dataDefLength );
-
-   // Copy the key definition
-   oldDef = GET_PTR_FAST( pOldMap->keyDefOffset, unsigned char );
-   newDef = (unsigned char *) psonMalloc( &pNewMap->memObject, 
-                                          pOldMap->keyDefLength, pContext );
-   if ( newDef == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   pNewMap->keyDefOffset = SET_OFFSET(newDef);
-   pNewMap->keyDefLength = pOldMap->keyDefLength;
-   memcpy( newDef, oldDef, pNewMap->keyDefLength );
    
    errcode = psonHashInit( &pNewMap->hashObj,
                            SET_OFFSET(&pNewMap->memObject),
@@ -106,6 +76,9 @@ bool psonFastMapCopy( psonFastMap        * pOldMap,
                     errcode );
       return false;
    }
+
+   pNewMap->dataDefOffset = pOldMap->dataDefOffset;
+   pNewMap->keyDefOffset = pOldMap->keyDefOffset;
 
    errcode = psonHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
    if ( errcode != PSO_OK ) {
@@ -403,28 +376,23 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKeyDef,
-                      uint32_t              keyDefLength,
-                      const unsigned char * dataDef,
-                      uint32_t              dataDefLength,
+                      psonKeyDefinition   * pKeyDefinition,
+                      psonDataDefinition  * pDataDefinition,
                       psonSessionContext  * pContext )
 {
    psoErrors errcode;
-   unsigned char * ptr;
    
-   PSO_PRE_CONDITION( pHashMap     != NULL );
-   PSO_PRE_CONDITION( pContext     != NULL );
-   PSO_PRE_CONDITION( pTxStatus    != NULL );
-   PSO_PRE_CONDITION( origName     != NULL );
-   PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pKeyDef      != NULL );
-   PSO_PRE_CONDITION( dataDef      != NULL );
+   PSO_PRE_CONDITION( pHashMap        != NULL );
+   PSO_PRE_CONDITION( pContext        != NULL );
+   PSO_PRE_CONDITION( pTxStatus       != NULL );
+   PSO_PRE_CONDITION( origName        != NULL );
+   PSO_PRE_CONDITION( pDefinition     != NULL );
+   PSO_PRE_CONDITION( pKeyDefinition  != NULL );
+   PSO_PRE_CONDITION( pDataDefinition != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
-   PSO_PRE_CONDITION( keyDefLength   > 0 );
-   PSO_PRE_CONDITION( dataDefLength  > 0 );
    PSO_PRE_CONDITION( pDefinition->fieldDefType > PSO_DEF_FIRST_TYPE && 
                       pDefinition->fieldDefType < PSO_DEF_LAST_TYPE );
    PSO_PRE_CONDITION( pDefinition->keyDefType > PSO_DEF_FIRST_TYPE && 
@@ -459,32 +427,10 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
       return false;
    }
    
-   pHashMap->fieldDefType = pDefinition->fieldDefType;
-   pHashMap->keyDefType = pDefinition->keyDefType;
-
-   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, dataDefLength, pContext );
-   if ( ptr == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   memcpy( ptr, dataDef, dataDefLength );
-   pHashMap->dataDefOffset = SET_OFFSET(ptr);
-   pHashMap->dataDefLength = dataDefLength;
-   
-   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
-                                      keyDefLength, pContext );
-   if ( ptr == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   memcpy( ptr, pKeyDef, keyDefLength );
-   pHashMap->keyDefOffset = SET_OFFSET(ptr);
-   pHashMap->keyDefLength = keyDefLength;
-
+   pHashMap->dataDefOffset = SET_OFFSET(pDataDefinition);
+   pHashMap->keyDefOffset  = SET_OFFSET(pKeyDefinition);
    pHashMap->latestVersion = hashItemOffset;
-   pHashMap->editVersion = PSON_NULL_OFFSET;
+   pHashMap->editVersion   = PSON_NULL_OFFSET;
    
    return true;
 }

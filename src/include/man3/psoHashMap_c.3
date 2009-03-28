@@ -1,4 +1,4 @@
-.TH "API functions for Photon hash maps." 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon hash maps." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,9 +15,13 @@ Hash maps use unique keys - the data items are not sorted.
 .br
 .RI "\fIClose a Hash Map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, unsigned char *key, \fBpsoUint32\fP keyLength, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoHashMapDefLength\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP *keyLength, \fBpsoUint32\fP *fieldsLength)"
+.br
+.RI "\fIRetrieve the lengths of the variable elements of the definition of the hash map. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength)"
 .br
@@ -75,11 +79,11 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoHashMapDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoHashMapDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP * definition, unsigned char * key, \fBpsoUint32\fP keyLength, unsigned char * fields, \fBpsoUint32\fP fieldsLength)"
 .PP
 Retrieve the data definition of the hash map. 
 .PP
-You can call this function twice - the first time with numFields set to \fIzero\fP and \fIfields\fP set to NULL to retrieve the actual number of fields. This allows you to allocate the proper size for \fIfields\fP.
+You can call the function \fBpsoHashMapDefLength\fP to retrieve the length of the key and field definitions. This allows you to allocate the proper size for both \fIkey\fP and \fIfields\fP.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -87,9 +91,34 @@ You can call this function twice - the first time with numFields set to \fIzero\
 .br
 \fIdefinition\fP The definition of the object. 
 .br
-\fInumFields\fP The length of the array \fIfields\fP. Can be set to zero to get the actual number of fields. 
+\fIkey\fP An opaque definition of the key. You can set this field to NULL if you do not want to retrieve the key definition. 
 .br
-\fIfields\fP The definition of all the fields. It can be set to NULL if \fInumFields\fP is set to zero.
+\fIkeyLength\fP The length in bytes of the buffer \fIkey\fP. It should be set to zero if \fIkey\fP is NULL. 
+.br
+\fIfields\fP An opaque definition of the data fields of the object. It can be set to NULL if you do not want to retrieve the definition. 
+.br
+\fIfieldsLength\fP The length in bytes of the buffer \fIfields\fP. It should be set to zero if \fIfields\fP is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoHashMapDefLength (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP * keyLength, \fBpsoUint32\fP * fieldsLength)"
+.PP
+Retrieve the lengths of the variable elements of the definition of the hash map. 
+.PP
+This function is a helper function for \fBpsoHashMapDefinition\fP. It allows you to allocate the proper size for \fIkey\fP and \fIfields\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map (see \fBpsoHashMapOpen\fP). 
+.br
+\fIkeyLength\fP The length in bytes of the key buffer. 
+.br
+\fIfieldsLength\fP The length in bytes of the fields buffer.
 .RE
 .PP
 \fBReturns:\fP

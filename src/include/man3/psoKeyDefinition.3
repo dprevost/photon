@@ -1,4 +1,4 @@
-.TH "psoKeyDefinition" 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoKeyDefinition" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -6,16 +6,20 @@ psoKeyDefinition \-
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <psoCommon.h>\fP
+\fC#include <psoPhotonODBC.h>\fP
 .PP
 .SH "Detailed Description"
 .PP 
 Description of the structure of the hash map key. 
 .PP
-Definition at line 167 of file psoCommon.h.
+Definition at line 145 of file psoPhotonODBC.h.
 .SS "Data Fields"
 
 .in +1c
+.ti -1c
+.RI "char \fBname\fP [PSO_MAX_FIELD_LENGTH]"
+.br
+.RI "\fIThe name of a field of the key. \fP"
 .ti -1c
 .RI "enum \fBpsoKeyType\fP \fBtype\fP"
 .br
@@ -23,40 +27,29 @@ Definition at line 167 of file psoCommon.h.
 .ti -1c
 .RI "\fBpsoUint32\fP \fBlength\fP"
 .br
-.RI "\fIFor fixed-length data types. \fP"
-.ti -1c
-.RI "\fBpsoUint32\fP \fBminLength\fP"
-.br
-.RI "\fIFor variable-length data types. \fP"
-.ti -1c
-.RI "\fBpsoUint32\fP \fBmaxLength\fP"
-.br
-.RI "\fIFor variable-length data types. \fP"
+.RI "\fIFor some of the fixed and variable-length data types. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
+.SS "char \fBpsoKeyDefinition::name\fP[PSO_MAX_FIELD_LENGTH]"
+.PP
+The name of a field of the key. 
+.PP
+
+.PP
+Definition at line 148 of file psoPhotonODBC.h.
 .SS "enum \fBpsoKeyType\fP \fBpsoKeyDefinition::type\fP"
 .PP
 The data type of the key. 
 .PP
 
 .PP
-Definition at line 170 of file psoCommon.h.
+Definition at line 151 of file psoPhotonODBC.h.
 .SS "\fBpsoUint32\fP \fBpsoKeyDefinition::length\fP"
 .PP
-For fixed-length data types. 
+For some of the fixed and variable-length data types. 
 .PP
-Definition at line 173 of file psoCommon.h.
-.SS "\fBpsoUint32\fP \fBpsoKeyDefinition::minLength\fP"
-.PP
-For variable-length data types. 
-.PP
-Definition at line 176 of file psoCommon.h.
-.SS "\fBpsoUint32\fP \fBpsoKeyDefinition::maxLength\fP"
-.PP
-For variable-length data types. 
-.PP
-Definition at line 179 of file psoCommon.h.
+Definition at line 154 of file psoPhotonODBC.h.
 
 .SH "Author"
 .PP 

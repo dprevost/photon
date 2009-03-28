@@ -29,6 +29,7 @@
 #include "Nucleus/BlockGroup.h"
 #include "Nucleus/LinkedList.h"
 #include "Nucleus/TxStatus.h"
+#include "Nucleus/Definitions.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -80,12 +81,6 @@ struct psonQueue
    /** Offset to the data definition */
    ptrdiff_t  dataDefOffset;
 
-   /** Length of dataDefOffset */
-   uint32_t dataDefLength;
-
-   /** The type of the field definition (metadata) */
-   enum psoDefinitionType fieldDefType;
-
    /**
     * Number of valid items. Valid items are the number of items NOT counting
     * items that might be added (but not committed) - also, items which are
@@ -111,8 +106,7 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    const unsigned char * pDataDef,
-                    uint32_t              dataDefLength,
+                    psonDataDefinition  * pDataDefinition,
                     psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

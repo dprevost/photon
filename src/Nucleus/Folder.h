@@ -29,6 +29,7 @@
 #include "Nucleus/BlockGroup.h"
 #include "Nucleus/Hash.h"
 #include "Nucleus/HashTx.h"
+#include "Nucleus/Definitions.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -103,10 +104,8 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
-                             const unsigned char * pKeyDef,
-                             uint32_t              keyDefLength,
-                             const unsigned char * pDataDef,
-                             uint32_t              dataDefLength,
+                             psonKeyDefinition   * pKeyDefinition,
+                             psonDataDefinition  * pDataDefinition,
                              psonSessionContext  * pContext );
 
 /**
@@ -145,10 +144,8 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
-                              unsigned char      ** ppKeyDef,
-                              uint32_t            * pKeyDefLength,
-                              unsigned char      ** ppDataDef,
-                              uint32_t            * pDataDefLength,
+                              psonKeyDefinition  ** ppKeyDefinition,
+                              psonDataDefinition ** ppDataDefinition,
                               psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -201,10 +198,8 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * originalName,
                              uint32_t              strLength,
                              psoObjectDefinition * pDefinition,
-                             const unsigned char * pKeyDef,
-                             uint32_t              keyDefLength,
-                             const unsigned char * pDataDef,
-                             uint32_t              dataDefLength,
+                             psonKeyDefinition   * pKeyDefinition,
+                             psonDataDefinition  * pDataDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psonSessionContext  * pContext );
@@ -260,10 +255,8 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
-                                const unsigned char * pKeyDef,
-                                uint32_t              keyDefLength,
-                                const unsigned char * pDataDef,
-                                uint32_t              dataDefLength,
+                                psonKeyDefinition   * pKeyDefinition,
+                                psonDataDefinition  * pDataDefinition,
                                 psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -285,10 +278,8 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
-                          unsigned char      ** ppKeyDef,
-                          uint32_t            * pKeyDefLength,
-                          unsigned char      ** ppDataDef,
-                          uint32_t            * pDataDefLength,
+                          psonKeyDefinition  ** ppKeyDefinition,
+                          psonDataDefinition ** ppDataDefinition,
                           psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

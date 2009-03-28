@@ -1,4 +1,4 @@
-.TH "API functions for Photon LIFO queues." 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon LIFO queues." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,9 +17,13 @@ Data items are placed at the end of the queue and retrieved from the end of the 
 .br
 .RI "\fIClose a LIFO queue. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoLifoDefLength\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP *fieldsLength)"
+.br
+.RI "\fIRetrieve the length of the fields definition of the queue. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoLifoGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *returnedLength)"
 .br
@@ -69,11 +73,11 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoLifoDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoLifoDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP * definition, unsigned char * fields, \fBpsoUint32\fP fieldsLength)"
 .PP
 Retrieve the data definition of the queue. 
 .PP
-You can call this function twice - the first time with numFields set to \fIzero\fP and \fIfields\fP set to NULL to retrieve the actual number of fields. This allows you to allocate the proper size for \fIfields\fP.
+You can call the function \fBpsoLifoDefLength\fP to retrieve the length of the field definitions. This allows you to allocate the proper size for \fIfields\fP.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -81,9 +85,28 @@ You can call this function twice - the first time with numFields set to \fIzero\
 .br
 \fIdefinition\fP The definition of the object. 
 .br
-\fInumFields\fP The length of the array \fIfields\fP. Can be set to zero to get the actual number of fields. 
+\fIfields\fP An opaque definition of the data fields of the object. It can be set to NULL if you do not want to retrieve the definition. 
 .br
-\fIfields\fP The definition of all the fields. It can be set to NULL if \fInumFields\fP is set to zero.
+\fIfieldsLength\fP The length, in bytes, of the buffer \fIfields\fP. It should be set to zero if \fIfields\fP is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoLifoDefLength (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP * fieldsLength)"
+.PP
+Retrieve the length of the fields definition of the queue. 
+.PP
+This function is a helper function for \fBpsoLifoDefinition\fP. It allows you to allocate the proper size for \fIfields\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the queue (see \fBpsoLifoOpen\fP). 
+.br
+\fIfieldsLength\fP The length in bytes of the fields buffer.
 .RE
 .PP
 \fBReturns:\fP

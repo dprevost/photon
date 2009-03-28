@@ -1,4 +1,4 @@
-.TH "API functions for Photon folders." 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon folders." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,11 +25,7 @@ If a flat structure is preferred, simply make all your data containers children 
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *pDefinition, \fBpsoFieldDefinition\fP *pFields)"
-.br
-.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
-.ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, \fBpsoUint32\fP lengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c
@@ -72,7 +68,7 @@ This function terminates the current access to the folder in shared memory (the 
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP * pDefinition, \fBpsoFieldDefinition\fP * pFields)"
+.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
 Create a new object in shared memory as a child of the current folder. 
 .PP
@@ -88,32 +84,11 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
 .br
-\fIpDefinition\fP The type of object to create (folder, queue, etc.), the number of fields and the 'optional' key definition (for hash maps and similar). 
+\fIdefinition\fP The type of object to create (folder, queue, etc.), the type of the fields definition, etc. 
 .br
-\fIpFields\fP An array of field definitions. It can be set to NULL when creating a Folder.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBpsoErrors\fP on error. 
-.RE
-.PP
-
-.SS "PHOTON_EXPORT int psoFolderCreateObjectXML (\fBPSO_HANDLE\fP folderHandle, const char * xmlBuffer, \fBpsoUint32\fP lengthInBytes)"
-.PP
-Create a new object in shared memory as a child of the current folder. 
-.PP
-The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
-.PP
-This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIfolderHandle\fP Handle to the current folder. 
+\fIkeyDefHandle\fP Handle to the definition of the key or NULL if the object has no key. 
 .br
-\fIxmlBuffer\fP The XML buffer (string) containing all the required information. 
-.br
-\fIlengthInBytes\fP The length of \fIxmlBuffer\fP (in bytes) not counting the null terminator.
+\fIdataDefHandle\fP Handle to the definition of the data fields. It can be set to NULL when creating a Folder.
 .RE
 .PP
 \fBReturns:\fP

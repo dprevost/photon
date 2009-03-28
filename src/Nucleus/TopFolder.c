@@ -92,10 +92,8 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
-                                const unsigned char * pKeyDef,
-                                uint32_t              keyDefLength,
-                                const unsigned char * pDataDef,
-                                uint32_t              dataDefLength,
+                                psonKeyDefinition   * pKeyDefinition,
+                                psonDataDefinition  * pDataDefinition,
                                 psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -112,7 +110,7 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
    PSO_PRE_CONDITION( pDefinition->type > 0 && 
                       pDefinition->type < PSO_LAST_OBJECT_TYPE );
    if ( pDefinition->type != PSO_FOLDER ) {
-      PSO_PRE_CONDITION( pDataDef  != NULL );
+      PSO_PRE_CONDITION( pDataDefinition  != NULL );
    }
    
    strLength = nameLengthInBytes;
@@ -159,10 +157,8 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
-                                   pKeyDef,
-                                   keyDefLength,
-                                   pDataDef,
-                                   dataDefLength,
+                                   pKeyDefinition,
+                                   pDataDefinition,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
@@ -390,10 +386,8 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
-                          unsigned char      ** ppKeyDef,
-                          uint32_t            * pKeyDefLength,
-                          unsigned char      ** ppDataDef,
-                          uint32_t            * pDataDefLength,
+                          psonKeyDefinition  ** ppKeyDefinition,
+                          psonDataDefinition ** ppDataDefinition,
                           psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -404,16 +398,15 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
    const char * name = objectName;
    char * lowerName = NULL;
 
-   PSO_PRE_CONDITION( pFolder        != NULL );
-   PSO_PRE_CONDITION( objectName     != NULL );
-   PSO_PRE_CONDITION( pDefinition    != NULL );
-   PSO_PRE_CONDITION( ppKeyDef       != NULL );
-   PSO_PRE_CONDITION( pKeyDefLength  != NULL );
-   PSO_PRE_CONDITION( ppDataDef      != NULL );
-   PSO_PRE_CONDITION( pDataDefLength != NULL );
-   PSO_PRE_CONDITION( pContext       != NULL );
+   PSO_PRE_CONDITION( pFolder          != NULL );
+   PSO_PRE_CONDITION( objectName       != NULL );
+   PSO_PRE_CONDITION( pDefinition      != NULL );
+   PSO_PRE_CONDITION( ppKeyDefinition  != NULL );
+   PSO_PRE_CONDITION( ppDataDefinition != NULL );
+   PSO_PRE_CONDITION( pContext         != NULL );
 
-   *ppDataDef = NULL;
+   *ppDataDefinition = NULL;
+   *ppKeyDefinition = NULL;
    
    strLength = nameLengthInBytes;
    
@@ -467,10 +460,8 @@ bool psonTopFolderGetDef( psonFolder          * pFolder,
                                        &(lowerName[first]), 
                                        strLength, 
                                        pDefinition,
-                                       ppKeyDef,
-                                       pKeyDefLength,
-                                       ppDataDef,
-                                       pDataDefLength,
+                                       ppKeyDefinition,
+                                       ppDataDefinition,
                                        pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          if ( ! ok ) goto error_handler;

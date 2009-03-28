@@ -1,4 +1,4 @@
-.TH "psoFolder.h" 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoFolder.h" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,11 +24,7 @@ Definition in file \fBpsoFolder.h\fP.
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *pDefinition, \fBpsoFieldDefinition\fP *pFields)"
-.br
-.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
-.ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObjectXML\fP (\fBPSO_HANDLE\fP folderHandle, const char *xmlBuffer, \fBpsoUint32\fP lengthInBytes)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
 .ti -1c

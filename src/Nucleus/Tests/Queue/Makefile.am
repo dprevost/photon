@@ -41,7 +41,6 @@ check_PROGRAMS =                 \
         InitNullStatus           \
         InitPass                 \
         InitZeroBlocks           \
-        InitZeroDataDefLength    \
         InitZeroLength           \
         InsertNowNullContext     \
         InsertNowNullItem        \
@@ -108,7 +107,6 @@ InitNullParent_SOURCES           = $(COMMON_HEADER) InitNullParent.c
 InitNullStatus_SOURCES           = $(COMMON_HEADER) InitNullStatus.c
 InitPass_SOURCES                 = $(COMMON_HEADER) InitPass.c
 InitZeroBlocks_SOURCES           = $(COMMON_HEADER) InitZeroBlocks.c
-InitZeroDataDefLength_SOURCES    = $(COMMON_HEADER) InitZeroDataDefLength.c
 InitZeroLength_SOURCES           = $(COMMON_HEADER) InitZeroLength.c
 InsertNowNullContext_SOURCES     = $(COMMON_HEADER) InsertNowNullContext.c
 InsertNowNullItem_SOURCES        = $(COMMON_HEADER) InsertNowNullItem.c
@@ -184,7 +182,6 @@ TESTS =                          \
         InitNullStatus           \
         InitPass                 \
         InitZeroBlocks           \
-        InitZeroDataDefLength    \
         InitZeroLength           \
         InsertNowNullContext     \
         InsertNowNullItem        \
@@ -244,7 +241,6 @@ XFAIL_TESTS =                    \
         InitNullParent           \
         InitNullStatus           \
         InitZeroBlocks           \
-        InitZeroDataDefLength    \
         InitZeroLength           \
         InsertNowNullContext     \
         InsertNowNullItem        \

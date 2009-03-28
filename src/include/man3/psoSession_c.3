@@ -1,4 +1,4 @@
-.TH "API functions for Photon sessions." 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon sessions." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,7 +15,7 @@ Each thread of an MT program should have its own session, making it independent 
 .PP
 
 .IP "\(bu" 2
-If you need to open the same Photon object in multiple threads, simply open it multiple times, for each thread. The overhead of having multiple handles to the same shared-memory data container is minimal and increases the overall performance of the framework. 
+If you need to open the same Photon object in multiple threads, simply open it multiple times, for each thread. The overhead of having multiple handles to the same shared-memory data container is minimal and using this technique instead of using multi-thread locks will increases the overall performance of the software. 
 .PP
 
 .IP "\(bu" 2
@@ -34,7 +34,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *pDefinition, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, const unsigned char *keyDef, \fBpsoUint32\fP keyDefLength, const unsigned char *dataDef, \fBpsoUint32\fP dataDefLength)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
 .ti -1c
@@ -50,9 +50,13 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, unsigned char *key, \fBpsoUint32\fP keyLength, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoGetDefLength\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoUint32\fP *keyLength, \fBpsoUint32\fP *fieldsLength)"
+.br
+.RI "\fIRetrieve the lengths of the variable elements of the definition of the named object. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoGetInfo\fP (\fBPSO_HANDLE\fP sessionHandle, \fBpsoInfo\fP *pInfo)"
 .br
@@ -80,7 +84,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .PP
 Commit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. 
 .PP
-Insertions and deletions subjected to this call include both data items inserted and deleted from data containers (maps, etc.) and objects themselves created with \fBpsoCreateObject\fP and/or destroyed with \fBpsoDestroyObject\fP.
+Insertions and deletions subjected to this call include both data items inserted, replaced and deleted from data containers (maps, etc.) and the objects themselves created, for example, with \fBpsoCreateObject\fP and/or destroyed with \fBpsoDestroyObject\fP.
 .PP
 Note: the internal calls executed by the engine to satisfy this request cannot fail. As such, you cannot find yourself with an ugly situation where some operations were committed and others not. If an error is returned by this function, nothing was committed.
 .PP
@@ -95,13 +99,13 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP * pDefinition, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, const unsigned char * keyDef, \fBpsoUint32\fP keyDefLength, const unsigned char * dataDef, \fBpsoUint32\fP dataDefLength)"
 .PP
 Create a new object in shared memory. 
 .PP
 The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
 .PP
-This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
+This function does not provide a handle to the newly created object. Use \fBpsoQueueOpen\fP and similar functions to get the handle.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -111,9 +115,15 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
 .br
-\fIpDefinition\fP The type of object to create (folder, queue, etc.) and the optional definitions (as needed). 
+\fIdefinition\fP The basic information needed to create the object: the type of object to create (folder, queue, etc.), the type of key definition, etc. 
 .br
-\fIfields\fP An array of field definitions. It can be set to NULL when creating a Folder.
+\fIkeyDef\fP An opaque definition of the key. You can set this field to NULL if the object has no key. See \fBpsoDefinitionType\fP for a more in-depth explanation. 
+.br
+\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP. It should be set to zero if \fIkeyDef\fP is NULL. 
+.br
+\fIdataDef\fP An opaque definition of the data fields of the object. It can be set to NULL when creating a Folder. See \fBpsoDefinitionType\fP for a more in-depth explanation. 
+.br
+\fIdataDefLength\fP The length in bytes of the buffer \fIdataDef\fP. It should be set to zero if \fIdataDef\fP is NULL.
 .RE
 .PP
 \fBReturns:\fP
@@ -185,11 +195,11 @@ Once this function is executed, attempts to use the session handle might lead to
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoBasicObjectDef\fP * definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP * fields)"
+.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, unsigned char * key, \fBpsoUint32\fP keyLength, unsigned char * fields, \fBpsoUint32\fP fieldsLength)"
 .PP
 Retrieve the data definition of the named object. 
 .PP
-You can call this function twice - the first time with numFields set to \fIzero\fP and \fIfields\fP set to NULL to retrieve the actual number of fields. This allows you to allocate the proper size for \fIfields\fP.
+You can call the function \fBpsoGetDefLength\fP to retrieve the lengths of the key and the field definitions. This allows you to allocate the proper size for \fIkey\fP and \fIfields\fP.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -201,9 +211,38 @@ You can call this function twice - the first time with numFields set to \fIzero\
 .br
 \fIdefinition\fP The definition of the object. 
 .br
-\fInumFields\fP The length of the array \fIfields\fP. Can be set to zero to get the actual number of fields. 
+\fIkey\fP An opaque definition of the key. You can set this field to NULL if the object has no key or if you do not want to retrieve the key definition. 
 .br
-\fIfields\fP The definition of all the fields. It can be set to NULL if \fInumFields\fP is set to zero.
+\fIkeyLength\fP The length in bytes of the buffer \fIkey\fP. It should be set to zero if \fIkey\fP is NULL. 
+.br
+\fIfields\fP An opaque definition of the data fields of the object. It can be set to NULL if you do not want to retrieve the definition. 
+.br
+\fIfieldsLength\fP The length in bytes of the buffer \fIfields\fP. It should be set to zero if \fIfields\fP is NULL.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoGetDefLength (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoUint32\fP * keyLength, \fBpsoUint32\fP * fieldsLength)"
+.PP
+Retrieve the lengths of the variable elements of the definition of the named object. 
+.PP
+This function is a helper function for \fBpsoGetDefinition\fP. It allows you to allocate the proper size for \fIkey\fP and \fIfields\fP.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the current session. 
+.br
+\fIobjectName\fP The fully qualified name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
+.br
+\fIkeyLength\fP The length in bytes of the key buffer. keyLength cannot be NULL even if the objects has no key. 
+.br
+\fIfieldsLength\fP The length in bytes of the fields buffer. This pointer cannot be NULL.
 .RE
 .PP
 \fBReturns:\fP
@@ -216,7 +255,7 @@ You can call this function twice - the first time with numFields set to \fIzero\
 .PP
 Return information on the current status of the shared memory. 
 .PP
-The fetched information is mainly about the current status of the memory allocator.
+The fetched information is mainly about the current status of the memory allocator and information needed to provide better support (compiler, etc.).
 .PP
 \fBParameters:\fP
 .RS 4

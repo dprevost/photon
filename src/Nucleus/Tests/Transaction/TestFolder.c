@@ -33,10 +33,9 @@ int main()
    psonFolderItem item;
    psonTxStatus status;
    psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { "MyKey", PSO_KEY_LONGVARBINARY, 0};
+   psonKeyDefinition key;
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
 
    pFolder = initFolderTest( expectedToPass, &context );
    pTx = context.pTransaction;
@@ -55,9 +54,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 1,
                                 0,
                                 &context );
@@ -70,10 +67,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                (unsigned char*)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &key,
+                                &fields,
                                 1,
                                 0,
                                 &context );
@@ -110,9 +105,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 1,
                                 0,
                                 &context );
@@ -125,10 +118,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                (unsigned char *)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &key,
+                                &fields,
                                 1,
                                 0,
                                 &context );
@@ -217,9 +208,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 1,
                                 0,
                                 &context );
@@ -232,10 +221,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                (unsigned char *)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &key,
+                                &fields,
                                 1,
                                 0,
                                 &context );
@@ -279,9 +266,7 @@ int main()
                                 5,
                                 &folderDef,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 1,
                                 0,
                                 &context );
@@ -294,10 +279,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                (unsigned char *)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &key,
+                                &fields,
                                 1,
                                 0,
                                 &context );

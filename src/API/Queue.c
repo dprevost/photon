@@ -90,15 +90,14 @@ int psoQueueClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoQueueDefinition( PSO_HANDLE            objectHandle, 
-                        psoObjectDefinition * pDefinition,
-                        unsigned char       * pFields,
-                        uint32_t              fieldsLength )
+int psoQueueDefinition( PSO_HANDLE   objectHandle, 
+                        PSO_HANDLE * dataDefHandle )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
    psonSessionContext * pContext;
+   psoaDataDefinition * pDataDefinition = NULL;
    
    pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
@@ -107,27 +106,28 @@ int psoQueueDefinition( PSO_HANDLE            objectHandle,
 
    pContext = &pQueue->object.pSession->context;
 
-   if ( pDefinition == NULL ) {
+   if ( dataDefHandle == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
-   if ( pFields != NULL && fieldsLength < pQueue->fieldsDefLength ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
+   pDataDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDataDefinition == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
-         pDefinition->type = PSO_QUEUE;
-         pDefinition->fieldDefType = pMemQueue->fieldDefType;
-         pDefinition->keyDefType   = PSO_DEF_NONE;
+         pDataDefinition->pSession = pQueue->object.pSession;
+         pDataDefinition->definitionType = PSOA_DEF_DATA;
+         GET_PTR( pDataDefinition->pMemDefinition, 
+                  pMemQueue->dataDefOffset, 
+                  psonDataDefinition );
+         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
 
-         if ( pFields != NULL ) {
-            memcpy( pFields, pQueue->fieldsDef, pQueue->fieldsDefLength );
-         }
          psoaCommonUnlock( &pQueue->object );
       }
       else {
@@ -390,11 +390,6 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pQueue->fieldsDef, 
                   pMemQueue->dataDefOffset,
                   unsigned char );
-         pQueue->fieldsDefLength = pMemQueue->dataDefLength;
-//         psoaGetLimits( pQueue->pDefinition,
-//                        pMemQueue->numFields,
-//                        &pQueue->minLength,
-//                        &pQueue->maxLength );
       }
    }
    else {
@@ -509,12 +504,6 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
       return PSO_INVALID_LENGTH;
    }
 
-//   if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
-//      psocSetError( &pQueue->object.pSession->context.errorHandler, 
-//         g_psoErrorHandle, PSO_INVALID_LENGTH );
-//      return PSO_INVALID_LENGTH;
-//   }
-   
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
@@ -575,11 +564,6 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
-//   if ( dataLength < pQueue->minLength || dataLength > pQueue->maxLength ) {
-//      psocSetError( &pQueue->object.pSession->context.errorHandler, 
-//         g_psoErrorHandle, PSO_INVALID_LENGTH );
-//      return PSO_INVALID_LENGTH;
-//   }
    
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {

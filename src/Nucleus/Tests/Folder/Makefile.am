@@ -51,21 +51,12 @@ check_PROGRAMS =                 \
         FiniWrongObjType         \
         GetDefinitionNullContext \
         GetDefinitionNullDataDef \
-        GetDefinitionNullDataLen \
         GetDefinitionNullDef     \
         GetDefinitionNullFolder  \
         GetDefinitionNullKey     \
-        GetDefinitionNullKeyLen  \
         GetDefinitionNullName    \
         GetDefinitionPass        \
         GetDefinitionZeroLength  \
-        GetDefLengthNullContext  \
-        GetDefLengthNullDataLen  \
-        GetDefLengthNullFolder   \
-        GetDefLengthNullKeyLen   \
-        GetDefLengthNullName     \
-        GetDefLengthPass         \
-        GetDefLengthZeroNameLen  \
         GetFirstEmpty            \
         GetFirstNullContext      \
         GetFirstNullFolder       \
@@ -173,21 +164,12 @@ FiniPass_SOURCES                 = $(COMMON_HEADER) FiniPass.c
 FiniWrongObjType_SOURCES         = $(COMMON_HEADER) FiniWrongObjType.c
 GetDefinitionNullContext_SOURCES = $(COMMON_HEADER) GetDefinitionNullContext.c
 GetDefinitionNullDataDef_SOURCES = $(COMMON_HEADER) GetDefinitionNullDataDef.c
-GetDefinitionNullDataLen_SOURCES = $(COMMON_HEADER) GetDefinitionNullDataLen.c
 GetDefinitionNullDef_SOURCES     = $(COMMON_HEADER) GetDefinitionNullDef.c
 GetDefinitionNullFolder_SOURCES  = $(COMMON_HEADER) GetDefinitionNullFolder.c
 GetDefinitionNullKey_SOURCES     = $(COMMON_HEADER) GetDefinitionNullKey.c
-GetDefinitionNullKeyLen_SOURCES  = $(COMMON_HEADER) GetDefinitionNullKeyLen.c
 GetDefinitionNullName_SOURCES    = $(COMMON_HEADER) GetDefinitionNullName.c
 GetDefinitionPass_SOURCES        = $(COMMON_HEADER) GetDefinitionPass.c
 GetDefinitionZeroLength_SOURCES  = $(COMMON_HEADER) GetDefinitionZeroLength.c
-GetDefLengthNullContext_SOURCES  = $(COMMON_HEADER) GetDefLengthNullContext.c
-GetDefLengthNullDataLen_SOURCES  = $(COMMON_HEADER) GetDefLengthNullDataLen.c
-GetDefLengthNullFolder_SOURCES   = $(COMMON_HEADER) GetDefLengthNullFolder.c
-GetDefLengthNullKeyLen_SOURCES   = $(COMMON_HEADER) GetDefLengthNullKeyLen.c
-GetDefLengthNullName_SOURCES     = $(COMMON_HEADER) GetDefLengthNullName.c
-GetDefLengthPass_SOURCES         = $(COMMON_HEADER) GetDefLengthPass.c
-GetDefLengthZeroNameLen_SOURCES  = $(COMMON_HEADER) GetDefLengthZeroNameLen.c
 GetFirstEmpty_SOURCES            = $(COMMON_HEADER) GetFirstEmpty.c
 GetFirstNullContext_SOURCES      = $(COMMON_HEADER) GetFirstNullContext.c
 GetFirstNullFolder_SOURCES       = $(COMMON_HEADER) GetFirstNullFolder.c
@@ -304,21 +286,12 @@ TESTS =                          \
         FiniWrongObjType         \
         GetDefinitionNullContext \
         GetDefinitionNullDataDef \
-        GetDefinitionNullDataLen \
         GetDefinitionNullDef     \
         GetDefinitionNullFolder  \
         GetDefinitionNullKey     \
-        GetDefinitionNullKeyLen  \
         GetDefinitionNullName    \
         GetDefinitionPass        \
         GetDefinitionZeroLength  \
-        GetDefLengthNullContext  \
-        GetDefLengthNullDataLen  \
-        GetDefLengthNullFolder   \
-        GetDefLengthNullKeyLen   \
-        GetDefLengthNullName     \
-        GetDefLengthPass         \
-        GetDefLengthZeroNameLen  \
         GetFirstEmpty            \
         GetFirstNullContext      \
         GetFirstNullFolder       \
@@ -418,19 +391,11 @@ XFAIL_TESTS =                    \
         FiniWrongObjType         \
         GetDefinitionNullContext \
         GetDefinitionNullDataDef \
-        GetDefinitionNullDataLen \
         GetDefinitionNullDef     \
         GetDefinitionNullFolder  \
         GetDefinitionNullKey     \
-        GetDefinitionNullKeyLen  \
         GetDefinitionNullName    \
         GetDefinitionZeroLength  \
-        GetDefLengthNullContext  \
-        GetDefLengthNullDataLen  \
-        GetDefLengthNullFolder   \
-        GetDefLengthNullKeyLen   \
-        GetDefLengthNullName     \
-        GetDefLengthZeroNameLen  \
         GetFirstNullContext      \
         GetFirstNullFolder       \
         GetFirstNullItem         \

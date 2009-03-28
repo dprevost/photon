@@ -130,53 +130,20 @@ int psoFastMapClose( PSO_HANDLE objectHandle );
 /**
  * \brief Retrieve the data definition of the hash map.
  *
- * You can call the function ::psoFastMapDefLength to retrieve the 
- * length of the field definitions. This allows you to allocate 
- * the proper size for \em key and \em fields.
+ * To avoid memory leaks, you must close the handles that will be 
+ * returned by this function (see ::psoDataDefClose and ::psoKeyDefClose).
  *
  * \param[in]  objectHandle The handle to the hash map (see ::psoFastMapOpen 
  *                          or ::psoFastMapEdit).
- * \param[out] definition The definition of the object.
- * \param[out] key An opaque definition of the key. You can set this field
- *             to NULL if you do not want to retrieve the key definition.
- * \param[in]  keyLength The length in bytes of the buffer \em key. 
- *             It should be set to zero if \em key is NULL.
- * \param[out] fields An opaque definition of the data fields of the object.
- *             It can be set to NULL if you do not want to retrieve the
- *             definition.
- * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
- *             It should be set to zero if \em fields is NULL.
+ * \param[out] keyDefHandle Handle to the key definition. 
+ * \param[out] dataDefHandle Handle to the definition of the data fields.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoFastMapDefinition( PSO_HANDLE            objectHandle, 
-                          psoObjectDefinition * definition,
-                          unsigned char       * key,
-                          psoUint32             keyLength,
-                          unsigned char       * fields,
-                          psoUint32             fieldsLength );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/**
- * \brief Retrieve the lengths of the variable elements of the definition 
- *        of the hash map.
- *
- * This function is a helper function for ::psoFastMapDefinition. 
- * It allows you to allocate the proper size for \em key and \em fields.
- *
- * \param[in]  objectHandle The handle to the hash map (see ::psoFastMapOpen 
- *                          or ::psoFastMapEdit).
- * \param[out] keyLength The length in bytes of the key buffer.
- * \param[out] fieldsLength The length in bytes of the fields buffer.
- *
- * \return 0 on success or a ::psoErrors on error.
- */
-PHOTON_EXPORT
-int psoFastMapDefLength( PSO_HANDLE   objectHandle, 
-                         psoUint32  * keyLength,
-                         psoUint32  * fieldsLength );
+int psoFastMapDefinition( PSO_HANDLE   objectHandle, 
+                          PSO_HANDLE * keyDefHandle,
+                          PSO_HANDLE * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -25,6 +25,7 @@
 #include <photon/psoErrors.h>
 #include "API/CommonObject.h"
 #include "API/DataDefinition.h"
+#include "API/KeyDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -103,17 +104,16 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoFastMapDefinition( PSO_HANDLE            objectHandle,
-                          psoObjectDefinition * pDefinition,
-                          unsigned char       * pKey,
-                          uint32_t              keyLength,
-                          unsigned char       * pFields,
-                          uint32_t              fieldsLength )
+int psoFastMapDefinition( PSO_HANDLE   objectHandle,
+                          PSO_HANDLE * keyDefHandle,
+                          PSO_HANDLE * dataDefHandle )
 {
    psoaFastMap * pHashMap;
    psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
    psonSessionContext * pContext;
+   psoaDataDefinition * pDataDefinition = NULL;
+   psoaKeyDefinition  * pKeyDefinition = NULL;
    
    pHashMap = (psoaFastMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -122,35 +122,46 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
 
    pContext = &pHashMap->object.pSession->context;
 
-   if ( pDefinition == NULL ) {
+   if ( keyDefHandle == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   if ( dataDefHandle == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
-   if ( pKey != NULL && keyLength < pHashMap->keyDefLength ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
+   pDataDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDataDefinition == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
-   
-   if ( pFields != NULL && fieldsLength < pHashMap->fieldsDefLength ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
+   pKeyDefinition = malloc( sizeof(psoaKeyDefinition) );
+   if ( pKeyDefinition == NULL ) {
+      free( pDataDefinition );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
 
    if ( ! pHashMap->object.pSession->terminated ) {
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
       
-         pDefinition->type = PSO_FAST_MAP;
-         if ( pKey != NULL ) {
-            memcpy( pKey, pHashMap->keyDef, pHashMap->keyDefLength );
-         }
-         pDefinition->fieldDefType = pMemHashMap->fieldDefType;
-         pDefinition->keyDefType   = pMemHashMap->keyDefType;
+         pDataDefinition->pSession = pHashMap->object.pSession;
+         pDataDefinition->definitionType = PSOA_DEF_DATA;
+         GET_PTR( pDataDefinition->pMemDefinition, 
+                  pMemHashMap->dataDefOffset, 
+                  psonDataDefinition );
+         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
 
-         if ( pFields != NULL ) {
-            memcpy( pFields, pHashMap->fieldsDef, pHashMap->fieldsDefLength );
-         }
+         pKeyDefinition->pSession = pHashMap->object.pSession;
+         pKeyDefinition->definitionType = PSOA_DEF_KEY;
+         GET_PTR( pKeyDefinition->pMemDefinition, 
+                  pMemHashMap->keyDefOffset, 
+                  psonKeyDefinition );
+         *keyDefHandle = (PSO_HANDLE) pKeyDefinition;
+
          psoaCommonUnlock( &pHashMap->object );
       }
       else {
@@ -162,56 +173,8 @@ int psoFastMapDefinition( PSO_HANDLE            objectHandle,
    }
    
    if ( errcode != PSO_OK ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
-   }
-   
-   return errcode;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-int psoFastMapDefLength( PSO_HANDLE   objectHandle, 
-                         psoUint32  * keyLength,
-                         psoUint32  * fieldsLength )
-{
-   psoaFastMap * pHashMap;
-   int errcode = 0;
-   psonSessionContext * pContext;
-
-   pHashMap = (psoaFastMap *) objectHandle;
-   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
-   
-   if ( pHashMap->object.type != PSOA_MAP ) {
-      return PSO_WRONG_TYPE_HANDLE;
-   }
-
-   pContext = &pHashMap->object.pSession->context;
-
-   if ( keyLength == NULL ) {
-      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-                    g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
-   if ( fieldsLength == NULL ) {
-      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-                    g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
-   
-   if ( ! pHashMap->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pHashMap->object ) ) {
-         *keyLength = pHashMap->keyDefLength;
-         *fieldsLength = pHashMap->fieldsDefLength;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
-   }
-   else {
-      errcode = PSO_SESSION_IS_TERMINATED;
-   }
-   
-   if ( errcode != 0 ) {
+      if ( pDataDefinition ) free(pDataDefinition);
+      if ( pKeyDefinition) free(pKeyDefinition);
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
    }
    
@@ -342,16 +305,6 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
          GET_PTR( pHashMap->keyDef, 
                   pMemHashMap->keyDefOffset,
                   unsigned char );
-         pHashMap->keyDefLength = pMemHashMap->keyDefLength;
-         pHashMap->fieldsDefLength = pMemHashMap->dataDefLength;
-
-//         psoaGetLimits( pHashMap->pDefinition,
-//                        pMemHashMap->numFields,
-//                        &pHashMap->minLength,
-//                        &pHashMap->maxLength );
-//         psoaGetKeyLimits( &pMemHashMap->keyDef,
-//                           &pHashMap->minKeyLength,
-//                           &pHashMap->maxKeyLength );
          pSession->numberOfEdits++;
       }
    }
@@ -724,18 +677,6 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
       return PSO_INVALID_LENGTH;
    }
 
-//   if ( keyLength < pHashMap->minKeyLength || keyLength > pHashMap->maxKeyLength ) {
-//      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-//         g_psoErrorHandle, PSO_INVALID_LENGTH );
-//      return PSO_INVALID_LENGTH;
-//   }
-
-//   if ( dataLength < pHashMap->minLength || dataLength > pHashMap->maxLength ) {
-//      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
-//         g_psoErrorHandle, PSO_INVALID_LENGTH );
-//      return PSO_INVALID_LENGTH;
-//   }
-
    if ( pHashMap->editMode == 0 ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler, 
          g_psoErrorHandle, PSO_OBJECT_IS_READ_ONLY );
@@ -838,15 +779,6 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pHashMap->keyDef, 
                   pMemHashMap->keyDefOffset,
                   unsigned char );
-         pHashMap->keyDefLength = pMemHashMap->keyDefLength;
-         pHashMap->fieldsDefLength = pMemHashMap->dataDefLength;
-//         psoaGetLimits( pHashMap->pDefinition,
-//                        pMemHashMap->numFields,
-//                        &pHashMap->minLength,
-//                        &pHashMap->maxLength );
-//         psoaGetKeyLimits( &pMemHashMap->keyDef,
-//                           &pHashMap->minKeyLength,
-//                           &pHashMap->maxKeyLength );
       }
    }
    else {

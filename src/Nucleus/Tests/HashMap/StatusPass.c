@@ -36,17 +36,16 @@ int main()
    char * data  = "my data";
    psoObjStatus status;
    psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
-   
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonKeyDefinition keyDef;
+   psonDataDefinition fields;
 
    pHashMap = initHashMapTest( expectedToPass, &context );
 
    psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
    
    ok = psonHashMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
-                         SET_OFFSET(pHashMap), &def, (unsigned char *)&keyDef,
-                         sizeof(keyDef), fields, sizeof(fields), &context );
+                         SET_OFFSET(pHashMap), &def, &keyDef,
+                         &fields, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

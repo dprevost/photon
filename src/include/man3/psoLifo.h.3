@@ -1,4 +1,4 @@
-.TH "psoLifo.h" 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoLifo.h" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,9 +24,13 @@ Definition in file \fBpsoLifo.h\fP.
 .br
 .RI "\fIClose a LIFO queue. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoLifoDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoLifoDefLength\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP *fieldsLength)"
+.br
+.RI "\fIRetrieve the length of the fields definition of the queue. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoLifoGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *returnedLength)"
 .br

@@ -61,8 +61,6 @@ check_PROGRAMS =                             \
         .\Release\InitPass.exe               \
         .\Release\InitZeroBlocks.exe         \
         .\Release\InitZeroLength.exe         \
-        .\Release\InitZeroLengthDataDef.exe  \
-        .\Release\InitZeroLengthKeyDef.exe   \
         .\Release\InsertNullContext.exe      \
         .\Release\InsertNullHash.exe         \
         .\Release\InsertNullItem.exe         \

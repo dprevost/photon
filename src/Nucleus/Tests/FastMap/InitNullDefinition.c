@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -47,9 +47,7 @@ int main()
                          SET_OFFSET(pHashMap),
                          NULL,
                          NULL,
-                         0,
-                         fields,
-                         sizeof(fields),
+                         &fields,
                          &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

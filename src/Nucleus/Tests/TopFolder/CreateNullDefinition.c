@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
 
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -40,9 +40,7 @@ int main()
                                    strlen("Test1"),
                                    NULL,
                                    NULL,
-                                   0,
-                                   fields,
-                                   sizeof(fields),
+                                   &fields,
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

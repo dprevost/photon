@@ -30,7 +30,7 @@ int main()
    psonQueue * pQueue;
    psonSessionContext context;
    psonTxStatus status;
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
    
    pQueue = initQueueTest( expectedToPass, &context );
 
@@ -44,8 +44,7 @@ int main()
                   "Queue1",
                   SET_OFFSET(pQueue),
                   NULL,
-                  fields,
-                  sizeof(fields),
+                  &fields,
                   &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -1,4 +1,4 @@
-.TH "psoInfo" 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoInfo" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ psoInfo \-
 .PP 
 This data structure is used to retrieve the status of the Photon shared memory. 
 .PP
-Definition at line 318 of file psoCommon.h.
+Definition at line 258 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -27,7 +27,7 @@ Definition at line 318 of file psoCommon.h.
 .ti -1c
 .RI "size_t \fBnumObjects\fP"
 .br
-.RI "\fINumber of API objects in the pso (internal objects are not counted). \fP"
+.RI "\fINumber of API objects in the Photon shared memory. \fP"
 .ti -1c
 .RI "size_t \fBnumGroups\fP"
 .br
@@ -71,11 +71,11 @@ Definition at line 318 of file psoCommon.h.
 .ti -1c
 .RI "char \fBquasarVersion\fP [10]"
 .br
-.RI "\fIThe server version (of the pso creator). \fP"
+.RI "\fIThe version of quasar used to create the shared memory. \fP"
 .ti -1c
 .RI "char \fBcreationTime\fP [30]"
 .br
-.RI "\fITimestamp of creation of the shared memory. \fP"
+.RI "\fITimestamp of the creation of the shared memory. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
@@ -85,105 +85,105 @@ Total size of the virtual data space.
 .PP
 
 .PP
-Definition at line 321 of file psoCommon.h.
+Definition at line 261 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::allocatedSizeInBytes\fP"
 .PP
 Total size of the allocated blocks. 
 .PP
 
 .PP
-Definition at line 324 of file psoCommon.h.
+Definition at line 264 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numObjects\fP"
 .PP
-Number of API objects in the pso (internal objects are not counted). 
+Number of API objects in the Photon shared memory. 
 .PP
-
+Internal objects are not counted. 
 .PP
-Definition at line 327 of file psoCommon.h.
+Definition at line 271 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numGroups\fP"
 .PP
 Total number of groups of blocks. 
 .PP
 
 .PP
-Definition at line 330 of file psoCommon.h.
+Definition at line 274 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numMallocs\fP"
 .PP
 Number of calls to allocate groups of blocks. 
 .PP
 
 .PP
-Definition at line 333 of file psoCommon.h.
+Definition at line 277 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::numFrees\fP"
 .PP
 Number of calls to free groups of blocks. 
 .PP
 
 .PP
-Definition at line 336 of file psoCommon.h.
+Definition at line 280 of file psoCommon.h.
 .SS "size_t \fBpsoInfo::largestFreeInBytes\fP"
 .PP
 Largest contiguous group of free blocks. 
 .PP
 
 .PP
-Definition at line 339 of file psoCommon.h.
+Definition at line 283 of file psoCommon.h.
 .SS "int \fBpsoInfo::memoryVersion\fP"
 .PP
 Shared-memory version. 
 .PP
 
 .PP
-Definition at line 342 of file psoCommon.h.
+Definition at line 286 of file psoCommon.h.
 .SS "int \fBpsoInfo::bigEndian\fP"
 .PP
 Endianess (0 for little endian, 1 for big endian). 
 .PP
 
 .PP
-Definition at line 345 of file psoCommon.h.
+Definition at line 289 of file psoCommon.h.
 .SS "char \fBpsoInfo::compiler\fP[20]"
 .PP
 Compiler name. 
 .PP
 
 .PP
-Definition at line 348 of file psoCommon.h.
+Definition at line 292 of file psoCommon.h.
 .SS "char \fBpsoInfo::compilerVersion\fP[10]"
 .PP
 Compiler version (if available). 
 .PP
 
 .PP
-Definition at line 351 of file psoCommon.h.
+Definition at line 295 of file psoCommon.h.
 .SS "char \fBpsoInfo::platform\fP[20]"
 .PP
 Platform. 
 .PP
 
 .PP
-Definition at line 354 of file psoCommon.h.
+Definition at line 298 of file psoCommon.h.
 .SS "char \fBpsoInfo::dllVersion\fP[10]"
 .PP
 Shared lib version. 
 .PP
 
 .PP
-Definition at line 357 of file psoCommon.h.
+Definition at line 301 of file psoCommon.h.
 .SS "char \fBpsoInfo::quasarVersion\fP[10]"
 .PP
-The server version (of the pso creator). 
+The version of quasar used to create the shared memory. 
 .PP
 
 .PP
-Definition at line 360 of file psoCommon.h.
+Definition at line 304 of file psoCommon.h.
 .SS "char \fBpsoInfo::creationTime\fP[30]"
 .PP
-Timestamp of creation of the shared memory. 
+Timestamp of the creation of the shared memory. 
 .PP
 
 .PP
-Definition at line 363 of file psoCommon.h.
+Definition at line 307 of file psoCommon.h.
 
 .SH "Author"
 .PP 

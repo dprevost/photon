@@ -90,15 +90,14 @@ int psoLifoClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoLifoDefinition( PSO_HANDLE            objectHandle, 
-                       psoObjectDefinition * pDefinition,
-                       unsigned char       * pFields,
-                       uint32_t              fieldsLength )
+int psoLifoDefinition( PSO_HANDLE   objectHandle, 
+                       PSO_HANDLE * dataDefHandle )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
    psonSessionContext * pContext;
+   psoaDataDefinition * pDataDefinition = NULL;
    
    pLifo = (psoaLifo *) objectHandle;
    if ( pLifo == NULL ) return PSO_NULL_HANDLE;
@@ -107,28 +106,28 @@ int psoLifoDefinition( PSO_HANDLE            objectHandle,
 
    pContext = &pLifo->object.pSession->context;
 
-   if ( pDefinition == NULL ) {
+   if ( dataDefHandle == NULL ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
 
-   if ( pFields != NULL && fieldsLength < pLifo->fieldsDefLength ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
+   pDataDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDataDefinition == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psoaCommonLock( &pLifo->object ) ) {
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
       
-         pDefinition->type = PSO_LIFO;
-         pDefinition->fieldDefType = pMemLifo->fieldDefType;
-         pDefinition->keyDefType   = PSO_DEF_NONE;
+         pDataDefinition->pSession = pLifo->object.pSession;
+         pDataDefinition->definitionType = PSOA_DEF_DATA;
+         GET_PTR( pDataDefinition->pMemDefinition, 
+                  pMemLifo->dataDefOffset, 
+                  psonDataDefinition );
+         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
 
-         if ( pFields != NULL ) {
-            memcpy( pFields, pLifo->fieldsDef, 
-               pLifo->fieldsDefLength );
-         }
          psoaCommonUnlock( &pLifo->object );
       }
       else {
@@ -391,11 +390,6 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
          GET_PTR( pLifo->fieldsDef, 
                   pMemLifo->dataDefOffset,
                   unsigned char );
-         pLifo->fieldsDefLength = pMemLifo->dataDefLength;
-//         psoaGetLimits( pLifo->pDefinition,
-//                        pMemLifo->numFields,
-//                        &pLifo->minLength,
-//                        &pLifo->maxLength );
       }
    }
    else {
@@ -509,11 +503,6 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
-//   if ( dataLength < pLifo->minLength || dataLength > pLifo->maxLength ) {
-//      psocSetError( &pLifo->object.pSession->context.errorHandler, 
-//         g_psoErrorHandle, PSO_INVALID_LENGTH );
-//      return PSO_INVALID_LENGTH;
-//   }
    
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psoaCommonLock( &pLifo->object ) ) {

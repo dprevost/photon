@@ -35,19 +35,11 @@ check_PROGRAMS =                              \
         .\Release\EditWrongLength.exe         \
         .\Release\EditWrongType.exe           \
         .\Release\EditZeroLength.exe          \
-        .\Release\GetDefLengthNullContext.exe \
-        .\Release\GetDefLengthNullDataLen.exe \
-        .\Release\GetDefLengthNullFolder.exe  \
-        .\Release\GetDefLengthNullKeyLen.exe  \
-        .\Release\GetDefLengthNullName.exe    \
-        .\Release\GetDefLengthPass.exe        \
         .\Release\GetDefNullContext.exe       \
         .\Release\GetDefNullDataDef.exe       \
-        .\Release\GetDefNullDataLength.exe    \
         .\Release\GetDefNullDef.exe           \
         .\Release\GetDefNullFolder.exe        \
         .\Release\GetDefNullKeyDef.exe        \
-        .\Release\GetDefNullKeyLength.exe     \
         .\Release\GetDefNullName.exe          \
         .\Release\GetDefPass.exe              \
         .\Release\OpenNullContext.exe         \

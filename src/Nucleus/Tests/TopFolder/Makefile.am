@@ -37,19 +37,11 @@ check_PROGRAMS =                \
         EditWrongLength         \
         EditWrongType           \
         EditZeroLength          \
-        GetDefLengthNullContext \
-        GetDefLengthNullDataLen \
-        GetDefLengthNullFolder  \
-        GetDefLengthNullKeyLen  \
-        GetDefLengthNullName    \
-        GetDefLengthPass        \
         GetDefNullContext       \
         GetDefNullDataDef       \
-        GetDefNullDataLength    \
         GetDefNullDef           \
         GetDefNullFolder        \
         GetDefNullKeyDef        \
-        GetDefNullKeyLength     \
         GetDefNullName          \
         GetDefPass              \
         OpenNullContext         \
@@ -90,19 +82,11 @@ EditPass_SOURCES                = $(COMMON_HEADER) EditPass.c
 EditWrongLength_SOURCES         = $(COMMON_HEADER) EditWrongLength.c
 EditWrongType_SOURCES           = $(COMMON_HEADER) EditWrongType.c
 EditZeroLength_SOURCES          = $(COMMON_HEADER) EditZeroLength.c
-GetDefLengthNullContext_SOURCES = $(COMMON_HEADER) GetDefLengthNullContext.c
-GetDefLengthNullDataLen_SOURCES = $(COMMON_HEADER) GetDefLengthNullDataLen.c
-GetDefLengthNullFolder_SOURCES  = $(COMMON_HEADER) GetDefLengthNullFolder.c
-GetDefLengthNullKeyLen_SOURCES  = $(COMMON_HEADER) GetDefLengthNullKeyLen.c
-GetDefLengthNullName_SOURCES    = $(COMMON_HEADER) GetDefLengthNullName.c
-GetDefLengthPass_SOURCES        = $(COMMON_HEADER) GetDefLengthPass.c
 GetDefNullContext_SOURCES       = $(COMMON_HEADER) GetDefNullContext.c
 GetDefNullDataDef_SOURCES       = $(COMMON_HEADER) GetDefNullDataDef.c
-GetDefNullDataLength_SOURCES    = $(COMMON_HEADER) GetDefNullDataLength.c
 GetDefNullDef_SOURCES           = $(COMMON_HEADER) GetDefNullDef.c
 GetDefNullFolder_SOURCES        = $(COMMON_HEADER) GetDefNullFolder.c
 GetDefNullKeyDef_SOURCES        = $(COMMON_HEADER) GetDefNullKeyDef.c
-GetDefNullKeyLength_SOURCES     = $(COMMON_HEADER) GetDefNullKeyLength.c
 GetDefNullName_SOURCES          = $(COMMON_HEADER) GetDefNullName.c
 GetDefPass_SOURCES              = $(COMMON_HEADER) GetDefPass.c
 OpenNullContext_SOURCES         = $(COMMON_HEADER) OpenNullContext.c
@@ -152,19 +136,11 @@ TESTS =                         \
         EditWrongLength         \
         EditWrongType           \
         EditZeroLength          \
-        GetDefLengthNullContext \
-        GetDefLengthNullDataLen \
-        GetDefLengthNullFolder  \
-        GetDefLengthNullKeyLen  \
-        GetDefLengthNullName    \
-        GetDefLengthPass        \
         GetDefNullContext       \
         GetDefNullDataDef       \
-        GetDefNullDataLength    \
         GetDefNullDef           \
         GetDefNullFolder        \
         GetDefNullKeyDef        \
-        GetDefNullKeyLength     \
         GetDefNullName          \
         GetDefPass              \
         OpenNullContext         \
@@ -197,18 +173,11 @@ XFAIL_TESTS =                   \
         EditNullItem            \
         EditNullName            \
         EditWrongType           \
-        GetDefLengthNullContext \
-        GetDefLengthNullDataLen \
-        GetDefLengthNullFolder  \
-        GetDefLengthNullKeyLen  \
-        GetDefLengthNullName    \
         GetDefNullContext       \
         GetDefNullDataDef       \
-        GetDefNullDataLength    \
         GetDefNullDef           \
         GetDefNullFolder        \
         GetDefNullKeyDef        \
-        GetDefNullKeyLength     \
         GetDefNullName          \
         OpenNullContext         \
         OpenNullItem            \

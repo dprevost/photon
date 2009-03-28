@@ -249,24 +249,21 @@ bool psonQueueInit( psonQueue           * pQueue,
                     char                * origName,
                     ptrdiff_t             hashItemOffset,
                     psoObjectDefinition * pDefinition,
-                    const unsigned char * pDataDef,
-                    uint32_t              dataDefLength,
+                    psonDataDefinition  * pDataDefinition,
                     psonSessionContext  * pContext )
 {
    psoErrors errcode;
-   char * ptr;
    
-   PSO_PRE_CONDITION( pQueue       != NULL );
-   PSO_PRE_CONDITION( pContext     != NULL );
-   PSO_PRE_CONDITION( pTxStatus    != NULL );
-   PSO_PRE_CONDITION( origName     != NULL );
-   PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pDataDef     != NULL );
+   PSO_PRE_CONDITION( pQueue          != NULL );
+   PSO_PRE_CONDITION( pContext        != NULL );
+   PSO_PRE_CONDITION( pTxStatus       != NULL );
+   PSO_PRE_CONDITION( origName        != NULL );
+   PSO_PRE_CONDITION( pDefinition     != NULL );
+   PSO_PRE_CONDITION( pDataDefinition != NULL );
    PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
-   PSO_PRE_CONDITION( dataDefLength  > 0 );
    PSO_PRE_CONDITION( pDefinition->fieldDefType > PSO_DEF_FIRST_TYPE && 
                       pDefinition->fieldDefType < PSO_DEF_LAST_TYPE );
    
@@ -290,17 +287,7 @@ bool psonQueueInit( psonQueue           * pQueue,
 
    psonLinkedListInit( &pQueue->listOfElements );
 
-   pQueue->fieldDefType = pDefinition->fieldDefType;
-
-   ptr = (char *)psonMalloc( &pQueue->memObject, dataDefLength, pContext );
-   if ( ptr == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   memcpy( ptr, pDataDef, dataDefLength );
-   pQueue->dataDefOffset = SET_OFFSET(ptr);
-   pQueue->dataDefLength = dataDefLength;
+   pQueue->dataDefOffset = SET_OFFSET(pDataDefinition);
    
    return true;
 }

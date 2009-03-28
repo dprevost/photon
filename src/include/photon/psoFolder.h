@@ -78,13 +78,10 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  *            the Photon engine).
  * \param[in] definition The type of object to create (folder, queue, etc.),
  *            the type of the fields definition, etc.
- * \param[in] key The definition of the key or NULL if the object has no key.
- * \param[in] keyLength The length in bytes of the buffer \em key. 
- *            It should be set to zero if \em key is NULL.
- * \param[in] fields An opaque definition of the data field of the object.
+ * \param[in] keyDefHandle Handle to the definition of the key or NULL if the 
+ *            object has no key.
+ * \param[in] dataDefHandle Handle to the definition of the data fields.
  *            It can be set to NULL when creating a Folder.
- * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
- *            It should be set to zero if \em fields is NULL.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -93,10 +90,8 @@ int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char          * objectName,
                            psoUint32             nameLengthInBytes,
                            psoObjectDefinition * definition,
-                           const unsigned char * key,
-                           psoUint32             keyLength,
-                           const unsigned char * fields,
-                           psoUint32             fieldsLength );
+                           PSO_HANDLE            keyDefHandle,
+                           PSO_HANDLE            dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

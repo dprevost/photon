@@ -33,13 +33,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(70)
+Dim failed_tests(68)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(16)
-Dim fail_programs(53)
+Dim fail_programs(51)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -106,27 +106,25 @@ fail_programs(31) = "InitNullParent"
 fail_programs(32) = "InitNullStatus"
 fail_programs(33) = "InitZeroBlocks"
 fail_programs(34) = "InitZeroLength"
-fail_programs(35) = "InitZeroLengthDataDef"
-fail_programs(36) = "InitZeroLengthKeyDef"
-fail_programs(37) = "InsertNullContext"
-fail_programs(38) = "InsertNullHash"
-fail_programs(39) = "InsertNullItem"
-fail_programs(40) = "InsertNullKey"
-fail_programs(41) = "InsertZeroLengthItem"
-fail_programs(41) = "InsertZeroLengthKey"
-fail_programs(43) = "ReleaseNullContext"
-fail_programs(44) = "ReleaseNullHash"
-fail_programs(45) = "ReleaseNullItem"
-fail_programs(46) = "ReplaceNullContext"
-fail_programs(47) = "ReplaceNullHash"
-fail_programs(48) = "ReplaceNullItem"
-fail_programs(49) = "ReplaceNullKey"
-fail_programs(50) = "ReplaceZeroLengthItem"
-fail_programs(51) = "ReplaceZeroLengthKey"
-fail_programs(52) = "StatusNullHash"
-fail_programs(53) = "StatusNullStatus"
+fail_programs(35) = "InsertNullContext"
+fail_programs(36) = "InsertNullHash"
+fail_programs(37) = "InsertNullItem"
+fail_programs(38) = "InsertNullKey"
+fail_programs(39) = "InsertZeroLengthItem"
+fail_programs(40) = "InsertZeroLengthKey"
+fail_programs(41) = "ReleaseNullContext"
+fail_programs(42) = "ReleaseNullHash"
+fail_programs(43) = "ReleaseNullItem"
+fail_programs(44) = "ReplaceNullContext"
+fail_programs(45) = "ReplaceNullHash"
+fail_programs(46) = "ReplaceNullItem"
+fail_programs(47) = "ReplaceNullKey"
+fail_programs(48) = "ReplaceZeroLengthItem"
+fail_programs(49) = "ReplaceZeroLengthKey"
+fail_programs(50) = "StatusNullHash"
+fail_programs(51) = "StatusNullStatus"
 
-numTests  = 71                 ' Sum of length of both arrays 
+numTests  = 69                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

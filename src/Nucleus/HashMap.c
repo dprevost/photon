@@ -590,28 +590,23 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKeyDef,
-                      uint32_t              keyDefLength,
-                      const unsigned char * pDataDef,
-                      uint32_t              dataDefLength,
+                      psonKeyDefinition   * pKeyDefinition,
+                      psonDataDefinition  * pDataDefinition,
                       psonSessionContext  * pContext )
 {
    psoErrors errcode;
-   unsigned char * ptr;
    
-   PSO_PRE_CONDITION( pHashMap     != NULL );
-   PSO_PRE_CONDITION( pContext     != NULL );
-   PSO_PRE_CONDITION( pTxStatus    != NULL );
-   PSO_PRE_CONDITION( origName     != NULL );
-   PSO_PRE_CONDITION( pDefinition  != NULL );
-   PSO_PRE_CONDITION( pKeyDef      != NULL );
-   PSO_PRE_CONDITION( pDataDef     != NULL );
-   PSO_PRE_CONDITION( hashItemOffset != PSON_NULL_OFFSET );
-   PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pHashMap        != NULL );
+   PSO_PRE_CONDITION( pContext        != NULL );
+   PSO_PRE_CONDITION( pTxStatus       != NULL );
+   PSO_PRE_CONDITION( origName        != NULL );
+   PSO_PRE_CONDITION( pDefinition     != NULL );
+   PSO_PRE_CONDITION( pKeyDefinition  != NULL );
+   PSO_PRE_CONDITION( pDataDefinition != NULL );
+   PSO_PRE_CONDITION( hashItemOffset  != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( parentOffset    != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    PSO_PRE_CONDITION( origNameLength > 0 );
-   PSO_PRE_CONDITION( keyDefLength   > 0 );
-   PSO_PRE_CONDITION( dataDefLength  > 0 );
    PSO_PRE_CONDITION( pDefinition->fieldDefType > PSO_DEF_FIRST_TYPE && 
                       pDefinition->fieldDefType < PSO_DEF_LAST_TYPE );
    PSO_PRE_CONDITION( pDefinition->keyDefType > PSO_DEF_FIRST_TYPE && 
@@ -646,30 +641,8 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
       return false;
    }
    
-   pHashMap->fieldDefType = pDefinition->fieldDefType;
-   pHashMap->keyDefType = pDefinition->keyDefType;
-
-   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
-                                      dataDefLength, pContext );
-   if ( ptr == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   memcpy( ptr, pDataDef, dataDefLength );
-   pHashMap->dataDefOffset = SET_OFFSET(ptr);
-   pHashMap->dataDefLength = dataDefLength;
-   
-   ptr = (unsigned char *)psonMalloc( &pHashMap->memObject, 
-                                      keyDefLength, pContext );
-   if ( ptr == NULL ) {
-      psocSetError( &pContext->errorHandler, 
-                    g_psoErrorHandle, PSO_NOT_ENOUGH_PSO_MEMORY );
-      return false;
-   }
-   memcpy( ptr, pKeyDef, keyDefLength );
-   pHashMap->keyDefOffset = SET_OFFSET(ptr);
-   pHashMap->keyDefLength = keyDefLength;
+   pHashMap->dataDefOffset = SET_OFFSET(pDataDefinition);
+   pHashMap->keyDefOffset  = SET_OFFSET(pKeyDefinition);
 
    pHashMap->isSystemObject = false;
 

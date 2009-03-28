@@ -35,9 +35,9 @@ int main()
    psonTxStatus * txItemStatus;
    psonTreeNode * pNode;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { "MyKey", PSO_KEY_VARCHAR, 100 };
+   psonKeyDefinition key;
 
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
 
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -53,10 +53,8 @@ int main()
                                 "Test2",
                                 5,
                                 &mapDef,
-                                (unsigned char *)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &key,
+                                &fields,
                                 1,
                                 0,
                                 &context );
@@ -105,10 +103,8 @@ int main()
                                 "Test4",
                                 5,
                                 &mapDef,
-                                (unsigned char *)&key,
-                                sizeof(key),
-                                fields,
-                                sizeof(fields),
+                                &key,
+                                &fields,
                                 1,
                                 0,
                                 &context );

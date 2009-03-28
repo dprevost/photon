@@ -49,21 +49,12 @@ check_PROGRAMS =                               \
         .\Release\FiniWrongObjType.exe         \
         .\Release\GetDefinitionNullContext.exe \
         .\Release\GetDefinitionNullDataDef.exe \
-        .\Release\GetDefinitionNullDataLen.exe \
         .\Release\GetDefinitionNullDef.exe     \
         .\Release\GetDefinitionNullFolder.exe  \
         .\Release\GetDefinitionNullKey.exe     \
-        .\Release\GetDefinitionNullKeyLen.exe  \
         .\Release\GetDefinitionNullName.exe    \
         .\Release\GetDefinitionPass.exe        \
         .\Release\GetDefinitionZeroLength.exe  \
-        .\Release\GetDefLengthNullContext.exe  \
-        .\Release\GetDefLengthNullDataLen.exe  \
-        .\Release\GetDefLengthNullFolder.exe   \
-        .\Release\GetDefLengthNullKeyLen.exe   \
-        .\Release\GetDefLengthNullName.exe     \
-        .\Release\GetDefLengthPass.exe         \
-        .\Release\GetDefLengthZeroNameLen.exe  \
         .\Release\GetFirstEmpty.exe            \
         .\Release\GetFirstNullContext.exe      \
         .\Release\GetFirstNullFolder.exe       \

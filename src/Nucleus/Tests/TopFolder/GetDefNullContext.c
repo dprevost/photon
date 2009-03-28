@@ -32,18 +32,11 @@ int main()
    psonSessionContext context;
    bool ok;
    psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef[2] = {
-       { "MyKey1", PSO_KEY_CHAR,    20 },
-       { "MyKey2", PSO_KEY_VARCHAR, 30 }
-   };
-   psoFieldDefinition fieldDef[3] = {
-      { "Field_1", PSO_CHAR,    {10}  },
-      { "Field_1", PSO_INTEGER, {0}   },
-      { "Field_1", PSO_VARCHAR, {100} }
-   };
-   unsigned char * retKeyDef = NULL, * retDataDef = NULL;
+   psonKeyDefinition keyDef;
+   psonDataDefinition fieldDef;
+   psonKeyDefinition * retKeyDef = NULL;
+   psonDataDefinition * retDataDef = NULL;
    psoObjectDefinition retDef;
-   uint32_t retKeyDefLength = 0, retDataDefLength = 0;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -51,10 +44,8 @@ int main()
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
-                                   (unsigned char *)keyDef,
-                                   2*sizeof(psoKeyDefinition),
-                                   (unsigned char *)fieldDef,
-                                   3*sizeof(psoFieldDefinition),
+                                   &keyDef,
+                                   &fieldDef,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -65,9 +56,7 @@ int main()
                              strlen("Test1"),
                              &retDef,
                              &retKeyDef,
-                             &retKeyDefLength,
                              &retDataDef,
-                             &retDataDefLength,
                              NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

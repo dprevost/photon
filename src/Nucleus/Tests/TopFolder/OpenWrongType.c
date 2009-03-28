@@ -40,9 +40,7 @@ int main()
                                    strlen("Test1"),
                                    &def,
                                    NULL,
-                                   0,
                                    NULL,
-                                   0,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -53,9 +51,7 @@ int main()
                                    strlen("Test1/Test2"),
                                    &def,
                                    NULL,
-                                   0,
                                    NULL,
-                                   0,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

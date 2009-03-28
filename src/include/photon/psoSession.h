@@ -151,16 +151,10 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * \param[in] definition The basic information needed to create the object:
  *            the type of object to create (folder, queue, etc.), the type
  *            of key definition, etc. 
- * \param[in] keyDef An opaque definition of the key. You can set this field
- *            to NULL if the object has no key. See ::psoDefinitionType
- *            for a more in-depth explanation.
- * \param[in] keyDefLength The length in bytes of the buffer \em keyDef. 
- *            It should be set to zero if \em keyDef is NULL.
- * \param[in] dataDef An opaque definition of the data fields of the object.
- *            It can be set to NULL when creating a Folder. See 
- *            ::psoDefinitionType for a more in-depth explanation.
- * \param[in] dataDefLength The length in bytes of the buffer \em dataDef. 
- *            It should be set to zero if \em dataDef is NULL.
+ * \param[in] keyDefHandle Handle to the definition of the key or NULL if the 
+ *            object has no key.
+ * \param[in] dataDefHandle Handle to the definition of the data fields.
+ *            It can be set to NULL when creating a Folder.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -169,10 +163,8 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
                      psoObjectDefinition * definition,
-                     const unsigned char * keyDef,
-                     psoUint32             keyDefLength,
-                     const unsigned char * dataDef,
-                     psoUint32             dataDefLength );
+                     PSO_HANDLE            keyDefHandle,
+                     PSO_HANDLE            dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -244,9 +236,10 @@ int psoExitSession( PSO_HANDLE sessionHandle );
 /**
  * \brief Retrieve the data definition of the named object.
  *
- * You can call the function ::psoGetDefLength to retrieve the 
- * lengths of the key and the field definitions. This allows you to allocate 
- * the proper size for \em key and \em fields.
+ * To avoid memory leaks, you must close the handles that will be 
+ * returned by this function (see ::psoDataDefClose and ::psoKeyDefClose).
+ *
+ * The handles might be set to NULL by this function.
  *
  * \param[in]  sessionHandle Handle to the current session.
  * \param[in]  objectName The fully qualified name of the object. 
@@ -254,16 +247,8 @@ int psoExitSession( PSO_HANDLE sessionHandle );
  *             counting the null terminator (null-terminators are not used by
  *             the Photon engine).
  * \param[out] definition The definition of the object.
- * \param[in]  key An opaque definition of the key. You can set this field
- *             to NULL if the object has no key or if you do not want to 
- *             retrieve the key definition.
- * \param[in]  keyLength The length in bytes of the buffer \em key. 
- *             It should be set to zero if \em key is NULL.
- * \param[in]  fields An opaque definition of the data fields of the object.
- *             It can be set to NULL if you do not want to retrieve the
- *             definition.
- * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
- *             It should be set to zero if \em fields is NULL.
+ * \param[out] keyDefHandle Handle to the key definition. 
+ * \param[out] dataDefHandle Handle to the definition of the data fields.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -272,10 +257,8 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       psoUint32             nameLengthInBytes,
                       psoObjectDefinition * definition,
-                      unsigned char       * key,
-                      psoUint32             keyLength,
-                      unsigned char       * fields,
-                      psoUint32             fieldsLength );
+                      PSO_HANDLE          * keyDefHandle,
+                      PSO_HANDLE          * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

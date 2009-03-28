@@ -1,4 +1,4 @@
-.TH "psoPhotonODBC.h" 3 "28 Feb 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoPhotonODBC.h" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -26,7 +26,7 @@ Definition in file \fBpsoPhotonODBC.h\fP.
 .ti -1c
 .RI "struct \fBpsoFieldDefinition\fP"
 .br
-.RI "\fIThe number of fields in the definition. \fP"
+.RI "\fIDescription of the structure of the data. \fP"
 .ti -1c
 .RI "struct \fBpsoDateStruct\fP"
 .br
@@ -34,7 +34,7 @@ Definition in file \fBpsoPhotonODBC.h\fP.
 .RI "struct \fBpsoTimeStruct\fP"
 .br
 .ti -1c
-.RI "struct \fBpsoTimestampStruct\fP"
+.RI "struct \fBpsoTimeStampStruct\fP"
 .br
 .ti -1c
 .RI "struct \fBpsoNumericStruct\fP"
@@ -56,7 +56,7 @@ Definition in file \fBpsoPhotonODBC.h\fP.
 .br
 .RI "\fIMaximum size of a decimal field. \fP"
 .ti -1c
-.RI "#define \fBPSO_MAX_NUMERIC_LEN\fP   16"
+.RI "#define \fBPSO_MAX_NUMERIC_LEN\fP   8"
 .br
 .in -1c
 .SS "Typedefs"
@@ -73,11 +73,11 @@ Definition in file \fBpsoPhotonODBC.h\fP.
 
 .in +1c
 .ti -1c
-.RI "enum \fBpsoFieldType\fP { \fBPSO_CHAR\fP =  10001, \fBPSO_VARCHAR\fP, \fBPSO_LONGVARCHAR\fP, \fBPSO_TINYINT\fP, \fBPSO_SMALLINT\fP, \fBPSO_INTEGER\fP, \fBPSO_BIGINT\fP, \fBPSO_NUMERIC\fP, \fBPSO_REAL\fP, \fBPSO_DOUBLE\fP, \fBPSO_BINARY\fP, \fBPSO_VARBINARY\fP, \fBPSO_LONGVARBINARY\fP, \fBPSO_DATE\fP, \fBPSO_TIME\fP, \fBPSO_TIMESTAMP\fP }"
+.RI "enum \fBpsoFieldType\fP { \fBPSO_CHAR\fP =  101, \fBPSO_VARCHAR\fP, \fBPSO_LONGVARCHAR\fP, \fBPSO_TINYINT\fP, \fBPSO_SMALLINT\fP, \fBPSO_INTEGER\fP, \fBPSO_BIGINT\fP, \fBPSO_NUMERIC\fP, \fBPSO_REAL\fP, \fBPSO_DOUBLE\fP, \fBPSO_BINARY\fP, \fBPSO_VARBINARY\fP, \fBPSO_LONGVARBINARY\fP, \fBPSO_DATE\fP, \fBPSO_TIME\fP, \fBPSO_TIMESTAMP\fP }"
 .br
 .RI "\fIPhoton supported data types. \fP"
 .ti -1c
-.RI "enum \fBpsoKeyType\fP { \fBPSO_KEY_INTEGER\fP =  101, \fBPSO_KEY_BINARY\fP, \fBPSO_KEY_STRING\fP, \fBPSO_KEY_VAR_BINARY\fP, \fBPSO_KEY_VAR_STRING\fP }"
+.RI "enum \fBpsoKeyType\fP { \fBPSO_KEY_CHAR\fP =  1001, \fBPSO_KEY_VARCHAR\fP, \fBPSO_KEY_LONGVARCHAR\fP, \fBPSO_KEY_INTEGER\fP, \fBPSO_KEY_BIGINT\fP, \fBPSO_KEY_BINARY\fP, \fBPSO_KEY_VARBINARY\fP, \fBPSO_KEY_LONGVARBINARY\fP, \fBPSO_KEY_DATE\fP, \fBPSO_KEY_TIME\fP, \fBPSO_KEY_TIMESTAMP\fP }"
 .br
 .RI "\fIPhoton supported data types for keys. \fP"
 .in -1c
@@ -98,17 +98,17 @@ Definition at line 47 of file psoPhotonODBC.h.
 Maximum number of fields (including the last one). 
 .PP
 Definition at line 52 of file psoPhotonODBC.h.
-.SS "#define PSO_MAX_NUMERIC_LEN   16"
+.SS "#define PSO_MAX_NUMERIC_LEN   8"
 .PP
-Definition at line 211 of file psoPhotonODBC.h.
+Definition at line 219 of file psoPhotonODBC.h.
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef struct \fBpsoFieldDefinition\fP \fBpsoFieldDefinition\fP"
 .PP
-Definition at line 180 of file psoPhotonODBC.h.
+Definition at line 188 of file psoPhotonODBC.h.
 .SS "typedef struct \fBpsoKeyDefinition\fP \fBpsoKeyDefinition\fP"
 .PP
-Definition at line 140 of file psoPhotonODBC.h.
+Definition at line 158 of file psoPhotonODBC.h.
 .SH "Enumeration Type Documentation"
 .PP 
 .SS "enum \fBpsoFieldType\fP"
@@ -178,17 +178,40 @@ Photon supported data types for keys.
 \fBEnumerator: \fP
 .in +1c
 .TP
+\fB\fIPSO_KEY_CHAR \fP\fP
+.TP
+\fB\fIPSO_KEY_VARCHAR \fP\fP
+.TP
+\fB\fIPSO_KEY_LONGVARCHAR \fP\fP
+.TP
 \fB\fIPSO_KEY_INTEGER \fP\fP
+A four-bytes integer. 
+.PP
+
+.TP
+\fB\fIPSO_KEY_BIGINT \fP\fP
 .TP
 \fB\fIPSO_KEY_BINARY \fP\fP
+An opaque type of fixed length. 
+.PP
+
 .TP
-\fB\fIPSO_KEY_STRING \fP\fP
+\fB\fIPSO_KEY_VARBINARY \fP\fP
+A variable length opaque type with a maximum length. 
+.PP
+
 .TP
-\fB\fIPSO_KEY_VAR_BINARY \fP\fP
-Only valid for the last field of the data definition. 
+\fB\fIPSO_KEY_LONGVARBINARY \fP\fP
+A variable length opaque type with no maximum length constraint. 
+.PP
+The length of that field is constrained by the maximum length of a data record. Only valid for the last field of the data definition 
 .TP
-\fB\fIPSO_KEY_VAR_STRING \fP\fP
-Only valid for the last field of the data definition. 
+\fB\fIPSO_KEY_DATE \fP\fP
+.TP
+\fB\fIPSO_KEY_TIME \fP\fP
+.TP
+\fB\fIPSO_KEY_TIMESTAMP \fP\fP
+
 .PP
 Definition at line 111 of file psoPhotonODBC.h.
 .SH "Author"

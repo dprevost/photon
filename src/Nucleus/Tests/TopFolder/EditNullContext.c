@@ -34,9 +34,9 @@ int main()
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
 
    psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition key = { "MyKey", PSO_KEY_VARCHAR, 100 };
+   psonKeyDefinition key;
 
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -45,9 +45,7 @@ int main()
                                    strlen("Test1"),
                                    &folderDef,
                                    NULL,
-                                   0,
                                    NULL,
-                                   0,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -57,10 +55,8 @@ int main()
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
-                                   (unsigned char *)&key,
-                                   sizeof(key),
-                                   fields,
-                                   sizeof(fields),
+                                   &key,
+                                   &fields,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

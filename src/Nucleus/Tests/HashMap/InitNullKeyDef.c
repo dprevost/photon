@@ -32,10 +32,7 @@ int main()
    int errcode;
    psonTxStatus status;
    psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
-   
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
-
+   psonDataDefinition fields;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
@@ -51,9 +48,7 @@ int main()
                               SET_OFFSET(pHashMap),
                               &def,
                               NULL,
-                              sizeof(keyDef),
-                              fields,
-                              sizeof(fields),
+                              &fields,
                               &context );
 
    ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

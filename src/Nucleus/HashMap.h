@@ -28,6 +28,7 @@
 #include "Nucleus/TreeNode.h"
 #include "Nucleus/BlockGroup.h"
 #include "Nucleus/HashTx.h"
+#include "Nucleus/Definitions.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -57,22 +58,17 @@ struct psonHashMap
 
    struct psonHashTx      hashObj;
 
-//   struct psoKeyDefinition keyDef;
-   
    /** Offset to the data definition */
    ptrdiff_t            dataDefOffset;
 
    /** Offset to the key definition */
    ptrdiff_t keyDefOffset;
 
-   uint32_t keyDefLength;
-   uint32_t dataDefLength;
-   
    /** The type of the key definition (metadata) */
-   enum psoDefinitionType keyDefType;
+//   enum psoDefinitionType keyDefType;
    
    /** The type of the field definition (metadata) */
-   enum psoDefinitionType fieldDefType;
+//   enum psoDefinitionType fieldDefType;
 
    /*
     * This field cannot be set or modified by the API. It is set to false
@@ -146,10 +142,8 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKeyDef,
-                      uint32_t              keyDefLength,
-                      const unsigned char * pDataDef,
-                      uint32_t              dataDefLength,
+                      psonKeyDefinition   * pKeyDefinition,
+                      psonDataDefinition  * pDataDefinition,
                       psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

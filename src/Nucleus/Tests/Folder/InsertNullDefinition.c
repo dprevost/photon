@@ -32,7 +32,7 @@ int main()
    bool ok;
    psonTxStatus status;
    
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonDataDefinition fields;
 
    pFolder = initFolderTest( expectedToPass, &context );
 
@@ -49,9 +49,7 @@ int main()
                                 5,
                                 NULL,
                                 NULL,
-                                0,
-                                fields,
-                                sizeof(fields),
+                                &fields,
                                 1,
                                 0,
                                 &context );

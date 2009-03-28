@@ -1,4 +1,4 @@
-.TH "psoHashMap.h" 3 "27 Jan 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoHashMap.h" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,9 +24,13 @@ Definition in file \fBpsoHashMap.h\fP.
 .br
 .RI "\fIClose a Hash Map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoBasicObjectDef\fP *definition, \fBpsoUint32\fP numFields, \fBpsoFieldDefinition\fP *fields)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, unsigned char *key, \fBpsoUint32\fP keyLength, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoHashMapDefLength\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP *keyLength, \fBpsoUint32\fP *fieldsLength)"
+.br
+.RI "\fIRetrieve the lengths of the variable elements of the definition of the hash map. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength)"
 .br

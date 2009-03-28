@@ -55,9 +55,7 @@ int main()
                                 5,
                                 &def,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 1,
                                 0,
                                 &context );

@@ -43,9 +43,7 @@ int main()
                                 0,
                                 &def,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -60,9 +58,7 @@ int main()
                                 strlen("/Test2"),
                                 &def,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -77,9 +73,7 @@ int main()
                                 PSO_MAX_NAME_LENGTH+1,
                                 &def,
                                 NULL,
-                                0,
                                 NULL,
-                                0,
                                 &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

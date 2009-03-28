@@ -41,9 +41,7 @@ int main()
                                    strlen("Test1"),
                                    &def,
                                    NULL,
-                                   0,
                                    NULL,
-                                   0,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

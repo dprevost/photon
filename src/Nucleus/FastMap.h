@@ -61,18 +61,18 @@ struct psonFastMap
    /** Offset to the key definition */
    ptrdiff_t keyDefOffset;
 
-   uint32_t keyDefLength;
-   uint32_t dataDefLength;
+//   uint32_t keyDefLength;
+//   uint32_t dataDefLength;
 
    ptrdiff_t latestVersion;
 
    ptrdiff_t editVersion;
    
    /** The type of the key definition (metadata) */
-   enum psoDefinitionType keyDefType;
+//   enum psoDefinitionType keyDefType;
    
    /** The type of the field definition (metadata) */
-   enum psoDefinitionType fieldDefType;
+//   enum psoDefinitionType fieldDefType;
    
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;
@@ -136,10 +136,8 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
                       char                * origName,
                       ptrdiff_t             hashItemOffset,
                       psoObjectDefinition * pDefinition,
-                      const unsigned char * pKeyDef,
-                      uint32_t              keyDefLength,
-                      const unsigned char * pDataDef,
-                      uint32_t              dataDefLength,
+                      psonKeyDefinition   * pKeyDefinition,
+                      psonDataDefinition  * pDataDefinition,
                       psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT

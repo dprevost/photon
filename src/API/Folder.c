@@ -25,6 +25,7 @@
 #include <photon/psoErrors.h>
 #include "API/CommonObject.h"
 #include "API/DataDefinition.h"
+#include "API/KeyDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
  * 
@@ -102,17 +103,19 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                            const char          * objectName,
                            uint32_t              nameLengthInBytes,
                            psoObjectDefinition * pDefinition,
-                           const unsigned char * pKey,
-                           uint32_t              keyLength,
-                           const unsigned char * pFields,
-                           uint32_t              fieldsLength )
+                           PSO_HANDLE            keyDefHandle,
+                           PSO_HANDLE            dataDefHandle )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
    int errcode = PSO_OK;
    bool ok = true;
    psoaSession * pSession;
-
+   psonDataDefinition * pMemDataDefinition = NULL;
+   psonKeyDefinition  * pMemKeyDefinition = NULL;
+   psoaDataDefinition * pDataDefinition;
+   psoaKeyDefinition  * pKeyDefinition;
+   
    pFolder = (psoaFolder *) objectHandle;
    if ( pFolder == NULL ) return PSO_NULL_HANDLE;
    
@@ -141,33 +144,37 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
       return PSO_WRONG_OBJECT_TYPE;
    }
 
-   if ( pDefinition->type != PSO_FOLDER && pFields == NULL ) {
+   if ( pDefinition->type != PSO_FOLDER && dataDefHandle == NULL ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
    }
    
    if ( pDefinition->type == PSO_HASH_MAP || pDefinition->type == PSO_FAST_MAP ) {
-      if ( pKey == NULL ) {
+      if ( keyDefHandle == NULL ) {
          psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
          return PSO_NULL_POINTER;
       }
    }
    
-   if ( pKey != NULL && keyLength == 0 ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
-   }
-
-   if ( pFields != NULL && fieldsLength == 0 ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
+   if ( keyDefHandle != NULL ) {
+      pKeyDefinition = (psoaKeyDefinition *)keyDefHandle;
+      
+      if ( pKeyDefinition->definitionType != PSOA_DEF_KEY ) {
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+      pMemKeyDefinition = pKeyDefinition->pMemDefinition;
    }
    
-//   errcode = psoaValidateDefinition( pDefinition, pKey, pFields );
-//   if ( errcode != PSO_OK ) {
-//      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
-//      return errcode;
-//   }
+   if ( dataDefHandle != NULL ) {
+      pDataDefinition = (psoaDataDefinition *)dataDefHandle;
+      
+      if ( pDataDefinition->definitionType != PSOA_DEF_DATA ) {
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+      pMemDataDefinition = pDataDefinition->pMemDefinition;
+   }
 
    if ( ! pSession->terminated ) {
       if ( psoaCommonLock( &pFolder->object ) ) {
@@ -177,10 +184,8 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
-                                      pKey,
-                                      keyLength,
-                                      pFields,
-                                      fieldsLength,
+                                      pMemKeyDefinition,
+                                      pMemDataDefinition,
                                       &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          psoaCommonUnlock( &pFolder->object );

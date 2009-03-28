@@ -35,8 +35,8 @@ int main()
    char * data2 = "my data2";
    char * ptr;
    psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 100 };
-   const unsigned char * fields =  (unsigned char *)"A dummy definition";
+   psonKeyDefinition keyDef;
+   psonDataDefinition fields;
    psonHashTxItem   hashItem;
    psonHashItem * pItem;
    
@@ -45,8 +45,8 @@ int main()
    psonTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pOldMap, 0, 1, 0, &hashItem.txStatus, 4, "Map1", 
-                         SET_OFFSET(pOldMap), &def, (unsigned char *)&keyDef, 
-                         sizeof(keyDef), fields, sizeof(fields), &context );
+                         SET_OFFSET(pOldMap), &def, &keyDef, 
+                         &fields, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

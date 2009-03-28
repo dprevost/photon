@@ -39,7 +39,6 @@ check_PROGRAMS =                               \
         .\Release\InitNullStatus.exe           \
         .\Release\InitPass.exe                 \
         .\Release\InitZeroBlocks.exe           \
-        .\Release\InitZeroDataDefLength.exe    \
         .\Release\InitZeroLength.exe           \
         .\Release\InsertNowNullContext.exe     \
         .\Release\InsertNowNullItem.exe        \

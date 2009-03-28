@@ -33,13 +33,13 @@ Dim fso
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(49)
+Dim failed_tests(41)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(12)
-Dim fail_programs(36)
+Dim ok_programs(11)
+Dim fail_programs(29)
 
 Dim exe_name, prog_path, program
 Dim consoleMode
@@ -60,12 +60,11 @@ ok_programs(3)  = "DestroyPass"
 ok_programs(4)  = "EditPass"
 ok_programs(5)  = "EditWrongLength"
 ok_programs(6)  = "EditZeroLength"
-ok_programs(7)  = "GetDefLengthPass"
-ok_programs(8)  = "GetDefPass"
-ok_programs(9)  = "OpenPass"
-ok_programs(10) = "OpenWrongLength"
-ok_programs(11) = "OpenZeroLength"
-ok_programs(12) = "StatusPass"
+ok_programs(7)  = "GetDefPass"
+ok_programs(8)  = "OpenPass"
+ok_programs(9)  = "OpenWrongLength"
+ok_programs(10) = "OpenZeroLength"
+ok_programs(11) = "StatusPass"
 
 fail_programs(0)  = "CloseNullContext"
 fail_programs(1)  = "CloseNullItem"
@@ -82,30 +81,23 @@ fail_programs(11) = "EditNullFolder"
 fail_programs(12) = "EditNullItem"
 fail_programs(13) = "EditNullName"
 fail_programs(14) = "EditWrongType"
-fail_programs(15) = "GetDefLengthNullContext"
-fail_programs(16) = "GetDefLengthNullDataLen"
-fail_programs(17) = "GetDefLengthNullFolder"
-fail_programs(18) = "GetDefLengthNullKeyLen"
-fail_programs(19) = "GetDefLengthNullName"
-fail_programs(20) = "GetDefNullContext"
-fail_programs(21) = "GetDefNullDataDef"
-fail_programs(22) = "GetDefNullDataLength"
-fail_programs(23) = "GetDefNullDef"
-fail_programs(24) = "GetDefNullFolder"
-fail_programs(25) = "GetDefNullKeyDef"
-fail_programs(26) = "GetDefNullKeyLength"
-fail_programs(27) = "GetDefNullName"
-fail_programs(28) = "OpenNullContext"
-fail_programs(29) = "OpenNullItem"
-fail_programs(30) = "OpenNullFolder"
-fail_programs(31) = "OpenNullName"
-fail_programs(32) = "OpenWrongType"
-fail_programs(33) = "StatusNullContext"
-fail_programs(34) = "StatusNullFolder"
-fail_programs(35) = "StatusNullName"
-fail_programs(36) = "StatusNullStatus"
+fail_programs(15) = "GetDefNullContext"
+fail_programs(16) = "GetDefNullDataDef"
+fail_programs(17) = "GetDefNullDef"
+fail_programs(18) = "GetDefNullFolder"
+fail_programs(19) = "GetDefNullKeyDef"
+fail_programs(20) = "GetDefNullName"
+fail_programs(21) = "OpenNullContext"
+fail_programs(22) = "OpenNullItem"
+fail_programs(23) = "OpenNullFolder"
+fail_programs(24) = "OpenNullName"
+fail_programs(25) = "OpenWrongType"
+fail_programs(26) = "StatusNullContext"
+fail_programs(27) = "StatusNullFolder"
+fail_programs(28) = "StatusNullName"
+fail_programs(29) = "StatusNullStatus"
 
-numTests = 50                 ' Sum of length of both arrays 
+numTests = 42                 ' Sum of length of both arrays 
 numFailed = 0
 
 ' Create the FileSystemObject

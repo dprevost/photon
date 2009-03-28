@@ -39,9 +39,7 @@ int main()
                                    strlen("Test1"),
                                    &def,
                                    NULL,
-                                   0,
                                    NULL,
-                                   0,
                                    NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
