@@ -42,8 +42,8 @@ int main( int argc, char * argv[] )
    struct dummy * data1 = NULL;
    size_t lenData;
 
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
+   psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
 
    psoFieldDefinition fields[5] = {
       { "field1", PSO_TINYINT,   {0} },

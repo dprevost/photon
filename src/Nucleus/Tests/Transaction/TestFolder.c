@@ -32,9 +32,9 @@ int main()
    bool ok;
    psonFolderItem item;
    psonTxStatus status;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psonKeyDefinition key;
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    psonDataDefinition fields;
 
    pFolder = initFolderTest( expectedToPass, &context );

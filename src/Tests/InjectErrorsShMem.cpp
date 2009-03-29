@@ -758,7 +758,7 @@ void PopulateHashMaps( Session & session, vector<myMap> & h )
    int i, j;
    string data, key;
    char s[4];
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "key1", PSO_KEY_VARCHAR, 200 };
    psoFieldDefinition fields[1] = { 
       { "Field_1", PSO_VARCHAR, {200} } 
@@ -792,7 +792,7 @@ void PopulateLifos( Session & session, vector<myLifo> & l )
    int i, j;
    string data;
    char s[4];
-   psoObjectDefinition queueDef = { PSO_LIFO, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = { 
       { "Field_1", PSO_VARCHAR, {100} } 
    };
@@ -821,7 +821,7 @@ void PopulateQueues( Session & session, vector<myQueue> & q )
    int i, j;
    string data;
    char s[4];
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = { 
       { "Field_1", PSO_VARCHAR, {100} } 
    };

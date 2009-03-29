@@ -34,7 +34,7 @@ int main()
    char * data1 = "my data1";
    char * data2 = "my data2";
    char * ptr;
-   psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fields;
    psonHashTxItem   hashItem;

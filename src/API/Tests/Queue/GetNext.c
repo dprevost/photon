@@ -35,11 +35,11 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data2";
    char buffer[200];
    uint32_t length;
-   psoObjectDefinition defQueue = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE dataDefHandle;
 
    if ( argc > 1 ) {

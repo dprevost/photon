@@ -34,7 +34,7 @@ int main()
    char * key  = "my key";
    char * data = "my data";
    psoObjStatus status;
-   psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fields;
    

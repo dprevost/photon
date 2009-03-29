@@ -31,7 +31,7 @@ int main()
    int errcode;
    bool ok;
    char name[PSO_MAX_NAME_LENGTH+100];
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    memset( name, 't', PSO_MAX_NAME_LENGTH+99 );
    name[PSO_MAX_NAME_LENGTH+99] = 0;

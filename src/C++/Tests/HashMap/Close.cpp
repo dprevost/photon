@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_hashmap_close";
    string hname = fname + "/test";
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 

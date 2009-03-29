@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };

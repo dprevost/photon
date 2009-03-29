@@ -113,6 +113,8 @@ enum psoIteratorType
 
 typedef enum psoIteratorType psoIteratorType;
 
+#define PSO_MULTIPLE_DATA_DEFINITIONS 0x0001
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
@@ -172,11 +174,25 @@ struct psoObjectDefinition
    /** The object type. */
    enum psoObjectType type;
 
-   /** The type of the key definition (metadata) */
-   enum psoDefinitionType keyDefType;
+   /**
+    * Flags defining the properties of the object.
+    *
+    * Currently defined flags:
+    *     - PSO_MULTIPLE_DATA_DEFINITIONS
+    *
+    * Flags should be ORed.
+    */
+   psoUint32 flags;
    
-   /** The type of the field definition (metadata) */
-   enum psoDefinitionType fieldDefType;
+   /**
+    * Optimization feature - not implemented yet
+    */
+   size_t expectedMinimunNumberOfDataRecords;
+   
+   /**
+    * Optimization feature - not implemented yet
+    */
+   size_t expectedMinimumNumberOfBlocks;
 };
 
 typedef struct psoObjectDefinition psoObjectDefinition;

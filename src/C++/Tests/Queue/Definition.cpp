@@ -41,9 +41,9 @@ int main( int argc, char * argv[] )
 
    size_t len;
    psoObjectDefinition folderDef = {
-      PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+      PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition queueDef = { 
-      PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_PHOTON_ODBC_SIMPLE };
+      PSO_QUEUE, 0, 0, 0 };
    FieldDefinitionODBC fieldDef( 5 );
    unsigned char * fields = NULL;
    uint32_t fieldsLength = 0;

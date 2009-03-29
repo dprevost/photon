@@ -31,8 +31,8 @@ int main()
    int errcode;
    bool ok;
    psonFolderItem folderItem;
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition key;
    
    psonDataDefinition fields;

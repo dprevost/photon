@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus txStatus;
-   psoObjectDefinition def = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
    pQueue = initQueueTest( expectedToPass, &context );

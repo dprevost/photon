@@ -31,8 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoObjectDefinition def = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
-   psonKeyDefinition keyDef;
+   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
    psonDataDefinition fields;
    
    pHashMap = initHashMapTest( expectedToPass, &context );

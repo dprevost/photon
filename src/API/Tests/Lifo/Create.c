@@ -30,7 +30,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition definition;
    psoFieldDefinition fields[2];
    PSO_HANDLE dataDefHandle;
@@ -100,8 +100,6 @@ int main( int argc, char * argv[] )
    }
 
    definition.type = PSO_LIFO;
-   definition.fieldDefType = PSO_DEF_USER_DEFINED;
-   definition.keyDefType = PSO_DEF_NONE;
    errcode = psoFolderCreateObject( folderHandle,
                                     "aqcr",
                                     strlen("aqcr"),

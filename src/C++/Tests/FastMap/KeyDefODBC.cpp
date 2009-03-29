@@ -41,9 +41,9 @@ int main( int argc, char * argv[] )
 
    size_t len;
    psoObjectDefinition folderDef = {
-      PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+      PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition mapDef = { 
-      PSO_FAST_MAP, PSO_DEF_PHOTON_ODBC_SIMPLE, PSO_DEF_PHOTON_ODBC_SIMPLE };
+      PSO_FAST_MAP, 0, 0, 0 };
    FieldDefinitionODBC fieldDef( 1 );
    KeyDefinition * returnedDef;
    KeyDefinitionODBC keyDef( 3 );

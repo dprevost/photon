@@ -43,7 +43,7 @@ int main( int argc, char * argv[] )
    int errcode;
    uint32_t dataLength, keyLength;
    psoObjectDefinition folderDef;
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }

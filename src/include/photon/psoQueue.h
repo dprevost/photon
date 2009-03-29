@@ -138,6 +138,18 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
 /** 
  * Open an existing FIFO queue (see ::psoCreateObject to create a new queue).
  *
+ * Queues will usually contain data records with an identical layout (data 
+ * definition of the items). This layout was defined when the queue was 
+ * created. 
+ *
+ * You can also insert and retrieve data records with different layouts if
+ * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
+ * layout defined when a queue is created is then used as the default one.
+ * 
+ * To access the layout on a record-by-record base, use the argument 
+ * \em dataDefHandle - it will be set to the layout of the retrieved
+ * record.
+ *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  queueName The fully qualified name of the queue. 
  * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
@@ -146,6 +158,10 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
  * \param[out] objectHandle The handle to the queue, allowing us access to
  *             the queue in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
+ * \param[out] dataDefHandle This optional handle gives you access to the
+ *             data definition of the record on a record by record basis.
+ *             It can be set to NULL. This handle is automatically close
+ *             when the queue is closed.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -154,6 +170,7 @@ int psoQueueOpen(  PSO_HANDLE   sessionHandle,
                    const char * queueName,
                    psoUint32    nameLengthInBytes,
                    PSO_HANDLE * objectHandle );
+//                   PSO_HANDLE * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

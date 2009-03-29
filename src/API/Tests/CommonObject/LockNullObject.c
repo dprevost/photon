@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    int errcode;
    bool ok;
    psoaCommonObject object;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );

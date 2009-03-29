@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_queue_close";
    string qname = fname + "/test";
    psoObjectDefinition folderDef;
-   psoObjectDefinition queueDef = { PSO_LIFO, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };

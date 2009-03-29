@@ -32,7 +32,7 @@ int main()
    bool ok;
    psonTxStatus status;
    psoObjStatus objStatus;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    pFolder = initFolderTest( expectedToPass, &context );
 

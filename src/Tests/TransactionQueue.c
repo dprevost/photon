@@ -26,11 +26,11 @@
 
 PSO_HANDLE g_session1, g_session2;
 
-psoObjectDefinition g_queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+psoObjectDefinition g_queueDef = { PSO_QUEUE, 0, 0, 0 };
 psoFieldDefinition g_fields[1] = { 
    { "Field_1", PSO_VARCHAR, {200} } 
 };
-psoObjectDefinition g_folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+psoObjectDefinition g_folderDef = { PSO_FOLDER, 0, 0, 0 };
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

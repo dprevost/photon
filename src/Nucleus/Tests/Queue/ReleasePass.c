@@ -33,7 +33,7 @@ int main()
    char * data = "My Data";
    psonQueueItem * pItem = NULL;
    psonTxStatus * txItemStatus;
-   psoObjectDefinition def = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
    pQueue = initQueueTest( expectedToPass, &context );

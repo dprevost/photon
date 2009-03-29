@@ -35,12 +35,12 @@ int main( int argc, char * argv[] )
    const char * key  = "My Key";
    const char * data = "My Data";
    psoaHashMapEntry entry;
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
 
    if ( argc > 1 ) {

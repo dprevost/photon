@@ -31,12 +31,11 @@ int main()
    psonSessionContext context;
    bool ok;
    psonTxStatus status;
-   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fieldDef;
-   unsigned char * retDataDef = NULL;
+   psonDataDefinition * retDataDef = NULL;
    psoObjectDefinition retDef;
-   uint32_t retKeyDefLength = 0, retDataDefLength = 0;
    
    pFolder = initFolderTest( expectedToPass, &context );
 

@@ -31,7 +31,7 @@ int main()
    psonFolder * pTopFolder;
    psonSessionContext context;
    bool ok;
-   psoObjectDefinition def = { PSO_HASH_MAP, PSO_DEF_USER_DEFINED, PSO_DEF_USER_DEFINED };
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fieldDef;
    psonDataDefinition * retDataDef = NULL;

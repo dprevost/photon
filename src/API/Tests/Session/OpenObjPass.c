@@ -33,7 +33,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle;
    int errcode;
    struct psoaCommonObject object;
-   psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
