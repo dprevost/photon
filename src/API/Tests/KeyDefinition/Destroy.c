@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,48 +21,18 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Queue.h"
+#include "API/KeyDefinition.h"
 
 const bool expectedToPass = true;
-
-struct dummy {
-   char c;
-   uint32_t u32;
-   char str[30];
-   uint16_t u16;
-   unsigned char bin[1];
-};
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-   PSO_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE defHandle, sessionHandle;
    int errcode;
-   struct dummy * data1 = NULL;
-   size_t lenData;
-
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   psoObjectDefinition queueDef = { PSO_QUEUE, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
-
-   psoFieldDefinition fields[5] = {
-      { "field1", PSO_TINYINT,   {0} },
-      { "field2", PSO_INTEGER,   {0} },
-      { "field3", PSO_CHAR,      {30} },
-      { "field4", PSO_SMALLINT,  {0} },
-      { "field5", PSO_LONGVARBINARY, {0} }
-   };
-   
-   psoFieldDefinition retFields[5];
-   psoObjectDefinition retDef;
-   PSO_HANDLE dataDefHandle, retDataDefHandle;
-   
-   memset( &retDef, 0, sizeof(psoObjectDefinition) );
-   memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
-
-   lenData = offsetof(struct dummy, bin) + 10;
-   data1 = (struct dummy *)malloc( lenData );
-   
+   psoKeyDefinition key = { "Key_1", PSO_KEY_VARCHAR, 10 };
+  
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
    }
@@ -80,77 +50,92 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/aqsp",
-                              strlen("/aqsp"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "My Def",
+                              strlen("My Def"),
+                              PSO_DEF_USER_DEFINED,
+                              (const unsigned char *) &key,
+                              sizeof(psoKeyDefinition),
+                              &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
-                               PSO_DEF_PHOTON_ODBC_SIMPLE,
-                               (unsigned char *)fields,
-                               sizeof(psoFieldDefinition),
-                               &dataDefHandle );
+   errcode = psoKeyDefClose( defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/aqsp/test",
-                              strlen("/aqsp/test"),
-                              &queueDef,
-                              NULL,
-                              dataDefHandle );
+   errcode = psoCommit( sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   errcode = psoQueueOpen( sessionHandle,
-                           "/aqsp/test",
-                           strlen("/aqsp/test"),
-                           &objHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoQueuePush( objHandle, data1, lenData );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
+   
    /* Invalid arguments to tested function. */
-
-   errcode = psoQueueDefinition( NULL, &retDataDefHandle );
+   errcode = psoaKeyDefDestroy( NULL,
+                                "My Def",
+                                strlen("My Def") );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, NULL );
+   errcode = psoaKeyDefDestroy( sessionHandle,
+                                NULL,
+                                strlen("My Def") );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = psoaKeyDefDestroy( sessionHandle,
+                                "My Def",
+                                0 );
+   if ( errcode != PSO_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* End of invalid args. This call should succeed. */
-   errcode = psoQueueDefinition( objHandle, &retDataDefHandle );
+   errcode = psoaKeyDefDestroy( sessionHandle,
+                                "My Def",
+                                strlen("My Def") );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psoCommit( sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Close the session and try to act on the object */
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "My Def",
+                              strlen("My Def"),
+                              PSO_DEF_USER_DEFINED,
+                              (const unsigned char *)&key,
+                              sizeof(psoFieldDefinition),
+                              &defHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoKeyDefClose( defHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = psoExitSession( sessionHandle );
    if ( errcode != PSO_OK ) {
@@ -158,16 +143,17 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueDefinition( objHandle, &retDataDefHandle );
-   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
+   errcode = psoaKeyDefDestroy( sessionHandle,
+                                "My Def",
+                                strlen("My Def") );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    psoExit();
-   
+
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

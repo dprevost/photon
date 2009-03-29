@@ -34,6 +34,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
+   PSO_HANDLE dataDefHandle;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -47,6 +48,18 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoInitSession( &sessionHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -93,9 +106,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              0,
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -106,9 +117,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               &def,
                               NULL,
-                              0,
-                              NULL, /* can only be NULL for folders */
-                              0 );
+                              NULL ); /* can only be NULL for folders */
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -120,9 +129,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascp"),
                               NULL,
                               NULL,
-                              0,
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              dataDefHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

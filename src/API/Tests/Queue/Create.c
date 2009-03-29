@@ -33,6 +33,7 @@ int main( int argc, char * argv[] )
    psoObjectDefinition def = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
    psoObjectDefinition definition;
    psoFieldDefinition fields[2];
+   PSO_HANDLE dataDefHandle;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -71,6 +72,18 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    /* Invalid definition. */
    
    memset( &definition, 0, sizeof(psoObjectDefinition) );
@@ -81,9 +94,7 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    0,
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -97,9 +108,7 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    0,
-                                    NULL,
-                                    0 );
+                                    NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -111,9 +120,7 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr"),
                                     &definition,
                                     NULL,
-                                    0,
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -131,9 +138,7 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr2"),
                                     &definition,
                                     NULL,
-                                    0,
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -156,9 +161,7 @@ int main( int argc, char * argv[] )
                                     strlen("aqcr3"),
                                     &definition,
                                     NULL,
-                                    0,
-                                    (unsigned char *)fields,
-                                    2*sizeof(psoFieldDefinition) );
+                                    dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

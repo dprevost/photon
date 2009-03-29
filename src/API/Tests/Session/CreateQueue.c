@@ -71,9 +71,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              0,
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              dataDefHandle );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -92,9 +90,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              0,
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              dataDefHandle );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -110,9 +106,7 @@ int main( int argc, char * argv[] )
                               strlen("/ascq/test"),
                               &queueDef,
                               NULL,
-                              0,
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

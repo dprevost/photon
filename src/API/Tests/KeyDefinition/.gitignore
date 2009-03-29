@@ -2,6 +2,7 @@
 /Makefile.in
 /Close
 /Create
+/Destroy
 /Get
 /GetLength
 /Open

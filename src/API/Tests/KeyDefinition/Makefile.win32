@@ -1,0 +1,36 @@
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org> 
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+include ..\Makefile.inc.Win32
+
+all: 
+
+check_PROGRAMS =                \
+        .\Release\Close.exe     \
+        .\Release\Create.exe    \
+        .\Release\Destroy.exe   \
+        .\Release\Get.exe       \
+        .\Release\GetLength.exe \
+        .\Release\Open.exe      
+ 
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+
+check: $(OUTDIR) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+
+checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q Debug
+	-@rmdir /Q Debug
+	-@erase /Q Release
+	-@rmdir /Q Release
+	-@erase /Q $(CLEANFILES)

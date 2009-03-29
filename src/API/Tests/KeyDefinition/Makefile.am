@@ -19,12 +19,14 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 check_PROGRAMS =  \
         Close     \
         Create    \
+        Destroy   \
         Get       \
         GetLength \
         Open      
 
 Close_SOURCES     = Close.c
 Create_SOURCES    = Create.c
+Destroy_SOURCES   = Destroy.c
 Get_SOURCES       = Get.c
 GetLength_SOURCES = GetLength.c
 Open_SOURCES      = Open.c
@@ -32,6 +34,7 @@ Open_SOURCES      = Open.c
 EXTRA_DIST =           \
         Close.sh       \
         Create.sh      \
+        Destroy.sh     \
         Get.sh         \
         GetLength.sh   \
         Makefile.win32 \
@@ -49,13 +52,14 @@ TESTS_ENVIRONMENT =                  \
 TESTS =              \
         Close.sh     \
         Create.sh    \
+        Destroy.sh   \
         Get.sh       \
         GetLength.sh \
         Open.sh      
 
 XFAIL_TESTS = 
 
-LDADD = $(top_builddir)/src/API/libphoton.la        \
+LDADD = $(top_builddir)/src/API/libphoton.la      \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la   
 

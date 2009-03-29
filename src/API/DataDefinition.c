@@ -1178,3 +1178,73 @@ cleanup:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * This function is not included in the published API.
+ *
+ * This function can be dangerous. Handles to data definition are 
+ * not counted for performance reasons -> this might destroy a
+ * definition which is used by someone else...
+ */
+PHOTON_API_EXPORT
+int psoaDataDefDestroy( PSO_HANDLE   sessionHandle,
+                        const char * definitionName,
+                        psoUint32    nameLengthInBytes )
+{
+   int errcode = PSO_OK;
+   psoaSession* pSession;
+   bool ok = true;
+//   psonDataDefinition * pMemDefinition = NULL;
+//   uint32_t recLength;
+//   psoaDataDefinition * pDefinition = NULL;
+//   psonHashTxItem * pHashItem;
+
+   pSession = (psoaSession*) sessionHandle;
+   if ( pSession == NULL ) return PSO_NULL_HANDLE;
+
+   if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( definitionName == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( nameLengthInBytes == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+
+   if ( ! pSession->terminated ) {
+      if ( psoaSessionLock( pSession ) ) {
+         ok = psonHashMapDelete( pSession->pDataDefMap,
+                                 definitionName,
+                                 nameLengthInBytes,
+                                 &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         psoaSessionUnlock( pSession );
+         if ( ! ok ) goto error_handler;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+         goto error_handler;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+      goto error_handler;
+   }
+
+error_handler:
+
+   if ( errcode != 0 ) {
+      psocSetError( &pSession->context.errorHandler, 
+         g_psoErrorHandle, errcode );
+   }
+   if ( ! ok ) {
+      errcode = psocGetLastError( &pSession->context.errorHandler );
+   }
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+

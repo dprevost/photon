@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Lifo.h"
+#include "API/DataDefinition.h"
 
 const bool expectedToPass = true;
 
@@ -29,18 +29,12 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   PSO_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE defHandle, sessionHandle;
    int errcode;
-   const char * data1 = "My Data1";
-   char buffer[200];
-   uint32_t length;
-   psoObjectDefinition defLilo = { PSO_LIFO, PSO_DEF_NONE, PSO_DEF_USER_DEFINED };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
-   PSO_HANDLE dataDefHandle;
-   
+  
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
    }
@@ -58,107 +52,92 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_gf",
-                              strlen("/api_lifo_gf"),
-                              &folderDef,
-                              NULL,
-                              NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
-                               PSO_DEF_PHOTON_ODBC_SIMPLE,
-                               (unsigned char *)fields,
+                               "My Def",
+                               strlen("My Def"),
+                               PSO_DEF_USER_DEFINED,
+                               (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
-                               &dataDefHandle );
+                               &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_gf/test",
-                              strlen("/api_lifo_gf/test"),
-                              &defLilo,
-                              NULL,
-                              dataDefHandle );
+   errcode = psoDataDefClose( defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_gf/test",
-                           strlen("/api_lifo_gf/test"),
-                           &objHandle );
+   errcode = psoCommit( sessionHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   errcode = psoLifoPush( objHandle, data1, strlen(data1) );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
+   
    /* Invalid arguments to tested function. */
-
-   errcode = psoLifoGetFirst( NULL,
-                               buffer,
-                               200,
-                               &length );
+   errcode = psoaDataDefDestroy( NULL,
+                                 "My Def",
+                                 strlen("My Def") );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = psoLifoGetFirst( objHandle,
-                               NULL,
-                               200,
-                               &length );
+
+   errcode = psoaDataDefDestroy( sessionHandle,
+                                 NULL,
+                                 strlen("My Def") );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = psoLifoGetFirst( objHandle,
-                               buffer,
-                               2,
-                               &length );
+
+   errcode = psoaDataDefDestroy( sessionHandle,
+                                 "My Def",
+                                 0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
-   errcode = psoLifoGetFirst( objHandle,
-                               buffer,
-                               200,
-                               NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
+
    /* End of invalid args. This call should succeed. */
-   errcode = psoLifoGetFirst( objHandle,
-                               buffer,
-                               200,
-                               &length );
+   errcode = psoaDataDefDestroy( sessionHandle,
+                                 "My Def",
+                                 strlen("My Def") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( memcmp( buffer, data1, strlen(data1) ) != 0 ) {
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
+
    /* Close the session and try to act on the object */
+   errcode = psoDataDefCreate( sessionHandle,
+                               "My Def",
+                               strlen("My Def"),
+                               PSO_DEF_USER_DEFINED,
+                               (const unsigned char *) fields,
+                               sizeof(psoFieldDefinition),
+                               &defHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefClose( defHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psoCommit( sessionHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = psoExitSession( sessionHandle );
    if ( errcode != PSO_OK ) {
@@ -166,19 +145,17 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoGetFirst( objHandle,
-                               buffer,
-                               200,
-                               &length );
-   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
+   errcode = psoaDataDefDestroy( sessionHandle,
+                                 "My Def",
+                                 strlen("My Def") );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    psoExit();
-   
+
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

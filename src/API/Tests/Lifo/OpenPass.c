@@ -38,6 +38,7 @@ int main( int argc, char * argv[] )
       { "Field_1", PSO_VARCHAR, {10} }
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, PSO_DEF_NONE, PSO_DEF_NONE };
+   PSO_HANDLE dataDefHandle;
    
    memset( junk, 0, 12 );
 
@@ -74,14 +75,24 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_op/test",
                               strlen("/api_lifo_op/test"),
                               &defLilo,
                               NULL,
-                              0,
-                              (unsigned char *)fields,
-                              sizeof(psoFieldDefinition) );
+                              dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

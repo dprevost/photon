@@ -49,10 +49,17 @@ typedef struct psoaKeyDefinition psoaKeyDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-//PHOTON_API_EXPORT
-//void psoaGetKeyLimits( psoKeyDefinition * pKeyDef,
-//                       uint32_t         * pMinLength,
-//                       uint32_t         * pMaxLength );
+/*
+ * This function is not included in the published API.
+ *
+ * This function can be dangerous. Handles to key definition are 
+ * not counted for performance reasons -> this might destroy a
+ * definition which is used by someone else...
+ */
+PHOTON_API_EXPORT
+int psoaKeyDefDestroy( PSO_HANDLE   sessionHandle,
+                       const char * definitionName,
+                       psoUint32    nameLengthInBytes );
 
 /*
  * Similar to psoaGetLimits (but using the api struct), it calculates the 
