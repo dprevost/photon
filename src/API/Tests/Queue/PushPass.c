@@ -107,7 +107,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                            "/aqPushp/test",
                            strlen("/aqPushp/test"),
-                           &objHandle );
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -115,7 +116,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle2,
                            "/aqPushp/test",
                            strlen("/aqPushp/test"),
-                           &objHandle2 );
+                           &objHandle2,
+                           NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -123,32 +125,32 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoQueuePush( NULL, data1, strlen(data1) );
+   errcode = psoQueuePush( NULL, data1, strlen(data1), NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueuePush( sessionHandle, data1, strlen(data1) );
+   errcode = psoQueuePush( sessionHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueuePush( objHandle, NULL, strlen(data1) );
+   errcode = psoQueuePush( objHandle, NULL, strlen(data1), NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueuePush( objHandle, data1, 0 );
+   errcode = psoQueuePush( objHandle, data1, 0, NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoQueuePush( objHandle, data1, strlen(data1) );
+   errcode = psoQueuePush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -193,7 +195,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueuePush( objHandle, data1, strlen(data1) );
+   errcode = psoQueuePush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

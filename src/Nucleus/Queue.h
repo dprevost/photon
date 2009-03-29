@@ -54,6 +54,9 @@ struct psonQueueItem
 
    psonLinkNode node;
 
+   /** Offset to the data definition for this specific item */
+   ptrdiff_t  dataDefOffset;
+
    size_t dataLength;
    
    unsigned char data[1];

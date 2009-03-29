@@ -43,6 +43,12 @@ struct psoaDataDefinition
    psoaSession * pSession;
    
    psonDataDefinition * pMemDefinition;
+   
+   /*
+    * If this is non-NULL, we are used by an API object and if we are
+    * closed, we must set this location to NULL to avoid memory violation.
+    */
+   struct psoaDataDefinition ** ppApiObject;
 };
 
 typedef struct psoaDataDefinition psoaDataDefinition;

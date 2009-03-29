@@ -103,7 +103,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( NULL,
                            "/aqop/test",
                            strlen("/aqop/test"),
-                           &objHandle );
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -113,7 +114,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( objHandle,
                            "/aqop/test",
                            strlen("/aqop/test"),
-                           &objHandle );
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -122,7 +124,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                            NULL,
                            strlen("/aqop/test"),
-                           &objHandle );
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -131,7 +134,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                            "/aqop/test",
                            0,
-                           &objHandle );
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -140,6 +144,7 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                              "/aqop/test",
                              strlen("/aqop/test"),
+                             NULL,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -148,18 +153,20 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoQueueOpen( sessionHandle,
-                            "/aqop/test",
-                            strlen("/aqop/test"),
-                            &objHandle );
+                           "/aqop/test",
+                           strlen("/aqop/test"),
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoQueueOpen( sessionHandle2,
-                            "/aqop/test",
-                            strlen("/aqop/test"),
-                            &objHandle2 );
+                           "/aqop/test",
+                           strlen("/aqop/test"),
+                           &objHandle2,
+                           NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

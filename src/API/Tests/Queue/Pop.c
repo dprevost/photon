@@ -107,7 +107,8 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                            "/aqpopp/test",
                            strlen("/aqpopp/test"),
-                           &objHandle );
+                           &objHandle,
+                           NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -115,13 +116,14 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle2,
                            "/aqpopp/test",
                            strlen("/aqpopp/test"),
-                           &objHandle2 );
+                           &objHandle2,
+                           NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueuePush( objHandle, data1, strlen(data1) );
+   errcode = psoQueuePush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

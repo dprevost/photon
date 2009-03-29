@@ -160,8 +160,9 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
  * \param[out] dataDefHandle This optional handle gives you access to the
  *             data definition of the record on a record by record basis.
- *             It can be set to NULL. This handle is automatically close
- *             when the queue is closed.
+ *             It can be set to NULL if you do not want to use this feature. 
+ *             If not set to NULL, you must close this handle to avoid 
+ *             memory leaks (see ::psoDataDefClose).
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -169,8 +170,8 @@ PHOTON_EXPORT
 int psoQueueOpen(  PSO_HANDLE   sessionHandle,
                    const char * queueName,
                    psoUint32    nameLengthInBytes,
-                   PSO_HANDLE * objectHandle );
-//                   PSO_HANDLE * dataDefHandle );
+                   PSO_HANDLE * objectHandle,
+                   PSO_HANDLE * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -206,16 +207,28 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
  *
  * The additions only become permanent after a call to ::psoCommit.
  *
+ * The \em dataDefinition argument should be used (non-NULL) only if
+ * you use this queue to store data records having different data 
+ * definitions.
+ *
+ * This could be used to implement inheritance of the data records or
+ * to build a mismatched collection of records.
+ *
  * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[in]  pItem  The data item to be inserted.
  * \param[in]  length The length of \em pItem (in bytes).
+ * \param[in]  dataDefinition An optional handle to a data definition
+ *             for this specific data record. The queue must have been created 
+ *             with the appropriate flag to support this feature.
+ *             Set this handle to NULL to use the default data definition.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoQueuePush( PSO_HANDLE   objectHandle, 
                   const void * pItem, 
-                  psoUint32    length );
+                  psoUint32    length,
+                  PSO_HANDLE   dataDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -225,16 +238,27 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
  * The additions become permanent immediately, not after a call to ::psoCommit.
  * (in other words, you cannot easily undo these insertions). 
  *
+ * The \em dataDefinition argument should be used (non-NULL) only if
+ * you use this queue to store data records having different data 
+ * definitions.
+ *
+ * This could be used to implement inheritance of the data records or
+ * to build a mismatched collection of records.
+ *
  * \param[in]  objectHandle The handle to the queue (see ::psoQueueOpen).
  * \param[in]  pItem  The data item to be inserted.
  * \param[in]  length The length of \em pItem (in bytes).
+ * \param[in]  dataDefinition A handle to the data definition for this 
+ *             specific data record. The queue must have been created 
+ *             with the appropriate flag to support this feature.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoQueuePushNow( PSO_HANDLE   objectHandle, 
                      const void * pItem, 
-                     psoUint32    length );
+                     psoUint32    length,
+                     PSO_HANDLE   dataDefinition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

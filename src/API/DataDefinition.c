@@ -29,20 +29,38 @@
 int psoDataDefClose( PSO_HANDLE definitionHandle )
 {
    psoaDataDefinition * pDefinition;
-
+   int errcode = PSO_OK;
+   
    pDefinition = (psoaDataDefinition *) definitionHandle;
    if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
    
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
 
-   /*
-    * Memory might still be around even after it is released, so we make 
-    * sure future access with the handle fails by setting the type wrong!
-    */
-   pDefinition->definitionType = 0; 
-   free( pDefinition );
+   if ( ! pDefinition->pSession->terminated ) {
+      if ( psoaSessionLock( pDefinition->pSession ) ) {
+         
+         if ( pDefinition->ppApiObject != NULL ) {
+            *pDefinition->ppApiObject = NULL;
+         }
+         /*
+          * Memory might still be around even after it is released, so we 
+          * make sure future access with the handle fails by setting the 
+          * type wrong.
+          */
+         pDefinition->definitionType = 0; 
+         free( pDefinition );
+         
+         psoaSessionUnlock(pDefinition->pSession);
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
    
-   return PSO_OK;
+   return errcode;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -149,6 +167,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    pDefinition->definitionType = PSOA_DEF_DATA;
    GET_PTR( pMemDefinition, pHashItem->dataOffset, psonDataDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
+   pDefinition->ppApiObject = NULL;
    
    *definitionHandle = (PSO_HANDLE) pDefinition;
 
@@ -1193,10 +1212,6 @@ int psoaDataDefDestroy( PSO_HANDLE   sessionHandle,
    int errcode = PSO_OK;
    psoaSession* pSession;
    bool ok = true;
-//   psonDataDefinition * pMemDefinition = NULL;
-//   uint32_t recLength;
-//   psoaDataDefinition * pDefinition = NULL;
-//   psonHashTxItem * pHashItem;
 
    pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;

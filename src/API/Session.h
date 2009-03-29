@@ -116,12 +116,11 @@ bool psoaSessionLock( psoaSession * pSession )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Unlock the current session. */
-//#ifndef __cplusplus
-static 
-//#endif
-__inline
+static inline
 void psoaSessionUnlock( psoaSession * pSession )
 {
+   PSO_PRE_CONDITION( pSession != NULL );
+
    if ( g_protectionIsNeeded ) {
       psocReleaseThreadLock( &pSession->mutex );
    }

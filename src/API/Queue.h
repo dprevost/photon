@@ -25,6 +25,7 @@
 
 #include "API/CommonObject.h"
 #include "Nucleus/Queue.h"
+#include "API/DataDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -36,20 +37,17 @@ typedef struct psoaQueue
 {
    psoaCommonObject object;
    
-   /**
+   /*
     * This pointer holds the result of the iteration (the pointer to
     * the current psonQueueItem).
     */
    psonQueueItem * iterator;
    
-   /** A pointer to the data definition of the object. */
-   unsigned char * fieldsDef;
-
-   /** The length of the data definition of the object. */
-   uint32_t fieldsDefLength;
-   
-//   uint32_t minLength;
-//   uint32_t maxLength;
+   /*
+    * Pointer to the data defintion struct used to hold the data
+    * definition for each retrieved record
+    */
+   psoaDataDefinition * pRecordDefinition;
    
 } psoaQueue;
 
