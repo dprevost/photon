@@ -50,6 +50,7 @@ int main()
                            strlen("my key 1"),
                            "my data 1",
                            strlen("my data 1"),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -60,6 +61,7 @@ int main()
                            strlen("my key 2"),
                            "my data 2",
                            strlen("my data 2"),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

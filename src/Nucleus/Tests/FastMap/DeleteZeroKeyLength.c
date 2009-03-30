@@ -54,6 +54,7 @@ int main()
                            6,
                            (const void *) data,
                            7,
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

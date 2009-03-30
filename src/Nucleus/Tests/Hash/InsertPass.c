@@ -34,6 +34,7 @@ int main()
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
+   psonHashItem * pHashItem;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -47,6 +48,7 @@ int main()
                              strlen(key1),
                              data1,
                              strlen(data1),
+                             &pHashItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -58,6 +60,7 @@ int main()
                              strlen(key1),
                              data2,
                              strlen(data2),
+                             &pHashItem,
                              &context );
    if ( errcode != PSO_ITEM_ALREADY_PRESENT ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -68,6 +71,7 @@ int main()
                              strlen(key2),
                              data1,
                              strlen(data1),
+                             &pHashItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

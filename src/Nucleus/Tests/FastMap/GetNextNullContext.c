@@ -56,6 +56,7 @@ int main()
                            7,
                            (const void *) data1,
                            8,
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -65,6 +66,7 @@ int main()
                            7,
                            (const void *) data2,
                            8,
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

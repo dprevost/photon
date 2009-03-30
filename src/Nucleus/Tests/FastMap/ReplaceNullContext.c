@@ -54,6 +54,7 @@ int main()
                            6,
                            (const void *) data1,
                            strlen(data1),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -64,6 +65,7 @@ int main()
                             6,
                             (const void *) data2,
                             strlen(data2),
+                            NULL,
                             NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

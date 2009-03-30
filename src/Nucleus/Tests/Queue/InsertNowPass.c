@@ -49,6 +49,7 @@ int main()
    ok = psonQueueInsertNow( pQueue,
                             data,
                             8,
+                            NULL,
                             PSON_QUEUE_FIRST,
                             &context );
    if ( ok != true ) {
@@ -61,6 +62,7 @@ int main()
    ok = psonQueueInsertNow( pQueue,
                             data,
                             8,
+                            NULL,
                             PSON_QUEUE_LAST,
                             &context );
    if ( ok != true ) {

@@ -438,9 +438,11 @@ bool psonFastMapInsert( psonFastMap        * pHashMap,
                         uint32_t             keyLength, 
                         const void         * pItem,
                         uint32_t             itemLength,
+                        psonDataDefinition * pDefinition,
                         psonSessionContext * pContext )
 {
    psoErrors errcode;
+   psonHashItem * pHashItem = NULL;
    
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( pKey     != NULL )
@@ -455,10 +457,17 @@ bool psonFastMapInsert( psonFastMap        * pHashMap,
                              keyLength,
                              pItem, 
                              itemLength,
+                             &pHashItem,
                              pContext );
    if ( errcode != PSO_OK ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
+   }
+   if ( pDefinition == NULL ) {
+      pHashItem->dataDefOffset = PSON_NULL_OFFSET;
+   }
+   else {
+      pHashItem->dataDefOffset = SET_OFFSET(pDefinition);
    }
       
    return true;
@@ -529,10 +538,12 @@ bool psonFastMapReplace( psonFastMap        * pHashMap,
                          uint32_t             keyLength, 
                          const void         * pData,
                          uint32_t             dataLength,
+                         psonDataDefinition * pDefinition,
                          psonSessionContext * pContext )
 {
    psoErrors errcode = PSO_OK;
-   
+   psonHashItem * pHashItem = NULL;
+
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( pKey     != NULL )
    PSO_PRE_CONDITION( pData    != NULL )
@@ -546,10 +557,17 @@ bool psonFastMapReplace( psonFastMap        * pHashMap,
                              keyLength,
                              pData,
                              dataLength,
+                             &pHashItem,
                              pContext );
    if ( errcode != PSO_OK ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
       return false;
+   }
+   if ( pDefinition == NULL ) {
+      pHashItem->dataDefOffset = PSON_NULL_OFFSET;
+   }
+   else {
+      pHashItem->dataDefOffset = SET_OFFSET(pDefinition);
    }
    
    return true;

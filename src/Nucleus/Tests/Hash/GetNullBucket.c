@@ -40,6 +40,7 @@ int main()
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
    psonHashItem* pItem = NULL;
+   psonHashItem * pHashItem;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -53,6 +54,7 @@ int main()
                              strlen(key1),
                              data1,
                              strlen(data1),
+                             &pHashItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -63,6 +65,7 @@ int main()
                              strlen(key2),
                              data2,
                              strlen(data2),
+                             &pHashItem,
                              &context );
    if ( errcode != PSO_OK ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

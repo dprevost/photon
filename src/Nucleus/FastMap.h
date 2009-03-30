@@ -146,6 +146,7 @@ bool psonFastMapInsert( psonFastMap        * pHashMap,
                         uint32_t             keyLength,
                         const void         * pItem,
                         uint32_t             itemLength,
+                        psonDataDefinition * pDefinition,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -159,6 +160,7 @@ bool psonFastMapReplace( psonFastMap        * pHashMap,
                          uint32_t             keyLength,
                          const void         * pItem,
                          uint32_t             itemLength,
+                         psonDataDefinition * pDefinition,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT

@@ -52,6 +52,9 @@ struct psonHashTxItem
    /** Next item with same key (for replace, etc.) */
    ptrdiff_t     nextSameKey;
    
+   /** Offset to the data definition for this specific item */
+   ptrdiff_t  dataDefOffset;
+
    uint32_t      keyLength;
    ptrdiff_t     dataOffset;
    uint32_t      dataLength;

@@ -152,6 +152,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
                         uint32_t             keyLength,
                         const void         * pItem,
                         uint32_t             itemLength,
+                        psonDataDefinition * pDefinition,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -165,6 +166,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          uint32_t             keyLength,
                          const void         * pItem,
                          uint32_t             itemLength,
+                         psonDataDefinition * pDefinition,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT

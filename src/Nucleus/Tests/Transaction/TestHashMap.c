@@ -90,6 +90,7 @@ int main()
                            strlen(key1),
                            data1,
                            strlen(data1),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -99,6 +100,7 @@ int main()
                            strlen(key2),
                            data2,
                            strlen(data2),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -108,6 +110,7 @@ int main()
                            strlen(key3),
                            data3,
                            strlen(data3),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -134,6 +137,7 @@ int main()
                            strlen(key1),
                            data1,
                            strlen(data1),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -143,6 +147,7 @@ int main()
                            strlen(key2),
                            data2,
                            strlen(data2),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -152,6 +157,7 @@ int main()
                            strlen(key3),
                            data3,
                            strlen(data3),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -252,6 +258,7 @@ int main()
                            strlen(key1),
                            data1,
                            strlen(data1),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -261,6 +268,7 @@ int main()
                            strlen(key2),
                            data2,
                            strlen(data2),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -270,6 +278,7 @@ int main()
                            strlen(key3),
                            data3,
                            strlen(data3),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -319,6 +328,7 @@ int main()
                            strlen(key1),
                            data1,
                            strlen(data1),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -328,6 +338,7 @@ int main()
                            strlen(key2),
                            data2,
                            strlen(data2),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -337,6 +348,7 @@ int main()
                            strlen(key3),
                            data3,
                            strlen(data3),
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

@@ -120,6 +120,7 @@ PHOTON_ENGINE_EXPORT
 bool psonQueueInsert( psonQueue          * pQueue,
                       const void         * pItem, 
                       uint32_t             length,
+                      psonDataDefinition * pDefinition,
                       enum psonQueueEnum   firstOrLast,
                       psonSessionContext * pContext );
 
@@ -127,6 +128,7 @@ PHOTON_ENGINE_EXPORT
 bool psonQueueInsertNow( psonQueue          * pQueue,
                          const void         * pItem, 
                          uint32_t             length,
+                         psonDataDefinition * pDefinition,
                          enum psonQueueEnum   firstOrLast,
                          psonSessionContext * pContext );
 

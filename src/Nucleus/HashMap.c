@@ -652,6 +652,7 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
                         uint32_t             keyLength, 
                         const void         * pData,
                         uint32_t             itemLength,
+                        psonDataDefinition * pDefinition,
                         psonSessionContext * pContext )
 {
    psonHashTxItem* pHashItem = NULL, * previousHashItem = NULL;
@@ -678,11 +679,11 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
       }
    
       found = psonHashTxGet( &pHashMap->hashObj, 
-                           (unsigned char *)pKey, 
-                           keyLength,
-                           &previousHashItem,
-                           &bucket,
-                           pContext );
+                             (unsigned char *)pKey, 
+                             keyLength,
+                             &previousHashItem,
+                             &bucket,
+                             pContext );
       if ( found ) {
          /* Find the last one in the chain of items with same key */
          while ( previousHashItem->nextSameKey != PSON_NULL_OFFSET ) {
@@ -709,6 +710,12 @@ bool psonHashMapInsert( psonHashMap        * pHashMap,
                                   &pHashItem,
                                   pContext );
       if ( errcode != PSO_OK ) goto the_exit;
+      if ( pDefinition == NULL ) {
+         pHashItem->dataDefOffset = PSON_NULL_OFFSET;
+      }
+      else {
+         pHashItem->dataDefOffset = SET_OFFSET(pDefinition);
+      }
 
       ok = psonTxAddOps( (psonTx*)pContext->pTransaction,
                          PSON_TX_ADD_DATA,
@@ -845,6 +852,7 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                          uint32_t             keyLength, 
                          const void         * pData,
                          uint32_t             itemLength,
+                         psonDataDefinition * pDefinition,
                          psonSessionContext * pContext )
 {
    psonHashTxItem * pHashItem, * pNewHashItem;
@@ -899,6 +907,12 @@ bool psonHashMapReplace( psonHashMap        * pHashMap,
                                   &pNewHashItem,
                                   pContext );
       if ( errcode != PSO_OK ) goto the_exit;
+      if ( pDefinition == NULL ) {
+         pNewHashItem->dataDefOffset = PSON_NULL_OFFSET;
+      }
+      else {
+         pNewHashItem->dataDefOffset = SET_OFFSET(pDefinition);
+      }
 
       ok = psonTxAddOps( (psonTx*)pContext->pTransaction,
                          PSON_TX_REMOVE_DATA,

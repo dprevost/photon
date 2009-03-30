@@ -54,6 +54,7 @@ int main()
                       0,
                       (const void *) data,
                       7,
+                      NULL,
                       &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -53,6 +53,7 @@ int main()
                       6,
                       NULL,
                       7,
+                      NULL,
                       &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

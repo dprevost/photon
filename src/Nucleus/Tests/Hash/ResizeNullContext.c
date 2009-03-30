@@ -34,6 +34,7 @@ int main()
    char key[20];
    char data[20];
    int i;
+   psonHashItem * pHashItem;
    
    pHash = initHashTest( expectedToPass, &context );
    
@@ -51,6 +52,7 @@ int main()
                                 strlen(key),
                                 data,
                                 strlen(data),
+                                &pHashItem,
                                 &context );
       if ( errcode != PSO_OK ) {
          fprintf( stderr, "i = %d %d\n", i, pHash->enumResize );

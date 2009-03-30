@@ -49,6 +49,7 @@ int main()
    ok = psonQueueInsert( pQueue,
                          NULL,
                          8,
+                         NULL,
                          PSO_FIRST,
                          &context );
    

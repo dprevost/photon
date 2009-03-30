@@ -654,6 +654,7 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
                                uint32_t              keyLength,
                                const void          * pData,
                                uint32_t              dataLength,
+                               psonHashItem       ** ppHashItem,
                                psonSessionContext  * pContext )
 {
    ptrdiff_t* pArray;   
@@ -663,10 +664,11 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
    size_t itemLength;
    psonMemObject * pMemObject;
    
-   PSO_PRE_CONDITION( pHash     != NULL );
-   PSO_PRE_CONDITION( pContext  != NULL );
-   PSO_PRE_CONDITION( pKey      != NULL );
-   PSO_PRE_CONDITION( pData     != NULL );
+   PSO_PRE_CONDITION( pHash      != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pKey       != NULL );
+   PSO_PRE_CONDITION( pData      != NULL );
+   PSO_PRE_CONDITION( ppHashItem != NULL );
    PSO_PRE_CONDITION( keyLength  > 0 );
    PSO_PRE_CONDITION( dataLength > 0 );
 
@@ -710,6 +712,8 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
    else {
       previousItem->nextItem = SET_OFFSET(pItem);
    }
+   
+   *ppHashItem = pItem;
    
    return PSO_OK;
 }
@@ -811,6 +815,7 @@ psonHashUpdate( psonHash            * pHash,
                 uint32_t              keyLength,
                 const void          * pData,
                 uint32_t              dataLength,
+                psonHashItem       ** ppHashItem,
                 psonSessionContext  * pContext )
 {
    size_t bucket = 0;
@@ -820,10 +825,11 @@ psonHashUpdate( psonHash            * pHash,
    psonHashItem * pOldItem, * previousItem = NULL, * pNewItem = NULL;
    psonMemObject * pMemObject;
 
-   PSO_PRE_CONDITION( pHash    != NULL );
-   PSO_PRE_CONDITION( pKey     != NULL );
-   PSO_PRE_CONDITION( pData    != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pHash      != NULL );
+   PSO_PRE_CONDITION( pKey       != NULL );
+   PSO_PRE_CONDITION( pData      != NULL );
+   PSO_PRE_CONDITION( ppHashItem != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
    PSO_PRE_CONDITION( keyLength  > 0 );
    PSO_PRE_CONDITION( dataLength > 0 );
    PSO_INV_CONDITION( pHash->initialized == PSON_HASH_SIGNATURE );
@@ -848,6 +854,8 @@ psonHashUpdate( psonHash            * pHash,
       memcpy( GET_PTR_FAST(pOldItem->dataOffset, void), pData, dataLength );
       pHash->totalDataSizeInBytes += (dataLength - pOldItem->dataLength);
       pOldItem->dataLength = dataLength;
+
+      *ppHashItem = pOldItem;
    }
    else {
       pMemObject = GET_PTR_FAST( pHash->memObjOffset, psonMemObject );
@@ -873,6 +881,8 @@ psonHashUpdate( psonHash            * pHash,
       else {
          previousItem->nextItem = SET_OFFSET(pNewItem);
       }
+
+      *ppHashItem = pNewItem;
       
       /* Eliminate the old record */
       psonFree( pMemObject, (unsigned char*)pOldItem, oldItemLength, pContext );

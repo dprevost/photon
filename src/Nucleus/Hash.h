@@ -47,6 +47,9 @@ struct psonHashItem
    /** Next item in this bucket */
    ptrdiff_t     nextItem;
    
+   /** Offset to the data definition for this specific item */
+   ptrdiff_t  dataDefOffset;
+
    uint32_t      keyLength;
    ptrdiff_t     dataOffset;
    uint32_t      dataLength;
@@ -167,6 +170,7 @@ enum psoErrors psonHashInsert( psonHash            * pHash,
                                uint32_t              keyLength,
                                const void          * pData,
                                uint32_t              dataLength,
+                               psonHashItem       ** ppHashItem,
                                psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
@@ -179,6 +183,7 @@ enum psoErrors psonHashUpdate( psonHash            * pHash,
                                uint32_t              keyLength,
                                const void          * pData,
                                uint32_t              dataLength,
+                               psonHashItem       ** ppHashItem,
                                psonSessionContext  * pContext );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
