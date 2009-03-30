@@ -109,7 +109,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/amnp/test",
                              strlen("/amnp/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -119,7 +120,8 @@ int main( int argc, char * argv[] )
                                key1,
                                7,
                                data1,
-                               8 );
+                               8,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -129,7 +131,8 @@ int main( int argc, char * argv[] )
                                key2,
                                7,
                                data2,
-                               8 );
+                               8,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

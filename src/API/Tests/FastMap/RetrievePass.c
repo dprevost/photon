@@ -107,7 +107,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/amrp/test",
                              strlen("/amrp/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -116,7 +117,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandle,
                              "/amrp/test",
                              strlen("/amrp/test"),
-                             &objHandle2 );
+                             &objHandle2,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -126,7 +128,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

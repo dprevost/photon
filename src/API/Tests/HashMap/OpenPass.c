@@ -116,7 +116,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( NULL,
                              "/ahop/test",
                              strlen("/ahop/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -126,7 +127,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( objHandle,
                              "/ahop/test",
                              strlen("/ahop/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -135,7 +137,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                              NULL,
                              strlen("/ahop/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -144,7 +147,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                              "/ahop/test",
                              0,
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

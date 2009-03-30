@@ -138,6 +138,18 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
 /** 
  * Open an existing LIFO queue (see ::psoCreateObject to create a new queue).
  *
+ * Queues will usually contain data records with an identical layout (data 
+ * definition of the items). This layout was defined when the queue was 
+ * created. 
+ *
+ * You can also insert and retrieve data records with different layouts if
+ * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
+ * layout defined when a queue is created is then used as the default one.
+ * 
+ * To access the layout on a record-by-record base, use the argument 
+ * \em dataDefHandle - it will be set to the layout of the last retrieved
+ * record.
+ *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  queueName The fully qualified name of the queue. 
  * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
@@ -146,6 +158,12 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
  * \param[out] objectHandle The handle to the queue, allowing us access to
  *             the queue in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
+ * \param[out] dataDefHandle This optional handle gives you access to the
+ *             data definition of the record on a record by record basis.
+ *             It can be set to NULL if you do not want to use this feature. 
+ *             If not set to NULL, the returned handle will be closed when
+ *             the queue is closed. You can also close it manually with 
+ *             ::psoDataDefClose.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -153,7 +171,8 @@ PHOTON_EXPORT
 int psoLifoOpen(  PSO_HANDLE   sessionHandle,
                   const char * queueName,
                   psoUint32    nameLengthInBytes,
-                  PSO_HANDLE * objectHandle );
+                  PSO_HANDLE * objectHandle,
+                  PSO_HANDLE * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -189,16 +208,28 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
  *
  * The additions only become permanent after a call to ::psoCommit.
  *
+ * The \em dataDefHandle argument should be used (non-NULL) only if
+ * you use this queue to store data records having different data 
+ * definitions.
+ *
+ * This could be used to implement inheritance of the data records or
+ * to build a mismatched collection of records.
+ *
  * \param[in]  objectHandle The handle to the queue (see ::psoLifoOpen).
  * \param[in]  pItem  The data item to be inserted.
  * \param[in]  length The length of \em pItem (in bytes).
+ * \param[in]  dataDefHandle An optional handle to a data definition
+ *             for this specific data record. The queue must have been created 
+ *             with the appropriate flag to support this feature.
+ *             Set this handle to NULL to use the default data definition.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoLifoPush( PSO_HANDLE   objectHandle, 
                  const void * pItem, 
-                 psoUint32    length );
+                 psoUint32    length,
+                 PSO_HANDLE   dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

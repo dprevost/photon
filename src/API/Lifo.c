@@ -343,7 +343,8 @@ error_handler:
 int psoLifoOpen( PSO_HANDLE   sessionHandle,
                  const char * queueName,
                  uint32_t     nameLengthInBytes,
-                 PSO_HANDLE * objectHandle )
+                 PSO_HANDLE * objectHandle,
+                 PSO_HANDLE * dataDefHandle )
 {
    psoaSession * pSession;
    psoaLifo * pLifo = NULL;
@@ -480,12 +481,15 @@ error_handler:
 
 int psoLifoPush( PSO_HANDLE   objectHandle,
                  const void * data,
-                 uint32_t     dataLength )
+                 uint32_t     dataLength,
+                 PSO_HANDLE   dataDefHandle )
 {
    psoaLifo * pLifo;
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
+   psonDataDefinition * pMemDefinition = NULL;
+   psoaDataDefinition * pDefinition = NULL;
 
    pLifo = (psoaLifo *) objectHandle;
    if ( pLifo == NULL ) return PSO_NULL_HANDLE;
@@ -503,14 +507,25 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
          g_psoErrorHandle, PSO_INVALID_LENGTH );
       return PSO_INVALID_LENGTH;
    }
+
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *)dataDefHandle;
+      if ( pDefinition->definitionType != PSOA_DEF_DATA ) {
+         psocSetError( &pLifo->object.pSession->context.errorHandler, 
+            g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+   }
    
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psoaCommonLock( &pLifo->object ) ) {
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
+         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
 
          ok = psonQueueInsert( pMemLifo,
                                data,
                                dataLength,
+                               pMemDefinition,
                                PSON_QUEUE_LAST,
                                &pLifo->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );

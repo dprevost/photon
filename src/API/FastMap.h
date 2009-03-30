@@ -26,6 +26,7 @@
 #include "API/CommonObject.h"
 #include "Nucleus/FastMap.h"
 #include "API/HashMap.h"
+#include "API/DataDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,10 +56,11 @@ typedef struct psoaFastMap
    /** The length of the data definition of the object. */
    uint32_t fieldsDefLength;
    
-//   uint32_t minLength;
-//   uint32_t maxLength;
-//   uint32_t minKeyLength;
-//   uint32_t maxKeyLength;
+   /*
+    * Pointer to the data defintion struct used to hold the data
+    * definition for each retrieved record
+    */
+   psoaDataDefinition * pRecordDefinition;
 
    int editMode;
 

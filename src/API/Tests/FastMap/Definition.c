@@ -133,14 +133,16 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/ammd/test",
                              strlen("/ammd/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* Test of the data definition with inserts . */
-   errcode = psoFastMapInsert( objHandle, key, strlen(key), data1, lenData );
+   errcode = psoFastMapInsert( objHandle, key, strlen(key), data1, lenData,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

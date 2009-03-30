@@ -500,12 +500,15 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
                       uint32_t     keyLength,
                       const void * data,
-                      uint32_t     dataLength )
+                      uint32_t     dataLength,
+                      PSO_HANDLE   dataDefHandle )
 {
    psoaHashMap * pHashMap;
    psonHashMap * pMemHashMap;
    int errcode = 0;
    bool ok = true;
+   psoaDataDefinition * pDefinition = NULL;
+   psonDataDefinition * pMemDefinition = NULL;
    
    pHashMap = (psoaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -529,6 +532,16 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
       return PSO_INVALID_LENGTH;
    }
 
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *) dataDefHandle;
+   
+      if ( pDefinition->definitionType != PSOA_DEF_DATA )  {
+         psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+            g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+   }
+
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
@@ -543,6 +556,7 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
                                     keyLength,
                                     data,
                                     dataLength,
+                                    pMemDefinition,
                                     &pHashMap->object.pSession->context );
             PSO_POST_CONDITION( ok == true || ok == false );
          }
@@ -572,7 +586,8 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
 int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     uint32_t     nameLengthInBytes,
-                    PSO_HANDLE * objectHandle )
+                    PSO_HANDLE * objectHandle,
+                    PSO_HANDLE * dataDefHandle )
 {
    psoaSession * pSession;
    psoaHashMap * pHashMap = NULL;
@@ -638,12 +653,15 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
                        uint32_t     keyLength,
                        const void * data,
-                       uint32_t     dataLength )
+                       uint32_t     dataLength,
+                       PSO_HANDLE   dataDefHandle )
 {
    psoaHashMap * pHashMap;
    psonHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
+   psoaDataDefinition * pDefinition = NULL;
+   psonDataDefinition * pMemDefinition = NULL;
    
    pHashMap = (psoaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -661,10 +679,21 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
       return PSO_INVALID_LENGTH;
    }
 
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *) dataDefHandle;
+   
+      if ( pDefinition->definitionType != PSOA_DEF_DATA )  {
+         psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+            g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+   }
+
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
+         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
 
          if ( pMemHashMap->isSystemObject ) {
             errcode = PSO_SYSTEM_OBJECT;
@@ -675,6 +704,7 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
                                      keyLength,
                                      data,
                                      dataLength,
+                                     pMemDefinition,
                                      &pHashMap->object.pSession->context );
             PSO_POST_CONDITION( ok == true || ok == false );
          }

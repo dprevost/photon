@@ -121,7 +121,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                              "/ahip/test",
                              strlen("/ahip/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -129,7 +130,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle2,
                              "/ahip/test",
                              strlen("/ahip/test"),
-                             &objHandle2 );
+                             &objHandle2,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -141,7 +143,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -151,7 +154,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -161,7 +165,8 @@ int main( int argc, char * argv[] )
                                NULL,
                                6,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -171,7 +176,8 @@ int main( int argc, char * argv[] )
                                key,
                                0,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -181,7 +187,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                NULL,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -202,7 +209,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -260,7 +268,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

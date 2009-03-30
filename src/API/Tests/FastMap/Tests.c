@@ -149,7 +149,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleEdit );
+                             &objHandleEdit,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -171,7 +172,8 @@ int main( int argc, char * argv[] )
                                key1,
                                strlen(key1),
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -223,7 +225,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleEdit );
+                             &objHandleEdit,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -233,7 +236,8 @@ int main( int argc, char * argv[] )
                                key2,
                                strlen(key2),
                                data,
-                               7 );
+                               7,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -285,7 +289,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleRead1 );
+                             &objHandleRead1,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -294,7 +299,8 @@ int main( int argc, char * argv[] )
     errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleEdit );
+                             &objHandleEdit,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -302,7 +308,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleRead2 );
+                             &objHandleRead2,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -312,7 +319,8 @@ int main( int argc, char * argv[] )
                                key2,
                                strlen(key2),
                                data,
-                               strlen(data) );
+                               strlen(data),
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -415,7 +423,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleRead1 );
+                             &objHandleRead1,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -424,7 +433,8 @@ int main( int argc, char * argv[] )
     errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleEdit );
+                             &objHandleEdit,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -432,7 +442,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleRead2 );
+                             &objHandleRead2,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -442,7 +453,8 @@ int main( int argc, char * argv[] )
                                key3,
                                strlen(key3),
                                data,
-                               strlen(data) );
+                               strlen(data),
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -524,7 +536,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleEdit );
+                             &objHandleEdit,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -534,7 +547,8 @@ int main( int argc, char * argv[] )
                                key3,
                                strlen(key3),
                                data,
-                               strlen(data) );
+                               strlen(data),
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -580,7 +594,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandleRead,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleRead1 );
+                             &objHandleRead1,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -597,7 +612,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandleEdit,
                              "/api_map_tests/test",
                              strlen("/api_map_tests/test"),
-                             &objHandleEdit );
+                             &objHandleEdit,
+                             NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

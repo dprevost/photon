@@ -25,6 +25,7 @@
 
 #include "API/CommonObject.h"
 #include "Nucleus/Queue.h"
+#include "API/DataDefinition.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -48,9 +49,12 @@ typedef struct psoaLifo
    /** The length of the data definition of the object. */
    uint32_t fieldsDefLength;
    
-//   uint32_t minLength;
-//   uint32_t maxLength;
-   
+   /*
+    * Pointer to the data defintion struct used to hold the data
+    * definition for each retrieved record
+    */
+   psoaDataDefinition * pRecordDefinition;
+
 } psoaLifo;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

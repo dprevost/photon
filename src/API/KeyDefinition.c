@@ -119,6 +119,7 @@ int psoKeyDefCreate( PSO_HANDLE               sessionHandle,
                                  nameLengthInBytes,
                                  pMemDefinition,
                                  recLength,
+                                 NULL,
                                  &pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
          

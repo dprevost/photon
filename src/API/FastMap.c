@@ -252,7 +252,8 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
 int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     uint32_t     nameLengthInBytes,
-                    PSO_HANDLE * objectHandle )
+                    PSO_HANDLE * objectHandle,
+                    PSO_HANDLE * dataDefHandle )
 {
    psoaSession * pSession;
    psoaFastMap * pHashMap = NULL;
@@ -648,12 +649,15 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
                       const void * key,
                       uint32_t     keyLength,
                       const void * data,
-                      uint32_t     dataLength )
+                      uint32_t     dataLength,
+                      PSO_HANDLE   dataDefHandle )
 {
    psoaFastMap * pHashMap;
    psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
+   psoaDataDefinition * pDefinition = NULL;
+   psonDataDefinition * pMemDefinition = NULL;
 
    pHashMap = (psoaFastMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -683,16 +687,28 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
       return PSO_OBJECT_IS_READ_ONLY;
    }
 
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *) dataDefHandle;
+   
+      if ( pDefinition->definitionType != PSOA_DEF_DATA )  {
+         psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+            g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+   }
+
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
+         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
 
          ok = psonFastMapInsert( pMemHashMap,
                                  key,
                                  keyLength,
                                  data,
                                  dataLength,
+                                 pMemDefinition,
                                  &pHashMap->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 
@@ -722,7 +738,8 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
 int psoFastMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     uint32_t     nameLengthInBytes,
-                    PSO_HANDLE * objectHandle )
+                    PSO_HANDLE * objectHandle,
+                    PSO_HANDLE * dataDefHandle )
 {
    psoaSession * pSession;
    psoaFastMap * pHashMap = NULL;
@@ -794,12 +811,15 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
                        const void * key,
                        uint32_t     keyLength,
                        const void * data,
-                       uint32_t     dataLength )
+                       uint32_t     dataLength,
+                       PSO_HANDLE   dataDefHandle )
 {
    psoaFastMap * pHashMap;
    psonFastMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok = true;
+   psoaDataDefinition * pDefinition = NULL;
+   psonDataDefinition * pMemDefinition = NULL;
 
    pHashMap = (psoaFastMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -823,16 +843,28 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
       return PSO_OBJECT_IS_READ_ONLY;
    }
 
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *) dataDefHandle;
+   
+      if ( pDefinition->definitionType != PSOA_DEF_DATA )  {
+         psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+            g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+   }
+
    if ( ! pHashMap->object.pSession->terminated ) {
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
+         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
 
          ok = psonFastMapReplace( pMemHashMap,
                                   key,
                                   keyLength,
                                   data,
                                   dataLength,
+                                  pMemDefinition,
                                   &pHashMap->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
 

@@ -485,13 +485,15 @@ error_handler:
 int psoQueuePush( PSO_HANDLE   objectHandle,
                   const void * data,
                   uint32_t     dataLength,
-                  PSO_HANDLE   dataDefinition )
+                  PSO_HANDLE   dataDefHandle )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
-
+   psonDataDefinition * pMemDefinition = NULL;
+   psoaDataDefinition * pDefinition = NULL;
+   
    pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
@@ -509,13 +511,24 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
       return PSO_INVALID_LENGTH;
    }
 
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *)dataDefHandle;
+      if ( pDefinition->definitionType != PSOA_DEF_DATA ) {
+         psocSetError( &pQueue->object.pSession->context.errorHandler, 
+            g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+         return PSO_WRONG_TYPE_HANDLE;
+      }
+   }
+
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
-
+         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
+         
          ok = psonQueueInsert( pMemQueue,
                                data,
                                dataLength,
+                               pMemDefinition,
                                PSON_QUEUE_LAST,
                                &pQueue->object.pSession->context );
          PSO_POST_CONDITION( ok == true || ok == false );
@@ -547,13 +560,13 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
 int psoQueuePushNow( PSO_HANDLE   objectHandle,
                      const void * data,
                      uint32_t     dataLength,
-                     PSO_HANDLE   dataDefinition )
+                     PSO_HANDLE   dataDefHandle )
 {
    psoaQueue * pQueue;
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
-   psoaDataDefinition * pDefinition;
+   psoaDataDefinition * pDefinition = NULL;
    psonDataDefinition * pMemDefinition = NULL;
    
    pQueue = (psoaQueue *) objectHandle;
@@ -573,20 +586,20 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
       return PSO_INVALID_LENGTH;
    }
    
-   if ( dataDefinition != NULL ) {
-      pDefinition = (psoaDataDefinition *) dataDefinition;
+   if ( dataDefHandle != NULL ) {
+      pDefinition = (psoaDataDefinition *) dataDefHandle;
    
       if ( pDefinition->definitionType != PSOA_DEF_DATA )  {
          psocSetError( &pQueue->object.pSession->context.errorHandler, 
             g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
          return PSO_WRONG_TYPE_HANDLE;
       }
-      pMemDefinition = pDefinition->pMemDefinition;
    }
    
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
 
          ok = psonQueueInsertNow( pMemQueue,
                                   data,

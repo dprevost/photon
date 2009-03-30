@@ -122,7 +122,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandle,
                              "/amons/test",
                              strlen("/amons/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

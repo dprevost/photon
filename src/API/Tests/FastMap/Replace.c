@@ -121,7 +121,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/amrepl/test",
                              strlen("/amrepl/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -131,7 +132,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data1,
-                               strlen(data1) );
+                               strlen(data1),
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -152,7 +154,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/amrepl/test",
                              strlen("/amrepl/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -160,7 +163,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapOpen( sessionHandle2,
                              "/amrepl/test",
                              strlen("/amrepl/test"),
-                             &objHandle2 );
+                             &objHandle2,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -172,7 +176,8 @@ int main( int argc, char * argv[] )
                                 key,
                                 6,
                                 data2,
-                                strlen(data2) );
+                                strlen(data2),
+                                NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -182,7 +187,8 @@ int main( int argc, char * argv[] )
                                 NULL,
                                 6,
                                 data2,
-                                strlen(data2) );
+                                strlen(data2),
+                                NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -192,7 +198,8 @@ int main( int argc, char * argv[] )
                                 key,
                                 0,
                                 data2,
-                                strlen(data2) );
+                                strlen(data2),
+                                NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -202,7 +209,8 @@ int main( int argc, char * argv[] )
                                 key,
                                 6,
                                 NULL,
-                                strlen(data2) );
+                                strlen(data2),
+                                NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -212,7 +220,8 @@ int main( int argc, char * argv[] )
                                 key,
                                 6,
                                 data2,
-                                0 );
+                                0,
+                                NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -223,7 +232,8 @@ int main( int argc, char * argv[] )
                                 key,
                                 6,
                                 data2,
-                                strlen(data2) );
+                                strlen(data2),
+                                NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -324,7 +334,8 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/amrepl/test",
                              strlen("/amrepl/test"),
-                             &objHandle );
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -340,7 +351,8 @@ int main( int argc, char * argv[] )
                                 key,
                                 6,
                                 data2,
-                                strlen(data2) );
+                                strlen(data2),
+                                NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
