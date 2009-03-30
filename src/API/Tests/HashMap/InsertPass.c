@@ -198,7 +198,8 @@ int main( int argc, char * argv[] )
                                key,
                                6,
                                data,
-                               0 );
+                               0,
+                               NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

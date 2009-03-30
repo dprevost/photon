@@ -103,7 +103,8 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( NULL,
                            "/api_lifo_op/test",
                            strlen("/api_lifo_op/test"),
-                           &objHandle );
+                           &objHandle,
+                          NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -113,7 +114,8 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( objHandle,
                            "/api_lifo_op/test",
                            strlen("/api_lifo_op/test"),
-                           &objHandle );
+                           &objHandle,
+                          NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -122,7 +124,8 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( sessionHandle,
                            NULL,
                            strlen("/api_lifo_op/test"),
-                           &objHandle );
+                           &objHandle,
+                          NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -131,7 +134,8 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( sessionHandle,
                            "/api_lifo_op/test",
                            0,
-                           &objHandle );
+                           &objHandle,
+                          NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -140,6 +144,7 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( sessionHandle,
                              "/api_lifo_op/test",
                              strlen("/api_lifo_op/test"),
+                             NULL,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -148,18 +153,20 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoLifoOpen( sessionHandle,
-                            "/api_lifo_op/test",
-                            strlen("/api_lifo_op/test"),
-                            &objHandle );
+                          "/api_lifo_op/test",
+                          strlen("/api_lifo_op/test"),
+                          &objHandle,
+                          NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoLifoOpen( sessionHandle2,
-                            "/api_lifo_op/test",
-                            strlen("/api_lifo_op/test"),
-                            &objHandle2 );
+                          "/api_lifo_op/test",
+                          strlen("/api_lifo_op/test"),
+                          &objHandle2,
+                          NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

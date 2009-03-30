@@ -107,15 +107,17 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( sessionHandle,
                            "/api_lifo_Pushp/test",
                            strlen("/api_lifo_Pushp/test"),
-                           &objHandle );
+                           &objHandle,
+                          NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoLifoOpen( sessionHandle2,
-                           "/api_lifo_Pushp/test",
-                           strlen("/api_lifo_Pushp/test"),
-                           &objHandle2 );
+                          "/api_lifo_Pushp/test",
+                          strlen("/api_lifo_Pushp/test"),
+                          &objHandle2,
+                          NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -123,32 +125,32 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoLifoPush( NULL, data1, strlen(data1) );
+   errcode = psoLifoPush( NULL, data1, strlen(data1), NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( sessionHandle, data1, strlen(data1) );
+   errcode = psoLifoPush( sessionHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, NULL, strlen(data1) );
+   errcode = psoLifoPush( objHandle, NULL, strlen(data1), NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, data1, 0 );
+   errcode = psoLifoPush( objHandle, data1, 0, NULL );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoLifoPush( objHandle, data1, strlen(data1) );
+   errcode = psoLifoPush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -193,7 +195,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, data1, strlen(data1) );
+   errcode = psoLifoPush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

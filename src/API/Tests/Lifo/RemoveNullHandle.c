@@ -95,13 +95,14 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( sessionHandle,
                            "/api_lifo_rnh/test",
                            strlen("/api_lifo_rnh/test"),
-                           &objHandle );
+                           &objHandle,
+                          NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, data1, strlen(data1) );
+   errcode = psoLifoPush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

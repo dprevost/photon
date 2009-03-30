@@ -123,7 +123,8 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                             "/ahons/test",
                             strlen("/ahons/test"),
-                            &objHandle );
+                            &objHandle,
+                            NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

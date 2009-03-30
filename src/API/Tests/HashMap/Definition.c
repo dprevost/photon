@@ -132,15 +132,17 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                           "/ahmd/test",
-                           strlen("/ahmd/test"),
-                           &objHandle );
+                             "/ahmd/test",
+                             strlen("/ahmd/test"),
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapInsert( objHandle, key, strlen(key), data1, lenData );
+   errcode = psoHashMapInsert( objHandle, key, strlen(key), data1, lenData,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

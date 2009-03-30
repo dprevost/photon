@@ -157,6 +157,7 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                              "/ahop/test",
                              strlen("/ahop/test"),
+                             NULL,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -165,18 +166,20 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoHashMapOpen( sessionHandle,
-                            "/ahop/test",
-                            strlen("/ahop/test"),
-                            &objHandle );
+                             "/ahop/test",
+                             strlen("/ahop/test"),
+                             &objHandle,
+                             NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoHashMapOpen( sessionHandle2,
-                            "/ahop/test",
-                            strlen("/ahop/test"),
-                            &objHandle2 );
+                             "/ahop/test",
+                             strlen("/ahop/test"),
+                             &objHandle2,
+                             NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
