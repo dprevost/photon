@@ -39,7 +39,8 @@ int main( int argc, char * argv[] )
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE dataDefHandle;
-   
+   const char * data1 = "My Data1";
+
    memset( junk, 0, 12 );
 
    if ( argc > 1 ) {
@@ -168,6 +169,77 @@ int main( int argc, char * argv[] )
                            &objHandle2,
                            NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoQueuePush( objHandle, data1, strlen(data1), dataDefHandle );
+   if ( errcode != PSO_DATA_DEF_UNSUPPORTED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoQueueOpen( sessionHandle,
+                           "/aqop/test",
+                           strlen("/aqop/test"),
+                           &objHandle2,
+                           &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   psoQueueClose( objHandle );
+   psoQueueClose( objHandle );
+   psoRollback( sessionHandle );
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/aqop",
+                              strlen("/aqop"),
+                              &folderDef,
+                              NULL,
+                              NULL );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   defQueue.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
+   errcode = psoCreateObject( sessionHandle,
+                              "/aqop/test",
+                              strlen("/aqop/test"),
+                              &defQueue,
+                              NULL,
+                              dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoQueueOpen( sessionHandle,
+                           "/aqop/test",
+                           strlen("/aqop/test"),
+                           &objHandle,
+                           &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoQueuePush( objHandle, data1, strlen(data1), dataDefHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

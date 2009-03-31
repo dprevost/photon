@@ -523,16 +523,22 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
-         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
-         
-         ok = psonQueueInsert( pMemQueue,
-                               data,
-                               dataLength,
-                               pMemDefinition,
-                               PSON_QUEUE_LAST,
-                               &pQueue->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            fprintf( stderr, "e: %d\n", pMemQueue->flags );
+            if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
+         }
+         if ( errcode == PSO_OK ) {
+            ok = psonQueueInsert( pMemQueue,
+                                  data,
+                                  dataLength,
+                                  pMemDefinition,
+                                  PSON_QUEUE_LAST,
+                                  &pQueue->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pQueue->object );
       }
       else {
@@ -599,16 +605,21 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
    if ( ! pQueue->object.pSession->terminated ) {
       if ( psoaCommonLock( &pQueue->object ) ) {
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
-         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
-
-         ok = psonQueueInsertNow( pMemQueue,
-                                  data,
-                                  dataLength,
-                                  pMemDefinition,
-                                  PSON_QUEUE_LAST,
-                                  &pQueue->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
+         }
+         if ( errcode == PSO_OK ) {
+            ok = psonQueueInsertNow( pMemQueue,
+                                     data,
+                                     dataLength,
+                                     pMemDefinition,
+                                     PSON_QUEUE_LAST,
+                                     &pQueue->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pQueue->object );
       }
       else {

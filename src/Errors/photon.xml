@@ -696,6 +696,24 @@
     </error>
 
     <error>
+      <errnumber> 68 </errnumber>
+      <errname> DATA_DEF_UNSUPPORTED </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            The data container does not support data definitions for individual
+            data records.
+          </errormsg>
+          <errordoc>
+            The data container does not support data definitions for individual
+            data records. In other words, the data container was not created
+            with the flag PSO_MULTIPLE_DATA_DEFINITIONS.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
+
+    <error>
       <errnumber> 69 </errnumber>
       <errname> OBJECT_IS_IN_USE </errname>
       <message_group>

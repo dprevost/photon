@@ -286,6 +286,7 @@ bool psonQueueInit( psonQueue           * pQueue,
    psonLinkedListInit( &pQueue->listOfElements );
 
    pQueue->dataDefOffset = SET_OFFSET(pDataDefinition);
+   pQueue->flags = pDefinition->flags;
    
    return true;
 }
