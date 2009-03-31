@@ -13,11 +13,14 @@ LDFLAGS += -L../../API/.libs -lphoton
 # installed photon).
 CFLAGS += -g -I../../include -Wall
 
-TARGETS = HashMap     \
-          HashMapLoop \
-          QueueIn     \
-          QueueWork   \
-          QueueOut    
+TARGETS = FastPerf      \
+          FastPerfByKey \
+          HashMap       \
+          HashMapLoop   \
+          HashPerf      \
+          QueueIn       \
+          QueueWork     \
+          QueueOut      
 
 all: $(TARGETS)
 
