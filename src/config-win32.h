@@ -44,7 +44,7 @@
 #define PSON_BLOCK_SIZE 8192
 
 /* Version number of package */
-#define VERSION "0.4.0"
+#define VERSION "0.5.0"
 
 /* Name of package */
 #define PACKAGE "photon"
@@ -56,13 +56,13 @@
 #define PACKAGE_NAME "Photon Software"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Photon Software 0.4.0"
+#define PACKAGE_STRING "Photon Software 0.5.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "photon"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.4.0"
+#define PACKAGE_VERSION "0.5.0"
 
 typedef signed char int8_t;
 typedef signed short int16_t;
@@ -72,6 +72,10 @@ typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
+
+#define SIZEOF_FLOAT  4
+#define SIZEOF_DOUBLE 8
+#define SIZEOF_LONG_DOUBLE 8
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

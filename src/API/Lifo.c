@@ -352,6 +352,7 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
    psoaLifo * pLifo = NULL;
    psonQueue * pMemLifo;
    int errcode;
+   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -376,6 +377,16 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
+   if ( dataDefHandle != NULL ) {
+      pDefinition = malloc( sizeof(psoaDataDefinition) );
+      if ( pDefinition == NULL ) {
+         free( pLifo );
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      pDefinition->pSession = pLifo->object.pSession;
+      pDefinition->definitionType = PSOA_DEF_DATA;
+   }
    
    memset( pLifo, 0, sizeof(psoaLifo) );
    pLifo->object.type = PSOA_LIFO;
@@ -390,9 +401,16 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
       if ( errcode == PSO_OK ) {
          *objectHandle = (PSO_HANDLE) pLifo;
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
-         GET_PTR( pLifo->fieldsDef, 
-                  pMemLifo->dataDefOffset,
-                  unsigned char );
+         if ( dataDefHandle != NULL ) {
+            /* We use the global queue definition as the initial value
+             * to avoid an uninitialized pointer.
+             */
+            GET_PTR( pDefinition->pMemDefinition, 
+                     pMemLifo->dataDefOffset, 
+                     psonDataDefinition );
+            pDefinition->ppApiObject = &pLifo->pRecordDefinition;
+            pLifo->pRecordDefinition = pDefinition;
+         }
       }
    }
    else {

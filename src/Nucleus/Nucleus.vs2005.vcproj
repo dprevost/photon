@@ -567,6 +567,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TopFolder.c"
+				>
+			</File>
+			<File
 				RelativePath="Transaction.c"
 				>
 				<FileConfiguration
@@ -595,6 +599,10 @@
 			>
 			<File
 				RelativePath="BlockGroup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Definitions.h"
 				>
 			</File>
 			<File

@@ -259,6 +259,7 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
    psoaFastMap * pHashMap = NULL;
    psonFastMap * pMemHashMap;
    int errcode;
+   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -283,6 +284,16 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
+   if ( dataDefHandle != NULL ) {
+      pDefinition = malloc( sizeof(psoaDataDefinition) );
+      if ( pDefinition == NULL ) {
+         free( pHashMap );
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      pDefinition->pSession = pHashMap->object.pSession;
+      pDefinition->definitionType = PSOA_DEF_DATA;
+   }
    
    memset( pHashMap, 0, sizeof(psoaFastMap) );
    pHashMap->object.type = PSOA_MAP;
@@ -300,12 +311,16 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
          pHashMap->editMode = 1;
          
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
-         GET_PTR( pHashMap->fieldsDef, 
-                  pMemHashMap->dataDefOffset,
-                  unsigned char );
-         GET_PTR( pHashMap->keyDef, 
-                  pMemHashMap->keyDefOffset,
-                  unsigned char );
+         if ( dataDefHandle != NULL ) {
+            /* We use the global queue definition as the initial value
+             * to avoid an uninitialized pointer.
+             */
+            GET_PTR( pDefinition->pMemDefinition, 
+                     pMemHashMap->dataDefOffset, 
+                     psonDataDefinition );
+            pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
+            pHashMap->pRecordDefinition = pDefinition;
+         }
          pSession->numberOfEdits++;
       }
    }
@@ -750,6 +765,7 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
    psoaFastMap * pHashMap = NULL;
    psonFastMap * pMemHashMap;
    int errcode;
+   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -774,6 +790,16 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
+   if ( dataDefHandle != NULL ) {
+      pDefinition = malloc( sizeof(psoaDataDefinition) );
+      if ( pDefinition == NULL ) {
+         free( pHashMap );
+         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      pDefinition->pSession = pHashMap->object.pSession;
+      pDefinition->definitionType = PSOA_DEF_DATA;
+   }
    
    memset( pHashMap, 0, sizeof(psoaFastMap) );
    pHashMap->object.type = PSOA_MAP;
@@ -795,12 +821,16 @@ int psoFastMapOpen( PSO_HANDLE   sessionHandle,
          pHashMap->reader.address = pHashMap;
          psoaListReadersPut( &pHashMap->object.pSession->listReaders, 
                              &pHashMap->reader );
-         GET_PTR( pHashMap->fieldsDef, 
-                  pMemHashMap->dataDefOffset,
-                  unsigned char );
-         GET_PTR( pHashMap->keyDef, 
-                  pMemHashMap->keyDefOffset,
-                  unsigned char );
+         if ( dataDefHandle != NULL ) {
+            /* We use the global queue definition as the initial value
+             * to avoid an uninitialized pointer.
+             */
+            GET_PTR( pDefinition->pMemDefinition, 
+                     pMemHashMap->dataDefOffset, 
+                     psonDataDefinition );
+            pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
+            pHashMap->pRecordDefinition = pDefinition;
+         }
       }
    }
    else {

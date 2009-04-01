@@ -273,6 +273,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\DataDefinition.c"
+				>
+			</File>
+			<File
 				RelativePath=".\FastMap.c"
 				>
 			</File>
@@ -319,6 +323,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\KeyDefinition.c"
+				>
 			</File>
 			<File
 				RelativePath="Lifo.c"
@@ -435,6 +443,10 @@
 			</File>
 			<File
 				RelativePath="Folder.h"
+				>
+			</File>
+			<File
+				RelativePath=".\KeyDefinition.h"
 				>
 			</File>
 			<File

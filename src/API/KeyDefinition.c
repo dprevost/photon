@@ -61,7 +61,7 @@ int psoKeyDefCreate( PSO_HANDLE               sessionHandle,
    psonKeyDefinition * pMemDefinition = NULL;
    uint32_t recLength;
    psoaKeyDefinition * pDefinition = NULL;
-   psonHashTxItem * pHashItem;
+   psonHashTxItem * pHashItem = NULL;
 
    pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;

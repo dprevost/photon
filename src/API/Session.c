@@ -391,9 +391,10 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
    int errcode = PSO_OK;
    psonFolder * pTree;
    bool ok = true;
-   pSession = (psoaSession*) sessionHandle;
    psoaDataDefinition * pDataDefinition = NULL;
    psoaKeyDefinition  * pKeyDefinition = NULL;
+
+   pSession = (psoaSession*) sessionHandle;
 
    if ( pSession == NULL ) return PSO_NULL_HANDLE;   
    if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;

@@ -79,7 +79,7 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    psonDataDefinition * pMemDefinition = NULL;
    uint32_t recLength;
    psoaDataDefinition * pDefinition = NULL;
-   psonHashTxItem * pHashItem;
+   psonHashTxItem * pHashItem = NULL;
 
    pSession = (psoaSession*) sessionHandle;
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
