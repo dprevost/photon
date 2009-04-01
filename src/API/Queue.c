@@ -525,7 +525,6 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
          pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
          if ( pDefinition != NULL ) {
             pMemDefinition = pDefinition->pMemDefinition;
-            fprintf( stderr, "e: %d\n", pMemQueue->flags );
             if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
                errcode = PSO_DATA_DEF_UNSUPPORTED;
             }

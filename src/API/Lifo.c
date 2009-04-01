@@ -147,6 +147,7 @@ int psoLifoDefinition( PSO_HANDLE   objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#if 0
 int psoLifoDefLength( PSO_HANDLE   objectHandle, 
                       psoUint32  * fieldsLength )
 {
@@ -187,6 +188,7 @@ int psoLifoDefLength( PSO_HANDLE   objectHandle,
    
    return errcode;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -520,16 +522,21 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
    if ( ! pLifo->object.pSession->terminated ) {
       if ( psoaCommonLock( &pLifo->object ) ) {
          pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
-         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
-
-         ok = psonQueueInsert( pMemLifo,
-                               data,
-                               dataLength,
-                               pMemDefinition,
-                               PSON_QUEUE_LAST,
-                               &pLifo->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            if ( !(pMemLifo->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
+         }
+         if ( errcode == PSO_OK ) {
+            ok = psonQueueInsert( pMemLifo,
+                                  data,
+                                  dataLength,
+                                  pMemDefinition,
+                                  PSON_QUEUE_LAST,
+                                  &pLifo->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pLifo->object );
       }
       else {

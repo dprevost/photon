@@ -639,6 +639,7 @@ bool psonHashMapInit( psonHashMap         * pHashMap,
    
    pHashMap->dataDefOffset = SET_OFFSET(pDataDefinition);
    pHashMap->keyDefOffset  = SET_OFFSET(pKeyDefinition);
+   pHashMap->flags = pDefinition->flags;
 
    pHashMap->isSystemObject = false;
 

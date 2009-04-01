@@ -61,18 +61,12 @@ struct psonFastMap
    /** Offset to the key definition */
    ptrdiff_t keyDefOffset;
 
-//   uint32_t keyDefLength;
-//   uint32_t dataDefLength;
+   /* Creation flags */
+   uint32_t flags;
 
    ptrdiff_t latestVersion;
 
    ptrdiff_t editVersion;
-   
-   /** The type of the key definition (metadata) */
-//   enum psoDefinitionType keyDefType;
-   
-   /** The type of the field definition (metadata) */
-//   enum psoDefinitionType fieldDefType;
    
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;

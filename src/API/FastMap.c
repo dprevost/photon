@@ -701,17 +701,22 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
-         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
-
-         ok = psonFastMapInsert( pMemHashMap,
-                                 key,
-                                 keyLength,
-                                 data,
-                                 dataLength,
-                                 pMemDefinition,
-                                 &pHashMap->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
+         }
+         if ( errcode == PSO_OK ) {
+            ok = psonFastMapInsert( pMemHashMap,
+                                    key,
+                                    keyLength,
+                                    data,
+                                    dataLength,
+                                    pMemDefinition,
+                                    &pHashMap->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pHashMap->object );
       }
       else {
@@ -857,17 +862,22 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
-         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
-
-         ok = psonFastMapReplace( pMemHashMap,
-                                  key,
-                                  keyLength,
-                                  data,
-                                  dataLength,
-                                  pMemDefinition,
-                                  &pHashMap->object.pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
+         }
+         if ( errcode == PSO_OK ) {
+            ok = psonFastMapReplace( pMemHashMap,
+                                     key,
+                                     keyLength,
+                                     data,
+                                     dataLength,
+                                     pMemDefinition,
+                                     &pHashMap->object.pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+         }
          psoaCommonUnlock( &pHashMap->object );
       }
       else {

@@ -546,19 +546,26 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
-
-         if ( pMemHashMap->isSystemObject ) {
-            errcode = PSO_SYSTEM_OBJECT;
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
          }
-         else {
-            ok = psonHashMapInsert( pMemHashMap,
-                                    key,
-                                    keyLength,
-                                    data,
-                                    dataLength,
-                                    pMemDefinition,
-                                    &pHashMap->object.pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
+         if ( errcode == PSO_OK ) {
+            if ( pMemHashMap->isSystemObject ) {
+               errcode = PSO_SYSTEM_OBJECT;
+            }
+            else {
+               ok = psonHashMapInsert( pMemHashMap,
+                                       key,
+                                       keyLength,
+                                       data,
+                                       dataLength,
+                                       pMemDefinition,
+                                       &pHashMap->object.pSession->context );
+               PSO_POST_CONDITION( ok == true || ok == false );
+            }
          }
          psoaCommonUnlock( &pHashMap->object );
       }
@@ -693,20 +700,26 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
 
       if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
-         if ( pDefinition != NULL ) pMemDefinition = pDefinition->pMemDefinition;
-
-         if ( pMemHashMap->isSystemObject ) {
-            errcode = PSO_SYSTEM_OBJECT;
+         if ( pDefinition != NULL ) {
+            pMemDefinition = pDefinition->pMemDefinition;
+            if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+               errcode = PSO_DATA_DEF_UNSUPPORTED;
+            }
          }
-         else {
-            ok = psonHashMapReplace( pMemHashMap,
-                                     key,
-                                     keyLength,
-                                     data,
-                                     dataLength,
-                                     pMemDefinition,
-                                     &pHashMap->object.pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
+         if ( errcode == PSO_OK ) {
+            if ( pMemHashMap->isSystemObject ) {
+               errcode = PSO_SYSTEM_OBJECT;
+            }
+            else {
+               ok = psonHashMapReplace( pMemHashMap,
+                                        key,
+                                        keyLength,
+                                        data,
+                                        dataLength,
+                                        pMemDefinition,
+                                        &pHashMap->object.pSession->context );
+               PSO_POST_CONDITION( ok == true || ok == false );
+            }
          }
          psoaCommonUnlock( &pHashMap->object );
       }

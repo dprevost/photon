@@ -64,11 +64,8 @@ struct psonHashMap
    /** Offset to the key definition */
    ptrdiff_t keyDefOffset;
 
-   /** The type of the key definition (metadata) */
-//   enum psoDefinitionType keyDefType;
-   
-   /** The type of the field definition (metadata) */
-//   enum psoDefinitionType fieldDefType;
+   /* Creation flags */
+   uint32_t flags;
 
    /*
     * This field cannot be set or modified by the API. It is set to false

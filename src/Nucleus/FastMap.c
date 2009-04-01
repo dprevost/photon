@@ -427,6 +427,7 @@ bool psonFastMapInit( psonFastMap         * pHashMap,
    pHashMap->keyDefOffset  = SET_OFFSET(pKeyDefinition);
    pHashMap->latestVersion = hashItemOffset;
    pHashMap->editVersion   = PSON_NULL_OFFSET;
+   pHashMap->flags = pDefinition->flags;
    
    return true;
 }
