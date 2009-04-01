@@ -17,15 +17,13 @@ lib_LTLIBRARIES = libphoton.la
 
 SUBDIRS = . Tests
 
-AM_CPPFLAGS += @LIBXML2_CFLAGS@
-
 # See http://www.gnu.org/software/libtool/manual.html#SEC34
 # for more info on version-info. 
 # Hints:
 #  - the version is not in synch with the version of the whole package
 #  - format:  currentversion:revision:age  (age is the tricky one here)
 
-libphoton_la_LDFLAGS = @LIBXML2_LIBS@ -version-info 0:0:0
+libphoton_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
 

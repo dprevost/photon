@@ -43,12 +43,6 @@ typedef struct psoaLifo
     */
    psonQueueItem * iterator;
    
-   /** A pointer to the data definition of the object. */
-   unsigned char * fieldsDef;
-
-   /** The length of the data definition of the object. */
-   uint32_t fieldsDefLength;
-   
    /*
     * Pointer to the data defintion struct used to hold the data
     * definition for each retrieved record

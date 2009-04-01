@@ -43,20 +43,8 @@ typedef struct psoaHashMap
     */
    psonHashMapItem iterator;
 
-   /** A pointer to the key definition of the object. */
-   unsigned char * keyDef;
-
-   /** The length of the key definition of the object. */
-   uint32_t keyDefLength;
-
-   /** A pointer to the data definition of the object. */
-   unsigned char * fieldsDef;
-
-   /** The length of the data definition of the object. */
-   uint32_t fieldsDefLength;
-   
    /*
-    * Pointer to the data defintion struct used to hold the data
+    * Pointer to the data definition struct used to hold the data
     * definition for each retrieved record
     */
    psoaDataDefinition * pRecordDefinition;

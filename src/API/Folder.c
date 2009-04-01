@@ -211,66 +211,6 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if 0
-int psoFolderCreateObjectXML( PSO_HANDLE   objectHandle,
-                              const char * xmlBuffer,
-                              uint32_t     lengthInBytes )
-{
-   psoObjectDefinition definition;
-   psoKeyDefinition    key;
-   psoFieldDefinition  * pFields = NULL;
-   int errcode = PSO_OK;
-   char * objectName = NULL;
-   uint32_t nameLengthInBytes = 0;
-
-   psoaFolder * pFolder;
-   psoaSession* pSession;
-   
-   pFolder = (psoaFolder *) objectHandle;
-   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
-   
-   if ( pFolder->object.type != PSOA_FOLDER ) {
-      return PSO_WRONG_TYPE_HANDLE;
-   }
-   pSession = pFolder->object.pSession;
-   
-   if ( xmlBuffer == NULL ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
-   if ( lengthInBytes == 0 ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
-      return PSO_INVALID_LENGTH;
-   }
-   
-   errcode = psoaXmlToDefinition( xmlBuffer,
-                                  lengthInBytes,
-                                  &definition,
-                                  &key,
-                                  &pFields,
-                                  &objectName,
-                                  &nameLengthInBytes );
-   if ( errcode == PSO_OK ) {
-      errcode = psoFolderCreateObject( objectHandle,
-                                       objectName,
-                                       nameLengthInBytes,
-                                       &definition,
-                                       &key,
-                                       pFields );
-   }
-   
-   if ( pFields != NULL ) free(pFields);
-   if ( objectName != NULL )  free(objectName);
-   
-   if ( errcode != PSO_OK ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
-   }
-   return errcode;
-}
-#endif
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
                             const char * objectName,
                             uint32_t     nameLengthInBytes )

@@ -23,17 +23,15 @@ INTDIR_RELEASE = .\Release
 OUTDIR_DEBUG   = .\Debug
 INTDIR_DEBUG   = .\Debug
 
-LIBXML2_INCLUDE = "c:\Program Files\libxml2\include"
-LIBXML2_LIB     = libxml2_a.lib zlib.lib iconv_a.lib 
 CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
 
 W32_SYS_LIBS = kernel32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib photonNucleus.lib $(LIBXML2_LIB) /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\photon.dll" /implib:"$(OUTDIR_RELEASE)\photon.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib photonNucleus.lib $(LIBXML2_LIB) /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\photon.dll"   /implib:"$(OUTDIR_DEBUG)\photon.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib photonNucleus.lib /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\photon.dll" /implib:"$(OUTDIR_RELEASE)\photon.lib" /libpath:"..\Release"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib photonNucleus.lib /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\photon.dll"   /implib:"$(OUTDIR_DEBUG)\photon.lib"   /libpath:"..\Debug"
 
-CFLAGS_RELEASE= /O2 /Ob1 /I ".." /I "..\include" /I $(LIBXML2_INCLUDE) /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc       /MD /Gy /Fp"$(INTDIR_RELEASE)\\API.pch" /Fo"$(INTDIR_RELEASE)\\" /Fd"$(INTDIR_RELEASE)\\" /W4 /nologo /c     /TC /errorReport:prompt
-CFLAGS_DEBUG  = /Od      /I ".." /I "..\include" /I $(LIBXML2_INCLUDE) /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm     /EHsc /RTC1 /MDd    /Fp"$(INTDIR_DEBUG)\\API.pch"   /Fo"$(INTDIR_DEBUG)\\"   /Fd"$(INTDIR_DEBUG)\\"   /W4 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE= /O2 /Ob1 /I ".." /I "..\include" /I /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc       /MD /Gy /Fp"$(INTDIR_RELEASE)\\API.pch" /Fo"$(INTDIR_RELEASE)\\" /Fd"$(INTDIR_RELEASE)\\" /W4 /nologo /c     /TC /errorReport:prompt
+CFLAGS_DEBUG  = /Od      /I ".." /I "..\include" /I /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm     /EHsc /RTC1 /MDd    /Fp"$(INTDIR_DEBUG)\\API.pch"   /Fo"$(INTDIR_DEBUG)\\"   /Fd"$(INTDIR_DEBUG)\\"   /W4 /nologo /c /Zi /TC /errorReport:prompt
 
 OBJS_RELEASE=                                  \
         "$(INTDIR_RELEASE)\api.obj"            \

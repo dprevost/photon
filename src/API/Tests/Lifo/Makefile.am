@@ -14,8 +14,6 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
-
 check_PROGRAMS =          \
         Close             \
         Create            \
@@ -41,10 +39,8 @@ check_PROGRAMS =          \
         RemoveWrongHandle \
         Status            
 
-#        CreateXML         
 Close_SOURCES             = Close.c
 Create_SOURCES            = Create.c
-#CreateXML_SOURCES         = CreateXML.c
 Definition_SOURCES        = Definition.c
 FirstNullEntry_SOURCES    = FirstNullEntry.c
 FirstNullHandle_SOURCES   = FirstNullHandle.c
@@ -70,7 +66,6 @@ Status_SOURCES            = Status.c
 EXTRA_DIST =                 \
         Close.sh             \
         Create.sh            \
-        CreateXML.sh         \
         Definition.sh        \
         FirstNullEntry.sh    \
         FirstNullHandle.sh   \
@@ -128,11 +123,9 @@ TESTS =                      \
         RemoveWrongHandle.sh \
         Status.sh            
 
-#        CreateXML.sh         
-
 XFAIL_TESTS = 
 
-LDADD = $(top_builddir)/src/API/libphoton.la        \
+LDADD = $(top_builddir)/src/API/libphoton.la      \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la   
 

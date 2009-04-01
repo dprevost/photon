@@ -59,7 +59,7 @@ typedef struct psoaQueue
  */
 PHOTON_API_EXPORT
 int psoaQueueFirst( psoaQueue     * pQueue,
-                   psoaDataEntry * pEntry );
+                    psoaDataEntry * pEntry );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
@@ -67,12 +67,12 @@ int psoaQueueFirst( psoaQueue     * pQueue,
  */
 PHOTON_API_EXPORT
 int psoaQueueNext( psoaQueue     * pQueue,
-                  psoaDataEntry * pEntry );
+                   psoaDataEntry * pEntry );
 
 /** Remove the first inserted item from a FIFO queue. */
 PHOTON_API_EXPORT
 int psoaQueueRemove( psoaQueue     * pQueue,
-                    psoaDataEntry * pEntry );
+                     psoaDataEntry * pEntry );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

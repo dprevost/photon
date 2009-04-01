@@ -71,21 +71,6 @@ void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
                         int                numKeys,
                         uint32_t         * pOffsets );
 
-//PHOTON_API_EXPORT
-//int psoaValidateDefinition( psoObjectDefinition * pDefinition,
-//                            psoKeyDefinition    * pKey,
-//                            psoFieldDefinition  * pFields );
-
-#if 0
-PHOTON_API_EXPORT
-int psoaXmlToDefinition( const char           * xmlBuffer,
-                         uint32_t               lengthInBytes,
-                         psoObjectDefinition *  pDefinition,
-                         psoKeyDefinition    *  pKey,
-                         psoFieldDefinition  ** ppFields,
-                         char                ** objectName,
-                         uint32_t             * nameLengthInBytes );
-#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

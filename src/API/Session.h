@@ -59,7 +59,7 @@ typedef struct psoaSession
    /** Pointer to the hashmap holding the data definitions */
    struct psonHashMap * pDataDefMap;
 
-   /** Pointer to the hashmap holding the data definitions */
+   /** Pointer to the hashmap holding the key definitions */
    struct psonHashMap * pKeyDefMap;
    
    bool terminated;

@@ -68,8 +68,9 @@ int psoaDataDefDestroy( PSO_HANDLE   sessionHandle,
                         psoUint32    nameLengthInBytes );
 
 /*
- * Similar to psoaGetLimits (but using the api struct), it calculates the 
- * offsets for each data field.
+ * This function calculates the offsets for each data field when using the
+ * ODBC metadata. 
+ *
  * The array of offsets must be allocated by the caller.
  */
 
@@ -78,21 +79,6 @@ void psoaGetFieldOffsets( psoFieldDefinition * pDefinition,
                           int                  numFields,
                           uint32_t           * pOffsets );
 
-//PHOTON_API_EXPORT
-//int psoaValidateDefinition( psoObjectDefinition * pDefinition,
-//                            psoKeyDefinition    * pKey,
-//                            psoFieldDefinition  * pFields );
-
-#if 0
-PHOTON_API_EXPORT
-int psoaXmlToDefinition( const char           * xmlBuffer,
-                         uint32_t               lengthInBytes,
-                         psoObjectDefinition *  pDefinition,
-                         psoKeyDefinition    *  pKey,
-                         psoFieldDefinition  ** ppFields,
-                         char                ** objectName,
-                         uint32_t             * nameLengthInBytes );
-#endif
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

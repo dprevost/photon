@@ -14,8 +14,6 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
-
 check_PROGRAMS =     \
         ClosePass    \
         Create       \
@@ -26,11 +24,8 @@ check_PROGRAMS =     \
         OpenPass     \
         StatusPass   
 
-#        CreateXML    
-
 ClosePass_SOURCES    = ClosePass.c
 Create_SOURCES       = Create.c
-#CreateXML_SOURCES    = CreateXML.c
 Destroy_SOURCES      = Destroy.c
 GetFirstPass_SOURCES = GetFirstPass.c
 GetNextPass_SOURCES  = GetNextPass.c
@@ -41,7 +36,6 @@ StatusPass_SOURCES   = StatusPass.c
 EXTRA_DIST =            \
         ClosePass.sh    \
         Create.sh       \
-        CreateXML.sh    \
         Destroy.sh      \
         GetFirstPass.sh \
         GetNextPass.sh  \
@@ -69,11 +63,9 @@ TESTS =                 \
         OpenPass.sh     \
         StatusPass.sh   
 
-#        CreateXML.sh    
-
 XFAIL_TESTS = 
 
-LDADD = $(top_builddir)/src/API/libphoton.la        \
+LDADD = $(top_builddir)/src/API/libphoton.la      \
         $(top_builddir)/src/Nucleus/libNucleus.la \
         $(top_builddir)/src/Common/libCommon.la   
 

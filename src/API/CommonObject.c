@@ -26,7 +26,6 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** */
 int psoaCommonObjOpen( psoaCommonObject  * pObject,
                       enum psoObjectType   objectType,
                       psoaEditMode         editMode,
