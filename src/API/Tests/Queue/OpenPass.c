@@ -190,7 +190,6 @@ int main( int argc, char * argv[] )
    }
 
    psoQueueClose( objHandle );
-   psoQueueClose( objHandle );
    psoRollback( sessionHandle );
 
    errcode = psoCreateObject( sessionHandle,

@@ -40,6 +40,7 @@ int main( int argc, char * argv[] )
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
+   const char * data1 = "My Data1";
    
    memset( junk, 0, 12 );
    
@@ -66,8 +67,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ahop",
-                              strlen("/ahop"),
+                              "/api_hashmap_open",
+                              strlen("/api_hashmap_open"),
                               &folderDef,
                               NULL,
                               NULL );
@@ -101,8 +102,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ahop/test",
-                              strlen("/ahop/test"),
+                              "/api_hashmap_open/test",
+                              strlen("/api_hashmap_open/test"),
                               &mapDef,
                               keyDefHandle,
                               dataDefHandle );
@@ -114,8 +115,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoHashMapOpen( NULL,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -125,8 +126,8 @@ int main( int argc, char * argv[] )
 
    objHandle = (PSO_HANDLE) junk;
    errcode = psoHashMapOpen( objHandle,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
@@ -136,7 +137,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoHashMapOpen( sessionHandle,
                              NULL,
-                             strlen("/ahop/test"),
+                             strlen("/api_hashmap_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
@@ -145,7 +146,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahop/test",
+                             "/api_hashmap_open/test",
                              0,
                              &objHandle,
                              NULL );
@@ -155,8 +156,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
                              NULL,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -166,8 +167,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -176,11 +177,91 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle2,
-                             "/ahop/test",
-                             strlen("/ahop/test"),
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapInsert( objHandle, 
+                               data1, 
+                               strlen(data1), 
+                               data1,
+                               strlen(data1),
+                               dataDefHandle );
+   if ( errcode != PSO_DATA_DEF_UNSUPPORTED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapOpen( sessionHandle,
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
+                             &objHandle2,
+                             &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   psoHashMapClose( objHandle );
+   psoRollback( sessionHandle );
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/api_hashmap_open",
+                              strlen("/api_hashmap_open"),
+                              &folderDef,
+                              NULL,
+                              NULL );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition2",
+                               strlen("Definition2"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   mapDef.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
+   errcode = psoCreateObject( sessionHandle,
+                              "/api_hashmap_open/test",
+                              strlen("/api_hashmap_open/test"),
+                              &mapDef,
+                              keyDefHandle,
+                              dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapOpen( sessionHandle,
+                             "/api_hashmap_open/test",
+                             strlen("/api_hashmap_open/test"),
+                             &objHandle,
+                             &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapInsert( objHandle, 
+                               data1, 
+                               strlen(data1), 
+                               data1,
+                               strlen(data1),
+                               dataDefHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

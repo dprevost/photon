@@ -79,7 +79,8 @@ bool psonFastMapCopy( psonFastMap        * pOldMap,
 
    pNewMap->dataDefOffset = pOldMap->dataDefOffset;
    pNewMap->keyDefOffset = pOldMap->keyDefOffset;
-
+   pNewMap->flags = pOldMap->flags;
+   
    errcode = psonHashCopy( &pOldMap->hashObj, &pNewMap->hashObj, pContext );
    if ( errcode != PSO_OK ) {
       psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );

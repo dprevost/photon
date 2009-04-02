@@ -1764,17 +1764,17 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
 
       case PSON_IDENT_MAP:
          ok = psonFastMapInit( (psonFastMap *)ptr,
-                           SET_OFFSET(pFolder),
-                           numBlocks,
-                           expectedNumOfChilds,
-                           objTxStatus,
-                           partialLength,
-                           pDesc->originalName,
-                           SET_OFFSET(pHashItem),
-                           pDefinition,
-                           pKeyDefinition,
-                           pDataDefinition,
-                           pContext );
+                               SET_OFFSET(pFolder),
+                               numBlocks,
+                               expectedNumOfChilds,
+                               objTxStatus,
+                               partialLength,
+                               pDesc->originalName,
+                               SET_OFFSET(pHashItem),
+                               pDefinition,
+                               pKeyDefinition,
+                               pDataDefinition,
+                               pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          pDesc->nodeOffset = SET_OFFSET(ptr) + offsetof(psonFastMap,nodeObject);
          pDesc->memOffset  = SET_OFFSET(ptr) + offsetof(psonFastMap,memObject);

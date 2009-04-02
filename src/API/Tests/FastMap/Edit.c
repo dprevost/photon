@@ -40,6 +40,7 @@ int main( int argc, char * argv[] )
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
+   const char * data1 = "My Data1";
    
    memset( junk, 0, 12 );
    
@@ -196,6 +197,86 @@ int main( int argc, char * argv[] )
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_A_SINGLE_UPDATER_IS_ALLOWED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFastMapInsert( objHandle, 
+                               data1, 
+                               strlen(data1), 
+                               data1,
+                               strlen(data1),
+                               dataDefHandle );
+   if ( errcode != PSO_DATA_DEF_UNSUPPORTED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFastMapOpen( sessionHandle,
+                             "/api_map_edit/test",
+                             strlen("/api_map_edit/test"),
+                             &objHandle2,
+                             &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   psoFastMapClose( objHandle );
+   psoRollback( sessionHandle );
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/api_map_edit2",
+                              strlen("/api_map_edit2"),
+                              &folderDef,
+                              NULL,
+                              NULL );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition2",
+                               strlen("Definition2"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   mapDef.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
+   errcode = psoCreateObject( sessionHandle,
+                              "/api_map_edit2/test",
+                              strlen("/api_map_edit2/test"),
+                              &mapDef,
+                              keyDefHandle,
+                              dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFastMapEdit( sessionHandle,
+                             "/api_map_edit2/test",
+                             strlen("/api_map_edit2/test"),
+                             &objHandle,
+                             &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFastMapInsert( objHandle, 
+                               data1, 
+                               strlen(data1), 
+                               data1,
+                               strlen(data1),
+                               dataDefHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

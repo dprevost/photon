@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE objHandle,  sessionHandle;
    int errcode;
-   psoObjectDefinition defLilo = { PSO_LIFO, 0, 0, 0 };
+   psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_ons/test",
                               strlen("/api_lifo_ons/test"),
-                              &defLilo,
+                              &defLifo,
                               NULL,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {

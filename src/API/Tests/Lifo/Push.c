@@ -35,7 +35,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    char buffer[200];
    uint32_t length;
-   psoObjectDefinition defLilo = { PSO_LIFO, 0, 0, 0 };
+   psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
@@ -90,7 +90,7 @@ int main( int argc, char * argv[] )
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_Pushp/test",
                               strlen("/api_lifo_Pushp/test"),
-                              &defLilo,
+                              &defLifo,
                               NULL,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {

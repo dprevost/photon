@@ -33,12 +33,13 @@ int main( int argc, char * argv[] )
    PSO_HANDLE objHandle2, sessionHandle2;
    int errcode;
    char junk[12];
-   psoObjectDefinition defLilo = { PSO_LIFO, 0, 0, 0 };
+   psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE dataDefHandle;
+   const char * data1 = "My Data1";
    
    memset( junk, 0, 12 );
 
@@ -65,8 +66,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_op",
-                              strlen("/api_lifo_op"),
+                              "/api_lifo_open",
+                              strlen("/api_lifo_open"),
                               &folderDef,
                               NULL,
                               NULL );
@@ -88,9 +89,9 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_op/test",
-                              strlen("/api_lifo_op/test"),
-                              &defLilo,
+                              "/api_lifo_open/test",
+                              strlen("/api_lifo_open/test"),
+                              &defLifo,
                               NULL,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -101,8 +102,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoLifoOpen( NULL,
-                           "/api_lifo_op/test",
-                           strlen("/api_lifo_op/test"),
+                           "/api_lifo_open/test",
+                           strlen("/api_lifo_open/test"),
                            &objHandle,
                           NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -112,8 +113,8 @@ int main( int argc, char * argv[] )
 
    objHandle = (PSO_HANDLE) junk;
    errcode = psoLifoOpen( objHandle,
-                           "/api_lifo_op/test",
-                           strlen("/api_lifo_op/test"),
+                           "/api_lifo_open/test",
+                           strlen("/api_lifo_open/test"),
                            &objHandle,
                           NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
@@ -123,7 +124,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoLifoOpen( sessionHandle,
                            NULL,
-                           strlen("/api_lifo_op/test"),
+                           strlen("/api_lifo_open/test"),
                            &objHandle,
                           NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
@@ -132,7 +133,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_op/test",
+                           "/api_lifo_open/test",
                            0,
                            &objHandle,
                           NULL );
@@ -142,8 +143,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle,
-                             "/api_lifo_op/test",
-                             strlen("/api_lifo_op/test"),
+                             "/api_lifo_open/test",
+                             strlen("/api_lifo_open/test"),
                              NULL,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -153,8 +154,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoLifoOpen( sessionHandle,
-                          "/api_lifo_op/test",
-                          strlen("/api_lifo_op/test"),
+                          "/api_lifo_open/test",
+                          strlen("/api_lifo_open/test"),
                           &objHandle,
                           NULL );
    if ( errcode != PSO_OK ) {
@@ -163,11 +164,81 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle2,
-                          "/api_lifo_op/test",
-                          strlen("/api_lifo_op/test"),
+                          "/api_lifo_open/test",
+                          strlen("/api_lifo_open/test"),
                           &objHandle2,
                           NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoLifoPush( objHandle, data1, strlen(data1), dataDefHandle );
+   if ( errcode != PSO_DATA_DEF_UNSUPPORTED ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoLifoOpen( sessionHandle,
+                          "/api_lifo_open/test",
+                          strlen("/api_lifo_open/test"),
+                          &objHandle2,
+                          &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   psoLifoClose( objHandle );
+   psoRollback( sessionHandle );
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/api_lifo_open",
+                              strlen("/api_lifo_open"),
+                              &folderDef,
+                              NULL,
+                              NULL );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefCreate( sessionHandle,
+                               "Definition",
+                               strlen("Definition"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   defLifo.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
+   errcode = psoCreateObject( sessionHandle,
+                              "/api_lifo_open/test",
+                              strlen("/api_lifo_open/test"),
+                              &defLifo,
+                              NULL,
+                              dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoLifoOpen( sessionHandle,
+                          "/api_lifo_open/test",
+                          strlen("/api_lifo_open/test"),
+                          &objHandle,
+                          &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoLifoPush( objHandle, data1, strlen(data1), dataDefHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
