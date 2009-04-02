@@ -42,7 +42,6 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
 
    if ( argc > 1 ) {
@@ -67,12 +66,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle1,
-                              "/amdp",
-                              strlen("/amdp"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle1,
+                              "/api_fastmap_delete",
+                              strlen("/api_fastmap_delete") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -104,20 +100,20 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle1,
-                              "/amdp/test",
-                              strlen("/amdp/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle1,
+                                   "/api_fastmap_delete/test",
+                                   strlen("/api_fastmap_delete/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoFastMapEdit( sessionHandle1,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle1,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -160,8 +156,8 @@ int main( int argc, char * argv[] )
    
    /* Get both handles and do a sanity check */
    errcode = psoFastMapOpen( sessionHandle1,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle1,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -169,8 +165,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFastMapEdit( sessionHandle2,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -278,8 +274,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFastMapOpen( sessionHandle2,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -309,8 +305,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFastMapOpen( sessionHandle1,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -353,8 +349,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFastMapEdit( sessionHandle2,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -411,8 +407,8 @@ int main( int argc, char * argv[] )
    
    /* Close the session and try to act on the object */
    errcode = psoFastMapEdit( sessionHandle2,
-                             "/amdp/test",
-                             strlen("/amdp/test"),
+                             "/api_fastmap_delete/test",
+                             strlen("/api_fastmap_delete/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OK ) {

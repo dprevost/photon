@@ -32,7 +32,6 @@ int main( int argc, char * argv[] )
    PSO_HANDLE objHandle, sessionHandle;
    int errcode;
    psoFolderEntry entry;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -51,22 +50,16 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/api_folder_getfirst",
-                              strlen("/api_folder_getfirst"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/api_folder_getfirst") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/api_folder_getfirst/f1",
-                              strlen("/api_folder_getfirst/f1"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/api_folder_getfirst/f1") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

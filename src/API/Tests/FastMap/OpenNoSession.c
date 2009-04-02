@@ -36,7 +36,6 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
    
    if ( argc > 1 ) {
@@ -56,12 +55,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/amons",
-                              strlen("/amons"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_fast_map_open_nosession",
+                              strlen("/api_fast_map_open_nosession") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -90,12 +86,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/amons/test",
-                              strlen("/amons/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_fast_map_open_nosession/test",
+                                   strlen("/api_fast_map_open_nosession/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -120,8 +116,8 @@ int main( int argc, char * argv[] )
     * error or we crash!
     */
    errcode = psoFastMapOpen( sessionHandle,
-                             "/amons/test",
-                             strlen("/amons/test"),
+                             "/api_fast_map_open_nosession/test",
+                             strlen("/api_fast_map_open_nosession/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {

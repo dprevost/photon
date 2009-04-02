@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -30,17 +30,12 @@ int main()
    psonFolder * pTopFolder;
    psonSessionContext context;
    bool ok;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
-   psonDataDefinition dataDef;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonTopFolderCreateObject( NULL,
-                                   "Test1",
-                                   strlen("Test1"),
-                                   &def,
+   ok = psonTopFolderCreateFolder( pTopFolder,
                                    NULL,
-                                   &dataDef,
+                                   4,
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

@@ -38,7 +38,6 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
    const char * data1 = "My Data1";
    
@@ -66,12 +65,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/api_map_edit",
-                              strlen("/api_map_edit"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/api_map_edit") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -100,12 +96,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_map_edit/test",
-                              strlen("/api_map_edit/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_map_edit/test",
+                                   strlen("/api_map_edit/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -225,12 +221,9 @@ int main( int argc, char * argv[] )
    psoFastMapClose( objHandle );
    psoRollback( sessionHandle );
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/api_map_edit2",
-                              strlen("/api_map_edit2"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/api_map_edit2") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -249,12 +242,12 @@ int main( int argc, char * argv[] )
    }
    
    mapDef.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_map_edit2/test",
-                              strlen("/api_map_edit2/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_map_edit2/test",
+                                   strlen("/api_map_edit2/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

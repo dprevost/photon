@@ -31,7 +31,6 @@ int main()
    psonSessionContext context;
    bool ok;
    psonFolderItem folderItem;
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition key;
    
@@ -39,12 +38,9 @@ int main()
 
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateFolder( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
-                                   &folderDef,
-                                   NULL,
-                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

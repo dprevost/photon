@@ -18,6 +18,11 @@ check_PROGRAMS =                \
         CloseNullContext        \
         CloseNullItem           \
         ClosePass               \
+        CreateFolderInvLength   \
+        CreateFolderNullContext \
+        CreateFolderNullFolder  \
+        CreateFolderNullName    \
+        CreateFolderPass        \
         CreateInvalidNameLength \
         CreateNullContext       \
         CreateNullDefinition    \
@@ -63,6 +68,11 @@ COMMON_HEADER = ../Folder/folderTest.h
 CloseNullContext_SOURCES        = $(COMMON_HEADER) CloseNullContext.c
 CloseNullItem_SOURCES           = $(COMMON_HEADER) CloseNullItem.c
 ClosePass_SOURCES               = $(COMMON_HEADER) ClosePass.c
+CreateFolderInvLength_SOURCES   = $(COMMON_HEADER) CreateFolderInvLength.c
+CreateFolderNullContext_SOURCES = $(COMMON_HEADER) CreateFolderNullContext.c
+CreateFolderNullFolder_SOURCES  = $(COMMON_HEADER) CreateFolderNullFolder.c
+CreateFolderNullName_SOURCES    = $(COMMON_HEADER) CreateFolderNullName.c
+CreateFolderPass_SOURCES        = $(COMMON_HEADER) CreateFolderPass.c
 CreateInvalidNameLength_SOURCES = $(COMMON_HEADER) CreateInvalidNameLength.c
 CreateNullContext_SOURCES       = $(COMMON_HEADER) CreateNullContext.c
 CreateNullDefinition_SOURCES    = $(COMMON_HEADER) CreateNullDefinition.c
@@ -117,6 +127,11 @@ TESTS =                         \
         CloseNullContext        \
         CloseNullItem           \
         ClosePass               \
+        CreateFolderInvLength   \
+        CreateFolderNullContext \
+        CreateFolderNullFolder  \
+        CreateFolderNullName    \
+        CreateFolderPass        \
         CreateInvalidNameLength \
         CreateNullContext       \
         CreateNullDefinition    \
@@ -160,6 +175,9 @@ TESTS =                         \
 XFAIL_TESTS =                   \
         CloseNullContext        \
         CloseNullItem           \
+        CreateFolderNullContext \
+        CreateFolderNullFolder  \
+        CreateFolderNullName    \
         CreateNullContext       \
         CreateNullDefinition    \
         CreateNullFolder        \

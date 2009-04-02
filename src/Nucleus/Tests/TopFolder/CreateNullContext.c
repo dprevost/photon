@@ -30,7 +30,8 @@ int main()
    psonFolder * pTopFolder;
    psonSessionContext context;
    bool ok;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
+   psonDataDefinition dataDef;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
@@ -39,7 +40,7 @@ int main()
                                    strlen("Test1"),
                                    &def,
                                    NULL,
-                                   NULL,
+                                   &dataDef,
                                    NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

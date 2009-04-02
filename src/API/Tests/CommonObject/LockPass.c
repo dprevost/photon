@@ -33,7 +33,6 @@ int main( int argc, char * argv[] )
    int errcode;
    bool ok;
    psoaCommonObject object;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -52,12 +51,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/aclp",
-                              strlen("/aclp"),
-                              &def,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_common_lock_pass",
+                              strlen("/api_common_lock_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -68,8 +64,8 @@ int main( int argc, char * argv[] )
    errcode = psoaCommonObjOpen( &object,
                                 PSO_FOLDER,
                                 false,
-                                "/aclp",
-                                strlen("/aclp") );
+                                "/api_common_lock_pass",
+                                strlen("/api_common_lock_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

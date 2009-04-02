@@ -41,7 +41,6 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
 
    if ( argc > 1 ) {
@@ -66,12 +65,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/ahdp",
-                              strlen("/ahdp"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/ahdp") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -101,12 +97,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/ahdp/test",
-                              strlen("/ahdp/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/ahdp/test",
+                                   strlen("/ahdp/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -135,7 +135,33 @@ int psoCommit( PSO_HANDLE sessionHandle );
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * Create a new folder in shared memory.
+ *
+ * The creation of the folder only becomes permanent after a call to 
+ * ::psoCommit.
+ *
+ * This function does not provide a handle to the newly created folder. Use
+ * ::psoFolderOpen and similar functions to get the handle.
+ *
+ * \param[in] sessionHandle Handle to the current session.
+ * \param[in] objectName The fully qualified name of the object. 
+ * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+ *            counting the null terminator.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoCreateFolder( PSO_HANDLE   sessionHandle,
+                     const char * objectName,
+                     psoUint32    nameLengthInBytes );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
  * Create a new object in shared memory.
+ *
+ * To create an object based on a key, use the function ::psoCreateKeyedObject
+ * instead of the current function.
  *
  * The creation of the object only becomes permanent after a call to 
  * ::psoCommit.
@@ -146,13 +172,9 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * \param[in] sessionHandle Handle to the current session.
  * \param[in] objectName The fully qualified name of the object. 
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
- *            counting the null terminator (null-terminators are not used by
- *            the Photon engine).
+ *            counting the null terminator.
  * \param[in] definition The basic information needed to create the object:
- *            the type of object to create (folder, queue, etc.), the type
- *            of key definition, etc. 
- * \param[in] keyDefHandle Handle to the definition of the key or NULL if the 
- *            object has no key.
+ *            the type of object to create, etc.
  * \param[in] dataDefHandle Handle to the definition of the data fields.
  *            It can be set to NULL when creating a Folder.
  *
@@ -163,8 +185,40 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                      const char          * objectName,
                      psoUint32             nameLengthInBytes,
                      psoObjectDefinition * definition,
-                     PSO_HANDLE            keyDefHandle,
                      PSO_HANDLE            dataDefHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Create a new keyed-base object in shared memory.
+ *
+ * The currently supported types of keyed objects are hash maps and
+ * read-only hash maps.
+ *
+ * The creation of the object only becomes permanent after a call to 
+ * ::psoCommit.
+ *
+ * This function does not provide a handle to the newly created object. Use
+ * ::psoHashMapOpen and similar functions to get the handle.
+ *
+ * \param[in] sessionHandle Handle to the current session.
+ * \param[in] objectName The fully qualified name of the object. 
+ * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+ *            counting the null terminator.
+ * \param[in] definition The basic information needed to create the object:
+ *            the type of object to create, etc.
+ * \param[in] keyDefHandle Handle to the definition of the key.
+ * \param[in] dataDefHandle Handle to the definition of the data fields.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
+                          const char          * objectName,
+                          psoUint32             nameLengthInBytes,
+                          psoObjectDefinition * definition,
+                          PSO_HANDLE            keyDefHandle,
+                          PSO_HANDLE            dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

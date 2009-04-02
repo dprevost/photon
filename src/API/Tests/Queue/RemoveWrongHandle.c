@@ -60,10 +60,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateObject( sessionHandle,
                               "/aqrwh",
-                              strlen("/aqrwh"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/aqrwh") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

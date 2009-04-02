@@ -31,7 +31,8 @@ int main()
    int errcode;
    bool ok;
    char name[PSO_MAX_FULL_NAME_LENGTH+100];
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
+   psonDataDefinition dataDef;
    
    memset( name, 't', PSO_MAX_FULL_NAME_LENGTH+99 );
    name[PSO_MAX_FULL_NAME_LENGTH+99] = 0;
@@ -43,7 +44,7 @@ int main()
                                    0,
                                    &def,
                                    NULL,
-                                   NULL,
+                                   &dataDef,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -58,7 +59,7 @@ int main()
                                    1,
                                    &def,
                                    NULL,
-                                   NULL,
+                                   &dataDef,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -73,7 +74,7 @@ int main()
                                    PSO_MAX_FULL_NAME_LENGTH+1,
                                    &def,
                                    NULL,
-                                   NULL,
+                                   &dataDef,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -91,7 +92,7 @@ int main()
                                    PSO_MAX_NAME_LENGTH+1,
                                    &def,
                                    NULL,
-                                   NULL,
+                                   &dataDef,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

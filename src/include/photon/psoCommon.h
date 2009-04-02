@@ -96,10 +96,10 @@ typedef void * PSO_HANDLE;
 enum psoObjectType
 {
    PSO_FOLDER   = 1,
-   PSO_HASH_MAP = 2,
-   PSO_LIFO     = 3,  /* A LIFO queue aka a stack */
-   PSO_FAST_MAP = 4,  /* A read-only hash map */
-   PSO_QUEUE    = 5,  /* A FIFO queue */
+   PSO_LIFO     = 2,  /* A LIFO queue aka a stack */
+   PSO_QUEUE    = 3,  /* A FIFO queue */
+   PSO_HASH_MAP = 4,
+   PSO_FAST_MAP = 5,  /* A read-only hash map */
    PSO_LAST_OBJECT_TYPE
 };
 

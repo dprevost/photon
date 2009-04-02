@@ -38,7 +38,6 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
    
    memset( junk, 0, 12 );
@@ -65,12 +64,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/amop",
-                              strlen("/amop"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_fast_map_open",
+                              strlen("/api_fast_map_open") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -99,12 +95,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/amop/test",
-                              strlen("/amop/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_fast_map_open/test",
+                                   strlen("/api_fast_map_open/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -113,8 +109,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoFastMapOpen( NULL,
-                             "/amop/test",
-                             strlen("/amop/test"),
+                             "/api_fast_map_open/test",
+                             strlen("/api_fast_map_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -124,8 +120,8 @@ int main( int argc, char * argv[] )
 
    objHandle = (PSO_HANDLE) junk;
    errcode = psoFastMapOpen( objHandle,
-                             "/amop/test",
-                             strlen("/amop/test"),
+                             "/api_fast_map_open/test",
+                             strlen("/api_fast_map_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
@@ -135,7 +131,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoFastMapOpen( sessionHandle,
                              NULL,
-                             strlen("/amop/test"),
+                             strlen("/api_fast_map_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
@@ -144,7 +140,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapOpen( sessionHandle,
-                             "/amop/test",
+                             "/api_fast_map_open/test",
                              0,
                              &objHandle,
                              NULL );
@@ -154,8 +150,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapOpen( sessionHandle,
-                             "/amop/test",
-                             strlen("/amop/test"),
+                             "/api_fast_map_open/test",
+                             strlen("/api_fast_map_open/test"),
                              NULL,
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -165,8 +161,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoFastMapOpen( sessionHandle,
-                             "/amop/test",
-                             strlen("/amop/test"),
+                             "/api_fast_map_open/test",
+                             strlen("/api_fast_map_open/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -175,8 +171,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapOpen( sessionHandle2,
-                             "/amop/test",
-                             strlen("/amop/test"),
+                             "/api_fast_map_open/test",
+                             strlen("/api_fast_map_open/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {

@@ -43,7 +43,6 @@ int main( int argc, char * argv[] )
    char key[] = "My Key";
    size_t lenData;
 
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition hashMapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
 
@@ -85,12 +84,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/ammd",
-                              strlen("/ammd"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_fast_map_definition",
+                              strlen("/api_fast_map_definition") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -119,20 +115,20 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/ammd/test",
-                              strlen("/ammd/test"),
-                              &hashMapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_fast_map_definition/test",
+                                   strlen("/api_fast_map_definition/test"),
+                                   &hashMapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/ammd/test",
-                             strlen("/ammd/test"),
+                             "/api_fast_map_definition/test",
+                             strlen("/api_fast_map_definition/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_OK ) {

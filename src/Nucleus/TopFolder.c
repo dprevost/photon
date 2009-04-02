@@ -88,6 +88,101 @@ bool psonTopFolderCloseObject( psonFolderItem     * pFolderItem,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+bool psonTopFolderCreateFolder( psonFolder          * pFolder,
+                                const char          * objectName,
+                                uint32_t              nameLengthInBytes,
+                                psonSessionContext  * pContext )
+{
+   psoErrors errcode = PSO_OK;
+   uint32_t strLength, i;
+   bool ok;
+   uint32_t first = 0;
+   const char * name = objectName;
+   char * lowerName = NULL;
+   psoObjectDefinition definition = { PSO_FOLDER, 0, 0, 0 };
+
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   
+   strLength = nameLengthInBytes;
+
+   if ( strLength > PSO_MAX_FULL_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) {
+      errcode = PSO_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+   lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
+   if ( lowerName == NULL ) {
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowecase the string */
+   for ( i = 0; i < strLength; ++i ) {
+      lowerName[i] = (char) tolower( name[i] );
+   }
+   
+   /* strip the first char if a separator */
+   if ( name[0] == '/' || name[0] == '\\' ) {
+      first = 1;
+      --strLength;
+      if ( strLength == 0 ) {
+         errcode = PSO_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+   }
+
+   /*
+    * There is no psonUnlock here - the recursive nature of the 
+    * function psonFolderInsertObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
+   if ( psonLock( &pFolder->memObject, pContext ) ) {
+      ok = psonFolderInsertObject( pFolder,
+                                   &(lowerName[first]),
+                                   &(name[first]),
+                                   strLength, 
+                                   &definition,
+                                   NULL,
+                                   NULL,
+                                   1, /* numBlocks, */
+                                   0, /* expectedNumOfChilds, */
+                                   pContext );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto error_handler;
+   }
+   else {
+      errcode = PSO_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+   free( lowerName );
+   
+   return true;
+
+error_handler:
+
+   if ( lowerName != NULL ) free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called psocSetError. 
+    */
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
@@ -107,11 +202,11 @@ bool psonTopFolderCreateObject( psonFolder          * pFolder,
    PSO_PRE_CONDITION( objectName  != NULL );
    PSO_PRE_CONDITION( pContext    != NULL );
    PSO_PRE_CONDITION( pDefinition != NULL );
-   PSO_PRE_CONDITION( pDefinition->type > 0 && 
+   PSO_PRE_CONDITION( pDefinition->type > PSO_FOLDER && 
                       pDefinition->type < PSO_LAST_OBJECT_TYPE );
-   if ( pDefinition->type != PSO_FOLDER ) {
-      PSO_PRE_CONDITION( pDataDefinition  != NULL );
-   }
+//   if ( pDefinition->type != PSO_FOLDER ) {
+   PSO_PRE_CONDITION( pDataDefinition != NULL );
+//   }
    
    strLength = nameLengthInBytes;
 

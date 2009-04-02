@@ -31,16 +31,14 @@ int main()
    int errcode;
    bool ok;
    psonFolderItem folderItem;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
+   psonDataDefinition dataDef;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateFolder( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
-                                   &def,
-                                   NULL,
-                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -51,7 +49,7 @@ int main()
                                    strlen("Test1/Test2"),
                                    &def,
                                    NULL,
-                                   NULL,
+                                   &dataDef,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -60,7 +58,7 @@ int main()
    ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
-                                 PSO_FOLDER,
+                                 PSO_QUEUE,
                                  &folderItem,
                                  &context );
    if ( ok != true ) {
@@ -70,7 +68,7 @@ int main()
    ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test3/Test2",
                                  strlen("Test3/Test2"),
-                                 PSO_FOLDER,
+                                 PSO_QUEUE,
                                  &folderItem,
                                  &context );
    if ( ok != false ) {
@@ -84,7 +82,7 @@ int main()
    ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test1/Test5",
                                  strlen("Test1/Test5"),
-                                 PSO_FOLDER,
+                                 PSO_QUEUE,
                                  &folderItem,
                                  &context );
    if ( ok != false ) {

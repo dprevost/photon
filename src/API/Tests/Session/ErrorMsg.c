@@ -53,10 +53,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateObject( sessionHandle,
                               "/asem",
-                              strlen("/asem"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/asem") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -71,10 +68,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateObject( sessionHandle,
                               "/asem",
-                              strlen("/asem"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/asem") );
    if ( errcode == PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

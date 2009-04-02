@@ -60,10 +60,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateObject( sessionHandle,
                               "/api_lifo_fwh",
-                              strlen("/api_lifo_fwh"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/api_lifo_fwh") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

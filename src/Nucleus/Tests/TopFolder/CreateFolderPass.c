@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -20,34 +20,48 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-#if defined(USE_DBC)
    psonFolder * pTopFolder;
    psonSessionContext context;
+   int errcode;
    bool ok;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
-   psonDataDefinition dataDef;
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonTopFolderCreateObject( NULL,
+   ok = psonTopFolderCreateFolder( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
-                                   &def,
-                                   NULL,
-                                   &dataDef,
                                    &context );
-
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-   return 1;
-#endif
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = psonTopFolderCreateFolder( pTopFolder,
+                                   "Test1/Test2",
+                                   strlen("Test1/Test2"),
+                                   &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   ok = psonTopFolderCreateFolder( pTopFolder,
+                                   "Test3/Test2",
+                                   strlen("Test3/Test2"),
+                                   &context );
+   if ( ok != false ) {
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   errcode = psocGetLastError( &context.errorHandler );
+   if ( errcode != PSO_NO_SUCH_FOLDER ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

@@ -251,6 +251,12 @@ bool psonTopFolderCloseObject( psonFolderItem     * pDescriptor,
                                psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
+bool psonTopFolderCreateFolder( psonFolder         * pFolder,
+                                const char         * objectName,
+                                uint32_t             nameLengthInBytes,
+                                psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonTopFolderCreateObject( psonFolder          * pFolder,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,

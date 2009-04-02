@@ -32,16 +32,12 @@ int main()
    psonSessionContext context;
    bool ok;
    psoObjStatus status;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    pTopFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonTopFolderCreateObject( pTopFolder,
+   ok = psonTopFolderCreateFolder( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
-                                   &def,
-                                   NULL,
-                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

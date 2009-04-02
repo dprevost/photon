@@ -47,12 +47,9 @@ int main()
    }
    
    /* Using the topfolder to create a grandchild! */
-   ok = psonTopFolderCreateObject( pFolder,
+   ok = psonTopFolderCreateFolder( pFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
-                                   &def,
-                                   NULL,
-                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

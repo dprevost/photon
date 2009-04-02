@@ -43,7 +43,6 @@ int main( int argc, char * argv[] )
    char key[] = "My Key";
    size_t lenData;
 
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition hashMapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
 
@@ -85,12 +84,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/ahmd",
-                              strlen("/ahmd"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/ahmd") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -120,12 +116,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/ahmd/test",
-                              strlen("/ahmd/test"),
-                              &hashMapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/ahmd/test",
+                                   strlen("/ahmd/test"),
+                                   &hashMapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

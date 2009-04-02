@@ -42,7 +42,6 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    PSO_HANDLE keyDefHandle, dataDefHandle;
 
    if ( argc > 1 ) {
@@ -67,12 +66,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/amrepl",
-                              strlen("/amrepl"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_fast_map_replace",
+                              strlen("/api_fast_map_replace") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -101,12 +97,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/amrepl/test",
-                              strlen("/amrepl/test"),
-                              &mapDef,
-                              keyDefHandle,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_fast_map_replace/test",
+                                   strlen("/api_fast_map_replace/test"),
+                                   &mapDef,
+                                   keyDefHandle,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -119,8 +115,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/amrepl/test",
-                             strlen("/amrepl/test"),
+                             "/api_fast_map_replace/test",
+                             strlen("/api_fast_map_replace/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -152,8 +148,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/amrepl/test",
-                             strlen("/amrepl/test"),
+                             "/api_fast_map_replace/test",
+                             strlen("/api_fast_map_replace/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -161,8 +157,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoFastMapOpen( sessionHandle2,
-                             "/amrepl/test",
-                             strlen("/amrepl/test"),
+                             "/api_fast_map_replace/test",
+                             strlen("/api_fast_map_replace/test"),
                              &objHandle2,
                              NULL );
    if ( errcode != PSO_OK ) {
@@ -332,8 +328,8 @@ int main( int argc, char * argv[] )
    /* Close the session and try to act on the object */
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/amrepl/test",
-                             strlen("/amrepl/test"),
+                             "/api_fast_map_replace/test",
+                             strlen("/api_fast_map_replace/test"),
                              &objHandle,
                              NULL );
    if ( errcode != PSO_OK ) {

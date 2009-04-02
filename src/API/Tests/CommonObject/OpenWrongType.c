@@ -33,7 +33,6 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle;
    int errcode;
    psoaCommonObject object;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -52,12 +51,9 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/acowt",
-                              strlen("/acowt"),
-                              &def,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_common_open_wrong_type",
+                              strlen("/api_common_open_wrong_type") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -68,8 +64,8 @@ int main( int argc, char * argv[] )
    errcode = psoaCommonObjOpen( &object,
                                 0,
                                 false,
-                                "/acowt",
-                                strlen("/acowt") );
+                                "/api_common_open_wrong_type",
+                                strlen("/api_common_open_wrong_type") );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

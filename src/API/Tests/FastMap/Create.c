@@ -60,20 +60,17 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/ammcr",
-                              strlen("/ammcr"),
-                              &def,
-                              NULL,
-                              NULL );
+   errcode = psoCreateFolder( sessionHandle,
+                              "/api_fast_map_create",
+                              strlen("/api_fast_map_create") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/ammcr",
-                            strlen("/ammcr"),
+                            "/api_fast_map_create",
+                            strlen("/api_fast_map_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -186,8 +183,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/ammcr",
-                            strlen("/ammcr"),
+                            "/api_fast_map_create",
+                            strlen("/api_fast_map_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

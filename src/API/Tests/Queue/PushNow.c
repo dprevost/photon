@@ -66,10 +66,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateObject( sessionHandle,
                               "/api_queue_pushnow",
-                              strlen("/api_queue_pushnow"),
-                              &folderDef,
-                              NULL,
-                              NULL );
+                              strlen("/api_queue_pushnow") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
