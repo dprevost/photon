@@ -63,23 +63,46 @@ int psoFolderClose( PSO_HANDLE objectHandle );
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
+ * Create a new folder in shared memory as a child of the current folder.
+ *
+ * The creation of the folder only becomes permanent after a call to 
+ * ::psoCommit.
+ *
+ * This function does not provide a handle to the newly created folder. Use
+ * psoFolderOpen to get the handle.
+ *
+ * \param[in] folderHandle Handle to the current folder.
+ * \param[in] objectName The name of the object. 
+ * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+ *            counting the null terminator.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoFolderCreateFolder( PSO_HANDLE            folderHandle,
+                           const char          * objectName,
+                           psoUint32             nameLengthInBytes );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
  * Create a new object in shared memory as a child of the current folder.
+ *
+ * To create an object based on a key, use the function 
+ * ::psoFolderCreateKeyedObject instead of the current function.
  *
  * The creation of the object only becomes permanent after a call to 
  * ::psoCommit.
  *
  * This function does not provide a handle to the newly created object. Use
- * psoQueueOpen and similar functions to get the handle.
+ * ::psoQueueOpen and similar functions to get the handle.
  *
  * \param[in] folderHandle Handle to the current folder.
  * \param[in] objectName The name of the object. 
  * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
- *            counting the null terminator (null-terminators are not used by
- *            the Photon engine).
- * \param[in] definition The type of object to create (folder, queue, etc.),
- *            the type of the fields definition, etc.
- * \param[in] keyDefHandle Handle to the definition of the key or NULL if the 
- *            object has no key.
+ *            counting the null terminator.
+ * \param[in] definition The basic information needed to create the object:
+ *            the type of object to create, etc.
  * \param[in] dataDefHandle Handle to the definition of the data fields.
  *            It can be set to NULL when creating a Folder.
  *
@@ -90,8 +113,41 @@ int psoFolderCreateObject( PSO_HANDLE            folderHandle,
                            const char          * objectName,
                            psoUint32             nameLengthInBytes,
                            psoObjectDefinition * definition,
-                           PSO_HANDLE            keyDefHandle,
                            PSO_HANDLE            dataDefHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * Create a new key-based object in shared memory as a child of the 
+ * current folder.
+ *
+ * The currently supported types of key-based objects are hash maps and
+ * read-only hash maps.
+ *
+ * The creation of the object only becomes permanent after a call to 
+ * ::psoCommit.
+ *
+ * This function does not provide a handle to the newly created object. Use
+ * ::psoHashMapOpen and similar functions to get the handle.
+ *
+ * \param[in] folderHandle Handle to the current folder.
+ * \param[in] objectName The name of the object. 
+ * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
+ *            counting the null terminator.
+ * \param[in] definition The basic information needed to create the object:
+ *            the type of object to create, etc.
+ * \param[in] keyDefHandle Handle to the definition of the key.
+ * \param[in] dataDefHandle Handle to the definition of the data fields.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoFolderCreateKeyedObject( PSO_HANDLE            folderHandle,
+                                const char          * objectName,
+                                psoUint32             nameLengthInBytes,
+                                psoObjectDefinition * definition,
+                                PSO_HANDLE            keyDefHandle,
+                                PSO_HANDLE            dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

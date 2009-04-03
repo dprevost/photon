@@ -141,7 +141,7 @@ int psoCommit( PSO_HANDLE sessionHandle );
  * ::psoCommit.
  *
  * This function does not provide a handle to the newly created folder. Use
- * ::psoFolderOpen and similar functions to get the handle.
+ * ::psoFolderOpen to get the handle.
  *
  * \param[in] sessionHandle Handle to the current session.
  * \param[in] objectName The fully qualified name of the object. 
@@ -190,9 +190,9 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * Create a new keyed-base object in shared memory.
+ * Create a new key-based object in shared memory.
  *
- * The currently supported types of keyed objects are hash maps and
+ * The currently supported types of key-based objects are hash maps and
  * read-only hash maps.
  *
  * The creation of the object only becomes permanent after a call to 
