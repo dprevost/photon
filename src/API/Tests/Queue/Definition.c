@@ -42,7 +42,6 @@ int main( int argc, char * argv[] )
    struct dummy * data1 = NULL;
    size_t lenData;
 
-   psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
 
    psoFieldDefinition fields[5] = {
@@ -80,7 +79,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/aqsp",
                               strlen("/aqsp") );
    if ( errcode != PSO_OK ) {
@@ -104,7 +103,6 @@ int main( int argc, char * argv[] )
                               "/aqsp/test",
                               strlen("/aqsp/test"),
                               &queueDef,
-                              NULL,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

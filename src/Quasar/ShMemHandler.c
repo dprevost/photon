@@ -39,7 +39,6 @@ extern psocErrMsgHandle g_qsrErrorHandle;
 bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
 {
    bool ok;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition defMap = { PSO_HASH_MAP, 0, 0, 0 };
    psonFolder * pTree, * pFolder;
    psonHashMap * pHashMap;
@@ -51,22 +50,16 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
 
    GET_PTR( pTree, pHandler->pMemHeader->treeMgrOffset, psonFolder )
 
-   ok = psonTopFolderCreateObject( pTree,
+   ok = psonTopFolderCreateFolder( pTree,
                                    "system",
                                    strlen("system"),
-                                   &def,
-                                   NULL,
-                                   NULL,
                                    &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;
    
-   ok = psonTopFolderCreateObject( pTree,
+   ok = psonTopFolderCreateFolder( pTree,
                                    "proc",
                                    strlen("proc"),
-                                   &def,
-                                   NULL,
-                                   NULL,
                                    &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;

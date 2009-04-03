@@ -30,7 +30,6 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition definition;
    psoFieldDefinition fields[2];
    PSO_HANDLE dataDefHandle;
@@ -52,7 +51,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/aqcr",
                               strlen("/aqcr") );
    if ( errcode != PSO_OK ) {
