@@ -102,9 +102,9 @@ int psoCommit( PSO_HANDLE sessionHandle )
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoCreateFolder( PSO_HANDLE            sessionHandle,
-                     const char          * objectName,
-                     uint32_t              nameLengthInBytes )
+int psoCreateFolder( PSO_HANDLE   sessionHandle,
+                     const char * objectName,
+                     uint32_t     nameLengthInBytes )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -195,15 +195,17 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
       return PSO_WRONG_OBJECT_TYPE;
    }
    
-   if ( dataDefHandle != NULL ) {
-      pDataDefinition = (psoaDataDefinition *)dataDefHandle;
-      
-      if ( pDataDefinition->definitionType != PSOA_DEF_DATA ) {
-         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
-         return PSO_WRONG_TYPE_HANDLE;
-      }
-      pMemDataDefinition = pDataDefinition->pMemDefinition;
+   if ( dataDefHandle == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
    }
+   
+   pDataDefinition = (psoaDataDefinition *)dataDefHandle;
+   if ( pDataDefinition->definitionType != PSOA_DEF_DATA ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );
+      return PSO_WRONG_TYPE_HANDLE;
+   }
+   pMemDataDefinition = pDataDefinition->pMemDefinition;
    
    if ( psoaSessionLock( pSession ) ) {
       if ( ! pSession->terminated ) {
@@ -291,6 +293,10 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
    }
    pMemKeyDefinition = pKeyDefinition->pMemDefinition;
    
+   if ( dataDefHandle == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
    pDataDefinition = (psoaDataDefinition *)dataDefHandle;
    if ( pDataDefinition->definitionType != PSOA_DEF_DATA ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_TYPE_HANDLE );

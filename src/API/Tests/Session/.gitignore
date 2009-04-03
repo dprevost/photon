@@ -8,8 +8,9 @@
 /CloseObjNullObject
 /CloseObjPass
 /CommitPass
-/CreatePass
-/CreateQueue
+/CreateFolder
+/CreateKeyedObject
+/CreateObject
 /DestroyPass
 /ErrorMsg
 /ExitPass

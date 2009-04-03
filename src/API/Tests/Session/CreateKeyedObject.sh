@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=CreatePass
+test_name=CreateKeyedObject
 test_dir=src/API/Tests/Session
 errcode=0
 

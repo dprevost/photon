@@ -5,6 +5,11 @@
 /CloseNullContext
 /CloseNullItem
 /ClosePass
+/CreateFolderInvLength
+/CreateFolderNullContext
+/CreateFolderNullFolder
+/CreateFolderNullName
+/CreateFolderPass
 /CreateInvalidNameLength
 /CreateNullContext
 /CreateNullDefinition

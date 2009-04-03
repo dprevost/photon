@@ -30,7 +30,6 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
@@ -67,81 +66,34 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoCreateObject( NULL,
+   errcode = psoCreateFolder( NULL,
                               "/ascp",
-                              strlen("/ascp"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/ascp") );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               NULL,
-                              strlen("/ascp"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/ascp") );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/ascp",
-                              0,
-                              &def,
-                              NULL,
-                              NULL );
+                              0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   def.type = 0;
-   errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
-                              &def,
-                              NULL,
-                              dataDefHandle );
-   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   def.type = PSO_QUEUE;
-   errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
-                              &def,
-                              NULL,
-                              NULL ); /* can only be NULL for folders */
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   def.type = PSO_FOLDER;
-   
-   errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
-                              NULL,
-                              NULL,
-                              dataDefHandle );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
    /* End of invalid args. This call should succeed. */
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/ascp",
-                              strlen("/ascp"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/ascp") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -151,12 +103,9 @@ int main( int argc, char * argv[] )
 
    psoExit();
    
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/ascp",
-                              strlen("/ascp"),
-                              &def,
-                              NULL,
-                              NULL );
+                              strlen("/ascp") );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

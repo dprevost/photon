@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,7 +21,6 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Lifo.h"
 
 const bool expectedToPass = true;
 
@@ -29,18 +28,14 @@ const bool expectedToPass = true;
 
 int main( int argc, char * argv[] )
 {
-   PSO_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE sessionHandle;
    int errcode;
-   const char * data1 = "My Data1";
-   const char * data2 = "My Data2";
-   const char * data3 = "My Data3";
-   psoObjStatus status;
-   psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
-
+   
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
    }
@@ -58,14 +53,6 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_sp",
-                              strlen("/api_lifo_sp") );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
    errcode = psoDataDefCreate( sessionHandle,
                                "Definition",
                                strlen("Definition"),
@@ -78,92 +65,105 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   /* Invalid arguments to tested function. */
+
+   errcode = psoCreateObject( NULL,
+                              "/ascp",
+                              strlen("/ascp"),
+                              &def,
+                              NULL );
+   if ( errcode != PSO_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_sp/test",
-                              strlen("/api_lifo_sp/test"),
-                              &defLifo,
+                              NULL,
+                              strlen("/ascp"),
+                              &def,
+                              NULL );
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              0,
+                              &def,
+                              NULL );
+   if ( errcode != PSO_INVALID_LENGTH ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              NULL,
+                              dataDefHandle );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              &def,
+                              NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   def.type = PSO_FOLDER;
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              &def,
+                              dataDefHandle );
+   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   def.type = PSO_HASH_MAP;
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              &def,
+                              dataDefHandle );
+   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   def.type = PSO_QUEUE;
+
+   /* End of invalid args. This call should succeed. */
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              &def,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_sp/test",
-                           strlen("/api_lifo_sp/test"),
-                           &objHandle,
-                          NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   /* Close the process and try to act on the session */
 
-   errcode = psoLifoPush( objHandle, data1, strlen(data1), NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = psoLifoPush( objHandle, data2, strlen(data2), NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = psoLifoPush( objHandle, data3, strlen(data3), NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* Invalid arguments to tested function. */
-
-   errcode = psoLifoStatus( NULL, &status );
-   if ( errcode != PSO_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoLifoStatus( objHandle, NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* End of invalid args. This call should succeed. */
-   errcode = psoLifoStatus( objHandle, &status );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   if ( status.numDataItem != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.numBlocks != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.numBlockGroup != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   psoExit();
    
-   /* Close the session and try to act on the object */
-
-   errcode = psoExitSession( sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoLifoStatus( objHandle, &status );
+   errcode = psoCreateObject( sessionHandle,
+                              "/ascp",
+                              strlen("/ascp"),
+                              &def,
+                              dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   psoExit();
-   
    return 0;
 }
 

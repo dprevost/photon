@@ -33,7 +33,6 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    PSO_HANDLE sessionHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -52,7 +51,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/asoono",
                               strlen("/asoono") );
    if ( errcode != PSO_OK ) {

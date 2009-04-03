@@ -21,7 +21,9 @@ check_PROGRAMS =            \
         CloseObjNullSession \
         CloseObjPass        \
         CommitPass          \
-        CreatePass          \
+        CreateFolder        \
+        CreateKeyedObject   \
+        CreateObject        \
         DestroyPass         \
         ErrorMsg            \
         ExitPass            \
@@ -45,7 +47,9 @@ CloseObjNullObject_SOURCES  = CloseObjNullObject.c
 CloseObjNullSession_SOURCES = CloseObjNullSession.c
 CloseObjPass_SOURCES        = CloseObjPass.c
 CommitPass_SOURCES          = CommitPass.c
-CreatePass_SOURCES          = CreatePass.c
+CreateFolder_SOURCES        = CreateFolder.c
+CreateKeyedObject_SOURCES   = CreateKeyedObject.c
+CreateObject_SOURCES        = CreateObject.c
 DestroyPass_SOURCES         = DestroyPass.c
 ErrorMsg_SOURCES            = ErrorMsg.c
 ExitPass_SOURCES            = ExitPass.c
@@ -69,7 +73,9 @@ EXTRA_DIST =                   \
         CloseObjNullSession.sh \
         CloseObjPass.sh        \
         CommitPass.sh          \
-        CreatePass.sh          \
+        CreateFolder.sh        \
+        CreateKeyedObject.sh   \
+        CreateObject.sh        \
         DestroyPass.sh         \
         ErrorMsg.sh            \
         ExitPass.sh            \
@@ -104,7 +110,9 @@ TESTS =                        \
         CloseObjNullSession.sh \
         CloseObjPass.sh        \
         CommitPass.sh          \
-        CreatePass.sh          \
+        CreateFolder.sh        \
+        CreateKeyedObject.sh   \
+        CreateObject.sh        \
         DestroyPass.sh         \
         ErrorMsg.sh            \
         ExitPass.sh            \

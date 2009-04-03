@@ -32,7 +32,6 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle;
    int errcode;
    char msg[256];
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1], 0 );
@@ -51,7 +50,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/asem",
                               strlen("/asem") );
    if ( errcode != PSO_OK ) {
@@ -66,7 +65,7 @@ int main( int argc, char * argv[] )
    }
    fprintf( stderr, "Message 1 (no error): %s\n", msg );
 
-   errcode = psoCreateObject( sessionHandle,
+   errcode = psoCreateFolder( sessionHandle,
                               "/asem",
                               strlen("/asem") );
    if ( errcode == PSO_OK ) {
