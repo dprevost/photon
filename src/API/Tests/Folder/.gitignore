@@ -1,7 +1,9 @@
 /Makefile
 /Makefile.in
 /ClosePass
-/Create
+/CreateFolder
+/CreateKeyObject
+/CreateObject
 /Destroy
 /GetFirstPass
 /GetNextPass

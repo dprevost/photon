@@ -97,6 +97,15 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
                            psonSessionContext * pContext );
 
 /**
+ * Creates an immediate folder child of the folder.
+ */
+PHOTON_ENGINE_EXPORT
+bool psonFolderCreateFolder( psonFolder         * pFolder,
+                             const char         * objectName,
+                             uint32_t             nameLengthInBytes,
+                             psonSessionContext * pContext );
+
+/**
  * Creates an immediate child of the folder.
  */
 PHOTON_ENGINE_EXPORT
@@ -138,6 +147,12 @@ PHOTON_ENGINE_EXPORT
 void psonFolderFini( psonFolder         * pFolder,
                      psonSessionContext * pContext );
 
+PHOTON_ENGINE_EXPORT
+bool psonFolderFindObject( psonFolder         * pFolder,
+                           const char         * objectName,
+                           uint32_t             strLength, 
+                           psonHashTxItem    ** ppFoundFolder,
+                           psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonFolderGetDefinition( psonFolder          * pFolder,

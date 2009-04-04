@@ -89,7 +89,6 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
-                                    NULL,
                                     dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -101,7 +100,6 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
-                                    NULL,
                                     NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -113,7 +111,6 @@ int main( int argc, char * argv[] )
                                     "aqcr",
                                     strlen("aqcr"),
                                     &definition,
-                                    NULL,
                                     dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -131,7 +128,6 @@ int main( int argc, char * argv[] )
                                     "aqcr2",
                                     strlen("aqcr2"),
                                     &definition,
-                                    NULL,
                                     dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -154,7 +150,6 @@ int main( int argc, char * argv[] )
                                     "aqcr3",
                                     strlen("aqcr3"),
                                     &definition,
-                                    NULL,
                                     dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );

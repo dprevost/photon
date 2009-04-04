@@ -99,6 +99,98 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
 /*
  * The new object created by this function is a child of the folder 
  */
+bool psonFolderCreateFolder( psonFolder          * pFolder,
+                             const char          * objectName,
+                             uint32_t              nameLengthInBytes,
+                             psonSessionContext  * pContext )
+{
+   psoErrors errcode = PSO_OK;
+   uint32_t strLength, i;
+   uint32_t first = 0;
+   const char * name = objectName;
+   char * lowerName = NULL;
+   bool ok;
+   psoObjectDefinition definition = { PSO_FOLDER, 0, 0, 0 };
+   
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   
+   strLength = nameLengthInBytes;
+
+   if ( strLength > PSO_MAX_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) {
+      errcode = PSO_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+   lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
+   if ( lowerName == NULL ) {
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowercase the string and check for separators */
+   for ( i = 0; i < strLength; ++i ) {
+      if ( name[i] == '/' || name[i] == '\\' ) {
+         errcode = PSO_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+      lowerName[i] = (char) tolower( name[i] );
+   }
+   
+   /*
+    * There is no psonUnlock here - the recursive nature of the 
+    * function psonFolderInsertObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
+   if ( psonLock(&pFolder->memObject, pContext) ) {
+      ok = psonFolderInsertObject( pFolder,
+                                   &(lowerName[first]),
+                                   &(name[first]),
+                                   strLength, 
+                                   &definition,
+                                   NULL,
+                                   NULL,
+                                   1, /* numBlocks, */
+                                   0, /* expectedNumOfChilds, */
+                                   pContext );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto error_handler;
+   }
+   else {
+      errcode = PSO_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+   free( lowerName );
+   
+   return true;
+
+error_handler:
+
+   if ( lowerName != NULL ) free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called psocSetError. 
+    */
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * The new object created by this function is a child of the folder 
+ */
 bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
@@ -760,6 +852,122 @@ void psonFolderFini( psonFolder         * pFolder,
    
    /* This call must be last - put a barrier here ? */ 
    psonMemObjectFini(  &pFolder->memObject, PSON_ALLOC_API_OBJ, pContext );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonFolderFindObject( psonFolder         * pFolder,
+                           const char         * objectName,
+                           uint32_t             strLength,
+                           psonHashTxItem    ** ppFoundItem,
+                           psonSessionContext * pContext )
+{
+   bool lastIteration = true;
+   uint32_t partialLength = 0;
+   psoErrors errcode = PSO_OK;
+   psonObjectDescriptor* pDesc = NULL;
+   psonHashTxItem* pHashItem = NULL;
+   psonTxStatus* txStatus;
+   psonFolder * pNextFolder;
+   size_t bucket;
+   bool found, ok;
+   
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( objectName  != NULL );
+   PSO_PRE_CONDITION( ppFoundItem != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
+
+   errcode = psonValidateString( objectName, 
+                                 strLength, 
+                                 &partialLength, 
+                                 &lastIteration );
+   if ( errcode != PSO_OK ) goto the_exit;
+
+   found = psonHashTxGet( &pFolder->hashObj, 
+                          (unsigned char *)objectName, 
+                          partialLength * sizeof(char),
+                          &pHashItem,
+                          &bucket,
+                          pContext );
+   if ( ! found ) {
+      if (lastIteration) {
+         errcode = PSO_NO_SUCH_OBJECT;
+      }
+      else {
+         errcode = PSO_NO_SUCH_FOLDER;
+      }
+      goto the_exit;
+   }
+   while ( pHashItem->nextSameKey != PSON_NULL_OFFSET ) {
+      GET_PTR( pHashItem, pHashItem->nextSameKey, psonHashTxItem );
+   }
+   
+   if ( lastIteration ) {
+      if ( pFolder->isSystemObject ) {
+         errcode = PSO_SYSTEM_OBJECT;
+         goto the_exit;
+      }
+
+      *ppFoundItem = pHashItem;      
+
+      return true;
+   }
+
+   /* If we come here, this was not the last iteration, so we continue */
+
+   /* This is not the last node. This node must be a folder, otherwise... */
+   GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+   if ( pDesc->apiType != PSO_FOLDER ) {
+      errcode = PSO_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   /* 
+    * If the transaction id of the next folder is not either equal to
+    * zero or to the current transaction id, then it belongs to 
+    * another transaction - uncommitted. For this transaction it is
+    * as if it does not exist.
+    * Similarly, if we are marked as destroyed... can't access that folder
+    * (to have the id as ok and be marked as destroyed is a rare case - 
+    * it would require that the current transaction deleted the folder and 
+    * than tries to access it).
+    */
+   txStatus = &pHashItem->txStatus;
+
+   if ( ! psonTxStatusIsValid( txStatus, SET_OFFSET(pContext->pTransaction)) 
+        || psonTxStatusIsMarkedAsDestroyed( txStatus ) ) {
+      errcode = PSO_NO_SUCH_FOLDER;
+      goto the_exit;
+   }
+
+   GET_PTR( pNextFolder, pDesc->offset, psonFolder );
+   if ( ! psonLock(&pNextFolder->memObject, pContext) ) {
+      errcode = PSO_OBJECT_CANNOT_GET_LOCK;
+      goto the_exit;
+   }
+   
+   psonUnlock( &pFolder->memObject, pContext );
+
+   ok = psonFolderFindObject( pNextFolder,
+                               &objectName[partialLength+1],
+                               strLength - partialLength - 1,
+                               ppFoundItem,
+                               pContext );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   return ok;
+   
+the_exit:
+
+   /* psocSetError might have been already called by some other function */
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   psonUnlock( &pFolder->memObject, pContext );
+   
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

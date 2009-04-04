@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=Create
+test_name=CreateFolder
 test_dir=src/API/Tests/Folder
 errcode=0
 

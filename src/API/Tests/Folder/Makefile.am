@@ -14,36 +14,42 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =     \
-        ClosePass    \
-        Create       \
-        Destroy      \
-        GetFirstPass \
-        GetNextPass  \
-        OpenNoSess   \
-        OpenPass     \
-        StatusPass   
+check_PROGRAMS =        \
+        ClosePass       \
+        CreateFolder    \
+        CreateKeyObject \
+        CreateObject    \
+        Destroy         \
+        GetFirstPass    \
+        GetNextPass     \
+        OpenNoSess      \
+        OpenPass        \
+        StatusPass      
 
-ClosePass_SOURCES    = ClosePass.c
-Create_SOURCES       = Create.c
-Destroy_SOURCES      = Destroy.c
-GetFirstPass_SOURCES = GetFirstPass.c
-GetNextPass_SOURCES  = GetNextPass.c
-OpenNoSess_SOURCES   = OpenNoSess.c
-OpenPass_SOURCES     = OpenPass.c
-StatusPass_SOURCES   = StatusPass.c
+ClosePass_SOURCES       = ClosePass.c
+CreateFolder_SOURCES    = CreateFolder.c
+CreateKeyObject_SOURCES = CreateKeyObject.c
+CreateObject_SOURCES    = CreateObject.c
+Destroy_SOURCES         = Destroy.c
+GetFirstPass_SOURCES    = GetFirstPass.c
+GetNextPass_SOURCES     = GetNextPass.c
+OpenNoSess_SOURCES      = OpenNoSess.c
+OpenPass_SOURCES        = OpenPass.c
+StatusPass_SOURCES      = StatusPass.c
 
-EXTRA_DIST =            \
-        ClosePass.sh    \
-        Create.sh       \
-        Destroy.sh      \
-        GetFirstPass.sh \
-        GetNextPass.sh  \
-        Makefile.win32  \
-        OpenNoSess.sh   \
-        OpenPass.sh     \
-        RunTests.vbs    \
-        StatusPass.sh   
+EXTRA_DIST =               \
+        ClosePass.sh       \
+        CreateFolder.sh    \
+        CreateKeyObject.sh \
+        CreateObject.sh    \
+        Destroy.sh         \
+        GetFirstPass.sh    \
+        GetNextPass.sh     \
+        Makefile.win32     \
+        OpenNoSess.sh      \
+        OpenPass.sh        \
+        RunTests.vbs       \
+        StatusPass.sh      
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -53,15 +59,17 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                 \
-        ClosePass.sh    \
-        Create.sh       \
-        Destroy.sh      \
-        GetFirstPass.sh \
-        GetNextPass.sh  \
-        OpenNoSess.sh   \
-        OpenPass.sh     \
-        StatusPass.sh   
+TESTS =                    \
+        ClosePass.sh       \
+        CreateFolder.sh    \
+        CreateKeyObject.sh \
+        CreateObject.sh    \
+        Destroy.sh         \
+        GetFirstPass.sh    \
+        GetNextPass.sh     \
+        OpenNoSess.sh      \
+        OpenPass.sh        \
+        StatusPass.sh      
 
 XFAIL_TESTS = 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -30,8 +30,9 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition definition;
-   psoFieldDefinition fields[2];
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VARCHAR, {10} }
+   };
    PSO_HANDLE dataDefHandle;
    
    if ( argc > 1 ) {
@@ -52,22 +53,22 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_cr",
-                              strlen("/api_lifo_cr") );
+                              "/api_folder_create",
+                              strlen("/api_folder_create") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/api_lifo_cr",
-                            strlen("/api_lifo_cr"),
+                            "/api_folder_create",
+                            strlen("/api_folder_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
+
    errcode = psoDataDefCreate( sessionHandle,
                                "Definition",
                                strlen("Definition"),
@@ -80,37 +81,44 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   /* Invalid definition. */
-   
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
- 
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr",
-                                    strlen("aqcr"),
-                                    &definition,
-                                    dataDefHandle );
-   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
+   /* Invalid arguments to tested function. */
+
+   errcode = psoFolderCreateFolder( NULL,
+                                    "api_folder_create",
+                                    strlen("api_folder_create") );
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   definition.type = PSO_LIFO;
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr",
-                                    strlen("aqcr"),
-                                    &definition,
-                                    NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
+   errcode = psoFolderCreateFolder( sessionHandle,
+                                    "api_folder_create",
+                                    strlen("api_folder_create") );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateFolder( folderHandle,
+                                    NULL,
+                                    strlen("api_folder_create") );
+   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateFolder( folderHandle,
+                                    "api_folder_create",
+                                    0 );
+   if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr",
-                                    strlen("aqcr"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateFolder( folderHandle,
+                                    "api_folder_create",
+                                    strlen("api_folder_create") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -123,11 +131,9 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr2",
-                                    strlen("aqcr2"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateFolder( folderHandle,
+                                    "api_folder_create2",
+                                    strlen("api_folder_create2") );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -136,8 +142,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/api_lifo_cr",
-                            strlen("/api_lifo_cr"),
+                            "/api_folder_create",
+                            strlen("/api_folder_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -145,11 +151,9 @@ int main( int argc, char * argv[] )
    }
    psoExit();
    
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr3",
-                                    strlen("aqcr3"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateFolder( folderHandle,
+                                    "api_folder_create3",
+                                    strlen("api_folder_create3") );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

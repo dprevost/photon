@@ -196,7 +196,7 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
       return PSO_NULL_POINTER;
    }
 
-   if ( pDefinition->type == 0 || pDefinition->type >= PSO_LAST_OBJECT_TYPE ) {
+   if ( pDefinition->type <= PSO_FOLDER || pDefinition->type >= PSO_HASH_MAP ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_WRONG_OBJECT_TYPE );
       return PSO_WRONG_OBJECT_TYPE;
    }

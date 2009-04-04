@@ -30,7 +30,6 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition definition;
    psoFieldDefinition fields[2];
    psoKeyDefinition keyDef;
@@ -98,47 +97,47 @@ int main( int argc, char * argv[] )
    
    memset( &definition, 0, sizeof(psoObjectDefinition) );
    
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "my_map",
-                                    strlen("my_map"),
-                                    &definition,
-                                    keyDefHandle,
-                                    dataDefHandle );
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "my_map",
+                                         strlen("my_map"),
+                                         &definition,
+                                         keyDefHandle,
+                                         dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    definition.type = PSO_HASH_MAP;   
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "my_map",
-                                    strlen("my_map"),
-                                    &definition,
-                                    keyDefHandle,
-                                    NULL );
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "my_map",
+                                         strlen("my_map"),
+                                         &definition,
+                                         keyDefHandle,
+                                         NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "my_map",
-                                    strlen("my_map"),
-                                    &definition,
-                                    NULL,
-                                    dataDefHandle );
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "my_map",
+                                         strlen("my_map"),
+                                         &definition,
+                                         NULL,
+                                         dataDefHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* End of invalid args. This call should succeed. */
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "my_map",
-                                    strlen("my_map"),
-                                    &def,
-                                    keyDefHandle,
-                                    dataDefHandle );
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "my_map",
+                                         strlen("my_map"),
+                                         &definition,
+                                         keyDefHandle,
+                                         dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -151,12 +150,12 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "my_map2",
-                                    strlen("my_map2"),
-                                    &def,
-                                    keyDefHandle,
-                                    dataDefHandle );
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "my_map2",
+                                         strlen("my_map2"),
+                                         &definition,
+                                         keyDefHandle,
+                                         dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -174,12 +173,12 @@ int main( int argc, char * argv[] )
    }
    psoExit();
    
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "my_map3",
-                                    strlen("my_map3"),
-                                    &def,
-                                    keyDefHandle,
-                                    dataDefHandle );
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "my_map3",
+                                         strlen("my_map3"),
+                                         &definition,
+                                         keyDefHandle,
+                                         dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
