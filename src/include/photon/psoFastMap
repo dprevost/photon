@@ -79,8 +79,23 @@ class PHOTON_EXPORT FastMap
 {
 public:
 
-   FastMap( Session & session );
+   /** 
+    * Open an existing read-only hash map (see psoSession::CreateObject to 
+    * create a new object).
+    *
+    * \param[in] session The session we belong to.
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   FastMap( Session & session, const std::string & hashMapName );
 
+
+   /**
+    * The destructor will close the hash map if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
    virtual ~FastMap();
 
    /**
@@ -96,58 +111,14 @@ public:
    /**
     * \brief Retrieve the data definition of the hash map.
     *
-    * Use this method if you cannot use GetKeyDefinition/GetFieldDefinition,
-    * for example if you define your own definitions.
-    *
-    * You can call the function ::DefinitionLength to retrieve the 
-    * length of the field and key definitions. This allows you to allocate 
-    * the proper size for \em key and \em fields.
-    *
-    * \param[out] definition The definition of the object.
-    * \param[out] key An opaque definition of the key. You can set this field
-    *             to NULL if you do not want to retrieve the key definition.
-    * \param[in]  keyLength The length in bytes of the buffer \em key. 
-    *             It should be set to zero if \em key is NULL.
-    * \param[out] fields An opaque definition of the data fields of the object.
-    *             It can be set to NULL if you do not want to retrieve the
-    *             definition.
-    * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
-    *             It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Definition( psoObjectDefinition & definition,
-                    unsigned char       * key,
-                    psoUint32             keyLength,
-                    unsigned char       * fields,
-                    psoUint32             fieldsLength );
-
-   /**
-    * Retrieve the lengths of the variable elements of the definition 
-    * of the hash map.
-    *
-    * This function is a helper function for ::Definition. 
-    * It allows you to allocate the proper size for \em key and \em fields.
-    *
-    * \param[out] keyLength The length in bytes of the key buffer.
-    * \param[out] fieldsLength The length in bytes of the fields buffer.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void DefinitionLength( psoUint32 * keyLength,
-                          psoUint32 * fieldsLength );
-
-   /**
-    * \brief Retrieve the field definition of the hash map.
-    *
     * This function returns a new object. It is the responsability of the
     * caller to delete the object.
     *
-    * \return definition A new field definition of the hash map.
+    * \return A new data definition of the hash map.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   FieldDefinition * GetFieldDefinition();
+   DataDefinition * GetDataDefinition();
 
    /**
     * \brief Retrieve the key definition of the hash map.
@@ -155,7 +126,7 @@ public:
     * This function returns a new object. It is the responsability of the
     * caller to delete the object.
     *
-    * \return definition A new key definition of the hash map.
+    * \return A new key definition of the hash map.
     *
     * \exception pso::Exception An abnormal error occured.
     */
@@ -251,30 +222,32 @@ public:
                 psoUint32   bufferLength,
                 psoUint32 & retKeyLength,
                 psoUint32 & retDataLength );
+   
+   /**
+    * \brief Retrieve the data definition of the last accessed record.
+    *
+    * Hah maps will usually contain data records with an identical layout (data 
+    * definition of the items). This layout was defined when the map was 
+    * created. 
+    *
+    * You can also insert and retrieve data records with different layouts if
+    * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
+    * layout defined when a map is created is then used as the default one.
+    * 
+    * The DataDefinition object returned by this method can be used to 
+    * access the layout on a record-by-record base.
+    *
+    * Warning: the methods ::Get and similar will update the 
+    * Notes: 
+    *   This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return A new data definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   DataDefinition * GetRecordDefinition();
 
-   /** 
-    * Open an existing read-only hash map (see psoSession::CreateObject to 
-    * create a new object).
-    *
-    * \param[in]  hashMapName The fully qualified name of the hash map. 
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const std::string & hashMapName );
-   
-   /** 
-    * Open an existing read-only hash map (see psoSession::CreateObject to 
-    * create a new object).
-    *
-    * \param[in]  hashMapName The fully qualified name of the hash map. 
-    * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
-    *             not counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const char * hashMapName,
-              psoUint32    nameLengthInBytes );
-   
    /**
     * Return the status of the hash map.
     *

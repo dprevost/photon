@@ -63,48 +63,6 @@ void FastMap::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void FastMap::Definition( psoObjectDefinition & definition,
-                          unsigned char       * key,
-                          psoUint32             keyLength,
-                          unsigned char       * fields,
-                          psoUint32             fieldsLength )
-{
-   int rc;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "FastMap::Definition", PSO_NULL_HANDLE );
-   }
-
-   rc = psoFastMapDefinition( m_objectHandle,
-                              &definition,
-                              key,
-                              keyLength,
-                              fields,
-                              fieldsLength );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
-   }
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void FastMap::DefinitionLength( psoUint32 * keyLength,
-                                psoUint32 * fieldsLength )
-{
-   int rc;
-   
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "FastMap::DefinitionLength", PSO_NULL_HANDLE );
-   }
-
-   rc = psoFastMapDefLength( m_objectHandle, keyLength, fieldsLength );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMap::DefinitionLength" );
-   }
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
 void FastMap::Get( const void * key,
                    uint32_t     keyLength,
                    void       * buffer,
@@ -129,7 +87,7 @@ void FastMap::Get( const void * key,
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
+#if 0
 FieldDefinition * FastMap::GetFieldDefinition()
 {
    psoaFastMap * pHashMap;
@@ -175,9 +133,37 @@ FieldDefinition * FastMap::GetFieldDefinition()
    
    return pFieldDef;
 }
-   
+#endif
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+DataDefinition * FastMap::GetDataDefinition()
+{
+   int rc;
+   PSO_HANDLE dataDefHandle, keyDefHandle;
+   DataDefinition * pDefinition;
+
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMap::GetDataDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapDefinition( m_objectHandle,
+                              &keyDefHandle,
+                              &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
+   }
+   
+   pDefinition = new DataDefinition();
+   pDefinition->m_definitionHandle = dataDefHandle;
+   pDefinition->m_sessionHandle = m_sessionHandle;
+   
+   return pDefinition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#if 0
 KeyDefinition * FastMap::GetKeyDefinition()
 {
    psoaFastMap * pHashMap;
@@ -223,7 +209,33 @@ KeyDefinition * FastMap::GetKeyDefinition()
    
    return pKeyDef;
 }
+#endif
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+KeyDefinition * FastMap::GetKeyDefinition()
+{
+   int rc;
+   PSO_HANDLE dataDefHandle, keyDefHandle;
+   KeyDefinition * pDefinition;
+
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMap::GetKeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapDefinition( m_objectHandle,
+                              &keyDefHandle,
+                              &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
+   }
    
+   pDefinition = new KeyDefinition();
+   pDefinition->m_definitionHandle = keyDefHandle;
+   pDefinition->m_sessionHandle = m_sessionHandle;
+   
+   return pDefinition;
+}
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 int FastMap::GetFirst( void       * key,

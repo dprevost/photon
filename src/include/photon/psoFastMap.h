@@ -353,6 +353,31 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
  * Open an existing hash map read only (see ::psoCreateObject to create a 
  * new object).
  *
+ * \param[in]  sessionHandle The handle to the current session.
+ * \param[in]  hashMapName The fully qualified name of the hash map. 
+ * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not
+ *             counting the null terminator (null-terminators are not used by
+ *             the Photon engine).
+ * \param[out] objectHandle The handle to the hash map, allowing us access to
+ *             the map in shared memory. On error, this handle will be set
+ *             to zero (NULL) unless the objectHandle pointer itself is NULL.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoFastMapOpen( PSO_HANDLE   sessionHandle,
+                    const char * hashMapName,
+                    psoUint32    nameLengthInBytes,
+                    PSO_HANDLE * objectHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Retrieves a handle allowing you to access the data definition of the 
+ * last accessed record.
+ *
+ * Explanation:
+ * 
  * Hah maps will usually contain data records with an identical layout (data 
  * definition of the items). This layout was defined when the map was 
  * created. 
@@ -365,29 +390,22 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
  * \em dataDefHandle - it will be set to the layout of the last retrieved
  * record.
  *
- * \param[in]  sessionHandle The handle to the current session.
- * \param[in]  hashMapName The fully qualified name of the hash map. 
- * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not
- *             counting the null terminator (null-terminators are not used by
- *             the Photon engine).
- * \param[out] objectHandle The handle to the hash map, allowing us access to
- *             the map in shared memory. On error, this handle will be set
- *             to zero (NULL) unless the objectHandle pointer itself is NULL.
+ * Note: you only need to get the handle once. The hidden fields associated
+ * with this handle will be updated after each record is retrieved. The
+ * handle will point to the data definition of the hash map upon
+ * initialization.
+ *
+ * \param[in]  objectHandle The handle to the hash map
  * \param[out] dataDefHandle This optional handle gives you access to the
  *             data definition of the record on a record by record basis.
- *             It can be set to NULL if you do not want to use this feature. 
- *             If not set to NULL, the returned handle will be closed when
- *             the hash map is closed. You can also close it manually with 
- *             ::psoDataDefClose.
+ *             This handle will be closed when the hash map is closed. You
+ *             can also close it manually with ::psoDataDefClose.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoFastMapOpen( PSO_HANDLE   sessionHandle,
-                    const char * hashMapName,
-                    psoUint32    nameLengthInBytes,
-                    PSO_HANDLE * objectHandle,
-                    PSO_HANDLE * dataDefHandle );
+int psoFastMapRecordDefinition( PSO_HANDLE   objectHandle,
+                                PSO_HANDLE * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

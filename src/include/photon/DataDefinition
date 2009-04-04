@@ -39,6 +39,8 @@
 
 namespace pso {
 
+class FastMap;
+
 /** 
  * This base class provides the "interface" needed to both define 
  * and retrieve the definition of the fields of a data record.
@@ -74,6 +76,15 @@ public:
     */
    DataDefinition( Session & session, const std::string name );
    
+protected:
+   /**
+    * Default empty constructor.
+    *
+    * It is used by the other objects to build the data definition 
+    * 
+    */
+   DataDefinition();
+
 public:
    
    /**
@@ -121,6 +132,8 @@ protected:
 
    /// Reference to the psoaSession struct (we belong to).
    PSO_HANDLE & m_sessionHandle;
+   
+   friend class FastMap;
 
 };
 

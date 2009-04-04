@@ -45,21 +45,62 @@ namespace pso {
  */
 class PHOTON_EXPORT KeyDefinition
 {
-protected:
 
    /**
-    * Construct a key definition.
+    * Construct a new key definition in shared memory.
     *
-    * \param[in] readOnly  Set to true if we are using this object to read 
-    *                      an existing definition. Or false if we are using
-    *                      this object to create new Photon objects.
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition.
+    * \param[in] type The type of definition (ODBC, user defined, etc.)
+    * \param[in] keyDef The key definition (as an opaque type)
+    * \param[in] keyDefLength The length in bytes of the buffer \em keyDef. 
+    *
+    * \exception pso::Exception An abnormal error occured.
     */
-   KeyDefinition( bool readOnly );
+   KeyDefinition( Session                & session,
+                  const std::string        name,
+                  enum psoDefinitionType   type,
+                  const unsigned char    * keyDef,
+                  psoUint32                keyDefLength );
+
+   /**
+    * Open an existing key definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinition( Session & session, const std::string name );
+   
+protected:
+   /**
+    * Default empty constructor.
+    *
+    * It is used by the other objects to build the key definition 
+    * 
+    */
+   KeyDefinition();
 
 public:
    
+   /**
+    * The destructor will close the definition if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
    virtual ~KeyDefinition();
-     
+
+   /**
+    * \brief Closes the key definition.
+    *
+    * This function terminates the current access to the key definition.  
+    * The definition itself is left untouched in shared memory.  
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Close();
+   
    /**
     * Iterates through the definition.
     *
@@ -68,28 +109,29 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   virtual std::string GetNext() = 0;
+   virtual std::string GetNext();
 
-   /** Returns the definition of the key.
+   /** Retrieve the key definition.
     *
     * \return The definition of the key as an array of bytes.
     */
-   virtual const unsigned char * GetDefinition() = 0;
+   virtual const unsigned char * GetDefinition();
 
    /** Returns the length, in bytes, of the definition.
     *
     * \return The length, in bytes, of the definition
     */
-   virtual psoUint32 GetDefLength() = 0;
+   virtual psoUint32 GetDefLength();
 
 protected:
+   
+   PSO_HANDLE m_definitionHandle;
 
-   /**
-    * Set by the constructor to true if we are using this object to read 
-    * an existing definition. Or false if we are using this object to 
-    * create new Photon objects.
-    */
-   bool readOnly;
+   /// Reference to the psoaSession struct (we belong to).
+   PSO_HANDLE & m_sessionHandle;
+   
+   friend class FastMap;
+
 };
 
 } // End of namespace

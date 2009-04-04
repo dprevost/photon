@@ -34,6 +34,7 @@
 //#include <photon/FieldDefinition>
 //#include <photon/FieldDefinitionODBC>
 //#include <photon/FieldDefinitionUser>
+#include <photon/DataDefinition>
 #include <photon/KeyDefinition>
 //#include <photon/KeyDefinitionODBC>
 //#include <photon/KeyDefinitionUser>
