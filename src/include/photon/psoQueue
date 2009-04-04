@@ -46,15 +46,29 @@ class PHOTON_EXPORT Queue
 {
 public:
 
-   Queue( Session & session );
+   /**
+    * Open an existing FIFO queue (see Session::CreateObject to create a new 
+    * queue).
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] queueName The fully qualified name of the queue. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   Queue( Session & session, const std::string & queueName );
 
+   /**
+    * The destructor will close the queue if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
    virtual ~Queue();
 
    /**
     * \brief Close a FIFO queue.
     *
     * This function terminates the current access to the queue in shared 
-    * memory (the queue itself, in shared memory is untouched).
+    * memory (the queue itself, in shared memory, is untouched).
     *
     * \warning Closing an object does not automatically commit or rollback 
     * data items that were inserted or removed. You still must use either 
@@ -158,29 +172,6 @@ public:
    int GetNext( void      * buffer,
                 psoUint32   bufferLength,
                 psoUint32 & returnedLength );
-
-   /** 
-    * Open an existing FIFO queue (see Session::CreateObject to create a new 
-    * queue).
-    *
-    * \param[in]  queueName The fully qualified name of the queue. 
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const std::string & queueName );
-
-   /** 
-    * Open an existing FIFO queue (see Session::CreateObject to create a new 
-    * queue).
-    *
-    * \param[in]  queueName The fully qualified name of the queue. 
-    * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
-    *             counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const char * queueName,
-              psoUint32    nameLengthInBytes );
 
    /** 
     * Remove the first item from the beginning of a FIFO queue and return it 

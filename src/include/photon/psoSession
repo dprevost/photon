@@ -33,6 +33,7 @@
 namespace pso {
 
 // Forward declarations
+class DataDefinition;
 class FieldDefinition;
 class KeyDefinition;
 
@@ -102,27 +103,41 @@ public:
    void Commit();
    
    /**
+    * Create a new folder in shared memory.
+    *
+    * The creation of the folder only becomes permanent after a call to 
+    * ::Commit.
+    *
+    * \param[in] folderName The fully qualified name of the object. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void CreateFolder( const std::string & folderName );
+
+   /**
     * Create a new object in shared memory.
+    *
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.).
     *
     * The creation of the object only becomes permanent after a call to 
     * ::Commit.
     *
     * \param[in] objectName The fully qualified name of the object. 
-    * \param[in] definition The type of object to create (folder, queue, etc.),
-    *            the type of field definition, etc.
-    * \param[in] keyDefinition   The definition of the key. Set it to NULL
-    *                            for objects without keys.
-    * \param[in] fieldDefinition The definition of the data fields.
+    * \param[in] definition The type of object to create and more.
+    * \param[in] dataDef The definition of the data fields of the object.
     *
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string   & objectName,
                       psoObjectDefinition & definition,
-                      KeyDefinition       * keyDefinition,
-                      FieldDefinition     * fieldDefinition );
+                      DataDefinition      & dataDef );
 
    /**
     * Create a new object in shared memory.
+    *
+    * This overloaded method should be used for objects requiring
+    * a key definition (hash maps, etc.).
     *
     * The creation of the object only becomes permanent after a call to 
     * ::Commit.
@@ -130,53 +145,15 @@ public:
     * \param[in] objectName The fully qualified name of the object. 
     * \param[in] definition The type of object to create (folder, queue, etc.),
     *            the type of field definition, etc.
-    * \param[in] key An opaque definition of the key. You can set this field
-    *            to NULL if the object has no key.
-    * \param[in] keyLength The length in bytes of the buffer \em key. 
-    *            It should be set to zero if \em key is NULL.
-    * \param[in] fields An opaque definition of the data fields of the object.
-    *            It can be set to NULL when creating a Folder.
-    * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
-    *            It should be set to zero if \em fields is NULL.
+    * \param[in] keyDef The definition of the key of the object.
+    * \param[in] dataDef The definition of the data fields of the object.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string         & objectName,
-                      const psoObjectDefinition & definition,
-                      const unsigned char       * key,
-                      psoUint32                   keyLength,
-                      const unsigned char       * fields,
-                      psoUint32                   fieldsLength );
-   
-   /**
-    * Create a new object in shared memory.
-    *
-    * The creation of the object only becomes permanent after a call to 
-    * ::Commit.
-    *
-    * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
-    *             counting the null terminator.
-    * \param[in] definition The type of object to create (folder, queue, etc.),
-    *            the type of field definition, etc.
-    * \param[in] key An opaque definition of the key. You can set this field
-    *            to NULL if the object has no key.
-    * \param[in] keyLength The length in bytes of the buffer \em key. 
-    *            It should be set to zero if \em key is NULL.
-    * \param[in] fields An opaque definition of the data fields of the object.
-    *            It can be set to NULL when creating a Folder.
-    * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
-    *            It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void CreateObject( const char                * objectName,
-                      psoUint32                   nameLengthInBytes,
-                      const psoObjectDefinition & definition,
-                      const unsigned char       * key,
-                      psoUint32                   keyLength,
-                      const unsigned char       * fields,
-                      psoUint32                   fieldsLength );
+   void CreateObject( const std::string   & objectName,
+                      psoObjectDefinition & definition,
+                      KeyDefinition       & keyDef,
+                      DataDefinition      & dataDef );
    
    /**
     * Destroy an existing object in shared memory.
@@ -189,21 +166,6 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const std::string & objectName );
-
-   /**
-    * Destroy an existing object in shared memory.
-    *
-    * The destruction of the object only becomes permanent after a call to 
-    * ::Commit.
-    *
-    * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
-    *             counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void DestroyObject( const char * objectName,
-                       psoUint32    nameLengthInBytes );
 
    /**
     * Return the error message associated with the last error(s).
@@ -287,38 +249,6 @@ public:
                        psoUint32             fieldsLength );
 
    /**
-    * \brief Retrieve the data definition of the named object.
-    *
-    * You can call the function ::GetDefinitionLength to retrieve the 
-    * lengths of the key and the field definitions. This allows you to allocate 
-    * the proper size for \em key and \em fields.
-    *
-    * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
-    *             counting the null terminator.
-    * \param[out] definition The definition of the object.
-    * \param[in]  key An opaque definition of the key. You can set this field
-    *             to NULL if the object has no key or if you do not want to 
-    *             retrieve the key definition.
-    * \param[in]  keyLength The length in bytes of the buffer \em key. 
-    *             It should be set to zero if \em key is NULL.
-    * \param[in]  fields An opaque definition of the data fields of the object.
-    *             It can be set to NULL if you do not want to retrieve the
-    *             definition.
-    * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
-    *             It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void GetDefinition( const char          * objectName,
-                       psoUint32             nameLengthInBytes,
-                       psoObjectDefinition & definition,
-                       unsigned char       * key,
-                       psoUint32             keyLength,
-                       unsigned char       * fields,
-                       psoUint32             fieldsLength );
-
-   /**
     * \brief Retrieve the lengths of the variable elements of the definition 
     *        of the named object.
     *
@@ -334,27 +264,6 @@ public:
    void GetDefinitionLength( const std::string & objectName,
                              psoUint32         * keyLength,
                              psoUint32         * fieldsLength );
-
-   /**
-    * \brief Retrieve the lengths of the variable elements of the definition 
-    *        of the named object.
-    *
-    * This function is a helper function for ::GetDefinition. 
-    * It allows you to allocate the proper size for \em key and \em fields.
-    *
-    * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
-    *             counting the null terminator (null-terminators are not used by
-    *             the Photon engine).
-    * \param[out] keyLength The length in bytes of the key buffer.
-    * \param[out] fieldsLength The length in bytes of the fields buffer.
-    *
-    * \return 0 on success or a ::psoErrors on error.
-    */
-   void GetDefinitionLength( const char * objectName,
-                             psoUint32    nameLengthInBytes,
-                             psoUint32  * keyLength,
-                             psoUint32  * fieldsLength );
 
    /**
     * Return information on the current status of the shared memory.
@@ -378,20 +287,6 @@ public:
     */
    void GetStatus( const std::string & objectName,
                    psoObjStatus      & status );
-
-   /**
-    * Return the status of the named object.
-    *
-    * \param[in]  objectName The fully qualified name of the object. 
-    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
-    *             counting the null terminator.
-    * \param[out] status A reference to the psoObjStatus structure.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void GetStatus( const char   * objectName,
-                   psoUint32      nameLengthInBytes,
-                   psoObjStatus & status );
 
    /**
     * This function initializes a session. 
@@ -435,9 +330,11 @@ private:
    /// Pointer to the psoaSession struct
    PSO_HANDLE m_sessionHandle;
    
+   friend class DataDefinition;
    friend class FastMap;
    friend class Folder;
    friend class HashMap;
+   friend class KeyDefinition;
    friend class Lifo;
    friend class Queue;
 };

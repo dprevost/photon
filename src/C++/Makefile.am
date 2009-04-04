@@ -27,22 +27,24 @@ libphotoncpp_la_LDFLAGS = -version-info 0:0:0
 
 include_HEADERS = 
 
-libphotoncpp_la_SOURCES =        \
-        Exception.cpp            \
-        FastMap.cpp              \
-        FastMapEditor.cpp        \
-        FieldDefinition.cpp      \
+libphotoncpp_la_SOURCES =   \
+        DataDefinition.cpp  \
+        Exception.cpp       \
+        FastMap.cpp         \
+        FastMapEditor.cpp   \
+        Folder.cpp          \
+        HashMap.cpp         \
+        KeyDefinition.cpp   \
+        Lifo.cpp            \
+        Process.cpp         \
+        Queue.cpp           \
+        Session.cpp         
+
+#        FieldDefinition.cpp      \
         FieldDefinitionODBC.cpp  \
         FieldDefinitionUser.cpp  \
-        Folder.cpp               \
-        HashMap.cpp              \
-        KeyDefinition.cpp        \
         KeyDefinitionODBC.cpp    \
-        KeyDefinitionUser.cpp    \
-        Lifo.cpp                 \
-        Process.cpp              \
-        Queue.cpp                \
-        Session.cpp              
+        KeyDefinitionUser.cpp    
 
 EXTRA_DIST =              \
         CPP.vs2005.vcproj \

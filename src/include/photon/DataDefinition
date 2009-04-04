@@ -1,0 +1,134 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+ *
+ * This file is part of Photon (photonsoftware.org).
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 or version 3 as published by the 
+ * Free Software Foundation and appearing in the file COPYING.GPL2 and 
+ * COPYING.GPL3 included in the packaging of this software.
+ *
+ * Licensees holding a valid Photon Commercial license can use this file 
+ * in accordance with the terms of their license.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef PHOTON_DATA_DEFINITION
+#define PHOTON_DATA_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <stdlib.h>
+#if defined(WIN32)
+#  pragma warning(disable: 4786)
+#  pragma warning(disable: 4251)
+#endif
+#include <string>
+
+#include <photon/psoCommon.h>
+#include <photon/psoPhotonODBC.h>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+namespace pso {
+
+/** 
+ * This base class provides the "interface" needed to both define 
+ * and retrieve the definition of the fields of a data record.
+ */
+class PHOTON_EXPORT DataDefinition
+{
+public:
+
+   /**
+    * Construct a new data definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition.
+    * \param[in] type The type of definition (ODBC, user defined, etc.)
+    * \param[in] dataDef The data definition (as an opaque type)
+    * \param[in] dataDefLength The length in bytes of the buffer \em dataDef. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   DataDefinition( Session                & session,
+                   const std::string        name,
+                   enum psoDefinitionType   type,
+                   const unsigned char    * dataDef,
+                   psoUint32                dataDefLength );
+
+   /**
+    * Open an existing data definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   DataDefinition( Session & session, const std::string name );
+   
+public:
+   
+   /**
+    * The destructor will close the definition if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
+   virtual ~DataDefinition();
+
+   /**
+    * \brief Closes the data definition.
+    *
+    * This function terminates the current access to the data definition.  
+    * The definition itself is left untouched in shared memory.  
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Close();
+   
+   /**
+    * Iterates through the definition.
+    *
+    * \return A formatted string containing the information on an item of 
+    *         the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   virtual std::string GetNext();
+
+   /** Retrieve the fields definition.
+    *
+    * \return The definition of the fields as an array of bytes.
+    */
+   virtual const unsigned char * GetDefinition();
+
+   /** Returns the length, in bytes, of the definition.
+    *
+    * \return The length, in bytes, of the definition
+    */
+   virtual psoUint32 GetDefLength();
+
+protected:
+   
+   PSO_HANDLE m_definitionHandle;
+
+   /// Reference to the psoaSession struct (we belong to).
+   PSO_HANDLE & m_sessionHandle;
+
+};
+
+} // End of namespace
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif // PHOTON_DATA_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

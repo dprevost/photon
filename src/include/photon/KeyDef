@@ -1,0 +1,102 @@
+/* -*- c++ -*- */
+/* :mode=c++:  - For jedit, previous line for emacs */
+/*
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+ *
+ * This file is part of Photon (photonsoftware.org).
+ *
+ * This file may be distributed and/or modified under the terms of the
+ * GNU General Public License version 2 or version 3 as published by the 
+ * Free Software Foundation and appearing in the file COPYING.GPL2 and 
+ * COPYING.GPL3 included in the packaging of this software.
+ *
+ * Licensees holding a valid Photon Commercial license can use this file 
+ * in accordance with the terms of their license.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ */
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#ifndef PHOTON_KEY_DEFINITION
+#define PHOTON_KEY_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#include <stdlib.h>
+#if defined(WIN32)
+#  pragma warning(disable: 4786)
+#  pragma warning(disable: 4251)
+#endif
+#include <string>
+
+#include <photon/psoCommon.h>
+#include <photon/psoPhotonODBC.h>
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+namespace pso {
+
+/** 
+ * This abstract base class provides the "interface" needed to both define
+ * and retrieve the definition of the fields of the key.
+ */
+class PHOTON_EXPORT KeyDefinition
+{
+protected:
+
+   /**
+    * Construct a key definition.
+    *
+    * \param[in] readOnly  Set to true if we are using this object to read 
+    *                      an existing definition. Or false if we are using
+    *                      this object to create new Photon objects.
+    */
+   KeyDefinition( bool readOnly );
+
+public:
+   
+   virtual ~KeyDefinition();
+     
+   /**
+    * Iterates through the definition.
+    *
+    * \return A formatted string containing the information on an item of 
+    *         the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   virtual std::string GetNext() = 0;
+
+   /** Returns the definition of the key.
+    *
+    * \return The definition of the key as an array of bytes.
+    */
+   virtual const unsigned char * GetDefinition() = 0;
+
+   /** Returns the length, in bytes, of the definition.
+    *
+    * \return The length, in bytes, of the definition
+    */
+   virtual psoUint32 GetDefLength() = 0;
+
+protected:
+
+   /**
+    * Set by the constructor to true if we are using this object to read 
+    * an existing definition. Or false if we are using this object to 
+    * create new Photon objects.
+    */
+   bool readOnly;
+};
+
+} // End of namespace
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+#endif // PHOTON_KEY_DEFINITION
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+

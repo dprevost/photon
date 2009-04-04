@@ -48,8 +48,21 @@ class PHOTON_EXPORT Folder
 {
 public:
 
-   Folder( Session & session );
+   /**
+    * Constructor of the Folder object.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] folderName The name of the folder. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   Folder( Session & session, const std::string & folderName );
 
+   /**
+    * The destructor will close the folder if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
    virtual ~Folder();
 
    /**
@@ -58,91 +71,45 @@ public:
     * This function terminates the current access to the folder in shared memory
     * (the folder itself is untouched).
     *
+    * \warning Closing an object does not automatically commit or rollback 
+    * objects that were created or destroyed. You still must use either 
+    * psoSession::Commit or psoSession::Rollback to end the current unit of 
+    * work.
+    *
     * \exception pso::Exception An abnormal error occured.
     */
    void Close();
 
    /**
+    * Create a new folder in shared memory as a child of the current folder.
+    *
+    * The creation of the folder only becomes permanent after a call to 
+    * Session::Commit.
+    *
+    * \param[in] folderName The name of the folder. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void CreateFolder( const std::string & folderName );
+
+   /**
     * Create a new object in shared memory as a child of the current folder.
+    *
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.).
     *
     * The creation of the object only becomes permanent after a call to 
     * Session::Commit.
     *
     * \param[in] objectName The name of the object. 
-    * \param[in] fieldDefinition The definition of the data fields.
-    * \param[in] keyDefinition   The definition of the key. Set it to NULL
-    *                            for objects without keys.
+    * \param[in] definition The type of object to create and more.
+    * \param[in] dataDefinition The definition of the data fields.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string & objectName,
-                      FieldDefinition   * fieldDefinition,
-                      KeyDefinition     * keyDefinition );
-
-   /**
-    * Create a new object in shared memory as a child of the current folder.
-    *
-    * The creation of the object only becomes permanent after a call to 
-    * Session::Commit.
-    *
-    * This function does not provide a handle or an object to the newly 
-    * created shared-memory object. Use psoQueue::Open and similar functions 
-    * to access them.
-    *
-    * \param[in] objectName The name of the object. 
-    * \param[in] definition The type of object to create (folder, queue, etc.),
-    *            the number of fields and the "optional" key definition 
-    *            (for hash maps and similar).
-    * \param[in] key The definition of the key or NULL if the object has no key.
-    * \param[in] keyLength The length in bytes of the buffer \em key. 
-    *            It should be set to zero if \em key is NULL.
-    * \param[in] fields An opaque definition of the data field of the object.
-    *            It can be set to NULL when creating a Folder.
-    * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
-    *            It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void CreateObject( const std::string         & objectName,
-                      const psoObjectDefinition & definition,
-                      const unsigned char       * key,
-                      psoUint32                   keyLength,
-                      const unsigned char       * fields,
-                      psoUint32                   fieldsLength );
-
-   /**
-    * Create a new object in shared memory as a child of the current folder.
-    *
-    * The creation of the object only becomes permanent after a call to 
-    * Session::Commit.
-    *
-    * This function does not provide a handle or an object to the newly 
-    * created shared-memory object. Use psoQueue::Open and similar functions 
-    * to access them.
-    *
-    * \param[in] objectName The name of the object.
-    * \param[in] nameLengthInBytes The length of \em objectName (in bytes) not
-    *            counting the null terminator.
-    * \param[in] definition The type of object to create (folder, queue, etc.),
-    *            the number of fields and the "optional" key definition 
-    *            (for hash maps and similar).
-    * \param[in] key The definition of the key or NULL if the object has no key.
-    * \param[in] keyLength The length in bytes of the buffer \em key. 
-    *            It should be set to zero if \em key is NULL.
-    * \param[in] fields An opaque definition of the data field of the object.
-    *            It can be set to NULL when creating a Folder.
-    * \param[in] fieldsLength The length in bytes of the buffer \em fields. 
-    *            It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void CreateObject( const char          * objectName,
-                      psoUint32             nameLengthInBytes,
+   void CreateObject( const std::string   & objectName,
                       psoObjectDefinition & definition,
-                      const unsigned char * key,
-                      psoUint32             keyLength,
-                      const unsigned char * fields,
-                      psoUint32             fieldsLength );
+                      DataDefinition      & dataDefinition );
 
    /**
     * Create a new object in shared memory as a child of the current folder.
@@ -150,36 +117,17 @@ public:
     * The creation of the object only becomes permanent after a call to 
     * Session::Commit.
     *
-    * This function does not provide a handle or an object to the newly 
-    * created shared-memory object. Use Queue::Open and similar functions 
-    * to access them.
-    *
-    * \param[in] xmlBuffer    The XML buffer containing all the required
-    *                         information. 
+    * \param[in] objectName The name of the object. 
+    * \param[in] definition The type of object to create and more.
+    * \param[in] keyDefinition  The definition of the key. 
+    * \param[in] dataDefinition The definition of the data fields.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-//   void CreateObjectXML( const std::string & xmlBuffer );
-
-  /**
-    * Create a new object in shared memory as a child of the current folder.
-    *
-    * The creation of the object only becomes permanent after a call to 
-    * Session::Commit.
-    *
-    * This function does not provide a handle or an object to the newly 
-    * created shared-memory object. Use psoQueue::Open and similar functions 
-    * to access them.
-    *
-    * \param[in] xmlBuffer    The XML buffer (string) containing all the required
-    *                         information. 
-    * \param[in] lengthInBytes The length of \em xmlBuffer (in bytes) not
-    *                          counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-//   void CreateObjectXML( const char * xmlBuffer,
-//                         psoUint32    lengthInBytes );
+   void CreateObject( const std::string   & objectName,
+                      psoObjectDefinition & definition,
+                      KeyDefinition       & keyDefinition,
+                      DataDefinition      & dataDefinition );
 
    /**
     * Destroy an object, child of the current folder, in shared memory.
@@ -192,21 +140,6 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void DestroyObject( const std::string & objectName );
-
-   /**
-    * Destroy an object, child of the current folder, in shared memory.
-    *
-    * The destruction of the object only becomes permanent after a call to 
-    * Session::Commit.
-    *
-    * \param[in]  objectName The name of the object. 
-    * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
-    *             counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void DestroyObject( const char * objectName,
-                       psoUint32    nameLengthInBytes );
 
    /** 
     * Iterate through the folder - no data items are removed from the 
@@ -247,29 +180,6 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    int GetNext( psoFolderEntry & entry );
-
-   /** 
-    * Open an existing folder (see Session::CreateObject to create a new 
-    * folder).
-    *
-    * \param[in]  folderName The fully qualified name of the folder. 
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const std::string & folderName );
-
-   /** 
-    * Open an existing folder (see Session::CreateObject to create a new 
-    * folder).
-    *
-    * \param[in]  folderName The fully qualified name of the folder. 
-    * \param[in]  nameLengthInBytes The length of \em folderName (in bytes) not
-    *             counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const char * folderName,
-              psoUint32    nameLengthInBytes );
    
    /**
     * Return the status of the folder.

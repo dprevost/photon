@@ -24,7 +24,7 @@
 #include <photon/psoErrors.h>
 #include "API/Session.h"
 #include <photon/psoException>
-#include <photon/FieldDefinition>
+#include <photon/DataDefinition>
 #include <photon/KeyDefinition>
 
 using namespace pso;
@@ -62,55 +62,30 @@ void Session::Commit()
    
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Session::CreateObject( const std::string   & objectName,
-                            psoObjectDefinition & definition,
-                            KeyDefinition       * keyDefinition,
-                            FieldDefinition     * fieldDefinition )
+void Session::CreateFolder( const std::string & objectName )
 {
    int rc;
 
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
-   if ( fieldDefinition == NULL ) {
-      throw pso::Exception( "Session::CreateObject", PSO_NULL_POINTER );
-   }
-   if ( keyDefinition ) {
-      rc = psoCreateObject( m_sessionHandle,
-                            objectName.c_str(),
-                            objectName.length(),
-                            &definition,
-                            keyDefinition->GetDefinition(),
-                            keyDefinition->GetDefLength(),
-                            fieldDefinition->GetDefinition(),
-                            fieldDefinition->GetDefLength() );
-   }
-   else {
-      rc = psoCreateObject( m_sessionHandle,
-                            objectName.c_str(),
-                            objectName.length(),
-                            &definition,
-                            NULL,
-                            0,
-                            fieldDefinition->GetDefinition(),
-                            fieldDefinition->GetDefLength() );
-   }
+    
+   rc = psoCreateFolder( m_sessionHandle,
+                         objectName.c_str(),
+                         objectName.length() );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Session::CreateFolder" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Session::CreateObject( const std::string         & objectName,
-                            const psoObjectDefinition & definition,
-                            const unsigned char       * key,
-                            psoUint32                   keyLength,
-                            const unsigned char       * fields,
-                            psoUint32                   fieldsLength )
+void Session::CreateObject( const std::string   & objectName,
+                            psoObjectDefinition & definition,
+                            DataDefinition      & dataDefinition )
 {
    int rc;
-   
+
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
@@ -118,45 +93,37 @@ void Session::CreateObject( const std::string         & objectName,
    rc = psoCreateObject( m_sessionHandle,
                          objectName.c_str(),
                          objectName.length(),
-                         (psoObjectDefinition *) &definition,
-                         key,
-                         keyLength,
-                         fields,
-                         fieldsLength );
+                         &definition,
+                         dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 }
-   
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Session::CreateObject( const char                * objectName,
-                            uint32_t                    nameLengthInBytes,
-                            const psoObjectDefinition & definition,
-                            const unsigned char       * key,
-                            psoUint32                   keyLength,
-                            const unsigned char       * fields,
-                            psoUint32                   fieldsLength )
+void Session::CreateObject( const std::string   & objectName,
+                            psoObjectDefinition & definition,
+                            KeyDefinition       & keyDefinition,
+                            DataDefinition      & dataDefinition )
 {
    int rc;
-   
+
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
 
-   rc = psoCreateObject( m_sessionHandle,
-                         objectName,
-                         nameLengthInBytes,
-                         (psoObjectDefinition *) &definition,
-                         key,
-                         keyLength,
-                         fields,
-                         fieldsLength );
+   rc = psoCreateKeyedObject( m_sessionHandle,
+                              objectName.c_str(),
+                              objectName.length(),
+                              &definition,
+                              keyDefinition.m_definitionHandle,
+                              dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 }
-   
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Session::DestroyObject( const std::string & objectName )
@@ -170,25 +137,6 @@ void Session::DestroyObject( const std::string & objectName )
    rc = psoDestroyObject( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length() );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Session::DestroyObject" );
-   }
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void Session::DestroyObject( const char * objectName,
-                             uint32_t     nameLengthInBytes )
-{
-   int rc;
-   
-   if ( m_sessionHandle == NULL ) {
-      throw pso::Exception( "Session::DestroyObject", PSO_NULL_HANDLE );
-   }
-
-   rc = psoDestroyObject( m_sessionHandle,
-                          objectName,
-                          nameLengthInBytes );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::DestroyObject" );
    }
@@ -345,27 +293,6 @@ void Session::GetStatus( const std::string & objectName,
    rc = psoGetStatus( m_sessionHandle,
                       objectName.c_str(),
                       objectName.length(),
-                      &status );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Session::GetStatus" );
-   }
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-void Session::GetStatus( const char   * objectName,
-                         uint32_t       nameLengthInBytes,
-                         psoObjStatus & status )
-{
-   int rc;
-   
-   if ( m_sessionHandle == NULL ) {
-      throw pso::Exception( "Session::GetStatus", PSO_NULL_HANDLE );
-   }
-
-   rc = psoGetStatus( m_sessionHandle,
-                      objectName,
-                      nameLengthInBytes,
                       &status );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::GetStatus" );
