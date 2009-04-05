@@ -318,14 +318,11 @@ error_handler:
 int psoQueueOpen( PSO_HANDLE   sessionHandle,
                   const char * queueName,
                   uint32_t     nameLengthInBytes,
-                  PSO_HANDLE * objectHandle,
-                  PSO_HANDLE * dataDefHandle )
+                  PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
    psoaQueue * pQueue = NULL;
-   psonQueue * pMemQueue;
    int errcode;
-   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -350,16 +347,6 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
-   if ( dataDefHandle != NULL ) {
-      pDefinition = malloc( sizeof(psoaDataDefinition) );
-      if ( pDefinition == NULL ) {
-         free( pQueue );
-         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
-         return PSO_NOT_ENOUGH_HEAP_MEMORY;
-      }
-      pDefinition->pSession = pQueue->object.pSession;
-      pDefinition->definitionType = PSOA_DEF_DATA;
-   }
    
    memset( pQueue, 0, sizeof(psoaQueue) );
    pQueue->object.type = PSOA_QUEUE;
@@ -371,28 +358,18 @@ int psoQueueOpen( PSO_HANDLE   sessionHandle,
                                    PSOA_READ_WRITE,
                                    queueName,
                                    nameLengthInBytes );
-      if ( errcode == PSO_OK ) {
-         *objectHandle = (PSO_HANDLE) pQueue;
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
-         if ( dataDefHandle != NULL ) {
-            /* We use the global queue definition as the initial value
-             * to avoid an uninitialized pointer.
-             */
-            GET_PTR( pDefinition->pMemDefinition, 
-                     pMemQueue->dataDefOffset, 
-                     psonDataDefinition );
-            pDefinition->ppApiObject = &pQueue->pRecordDefinition;
-            pQueue->pRecordDefinition = pDefinition;
-         }
-      }
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
    }
 
-   if ( dataDefHandle != NULL ) {
-      if ( errcode != PSO_OK ) free(pDefinition);
-      else *dataDefHandle = (PSO_HANDLE)pDefinition;
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
+         g_psoErrorHandle, errcode );
+      free(pQueue);
+   }
+   else {
+      *objectHandle = (PSO_HANDLE) pQueue;
    }
 
    return errcode;
@@ -638,6 +615,67 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
       errcode = psocGetLastError( &pQueue->object.pSession->context.errorHandler );
    }
    
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoQueueRecordDefinition( PSO_HANDLE   objectHandle,
+                              PSO_HANDLE * dataDefHandle )
+{
+   psoaQueue * pQueue;
+   psonQueue * pMemQueue;
+   int errcode = PSO_OK;
+   psoaDataDefinition * pDefinition = NULL;
+   
+   pQueue = (psoaQueue *) objectHandle;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( dataDefHandle == NULL ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDefinition == NULL ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   pDefinition->pSession = pQueue->object.pSession;
+   pDefinition->definitionType = PSOA_DEF_DATA;
+   
+   if ( ! pQueue->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+ 
+         /* We use the global queue definition as the initial value
+          * to avoid an uninitialized pointer.
+          */
+         GET_PTR( pDefinition->pMemDefinition, 
+                  pMemQueue->dataDefOffset, 
+                  psonDataDefinition );
+         pDefinition->ppApiObject = &pQueue->pRecordDefinition;
+         pQueue->pRecordDefinition = pDefinition;
+         
+         dataDefHandle = (PSO_HANDLE) pDefinition;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
+                    g_psoErrorHandle, errcode );
+   }
+
    return errcode;
 }
 

@@ -204,8 +204,7 @@ PHOTON_EXPORT
 int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     psoUint32    nameLengthInBytes,
-                    PSO_HANDLE * objectHandle,
-                    PSO_HANDLE * dataDefHandle );
+                    PSO_HANDLE * objectHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -350,7 +349,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing hash map read only (see ::psoCreateObject to create a 
+ * Open an existing read-only hash map (see ::psoCreateObject to create a 
  * new object).
  *
  * \param[in]  sessionHandle The handle to the current session.

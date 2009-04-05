@@ -593,14 +593,11 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
 int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     uint32_t     nameLengthInBytes,
-                    PSO_HANDLE * objectHandle,
-                    PSO_HANDLE * dataDefHandle )
+                    PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
    psoaHashMap * pHashMap = NULL;
-   psonHashMap * pMemHashMap;
    int errcode;
-   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -625,16 +622,6 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
-   if ( dataDefHandle != NULL ) {
-      pDefinition = malloc( sizeof(psoaDataDefinition) );
-      if ( pDefinition == NULL ) {
-         free( pHashMap );
-         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
-         return PSO_NOT_ENOUGH_HEAP_MEMORY;
-      }
-      pDefinition->pSession = pHashMap->object.pSession;
-      pDefinition->definitionType = PSOA_DEF_DATA;
-   }
    
    memset( pHashMap, 0, sizeof(psoaHashMap) );
    pHashMap->object.type = PSOA_HASH_MAP;
@@ -647,23 +634,79 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                                    PSOA_READ_WRITE,
                                    hashMapName,
                                    nameLengthInBytes );
-      if ( errcode == 0 ) {
-         *objectHandle = (PSO_HANDLE) pHashMap;
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+         g_psoErrorHandle, errcode );
+      free(pHashMap);
+   }
+   else {
+      *objectHandle = (PSO_HANDLE) pHashMap;
+   }
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoHashMapRecordDefinition( PSO_HANDLE   objectHandle,
+                                PSO_HANDLE * dataDefHandle )
+{
+   psoaHashMap * pHashMap;
+   psonHashMap * pMemHashMap;
+   int errcode = PSO_OK;
+   psoaDataDefinition * pDefinition = NULL;
+   
+   pHashMap = (psoaHashMap *) objectHandle;
+   if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pHashMap->object.type != PSOA_MAP ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( dataDefHandle == NULL ) {
+      psocSetError( &pHashMap->object.pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDefinition == NULL ) {
+      psocSetError( &pHashMap->object.pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   pDefinition->pSession = pHashMap->object.pSession;
+   pDefinition->definitionType = PSOA_DEF_DATA;
+   
+   if ( ! pHashMap->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pHashMap->object ) ) {
          pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
-         if ( dataDefHandle != NULL ) {
-            /* We use the global queue definition as the initial value
-             * to avoid an uninitialized pointer.
-             */
-            GET_PTR( pDefinition->pMemDefinition, 
-                     pMemHashMap->dataDefOffset, 
-                     psonDataDefinition );
-            pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
-            pHashMap->pRecordDefinition = pDefinition;
-         }
+ 
+         /* We use the global queue definition as the initial value
+          * to avoid an uninitialized pointer.
+          */
+         GET_PTR( pDefinition->pMemDefinition, 
+                  pMemHashMap->dataDefOffset, 
+                  psonDataDefinition );
+         pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
+         pHashMap->pRecordDefinition = pDefinition;
+         
+         dataDefHandle = (PSO_HANDLE) pDefinition;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
       }
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pHashMap->object.pSession->context.errorHandler, 
+                    g_psoErrorHandle, errcode );
    }
 
    return errcode;

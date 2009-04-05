@@ -34,7 +34,7 @@ namespace pso {
 
 // Forward declarations
 class Session;
-class FieldDefinition;
+class DataDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -45,8 +45,21 @@ class PHOTON_EXPORT Lifo
 {
 public:
 
-   Lifo( Session &session );
+   /** 
+    * Open an existing LIFO queue.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] queueName The fully qualified name of the queue. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   Lifo( Session &session, const std::string & queueName );
 
+   /**
+    * The destructor will close the queue if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
    virtual ~Lifo();
 
    /**
@@ -67,46 +80,14 @@ public:
    /**
     * \brief Retrieve the data definition of the queue.
     *
-    * You can call the function ::DefinitionLength to retrieve the 
-    * length of the field definitions. This allows you to allocate 
-    * the proper size for \em fields.
-    *
-    * \param[out] definition The definition of the object.
-    * \param[in]  fields An opaque definition of the data fields of the object.
-    *             It can be set to NULL if you do not want to retrieve the
-    *             definition.
-    * \param[in]  fieldsLength The length, in bytes, of the buffer \em fields.
-    *             It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Definition( psoObjectDefinition & definition,
-                    unsigned char       * fields,
-                    psoUint32             fieldsLength );
-
-   /**
-    * \brief Retrieve the length of the fields definition of the queue.
-    *
-    * This function is a helper function for ::Definition. 
-    * It allows you to allocate the proper size for \em fields.
-    *
-    * \param[out] fieldsLength The length in bytes of the fields buffer.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void DefinitionLength( psoUint32 * fieldsLength );
-
-   /**
-    * \brief Retrieve the field definition of the queue.
-    *
     * This function returns a new object. It is the responsability of the
     * caller to delete the object.
     *
-    * \return definition A new field definition of the queue.
+    * \return definition A new data definition of the queue.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   FieldDefinition * GetFieldDefinition();
+   DataDefinition * GetDataDefinition();
 
    /** 
     * Iterate through the queue - no data items are removed from the queue
@@ -158,28 +139,33 @@ public:
                 psoUint32   bufferLength,
                 psoUint32 & returnedLength );
 
-   /** 
-    * Open an existing LIFO queue (see Session::CreateObject to create a new 
-    * queue).
+   /**
+    * \brief Retrieve the data definition of the last accessed record.
     *
-    * \param[in]  queueName The fully qualified name of the queue. 
+    * Queues will usually contain data records with an identical layout (data 
+    * definition of the items). This layout was defined when the queue was 
+    * created. 
+    *
+    * You can also insert and retrieve data records with different layouts if
+    * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
+    * layout defined when a queue is created is then used as the default one.
+    * 
+    * The DataDefinition object returned by this method can be used to 
+    * access the layout on a record-by-record base.
+    *
+    * Note: you only need to get this object once. The hidden fields 
+    * associated with this object will be updated after each record is
+    * retrieved. The object will point to the data definition of the 
+    * queue itself when initially constructed.
+    * 
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return A new data definition of the queue.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Open( const std::string & queueName );
-
-   /** 
-    * Open an existing LIFO queue (see Session::CreateObject to create a new 
-    * queue).
-    *
-    * \param[in]  queueName The fully qualified name of the queue. 
-    * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
-    *             counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const char * queueName,
-              psoUint32    nameLengthInBytes );
+   DataDefinition * GetRecordDefinition();
 
    /** 
     * Remove the first item from the end of a LIFO queue and return it 
@@ -218,6 +204,30 @@ public:
     */
    void Push( const void * pItem, 
               psoUint32    length );
+
+   /**
+    * Insert a data record at the end of the LIFO queue.
+    *
+    * The additions only become permanent after a call to psoSession::Commit.
+    *
+    * The additional argument of this overloaded function, \em dataDefinition,
+    * is used to provide an alternate data definition if the queue supports
+    * this feature.
+    *
+    * This could be used to implement inheritance of the data records or
+    * to build a mismatched collection of records.
+    *
+    * \param[in]  pItem  The data item to be inserted.
+    * \param[in]  length The length of \em pItem (in bytes).
+    * \param[in]  dataDefinition The data definition for this specific 
+    *             data record. The queue must have been created with 
+    *             the appropriate flag to support this feature.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Push( const void           * pItem, 
+              psoUint32              length,
+              const DataDefinition & dataDefinition );
 
    /**
     * Return the status of the queue.

@@ -34,7 +34,7 @@ namespace pso {
 
 // Forward declarations
 class Session;
-class FieldDefinition;
+class DataDefinition;
 class KeyDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

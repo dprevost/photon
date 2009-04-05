@@ -264,12 +264,6 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
  * \param[out] objectHandle The handle to the hash map, allowing us access to
  *             the map in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
- * \param[out] dataDefHandle This optional handle gives you access to the
- *             data definition of the record on a record by record basis.
- *             It can be set to NULL if you do not want to use this feature. 
- *             If not set to NULL, the returned handle will be closed when
- *             the hash map is closed. You can also close it manually with 
- *             ::psoDataDefClose.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -277,8 +271,44 @@ PHOTON_EXPORT
 int psoHashMapOpen( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     psoUint32    nameLengthInBytes,
-                    PSO_HANDLE * objectHandle,
-                    PSO_HANDLE * dataDefHandle );
+                    PSO_HANDLE * objectHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/** 
+ * Retrieves a handle allowing you to access the data definition of the 
+ * last accessed record.
+ *
+ * Explanation:
+ * 
+ * Hah maps will usually contain data records with an identical layout (data 
+ * definition of the items). This layout was defined when the map was 
+ * created. 
+ *
+ * You can also insert and retrieve data records with different layouts if
+ * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
+ * layout defined when a map is created is then used as the default one.
+ * 
+ * To access the layout on a record-by-record base, use the argument 
+ * \em dataDefHandle - it will be set to the layout of the last retrieved
+ * record.
+ *
+ * Note: you only need to get the handle once. The hidden fields associated
+ * with this handle will be updated after each record is retrieved. The
+ * handle will point to the data definition of the hash map upon
+ * initialization.
+ *
+ * \param[in]  objectHandle The handle to the hash map
+ * \param[out] dataDefHandle This optional handle gives you access to the
+ *             data definition of the record on a record by record basis.
+ *             This handle will be closed when the hash map is closed. You
+ *             can also close it manually with ::psoDataDefClose.
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoHashMapRecordDefinition( PSO_HANDLE   objectHandle,
+                                PSO_HANDLE * dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

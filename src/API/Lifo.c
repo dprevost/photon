@@ -300,14 +300,11 @@ error_handler:
 int psoLifoOpen( PSO_HANDLE   sessionHandle,
                  const char * queueName,
                  uint32_t     nameLengthInBytes,
-                 PSO_HANDLE * objectHandle,
-                 PSO_HANDLE * dataDefHandle )
+                 PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
    psoaLifo * pLifo = NULL;
-   psonQueue * pMemLifo;
    int errcode;
-   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -332,16 +329,6 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
-   if ( dataDefHandle != NULL ) {
-      pDefinition = malloc( sizeof(psoaDataDefinition) );
-      if ( pDefinition == NULL ) {
-         free( pLifo );
-         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
-         return PSO_NOT_ENOUGH_HEAP_MEMORY;
-      }
-      pDefinition->pSession = pLifo->object.pSession;
-      pDefinition->definitionType = PSOA_DEF_DATA;
-   }
    
    memset( pLifo, 0, sizeof(psoaLifo) );
    pLifo->object.type = PSOA_LIFO;
@@ -353,23 +340,18 @@ int psoLifoOpen( PSO_HANDLE   sessionHandle,
                                    PSOA_READ_WRITE,
                                    queueName,
                                    nameLengthInBytes );
-      if ( errcode == PSO_OK ) {
-         *objectHandle = (PSO_HANDLE) pLifo;
-         pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
-         if ( dataDefHandle != NULL ) {
-            /* We use the global queue definition as the initial value
-             * to avoid an uninitialized pointer.
-             */
-            GET_PTR( pDefinition->pMemDefinition, 
-                     pMemLifo->dataDefOffset, 
-                     psonDataDefinition );
-            pDefinition->ppApiObject = &pLifo->pRecordDefinition;
-            pLifo->pRecordDefinition = pDefinition;
-         }
-      }
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pLifo->object.pSession->context.errorHandler, 
+         g_psoErrorHandle, errcode );
+      free(pLifo);
+   }
+   else {
+      *objectHandle = (PSO_HANDLE) pLifo;
    }
 
    return errcode;
@@ -529,6 +511,67 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
       errcode = psocGetLastError( &pLifo->object.pSession->context.errorHandler );
    }
    
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoLifoRecordDefinition( PSO_HANDLE   objectHandle,
+                             PSO_HANDLE * dataDefHandle )
+{
+   psoaLifo  * pQueue;
+   psonQueue * pMemQueue;
+   int errcode = PSO_OK;
+   psoaDataDefinition * pDefinition = NULL;
+   
+   pQueue = (psoaLifo *) objectHandle;
+   if ( pQueue == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pQueue->object.type != PSOA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( dataDefHandle == NULL ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   pDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDefinition == NULL ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler,
+                    g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   pDefinition->pSession = pQueue->object.pSession;
+   pDefinition->definitionType = PSOA_DEF_DATA;
+   
+   if ( ! pQueue->object.pSession->terminated ) {
+      if ( psoaCommonLock( &pQueue->object ) ) {
+         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+ 
+         /* We use the global queue definition as the initial value
+          * to avoid an uninitialized pointer.
+          */
+         GET_PTR( pDefinition->pMemDefinition, 
+                  pMemQueue->dataDefOffset, 
+                  psonDataDefinition );
+         pDefinition->ppApiObject = &pQueue->pRecordDefinition;
+         pQueue->pRecordDefinition = pDefinition;
+         
+         dataDefHandle = (PSO_HANDLE) pDefinition;
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pQueue->object.pSession->context.errorHandler, 
+                    g_psoErrorHandle, errcode );
+   }
+
    return errcode;
 }
 

@@ -33,9 +33,8 @@
 namespace pso {
 
 // Forward declarations
-//class psoQueueItem;
 class Session;
-class FieldDefinition;
+class DataDefinition;
 class KeyDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -49,8 +48,21 @@ class PHOTON_EXPORT HashMap
 {
 public:
 
-   HashMap( Session & session );
+   /** 
+    * Open an existing hash map.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   HashMap( Session & session, const std::string & hashMapName );
 
+   /**
+    * The destructor will close the hash map if not closed.
+    *
+    * This method won't throw an exception on error.
+    */
    virtual ~HashMap();
 
    /**
@@ -68,84 +80,6 @@ public:
     */
    void Close();
    
-   /**
-    * \brief Retrieve the data definition of the hash map.
-    *
-    * This function uses the optional class ObjDefinition. This class 
-    * simplify the management of the array of field definitions.
-    *
-    * \param[out] definition The definition of the object (accessed through
-    *             the definition "helper object".
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-//   void Definition( ObjDefinition & definition );
-
-   /**
-    * \brief Retrieve the data definition of the hash map.
-    *
-    * You can call the function ::DefinitionLength to retrieve the 
-    * length of the key and field definitions. This allows you to allocate 
-    * the proper size for both \em key and \em fields.
-    *
-    * \param[out] definition The definition of the object.
-    * \param[out] key An opaque definition of the key. You can set this field
-    *             to NULL if you do not want to retrieve the key definition.
-    * \param[in]  keyLength The length in bytes of the buffer \em key. 
-    *             It should be set to zero if \em key is NULL.
-    * \param[out] fields An opaque definition of the data fields of the object.
-    *             It can be set to NULL if you do not want to retrieve the
-    *             definition.
-    * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
-    *             It should be set to zero if \em fields is NULL.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Definition( psoObjectDefinition & definition,
-                    unsigned char       * key,
-                    psoUint32             keyLength,
-                    unsigned char       * fields,
-                    psoUint32             fieldsLength );
-
-   /**
-    * \brief Retrieve the lengths of the variable elements of the definition 
-    *        of the hash map.
-    *
-    * This function is a helper function for ::Definition. 
-    * It allows you to allocate the proper size for \em key and \em fields.
-    *
-    * \param[out] keyLength The length in bytes of the key buffer.
-    * \param[out] fieldsLength The length in bytes of the fields buffer.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void DefinitionLength( psoUint32 * keyLength,
-                          psoUint32 * fieldsLength );
-
-   /**
-    * \brief Retrieve the field definition of the hash map.
-    *
-    * This function returns a new object. It is the responsability of the
-    * caller to delete the object.
-    *
-    * \return definition A new field definition of the hash map.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   FieldDefinition * GetFieldDefinition();
-
-   /**
-    * \brief Retrieve the key definition of the hash map.
-    *
-    * This function returns a new object. It is the responsability of the
-    * caller to delete the object.
-    *
-    * \return definition A new key definition of the hash map.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   KeyDefinition * GetKeyDefinition();
-
    /** 
     * Remove the data item identified by the given key from the hash map.
     *
@@ -163,6 +97,30 @@ public:
    void Delete( const void * key,
                 psoUint32    keyLength );
 
+   /**
+    * \brief Retrieve the data definition of the hash map.
+    *
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return A new data definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   DataDefinition * GetDataDefinition();
+
+   /**
+    * \brief Retrieve the key definition of the hash map.
+    *
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return A new key definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinition * GetKeyDefinition();
+                          
    /** 
     * Retrieve the data item identified by the given key from the hash map.
     *
@@ -255,6 +213,34 @@ public:
                 psoUint32 & retDataLength );
 
    /**
+    * \brief Retrieve the data definition of the last accessed record.
+    *
+    * Hah maps will usually contain data records with an identical layout (data 
+    * definition of the items). This layout was defined when the map was 
+    * created. 
+    *
+    * You can also insert and retrieve data records with different layouts if
+    * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
+    * layout defined when a map is created is then used as the default one.
+    * 
+    * The DataDefinition object returned by this method can be used to 
+    * access the layout on a record-by-record base.
+    *
+    * Note: you only need to get this object once. The hidden fields 
+    * associated with this object will be updated after each record is
+    * retrieved. The object will point to the data definition of the 
+    * hash map itself when initially constructed.
+    * 
+    * This function returns a new object. It is the responsability of the
+    * caller to delete the object.
+    *
+    * \return A new data definition of the hash map.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   DataDefinition * GetRecordDefinition();
+
+   /**
     * Insert a data element in the hash map.
     *
     * The additions only become permanent after a call to psoSession::Commit.
@@ -271,28 +257,33 @@ public:
                 const void * data,
                 psoUint32    dataLength );
 
-   /** 
-    * Open an existing hash map (see psoSession::CreateObject to create a new 
-    * object).
+   /**
+    * Insert a data element in the hash map.
     *
-    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    * The additions only become permanent after a call to psoSession::Commit.
+    *
+    * The additional argument of this overloaded function, \em dataDefinition,
+    * is used to provide an alternate data definition if the hash map supports
+    * this feature.
+    *
+    * This could be used to implement inheritance of the data records or
+    * to build a mismatched collection of records.
+    *
+    * \param[in]  key The key of the item to be inserted.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[in]  data  The data item to be inserted.
+    * \param[in]  dataLength The length of \em data (in bytes).
+    * \param[in]  dataDefinition The data definition for this specific 
+    *             data record. The hash map must have been created with 
+    *             the appropriate flag to support this feature.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void Open( const std::string & hashMapName );
-   
-   /** 
-    * Open an existing hash map (see psoSession::CreateObject to create a new 
-    * object).
-    *
-    * \param[in]  hashMapName The fully qualified name of the hash map. 
-    * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) 
-    *             not counting the null terminator.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   void Open( const char * hashMapName,
-              psoUint32    nameLengthInBytes );
+   void Insert( const void           * key,
+                psoUint32              keyLength,
+                const void           * data,
+                psoUint32              dataLength,
+                const DataDefinition & dataDefinition );
    
    /**
     * Replace a data element in the hash map.
@@ -310,6 +301,33 @@ public:
                  psoUint32    keyLength,
                  const void * data,
                  psoUint32    dataLength );
+
+   /**
+    * Replace a data record in the hash map.
+    *
+    * The replacements only become permanent after a call to psoSession::Commit.
+    *
+    * The additional argument of this overloaded function, \em dataDefinition,
+    * is used to store data records having different data definitions.
+    *
+    * This could be used to implement inheritance of the data records or
+    * to build a mismatched collection of records.
+    *
+    * \param[in]  key The key of the item to be replaced.
+    * \param[in]  keyLength The length of the \em key buffer (in bytes).
+    * \param[in]  data  The new data item that will replace the previous data.
+    * \param[in]  dataLength The length of \em data (in bytes).
+    * \param[in]  dataDefinition The data definition for this specific 
+    *             data record. The hash map must have been created with 
+    *             the appropriate flag to support this feature.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Replace( const void           * key,
+                 psoUint32              keyLength,
+                 const void           * data,
+                 psoUint32              dataLength,
+                 const DataDefinition & dataDefinition );
 
    /**
     * Return the status of the hash map.

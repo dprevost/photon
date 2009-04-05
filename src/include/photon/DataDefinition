@@ -134,6 +134,7 @@ protected:
    PSO_HANDLE & m_sessionHandle;
    
    friend class FastMap;
+   friend class FastMapEditor;
 
 };
 

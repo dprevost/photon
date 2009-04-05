@@ -332,6 +332,7 @@ private:
    
    friend class DataDefinition;
    friend class FastMap;
+   friend class FastMapEditor;
    friend class Folder;
    friend class HashMap;
    friend class KeyDefinition;
