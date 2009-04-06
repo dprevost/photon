@@ -237,9 +237,12 @@ public:
     * The DataDefinition object returned by this method can be used to 
     * access the layout on a record-by-record base.
     *
-    * Warning: the methods ::Get and similar will update the 
-    * Notes: 
-    *   This function returns a new object. It is the responsability of the
+    * Note: you only need to get this object once. The hidden fields 
+    * associated with this object will be updated after each record is
+    * retrieved. The object will point to the data definition of the 
+    * map itself when initially constructed.
+    * 
+    * This function returns a new object. It is the responsability of the
     * caller to delete the object.
     *
     * \return A new data definition of the hash map.

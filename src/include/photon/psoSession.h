@@ -317,34 +317,6 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * \brief Retrieve the lengths of the variable elements of the definition 
- *        of the named object.
- *
- * This function is a helper function for ::psoGetDefinition. 
- * It allows you to allocate the proper size for \em key and \em fields.
- *
- * \param[in]  sessionHandle Handle to the current session.
- * \param[in]  objectName The fully qualified name of the object. 
- * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
- *             counting the null terminator (null-terminators are not used by
- *             the Photon engine).
- * \param[out] keyLength The length in bytes of the key buffer.
- *             keyLength cannot be NULL even if the objects has no key.
- * \param[out] fieldsLength The length in bytes of the fields buffer.
- *             This pointer cannot be NULL.
- *
- * \return 0 on success or a ::psoErrors on error.
- */
-PHOTON_EXPORT
-int psoGetDefLength( PSO_HANDLE   sessionHandle,
-                     const char * objectName,
-                     psoUint32    nameLengthInBytes,
-                     psoUint32  * keyLength,
-                     psoUint32  * fieldsLength );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/**
  * Return information on the current status of the shared memory.
  *
  * The fetched information is mainly about the current status of the memory 

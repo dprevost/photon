@@ -135,6 +135,11 @@ protected:
    
    friend class FastMap;
    friend class FastMapEditor;
+   friend class Folder;
+   friend class HashMap;
+   friend class Lifo;
+   friend class Queue;
+   friend class Session;
 
 };
 

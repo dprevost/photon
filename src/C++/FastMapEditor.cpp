@@ -60,7 +60,6 @@ FastMapEditor::~FastMapEditor()
    }
    
    m_objectHandle = NULL;
-   m_sessionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -205,7 +204,7 @@ DataDefinition * FastMapEditor::GetDataDefinition()
                               &keyDefHandle,
                               &dataDefHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMapEditor::Definition" );
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::GetDataDefinition" );
    }
    
    pDefinition = new DataDefinition();
@@ -266,32 +265,6 @@ KeyDefinition * FastMapEditor::GetKeyDefinition()
 #endif
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefinition * FastMapEditor::GetKeyDefinition()
-{
-   int rc;
-   PSO_HANDLE dataDefHandle, keyDefHandle;
-   KeyDefinition * pDefinition;
-
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "FastMapEditor::GetKeyDefinition", PSO_NULL_HANDLE );
-   }
-
-   rc = psoFastMapDefinition( m_objectHandle,
-                              &keyDefHandle,
-                              &dataDefHandle );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMapEditor::GetKeyDefinition" );
-   }
-   
-   pDefinition = new KeyDefinition();
-   pDefinition->m_definitionHandle = keyDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
-   
-   return pDefinition;
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
 int FastMapEditor::GetFirst( void     * key,
                              uint32_t   keyLength,
                              void     * buffer,
@@ -317,6 +290,32 @@ int FastMapEditor::GetFirst( void     * key,
    }
    
    return rc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+KeyDefinition * FastMapEditor::GetKeyDefinition()
+{
+   int rc;
+   PSO_HANDLE dataDefHandle, keyDefHandle;
+   KeyDefinition * pDefinition;
+
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMapEditor::GetKeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapDefinition( m_objectHandle,
+                              &keyDefHandle,
+                              &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::GetKeyDefinition" );
+   }
+   
+   pDefinition = new KeyDefinition();
+   pDefinition->m_definitionHandle = keyDefHandle;
+   pDefinition->m_sessionHandle = m_sessionHandle;
+   
+   return pDefinition;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -349,6 +348,31 @@ int FastMapEditor::GetNext( void     * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+DataDefinition * FastMapEditor::GetRecordDefinition()
+{
+   int rc;
+   PSO_HANDLE dataDefHandle;
+   DataDefinition * pDefinition;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMapEditor::GetRecordDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapRecordDefinition( m_objectHandle,
+                                    &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::GetRecordDefinition" );
+   }
+
+   pDefinition = new DataDefinition();
+   pDefinition->m_definitionHandle = dataDefHandle;
+   pDefinition->m_sessionHandle = m_sessionHandle;
+   
+   return pDefinition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void FastMapEditor::Insert( const void * key,
                             uint32_t     keyLength,
                             const void * data,
@@ -373,6 +397,31 @@ void FastMapEditor::Insert( const void * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void FastMapEditor::Insert( const void           * key,
+                            uint32_t               keyLength,
+                            const void           * data,
+                            uint32_t               dataLength,
+                            const DataDefinition & dataDefinition )
+{
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMapEditor::Insert", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapInsert( m_objectHandle,
+                          key,
+                          keyLength,
+                          data,
+                          dataLength,
+                          dataDefinition.m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Insert" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void FastMapEditor::Replace( const void * key,
                              uint32_t     keyLength,
                              const void * data,
@@ -390,6 +439,31 @@ void FastMapEditor::Replace( const void * key,
                            data,
                            dataLength,
                            NULL );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Replace" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void FastMapEditor::Replace( const void           * key,
+                             uint32_t               keyLength,
+                             const void           * data,
+                             uint32_t               dataLength,
+                             const DataDefinition & dataDefinition )
+{
+   int rc;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMapEditor::Replace", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapReplace( m_objectHandle,
+                           key,
+                           keyLength,
+                           data,
+                           dataLength,
+                           dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "FastMapEditor::Replace" );
    }

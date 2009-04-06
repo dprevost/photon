@@ -32,7 +32,7 @@ namespace pso {
 
 // Forward declarations
 class Session;
-class FieldDefinition;
+class DataDefinition;
 class KeyDefinition;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -141,6 +141,34 @@ public:
     */
    void DestroyObject( const std::string & objectName );
 
+   /**
+    * \brief Retrieve the basic definition of the object, a child of the
+    * folder.
+    *
+    * \param[in]  objectName The name of the object. 
+    * \param[out] definition The definition of the object 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void GetDefinition( const std::string    & objectName,
+                       psoObjectDefinition  & definition );
+   
+   /**
+    * \brief Retrieve the data definition of the the object, a child of the
+    * folder.
+    *
+    * This function may return a new object. It is the responsability of
+    * the caller to delete the object.
+    *
+    * \param[in]  objectName The name of the object. 
+    *
+    * \return A new DataDefinition object or NULL if the object is
+    *         a Folder.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   DataDefinition * GetDataDefinition( const std::string & objectName );
+   
    /** 
     * Iterate through the folder - no data items are removed from the 
     * folder by this function.
@@ -159,6 +187,22 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    int GetFirst( psoFolderEntry & entry );
+
+   /**
+    * \brief Retrieve the key definition of the the object, a child of the
+    * folder.
+    *
+    * This function may return a new object. It is the responsability of
+    * the caller to delete the object.
+    *
+    * \param[in]  objectName The name of the object. 
+    * 
+    * \return A new KeyDefinition object or NULL if the object does not
+    *         have a key definition (Folders, Queues, etc.).
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   KeyDefinition * GetKeyDefinition( const std::string & objectName );
 
    /** 
     * Iterate through the folder.

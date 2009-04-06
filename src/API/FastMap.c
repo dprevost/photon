@@ -252,14 +252,11 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
 int psoFastMapEdit( PSO_HANDLE   sessionHandle,
                     const char * hashMapName,
                     uint32_t     nameLengthInBytes,
-                    PSO_HANDLE * objectHandle,
-                    PSO_HANDLE * dataDefHandle )
+                    PSO_HANDLE * objectHandle )
 {
    psoaSession * pSession;
    psoaFastMap * pHashMap = NULL;
-   psonFastMap * pMemHashMap;
    int errcode;
-   psoaDataDefinition * pDefinition = NULL;
    
    if ( objectHandle == NULL ) return PSO_NULL_HANDLE;
    *objectHandle = NULL;
@@ -284,16 +281,6 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
-   if ( dataDefHandle != NULL ) {
-      pDefinition = malloc( sizeof(psoaDataDefinition) );
-      if ( pDefinition == NULL ) {
-         free( pHashMap );
-         psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
-         return PSO_NOT_ENOUGH_HEAP_MEMORY;
-      }
-      pDefinition->pSession = pHashMap->object.pSession;
-      pDefinition->definitionType = PSOA_DEF_DATA;
-   }
    
    memset( pHashMap, 0, sizeof(psoaFastMap) );
    pHashMap->object.type = PSOA_MAP;
@@ -310,17 +297,6 @@ int psoFastMapEdit( PSO_HANDLE   sessionHandle,
          *objectHandle = (PSO_HANDLE) pHashMap;
          pHashMap->editMode = 1;
          
-         pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
-         if ( dataDefHandle != NULL ) {
-            /* We use the global queue definition as the initial value
-             * to avoid an uninitialized pointer.
-             */
-            GET_PTR( pDefinition->pMemDefinition, 
-                     pMemHashMap->dataDefOffset, 
-                     psonDataDefinition );
-            pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
-            pHashMap->pRecordDefinition = pDefinition;
-         }
          pSession->numberOfEdits++;
       }
    }

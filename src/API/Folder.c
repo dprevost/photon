@@ -416,6 +416,109 @@ int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
     
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int psoFolderGetDefinition( PSO_HANDLE            objectHandle,
+                            const char          * objectName,
+                            uint32_t              nameLengthInBytes,
+                            psoObjectDefinition * pDefinition,
+                            PSO_HANDLE          * keyDefHandle,
+                            PSO_HANDLE          * dataDefHandle )
+{
+   psoaFolder * pFolder;
+   psonFolder * pMemFolder;
+   psoaSession * pSession;
+   int errcode = PSO_OK;
+   bool ok = true;
+   psoaDataDefinition * pDataDefinition = NULL;
+   psoaKeyDefinition  * pKeyDefinition = NULL;
+
+   pFolder = (psoaFolder *) objectHandle;
+   if ( pFolder == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pFolder->object.type != PSOA_FOLDER ) {
+      return PSO_WRONG_TYPE_HANDLE;
+   }
+   pSession = pFolder->object.pSession;
+
+   if ( objectName == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_OBJECT_NAME );
+      return PSO_INVALID_OBJECT_NAME;
+   }
+
+   if ( nameLengthInBytes == 0 ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_INVALID_LENGTH );
+      return PSO_INVALID_LENGTH;
+   }
+   
+   if ( pDefinition == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   if ( keyDefHandle == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   if ( dataDefHandle == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   pDataDefinition = malloc( sizeof(psoaDataDefinition) );
+   if ( pDataDefinition == NULL ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   pKeyDefinition = malloc( sizeof(psoaKeyDefinition) );
+   if ( pKeyDefinition == NULL ) {
+      free( pDataDefinition );
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NOT_ENOUGH_HEAP_MEMORY );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+
+   if ( ! pSession->terminated ) {
+      if ( psoaCommonLock( &pFolder->object ) ) {
+         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+
+         ok = psonFolderGetDefinition( pMemFolder,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       pDefinition,
+                                       &pKeyDefinition->pMemDefinition,
+                                       &pDataDefinition->pMemDefinition,
+                                       &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) {
+            *dataDefHandle = (PSO_HANDLE) pDataDefinition;
+            *keyDefHandle = (PSO_HANDLE) pKeyDefinition;
+         }
+         psoaSessionUnlock( pSession );
+      }
+      else {
+         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      }
+   }
+   else {
+      errcode = PSO_SESSION_IS_TERMINATED;
+   }
+   
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
+   }
+   if ( ! ok ) {
+      errcode = psocGetLastError( &pSession->context.errorHandler );
+   }
+   
+   if ( errcode != PSO_OK ) {
+      if ( pDataDefinition ) free(pDataDefinition);
+      if ( pKeyDefinition) free(pKeyDefinition);
+   }
+   
+   return errcode;
+}   
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 int psoFolderGetFirst( PSO_HANDLE       objectHandle,
                        psoFolderEntry * pEntry )
 {

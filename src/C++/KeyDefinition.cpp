@@ -27,8 +27,13 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefinition::KeyDefinition( bool ro )
-   : readOnly ( ro )
+KeyDefinition::KeyDefinition( Session                & session,
+                              const std::string        name,
+                              enum psoDefinitionType   type,
+                              const unsigned char    * keyDef,
+                              psoUint32                keyDefLength )
+   : m_definitionHandle ( NULL ),
+     m_sessionHandle    ( session.m_sessionHandle )
 {
 }
 

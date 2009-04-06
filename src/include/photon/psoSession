@@ -205,65 +205,45 @@ public:
                   psoUint32   msgLengthInBytes );
 
    /**
-    * \brief Retrieve the data definition of the named object.
-    *
-    * This function uses the optional class ObjDefinition. This class 
-    * simplify the management of the array of field definitions.
+    * \brief Retrieve the basic definition of the named object.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[out] definition The definition of the object (accessed through
-    *             the definition "helper object".
+    * \param[out] definition The definition of the object 
     *
     * \exception pso::Exception An abnormal error occured.
     */
-//   void GetDefinition( const std::string & objectName,
-//                       ObjDefinition     & definition );
-
+   void GetDefinition( const std::string    & objectName,
+                       psoObjectDefinition  & definition );
+   
    /**
     * \brief Retrieve the data definition of the named object.
     *
-    * You can call the function ::GetDefinitionLength to retrieve the 
-    * lengths of the key and the field definitions. This allows you to allocate 
-    * the proper size for \em key and \em fields.
+    * This function may return a new object. It is the responsability of
+    * the caller to delete the object.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[out] definition The definition of the object.
-    * \param[in]  key An opaque definition of the key. You can set this field
-    *             to NULL if the object has no key or if you do not want to 
-    *             retrieve the key definition.
-    * \param[in]  keyLength The length in bytes of the buffer \em key. 
-    *             It should be set to zero if \em key is NULL.
-    * \param[in]  fields An opaque definition of the data fields of the object.
-    *             It can be set to NULL if you do not want to retrieve the
-    *             definition.
-    * \param[in]  fieldsLength The length in bytes of the buffer \em fields.
-    *             It should be set to zero if \em fields is NULL.
+    *
+    * \return A new DataDefinition object or NULL if the object is
+    *         a Folder.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void GetDefinition( const std::string   & objectName,
-                       psoObjectDefinition & definition,
-                       unsigned char       * key,
-                       psoUint32             keyLength,
-                       unsigned char       * fields,
-                       psoUint32             fieldsLength );
-
+   DataDefinition * GetDataDefinition( const std::string & objectName );
+   
    /**
-    * \brief Retrieve the lengths of the variable elements of the definition 
-    *        of the named object.
+    * \brief Retrieve the key definition of the named object.
     *
-    * This function is a helper function for ::GetDefinition. 
-    * It allows you to allocate the proper size for \em key and \em fields.
+    * This function may return a new object. It is the responsability of
+    * the caller to delete the object.
     *
     * \param[in]  objectName The fully qualified name of the object. 
-    * \param[out] keyLength The length in bytes of the key buffer.
-    * \param[out] fieldsLength The length in bytes of the fields buffer.
+    * 
+    * \return A new KeyDefinition object or NULL if the object does not
+    *         have a key definition (Folders, Queues, etc.).
     *
-    * \return 0 on success or a ::psoErrors on error.
+    * \exception pso::Exception An abnormal error occured.
     */
-   void GetDefinitionLength( const std::string & objectName,
-                             psoUint32         * keyLength,
-                             psoUint32         * fieldsLength );
+   KeyDefinition * GetKeyDefinition( const std::string & objectName );
 
    /**
     * Return information on the current status of the shared memory.

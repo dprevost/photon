@@ -57,7 +57,6 @@ FastMap::~FastMap()
    }
    
    m_objectHandle = NULL;
-   m_sessionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -167,7 +166,7 @@ DataDefinition * FastMap::GetDataDefinition()
                               &keyDefHandle,
                               &dataDefHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
+      throw pso::Exception( m_sessionHandle, "FastMap::GetDataDefinition" );
    }
    
    pDefinition = new DataDefinition();
@@ -226,31 +225,6 @@ KeyDefinition * FastMap::GetKeyDefinition()
    return pKeyDef;
 }
 #endif
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-KeyDefinition * FastMap::GetKeyDefinition()
-{
-   int rc;
-   PSO_HANDLE dataDefHandle, keyDefHandle;
-   KeyDefinition * pDefinition;
-
-   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "FastMap::GetKeyDefinition", PSO_NULL_HANDLE );
-   }
-
-   rc = psoFastMapDefinition( m_objectHandle,
-                              &keyDefHandle,
-                              &dataDefHandle );
-   if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "FastMap::Definition" );
-   }
-   
-   pDefinition = new KeyDefinition();
-   pDefinition->m_definitionHandle = keyDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
-   
-   return pDefinition;
-}
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -283,6 +257,32 @@ int FastMap::GetFirst( void       * key,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+KeyDefinition * FastMap::GetKeyDefinition()
+{
+   int rc;
+   PSO_HANDLE dataDefHandle, keyDefHandle;
+   KeyDefinition * pDefinition;
+
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMap::GetKeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapDefinition( m_objectHandle,
+                              &keyDefHandle,
+                              &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::GetKeyDefinition" );
+   }
+   
+   pDefinition = new KeyDefinition();
+   pDefinition->m_definitionHandle = keyDefHandle;
+   pDefinition->m_sessionHandle = m_sessionHandle;
+   
+   return pDefinition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 int FastMap::GetNext( void       * key,
                       uint32_t     keyLength,
                       void       * buffer,
@@ -307,6 +307,31 @@ int FastMap::GetNext( void       * key,
       throw pso::Exception( m_sessionHandle, "FastMap::GetNext" );
    }
    return rc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+DataDefinition * FastMap::GetRecordDefinition()
+{
+   int rc;
+   PSO_HANDLE dataDefHandle;
+   DataDefinition * pDefinition;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMap::GetRecordDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoFastMapRecordDefinition( m_objectHandle,
+                                    &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::GetRecordDefinition" );
+   }
+
+   pDefinition = new DataDefinition();
+   pDefinition->m_definitionHandle = dataDefHandle;
+   pDefinition->m_sessionHandle = m_sessionHandle;
+   
+   return pDefinition;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
