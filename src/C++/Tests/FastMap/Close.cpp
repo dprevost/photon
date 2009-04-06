@@ -31,19 +31,25 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   FastMap hashmap(session);
-   FastMapEditor editor(session);
+   FastMap * hashmap = NULL;
+   FastMapEditor * editor = NULL;
    string fname = "/cpp_fastmap_close";
    string hname = fname + "/test";
-   psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
+   DataDefinition dataDefObj( session, 
+                              "Data Definition",
+                              PSO_DEF_PHOTON_ODBC_SIMPLE,
+                              (unsigned char *)fields,
+                              sizeof(psoFieldDefinition) );
+   KeyDefinition keyDefObj( session, 
+                            "Key Definition",
+                            PSO_DEF_PHOTON_ODBC_SIMPLE,
+                            (unsigned char *)&keyDef,
+                            sizeof(psoKeyDefinition) );
    
    try {
       if ( argc > 1 ) {
@@ -53,13 +59,14 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( fname );
+      
       session.CreateObject( hname,
-                            mapDef, 
-                            (unsigned char *)&keyDef,
-                            sizeof(psoKeyDefinition),
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
+                            mapDef,
+                            keyDefObj,
+                            dataDefObj );
+      hashmap = new FastMap( session, hname );
+      editor = new FastMapEditor( session, hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -67,11 +74,17 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Closing when not open...
    try {
-      hashmap.Close();
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
+      hashmap->Close();
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   // Second close must throw an exception
+   try {
+      hashmap->Close();
+      cerr << "Test failed - line " << __LINE__ << ", error: no exception thrown" << endl;
       return 1;
    }
    catch( pso::Exception exc ) {
@@ -80,30 +93,19 @@ int main( int argc, char * argv[] )
          return 1;
       }
    }
-
-   try {
-      hashmap.Open( hname );
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   try {
-      hashmap.Close();
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
+   
    // Repeat the tests with the editor version.
    
-   // Closing when not open...
    try {
-      editor.Close();
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
+      editor->Close();
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   try {
+      editor->Close();
+      cerr << "Test failed - line " << __LINE__ << ", error: no exception thrown" << endl;
       return 1;
    }
    catch( pso::Exception exc ) {
@@ -112,23 +114,6 @@ int main( int argc, char * argv[] )
          return 1;
       }
    }
-
-   try {
-      editor.Open( hname );
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   try {
-      editor.Close();
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-   
    
    return 0;
 }

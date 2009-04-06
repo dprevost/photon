@@ -112,8 +112,7 @@ int main( int argc, char * argv[] )
    errcode = psoLifoOpen( sessionHandle,
                           "/api_lifo_sp/test",
                           strlen("/api_lifo_sp/test"),
-                          &objHandle,
-                          NULL );
+                          &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

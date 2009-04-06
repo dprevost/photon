@@ -106,8 +106,7 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                             "/ahnp/test",
                              strlen("/ahnp/test"),
-                            &objHandle,
-                            NULL );
+                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

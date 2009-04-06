@@ -89,8 +89,7 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                            "/aqfp/test",
                            strlen("/aqfp/test"),
-                           &objHandle,
-                           NULL );
+                           &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -105,8 +105,7 @@ int main( int argc, char * argv[] )
    errcode = psoFastMapEdit( sessionHandle,
                              "/api_fast_map_next_pass/test",
                              strlen("/api_fast_map_next_pass/test"),
-                             &objHandle,
-                             NULL );
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

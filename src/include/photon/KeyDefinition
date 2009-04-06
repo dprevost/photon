@@ -45,7 +45,8 @@ namespace pso {
  */
 class PHOTON_EXPORT KeyDefinition
 {
-
+public:
+   
    /**
     * Construct a new key definition in shared memory.
     *

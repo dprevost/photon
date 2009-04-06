@@ -118,8 +118,7 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle,
                              "/ahrepl/test",
                              strlen("/ahrepl/test"),
-                             &objHandle,
-                             NULL );
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -127,8 +126,7 @@ int main( int argc, char * argv[] )
    errcode = psoHashMapOpen( sessionHandle2,
                              "/ahrepl/test",
                              strlen("/ahrepl/test"),
-                             &objHandle2,
-                             NULL );
+                             &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

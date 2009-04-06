@@ -105,8 +105,7 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                             "/aqons/test",
                             strlen("/aqons/test"),
-                            &objHandle,
-                            NULL );
+                            &objHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

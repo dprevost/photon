@@ -102,8 +102,7 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle,
                            "/api_queue_pushnow/test",
                            strlen("/api_queue_pushnow/test"),
-                           &objHandle,
-                           NULL );
+                           &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -111,8 +110,7 @@ int main( int argc, char * argv[] )
    errcode = psoQueueOpen( sessionHandle2,
                            "/api_queue_pushnow/test",
                            strlen("/api_queue_pushnow/test"),
-                           &objHandle2,
-                           NULL );
+                           &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
