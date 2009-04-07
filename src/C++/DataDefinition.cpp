@@ -140,21 +140,26 @@ void DataDefinition::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-const unsigned char * DataDefinition::GetDefinition()
+void DataDefinition::GetDefinition( unsigned char * buffer,
+                                    psoUint32       bufferLength )
 {
    if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
       throw pso::Exception( "DataDefinition::GetDefinition", PSO_NULL_HANDLE );
    }
 
-   return m_dataDef;
+   if ( bufferLength < m_dataDefLength ) {
+      throw pso::Exception( "DataDefinition::GetDefinition", PSO_INVALID_LENGTH );
+   }
+   
+   memcpy( buffer, m_dataDef, m_dataDefLength );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-uint32_t DataDefinition::GetDefLength()
+uint32_t DataDefinition::GetLength()
 {
    if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
-      throw pso::Exception( "DataDefinition::GetDefLength", PSO_NULL_HANDLE );
+      throw pso::Exception( "DataDefinition::GetLength", PSO_NULL_HANDLE );
    }
 
    return m_dataDefLength;
@@ -172,7 +177,7 @@ string DataDefinition::GetNext()
    }
 
    if ( m_dataDef == NULL ) {
-      throw pso::Exception( "FieldDefinitionUser::GetNext", PSO_NULL_POINTER );
+      throw pso::Exception( "DataDefinition::GetNext", PSO_NULL_POINTER );
    }
 
    if ( m_currentLength >= m_dataDefLength ) {
@@ -291,6 +296,17 @@ string DataDefinition::GetNextODBC()
    s = stream.str();
    
    return s;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+enum psoDefinitionType DataDefinition::GetType()
+{
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "DataDefinition::GetType", PSO_NULL_HANDLE );
+   }
+
+   return m_defType;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

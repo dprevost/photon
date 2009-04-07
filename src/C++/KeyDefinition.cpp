@@ -20,7 +20,9 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/KeyDefinition>
+#include <photon/KeyDefinition.h>
+#include "API/KeyDefinition.h"
+#include <sstream>
 
 using namespace std;
 using namespace pso;
@@ -33,14 +35,184 @@ KeyDefinition::KeyDefinition( Session                & session,
                               const unsigned char    * keyDef,
                               psoUint32                keyDefLength )
    : m_definitionHandle ( NULL ),
-     m_sessionHandle    ( session.m_sessionHandle )
+     m_sessionHandle    ( session.m_sessionHandle ),
+     m_defType          ( type ),
+     m_keyDef           ( keyDef ),
+     m_keyDefLength     ( keyDefLength ),
+     m_currentLength    ( 0 )
 {
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "keyDefinition::KeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoKeyDefCreate( m_sessionHandle,
+                         name.c_str(),
+                         name.length(),
+                         type,
+                         keyDef,
+                         keyDefLength,
+                         &m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::KeyDefinition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+KeyDefinition::KeyDefinition( Session & session, const std::string name )
+   : m_definitionHandle ( NULL ),
+     m_sessionHandle    ( session.m_sessionHandle ),
+     m_currentLength    ( 0 )
+{
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::KeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoKeyDefOpen( m_sessionHandle,
+                       name.c_str(),
+                       name.length(),
+                       &m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::KeyDefinition" );
+   }
+   
+   rc = psoaKeyDefGetDef( m_definitionHandle, 
+                          &m_defType,
+                          (unsigned char **)&m_keyDef,
+                          &m_keyDefLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::KeyDefinition" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+KeyDefinition::KeyDefinition( PSO_HANDLE sessionHandle,
+                              PSO_HANDLE definitionHandle )
+   : m_definitionHandle ( definitionHandle ),
+     m_sessionHandle    ( sessionHandle ),
+     m_currentLength    ( 0 )
+{
+   int rc;
+
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::KeyDefinition", PSO_NULL_HANDLE );
+   }
+
+   rc = psoaKeyDefGetDef( m_definitionHandle, 
+                           &m_defType,
+                           (unsigned char **)&m_keyDef,
+                           &m_keyDefLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::KeyDefinition" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 KeyDefinition::~KeyDefinition()
 {
+   if ( m_definitionHandle != NULL ) {
+      psoKeyDefClose( m_definitionHandle );
+   }
+   m_definitionHandle = NULL;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void KeyDefinition::Close()
+{
+   int rc;
+
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::Close", PSO_NULL_HANDLE );
+   }
+
+   rc = psoKeyDefClose( m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::Close" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void KeyDefinition::GetDefinition( unsigned char * buffer,
+                                   psoUint32       bufferLength)
+{
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::GetDefinition", PSO_NULL_HANDLE );
+   }
+
+   if ( bufferLength < m_keyDefLength ) {
+      throw pso::Exception( "KeyDefinition::GetDefinition", PSO_INVALID_LENGTH );
+   }
+   
+   memcpy( buffer, m_keyDef, m_keyDefLength );
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+psoUint32 KeyDefinition::GetLength()
+{
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::GetLength", PSO_NULL_HANDLE );
+   }
+
+   return m_keyDefLength;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+string KeyDefinition::GetNext()
+{
+   string s;
+   uint32_t i;
+
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::GetNext", PSO_NULL_HANDLE );
+   }
+
+   if ( m_keyDef == NULL ) {
+      throw pso::Exception( "KeyDefinition::GetNext", PSO_NULL_POINTER );
+   }
+
+   if ( m_currentLength >= m_keyDefLength ) {
+      m_currentLength = 0;
+      return s;
+   }
+   
+   if ( m_defType == PSO_DEF_USER_DEFINED ) {
+      
+      for ( i = m_currentLength; i < m_keyDefLength; ++i ) {
+         if ( m_keyDef[i] == 0 ) {
+            m_currentLength = i + 1;
+            break;
+         }
+         s += m_keyDef[i];
+      }
+   }
+   else if ( m_defType == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
+      
+//      return GetNextODBC();
+   }
+
+   return s;
+}
+
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+enum psoDefinitionType KeyDefinition::GetType()
+{
+   if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::GetType", PSO_NULL_HANDLE );
+   }
+
+   return m_defType;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

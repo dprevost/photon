@@ -263,9 +263,7 @@ Session::GetKeyDefinition( const std::string & objectName )
       throw pso::Exception( m_sessionHandle, "Session::GetKeyDefinition" );
    }
    
-   pDefinition = new KeyDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new KeyDefinition( m_sessionHandle, keyDefHandle );
    
    return pDefinition;
 }

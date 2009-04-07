@@ -78,10 +78,8 @@ public:
    
 protected:
    /**
-    * Default empty constructor.
-    *
-    * It is used by the other objects of this API to build the data 
-    * definition.
+    * This constructor is used by the other objects of this API to build the 
+    * data definition.
     * 
     * \param[in] sessionHandle Handle to the session we belong to.
     * \param[in] definitionHandle Handle to the definition
@@ -120,20 +118,37 @@ public:
     */
    std::string GetNext();
 
-   /** Retrieve the fields definition.
+   /** 
+    * Retrieves the data definition as an array of bytes.
     *
-    * \return The definition of the fields as an array of bytes.
+    * \param[out] buffer A buffer to copy the data definition.
+    * \param[in]  bufferLength The length in bytes of \em buffer.
+    *
+    * \exception pso::Exception An abnormal error occured.
     */
-   const unsigned char * GetDefinition();
+   void GetDefinition( unsigned char * buffer,
+                       psoUint32       bufferLength );
 
-   /** Returns the length, in bytes, of the definition.
+   /** 
+    * Returns the length, in bytes, of the definition.
+    *
+    * This function can be used to determine the length of the buffer
+    * that must be allocated for ::GetDefinition().
     *
     * \return The length, in bytes, of the definition
+    *
+    * \exception pso::Exception An abnormal error occured.
     */
-   psoUint32 GetDefLength();
+   psoUint32 GetLength();
 
-   enum psoDefinitionType GetType()
-      { return m_defType; }
+   /** 
+    * Returns the type of the definition.
+    *
+    * \return The type of the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   enum psoDefinitionType GetType();
    
 protected:
    

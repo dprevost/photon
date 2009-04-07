@@ -309,9 +309,7 @@ KeyDefinition * FastMapEditor::GetKeyDefinition()
       throw pso::Exception( m_sessionHandle, "FastMapEditor::GetKeyDefinition" );
    }
    
-   pDefinition = new KeyDefinition();
-   pDefinition->m_definitionHandle = keyDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new KeyDefinition( m_sessionHandle, keyDefHandle );
    
    return pDefinition;
 }
