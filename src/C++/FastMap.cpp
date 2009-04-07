@@ -169,9 +169,7 @@ DataDefinition * FastMap::GetDataDefinition()
       throw pso::Exception( m_sessionHandle, "FastMap::GetDataDefinition" );
    }
    
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }
@@ -327,9 +325,7 @@ DataDefinition * FastMap::GetRecordDefinition()
       throw pso::Exception( m_sessionHandle, "FastMap::GetRecordDefinition" );
    }
 
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }

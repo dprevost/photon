@@ -93,9 +93,7 @@ DataDefinition * Queue::GetDataDefinition()
       throw pso::Exception( m_sessionHandle, "Queue::GetDataDefinition" );
    }
    
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }
@@ -164,9 +162,7 @@ DataDefinition * Queue::GetRecordDefinition()
       throw pso::Exception( m_sessionHandle, "Queue::GetRecordDefinition" );
    }
 
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }

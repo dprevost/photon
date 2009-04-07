@@ -112,9 +112,7 @@ DataDefinition * HashMap::GetDataDefinition()
       throw pso::Exception( m_sessionHandle, "HashMap::Definition" );
    }
    
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }
@@ -246,9 +244,7 @@ DataDefinition * HashMap::GetRecordDefinition()
       throw pso::Exception( m_sessionHandle, "HashMap::GetRecordDefinition" );
    }
 
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }

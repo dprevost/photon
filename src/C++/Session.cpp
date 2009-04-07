@@ -233,9 +233,7 @@ Session::GetDataDefinition( const std::string & objectName )
       throw pso::Exception( m_sessionHandle, "Session::GetDataDefinition" );
    }
    
-   pDefinition = new DataDefinition();
-   pDefinition->m_definitionHandle = dataDefHandle;
-   pDefinition->m_sessionHandle = m_sessionHandle;
+   pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
 }

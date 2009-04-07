@@ -67,6 +67,12 @@ int psoaDataDefDestroy( PSO_HANDLE   sessionHandle,
                         const char * definitionName,
                         psoUint32    nameLengthInBytes );
 
+PHOTON_EXPORT
+int psoaDataDefGetDef( PSO_HANDLE                definitionHandle,
+                       enum psoDefinitionType  * type,
+                       unsigned char          ** dataDef,
+                       psoUint32               * dataDefLength );
+
 /*
  * This function calculates the offsets for each data field when using the
  * ODBC metadata. 

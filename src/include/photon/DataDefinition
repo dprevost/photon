@@ -80,10 +80,16 @@ protected:
    /**
     * Default empty constructor.
     *
-    * It is used by the other objects to build the data definition 
+    * It is used by the other objects of this API to build the data 
+    * definition.
     * 
+    * \param[in] sessionHandle Handle to the session we belong to.
+    * \param[in] definitionHandle Handle to the definition
+    *
+    * \exception pso::Exception An abnormal error occured.
     */
-   DataDefinition();
+   DataDefinition( PSO_HANDLE sessionHandle,
+                   PSO_HANDLE definitionHandle );
 
 public:
    
@@ -112,27 +118,35 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   virtual std::string GetNext();
+   std::string GetNext();
 
    /** Retrieve the fields definition.
     *
     * \return The definition of the fields as an array of bytes.
     */
-   virtual const unsigned char * GetDefinition();
+   const unsigned char * GetDefinition();
 
    /** Returns the length, in bytes, of the definition.
     *
     * \return The length, in bytes, of the definition
     */
-   virtual psoUint32 GetDefLength();
+   psoUint32 GetDefLength();
 
+   enum psoDefinitionType GetType()
+      { return m_defType; }
+   
 protected:
    
    PSO_HANDLE m_definitionHandle;
 
    /// Reference to the psoaSession struct (we belong to).
    PSO_HANDLE & m_sessionHandle;
-   
+
+   enum psoDefinitionType m_defType;
+   const unsigned char * m_dataDef;
+   psoUint32  m_dataDefLength;
+   psoUint32  m_currentLength;
+
    friend class FastMap;
    friend class FastMapEditor;
    friend class Folder;
@@ -140,6 +154,16 @@ protected:
    friend class Lifo;
    friend class Queue;
    friend class Session;
+
+   /**
+    * Iterates through an ODBC definition 
+    *
+    * \return A formatted string containing the information on an item of 
+    *         the definition.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   std::string GetNextODBC();
 
 };
 
