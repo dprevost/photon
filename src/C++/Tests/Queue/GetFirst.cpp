@@ -59,7 +59,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( qname,
                             queueDef,
                             dataDefObj );
-      queue = new Queue( session, fname );
+      queue = new Queue( session, qname );
       queue->Push( data1, strlen(data1) );
    }
    catch( pso::Exception exc ) {

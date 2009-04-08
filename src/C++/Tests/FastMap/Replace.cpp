@@ -31,8 +31,8 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session1, session2;
-   FastMapEditor map1(session1);
-   FastMap map2(session2);
+   FastMapEditor * map1;
+   FastMap       * map2;
    string fname = "/cpp_fastmap_replace";
    string hname = fname + "/test";
 
@@ -41,15 +41,11 @@ int main( int argc, char * argv[] )
    const char * data2 = "My Data 2";
    char buffer[50];
    uint32_t length;
-   psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -58,22 +54,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session1.Init();
-      session2.Init();
-      session1.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session1.CreateObject( hname,
-                             mapDef, 
-                             (unsigned char *)&keyDef,
-                             sizeof(psoKeyDefinition),
-                             (unsigned char *)fields,
-                             sizeof(psoFieldDefinition) );
-      map1.Open( hname );
-      // Insert after commit for first test below
-      map1.Insert( key, 6, data1, strlen(data1) );
-      map1.Close();
-      session1.Commit();
-      map1.Open( hname );
-      map2.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -81,10 +61,40 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   try {
+      session1.Init();
+      session2.Init();
+      session1.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session1, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
+      KeyDefinition keyDefObj( session1,
+                               "Key Definition",
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)&keys,
+                               sizeof(psoKeyDefinition) );
+      session1.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+
+      map1 = new FastMapEditor( session1, hname );
+      // Insert after commit for first test below
+      map1->Insert( key, 6, data1, strlen(data1) );
+      delete( map1 );
+      session1.Commit();
+      map1 = new FastMapEditor( session1, hname );
+      map2 = new FastMap( session2, hname );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
 #if 0
    // Must commit the insert before replacing
    try {
-      map1.Replace( key, 6, data2, strlen(data2) );
+      map1->Replace( key, 6, data2, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -108,7 +118,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      map1.Replace( NULL, 6, data2, strlen(data2) );
+      map1->Replace( NULL, 6, data2, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -121,7 +131,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Replace( key, 0, data2, strlen(data2) );
+      map1->Replace( key, 0, data2, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -134,7 +144,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Replace( key, 6, NULL, strlen(data2) );
+      map1->Replace( key, 6, NULL, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -147,7 +157,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Replace( key, 6, data2, 0 );
+      map1->Replace( key, 6, data2, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -161,7 +171,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      map1.Replace( key, 6, data2, strlen(data2) );
+      map1->Replace( key, 6, data2, strlen(data2) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -175,7 +185,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from any session.
     */
    try {
-      map1.Get( key, 6, buffer, 50, length );
+      map1->Get( key, 6, buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -191,7 +201,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      map2.Get( key, 6, buffer, 50, length );
+      map2->Get( key, 6, buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -207,7 +217,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Close();
+      map1->Close();
       session1.Commit();
       session2.Commit();
    }
@@ -217,7 +227,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map2.Get( key, 6, buffer, 50, length );
+      map2->Get( key, 6, buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

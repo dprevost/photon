@@ -49,7 +49,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( name, def, NULL, 0, NULL, 0 );
-      folder.Open( name );
+      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -58,7 +58,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.Status( status );
+      folder->Status( status );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

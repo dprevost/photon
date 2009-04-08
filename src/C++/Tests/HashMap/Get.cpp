@@ -64,8 +64,8 @@ int main( int argc, char * argv[] )
                             sizeof(psoKeyDefinition),
                             (unsigned char *)fields,
                             sizeof(psoFieldDefinition) );
-      hashmap.Open( hname );
-      hashmap.Insert( key, 6, data, 7 );
+      hashmap->Open( hname );
+      hashmap->Insert( key, 6, data, 7 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try { 
-      hashmap.Get( NULL, 6, buffer, 50, length );
+      hashmap->Get( NULL, 6, buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -89,7 +89,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( key, 0, buffer, 50, length );
+      hashmap->Get( key, 0, buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -102,7 +102,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( key, 6, NULL, 50, length );
+      hashmap->Get( key, 6, NULL, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -115,7 +115,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.Get( key, 6, buffer, 2, length );
+      hashmap->Get( key, 6, buffer, 2, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -129,7 +129,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try { 
-      hashmap.Get( key, 6, buffer, 50, length );
+      hashmap->Get( key, 6, buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

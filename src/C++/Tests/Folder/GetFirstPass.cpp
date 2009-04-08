@@ -52,7 +52,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateObject( name, def, NULL, 0, NULL, 0 );
       session.CreateObject( subname, def, NULL, 0, NULL, 0 );
-      folder.Open( name );
+      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -64,7 +64,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      folder.GetFirst( entry );
+      folder->GetFirst( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -72,8 +72,8 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.Close();
-      folder.Open( subname );
+      folder->Close();
+      folder->Open( subname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = folder.GetFirst( entry );
+      rc = folder->GetFirst( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

@@ -32,13 +32,9 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Folder folder(session);
+   Folder * folder;
    string name = "/cpp_folder_close";
-   psoObjectDefinition def; 
 
-   memset( &def, 0, sizeof def );
-   def.type = PSO_FOLDER;
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -46,8 +42,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( name, def, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -55,22 +49,9 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   // Closing when not open...
    try {
-      folder.Close();
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
-   try {
-      folder.Open( name );
+      session.Init();
+      session.CreateFolder( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -78,7 +59,15 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.Close();
+      folder = new Folder( session, name );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   try {
+      folder->Close();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

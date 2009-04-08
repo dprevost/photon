@@ -26,6 +26,12 @@ int main()
 {
    psoaProcess process;
    int errcode;
+   bool ok;
+   
+   ok = psocInitThreadLock( &g_ProcessMutex );
+   if ( ! ok ) {
+      return 0;
+   }
 
    memset( &process, 0, sizeof(psoaProcess) );
    /* try something junk... */   

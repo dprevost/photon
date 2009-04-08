@@ -61,7 +61,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( qname,
                             queueDef,
                             dataDefObj );
-      queue = new Queue( session, fname );
+      queue = new Queue( session, qname );
       queue->Push( data1, strlen(data1) );
       queue->Push( data2, strlen(data2) );
       queue->Push( data3, strlen(data3) );

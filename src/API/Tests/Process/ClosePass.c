@@ -36,6 +36,12 @@ int main( int argc, char * argv[] )
    psoaProcess process;
    int errcode;
    psonSessionContext context;
+   bool ok;
+   
+   ok = psocInitThreadLock( &g_ProcessMutex );
+   if ( ! ok ) {
+      return -1;
+   }
    
    memset( &process, 0, sizeof(psoaProcess) );
    if ( argc > 1 ) {

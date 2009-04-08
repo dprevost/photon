@@ -71,7 +71,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      map1.Open( NULL, strlen(c_name) );
+      map1->Open( NULL, strlen(c_name) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -84,7 +84,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Open( c_name, 0 );
+      map1->Open( c_name, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -97,7 +97,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Open( fname ); // Name of the folder
+      map1->Open( fname ); // Name of the folder
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -110,7 +110,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      map1.Open( "" );
+      map1->Open( "" );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -124,14 +124,14 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed. */
    try {
-      map1.Open( hname );
+      map1->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
    try {
-      map2.Open( c_name, strlen(c_name) );
+      map2->Open( c_name, strlen(c_name) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -145,7 +145,7 @@ int main( int argc, char * argv[] )
    
    try {
       session1.Commit();
-      map2.Open( c_name, strlen(c_name) );
+      map2->Open( c_name, strlen(c_name) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

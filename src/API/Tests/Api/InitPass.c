@@ -30,29 +30,23 @@ int main( int argc, char * argv[] )
 {
    int errcode;
    
-   errcode = psoInit( NULL, 1 );
+   errcode = psoInit( NULL );
    if ( errcode != PSO_INVALID_QUASAR_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoInit( "12345", 1 );
-   if ( errcode != PSO_CONNECT_ERROR ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoInit( "12345", 0 );
+   errcode = psoInit( "12345" );
    if ( errcode != PSO_CONNECT_ERROR ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    if ( argc > 1 ) {
-      errcode = psoInit( argv[1], 0 );
+      errcode = psoInit( argv[1] );
    }
    else {
-      errcode = psoInit( "10701", 0 );
+      errcode = psoInit( "10701" );
    }
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -56,7 +56,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( qname,
                             queueDef,
                             dataDefObj );
-      queue = new Queue( session, fname );
+      queue = new Queue( session, qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -67,15 +67,10 @@ int main( int argc, char * argv[] )
    // Closing when not open...
    try {
       queue->Close();
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
    }
    catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
    }
    // Second close must throw an exception
    try {

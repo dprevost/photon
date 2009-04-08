@@ -63,8 +63,8 @@ int main( int argc, char * argv[] )
                             queueDef,
                             dataDefObj );
       session1.Commit();
-      queue1 = new Queue( session1, fname );
-      queue2 = new Queue( session2, fname );
+      queue1 = new Queue( session1, qname );
+      queue2 = new Queue( session2, qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

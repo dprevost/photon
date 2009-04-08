@@ -80,10 +80,7 @@ typedef struct psoaProcess
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-extern psoaProcess *  g_pProcessInstance;
-
-PHOTON_API_EXPORT
-extern bool           g_protectionIsNeeded;
+extern psoaProcess * g_pProcessInstance;
 
 /** 
  * This global mutex is needed for opening and closing sessions in 
@@ -121,12 +118,10 @@ static
 __inline
 bool psoaProcessLock()
 {
-   bool ok = true;
+   bool ok;
    
-   if ( g_protectionIsNeeded ) {
-      ok = psocTryAcquireThreadLock( &g_ProcessMutex, PSON_LOCK_TIMEOUT );
-      PSO_POST_CONDITION( ok == true || ok == false );
-   }
+   ok = psocTryAcquireThreadLock( &g_ProcessMutex, PSON_LOCK_TIMEOUT );
+   PSO_POST_CONDITION( ok == true || ok == false );
    
    return ok;
 }
@@ -140,9 +135,7 @@ static
 __inline
 void psoaProcessUnlock()
 {
-   if ( g_protectionIsNeeded ) {
-      psocReleaseThreadLock( &g_ProcessMutex );
-   }
+   psocReleaseThreadLock( &g_ProcessMutex );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

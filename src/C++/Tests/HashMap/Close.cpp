@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
 
    // Closing when not open...
    try {
-      hashmap.Close();
+      hashmap->Close();
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      hashmap.Open( hname );
+      hashmap->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -89,7 +89,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      hashmap.Close();
+      hashmap->Close();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

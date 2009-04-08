@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
       session.CreateObject( name, def, NULL, 0, NULL, 0 );
       session.CreateObject( sub1name, def, NULL, 0, NULL, 0 );
       session.CreateObject( sub2name, def, NULL, 0, NULL, 0 );
-      folder.Open( name );
+      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -64,7 +64,7 @@ int main( int argc, char * argv[] )
 
    // No GetFirst
    try {
-      folder.GetNext( entry );
+      folder->GetNext( entry );
    }
    catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_ITERATOR ) {
@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.GetFirst( entry );
+      folder->GetFirst( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -83,7 +83,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      rc = folder.GetNext( entry );
+      rc = folder->GetNext( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -95,7 +95,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = folder.GetNext( entry );
+      rc = folder->GetNext( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

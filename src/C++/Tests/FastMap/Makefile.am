@@ -14,33 +14,32 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
-
 check_PROGRAMS =     \
         Close        \
         Definition   \
         Delete       \
         Empty        \
-        FieldDefODBC \
         Get          \
         GetFirst     \
         GetNext      \
         Insert       \
-        KeyDefODBC   \
         Open         \
         Replace      \
         Status       
+
+#                FieldDefODBC 
+#KeyDefODBC   
 
 Close_SOURCES        = Close.cpp
 Definition_SOURCES   = Definition.cpp
 Delete_SOURCES       = Delete.cpp
 Empty_SOURCES        = Empty.cpp
-FieldDefODBC_SOURCES = FieldDefODBC.cpp
+#FieldDefODBC_SOURCES = FieldDefODBC.cpp
 Get_SOURCES          = Get.cpp
 GetFirst_SOURCES     = GetFirst.cpp
 GetNext_SOURCES      = GetNext.cpp
 Insert_SOURCES       = Insert.cpp
-KeyDefODBC_SOURCES   = KeyDefODBC.cpp
+#KeyDefODBC_SOURCES   = KeyDefODBC.cpp
 Open_SOURCES         = Open.cpp
 Replace_SOURCES      = Replace.cpp
 Status_SOURCES       = Status.cpp
@@ -75,15 +74,16 @@ TESTS =                 \
         Definition.sh   \
         Delete.sh       \
         Empty.sh        \
-        FieldDefODBC.sh \
         Get.sh          \
         GetFirst.sh     \
         GetNext.sh      \
         Insert.sh       \
-        KeyDefODBC.sh   \
         Open.sh         \
         Replace.sh      \
         Status.sh       
+
+#        FieldDefODBC.sh \
+#        KeyDefODBC.sh   
 
 XFAIL_TESTS = 
 

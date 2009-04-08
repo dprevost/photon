@@ -44,36 +44,29 @@ int psoQueueClose( PSO_HANDLE objectHandle )
    if ( pQueue->object.type != PSOA_QUEUE ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-         /* Reinitialize the iterator, if needed */
-         if ( pQueue->iterator != NULL ) {
-            if ( psonQueueRelease( pMemQueue,
-                                   pQueue->iterator,
-                                   &pQueue->object.pSession->context ) ) {
-               pQueue->iterator = NULL;
-            }
-            else {
-               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-            }
+      /* Reinitialize the iterator, if needed */
+      if ( pQueue->iterator != NULL ) {
+         if ( psonQueueRelease( pMemQueue,
+                                pQueue->iterator,
+                                &pQueue->object.pSession->context ) ) {
+            pQueue->iterator = NULL;
          }
-
-         if ( errcode == PSO_OK ) {
-            errcode = psoaCommonObjClose( &pQueue->object );
+         else {
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
-         if ( errcode == PSO_OK ) {
-            if ( pQueue->pRecordDefinition != NULL ) {
-               pQueue->pRecordDefinition->definitionType = 0; 
-               free(pQueue->pRecordDefinition);
-               pQueue->pRecordDefinition = NULL;
-            }
-         }
-
-         psoaCommonUnlock( &pQueue->object );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+
+      if ( errcode == PSO_OK ) {
+         errcode = psoaCommonObjClose( &pQueue->object );
+      }
+      if ( errcode == PSO_OK ) {
+         if ( pQueue->pRecordDefinition != NULL ) {
+            pQueue->pRecordDefinition->definitionType = 0; 
+            free(pQueue->pRecordDefinition);
+            pQueue->pRecordDefinition = NULL;
+         }
       }
    }
    else {
@@ -126,21 +119,14 @@ int psoQueueDefinition( PSO_HANDLE   objectHandle,
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
-         pDataDefinition->pSession = pQueue->object.pSession;
-         pDataDefinition->definitionType = PSOA_DEF_DATA;
-         GET_PTR( pDataDefinition->pMemDefinition, 
-                  pMemQueue->dataDefOffset, 
-                  psonDataDefinition );
-         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
-
-         psoaCommonUnlock( &pQueue->object );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      pDataDefinition->pSession = pQueue->object.pSession;
+      pDataDefinition->definitionType = PSOA_DEF_DATA;
+      GET_PTR( pDataDefinition->pMemDefinition, 
+               pMemQueue->dataDefOffset, 
+               psonDataDefinition );
+      *dataDefHandle = (PSO_HANDLE) pDataDefinition;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -182,11 +168,6 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pQueue->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-   
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -195,7 +176,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
       
       pQueue->iterator = NULL;
    }
@@ -206,7 +187,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                       bufferLength,
                       &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    *returnedLength = pQueue->iterator->dataLength;
    memcpy( buffer, pQueue->iterator->data, *returnedLength );
@@ -216,12 +197,7 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
                psonDataDefinition );
    }
 
-   psoaCommonUnlock( &pQueue->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -270,11 +246,6 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pQueue->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    ok = psonQueueGet( pMemQueue,
@@ -283,7 +254,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
                       bufferLength,
                       &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
    
    *returnedLength = pQueue->iterator->dataLength;
    memcpy( buffer, pQueue->iterator->data, *returnedLength );
@@ -293,12 +264,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
                psonDataDefinition );
    }
    
-   psoaCommonUnlock( &pQueue->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -403,11 +369,6 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pQueue->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -416,7 +377,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
 
       pQueue->iterator = NULL;
    }
@@ -427,7 +388,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
                          bufferLength,
                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    *returnedLength = pQueue->iterator->dataLength;
    memcpy( buffer, pQueue->iterator->data, *returnedLength );
@@ -437,12 +398,7 @@ int psoQueuePop( PSO_HANDLE   objectHandle,
                psonDataDefinition );
    }
 
-   psoaCommonUnlock( &pQueue->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -498,27 +454,21 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
-         if ( pDefinition != NULL ) {
-            pMemDefinition = pDefinition->pMemDefinition;
-            if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
-               errcode = PSO_DATA_DEF_UNSUPPORTED;
-            }
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      if ( pDefinition != NULL ) {
+         pMemDefinition = pDefinition->pMemDefinition;
+         if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+            errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
-         if ( errcode == PSO_OK ) {
-            ok = psonQueueInsert( pMemQueue,
-                                  data,
-                                  dataLength,
-                                  pMemDefinition,
-                                  PSON_QUEUE_LAST,
-                                  &pQueue->object.pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
-         }
-         psoaCommonUnlock( &pQueue->object );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      if ( errcode == PSO_OK ) {
+         ok = psonQueueInsert( pMemQueue,
+                               data,
+                               dataLength,
+                               pMemDefinition,
+                               PSON_QUEUE_LAST,
+                               &pQueue->object.pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
    }
    else {
@@ -579,27 +529,21 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
    }
    
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
-         if ( pDefinition != NULL ) {
-            pMemDefinition = pDefinition->pMemDefinition;
-            if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
-               errcode = PSO_DATA_DEF_UNSUPPORTED;
-            }
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      if ( pDefinition != NULL ) {
+         pMemDefinition = pDefinition->pMemDefinition;
+         if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+            errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
-         if ( errcode == PSO_OK ) {
-            ok = psonQueueInsertNow( pMemQueue,
-                                     data,
-                                     dataLength,
-                                     pMemDefinition,
-                                     PSON_QUEUE_LAST,
-                                     &pQueue->object.pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
-         }
-         psoaCommonUnlock( &pQueue->object );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      if ( errcode == PSO_OK ) {
+         ok = psonQueueInsertNow( pMemQueue,
+                                  data,
+                                  dataLength,
+                                  pMemDefinition,
+                                  PSON_QUEUE_LAST,
+                                  &pQueue->object.pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
    }
    else {
@@ -649,23 +593,18 @@ int psoQueueRecordDefinition( PSO_HANDLE   objectHandle,
    pDefinition->definitionType = PSOA_DEF_DATA;
    
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
  
-         /* We use the global queue definition as the initial value
-          * to avoid an uninitialized pointer.
-          */
-         GET_PTR( pDefinition->pMemDefinition, 
-                  pMemQueue->dataDefOffset, 
-                  psonDataDefinition );
-         pDefinition->ppApiObject = &pQueue->pRecordDefinition;
-         pQueue->pRecordDefinition = pDefinition;
-         
-         dataDefHandle = (PSO_HANDLE) pDefinition;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      /* We use the global queue definition as the initial value
+       * to avoid an uninitialized pointer.
+       */
+      GET_PTR( pDefinition->pMemDefinition, 
+               pMemQueue->dataDefOffset, 
+               psonDataDefinition );
+      pDefinition->ppApiObject = &pQueue->pRecordDefinition;
+      pQueue->pRecordDefinition = pDefinition;
+
+      dataDefHandle = (PSO_HANDLE) pDefinition;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -702,25 +641,18 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
    }
 
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       
-         if ( psonLock(&pMemQueue->memObject, pContext) ) {
-            psonMemObjectStatus( &pMemQueue->memObject, pStatus );
+      if ( psonLock(&pMemQueue->memObject, pContext) ) {
+         psonMemObjectStatus( &pMemQueue->memObject, pStatus );
 
-            psonQueueStatus( pMemQueue, pStatus );
-            pStatus->type = PSO_QUEUE;
+         psonQueueStatus( pMemQueue, pStatus );
+         pStatus->type = PSO_QUEUE;
 
-            psonUnlock( &pMemQueue->memObject, pContext );
-         }
-         else {
-            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-         }
-      
-         psoaCommonUnlock( &pQueue->object );
+         psonUnlock( &pMemQueue->memObject, pContext );
       }
       else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       }
    }
    else {
@@ -756,11 +688,6 @@ int psoaQueueFirst( psoaQueue     * pQueue,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pQueue->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -769,7 +696,7 @@ int psoaQueueFirst( psoaQueue     * pQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
       
       pQueue->iterator = NULL;
    }
@@ -780,7 +707,7 @@ int psoaQueueFirst( psoaQueue     * pQueue,
                       (uint32_t) -1,
                       &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    pEntry->data = pQueue->iterator->data;
    pEntry->length = pQueue->iterator->dataLength;
@@ -790,12 +717,7 @@ int psoaQueueFirst( psoaQueue     * pQueue,
                psonDataDefinition );
    }
       
-   psoaCommonUnlock( &pQueue->object );
-   
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -829,11 +751,6 @@ int psoaQueueNext( psoaQueue     * pQueue,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pQueue->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    ok = psonQueueGet( pMemQueue,
@@ -842,7 +759,7 @@ int psoaQueueNext( psoaQueue     * pQueue,
                       (uint32_t) -1,
                       &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    pEntry->data = pQueue->iterator->data;
    pEntry->length = pQueue->iterator->dataLength;
@@ -852,12 +769,7 @@ int psoaQueueNext( psoaQueue     * pQueue,
                psonDataDefinition );
    }
 
-   psoaCommonUnlock( &pQueue->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -890,11 +802,6 @@ int psoaQueueRemove( psoaQueue     * pQueue,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pQueue->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -903,7 +810,7 @@ int psoaQueueRemove( psoaQueue     * pQueue,
                              pQueue->iterator,
                              &pQueue->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
 
       pQueue->iterator = NULL;
    }
@@ -914,7 +821,7 @@ int psoaQueueRemove( psoaQueue     * pQueue,
                          (uint32_t) -1,
                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    pEntry->data = (const void *) pQueue->iterator->data;
    pEntry->length = pQueue->iterator->dataLength;
@@ -924,12 +831,7 @@ int psoaQueueRemove( psoaQueue     * pQueue,
                psonDataDefinition );
    }
 
-   psoaCommonUnlock( &pQueue->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pQueue->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {

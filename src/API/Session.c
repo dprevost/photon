@@ -76,21 +76,15 @@ int psoCommit( PSO_HANDLE sessionHandle )
       return PSO_NOT_ALL_EDIT_ARE_CLOSED;
    }
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         ok = psonTxCommit( (psonTx*)pSession->context.pTransaction, 
-                             &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         if ( ok ) psoaResetReaders( pSession );
-         else errcode = PSO_ENGINE_BUSY;
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      ok = psonTxCommit( (psonTx*)pSession->context.pTransaction, 
+                          &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) psoaResetReaders( pSession );
+      else errcode = PSO_ENGINE_BUSY;
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -126,22 +120,16 @@ int psoCreateFolder( PSO_HANDLE   sessionHandle,
       return PSO_INVALID_LENGTH;
    }
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
-         ok = psonTopFolderCreateFolder( pTree,
-                                         objectName,
-                                         nameLengthInBytes,
-                                         &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+      ok = psonTopFolderCreateFolder( pTree,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -207,25 +195,19 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
    }
    pMemDataDefinition = pDataDefinition->pMemDefinition;
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
-         ok = psonTopFolderCreateObject( pTree,
-                                         objectName,
-                                         nameLengthInBytes,
-                                         pDefinition,
-                                         NULL,
-                                         pMemDataDefinition,
-                                         &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+      ok = psonTopFolderCreateObject( pTree,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      pDefinition,
+                                      NULL,
+                                      pMemDataDefinition,
+                                      &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -304,25 +286,19 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
    }
    pMemDataDefinition = pDataDefinition->pMemDefinition;
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
-         ok = psonTopFolderCreateObject( pTree,
-                                         objectName,
-                                         nameLengthInBytes,
-                                         pDefinition,
-                                         pMemKeyDefinition,
-                                         pMemDataDefinition,
-                                         &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+      ok = psonTopFolderCreateObject( pTree,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      pDefinition,
+                                      pMemKeyDefinition,
+                                      pMemDataDefinition,
+                                      &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -362,22 +338,16 @@ int psoDestroyObject( PSO_HANDLE   sessionHandle,
       return PSO_INVALID_LENGTH;
    }
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
-         ok = psonTopFolderDestroyObject( pTree,
-                                          objectName,
-                                          nameLengthInBytes,
-                                          &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+      ok = psonTopFolderDestroyObject( pTree,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -410,24 +380,18 @@ int psoErrorMsg( PSO_HANDLE   sessionHandle,
    
    if ( msgLengthInBytes < 32 ) return PSO_INVALID_LENGTH;
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         if ( psocGetLastError( &pSession->context.errorHandler ) != 0 ) {
-            len = psocGetErrorMsg( &pSession->context.errorHandler,
-                                   message, 
-                                   msgLengthInBytes );
-         }
-         else {
-            strcpy( message, "No Error!" );
-         }
+   if ( ! pSession->terminated ) {
+      if ( psocGetLastError( &pSession->context.errorHandler ) != 0 ) {
+         len = psocGetErrorMsg( &pSession->context.errorHandler,
+                                message, 
+                                msgLengthInBytes );
       }
       else {
-         rc = PSO_SESSION_IS_TERMINATED;
+         strcpy( message, "No Error!" );
       }
-      psoaSessionUnlock( pSession );
    }
    else {
-      rc = PSO_SESSION_CANNOT_GET_LOCK;
+      rc = PSO_SESSION_IS_TERMINATED;
    }
    
    return rc;
@@ -565,29 +529,23 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
 
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
-         ok = psonTopFolderGetDef( pTree, 
-                                   objectName,
-                                   nameLengthInBytes,
-                                   pDefinition,
-                                   &pKeyDefinition->pMemDefinition,
-                                   &pDataDefinition->pMemDefinition,
-                                   &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         if ( ok ) {
-            *dataDefHandle = (PSO_HANDLE) pDataDefinition;
-            *keyDefHandle = (PSO_HANDLE) pKeyDefinition;
-         }
+   if ( ! pSession->terminated ) {
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+      ok = psonTopFolderGetDef( pTree, 
+                                objectName,
+                                nameLengthInBytes,
+                                pDefinition,
+                                &pKeyDefinition->pMemDefinition,
+                                &pDataDefinition->pMemDefinition,
+                                &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) {
+         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
+         *keyDefHandle = (PSO_HANDLE) pKeyDefinition;
       }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -614,7 +572,7 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
    int errcode = PSO_OK;
    bool ok = true;
    psonMemAlloc * pAlloc;
-   struct psonMemoryHeader * pHead = g_pProcessInstance->pHeader;
+   struct psonMemoryHeader * pHead;
    
    pSession = (psoaSession*) sessionHandle;
 
@@ -627,30 +585,25 @@ int psoGetInfo( PSO_HANDLE   sessionHandle,
    }
    memset( pInfo, 0, sizeof(struct psoInfo) );
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, psonMemAlloc )
-         ok = psonMemAllocStats( pAlloc, pInfo, &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         if ( ok ) {
-            pInfo->memoryVersion = pHead->version;
-            pInfo->bigEndian = 0;
-            if (pHead->bigEndian) pInfo->bigEndian = 1;
-            memcpy( pInfo->compiler,        pHead->compiler,        20 );
-            memcpy( pInfo->compilerVersion, pHead->compilerVersion, 10 );
-            memcpy( pInfo->platform,        pHead->cpu_type ,       20 );
-            memcpy( pInfo->quasarVersion,   pHead->quasarVersion, 10 );
-            memcpy( pInfo->creationTime,    pHead->creationTime,    30 );
-            strncpy( pInfo->dllVersion, PACKAGE_VERSION, 10 );
-         }
+   if ( ! pSession->terminated ) {
+      pHead = g_pProcessInstance->pHeader;
+      GET_PTR( pAlloc, pSession->pHeader->allocatorOffset, psonMemAlloc )
+      ok = psonMemAllocStats( pAlloc, pInfo, &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) {
+         pInfo->memoryVersion = pHead->version;
+         pInfo->bigEndian = 0;
+         if (pHead->bigEndian) pInfo->bigEndian = 1;
+         memcpy( pInfo->compiler,        pHead->compiler,        20 );
+         memcpy( pInfo->compilerVersion, pHead->compilerVersion, 10 );
+         memcpy( pInfo->platform,        pHead->cpu_type ,       20 );
+         memcpy( pInfo->quasarVersion,   pHead->quasarVersion, 10 );
+         memcpy( pInfo->creationTime,    pHead->creationTime,    30 );
+         strncpy( pInfo->dllVersion, PACKAGE_VERSION, 10 );
       }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -697,23 +650,17 @@ int psoGetStatus( PSO_HANDLE     sessionHandle,
 
    memset( pStatus, 0, sizeof(psoObjStatus) );
 
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
-         ok = psonTopFolderGetStatus( pTree, 
-                                      objectName,
-                                      nameLengthInBytes,
-                                      pStatus,
-                                      &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      GET_PTR( pTree, pSession->pHeader->treeMgrOffset, psonFolder )
+      ok = psonTopFolderGetStatus( pTree, 
+                                   objectName,
+                                   nameLengthInBytes,
+                                   pStatus,
+                                   &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -756,15 +703,6 @@ int psoInitSession( PSO_HANDLE * sessionHandle )
     * from errors;
     */
    
-   if ( g_protectionIsNeeded ) {
-      ok = psocInitThreadLock( &pSession->mutex );
-      PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) {
-         errcode = PSO_NOT_ENOUGH_RESOURCES;
-         goto error_handler;
-      }
-   }
-   
    pSession->pHeader = g_pProcessInstance->pHeader;
    if ( pSession->pHeader == NULL ) {
       errcode = PSO_PROCESS_NOT_INITIALIZED;
@@ -794,31 +732,20 @@ int psoInitSession( PSO_HANDLE * sessionHandle )
    GET_PTR( pSession->pKeyDefMap, pSession->pHeader->keyDefMapOffset, psonHashMap );
 
    psoaListReadersInit( &pSession->listReaders );
+   pSession->terminated = false;
    
    /*
     * Once a session is added, it can be accessed by other threads
-    * in the process (exiting, for example). So we must lock the
-    * session, just in case.
+    * in the process (exiting, for example). After this point we 
+    * will want to use the process mutex to remove it.
     */
-   if ( psoaSessionLock( pSession ) ) {
-      ok = psonProcessAddSession( g_pProcessInstance->pCleanup, 
-                                  pSession, 
-                                  &pSession->pCleanup, 
-                                  &pSession->context );
-      PSO_POST_CONDITION( ok == true || ok == false );
-      psoaSessionUnlock( pSession );
-      if ( ! ok ) goto error_handler;
-   }
-   else {
-      /* 
-       * A lock failure should be impossible since the session is
-       * unknown to other and cannot be locked.
-       */
-      errcode = PSO_INTERNAL_ERROR;
-      goto error_handler;
-   }
+   ok = psonProcessAddSession( g_pProcessInstance->pCleanup, 
+                               pSession, 
+                               &pSession->pCleanup, 
+                               &pSession->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) goto error_handler;
    
-   pSession->terminated = false;
    *sessionHandle = (PSO_HANDLE) pSession;
 
    return PSO_OK;
@@ -863,14 +790,11 @@ int psoLastError( PSO_HANDLE sessionHandle )
    
    if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         rc = psocGetLastError( &pSession->context.errorHandler );
-      }
-      else {
-         rc = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      rc = psocGetLastError( &pSession->context.errorHandler );
+   }
+   else {
+      rc = PSO_SESSION_IS_TERMINATED;
    }
 
    return rc;
@@ -889,22 +813,15 @@ int psoRollback( PSO_HANDLE sessionHandle )
    if ( pSession == NULL ) return PSO_NULL_HANDLE;
    if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
    
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         ok = psonTxRollback( (psonTx*)pSession->context.pTransaction, 
-                              &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         if ( ok ) psoaResetReaders( pSession );
-         else errcode = PSO_ENGINE_BUSY;
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
-      }
-      
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      ok = psonTxRollback( (psonTx*)pSession->context.pTransaction, 
+                           &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) psoaResetReaders( pSession );
+      else errcode = PSO_ENGINE_BUSY;
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( errcode != PSO_OK ) {
@@ -965,51 +882,62 @@ int psoaCloseSession( psoaSession * pSession )
    bool ok;
    
    PSO_PRE_CONDITION( pSession != NULL );
+   /*
+    * Note: this function is always called after getting control of
+    * the process mutex.
+    */
 
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         if ( pSession->context.pTransaction != NULL ) {
-            psonTxRollback( (psonTx*)(pSession->context.pTransaction), 
-                            &pSession->context );
-            pSession->context.pTransaction = NULL;
-         }
+   if ( ! pSession->terminated ) {
+      /*
+       * Setting this first may protect badly written client programs 
+       * from accessing a session or its objects after the session was
+       * terminated either by psoExit or psoSessionExit.
+       *
+       * In any case, there is a limit to how much we can protect these
+       * clients and still maintain the performance of the software!
+       *
+       * Explanation:
+       *
+       * "terminated" is not protected by a mem. barrier or a lock when 
+       * the other API calls test it - its value on CPU #n might not 
+       * match its value on the CPU where the current code is running.
+       */
+      pSession->terminated = true;
+
+      if ( pSession->context.pTransaction != NULL ) {
+         psonTxRollback( (psonTx*)(pSession->context.pTransaction), 
+                         &pSession->context );
+         pSession->context.pTransaction = NULL;
+      }
    
-         if ( psonLock( &pSession->pCleanup->memObject, &pSession->context) ) {
-            for (;;) {
-               ok = psonSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
-               PSO_POST_CONDITION( ok == true || ok == false );
-               if ( ! ok ) break;
+      if ( psonLock( &pSession->pCleanup->memObject, &pSession->context) ) {
+         for (;;) {
+            ok = psonSessionGetFirst( pSession->pCleanup, &pObject, &pSession->context );
+            PSO_POST_CONDITION( ok == true || ok == false );
+            if ( ! ok ) break;
 
-               /* This would be an internal error... */
-               if ( pObject == NULL ) continue;
+            /* This would be an internal error... */
+            if ( pObject == NULL ) continue;
+           
+            if ( pObject->pCommonObject == NULL ) continue;
             
-               if ( pObject->pCommonObject == NULL ) continue;
-            
-               pCommonObject = (psoaCommonObject*) pObject->pCommonObject;
-               rc = psonTopFolderCloseObject( &pCommonObject->folderItem, 
-                                              &pSession->context );
-               psoaCommonCloseObject( pCommonObject );
+            pCommonObject = (psoaCommonObject*) pObject->pCommonObject;
+            rc = psonTopFolderCloseObject( &pCommonObject->folderItem, 
+                                           &pSession->context );
+            psoaCommonCloseObject( pCommonObject );
 
-               ok = psonSessionRemoveFirst(pSession->pCleanup, &pSession->context );
-               PSO_POST_CONDITION( ok == true );
-            }
-            psonUnlock( &pSession->pCleanup->memObject, &pSession->context);
+            ok = psonSessionRemoveFirst(pSession->pCleanup, &pSession->context );
+            PSO_POST_CONDITION( ok == true );
          }
-      
-         pSession->pCleanup = NULL;
-         pSession->terminated = true;
-        
-      }
-      else {
-         errcode = PSO_SESSION_IS_TERMINATED;
+         psonUnlock( &pSession->pCleanup->memObject, &pSession->context);
       }
       
-      psoaSessionUnlock( pSession );
+      pSession->pCleanup = NULL;
    }
    else {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      errcode = PSO_SESSION_IS_TERMINATED;
    }
-   
+
    if ( errcode != PSO_OK ) {
       psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, errcode );
    }

@@ -66,11 +66,11 @@ int main( int argc, char * argv[] )
                              sizeof(psoKeyDefinition),
                              (unsigned char *)fields,
                              sizeof(psoFieldDefinition) );
-      map1.Open( hname );
+      map1->Open( hname );
       session1.Commit();
       // Insert after commit for first test below
-      map1.Insert( key, 6, data1, strlen(data1) );
-      map2.Open( hname );
+      map1->Insert( key, 6, data1, strlen(data1) );
+      map2->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
 
    // Must commit the insert before replacing
    try {
-      map1.Replace( key, 6, data2, strlen(data2) );
+      map1->Replace( key, 6, data2, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -103,7 +103,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      map1.Replace( NULL, 6, data2, strlen(data2) );
+      map1->Replace( NULL, 6, data2, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -116,7 +116,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Replace( key, 0, data2, strlen(data2) );
+      map1->Replace( key, 0, data2, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -129,7 +129,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Replace( key, 6, NULL, strlen(data2) );
+      map1->Replace( key, 6, NULL, strlen(data2) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -142,7 +142,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Replace( key, 6, data2, 0 );
+      map1->Replace( key, 6, data2, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -156,7 +156,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      map1.Replace( key, 6, data2, strlen(data2) );
+      map1->Replace( key, 6, data2, strlen(data2) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -170,7 +170,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from any session.
     */
    try {
-      map1.Get( key, 6, buffer, 50, length );
+      map1->Get( key, 6, buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -186,7 +186,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      map2.Get( key, 6, buffer, 50, length );
+      map2->Get( key, 6, buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

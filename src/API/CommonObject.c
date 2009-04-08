@@ -43,19 +43,16 @@ int psoaCommonObjOpen( psoaCommonObject  * pObject,
 
    if ( pObject->pSession == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
 
-   if ( psoaCommonLock( pObject ) ) {
-      errcode = psoaSessionOpenObj( pObject->pSession,
-                                    objectType,
-                                    editMode,
-                                    objectName,
-                                    nameLengthInBytes,
-                                    pObject );
-      if ( errcode == 0 ) {
-         GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
-                          psonObjectDescriptor );
-         GET_PTR( pObject->pMyMemObject, pDesc->offset, void );
-      }
-      psoaCommonUnlock( pObject );
+   errcode = psoaSessionOpenObj( pObject->pSession,
+                                 objectType,
+                                 editMode,
+                                 objectName,
+                                 nameLengthInBytes,
+                                 pObject );
+   if ( errcode == 0 ) {
+      GET_PTR( pDesc, pObject->folderItem.pHashItem->dataOffset,
+                       psonObjectDescriptor );
+      GET_PTR( pObject->pMyMemObject, pDesc->offset, void );
    }
    
    return errcode;
@@ -72,7 +69,6 @@ int psoaCommonObjClose( psoaCommonObject * pObject )
    
    if ( pObject->pSession == NULL ) return PSO_PROCESS_NOT_INITIALIZED;
 
-   /* No need to lock the api session. The caller already did it! */
    errcode = psoaSessionCloseObj( pObject->pSession, pObject );
    
    return errcode;

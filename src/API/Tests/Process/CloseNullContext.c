@@ -30,6 +30,12 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    psoaProcess process;
    int errcode;
+   bool ok;
+   
+   ok = psocInitThreadLock( &g_ProcessMutex );
+   if ( ! ok ) {
+      return 0;
+   }
       
    memset( &process, 0, sizeof(psoaProcess) );
 

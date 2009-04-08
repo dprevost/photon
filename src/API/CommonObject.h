@@ -85,45 +85,6 @@ int psoaCommonObjClose( psoaCommonObject * pObject );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/**
- * Lock the current object. 
- *
- * \param[in] pObject Pointer to the object to lock.
-*/
-static inline
-bool psoaCommonLock( psoaCommonObject * pObject )
-{
-   bool ok = true;
-   
-   PSO_PRE_CONDITION( pObject != NULL );
-
-   if ( g_protectionIsNeeded ) {
-      ok = psocTryAcquireThreadLock( &pObject->pSession->mutex, PSON_LOCK_TIMEOUT );
-      PSO_POST_CONDITION( ok == true || ok == false );
-   }
-   
-   return ok;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** 
- * Unlock the current object.
- *
- * \param[in] pObject Pointer to the object to unlock.
- */
-static inline
-void psoaCommonUnlock( psoaCommonObject * pObject )
-{
-   PSO_PRE_CONDITION( pObject != NULL );
-
-   if ( g_protectionIsNeeded ) {
-      psocReleaseThreadLock( &pObject->pSession->mutex );
-   }
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /** 
  * Called by the psoaSession upon session termination.
  *

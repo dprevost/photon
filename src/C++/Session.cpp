@@ -328,17 +328,11 @@ int Session::LastError()
    
    if ( pSession->type != PSOA_SESSION ) return PSO_WRONG_TYPE_HANDLE;
 
-   if ( psoaSessionLock( pSession ) ) {
-      if ( ! pSession->terminated ) {
-         lastErr = psocGetLastError( &pSession->context.errorHandler );
-      }
-      else {
-         rc = PSO_SESSION_IS_TERMINATED;
-      }
-      psoaSessionUnlock( pSession );
+   if ( ! pSession->terminated ) {
+      lastErr = psocGetLastError( &pSession->context.errorHandler );
    }
    else {
-      rc = PSO_SESSION_CANNOT_GET_LOCK;
+      rc = PSO_SESSION_IS_TERMINATED;
    }
    
    if ( rc != 0 ) {

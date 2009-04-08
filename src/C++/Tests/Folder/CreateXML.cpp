@@ -55,7 +55,7 @@ int main( int argc, char * argv[] )
       }
       session.Init();
       session.CreateObject( name, def, NULL, 0, NULL, 0 );
-      folder.Open( name );
+      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
 //fprintf( stderr, "%s\n", buff );
 
    try {
-      folder.CreateObjectXML( NULL, strlen(buff) );
+      folder->CreateObjectXML( NULL, strlen(buff) );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -88,7 +88,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.CreateObjectXML( buff, 0 );
+      folder->CreateObjectXML( buff, 0 );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -99,9 +99,9 @@ int main( int argc, char * argv[] )
       }
    }
 
-   // The closing tag is </folder2> instead of folder.
+   // The closing tag is </folder2> instead of folder->
    try {
-      folder.CreateObjectXML( buff, strlen(buff) );
+      folder->CreateObjectXML( buff, strlen(buff) );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -124,7 +124,7 @@ int main( int argc, char * argv[] )
       "</folder>" );
 
    try {
-      folder.CreateObjectXML( buff, strlen(buff) );
+      folder->CreateObjectXML( buff, strlen(buff) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

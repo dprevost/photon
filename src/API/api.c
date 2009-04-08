@@ -34,8 +34,7 @@ extern "C" {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoInit( const char * qsrAddress,
-             int          programIsMultiThreaded )                  
+int psoInit( const char * qsrAddress )                  
 {
    int errcode = PSO_OK;
    psoaProcess * process;
@@ -43,13 +42,9 @@ int psoInit( const char * qsrAddress,
    
    if ( qsrAddress == NULL ) return PSO_INVALID_QUASAR_ADDRESS;
    
-   g_protectionIsNeeded = programIsMultiThreaded;
-   
-   if ( g_protectionIsNeeded ) {
-      ok = psocInitThreadLock( &g_ProcessMutex );
-      PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) return PSO_NOT_ENOUGH_RESOURCES;
-   }
+   ok = psocInitThreadLock( &g_ProcessMutex );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   if ( ! ok ) return PSO_NOT_ENOUGH_RESOURCES;
 
    process = (psoaProcess *) malloc( sizeof(psoaProcess) );
    if ( process == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
@@ -69,6 +64,7 @@ void psoExit()
    if ( g_pProcessInstance != NULL ) {
       psoaProcessFini();
    }
+   g_pProcessInstance = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

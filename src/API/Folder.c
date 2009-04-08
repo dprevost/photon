@@ -51,30 +51,24 @@ int psoFolderClose( PSO_HANDLE objectHandle )
    
    if ( ! pFolder->object.pSession->terminated ) {
 
-      if ( psoaCommonLock( &pFolder->object ) ) {
-        pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+     pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-         /* Reinitialize the iterator, if needed */
-         if ( pFolder->iterator.pHashItem != NULL ) {
-            ok = psonFolderRelease( pMemFolder,
-                                    &pFolder->iterator,
-                                    &pFolder->object.pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
-            if ( ok ) {
-               memset( &pFolder->iterator, 0, sizeof(psonFolderItem) );
-            }
-            else {
-               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-            }
+      /* Reinitialize the iterator, if needed */
+      if ( pFolder->iterator.pHashItem != NULL ) {
+         ok = psonFolderRelease( pMemFolder,
+                                 &pFolder->iterator,
+                                 &pFolder->object.pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
+         if ( ok ) {
+            memset( &pFolder->iterator, 0, sizeof(psonFolderItem) );
          }
-
-         if ( errcode == PSO_OK ) {
-            errcode = psoaCommonObjClose( &pFolder->object );
+         else {
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
-         psoaCommonUnlock( &pFolder->object );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+
+      if ( errcode == PSO_OK ) {
+         errcode = psoaCommonObjClose( &pFolder->object );
       }
    }
    else {
@@ -128,19 +122,13 @@ int psoFolderCreateFolder( PSO_HANDLE            objectHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( psoaCommonLock( &pFolder->object ) ) {
-         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+      pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-         ok = psonFolderCreateFolder( pMemFolder,
-                                      objectName,
-                                      nameLengthInBytes,
-                                      &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaCommonUnlock( &pFolder->object );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      ok = psonFolderCreateFolder( pMemFolder,
+                                   objectName,
+                                   nameLengthInBytes,
+                                   &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -219,22 +207,16 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
    pMemDataDefinition = pDataDefinition->pMemDefinition;
 
    if ( ! pSession->terminated ) {
-      if ( psoaCommonLock( &pFolder->object ) ) {
-         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+      pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-         ok = psonFolderCreateObject( pMemFolder,
-                                      objectName,
-                                      nameLengthInBytes,
-                                      pDefinition,
-                                      NULL,
-                                      pMemDataDefinition,
-                                      &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaCommonUnlock( &pFolder->object );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      ok = psonFolderCreateObject( pMemFolder,
+                                   objectName,
+                                   nameLengthInBytes,
+                                   pDefinition,
+                                   NULL,
+                                   pMemDataDefinition,
+                                   &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -321,22 +303,16 @@ int psoFolderCreateKeyedObject( PSO_HANDLE            objectHandle,
    pMemDataDefinition = pDataDefinition->pMemDefinition;
 
    if ( ! pSession->terminated ) {
-      if ( psoaCommonLock( &pFolder->object ) ) {
-         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+      pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-         ok = psonFolderCreateObject( pMemFolder,
-                                      objectName,
-                                      nameLengthInBytes,
-                                      pDefinition,
-                                      pMemKeyDefinition,
-                                      pMemDataDefinition,
-                                      &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaCommonUnlock( &pFolder->object );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      ok = psonFolderCreateObject( pMemFolder,
+                                   objectName,
+                                   nameLengthInBytes,
+                                   pDefinition,
+                                   pMemKeyDefinition,
+                                   pMemDataDefinition,
+                                   &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -384,20 +360,13 @@ int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( psoaCommonLock( &pFolder->object ) ) {
-         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+      pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-         ok = psonFolderDestroyObject( pMemFolder,
-                                       objectName,
-                                       nameLengthInBytes,
-                                       &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-
-         psoaCommonUnlock( &pFolder->object );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      ok = psonFolderDestroyObject( pMemFolder,
+                                    objectName,
+                                    nameLengthInBytes,
+                                    &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -477,25 +446,19 @@ int psoFolderGetDefinition( PSO_HANDLE            objectHandle,
    }
 
    if ( ! pSession->terminated ) {
-      if ( psoaCommonLock( &pFolder->object ) ) {
-         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+      pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-         ok = psonFolderGetDefinition( pMemFolder,
-                                       objectName,
-                                       nameLengthInBytes,
-                                       pDefinition,
-                                       &pKeyDefinition->pMemDefinition,
-                                       &pDataDefinition->pMemDefinition,
-                                       &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         if ( ok ) {
-            *dataDefHandle = (PSO_HANDLE) pDataDefinition;
-            *keyDefHandle = (PSO_HANDLE) pKeyDefinition;
-         }
-         psoaSessionUnlock( pSession );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      ok = psonFolderGetDefinition( pMemFolder,
+                                    objectName,
+                                    nameLengthInBytes,
+                                    pDefinition,
+                                    &pKeyDefinition->pMemDefinition,
+                                    &pDataDefinition->pMemDefinition,
+                                    &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ok ) {
+         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
+         *keyDefHandle = (PSO_HANDLE) pKeyDefinition;
       }
    }
    else {
@@ -545,11 +508,6 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
       goto error_handler;
    }
    
-   if ( ! psoaCommonLock( &pFolder->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-   
    pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -562,7 +520,7 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
          memset( &pFolder->iterator, 0, sizeof(psonFolderItem) );
       }
       else {
-         goto error_handler_unlock;
+         goto error_handler;
       }
    }
 
@@ -570,7 +528,7 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
                             &pFolder->iterator,
                             &pFolder->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    memset( pEntry, 0, sizeof( psoFolderEntry ) );
    GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
@@ -580,12 +538,7 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
    pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
    memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
 
-   psoaCommonUnlock( &pFolder->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pFolder->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -632,18 +585,13 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
       goto error_handler;
    }
    
-   if ( ! psoaCommonLock( &pFolder->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
    ok = psonFolderGetNext( pMemFolder,
                            &pFolder->iterator,
                            &pFolder->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
    
    memset( pEntry, 0, sizeof( psoFolderEntry ) );
    GET_PTR( pDescriptor, pFolder->iterator.pHashItem->dataOffset, 
@@ -653,12 +601,7 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
    pEntry->nameLengthInBytes = pDescriptor->nameLengthInBytes;
    memcpy( pEntry->name, pDescriptor->originalName, pDescriptor->nameLengthInBytes );
 
-   psoaCommonUnlock( &pFolder->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pFolder->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -755,26 +698,19 @@ int psoFolderStatus( PSO_HANDLE     objectHandle,
    
    if ( ! pFolder->object.pSession->terminated ) {
 
-      if ( psoaCommonLock( &pFolder->object ) ) {
-
-         pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
+      pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
       
-         if ( psonLock(&pMemFolder->memObject, pContext) ) {
+      if ( psonLock(&pMemFolder->memObject, pContext) ) {
 
-            psonMemObjectStatus( &pMemFolder->memObject, pStatus );
+         psonMemObjectStatus( &pMemFolder->memObject, pStatus );
 
-            psonFolderMyStatus( pMemFolder, pStatus );
-            pStatus->type = PSO_FOLDER;
+         psonFolderMyStatus( pMemFolder, pStatus );
+         pStatus->type = PSO_FOLDER;
             
-            psonUnlock( &pMemFolder->memObject, pContext );
-         }
-         else {
-            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-         }
-         psoaCommonUnlock( &pFolder->object );
+         psonUnlock( &pMemFolder->memObject, pContext );
       }
       else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       }
    }
    else {

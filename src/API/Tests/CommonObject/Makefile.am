@@ -14,42 +14,30 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =         \
-        CloseNullObject  \
-        ClosePass        \
-        LockNullObject   \
-        LockPass         \
-        OpenNullName     \
-        OpenNullObject   \
-        OpenPass         \
-        OpenWrongType    \
-        UnlockNullObject \
-        UnlockPass       
+check_PROGRAMS =        \
+        CloseNullObject \
+        ClosePass       \
+        OpenNullName    \
+        OpenNullObject  \
+        OpenPass        \
+        OpenWrongType   
 
 CloseNullObject_SOURCES  = CloseNullObject.c
 ClosePass_SOURCES        = ClosePass.c
-LockNullObject_SOURCES   = LockNullObject.c
-LockPass_SOURCES         = LockPass.c
 OpenNullName_SOURCES     = OpenNullName.c
 OpenNullObject_SOURCES   = OpenNullObject.c
 OpenPass_SOURCES         = OpenPass.c
 OpenWrongType_SOURCES    = OpenWrongType.c
-UnlockNullObject_SOURCES = UnlockNullObject.c
-UnlockPass_SOURCES       = UnlockPass.c
 
-EXTRA_DIST =                \
-        CloseNullObject.sh  \
-        ClosePass.sh        \
-        LockNullObject.sh   \
-        LockPass.sh         \
-        Makefile.win32      \
-        OpenNullName.sh     \
-        OpenNullObject.sh   \
-        OpenPass.sh         \
-        OpenWrongType.sh    \
-        RunTests.vbs        \
-        UnlockNullObject.sh \
-        UnlockPass.sh       
+EXTRA_DIST =               \
+        CloseNullObject.sh \
+        ClosePass.sh       \
+        Makefile.win32     \
+        OpenNullName.sh    \
+        OpenNullObject.sh  \
+        OpenPass.sh        \
+        OpenWrongType.sh   \
+        RunTests.vbs       
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -59,17 +47,13 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                     \
-        CloseNullObject.sh  \
-        ClosePass.sh        \
-        LockNullObject.sh   \
-        LockPass.sh         \
-        OpenNullName.sh     \
-        OpenNullObject.sh   \
-        OpenPass.sh         \
-        OpenWrongType.sh    \
-        UnlockNullObject.sh \
-        UnlockPass.sh       
+TESTS =                    \
+        CloseNullObject.sh \
+        ClosePass.sh       \
+        OpenNullName.sh    \
+        OpenNullObject.sh  \
+        OpenPass.sh        \
+        OpenWrongType.sh   
 
 XFAIL_TESTS = 
 

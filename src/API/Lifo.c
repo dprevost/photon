@@ -44,28 +44,22 @@ int psoLifoClose( PSO_HANDLE objectHandle )
    if ( pLifo->object.type != PSOA_LIFO ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pLifo->object ) ) {
-         pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
+      pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
-         /* Reinitialize the iterator, if needed */
-         if ( pLifo->iterator != NULL ) {
-            if ( psonQueueRelease( pMemLifo,
-                                   pLifo->iterator,
-                                   &pLifo->object.pSession->context ) ) {
-               pLifo->iterator = NULL;
-            }
-            else {
-               errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-            }
+      /* Reinitialize the iterator, if needed */
+      if ( pLifo->iterator != NULL ) {
+         if ( psonQueueRelease( pMemLifo,
+                                pLifo->iterator,
+                                &pLifo->object.pSession->context ) ) {
+            pLifo->iterator = NULL;
          }
-
-         if ( errcode == PSO_OK ) {
-            errcode = psoaCommonObjClose( &pLifo->object );
+         else {
+            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
          }
-         psoaCommonUnlock( &pLifo->object );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+
+      if ( errcode == PSO_OK ) {
+         errcode = psoaCommonObjClose( &pLifo->object );
       }
    }
    else {
@@ -118,21 +112,14 @@ int psoLifoDefinition( PSO_HANDLE   objectHandle,
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pLifo->object ) ) {
-         pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
+      pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
       
-         pDataDefinition->pSession = pLifo->object.pSession;
-         pDataDefinition->definitionType = PSOA_DEF_DATA;
-         GET_PTR( pDataDefinition->pMemDefinition, 
-                  pMemLifo->dataDefOffset, 
-                  psonDataDefinition );
-         *dataDefHandle = (PSO_HANDLE) pDataDefinition;
-
-         psoaCommonUnlock( &pLifo->object );
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      pDataDefinition->pSession = pLifo->object.pSession;
+      pDataDefinition->definitionType = PSOA_DEF_DATA;
+      GET_PTR( pDataDefinition->pMemDefinition, 
+               pMemLifo->dataDefOffset, 
+               psonDataDefinition );
+      *dataDefHandle = (PSO_HANDLE) pDataDefinition;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -174,11 +161,6 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pLifo->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-   
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -187,7 +169,7 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
       
       pLifo->iterator = NULL;
    }
@@ -198,17 +180,12 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
                       bufferLength,
                       &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    *returnedLength = pLifo->iterator->dataLength;
    memcpy( buffer, pLifo->iterator->data, *returnedLength );
 
-   psoaCommonUnlock( &pLifo->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pLifo->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -257,11 +234,6 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pLifo->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
    ok = psonQueueGet( pMemLifo,
@@ -270,17 +242,12 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
                       bufferLength,
                       &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
    
    *returnedLength = pLifo->iterator->dataLength;
    memcpy( buffer, pLifo->iterator->data, *returnedLength );
 
-   psoaCommonUnlock( &pLifo->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pLifo->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -385,11 +352,6 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pLifo->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -398,7 +360,7 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
 
       pLifo->iterator = NULL;
    }
@@ -409,17 +371,12 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
                          bufferLength,
                          &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    *returnedLength = pLifo->iterator->dataLength;
    memcpy( buffer, pLifo->iterator->data, *returnedLength );
 
-   psoaCommonUnlock( &pLifo->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pLifo->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -475,27 +432,21 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
    }
    
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pLifo->object ) ) {
-         pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
-         if ( pDefinition != NULL ) {
-            pMemDefinition = pDefinition->pMemDefinition;
-            if ( !(pMemLifo->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
-               errcode = PSO_DATA_DEF_UNSUPPORTED;
-            }
+      pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
+      if ( pDefinition != NULL ) {
+         pMemDefinition = pDefinition->pMemDefinition;
+         if ( !(pMemLifo->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
+            errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
-         if ( errcode == PSO_OK ) {
-            ok = psonQueueInsert( pMemLifo,
-                                  data,
-                                  dataLength,
-                                  pMemDefinition,
-                                  PSON_QUEUE_LAST,
-                                  &pLifo->object.pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
-         }
-         psoaCommonUnlock( &pLifo->object );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+      if ( errcode == PSO_OK ) {
+         ok = psonQueueInsert( pMemLifo,
+                               data,
+                               dataLength,
+                               pMemDefinition,
+                               PSON_QUEUE_LAST,
+                               &pLifo->object.pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
    }
    else {
@@ -545,23 +496,18 @@ int psoLifoRecordDefinition( PSO_HANDLE   objectHandle,
    pDefinition->definitionType = PSOA_DEF_DATA;
    
    if ( ! pQueue->object.pSession->terminated ) {
-      if ( psoaCommonLock( &pQueue->object ) ) {
-         pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
+      pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
  
-         /* We use the global queue definition as the initial value
-          * to avoid an uninitialized pointer.
-          */
-         GET_PTR( pDefinition->pMemDefinition, 
-                  pMemQueue->dataDefOffset, 
-                  psonDataDefinition );
-         pDefinition->ppApiObject = &pQueue->pRecordDefinition;
-         pQueue->pRecordDefinition = pDefinition;
+      /* We use the global queue definition as the initial value
+       * to avoid an uninitialized pointer.
+       */
+      GET_PTR( pDefinition->pMemDefinition, 
+               pMemQueue->dataDefOffset, 
+               psonDataDefinition );
+      pDefinition->ppApiObject = &pQueue->pRecordDefinition;
+      pQueue->pRecordDefinition = pDefinition;
          
-         dataDefHandle = (PSO_HANDLE) pDefinition;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      dataDefHandle = (PSO_HANDLE) pDefinition;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -598,25 +544,18 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
    }
 
    if ( ! pLifo->object.pSession->terminated ) {
-      if ( psoaCommonLock(&pLifo->object) ) {
-         pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
+      pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
       
-         if ( psonLock(&pMemLifo->memObject, pContext) ) {
-            psonMemObjectStatus( &pMemLifo->memObject, pStatus );
+      if ( psonLock(&pMemLifo->memObject, pContext) ) {
+         psonMemObjectStatus( &pMemLifo->memObject, pStatus );
 
-            psonQueueStatus( pMemLifo, pStatus );
-            pStatus->type = PSO_LIFO;
+         psonQueueStatus( pMemLifo, pStatus );
+         pStatus->type = PSO_LIFO;
 
-            psonUnlock( &pMemLifo->memObject, pContext );
-         }
-         else {
-            errcode = PSO_OBJECT_CANNOT_GET_LOCK;
-         }
-      
-         psoaCommonUnlock( &pLifo->object );
+         psonUnlock( &pMemLifo->memObject, pContext );
       }
       else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
+         errcode = PSO_OBJECT_CANNOT_GET_LOCK;
       }
    }
    else {
@@ -652,11 +591,6 @@ int psoaLifoFirst( psoaLifo      * pLifo,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pLifo->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -665,7 +599,7 @@ int psoaLifoFirst( psoaLifo      * pLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
       
       pLifo->iterator = NULL;
    }
@@ -676,17 +610,12 @@ int psoaLifoFirst( psoaLifo      * pLifo,
                       (uint32_t) -1,
                       &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    pEntry->data = pLifo->iterator->data;
    pEntry->length = pLifo->iterator->dataLength;
       
-   psoaCommonUnlock( &pLifo->object );
-   
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pLifo->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -720,11 +649,6 @@ int psoaLifoNext( psoaLifo      * pLifo,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pLifo->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
    ok = psonQueueGet( pMemLifo,
@@ -733,17 +657,12 @@ int psoaLifoNext( psoaLifo      * pLifo,
                       (uint32_t) -1,
                       &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    pEntry->data = pLifo->iterator->data;
    pEntry->length = pLifo->iterator->dataLength;
 
-   psoaCommonUnlock( &pLifo->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pLifo->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {
@@ -776,11 +695,6 @@ int psoaLifoRemove( psoaLifo      * pLifo,
       goto error_handler;
    }
 
-   if ( ! psoaCommonLock( &pLifo->object ) ) {
-      errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      goto error_handler;
-   }
-
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
    /* Reinitialize the iterator, if needed */
@@ -789,7 +703,7 @@ int psoaLifoRemove( psoaLifo      * pLifo,
                              pLifo->iterator,
                              &pLifo->object.pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler_unlock;
+      if ( ! ok ) goto error_handler;
 
       pLifo->iterator = NULL;
    }
@@ -800,17 +714,12 @@ int psoaLifoRemove( psoaLifo      * pLifo,
                          (uint32_t) -1,
                          &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
-   if ( ! ok ) goto error_handler_unlock;
+   if ( ! ok ) goto error_handler;
 
    pEntry->data = (const void *) pLifo->iterator->data;
    pEntry->length = pLifo->iterator->dataLength;
       
-   psoaCommonUnlock( &pLifo->object );
-
    return PSO_OK;
-
-error_handler_unlock:
-   psoaCommonUnlock( &pLifo->object );
 
 error_handler:
    if ( errcode != PSO_OK ) {

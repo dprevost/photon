@@ -119,7 +119,7 @@ DataDefinition::~DataDefinition()
    if ( m_definitionHandle != NULL ) {
       psoDataDefClose( m_definitionHandle );
    }
-   m_definitionHandle = NULL;
+   m_sessionHandle = m_definitionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -136,6 +136,7 @@ void DataDefinition::Close()
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "DataDefinition::Close" );
    }
+   m_sessionHandle = m_definitionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

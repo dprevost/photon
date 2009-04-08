@@ -31,8 +31,8 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session1, session2;
-   FastMap hashmap(session1);
-   FastMapEditor editor(session2);
+   FastMapEditor * editor;
+   FastMap       * hashmap;
    string fname = "/cpp_fastmap_getfirst";
    string hname = fname + "/test";
 
@@ -42,15 +42,11 @@ int main( int argc, char * argv[] )
    char buffKey[50];
    int errcode;
    uint32_t dataLength, keyLength;
-   psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -59,19 +55,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session1.Init();
-      session2.Init();
-      session2.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session2.CreateObject( hname,
-                             mapDef, 
-                             (unsigned char *)&keyDef,
-                             sizeof(psoKeyDefinition),
-                             (unsigned char *)fields,
-                             sizeof(psoFieldDefinition) );
-      session2.Commit();
-      hashmap.Open( hname );
-      editor.Open( hname );
-      editor.Insert( key, 6, data, 7 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -79,11 +62,38 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   try {
+      session1.Init();
+      session2.Init();
+      session2.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session2, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
+      KeyDefinition keyDefObj( session2,
+                               "Key Definition",
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)&keys,
+                               sizeof(psoKeyDefinition) );
+      session2.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+      session2.Commit();
+
+      hashmap = new FastMap( session1, hname );
+      editor  = new FastMapEditor( session2, hname );
+      editor->Insert( key, strlen(key), data, strlen(data) );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
    // Invalid arguments to tested function.
 
    try {
       // No commit yet.
-      errcode = hashmap.GetFirst( buffKey, 50, buffer, 50, keyLength, dataLength );
+      errcode = hashmap->GetFirst( buffKey, 50, buffer, 50, keyLength, dataLength );
       if ( errcode != PSO_IS_EMPTY ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
@@ -94,7 +104,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
    try { 
-      editor.Close();
+      editor->Close();
       session2.Commit(); // Commit the editions
       session1.Commit(); // Refresh session1 (and hashmap)
    }
@@ -104,7 +114,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetFirst( NULL, 50, buffer, 50, keyLength, dataLength );
+      hashmap->GetFirst( NULL, 50, buffer, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -117,7 +127,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetFirst( buffKey, 2, buffer, 50, keyLength, dataLength );
+      hashmap->GetFirst( buffKey, 2, buffer, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -130,7 +140,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetFirst( buffKey, 50, NULL, 50, keyLength, dataLength );
+      hashmap->GetFirst( buffKey, 50, NULL, 50, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -143,7 +153,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      hashmap.GetFirst( buffKey, 50, buffer, 2, keyLength, dataLength );
+      hashmap->GetFirst( buffKey, 50, buffer, 2, keyLength, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -157,7 +167,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try { 
-      errcode = hashmap.GetFirst( buffKey, 50, buffer, 50, keyLength, dataLength );
+      errcode = hashmap->GetFirst( buffKey, 50, buffer, 50, keyLength, dataLength );
       if ( errcode != PSO_OK ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;

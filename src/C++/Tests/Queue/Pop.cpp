@@ -51,6 +51,14 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
+      cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
       session1.Init();
       session2.Init();
       session1.CreateFolder( fname );
@@ -62,14 +70,13 @@ int main( int argc, char * argv[] )
       session1.CreateObject( qname,
                              queueDef,
                              dataDefObj );
-      queue1 = new Queue( session1, fname );
+      queue1 = new Queue( session1, qname );
       queue1->Push( data1, strlen(data1) );
       session1.Commit();
-      queue2 = new Queue( session2, fname );
+      queue2 = new Queue( session2, qname );
    }
    catch( pso::Exception exc ) {
-      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
-      cerr << "Is the server running?" << endl;
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

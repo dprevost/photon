@@ -66,10 +66,10 @@ int main( int argc, char * argv[] )
                             sizeof(psoKeyDefinition),
                             (unsigned char *)fields,
                             sizeof(psoFieldDefinition) );
-      hashmap.Open( hname );
-      hashmap.Insert( key1, 7, data, 7 );
-      hashmap.Insert( key2, 7, data, 7 );
-      hashmap.Insert( key3, 7, data, 7 );
+      hashmap->Open( hname );
+      hashmap->Insert( key1, 7, data, 7 );
+      hashmap->Insert( key2, 7, data, 7 );
+      hashmap->Insert( key3, 7, data, 7 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      hashmap.Status( status );
+      hashmap->Status( status );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

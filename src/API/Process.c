@@ -32,11 +32,6 @@
 psoaProcess     *g_pProcessInstance = NULL;
 psocThreadLock   g_ProcessMutex;
    
-/** 
- * Set to true if the program is multithreaded.
- */
-bool             g_protectionIsNeeded = false;
-
 int psoaStandalone( const char       * address,
                     char             * path,
                     size_t           * memorySizekb,
@@ -78,9 +73,7 @@ int psoaProcessInit( psoaProcess * process, const char * qsrAddress )
    context.pidLocker = getpid();
    psocInitErrorHandler( &context.errorHandler );
    
-   if ( g_protectionIsNeeded ) {
-      psocAcquireThreadLock( &g_ProcessMutex );
-   }
+   psocAcquireThreadLock( &g_ProcessMutex );
    
    if ( process->pHeader != NULL ) {
       errcode = PSO_PROCESS_ALREADY_INITIALIZED;
@@ -140,9 +133,7 @@ int psoaProcessInit( psoaProcess * process, const char * qsrAddress )
    
 the_exit:
    
-   if ( g_protectionIsNeeded ) {
-      psocReleaseThreadLock( &g_ProcessMutex );
-   }
+   psocReleaseThreadLock( &g_ProcessMutex );
    
    return errcode;
 }
@@ -178,9 +169,7 @@ void psoaProcessFini()
    GET_PTR( context.pAllocator, process->pHeader->allocatorOffset, void );
    psocInitErrorHandler( &context.errorHandler );
 
-   if ( g_protectionIsNeeded ) {
-      psocAcquireThreadLock( &g_ProcessMutex );
-   }
+   psocAcquireThreadLock( &g_ProcessMutex );
    
    GET_PTR( processManager, process->pHeader->processMgrOffset, psonProcMgr );
 
@@ -233,16 +222,14 @@ error_handler:
       psoaDisconnect( &process->connector, &context.errorHandler );
    }
    
-   if ( g_protectionIsNeeded ) {
-      psocReleaseThreadLock( &g_ProcessMutex );
-   }
+   psocReleaseThreadLock( &g_ProcessMutex );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaOpenMemory( psoaProcess        * process,
-                    const char        * memoryFileName,
-                    size_t              memorySizekb,
+                    const char         * memoryFileName,
+                    size_t               memorySizekb,
                     psonSessionContext * pContext )
 {
    int errcode = 0;

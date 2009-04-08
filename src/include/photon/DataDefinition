@@ -154,8 +154,8 @@ protected:
    
    PSO_HANDLE m_definitionHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
 
    enum psoDefinitionType m_defType;
    const unsigned char * m_dataDef;

@@ -92,7 +92,6 @@ DataDefinition * Queue::GetDataDefinition()
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Queue::GetDataDefinition" );
    }
-   
    pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;

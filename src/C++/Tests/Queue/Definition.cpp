@@ -37,13 +37,10 @@ int main( int argc, char * argv[] )
    Session session;
    Queue * queue;
    string fname = "/cpp_queue_definition";
-   string hname = fname + "/test";
+   string qname = fname + "/test";
 
-   size_t len;
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
-//   unsigned char * fields = NULL;
-//   uint32_t fieldsLength = 0;
-   psoObjectDefinition retDef;
+   unsigned char * retFields = NULL;
    psoFieldDefinition fields[5] = {
       { "field1", PSO_TINYINT,       {0} },
       { "field2", PSO_INTEGER,       {0} },
@@ -51,19 +48,7 @@ int main( int argc, char * argv[] )
       { "field4", PSO_SMALLINT,      {0} },
       { "field5", PSO_LONGVARBINARY, {0} }
    };
-   
-   try {
-      queue->Definition( retDef, fields, fieldsLength );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
+   DataDefinition * retDataDef = NULL;
    
    try {
       if ( argc > 1 ) {
@@ -73,9 +58,14 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue->Open( hname );
+      session.CreateFolder( fname );
+      DataDefinition dataDefObj( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 5*sizeof(psoFieldDefinition) );
+      session.CreateObject( qname, queueDef, dataDefObj );
+      queue = new Queue( session, qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -84,31 +74,31 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      // This is valid
-      queue->Definition( retDef, NULL, 0 );
+      retDataDef = queue->GetDataDefinition();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = 5 * sizeof(psoFieldDefinition);
    try {
-      queue->DefinitionLength( &fieldsLength );
-      if ( fieldsLength != len ) {
+      if ( retDataDef->GetType() != PSO_DEF_PHOTON_ODBC_SIMPLE ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }
-      fields = new unsigned char [fieldsLength];
-      queue->Definition( retDef, fields, fieldsLength );
+      if ( retDataDef->GetLength() != 5*sizeof(psoFieldDefinition) ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      retFields = new unsigned char [5*sizeof(psoFieldDefinition)];
+      retDataDef->GetDefinition( retFields, 5*sizeof(psoFieldDefinition) );
+      if ( memcmp( retFields, fields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   if ( memcmp( fieldDef.GetDefinition(), fields, len ) != 0 ) {
-      cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
 

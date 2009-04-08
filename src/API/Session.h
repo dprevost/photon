@@ -68,9 +68,6 @@ typedef struct psoaSession
    
    int numberOfEdits;
    
-   /** Our lock to serialize access to this object, if needed. */
-   psocThreadLock  mutex;
-   
    psoaListReaders listReaders;
    
 } psoaSession;
@@ -95,36 +92,6 @@ int psoaSessionOpenObj( psoaSession             * pSession,
                         const char              * objectName,
                         uint32_t                  nameLengthInBytes,
                         struct psoaCommonObject * pObject );
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static inline
-bool psoaSessionLock( psoaSession * pSession )
-{
-   bool ok = true;
-
-   PSO_PRE_CONDITION( pSession != NULL );
-   
-   if ( g_protectionIsNeeded ) {
-      ok = psocTryAcquireThreadLock( &pSession->mutex, PSON_LOCK_TIMEOUT );
-      PSO_POST_CONDITION( ok == true || ok == false );
-   }
-   
-   return ok;
-}
-   
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/** Unlock the current session. */
-static inline
-void psoaSessionUnlock( psoaSession * pSession )
-{
-   PSO_PRE_CONDITION( pSession != NULL );
-
-   if ( g_protectionIsNeeded ) {
-      psocReleaseThreadLock( &pSession->mutex );
-   }
-}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

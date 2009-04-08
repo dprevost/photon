@@ -113,32 +113,25 @@ int psoKeyDefCreate( PSO_HANDLE               sessionHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapInsert( pSession->pKeyDefMap,
-                                 definitionName,
-                                 nameLengthInBytes,
-                                 pMemDefinition,
-                                 recLength,
-                                 NULL,
-                                 &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
+      ok = psonHashMapInsert( pSession->pKeyDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              pMemDefinition,
+                              recLength,
+                              NULL,
+                              &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
          
-         if ( ok ) {
-            ok = psonHashMapGet( pSession->pKeyDefMap,
-                                 definitionName,
-                                 nameLengthInBytes,
-                                 &pHashItem,
-                                 (uint32_t) -1,
-                                 &pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
-         }
-         psoaSessionUnlock( pSession );
-         if ( ! ok ) goto error_handler;
+      if ( ok ) {
+         ok = psonHashMapGet( pSession->pKeyDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              &pHashItem,
+                              (uint32_t) -1,
+                              &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-         goto error_handler;
-      }
+      if ( ! ok ) goto error_handler;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -270,21 +263,14 @@ int psoKeyDefOpen( PSO_HANDLE   sessionHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapGet( pSession->pKeyDefMap,
-                              definitionName,
-                              nameLengthInBytes,
-                              &pHashItem,
-                              (uint32_t) -1,
-                              &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaSessionUnlock( pSession );
-         if ( ! ok ) goto error_handler;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-         goto error_handler;
-      }
+      ok = psonHashMapGet( pSession->pKeyDefMap,
+                           definitionName,
+                           nameLengthInBytes,
+                           &pHashItem,
+                           (uint32_t) -1,
+                           &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto error_handler;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -348,28 +334,15 @@ int psoaKeyDefDestroy( PSO_HANDLE   sessionHandle,
    }
 
    if ( ! pSession->terminated ) {
-      if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapDelete( pSession->pKeyDefMap,
-                                 definitionName,
-                                 nameLengthInBytes,
-                                 &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaSessionUnlock( pSession );
-         if ( ! ok ) goto error_handler;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-         goto error_handler;
-      }
+      ok = psonHashMapDelete( pSession->pKeyDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
-      goto error_handler;
    }
-
-   return PSO_OK;
-   
-error_handler:
 
    if ( errcode != 0 ) {
       psocSetError( &pSession->context.errorHandler, 

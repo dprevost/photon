@@ -46,10 +46,10 @@ int main( int argc, char * argv[] )
    PSO_HANDLE keyDefHandle, dataDefHandle;
 
    if ( argc > 1 ) {
-      errcode = psoInit( argv[1], 0 );
+      errcode = psoInit( argv[1] );
    }
    else {
-      errcode = psoInit( "10701", 0 );
+      errcode = psoInit( "10701" );
    }
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

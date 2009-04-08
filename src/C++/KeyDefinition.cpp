@@ -119,7 +119,7 @@ KeyDefinition::~KeyDefinition()
    if ( m_definitionHandle != NULL ) {
       psoKeyDefClose( m_definitionHandle );
    }
-   m_definitionHandle = NULL;
+   m_sessionHandle = m_definitionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -136,6 +136,7 @@ void KeyDefinition::Close()
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "KeyDefinition::Close" );
    }
+   m_sessionHandle = m_definitionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

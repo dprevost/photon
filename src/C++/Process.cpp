@@ -34,10 +34,19 @@ Process::Process()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Process::Init( const char * wdAddress,
-                    bool         protectionNeeded )
+void Process::Init( std::string & address )
 {
-   int rc = psoInit( wdAddress, protectionNeeded );
+   int rc = psoInit( address.c_str() );
+   if ( rc != 0 ) {
+      throw pso::Exception( "Process::Init", rc );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Process::Init( const char * address )
+{
+   int rc = psoInit( address );
    if ( rc != 0 ) {
       throw pso::Exception( "Process::Init", rc );
    }

@@ -50,7 +50,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session2.Init();
       session.CreateObject( name, def, NULL, 0, NULL, 0 );
-      folder.Open( name );
+      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -60,7 +60,7 @@ int main( int argc, char * argv[] )
    
    try {
       // Destroy non-existing object.
-      folder.DestroyObject( subname.c_str(), subname.length() );
+      folder->DestroyObject( subname.c_str(), subname.length() );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -72,7 +72,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      folder.CreateObject( subname, def, NULL, 0, NULL, 0 );
+      folder->CreateObject( subname, def, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
 
    try {
       // Destroy without a commit - should fail
-      folder.DestroyObject( subname );
+      folder->DestroyObject( subname );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -101,7 +101,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      folder.DestroyObject( NULL, subname.length() );
+      folder->DestroyObject( NULL, subname.length() );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -113,7 +113,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder.DestroyObject( subname.c_str(), 0 );
+      folder->DestroyObject( subname.c_str(), 0 );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -140,7 +140,7 @@ int main( int argc, char * argv[] )
    // End of invalid args. This call should succeed.
 
    try {
-      folder.DestroyObject( subname );
+      folder->DestroyObject( subname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

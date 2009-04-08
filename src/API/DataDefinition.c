@@ -37,24 +37,17 @@ int psoDataDefClose( PSO_HANDLE definitionHandle )
    if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( ! pDefinition->pSession->terminated ) {
-      if ( psoaSessionLock( pDefinition->pSession ) ) {
-         
-         if ( pDefinition->ppApiObject != NULL ) {
-            *pDefinition->ppApiObject = NULL;
-         }
-         /*
-          * Memory might still be around even after it is released, so we 
-          * make sure future access with the handle fails by setting the 
-          * type wrong.
-          */
-         pDefinition->definitionType = 0; 
-         free( pDefinition );
-         
-         psoaSessionUnlock(pDefinition->pSession);
+
+      if ( pDefinition->ppApiObject != NULL ) {
+         *pDefinition->ppApiObject = NULL;
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-      }
+      /*
+       * Memory might still be around even after it is released, so we 
+       * make sure future access with the handle fails by setting the 
+       * type wrong.
+       */
+      pDefinition->definitionType = 0; 
+      free( pDefinition );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -131,32 +124,25 @@ int psoDataDefCreate( PSO_HANDLE               sessionHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapInsert( pSession->pDataDefMap,
-                                 definitionName,
-                                 nameLengthInBytes,
-                                 pMemDefinition,
-                                 recLength,
-                                 NULL,
-                                 &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
+      ok = psonHashMapInsert( pSession->pDataDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              pMemDefinition,
+                              recLength,
+                              NULL,
+                              &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
          
-         if ( ok ) {
-            ok = psonHashMapGet( pSession->pDataDefMap,
-                                 definitionName,
-                                 nameLengthInBytes,
-                                 &pHashItem,
-                                 (uint32_t) -1,
-                                 &pSession->context );
-            PSO_POST_CONDITION( ok == true || ok == false );
-         }
-         psoaSessionUnlock( pSession );
-         if ( ! ok ) goto error_handler;
+      if ( ok ) {
+         ok = psonHashMapGet( pSession->pDataDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              &pHashItem,
+                              (uint32_t) -1,
+                              &pSession->context );
+         PSO_POST_CONDITION( ok == true || ok == false );
       }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-         goto error_handler;
-      }
+      if ( ! ok ) goto error_handler;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -289,21 +275,14 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
    }
    
    if ( ! pSession->terminated ) {
-      if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapGet( pSession->pDataDefMap,
-                              definitionName,
-                              nameLengthInBytes,
-                              &pHashItem,
-                              (uint32_t) -1,
-                              &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaSessionUnlock( pSession );
-         if ( ! ok ) goto error_handler;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-         goto error_handler;
-      }
+      ok = psonHashMapGet( pSession->pDataDefMap,
+                           definitionName,
+                           nameLengthInBytes,
+                           &pHashItem,
+                           (uint32_t) -1,
+                           &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto error_handler;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -524,26 +503,15 @@ int psoaDataDefDestroy( PSO_HANDLE   sessionHandle,
    }
 
    if ( ! pSession->terminated ) {
-      if ( psoaSessionLock( pSession ) ) {
-         ok = psonHashMapDelete( pSession->pDataDefMap,
-                                 definitionName,
-                                 nameLengthInBytes,
-                                 &pSession->context );
-         PSO_POST_CONDITION( ok == true || ok == false );
-         psoaSessionUnlock( pSession );
-         if ( ! ok ) goto error_handler;
-      }
-      else {
-         errcode = PSO_SESSION_CANNOT_GET_LOCK;
-         goto error_handler;
-      }
+      ok = psonHashMapDelete( pSession->pDataDefMap,
+                              definitionName,
+                              nameLengthInBytes,
+                              &pSession->context );
+      PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
-      goto error_handler;
    }
-
-error_handler:
 
    if ( errcode != 0 ) {
       psocSetError( &pSession->context.errorHandler, 

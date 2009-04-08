@@ -67,8 +67,8 @@ int main( int argc, char * argv[] )
                              (unsigned char *)fields,
                              sizeof(psoFieldDefinition) );
       session1.Commit();
-      map1.Open( hname );
-      map2.Open( hname );
+      map1->Open( hname );
+      map2->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      map1.Insert( NULL, 6, data, strlen(data) );
+      map1->Insert( NULL, 6, data, strlen(data) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -92,7 +92,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Insert( key, 0, data, strlen(data) );
+      map1->Insert( key, 0, data, strlen(data) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Insert( key, 6, NULL, strlen(data) );
+      map1->Insert( key, 6, NULL, strlen(data) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -118,7 +118,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Insert( key, 6, data, 0 );
+      map1->Insert( key, 6, data, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -132,7 +132,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      map1.Insert( key, 6, data, strlen(data) );
+      map1->Insert( key, 6, data, strlen(data) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -146,7 +146,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from first session.
     */
    try {
-      map2.Get( key, strlen(key), buffer, 20, length );
+      map2->Get( key, strlen(key), buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -159,7 +159,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Get( key, strlen(key), buffer, 20, length );
+      map1->Get( key, strlen(key), buffer, 20, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -167,7 +167,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1.Delete( key, strlen(key) );
+      map1->Delete( key, strlen(key) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -180,7 +180,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = map1.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
+      rc = map1->GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -192,7 +192,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = map2.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
+      rc = map2->GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
