@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      queue1.Open( NULL, strlen(c_name) );
+      queue1->Open( NULL, strlen(c_name) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -83,7 +83,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      queue1.Open( c_name, 0 );
+      queue1->Open( c_name, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -96,7 +96,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      queue1.Open( fname ); // Name of the folder
+      queue1->Open( fname ); // Name of the folder
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -109,7 +109,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      queue1.Open( "" );
+      queue1->Open( "" );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -123,14 +123,14 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed. */
    try {
-      queue1.Open( qname );
+      queue1->Open( qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
    try {
-      queue2.Open( c_name, strlen(c_name) );
+      queue2->Open( c_name, strlen(c_name) );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -144,7 +144,7 @@ int main( int argc, char * argv[] )
    
    try {
       session1.Commit();
-      queue2.Open( c_name, strlen(c_name) );
+      queue2->Open( c_name, strlen(c_name) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

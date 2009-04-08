@@ -61,6 +61,12 @@ int psoaKeyDefDestroy( PSO_HANDLE   sessionHandle,
                        const char * definitionName,
                        psoUint32    nameLengthInBytes );
 
+PHOTON_EXPORT
+int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
+                      enum psoDefinitionType  * type,
+                      unsigned char          ** keyDef,
+                      psoUint32               * keyDefLength );
+
 /*
  * Similar to psoaGetLimits (but using the api struct), it calculates the 
  * offsets for each data field.

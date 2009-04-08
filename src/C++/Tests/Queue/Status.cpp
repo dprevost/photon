@@ -32,21 +32,17 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Queue queue(session);
+   Queue * queue;
    string fname = "/cpp_queue_status";
    string qname = fname + "/test";
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
    const char * data3 = "My Data3";
    psoObjStatus status;
-   psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -56,17 +52,19 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( fname );
+      DataDefinition dataDefObj( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
       session.CreateObject( qname,
                             queueDef,
-                            NULL,
-                            0,
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
-      queue.Open( qname );
-      queue.Push( data1, strlen(data1) );
-      queue.Push( data2, strlen(data2) );
-      queue.Push( data3, strlen(data3) );
+                            dataDefObj );
+      queue = new Queue( session, fname );
+      queue->Push( data1, strlen(data1) );
+      queue->Push( data2, strlen(data2) );
+      queue->Push( data3, strlen(data3) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -76,7 +74,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      queue.Status( status );
+      queue->Status( status );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

@@ -384,6 +384,41 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
+                      enum psoDefinitionType  * type,
+                      unsigned char          ** keyDef,
+                      psoUint32               * keyDefLength )
+{
+   psoaKeyDefinition * pDefinition;
+
+   pDefinition = (psoaKeyDefinition *) definitionHandle;
+   if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pDefinition->definitionType != PSOA_DEF_KEY ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( type == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( keyDef == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   if ( keyDefLength == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   *type = pDefinition->pMemDefinition->type;
+   *keyDef = pDefinition->pMemDefinition->definition,
+   *keyDefLength = pDefinition->pMemDefinition->definitionLength;
+   
+   return PSO_OK;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
                         int                numKeys,
                         uint32_t         * pOffsets )

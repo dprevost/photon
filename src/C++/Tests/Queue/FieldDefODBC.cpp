@@ -69,7 +69,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
       session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue.Open( hname );
+      queue->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      returnedDef = queue.GetFieldDefinition();
+      returnedDef = queue->GetFieldDefinition();
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

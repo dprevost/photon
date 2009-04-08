@@ -35,34 +35,25 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Queue queue(session);
+   Queue * queue;
    string fname = "/cpp_queue_definition";
    string hname = fname + "/test";
 
    size_t len;
-   psoObjectDefinition folderDef = {
-      PSO_FOLDER, 0, 0, 0 };
-   psoObjectDefinition queueDef = { 
-      PSO_QUEUE, 0, 0, 0 };
-   FieldDefinitionODBC fieldDef( 5 );
-   unsigned char * fields = NULL;
-   uint32_t fieldsLength = 0;
+   psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
+//   unsigned char * fields = NULL;
+//   uint32_t fieldsLength = 0;
    psoObjectDefinition retDef;
+   psoFieldDefinition fields[5] = {
+      { "field1", PSO_TINYINT,       {0} },
+      { "field2", PSO_INTEGER,       {0} },
+      { "field3", PSO_CHAR,         {30} },
+      { "field4", PSO_SMALLINT,      {0} },
+      { "field5", PSO_LONGVARBINARY, {0} }
+   };
    
    try {
-      fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
-      fieldDef.AddField( "field2", 6, PSO_INTEGER,       0, 0, 0 );
-      fieldDef.AddField( "field3", 6, PSO_CHAR,         30, 0, 0 );
-      fieldDef.AddField( "field4", 6, PSO_SMALLINT,      0, 0, 0 );
-      fieldDef.AddField( "field5", 6, PSO_LONGVARBINARY, 0, 0, 0 );
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   try {
-      queue.Definition( retDef, fields, fieldsLength );
+      queue->Definition( retDef, fields, fieldsLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -84,7 +75,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
       session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue.Open( hname );
+      queue->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -94,7 +85,7 @@ int main( int argc, char * argv[] )
 
    try {
       // This is valid
-      queue.Definition( retDef, NULL, 0 );
+      queue->Definition( retDef, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -103,13 +94,13 @@ int main( int argc, char * argv[] )
 
    len = 5 * sizeof(psoFieldDefinition);
    try {
-      queue.DefinitionLength( &fieldsLength );
+      queue->DefinitionLength( &fieldsLength );
       if ( fieldsLength != len ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }
       fields = new unsigned char [fieldsLength];
-      queue.Definition( retDef, fields, fieldsLength );
+      queue->Definition( retDef, fields, fieldsLength );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

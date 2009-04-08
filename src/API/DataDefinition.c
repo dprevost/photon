@@ -228,41 +228,6 @@ int psoDataDefGet( PSO_HANDLE               definitionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaDataDefGetDef( PSO_HANDLE                definitionHandle,
-                       enum psoDefinitionType  * type,
-                       unsigned char          ** dataDef,
-                       psoUint32               * dataDefLength )
-{
-   psoaDataDefinition * pDefinition;
-
-   pDefinition = (psoaDataDefinition *) definitionHandle;
-   if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
-   
-   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
-
-   if ( type == NULL ) {
-      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
-   if ( dataDef == NULL ) {
-      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
-
-   if ( dataDefLength == NULL ) {
-      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
-   }
-   
-   *type = pDefinition->pMemDefinition->type;
-   *dataDef = pDefinition->pMemDefinition->definition,
-   *dataDefLength = pDefinition->pMemDefinition->definitionLength;
-   
-   return PSO_OK;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 int psoDataDefGetLength( PSO_HANDLE   definitionHandle,
                          psoUint32  * dataDefLength )
 {
@@ -589,6 +554,41 @@ error_handler:
    }
 
    return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int psoaDataDefGetDef( PSO_HANDLE                definitionHandle,
+                       enum psoDefinitionType  * type,
+                       unsigned char          ** dataDef,
+                       psoUint32               * dataDefLength )
+{
+   psoaDataDefinition * pDefinition;
+
+   pDefinition = (psoaDataDefinition *) definitionHandle;
+   if ( pDefinition == NULL ) return PSO_NULL_HANDLE;
+   
+   if ( pDefinition->definitionType != PSOA_DEF_DATA ) return PSO_WRONG_TYPE_HANDLE;
+
+   if ( type == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( dataDef == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+
+   if ( dataDefLength == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   
+   *type = pDefinition->pMemDefinition->type;
+   *dataDef = pDefinition->pMemDefinition->definition,
+   *dataDefLength = pDefinition->pMemDefinition->definitionLength;
+   
+   return PSO_OK;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

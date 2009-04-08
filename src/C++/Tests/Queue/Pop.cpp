@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session1, session2;
-   Queue queue1(session1), queue2(session2);
+   Queue * queue1, * queue2;
    string fname = "/cpp_queue_pop";
    string qname = fname + "/test";
 
@@ -39,15 +39,11 @@ int main( int argc, char * argv[] )
    char buffer[50];
    uint32_t length;
    int rc;
-   psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
 
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -57,17 +53,19 @@ int main( int argc, char * argv[] )
       }
       session1.Init();
       session2.Init();
-      session1.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session1.CreateFolder( fname );
+      DataDefinition dataDefObj( session1, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
       session1.CreateObject( qname,
-                            queueDef,
-                            NULL,
-                            0,
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
-      queue1.Open( qname );
-      queue1.Push( data1, strlen(data1) );
+                             queueDef,
+                             dataDefObj );
+      queue1 = new Queue( session1, fname );
+      queue1->Push( data1, strlen(data1) );
       session1.Commit();
-      queue2.Open( qname );
+      queue2 = new Queue( session2, fname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -78,7 +76,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      queue1.Pop( NULL, 50, length );
+      queue1->Pop( NULL, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -91,7 +89,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      queue1.Pop( buffer, 2, length );
+      queue1->Pop( buffer, 2, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -105,7 +103,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      queue1.Pop( buffer, 50, length );
+      queue1->Pop( buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -123,7 +121,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from second session.
     */
    try {
-      queue1.GetFirst( buffer, 50, length );
+      queue1->GetFirst( buffer, 50, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -136,7 +134,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      queue2.GetFirst( buffer, 50, length );
+      queue2->GetFirst( buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -144,7 +142,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = queue2.Pop( buffer, 50, length );
+      rc = queue2->Pop( buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -167,7 +165,7 @@ int main( int argc, char * argv[] )
     * internal pointer).
     */
    try {
-      queue2.GetFirst( buffer, 50, length );
+      queue2->GetFirst( buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -183,7 +181,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = queue1.GetFirst( buffer, 50, length );
+      rc = queue1->GetFirst( buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -195,7 +193,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = queue2.GetFirst( buffer, 50, length );
+      rc = queue2->GetFirst( buffer, 50, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
