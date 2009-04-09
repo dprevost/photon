@@ -170,7 +170,7 @@ int main( int argc, char * argv[] )
                                          &def,
                                          NULL,
                                          dataDefHandle );
-   if ( errcode != PSO_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -181,7 +181,7 @@ int main( int argc, char * argv[] )
                                          &def,
                                          keyDefHandle,
                                          NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
+   if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

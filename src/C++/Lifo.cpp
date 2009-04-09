@@ -28,6 +28,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+Lifo::Lifo()
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( NULL )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 Lifo::Lifo( Session & session, const std::string & queueName )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
@@ -165,6 +173,31 @@ DataDefinition * Lifo::GetRecordDefinition()
    pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Lifo::Open( Session & session, const std::string & queueName )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "Lifo::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Lifo::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoLifoOpen( m_sessionHandle,
+                     queueName.c_str(),
+                     queueName.length(),
+                     &m_objectHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Lifo::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

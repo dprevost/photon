@@ -27,6 +27,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+Folder::Folder()
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( NULL )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 Folder::Folder( Session & session, const std::string & folderName )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
@@ -53,7 +61,7 @@ Folder::~Folder()
    if ( m_objectHandle != NULL ) {
       psoFolderClose( m_objectHandle );
    }
-   m_objectHandle = NULL;
+   m_objectHandle = m_sessionHandle = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -67,7 +75,7 @@ void Folder::Close()
    }
 
    rc = psoFolderClose( m_objectHandle );
-   m_objectHandle = NULL;
+   m_objectHandle = m_sessionHandle = NULL;
    
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::Close" );
@@ -274,6 +282,31 @@ int Folder::GetNext( psoFolderEntry & entry )
    }
 
    return rc;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Folder::Open( Session & session, const std::string & folderName )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "Folder::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Folder::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoFolderOpen( m_sessionHandle,
+                       folderName.c_str(),
+                       folderName.length(),
+                       &m_objectHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Folder::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

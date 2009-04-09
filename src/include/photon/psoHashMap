@@ -48,6 +48,14 @@ class PHOTON_EXPORT HashMap
 {
 public:
 
+   /**
+    * This constructor does nothing.
+    *
+    * You must use Open to access an in-memory HashMap object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   HashMap();
+
    /** 
     * Open an existing hash map.
     *
@@ -285,6 +293,16 @@ public:
                 psoUint32              dataLength,
                 const DataDefinition & dataDefinition );
    
+   /** 
+    * Open an existing hash map.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string & hashMapName );
+
    /**
     * Replace a data element in the hash map.
     *
@@ -343,8 +361,8 @@ private:
    /// Pointer to the psoaHashMap struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
    
 };
  

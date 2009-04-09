@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=GetNextPass
+test_name=GetFirst
 test_dir=src/C++/Tests/Folder
 errcode=0
 

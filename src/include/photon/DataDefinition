@@ -39,8 +39,6 @@
 
 namespace pso {
 
-class FastMap;
-
 /** 
  * This base class provides the "interface" needed to both define 
  * and retrieve the definition of the fields of a data record.
@@ -50,7 +48,15 @@ class PHOTON_EXPORT DataDefinition
 public:
 
    /**
-    * Construct a new data definition in shared memory.
+    * This constructor does nothing.
+    *
+    * You must use either Open or Create to use this object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   DataDefinition();
+
+   /**
+    * Creates a new data definition in shared memory.
     *
     * \param[in] session The session we belong to.
     * \param[in] name The name of the definition.
@@ -76,7 +82,7 @@ public:
     */
    DataDefinition( Session & session, const std::string name );
    
-protected:
+private:
    /**
     * This constructor is used by the other objects of this API to build the 
     * data definition.
@@ -108,6 +114,23 @@ public:
     */
    void Close();
    
+   /**
+    * Creates a new data definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition.
+    * \param[in] type The type of definition (ODBC, user defined, etc.)
+    * \param[in] dataDef The data definition (as an opaque type)
+    * \param[in] dataDefLength The length in bytes of the buffer \em dataDef. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Create( Session                & session,
+                const std::string        name,
+                enum psoDefinitionType   type,
+                const unsigned char    * dataDef,
+                psoUint32                dataDefLength );
+
    /**
     * Iterates through the definition.
     *
@@ -150,7 +173,17 @@ public:
     */
    enum psoDefinitionType GetType();
    
-protected:
+   /**
+    * Open an existing data definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string name );
+
+private:
    
    PSO_HANDLE m_definitionHandle;
 

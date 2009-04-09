@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,8 +31,8 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=KeyDefODBC
-test_dir=src/C++/Tests/FastMap
+test_name=Status
+test_dir=src/C++/Tests/Folder
 errcode=0
 
 # If the env. variable top_srcdir is not defined... we must have three

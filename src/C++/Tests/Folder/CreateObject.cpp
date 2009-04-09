@@ -20,7 +20,6 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include "Tests/PrintError.h"
 #include <iostream>
 
 using namespace std;
@@ -31,15 +30,18 @@ using namespace pso;
 int main( int argc, char * argv[] )
 {
    Process process;
-   Session session1, session2;
-   Folder folder1(session1), folder2(session2);
-   string name = "/cpp_folder_open";
-   const char * c_name = "/cpp_folder_open";
-   psoObjectDefinition def; 
+   Session session;
+   Folder *folder;
+   string name = "/cpp_folder_create";
+   string subname = "test";
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VARCHAR, {10} } 
+   };
+   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
+   DataDefinition dataDefObj;
+   KeyDefinition keyDefObj;
 
-   memset( &def, 0, sizeof def );
-   def.type = PSO_FOLDER;
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -47,9 +49,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session1.Init();
-      session2.Init();
-      session1.CreateObject( name, def, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -57,20 +56,33 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   try {
+      session.Init();
+      session.CreateFolder( name );
+      folder = new Folder( session, name );
+
+      dataDefObj.Create( session, 
+                         "Data Definition",
+                         PSO_DEF_PHOTON_ODBC_SIMPLE,
+                         (unsigned char *)fields,
+                         sizeof(psoFieldDefinition) );
+      keyDefObj.Create( session, 
+                        "Key Definition",
+                        PSO_DEF_PHOTON_ODBC_SIMPLE,
+                        (unsigned char *)&keyDef,
+                        sizeof(psoKeyDefinition) );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   
    // Invalid arguments to tested function.
 
    try {
-      folder1.Open( NULL, strlen(c_name) );
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
-   try {
-      folder1.Open( c_name, 0 );
+      folder->CreateObject( "", mapDef, keyDefObj, dataDefObj );
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
    }
    catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
@@ -78,10 +90,36 @@ int main( int argc, char * argv[] )
          return 1;
       }
    }
+   
+   mapDef.type = (psoObjectType)0;
+   try {
+      folder->CreateObject( subname, mapDef, keyDefObj, dataDefObj );
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+   mapDef.type = PSO_HASH_MAP;
 
+   try {
+      folder->CreateObject( subname, mapDef, dataDefObj );
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+   
    // End of invalid args. This call should succeed.
    try {
-      folder1.Open( name );
+      folder->CreateObject( subname, mapDef, keyDefObj, dataDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -89,15 +127,16 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder2.Open( name );
+      dataDefObj.Close();
+      folder->CreateObject( subname, mapDef, keyDefObj, dataDefObj );
    }
    catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_OBJECT_IS_IN_USE ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
    }
-
+   
    return 0;
 }
 

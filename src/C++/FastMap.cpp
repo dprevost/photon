@@ -28,6 +28,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+FastMap::FastMap()
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( NULL )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 FastMap::FastMap( Session &session, const std::string & hashMapName )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
@@ -326,6 +334,32 @@ DataDefinition * FastMap::GetRecordDefinition()
    pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void FastMap::Open( Session &session, const std::string & hashMapName )
+{
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMap::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "FastMap::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoFastMapOpen( m_sessionHandle,
+                        hashMapName.c_str(),
+                        hashMapName.length(),
+                        &m_objectHandle );
+
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMap::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

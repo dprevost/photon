@@ -184,8 +184,8 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
    }
    
    if ( dataDefHandle == NULL ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_HANDLE );
+      return PSO_NULL_HANDLE;
    }
    
    pDataDefinition = (psoaDataDefinition *)dataDefHandle;
@@ -265,8 +265,8 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
    }
    
    if ( keyDefHandle == NULL ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_HANDLE );
+      return PSO_NULL_HANDLE;
    }
    pKeyDefinition = (psoaKeyDefinition *)keyDefHandle;
    if ( pKeyDefinition->definitionType != PSOA_DEF_KEY ) {
@@ -276,8 +276,8 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
    pMemKeyDefinition = pKeyDefinition->pMemDefinition;
    
    if ( dataDefHandle == NULL ) {
-      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
-      return PSO_NULL_POINTER;
+      psocSetError( &pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_HANDLE );
+      return PSO_NULL_HANDLE;
    }
    pDataDefinition = (psoaDataDefinition *)dataDefHandle;
    if ( pDataDefinition->definitionType != PSOA_DEF_DATA ) {

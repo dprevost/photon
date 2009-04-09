@@ -79,6 +79,14 @@ class PHOTON_EXPORT FastMap
 {
 public:
 
+   /**
+    * This constructor does nothing.
+    *
+    * You must use Open to access an in-memory HashMap object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   FastMap();
+
    /** 
     * Open an existing read-only hash map (see psoSession::CreateObject to 
     * create a new object).
@@ -89,7 +97,6 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    FastMap( Session & session, const std::string & hashMapName );
-
 
    /**
     * The destructor will close the hash map if not closed.
@@ -251,6 +258,17 @@ public:
     */
    DataDefinition * GetRecordDefinition();
 
+   /** 
+    * Open an existing read-only hash map (see psoSession::CreateObject to 
+    * create a new object).
+    *
+    * \param[in] session The session we belong to.
+    * \param[in]  hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string & hashMapName );
+
    /**
     * Return the status of the hash map.
     *
@@ -265,8 +283,8 @@ protected:
    /// Pointer to the psoaFastMap struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
    
 };
 

@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=CreateXML
+test_name=CreateObject
 test_dir=src/C++/Tests/Folder
 errcode=0
 

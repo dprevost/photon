@@ -29,6 +29,18 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+KeyDefinition::KeyDefinition()
+   : m_definitionHandle ( NULL ),
+     m_sessionHandle    ( NULL ),
+     m_defType          ( PSO_DEF_USER_DEFINED ),
+     m_keyDef           ( NULL ),
+     m_keyDefLength     ( 0 ),
+     m_currentLength    ( 0 )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 KeyDefinition::KeyDefinition( Session                & session,
                               const std::string        name,
                               enum psoDefinitionType   type,
@@ -141,6 +153,42 @@ void KeyDefinition::Close()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void KeyDefinition::Create( Session                & session,
+                            const std::string        name,
+                            enum psoDefinitionType   type,
+                            const unsigned char    * keyDef,
+                            psoUint32                keyDefLength )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "keyDefinition::Create", PSO_NULL_HANDLE );
+   }
+
+   if ( m_definitionHandle != NULL ) {
+      throw pso::Exception( "KeyDefinition::Create", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+   m_defType = type;
+   m_keyDef  = keyDef;
+   m_keyDefLength  = keyDefLength;
+   m_currentLength = 0;
+
+   rc = psoKeyDefCreate( m_sessionHandle,
+                         name.c_str(),
+                         name.length(),
+                         type,
+                         keyDef,
+                         keyDefLength,
+                         &m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::Create" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 void KeyDefinition::GetDefinition( unsigned char * buffer,
                                    psoUint32       bufferLength)
 {
@@ -214,6 +262,39 @@ enum psoDefinitionType KeyDefinition::GetType()
    }
 
    return m_defType;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void KeyDefinition::Open( Session & session, const std::string name )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "KeyDefinition::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_definitionHandle != NULL ) {
+      throw pso::Exception( "KeyDefinition::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+   
+   rc = psoKeyDefOpen( m_sessionHandle,
+                       name.c_str(),
+                       name.length(),
+                       &m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::Open" );
+   }
+   
+   rc = psoaKeyDefGetDef( m_definitionHandle, 
+                          &m_defType,
+                          (unsigned char **)&m_keyDef,
+                          &m_keyDefLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "KeyDefinition::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

@@ -110,14 +110,14 @@ public:
     *
     * \return The definition of the fields as an array of bytes.
     */
-   virtual const unsigned char * GetDefinition();
+   const unsigned char * GetDefinition();
 
    /** 
     * Returns the length, in bytes, of the definition.
     *
     * \return The length, in bytes, of the definition
     */
-   virtual psoUint32 GetDefLength();
+   psoUint32 GetDefLength();
 
 private:
 

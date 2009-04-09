@@ -48,7 +48,15 @@ class PHOTON_EXPORT KeyDefinition
 public:
    
    /**
-    * Construct a new key definition in shared memory.
+    * This constructor does nothing.
+    *
+    * You must use either Open or Create to use this object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   KeyDefinition();
+
+   /**
+    * Creates a new key definition in shared memory.
     *
     * \param[in] session The session we belong to.
     * \param[in] name The name of the definition.
@@ -74,7 +82,7 @@ public:
     */
    KeyDefinition( Session & session, const std::string name );
    
-protected:
+private:
    /**
     * This constructor is used by the other objects of this API to build the 
     * key definition.
@@ -106,6 +114,23 @@ public:
     */
    void Close();
    
+   /**
+    * Creates a new key definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition.
+    * \param[in] type The type of definition (ODBC, user defined, etc.)
+    * \param[in] keyDef The key definition (as an opaque type)
+    * \param[in] keyDefLength The length in bytes of the buffer \em keyDef. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Create( Session                & session,
+                const std::string        name,
+                enum psoDefinitionType   type,
+                const unsigned char    * keyDef,
+                psoUint32                keyDefLength );
+
    /**
     * Iterates through the definition.
     *
@@ -148,7 +173,17 @@ public:
     */
    enum psoDefinitionType GetType();
 
-protected:
+   /**
+    * Open an existing key definition in shared memory.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] name The name of the definition. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string   name );
+   
+private:
    
    PSO_HANDLE m_definitionHandle;
 

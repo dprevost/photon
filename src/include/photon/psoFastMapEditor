@@ -55,6 +55,14 @@ class PHOTON_EXPORT FastMapEditor
 {
 public:
 
+   /**
+    * This constructor does nothing.
+    *
+    * You must use Open to access an in-memory HashMap object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   FastMapEditor();
+
    /** 
     * Open an existing read-only hash map in edit mode.
     *
@@ -302,6 +310,20 @@ public:
                 psoUint32              dataLength,
                 const DataDefinition & dataDefinition );
    
+   /** 
+    * Open an existing read-only hash map in edit mode.
+    *
+    * Updates are done using a temporary copy (in shared memory) and 
+    * this copy becomes the latest version of the map only after a call
+    * to psoSession::Commit().
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] hashMapName The fully qualified name of the hash map. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string & hashMapName );
+
    /**
     * Replace a data element in the hash map.
     *
@@ -360,8 +382,8 @@ protected:
    /// Pointer to the psoaFastMap struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
 
 };
  

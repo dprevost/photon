@@ -47,6 +47,14 @@ class PHOTON_EXPORT Queue
 public:
 
    /**
+    * This constructor does nothing.
+    *
+    * You must use Open to access an in-memory FIFO queue object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   Queue();
+
+   /**
     * Open an existing FIFO queue (see Session::CreateObject to create a new 
     * queue).
     *
@@ -169,6 +177,17 @@ public:
     */
    DataDefinition * GetRecordDefinition();
 
+   /**
+    * Open an existing FIFO queue (see Session::CreateObject to create a new 
+    * queue).
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] queueName The fully qualified name of the queue. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string & queueName );
+
    /** 
     * Remove the first item from the beginning of a FIFO queue and return it 
     * to the caller.
@@ -286,8 +305,8 @@ private:
    /// Pointer to the psoaQueue struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
 
 };
 

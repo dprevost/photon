@@ -35,18 +35,19 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   FastMap map(session);
+   FastMap * map;
    string fname = "/cpp_fastmap_fielddefODBC";
    string hname = fname + "/test";
-
+   
    size_t len;
-   psoObjectDefinition folderDef = {
-      PSO_FOLDER, 0, 0, 0 };
-   psoObjectDefinition mapDef = { 
-      PSO_FAST_MAP, 0, 0, 0 };
-   FieldDefinitionODBC fieldDef( 5 );
-   FieldDefinition * returnedDef;
-   KeyDefinitionODBC keyDef( 3 );
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
+
+   DataDefBuilderODBC fieldDef( 5 );
+   KeyDefBuilderODBC keyDef( 3 );
+
+   DataDefinition * returnedDataDef;
+   KeyDefinition * returnedKeyDef;
+   unsigned char * buffer;
    
    try {
       fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
@@ -70,31 +71,79 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, mapDef, &keyDef, &fieldDef );
-      map.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
       return 1;
    }
+   
 
    try {
-      returnedDef = map.GetFieldDefinition();
+      session.Init();
+      session.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 fieldDef.GetDefinition(),
+                                 fieldDef.GetDefLength() );
+      KeyDefinition keyDefObj( session, 
+                               "Key Definition",
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               keyDef.GetDefinition(),
+                               keyDef.GetDefLength() );
+
+      session.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+
+      map = new FastMap( session, hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = 5 * sizeof(psoFieldDefinition);
-   if ( memcmp( fieldDef.GetDefinition(), returnedDef->GetDefinition(), len ) != 0 ) {
-      cerr << "Test failed - line " << __LINE__ << endl;
+   try {
+      returnedDataDef = map->GetDataDefinition();
+      returnedKeyDef  = map->GetKeyDefinition();
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   try {
+      len = 5 * sizeof(psoFieldDefinition);
+      buffer = new unsigned char [len];
+      if ( len != returnedDataDef->GetLength() ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      returnedDataDef->GetDefinition( buffer, len );      
+      if ( memcmp( fieldDef.GetDefinition(), buffer, len ) != 0 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      delete [] buffer;
+      
+      len = 3 * sizeof(psoKeyDefinition);
+      buffer = new unsigned char [len];
+      if ( len != returnedKeyDef->GetLength() ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      returnedKeyDef->GetDefinition( buffer, len );      
+      if ( memcmp( keyDef.GetDefinition(), buffer, len ) != 0 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+   
    return 0;
 }
 

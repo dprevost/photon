@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=GetFirstPass
+test_name=CreateFolder
 test_dir=src/C++/Tests/Folder
 errcode=0
 

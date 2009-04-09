@@ -45,6 +45,14 @@ class PHOTON_EXPORT Lifo
 {
 public:
 
+   /**
+    * This constructor does nothing.
+    *
+    * You must use Open to access an in-memory LIFO queue object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   Lifo();
+
    /** 
     * Open an existing LIFO queue.
     *
@@ -168,6 +176,16 @@ public:
    DataDefinition * GetRecordDefinition();
 
    /** 
+    * Open an existing LIFO queue.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] queueName The fully qualified name of the queue. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string & queueName );
+
+   /** 
     * Remove the first item from the end of a LIFO queue and return it 
     * to the caller.
     *
@@ -243,8 +261,8 @@ private:
    /// Pointer to the psoaLifo struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
 
 };
 

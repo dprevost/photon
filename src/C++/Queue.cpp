@@ -28,6 +28,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+Queue::Queue()
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( NULL )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 Queue::Queue( Session & session, const std::string & queueName )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
@@ -164,6 +172,31 @@ DataDefinition * Queue::GetRecordDefinition()
    pDefinition = new DataDefinition( m_sessionHandle, dataDefHandle );
    
    return pDefinition;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Queue::Open( Session & session, const std::string & queueName )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "Queue::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "Queue::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoQueueOpen( m_sessionHandle,
+                      queueName.c_str(),
+                      queueName.length(),
+                      &m_objectHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Queue::Open" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

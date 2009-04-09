@@ -49,7 +49,15 @@ class PHOTON_EXPORT Folder
 public:
 
    /**
-    * Constructor of the Folder object.
+    * This constructor does nothing.
+    *
+    * You must use Open to access an in-memory Folder object - otherwise
+    * a pso::Exception will be thrown.
+    */
+   Folder();
+
+   /**
+    * Opens a Folder object.
     *
     * \param[in] session The session we belong to.
     * \param[in] folderName The name of the folder. 
@@ -226,6 +234,16 @@ public:
    int GetNext( psoFolderEntry & entry );
    
    /**
+    * Opens a Folder object.
+    *
+    * \param[in] session The session we belong to.
+    * \param[in] folderName The name of the folder. 
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void Open( Session & session, const std::string & folderName );
+
+   /**
     * Return the status of the folder.
     *
     * \param[out] status A pointer to the status structure.
@@ -239,8 +257,8 @@ private:
    /// Pointer to the psoaFolder struct.
    PSO_HANDLE m_objectHandle;
 
-   /// Reference to the psoaSession struct (we belong to).
-   PSO_HANDLE & m_sessionHandle;
+   /// The psoaSession struct (we belong to).
+   PSO_HANDLE m_sessionHandle;
 
 };
 

@@ -29,6 +29,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+FastMapEditor::FastMapEditor()
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( NULL )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 FastMapEditor::FastMapEditor( Session & session, 
                               const std::string & hashMapName )
    : m_objectHandle  ( NULL ),
@@ -411,6 +419,33 @@ void FastMapEditor::Insert( const void           * key,
                           dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "FastMapEditor::Insert" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void FastMapEditor::Open( Session & session, 
+                          const std::string & hashMapName )
+{
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "FastMapEditor::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "FastMapEditor::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoFastMapEdit( m_sessionHandle,
+                        hashMapName.c_str(),
+                        hashMapName.length(),
+                        &m_objectHandle );
+
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "FastMapEditor::Open" );
    }
 }
 

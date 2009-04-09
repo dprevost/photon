@@ -29,7 +29,7 @@ using namespace pso;
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 DataDefBuilderODBC::DataDefBuilderODBC( uint32_t numFieldFields,
-                                          bool     simple /* = true */ )
+                                        bool     simple /* = true */ )
    : field        ( NULL ),
      numFields    ( numFieldFields ),
      currentField ( 0 ),
@@ -173,6 +173,38 @@ void DataDefBuilderODBC::AddField( const char * name,
       throw pso::Exception( "DataDefBuilderODBC::AddField",
                             PSO_INVALID_FIELD_TYPE );
    }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+const unsigned char * DataDefBuilderODBC::GetDefinition()
+{
+   if ( field == NULL ) {
+      throw pso::Exception( "DataDefBuilderODBC::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentField != numFields ) {
+      throw pso::Exception( "DataDefBuilderODBC::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return (const unsigned char *)field;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+psoUint32 DataDefBuilderODBC::GetDefLength()
+{
+   if ( field == NULL ) {
+      throw pso::Exception( "DataDefBuilderODBC::GetDefLength", PSO_NULL_POINTER );
+   }
+
+   if ( currentField != numFields ) {
+      throw pso::Exception( "DataDefBuilderODBC::GetDefLength",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return sizeof(psoFieldDefinition)*numFields;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

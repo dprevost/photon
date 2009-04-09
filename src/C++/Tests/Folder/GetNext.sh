@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=ClosePass
+test_name=GetNext
 test_dir=src/C++/Tests/Folder
 errcode=0
 

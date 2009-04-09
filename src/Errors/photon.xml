@@ -163,7 +163,8 @@
             The provided handle is NULL.
           </errormsg>
           <errordoc>
-            The provided handle is NULL.
+            The provided handle is NULL. For objected-oriented interfaces,
+            this might indicate that an object was not properly initialized.
           </errordoc>
         </message>
       </message_group>

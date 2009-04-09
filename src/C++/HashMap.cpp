@@ -28,6 +28,14 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+HashMap::HashMap()
+   : m_objectHandle  ( NULL ),
+     m_sessionHandle ( NULL )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 HashMap::HashMap( Session & session, const std::string & hashMapName )
    : m_objectHandle  ( NULL ),
      m_sessionHandle ( session.m_sessionHandle )
@@ -293,6 +301,31 @@ void HashMap::Insert( const void           * key,
                           dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "HashMap::Insert" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void HashMap::Open( Session & session, const std::string & hashMapName )
+{
+   int rc;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "HashMap::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_objectHandle != NULL ) {
+      throw pso::Exception( "HashMap::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoHashMapOpen( m_sessionHandle,
+                        hashMapName.c_str(),
+                        hashMapName.length(),
+                        &m_objectHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "HashMap::Open" );
    }
 }
 

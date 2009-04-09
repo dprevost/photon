@@ -14,39 +14,36 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
-
 check_PROGRAMS =     \
-        ClosePass    \
-        Create       \
+        Close        \
+        Constructor  \
+        CreateFolder \
+        CreateObject \
         Destroy      \
-        GetFirstPass \
-        GetNextPass  \
-        OpenPass     \
-        StatusPass   
+        GetFirst     \
+        GetNext      \
+        Status       
 
-#        CreateXML    
-#CreateXML_SOURCES    = CreateXML.cpp
-
-ClosePass_SOURCES    = ClosePass.cpp
-Create_SOURCES       = Create.cpp
+Close_SOURCES        = Close.cpp
+Constructor_SOURCES  = Constructor.cpp
+CreateFolder_SOURCES = CreateFolder.cpp
+CreateObject_SOURCES = CreateObject.cpp
 Destroy_SOURCES      = Destroy.cpp
-GetFirstPass_SOURCES = GetFirstPass.cpp
-GetNextPass_SOURCES  = GetNextPass.cpp
-OpenPass_SOURCES     = OpenPass.cpp
-StatusPass_SOURCES   = StatusPass.cpp
+GetFirst_SOURCES     = GetFirst.cpp
+GetNext_SOURCES      = GetNext.cpp
+Status_SOURCES       = Status.cpp
 
 EXTRA_DIST =            \
-        ClosePass.sh    \
-        Create.sh       \
-        CreateXML.sh    \
+        Close.sh        \
+        Constructor.sh  \
+        CreateFolder.sh \
+        CreateObject.sh \
         Destroy.sh      \
-        GetFirstPass.sh \
-        GetNextPass.sh  \
+        GetFirst.sh     \
+        GetNext.sh      \
         Makefile.win32  \
-        OpenPass.sh     \
         RunTests.vbs    \
-        StatusPass.sh   
+        Status.sh       
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -57,15 +54,14 @@ TESTS_ENVIRONMENT =                  \
         PYTHON=$(PYTHON)
 
 TESTS =                 \
-        ClosePass.sh    \
-        Create.sh       \
+        Close.sh        \
+        Constructor.sh  \
+        CreateFolder.sh \
+        CreateObject.sh \
         Destroy.sh      \
-        GetFirstPass.sh \
-        GetNextPass.sh  \
-        OpenPass.sh     \
-        StatusPass.sh   
-
-#        CreateXML.sh    
+        GetFirst.sh     \
+        GetNext.sh      \
+        Status.sh       
 
 XFAIL_TESTS = 
 

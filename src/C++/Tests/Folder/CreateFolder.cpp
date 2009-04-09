@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -27,37 +27,13 @@ using namespace pso;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-const bool expectedToPass = true;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   FastMap map(session);
-   string fname = "/cpp_fastmap_keydefODBC";
-   string hname = fname + "/test";
-
-   size_t len;
-   psoObjectDefinition folderDef = {
-      PSO_FOLDER, 0, 0, 0 };
-   psoObjectDefinition mapDef = { 
-      PSO_FAST_MAP, 0, 0, 0 };
-   FieldDefinitionODBC fieldDef( 1 );
-   KeyDefinition * returnedDef;
-   KeyDefinitionODBC keyDef( 3 );
-   
-   try {
-      fieldDef.AddField( "field1", 6, PSO_TINYINT, 0, 0, 0 );
-      keyDef.AddKeyField( "keyfield1", 9, PSO_KEY_INTEGER,       0 );
-      keyDef.AddKeyField( "keyfield2", 9, PSO_KEY_CHAR,         30 );
-      keyDef.AddKeyField( "keyfield3", 9, PSO_KEY_LONGVARBINARY, 0 );
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
+   Folder * folder;
+   string name = "/cpp_folder_create";
+   string subname = "test";
 
    try {
       if ( argc > 1 ) {
@@ -66,10 +42,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, mapDef, &keyDef, &fieldDef );
-      map.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -78,16 +50,48 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      returnedDef = map.GetKeyDefinition();
+      session.Init();
+      session.CreateFolder( name );
+      folder = new Folder( session, name );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
+      cerr << "Is the server running?" << endl;
+      return 1;
+   }
+   
+   // Invalid arguments to tested function.
+
+   try {
+      folder->CreateFolder( NULL );
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
+   try {
+      folder->CreateFolder( "" );
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+   
+   // End of invalid args. This call should succeed.
+   try {
+      folder->CreateFolder( subname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   len = 3 * sizeof(psoKeyDefinition);
-   if ( memcmp( keyDef.GetDefinition(), returnedDef->GetDefinition(), len ) != 0 ) {
-      cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
 

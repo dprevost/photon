@@ -14,52 +14,48 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =     \
-        Close        \
-        Definition   \
-        Delete       \
-        Empty        \
-        Get          \
-        GetFirst     \
-        GetNext      \
-        Insert       \
-        Open         \
-        Replace      \
-        Status       
+check_PROGRAMS =    \
+        Close       \
+        DataDefODBC \
+        Definition  \
+        Delete      \
+        Empty       \
+        Get         \
+        GetFirst    \
+        GetNext     \
+        Insert      \
+        Open        \
+        Replace     \
+        Status      
 
-#                FieldDefODBC 
-#KeyDefODBC   
+Close_SOURCES       = Close.cpp
+DataDefODBC_SOURCES = DataDefODBC.cpp
+Definition_SOURCES  = Definition.cpp
+Delete_SOURCES      = Delete.cpp
+Empty_SOURCES       = Empty.cpp
+Get_SOURCES         = Get.cpp
+GetFirst_SOURCES    = GetFirst.cpp
+GetNext_SOURCES     = GetNext.cpp
+Insert_SOURCES      = Insert.cpp
+Open_SOURCES        = Open.cpp
+Replace_SOURCES     = Replace.cpp
+Status_SOURCES      = Status.cpp
 
-Close_SOURCES        = Close.cpp
-Definition_SOURCES   = Definition.cpp
-Delete_SOURCES       = Delete.cpp
-Empty_SOURCES        = Empty.cpp
-#FieldDefODBC_SOURCES = FieldDefODBC.cpp
-Get_SOURCES          = Get.cpp
-GetFirst_SOURCES     = GetFirst.cpp
-GetNext_SOURCES      = GetNext.cpp
-Insert_SOURCES       = Insert.cpp
-#KeyDefODBC_SOURCES   = KeyDefODBC.cpp
-Open_SOURCES         = Open.cpp
-Replace_SOURCES      = Replace.cpp
-Status_SOURCES       = Status.cpp
-
-EXTRA_DIST =            \
-        Close.sh        \
-        Definition.sh   \
-        Delete.sh       \
-        Empty.sh        \
-        FieldDefODBC.sh \
-        Get.sh          \
-        GetFirst.sh     \
-        GetNext.sh      \
-        Insert.sh       \
-        KeyDefODBC      \
-        Makefile.win32  \
-        Open.sh         \
-        Replace.sh      \
-        RunTests.vbs    \
-        Status.sh       
+EXTRA_DIST =           \
+        Close.sh       \
+        DataDefODBC.sh \
+        Definition.sh  \
+        Delete.sh      \
+        Empty.sh       \
+        Get.sh         \
+        GetFirst.sh    \
+        GetNext.sh     \
+        Insert.sh      \
+        Makefile.win32 \
+        Open.sh        \
+        Replace.sh     \
+        RunTests.vbs   \
+        Status.sh      
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -69,21 +65,19 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                 \
-        Close.sh        \
-        Definition.sh   \
-        Delete.sh       \
-        Empty.sh        \
-        Get.sh          \
-        GetFirst.sh     \
-        GetNext.sh      \
-        Insert.sh       \
-        Open.sh         \
-        Replace.sh      \
-        Status.sh       
-
-#        FieldDefODBC.sh \
-#        KeyDefODBC.sh   
+TESTS =                \
+        Close.sh       \
+        DataDefODBC.sh \
+        Definition.sh  \
+        Delete.sh      \
+        Empty.sh       \
+        Get.sh         \
+        GetFirst.sh    \
+        GetNext.sh     \
+        Insert.sh      \
+        Open.sh        \
+        Replace.sh     \
+        Status.sh      
 
 XFAIL_TESTS = 
 

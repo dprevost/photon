@@ -31,13 +31,8 @@
 
 #include <photon/psoException>
 
-//#include <photon/FieldDefinition>
-//#include <photon/FieldDefinitionODBC>
-//#include <photon/FieldDefinitionUser>
 #include <photon/DataDefinition>
 #include <photon/KeyDefinition>
-//#include <photon/KeyDefinitionODBC>
-//#include <photon/KeyDefinitionUser>
 
 #include <photon/psoProcess>
 #include <photon/psoSession>
@@ -56,6 +51,14 @@
 #include <photon/psoFastMapEditor>
 #include <photon/psoLifo>
 #include <photon/psoQueue>
+
+/*
+ * The next classes are optional (helper classes).
+ */
+#include <photon/DataDefBuilderODBC>
+#include <photon/DataDefBuilderUser>
+#include <photon/KeyDefBuilderODBC>
+#include <photon/KeyDefBuilderUser>
 
 /**
  *

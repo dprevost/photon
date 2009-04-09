@@ -29,6 +29,18 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+DataDefinition::DataDefinition()
+   : m_definitionHandle ( NULL ),
+     m_sessionHandle    ( NULL ),
+     m_defType          ( PSO_DEF_USER_DEFINED ),
+     m_dataDef          ( NULL ),
+     m_dataDefLength    ( 0 ),
+     m_currentLength    ( 0 )
+{
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
 DataDefinition::DataDefinition( Session                & session,
                                 const std::string        name,
                                 enum psoDefinitionType   type,
@@ -137,6 +149,42 @@ void DataDefinition::Close()
       throw pso::Exception( m_sessionHandle, "DataDefinition::Close" );
    }
    m_sessionHandle = m_definitionHandle = NULL;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void DataDefinition::Create( Session                & session,
+                             const std::string        name,
+                             enum psoDefinitionType   type,
+                             const unsigned char    * dataDef,
+                             psoUint32                dataDefLength )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "DataDefinition::Create", PSO_NULL_HANDLE );
+   }
+   
+   if ( m_definitionHandle != NULL ) {
+      throw pso::Exception( "DataDefinition::Create", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+   m_defType = type;
+   m_dataDef = dataDef;
+   m_dataDefLength = dataDefLength;
+   m_currentLength = 0;
+
+   rc = psoDataDefCreate( m_sessionHandle,
+                          name.c_str(),
+                          name.length(),
+                          type,
+                          dataDef,
+                          dataDefLength,
+                          &m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "DataDefinition::Create" );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -312,4 +360,36 @@ enum psoDefinitionType DataDefinition::GetType()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+void DataDefinition::Open( Session & session, const std::string name )
+{
+   int rc;
+   
+   if ( session.m_sessionHandle == NULL ) {
+      throw pso::Exception( "DataDefinition::Open", PSO_NULL_HANDLE );
+   }
+
+   if ( m_definitionHandle != NULL ) {
+      throw pso::Exception( "DataDefinition::Open", PSO_ALREADY_OPEN );
+   }
+
+   m_sessionHandle = session.m_sessionHandle;
+
+   rc = psoDataDefOpen( m_sessionHandle,
+                        name.c_str(),
+                        name.length(),
+                        &m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "DataDefinition::Open" );
+   }
+   
+   rc = psoaDataDefGetDef( m_definitionHandle, 
+                           &m_defType,
+                           (unsigned char **)&m_dataDef,
+                           &m_dataDefLength );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "DataDefinition::Open" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
