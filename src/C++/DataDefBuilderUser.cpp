@@ -20,54 +20,23 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/FieldDefinitionUser>
+#include <photon/DataDefBuilderUser>
 
 using namespace std;
 using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-FieldDefinitionUser::FieldDefinitionUser( unsigned char * serialFieldDef,
-                                          uint32_t        fieldDefLen )
-   : FieldDefinition( true ),
-     field         ( NULL ),
-     numFields     ( 0 ),
+DataDefBuilderUser::DataDefBuilderUser()
+   : field         ( NULL ),
      currentField  ( 0 ),
-     currentLength ( 0 ),
-     maxLength     ( fieldDefLen )
+     currentLength ( 0 )
 {
-   if ( serialFieldDef == NULL ) {
-      throw pso::Exception( "FieldDefinitionUser::FieldDefinitionUser", 
-                            PSO_NULL_POINTER );
-   }
-   if ( fieldDefLen == 0 ) {
-      throw pso::Exception( "FieldDefinitionUser::FieldDefinitionUser", 
-                            PSO_INVALID_LENGTH );
-   }
-
-   field = new unsigned char [fieldDefLen];
-   memcpy( field, serialFieldDef, fieldDefLen );
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-FieldDefinitionUser::FieldDefinitionUser( uint32_t numFieldFields )
-   : FieldDefinition( false ),
-     field         ( NULL ),
-     numFields     ( numFieldFields ),
-     currentField  ( 0 ),
-     currentLength ( 0 ),
-     maxLength     ( 0 )
-{
-   if ( numFieldFields == 0 || numFieldFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "FieldDefinitionUser::FieldDefinitionUser",
-                            PSO_INVALID_NUM_FIELDS );
-   }
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-FieldDefinitionUser::~FieldDefinitionUser()
+DataDefBuilderUser::~DataDefBuilderUser()
 {
    if ( field ) delete [] field;
    field = NULL;
@@ -75,18 +44,13 @@ FieldDefinitionUser::~FieldDefinitionUser()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void FieldDefinitionUser::AddField( std::string fieldDescriptor )
+void DataDefBuilderUser::AddField( string fieldDescriptor )
 {
    unsigned char * tmp = NULL;
    size_t length;
    
-   if ( readOnly ) {
-      throw pso::Exception( "FieldDefinitionUser::AddField",
-                            PSO_INVALID_DEF_OPERATION );
-   }
-
-   if ( currentField >= numFields ) {
-      throw pso::Exception( "FieldDefinitionUser::AddField",
+   if ( currentField >= PSO_MAX_FIELDS ) {
+      throw pso::Exception( "DataDefBuilderUser::AddField",
                             PSO_INVALID_NUM_FIELDS );
    }
    
@@ -104,8 +68,9 @@ void FieldDefinitionUser::AddField( std::string fieldDescriptor )
    }
    memcpy( &tmp[currentLength], fieldDescriptor.c_str(), fieldDescriptor.length() );
 
+   currentField++;
    field = tmp;
-   maxLength = currentLength = length;
+   currentLength = length;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

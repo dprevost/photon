@@ -42,23 +42,9 @@ namespace pso {
  * It should be noted that you do not have to use this class, the key 
  * definition can be set or retrieved directly as an array of bytes.
  */
-class PHOTON_EXPORT KeyDefinitionUser : public KeyDefinition
+class PHOTON_EXPORT KeyDefBuilderUser
 {
 public:
-
-   /**
-    * Construct a key definition.
-    *
-    * This constructor is used to query existing definitions.
-    *
-    * \param[in] serializedKeyDef The serialized key definition as an 
-    *            array of bytes. 
-    * \param[in] keyDefLength The length in bytes of serializedKeyDef. 
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   KeyDefinitionUser( unsigned char * serializedKeyDef,
-                      psoUint32       keydefLength );
 
    /**
     * Construct a data-container definition.
@@ -69,9 +55,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   KeyDefinitionUser( psoUint32 numFields );
+   KeyDefBuilderUser( psoUint32 numFields );
 
-   virtual ~KeyDefinitionUser();
+   virtual ~KeyDefBuilderUser();
 
    /**
     * Add a field to the definition. Fields must be added in order.
@@ -81,19 +67,6 @@ public:
     * \exception pso::Exception An abnormal error occured.
     */
    void AddKeyField( std::string fieldDescription );
-
-   /**
-    * Iterates through the definition.
-    *
-    * For user-defined definitions, the iteration is done by searching
-    * for the separator. If none are found, the whole definition is returned.
-    *
-    * \return A formatted string containing the information on an item of 
-    *         the definition.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   virtual std::string GetNext();
 
    /** 
     * Retrieve the key definition.

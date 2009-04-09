@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/FieldDefinitionODBC>
+#include <photon/DataDefBuilderODBC>
 #include <sstream>
 
 using namespace std;
@@ -28,48 +28,15 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-FieldDefinitionODBC::FieldDefinitionODBC( unsigned char * serialFieldDef,
-                                          uint32_t        fieldDefLen )
-   : FieldDefinition( true ),
-     field        ( NULL ),
-     currentField ( 0 ),
-     simpleDef    ( true )
-{
-   if ( serialFieldDef == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC", 
-                            PSO_NULL_POINTER );
-   }
-   if ( fieldDefLen == 0 ) {
-      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC", 
-                            PSO_INVALID_LENGTH );
-   }
-   if ( (fieldDefLen%sizeof(psoFieldDefinition)) != 0 ) {
-      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC", 
-                            PSO_INVALID_LENGTH );
-   }
-
-   numFields = fieldDefLen / sizeof(psoFieldDefinition);
-
-   field = (psoFieldDefinition *) malloc( fieldDefLen );
-   if ( field == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   memcpy( field, serialFieldDef, fieldDefLen );
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-FieldDefinitionODBC::FieldDefinitionODBC( uint32_t numFieldFields,
+DataDefBuilderODBC::DataDefBuilderODBC( uint32_t numFieldFields,
                                           bool     simple /* = true */ )
-   : FieldDefinition( false ),
-     field        ( NULL ),
+   : field        ( NULL ),
      numFields    ( numFieldFields ),
      currentField ( 0 ),
      simpleDef    ( simple )
 {
    if ( numFieldFields == 0 || numFieldFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC",
+      throw pso::Exception( "DataDefBuilderODBC::DataDefBuilderODBC",
                             PSO_INVALID_NUM_FIELDS );
    }
    
@@ -77,14 +44,14 @@ FieldDefinitionODBC::FieldDefinitionODBC( uint32_t numFieldFields,
    size_t len = numFieldFields * sizeof(psoFieldDefinition);
    field = (psoFieldDefinition *)calloc( len, 1 );
    if ( field == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::FieldDefinitionODBC",
+      throw pso::Exception( "DataDefBuilderODBC::DataDefBuilderODBC",
                             PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-FieldDefinitionODBC::~FieldDefinitionODBC()
+DataDefBuilderODBC::~DataDefBuilderODBC()
 {
    if ( field ) free( field );
    field = NULL;
@@ -92,7 +59,7 @@ FieldDefinitionODBC::~FieldDefinitionODBC()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void FieldDefinitionODBC::AddField( std::string  & name,
+void DataDefBuilderODBC::AddField( std::string  & name,
                                     psoFieldType   type,
                                     uint32_t       length,
                                     uint32_t       precision,
@@ -108,34 +75,29 @@ void FieldDefinitionODBC::AddField( std::string  & name,
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void FieldDefinitionODBC::AddField( const char * name,
+void DataDefBuilderODBC::AddField( const char * name,
                                     uint32_t     nameLength,
                                     psoFieldType type,
                                     uint32_t     length,
                                     uint32_t     precision,
                                     uint32_t     scale )
 {
-   if ( readOnly ) {
-      throw pso::Exception( "FieldDefinitionODBC::AddField",
-                            PSO_INVALID_DEF_OPERATION );
-   }
-
    if ( field == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::AddField", PSO_NULL_POINTER );
+      throw pso::Exception( "DataDefBuilderODBC::AddField", PSO_NULL_POINTER );
    }
 
    if ( currentField >= numFields ) {
-      throw pso::Exception( "FieldDefinitionODBC::AddField",
+      throw pso::Exception( "DataDefBuilderODBC::AddField",
                             PSO_INVALID_NUM_FIELDS );
    }
    
    if ( name == NULL ) {
-      throw pso::Exception( "FieldDefinitionODBC::AddField",
+      throw pso::Exception( "DataDefBuilderODBC::AddField",
                             PSO_NULL_POINTER );
    }
    
    if ( nameLength == 0 || nameLength > PSO_MAX_FIELD_LENGTH ) {
-      throw pso::Exception( "FieldDefinitionODBC::AddField",
+      throw pso::Exception( "DataDefBuilderODBC::AddField",
                             PSO_INVALID_FIELD_NAME );
    }
    memcpy( field[currentField].name, name, nameLength );
@@ -158,7 +120,7 @@ void FieldDefinitionODBC::AddField( const char * name,
    case PSO_BINARY:
    case PSO_CHAR:
       if ( length == 0 ) {
-         throw pso::Exception( "FieldDefinitionODBC::AddField",
+         throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_LENGTH );
       }
       field[currentField].type = type;
@@ -169,11 +131,11 @@ void FieldDefinitionODBC::AddField( const char * name,
    case PSO_VARBINARY:
    case PSO_VARCHAR:
       if ( simpleDef && currentField != numFields-1 ) {
-         throw pso::Exception( "FieldDefinitionODBC::AddField",
+         throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_TYPE );
       }
       if ( length == 0 ) {
-         throw pso::Exception( "FieldDefinitionODBC::AddField",
+         throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_LENGTH );
       }
       field[currentField].type = type;
@@ -184,7 +146,7 @@ void FieldDefinitionODBC::AddField( const char * name,
    case PSO_LONGVARBINARY:
    case PSO_LONGVARCHAR:
       if ( simpleDef && currentField != numFields-1 ) {
-         throw pso::Exception( "FieldDefinitionODBC::AddField",
+         throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_TYPE );
       }
       field[currentField].type = type;
@@ -194,11 +156,11 @@ void FieldDefinitionODBC::AddField( const char * name,
 
    case PSO_NUMERIC:
       if ( precision == 0 || precision > PSO_FIELD_MAX_PRECISION ) {
-         throw pso::Exception( "FieldDefinitionODBC::AddField",
+         throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_PRECISION );
       }
       if ( scale > precision ) {
-         throw pso::Exception( "FieldDefinitionODBC::AddField",
+         throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_SCALE );
       }
       field[currentField].type = type;
@@ -208,7 +170,7 @@ void FieldDefinitionODBC::AddField( const char * name,
       break;
 
    default:
-      throw pso::Exception( "FieldDefinitionODBC::AddField",
+      throw pso::Exception( "DataDefBuilderODBC::AddField",
                             PSO_INVALID_FIELD_TYPE );
    }
 }

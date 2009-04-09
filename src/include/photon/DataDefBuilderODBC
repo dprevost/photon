@@ -20,8 +20,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef KEY_DEFINITION_ODBC
-#define KEY_DEFINITION_ODBC
+#ifndef PHOTON_DATA_DEF_BUILDER_ODBC
+#define PHOTON_DATA_DEF_BUILDER_ODBC
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -30,63 +30,58 @@
 
 #include <photon/psoCommon.h>
 #include <photon/psoPhotonODBC.h>
-#include <photon/KeyDefinition>
+#include <photon/DataDefinition>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 namespace pso {
 
 /** 
- * This class is a wrapper for the C struct psoObjectDefinition.
+ * This class is a helper class to build the data definition of
+ * Photon objects when the definition is ODBC like.
  *
- * It's main pupose is to encapsulate the memory management of the C struct.
+ * It should be noted that you do not have to use this class, the data
+ * definition can be set or retrieved directly as an array of bytes.
+ *
+ * Internally, this class will set the data definition as an array 
+ * of psoFieldDefinition struct.
  */
-class PHOTON_EXPORT KeyDefinitionODBC : public KeyDefinition
+ class PHOTON_EXPORT DataDefBuilderODBC
 {
 public:
-
    /**
     * Construct a data-container definition.
     *
-    * This constructor is useful to query existing definitions but the
-    * new object cannot be used to create new data containers (without 
-    * calling ::Reset() - which is equivalent to the other constructor).
+    * Use this constructor to build a definition to create new Photon objects.
     *
-    * \param[in] serializedKeyDef The serialized key definition as an 
-    *            array of bytes. 
-    * \param[in] keyDefLength The length in bytes of serializedKeyDef. 
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   KeyDefinitionODBC( unsigned char * serializedKeyDef,
-                      psoUint32       keydefLength );
-
-   /**
-    * Construct a data-container definition.
-    *
-    * \param[in] numKeyFields The number of key fields.
+    * \param[in] numFields The number of data fields.
     * \param[in] simple Set this to true if the definition type is "simple"
     *            (fixed length fields) or false if not.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   KeyDefinitionODBC( psoUint32 numKeyFields, bool simple = true );
-   
-   virtual ~KeyDefinitionODBC();
+   DataDefBuilderODBC( psoUint32 numFields, bool simple = true );
+
+   virtual ~DataDefBuilderODBC();
 
    /**
-    * Add a key field to the definition.
+    * Add a field to the definition. Fields must be added in order.
     *
     * \param[in]  name The name of the field
     * \param[in]  type The data type of the field. 
     * \param[in]  length The length of the key (needed for some data types).
+    * \param[in]  precision The number of digits of a numeric field (not 
+    *             counting the separator or the sign).
+    * \param[in]  scale The number of digits after the separator of a numeric
+    *             field.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void AddKeyField( std::string & name,
-                     psoKeyType    type,
-                     psoUint32     length );
-
+   void AddField( std::string  & name,
+                  psoFieldType   type,
+                  psoUint32      length,
+                  psoUint32      precision,
+                  psoUint32      scale );
 
    /**
     * Add a field to the definition. Fields must be added in order.
@@ -95,31 +90,30 @@ public:
     * \param[in]  nameLength The length of the name (in bytes).
     * \param[in]  type The data type of the field. 
     * \param[in]  length The length of the key (needed for some data types).
+    * \param[in]  precision The number of digits of a numeric field (not 
+    *             counting the separator or the sign).
+    * \param[in]  scale The number of digits after the separator of a numeric
+    *             field.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void AddKeyField( const char * name,
-                     psoUint32    nameLength,
-                     psoKeyType   type,
-                     psoUint32    length );
+   void AddField( const char  * name,
+                  psoUint32     nameLength,
+                  psoFieldType  type,
+                  psoUint32     length,
+                  psoUint32     precision,
+                  psoUint32     scale );
 
-   /**
-    * Iterates through the definition.
-    *
-    * \return A formatted string containing the information on an item of 
-    *         the definition.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   virtual std::string GetNext();
 
-   /** Retrieve the key definition.
+   /** 
+    * Retrieve the fields definition.
     *
-    * \return The definition of the key as an array of bytes.
+    * \return The definition of the fields as an array of bytes.
     */
    virtual const unsigned char * GetDefinition();
 
-   /** Returns the length, in bytes, of the definition.
+   /** 
+    * Returns the length, in bytes, of the definition.
     *
     * \return The length, in bytes, of the definition
     */
@@ -127,14 +121,14 @@ public:
 
 private:
 
-   /// The C struct array holding the definition of the key fields
-   psoKeyDefinition *  key;
+   /// The C struct array holding the definition of the fields
+   psoFieldDefinition * field;
 
-   /// Number of keys in the definition
-   psoUint32 numKeys;
+   /// Number of fields in the definition
+   psoUint32 numFields;
 
    /// Iterator
-   psoUint32 currentKey;
+   psoUint32 currentField;
 
    /// true if the definition type is odbc simple, false otherwise.
    bool simpleDef;
@@ -144,7 +138,7 @@ private:
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif // KEY_DEFINITION_ODBC
+#endif // PHOTON_DATA_DEF_BUILDER_ODBC
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

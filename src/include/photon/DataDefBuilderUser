@@ -20,8 +20,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef PHOTON_FIELD_DEFINITION_USER
-#define PHOTON_FIELD_DEFINITION_USER
+#ifndef PHOTON_DATA_DEF_BUILDER_USER
+#define PHOTON_DATA_DEF_BUILDER_USER
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -29,49 +29,34 @@
 #include <string>
 
 #include <photon/psoCommon.h>
-#include <photon/FieldDefinition>
+#include <photon/DataDefinition>
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 namespace pso {
 
 /** 
- * This class is a helper class to retrieve/create the definition of
+ * This class is a helper class to build the data definition of
  * Photon objects when the definition is user-defined.
  *
  * It should be noted that you do not have to use this class, the data-record
  * definition can be set or retrieved directly as an array of bytes.
+ *
+ * What's different about this class? You add a "description" for each of
+ * your field and the builder will insert a null byte to separate them.
+ * This will allow DataDefinition::GetNext() to display your definition
+ * in a loop as strings.
  */
-class PHOTON_EXPORT FieldDefinitionUser : public FieldDefinition
+class PHOTON_EXPORT DataDefBuilderUser
 {
 public:
 
    /**
-    * Construct a data-container definition.
-    *
-    * This constructor is used to query existing definitions.
-    *
-    * \param[in] serializedFieldDef The serialized definition of the data
-    *            fields as an array of bytes. 
-    * \param[in] fieldDefLength The length in bytes of serializedFieldDef.
-    *
-    * \exception pso::Exception An abnormal error occured.
+    * Construct a helper class data definition builder
     */
-   FieldDefinitionUser( unsigned char * serializedFieldDef,
-                        psoUint32       fieldDefLength );
+   DataDefBuilderUser();
 
-   /**
-    * Construct a data-container definition.
-    *
-    * Use this constructor to build a definition to create new Photon objects.
-    *
-    * \param[in] numFields The number of data fields.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   FieldDefinitionUser( psoUint32 numFields );
-
-   virtual ~FieldDefinitionUser();
+   virtual ~DataDefBuilderUser();
 
    /**
     * Add a field to the definition. Fields must be added in order.
@@ -82,52 +67,38 @@ public:
     */
    void AddField( std::string fieldDescription );
 
-   /**
-    * Iterates through the definition.
-    *
-    * For user-defined definitions, the iteration is done by searching
-    * for the separator. If none are found, the whole definition is returned.
-    *
-    * \return A formatted string containing the information on an item of 
-    *         the definition.
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   virtual std::string GetNext();
-
-   /** Retrieve the fields definition.
+   /** 
+    * Retrieve the data definition as an array of bytes.
     *
     * \return The definition of the fields as an array of bytes.
     */
-   virtual const unsigned char * GetDefinition();
+   const unsigned char * GetDefinition();
 
-   /** Returns the length, in bytes, of the definition.
+   /** 
+    * Returns the length, in bytes, of the definition.
     *
     * \return The length, in bytes, of the definition
     */
-   virtual psoUint32 GetDefLength();
+   psoUint32 GetDefLength();
 
 private:
 
-   /// The definition of the key fields
+   /// The definition of the data fields
    unsigned char * field;
 
    /// Number of fields in the definition
-   psoUint32 numFields;
-
-   /// Iterator
    psoUint32 currentField;
 
+   /// Current length of the buffer
    psoUint32 currentLength;
 
-   psoUint32 maxLength;
 };
 
 } // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif // PHOTON_FIELD_DEFINITION_USER
+#endif // PHOTON_DATA_DEF_BUILDER_USER
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

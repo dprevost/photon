@@ -20,54 +20,29 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/KeyDefinitionUser>
+#include <photon/KeyDefBuilderUser>
 
 using namespace std;
 using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefinitionUser::KeyDefinitionUser( unsigned char * serialKeyDef,
-                                      uint32_t        keyDefLen )
-   : KeyDefinition( true ),
-     key          ( NULL ),
-     numKeys       ( 0 ),
-     currentKey    ( 0 ),
-     currentLength ( 0 ),
-     maxLength     ( keyDefLen )
-{
-   if ( serialKeyDef == NULL ) {
-      throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser", 
-                            PSO_NULL_POINTER );
-   }
-   if ( keyDefLen == 0 ) {
-      throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser", 
-                            PSO_INVALID_LENGTH );
-   }
-
-   key = new unsigned char [keyDefLen];
-   memcpy( key, serialKeyDef, keyDefLen );
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-KeyDefinitionUser::KeyDefinitionUser( uint32_t numKeyFields )
-   : KeyDefinition( false ),
-     key           ( NULL ),
+KeyDefBuilderUser::KeyDefBuilderUser( uint32_t numKeyFields )
+   : key           ( NULL ),
      numKeys       ( numKeyFields ),
      currentKey    ( 0 ),
      currentLength ( 0 ),
      maxLength     ( 0 )
 {
    if ( numKeyFields == 0 || numKeyFields > PSO_MAX_FIELDS ) {
-      throw pso::Exception( "KeyDefinitionUser::KeyDefinitionUser",
+      throw pso::Exception( "KeyDefBuilderUser::KeyDefBuilderUser",
                             PSO_INVALID_NUM_FIELDS );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefinitionUser::~KeyDefinitionUser()
+KeyDefBuilderUser::~KeyDefBuilderUser()
 {
    if ( key ) delete [] key;
    key = NULL;
@@ -75,18 +50,13 @@ KeyDefinitionUser::~KeyDefinitionUser()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void KeyDefinitionUser::AddKeyField( std::string fieldDescriptor )
+void KeyDefBuilderUser::AddKeyField( std::string fieldDescriptor )
 {
    unsigned char * tmp = NULL;
    size_t length;
 
-   if ( readOnly ) {
-      throw pso::Exception( "KeyDefinitionUser::AddKeyField",
-                            PSO_INVALID_DEF_OPERATION );
-   }
-
    if ( currentKey >= numKeys ) {
-      throw pso::Exception( "KeyDefinitionUser::AddKeyField",
+      throw pso::Exception( "KeyDefBuilderUser::AddKeyField",
                             PSO_INVALID_NUM_FIELDS );
    }
    
@@ -110,35 +80,7 @@ void KeyDefinitionUser::AddKeyField( std::string fieldDescriptor )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-string KeyDefinitionUser::GetNext() 
-{
-   string s;
-   uint32_t i;
-   
-   if ( ! readOnly ) {
-      throw pso::Exception( "KeyDefinitionUser::GetNext",
-                            PSO_INVALID_DEF_OPERATION );
-   }
-   if ( key == NULL ) {
-      throw pso::Exception( "KeyDefinitionUser::GetNext", PSO_NULL_POINTER );
-   }
-
-   if ( currentLength >= maxLength ) return s;
-
-   for ( i = currentLength; i < maxLength; ++i ) {
-      if ( key[i] == 0 ) {
-         currentLength = i + 1;
-         break;
-      }
-      s += key[i];
-   }
-
-   return s;
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-const unsigned char * KeyDefinitionUser::GetDefinition()
+const unsigned char * KeyDefBuilderUser::GetDefinition()
 {
    return key;
 }
@@ -146,7 +88,7 @@ const unsigned char * KeyDefinitionUser::GetDefinition()
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 /* Returns the length, in bytes, of the definition. */
-uint32_t KeyDefinitionUser::GetDefLength()
+uint32_t KeyDefBuilderUser::GetDefLength()
 {
    return maxLength;
 }
