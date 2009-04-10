@@ -31,14 +31,10 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session, session2;
-   Folder folder(session), f1(session), f2(session2);
+   Folder folder, f1, f2;
    string name = "/cpp_folder_destroy";
    string subname = "test";
    string fullname = "/cpp_folder_destroy/test";
-   psoObjectDefinition def; 
-
-   memset( &def, 0, sizeof def );
-   def.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -47,20 +43,27 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session2.Init();
-      session.CreateObject( name, def, NULL, 0, NULL, 0 );
-      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
       return 1;
    }
+
+   try {
+      session.Init();
+      session2.Init();
+      session.CreateFolder( name );
+      folder.Open( session, name );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
    
    try {
       // Destroy non-existing object.
-      folder->DestroyObject( subname.c_str(), subname.length() );
+      folder.DestroyObject( subname );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -72,7 +75,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      folder->CreateObject( subname, def, NULL, 0, NULL, 0 );
+      folder.CreateFolder( subname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -81,7 +84,7 @@ int main( int argc, char * argv[] )
 
    try {
       // Destroy without a commit - should fail
-      folder->DestroyObject( subname );
+      folder.DestroyObject( subname );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -101,19 +104,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      folder->DestroyObject( NULL, subname.length() );
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
-      folder->DestroyObject( subname.c_str(), 0 );
+      folder.DestroyObject( "" );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -140,7 +131,7 @@ int main( int argc, char * argv[] )
    // End of invalid args. This call should succeed.
 
    try {
-      folder->DestroyObject( subname );
+      folder.DestroyObject( subname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -149,7 +140,7 @@ int main( int argc, char * argv[] )
 
    // Open on the same session - should fail
    try {
-      f1.Open( fullname );
+      f1.Open( session, fullname );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -163,7 +154,7 @@ int main( int argc, char * argv[] )
 
    // Open with a different session - should work
    try {
-      f2.Open( fullname );
+      f2.Open( session2, fullname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

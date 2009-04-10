@@ -32,17 +32,13 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Folder folder(session);
+   Folder folder;
    string name = "/cpp_folder_getnext";
    string sub1name = name + "/f1";
    string sub2name = name + "/f2";
    psoFolderEntry entry;
    int rc;
-   psoObjectDefinition def; 
 
-   memset( &def, 0, sizeof def );
-   def.type = PSO_FOLDER;
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -50,11 +46,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( name, def, NULL, 0, NULL, 0 );
-      session.CreateObject( sub1name, def, NULL, 0, NULL, 0 );
-      session.CreateObject( sub2name, def, NULL, 0, NULL, 0 );
-      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -62,9 +53,21 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   try {
+      session.Init();
+      session.CreateFolder( name );
+      session.CreateFolder( sub1name );
+      session.CreateFolder( sub2name );
+      folder.Open( session, name );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
    // No GetFirst
    try {
-      folder->GetNext( entry );
+      folder.GetNext( entry );
    }
    catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_INVALID_ITERATOR ) {
@@ -74,7 +77,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder->GetFirst( entry );
+      folder.GetFirst( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -83,7 +86,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      rc = folder->GetNext( entry );
+      rc = folder.GetNext( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -95,7 +98,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      rc = folder->GetNext( entry );
+      rc = folder.GetNext( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=OpenPass
+test_name=Constructor
 test_dir=src/C++/Tests/Folder
 errcode=0
 

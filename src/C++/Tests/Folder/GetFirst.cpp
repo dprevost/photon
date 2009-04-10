@@ -32,15 +32,11 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Folder folder(session);
+   Folder folder;
    string name = "/cpp_folder_getfirst";
    string subname = name + "/f1";
    psoFolderEntry entry;
-   psoObjectDefinition def; 
    int rc;
-   
-   memset( &def, 0, sizeof def );
-   def.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -49,10 +45,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( name, def, NULL, 0, NULL, 0 );
-      session.CreateObject( subname, def, NULL, 0, NULL, 0 );
-      folder->Open( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -60,11 +52,22 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   try {
+      session.Init();
+      session.CreateFolder( name );
+      session.CreateFolder( subname );
+      folder.Open( session, name );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
    // There are no invalid args to this tested function.
 
    // End of invalid args. This call should succeed.
    try {
-      folder->GetFirst( entry );
+      folder.GetFirst( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -72,8 +75,8 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      folder->Close();
-      folder->Open( subname );
+      folder.Close();
+      folder.Open( session, subname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -81,7 +84,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = folder->GetFirst( entry );
+      rc = folder.GetFirst( entry );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

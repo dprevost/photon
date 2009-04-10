@@ -63,18 +63,6 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      folder->CreateFolder( NULL );
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
       folder->CreateFolder( "" );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
