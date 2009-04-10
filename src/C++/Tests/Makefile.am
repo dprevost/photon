@@ -16,7 +16,6 @@ CLEANFILES = *~ core
 
 SUBDIRS =            \
         FastMap      \
-        FieldDefODBC \
         Folder       \
         HashMap      \
         Lifo         \

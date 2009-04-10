@@ -75,7 +75,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      hashmap->Definition( retDef, key, keyLength, fields, fieldsLength );
+      hashmap.Definition( retDef, key, keyLength, fields, fieldsLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -97,7 +97,7 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
       session.CreateObject( hname, mapDef, &keyDef, &fieldDef );
-      hashmap->Open( hname );
+      hashmap.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -107,7 +107,7 @@ int main( int argc, char * argv[] )
 
    try {
       // This is valid
-      hashmap->Definition( retDef, NULL, 0, NULL, 0 );
+      hashmap.Definition( retDef, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -117,7 +117,7 @@ int main( int argc, char * argv[] )
    len1 = 2 * sizeof( psoKeyDefinition );
    len2 = 5 * sizeof(psoFieldDefinition);
    try {
-      hashmap->DefinitionLength( &keyLength, &fieldsLength );
+      hashmap.DefinitionLength( &keyLength, &fieldsLength );
       if ( keyLength != len1 ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
@@ -128,7 +128,7 @@ int main( int argc, char * argv[] )
       }
       fields = new unsigned char [fieldsLength];
       key    = new unsigned char [keyLength];
-      hashmap->Definition( retDef, key, keyLength, fields, fieldsLength );
+      hashmap.Definition( retDef, key, keyLength, fields, fieldsLength );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
