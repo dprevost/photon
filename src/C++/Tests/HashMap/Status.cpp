@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   HashMap hashmap(session);
+   HashMap * hashmap;
    string fname = "/cpp_hashmap_status";
    string hname = fname + "/test";
 
@@ -41,15 +41,11 @@ int main( int argc, char * argv[] )
    const char * key3 = "My Key3";
    const char * data = "My Data";
    psoObjStatus status;
-   psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -58,22 +54,39 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
+      cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
       session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
+      KeyDefinition keyDefObj( session, 
+                               "Key Definition",
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)&keyDef,
+                               sizeof(psoKeyDefinition) );
+
       session.CreateObject( hname,
                             mapDef,
-                            (unsigned char *)&keyDef,
-                            sizeof(psoKeyDefinition),
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
-      hashmap->Open( hname );
+                            keyDefObj,
+                            dataDefObj );
+      hashmap = new HashMap( session, hname );
       hashmap->Insert( key1, 7, data, 7 );
       hashmap->Insert( key2, 7, data, 7 );
       hashmap->Insert( key3, 7, data, 7 );
    }
    catch( pso::Exception exc ) {
-      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
-      cerr << "Is the server running?" << endl;
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

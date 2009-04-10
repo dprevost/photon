@@ -77,7 +77,6 @@ int main( int argc, char * argv[] )
       cerr << "Is the server running?" << endl;
       return 1;
    }
-   
 
    try {
       session.Init();

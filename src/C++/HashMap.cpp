@@ -310,7 +310,7 @@ void HashMap::Open( Session & session, const std::string & hashMapName )
 {
    int rc;
    
-   if ( m_sessionHandle == NULL ) {
+   if ( session.m_sessionHandle == NULL ) {
       throw pso::Exception( "HashMap::Open", PSO_NULL_HANDLE );
    }
 

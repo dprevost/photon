@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session1, session2;
-   HashMap map1(session1), map2(session2);
+   HashMap map1, map2;
    string fname = "/cpp_hashmap_delete";
    string hname = fname + "/test";
 
@@ -40,16 +40,12 @@ int main( int argc, char * argv[] )
    uint32_t length, keyLength;
    char buffer[20], keyBuff[20];
    int rc;
-   psoObjectDefinition folderDef;
    psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
 
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -57,30 +53,47 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session1.Init();
-      session2.Init();
-      session1.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session1.CreateObject( hname,
-                             mapDef, 
-                             (unsigned char *)&keyDef,
-                             sizeof(psoKeyDefinition),
-                             (unsigned char *)fields,
-                             sizeof(psoFieldDefinition) );
-      map1->Open( hname );
-      map1->Insert( key, 6, data, 7 );
-      session1.Commit();
-      map2->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
       return 1;
    }
+   
+   try {
+      session1.Init();
+      session2.Init();
+      session1.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session1, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 5*sizeof(psoFieldDefinition) );
+      KeyDefinition keyDefObj( session1, 
+                               "Key Definition",
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)&keys,
+                               2*sizeof(psoKeyDefinition) );
+
+      session1.CreateObject( hname,
+                             mapDef,
+                             keyDefObj,
+                             dataDefObj );
+      map1.Open( session1, hname );
+      map1.Insert( key, 6, data, 7 );
+      session1.Commit();
+      map2.Open( session2, hname );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
 
    // Invalid arguments to tested function.
 
    try {
-      map1->Delete( NULL, 6 );
+      map1.Delete( NULL, 6 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -93,7 +106,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1->Delete( key, 0 );
+      map1.Delete( key, 0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -107,7 +120,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      map1->Delete( key, 6 );
+      map1.Delete( key, 6 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -121,7 +134,7 @@ int main( int argc, char * argv[] )
     *  - cannot modify it from second session.
     */
    try { 
-      map1->Get( key, 6, buffer, 20, length );
+      map1.Get( key, 6, buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -134,7 +147,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map2->Get( key, 6, buffer, 20, length );
+      map2.Get( key, 6, buffer, 20, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -142,7 +155,7 @@ int main( int argc, char * argv[] )
    }
 
    try { 
-      map2->Delete( key, 6 );
+      map2.Delete( key, 6 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -155,7 +168,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      map2->GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
+      map2.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -163,7 +176,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      rc = map1->GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
+      rc = map1.GetFirst( keyBuff, 20, buffer, 20, keyLength, length );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -193,7 +206,7 @@ int main( int argc, char * argv[] )
    }
    
    try { 
-      map1->Get( key, 6, buffer, 20, length );
+      map1.Get( key, 6, buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -206,7 +219,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      map1->Insert( key, 6, data, 7 );
+      map1.Insert( key, 6, data, 7 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -222,7 +235,7 @@ int main( int argc, char * argv[] )
    }
    
    try { 
-      map2->Get( key, 6, buffer, 20, length );
+      map2.Get( key, 6, buffer, 20, length );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=KeyDefODBC
+test_name=DataDefODBC
 test_dir=src/C++/Tests/HashMap
 errcode=0
 

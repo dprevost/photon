@@ -18,41 +18,38 @@ AM_LDFLAGS = @LIBXML2_LIBS@
 
 check_PROGRAMS =     \
         Close        \
+        DataDefODBC  \
         Definition   \
         Delete       \
-        FieldDefODBC \
         Get          \
         GetFirst     \
         GetNext      \
         Insert       \
-        KeyDefODBC   \
         Open         \
         Replace      \
         Status       
 
 Close_SOURCES        = Close.cpp
+DataDefODBC_SOURCES  = DataDefODBC.cpp
 Definition_SOURCES   = Definition.cpp
 Delete_SOURCES       = Delete.cpp
-FieldDefODBC_SOURCES = FieldDefODBC.cpp
 Get_SOURCES          = Get.cpp
 GetFirst_SOURCES     = GetFirst.cpp
 GetNext_SOURCES      = GetNext.cpp
 Insert_SOURCES       = Insert.cpp
-KeyDefODBC_SOURCES   = KeyDefODBC.cpp
 Open_SOURCES         = Open.cpp
 Replace_SOURCES      = Replace.cpp
 Status_SOURCES       = Status.cpp
 
 EXTRA_DIST =            \
         Close.sh        \
+        DataDefODBC.sh  \
         Definition.sh   \
         Delete.sh       \
-        FieldDefODBC.sh \
         Get.sh          \
         GetFirst.sh     \
         GetNext.sh      \
         Insert.sh       \
-        KeyDefODBC.sh   \
         Makefile.win32  \
         Open.sh         \
         Replace.sh      \
@@ -69,9 +66,9 @@ TESTS_ENVIRONMENT =                  \
 
 TESTS =                 \
         Close.sh        \
+        DataDefODBC.sh  \
         Definition.sh   \
         Delete.sh       \
-        FieldDefODBC.sh \
         Get.sh          \
         GetFirst.sh     \
         GetNext.sh      \

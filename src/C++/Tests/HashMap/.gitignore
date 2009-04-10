@@ -3,14 +3,13 @@
 /Debug
 /Release
 /Close
+/DataDefODBC
 /Definition
 /Delete
-/FieldDefODBC
 /Get
 /GetFirst
 /GetNext
 /Insert
-/KeyDefODBC
 /Open
 /Replace
 /Status
