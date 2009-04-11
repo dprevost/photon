@@ -316,6 +316,7 @@ void Folder::Status( psoObjStatus & status )
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      fprintf(stderr, "here!\n" );
       throw pso::Exception( "Folder::Status", PSO_NULL_HANDLE );
    }
 

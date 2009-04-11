@@ -47,7 +47,7 @@ pso::Exception::Exception( PSO_HANDLE   sessionHandle,
    if ( rc != 0 ) {
       // We build our own message
       oss << functionName << " exception: ";
-      oss << "Cannot retrieve the error message ";
+      oss << "Cannot retrieve the error message (is the session valid?)";
       msg = oss.str();
    }
 }

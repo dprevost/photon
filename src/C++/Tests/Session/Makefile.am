@@ -14,44 +14,48 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-AM_LDFLAGS = @LIBXML2_LIBS@
+check_PROGRAMS =        \
+        Commit          \
+        CreateFolder    \
+        CreateObject    \
+        CreateObjectMap \
+        Destroy         \
+        ErrorMsg        \
+        Exit            \
+        GetInfo         \
+        Init            \
+        LastError       \
+        Rollback        \
+        Status          
 
-check_PROGRAMS =  \
-        Commit    \
-        Create    \
-        Destroy   \
-        ErrorMsg  \
-        Exit      \
-        GetInfo   \
-        Init      \
-        LastError \
-        Rollback  \
-        Status    
+Commit_SOURCES          = Commit.cpp
+CreateFolder_SOURCES    = CreateFolder.cpp
+CreateObject_SOURCES    = CreateObject.cpp
+CreateObjectMap_SOURCES = CreateObjectMap.cpp
+Destroy_SOURCES         = Destroy.cpp
+ErrorMsg_SOURCES        = ErrorMsg.cpp
+Exit_SOURCES            = Exit.cpp
+GetInfo_SOURCES         = GetInfo.cpp
+Init_SOURCES            = Init.cpp
+LastError_SOURCES       = LastError.cpp
+Rollback_SOURCES        = Rollback.cpp
+Status_SOURCES          = Status.cpp
 
-Commit_SOURCES    = Commit.cpp
-Create_SOURCES    = Create.cpp
-Destroy_SOURCES   = Destroy.cpp
-ErrorMsg_SOURCES  = ErrorMsg.cpp
-Exit_SOURCES      = Exit.cpp
-GetInfo_SOURCES   = GetInfo.cpp
-Init_SOURCES      = Init.cpp
-LastError_SOURCES = LastError.cpp
-Rollback_SOURCES  = Rollback.cpp
-Status_SOURCES    = Status.cpp
-
-EXTRA_DIST =           \
-        Commit.sh      \
-        Create.sh      \
-        Destroy.sh     \
-        ErrorMsg.sh    \
-        Exit.sh        \
-        GetInfo.sh     \
-        Init.sh        \
-        LastError.sh   \
-        Makefile.win32 \
-        Rollback.sh    \
-        RunTests.vbs   \
-        Status.sh      
+EXTRA_DIST =               \
+        Commit.sh          \
+        CreateFolder.sh    \
+        CreateObject.sh    \
+        CreateObjectMap.sh \
+        Destroy.sh         \
+        ErrorMsg.sh        \
+        Exit.sh            \
+        GetInfo.sh         \
+        Init.sh            \
+        LastError.sh       \
+        Makefile.win32     \
+        Rollback.sh        \
+        RunTests.vbs       \
+        Status.sh          
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -61,17 +65,19 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =              \
-        Commit.sh    \
-        Create.sh    \
-        Destroy.sh   \
-        ErrorMsg.sh  \
-        Exit.sh      \
-        GetInfo.sh   \
-        Init.sh      \
-        LastError.sh \
-        Rollback.sh  \
-        Status.sh    
+TESTS =                    \
+        Commit.sh          \
+        CreateFolder.sh    \
+        CreateObject.sh    \
+        CreateObjectMap.sh \
+        Destroy.sh         \
+        ErrorMsg.sh        \
+        Exit.sh            \
+        GetInfo.sh         \
+        Init.sh            \
+        LastError.sh       \
+        Rollback.sh        \
+        Status.sh          
 
 XFAIL_TESTS = 
 

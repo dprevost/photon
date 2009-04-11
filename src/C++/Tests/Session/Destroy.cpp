@@ -31,19 +31,14 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session1, session2;
-   Folder folder1(session1), folder2(session2);
-   Queue  queue1(session1), queue2(session2);
+   Folder folder1, folder2;
+   Queue  queue1, queue2;
    
    string name = "/cpp_session_destroy";
-   const char * c_name = "/cpp_session_destroy";
-   psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -83,7 +78,7 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      session1.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session1.CreateFolder( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -115,32 +110,6 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session1.DestroyObject( NULL, strlen(c_name) );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
-      session1.DestroyObject( c_name, 0 );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
       session1.DestroyObject( "" );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
@@ -164,7 +133,7 @@ int main( int argc, char * argv[] )
 
    // Open on the same session - should fail.
    try {
-      folder1.Open( name );
+      folder1.Open( session1, name );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -178,7 +147,7 @@ int main( int argc, char * argv[] )
 
    // Open with a different session - should work.
    try {
-      folder2.Open( name );
+      folder2.Open( session2, name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -212,12 +181,14 @@ int main( int argc, char * argv[] )
    }
 
    try {
+      DataDefinition dataDefObj( session1, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
       session1.CreateObject( name,
                              queueDef,
-                             NULL,
-                             0, 
-                             (unsigned char *)fields,
-                             sizeof(psoFieldDefinition) );
+                             dataDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -225,7 +196,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      queue1.Open( name );
+      queue1.Open( session1, name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -233,7 +204,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      queue2.Open( name );
+      queue2.Open( session2, name );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

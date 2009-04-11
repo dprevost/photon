@@ -33,10 +33,6 @@ int main( int argc, char * argv[] )
    Session session;
    int errcode;
    string name = "/cpp_session_last_error";
-   psoObjectDefinition folderDef;
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
    
    try {
       if ( argc > 1 ) {
@@ -61,7 +57,7 @@ int main( int argc, char * argv[] )
          return 1;
       }
       // Our first "test call"
-      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -83,7 +79,7 @@ int main( int argc, char * argv[] )
    // Create the same object a second time and check that last error is
    // the one we expect.
    try {
-      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( name );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

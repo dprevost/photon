@@ -32,10 +32,6 @@ int main( int argc, char * argv[] )
    Process process;
    Session session;
    string name = "/cpp_session_errormsg", msg;
-   psoObjectDefinition folderDef;
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -53,7 +49,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( name );
       session.ErrorMsg( msg );
    }
    catch( pso::Exception exc ) {
@@ -63,7 +59,7 @@ int main( int argc, char * argv[] )
    cout << "Message 1 (no error): " << msg  << endl;
 
    try {
-      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( name );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;

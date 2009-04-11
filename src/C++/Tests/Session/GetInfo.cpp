@@ -34,10 +34,6 @@ int main( int argc, char * argv[] )
    string name = "/cpp_session_getinfo", msg;
    psoInfo info, info2;
    size_t allocSpace;
-   psoObjectDefinition folderDef;
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -64,7 +60,7 @@ int main( int argc, char * argv[] )
    allocSpace = info.allocatedSizeInBytes;
 
    try {
-      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session.CreateFolder( name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

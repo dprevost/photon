@@ -3,7 +3,9 @@
 /Debug
 /Release
 /Commit
-/Create
+/CreateFolder
+/CreateObject
+/CreateObjectMap
 /Destroy
 /ErrorMsg
 /Exit

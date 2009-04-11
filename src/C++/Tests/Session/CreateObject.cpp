@@ -31,15 +31,12 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   string name = "/cpp_session_create";
-   const char * c_name = "/cpp_session_create";
-   psoObjectDefinition folderDef;
+   string name = "/cpp_session_create_object";
+   psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
+   DataDefinition * dataDef = new DataDefinition();
 
    try {
       if ( argc > 1 ) {
@@ -59,33 +56,27 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session.CreateObject( NULL, strlen(c_name), folderDef, NULL, 0, NULL, 0 );
+      session.CreateObject( name, queueDef, *dataDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
    catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
+      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
    }
+   
+   delete( dataDef);
+   dataDef = new DataDefinition( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
 
    try {
-      session.CreateObject( c_name, 0, folderDef, NULL, 0, NULL, 0 );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
-      session.CreateObject( "", folderDef, NULL, 0, NULL, 0 );
+      session.CreateObject( "", queueDef, *dataDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -97,15 +88,9 @@ int main( int argc, char * argv[] )
       }
    }
 
+   queueDef.type = PSO_HASH_MAP;
    try {
-      folderDef.type = (psoObjectType)0;
-      // The last argument cannot be NULL since we are not creating a folder.
-      session.CreateObject( name,
-                            folderDef,
-                            NULL,
-                            0, 
-                            (unsigned char *)fields, 
-                            sizeof(psoFieldDefinition) );
+      session.CreateObject( name, queueDef, *dataDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -116,11 +101,11 @@ int main( int argc, char * argv[] )
          return 1;
       }
    }
-   folderDef.type = PSO_FOLDER;
+   queueDef.type = PSO_QUEUE;
 
    // End of invalid args. This call should succeed.
    try {
-      session.CreateObject( name, folderDef, NULL, 0, NULL, 0 );
+      session.CreateObject( name, queueDef, *dataDef );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

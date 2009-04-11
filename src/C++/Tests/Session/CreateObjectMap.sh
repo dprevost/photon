@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=Create
+test_name=CreateObjectMap
 test_dir=src/C++/Tests/Session
 errcode=0
 

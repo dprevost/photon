@@ -33,7 +33,6 @@ int main( int argc, char * argv[] )
    Session session;
    psoObjStatus status;
    string fname = "/cpp_session_status";
-   const char * c_name = "/cpp_session_status";
    psoObjectDefinition folderDef;
 
    memset( &folderDef, 0, sizeof folderDef );
@@ -63,32 +62,6 @@ int main( int argc, char * argv[] )
    }
 
    // Invalid arguments to tested function.
-
-   try {
-      session.GetStatus( NULL, strlen(c_name), status );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_OBJECT_NAME ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
-      session.GetStatus( c_name, 0, status );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
 
    try {
       session.GetStatus( "", status );

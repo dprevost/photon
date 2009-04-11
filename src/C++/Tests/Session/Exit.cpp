@@ -50,10 +50,6 @@ int main( int argc, char * argv[] )
    Folder * folder = NULL;
    string name = "/cpp_session_exit";
    psoObjStatus status;
-   psoObjectDefinition folderDef;
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -71,11 +67,11 @@ int main( int argc, char * argv[] )
 
    try {
       session = new Session();
-      folder = new Folder(*session);
+      folder = new Folder();
       
       session->Init();
-      session->CreateObject( name, folderDef, NULL, 0, NULL, 0 );
-      folder->Open( name );
+      session->CreateFolder( name );
+      folder->Open( *session, name );
       
       delete session;
    }
@@ -93,46 +89,11 @@ int main( int argc, char * argv[] )
       return 1;
    }
    catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
-#if 0   
-   PSO_HANDLE sessionHandle, objHandle;
-   int errcode;
-   
-
-   errcode = psoExitSession( sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
+      return 0;
    }
 
-   errcode = psoInitSession( &sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   /* */
-   errcode = psoCreateObject( sessionHandle, "test1", 5, &folderDef );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   errcode = psoExitSession( sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psoExit();
-#endif
-   
-   return 0;
+   cerr << "Test failed - line " << __LINE__ << endl;
+   return 1;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
