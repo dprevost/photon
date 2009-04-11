@@ -470,10 +470,12 @@ AC_CONFIG_FILES([
    doc/doxyfile.photon_c
    doc/doxyfile.photon_cpp
    src/include/Doxygen/pso_c
-   src/include/Doxygen/FieldDefinition
-   src/include/Doxygen/FieldDefinitionODBC
+   src/include/Doxygen/DataDefBuilderODBC
+   src/include/Doxygen/DataDefBuilderUser
+   src/include/Doxygen/DataDefinition
+   src/include/Doxygen/KeyDefBuilderODBC
+   src/include/Doxygen/KeyDefBuilderUser
    src/include/Doxygen/KeyDefinition
-   src/include/Doxygen/KeyDefinitionODBC
    src/include/Doxygen/psoException
    src/include/Doxygen/psoFastMapEditor
    src/include/Doxygen/psoFastMap

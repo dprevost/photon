@@ -1,8 +1,10 @@
 /pso_c
-/FieldDefinition
-/FieldDefinitionODBC
+/DataDefBuilderODBC
+/DataDefBuilderUser
+/DataDefinition
+/KeyDefBuilderODBC
+/KeyDefBuilderUser
 /KeyDefinition
-/KeyDefinitionODBC
 /psoException
 /psoFastMap
 /psoFastMapEditor
