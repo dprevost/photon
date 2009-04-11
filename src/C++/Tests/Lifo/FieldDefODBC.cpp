@@ -35,17 +35,15 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Lifo queue(session);
+   Lifo queue;
    string fname = "/cpp_lifo_fielddefODBC";
-   string hname = fname + "/test";
+   string qname = fname + "/test";
 
    size_t len;
-   psoObjectDefinition folderDef = {
-      PSO_FOLDER, 0, 0, 0 };
-   psoObjectDefinition queueDef = { 
-      PSO_LIFO, 0, 0, 0 };
-   FieldDefinitionODBC fieldDef( 5 );
-   FieldDefinition * returnedDef;
+   psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
+   DataDefBuilderODBC fieldDef( 5 );
+   DataDefinition * returnedDef;
+   unsigned char * buffer;
    
    try {
       fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
@@ -66,10 +64,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -78,16 +72,46 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      returnedDef = queue.GetFieldDefinition();
+      session.Init();
+      session.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 fieldDef.GetDefinition(),
+                                 fieldDef.GetDefLength() );
+      session.CreateObject( qname, queueDef, dataDefObj );
+      queue.Open( session, qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = 5 * sizeof(psoFieldDefinition);
-   if ( memcmp( fieldDef.GetDefinition(), returnedDef->GetDefinition(), len ) != 0 ) {
-      cerr << "Test failed - line " << __LINE__ << endl;
+   try {
+      returnedDef = queue.GetDataDefinition();
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   try {
+      len = 5 * sizeof(psoFieldDefinition);
+      buffer = new unsigned char [len];
+      if ( len != returnedDef->GetLength() ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      returnedDef->GetDefinition( buffer, len );      
+      if ( memcmp( fieldDef.GetDefinition(), buffer, len ) != 0 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      delete [] buffer;
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

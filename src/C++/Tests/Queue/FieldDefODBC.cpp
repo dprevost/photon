@@ -37,11 +37,9 @@ int main( int argc, char * argv[] )
    Session session;
    Queue queue(session);
    string fname = "/cpp_queue_fielddefODBC";
-   string hname = fname + "/test";
+   string qname = fname + "/test";
 
    size_t len;
-   psoObjectDefinition folderDef = {
-      PSO_FOLDER, 0, 0, 0 };
    psoObjectDefinition queueDef = { 
       PSO_QUEUE, 0, 0, 0 };
    FieldDefinitionODBC fieldDef( 5 );
@@ -66,14 +64,21 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue->Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
+      session.Init();
+      session.CreateFolder( fname );
+      session.CreateObject( qname, queueDef, NULL, &fieldDef );
+      queue->Open( qname );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

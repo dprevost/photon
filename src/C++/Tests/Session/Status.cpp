@@ -46,12 +46,19 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
+      session.Init();
+      session.CreateFolder( fname );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

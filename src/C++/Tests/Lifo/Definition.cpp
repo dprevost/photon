@@ -35,34 +35,24 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Lifo queue(session);
+   Lifo queue;
    string fname = "/cpp_lifo_definition";
-   string hname = fname + "/test";
+   string qname = fname + "/test";
 
-   size_t len;
-   psoObjectDefinition folderDef = {
-      PSO_FOLDER, 0, 0, 0 };
-   psoObjectDefinition queueDef = { 
-      PSO_LIFO, 0, 0, 0 };
-   FieldDefinitionODBC fieldDef( 5 );
-   unsigned char * fields = NULL;
-   uint32_t fieldsLength = 0;
-   psoObjectDefinition retDef;
-   
-   try {
-      fieldDef.AddField( "field1", 6, PSO_TINYINT,       0, 0, 0 );
-      fieldDef.AddField( "field2", 6, PSO_INTEGER,       0, 0, 0 );
-      fieldDef.AddField( "field3", 6, PSO_CHAR,         30, 0, 0 );
-      fieldDef.AddField( "field4", 6, PSO_SMALLINT,      0, 0, 0 );
-      fieldDef.AddField( "field5", 6, PSO_LONGVARBINARY, 0, 0, 0 );
-   }
-   catch( pso::Exception exc ) {
-      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
+   psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
+   psoFieldDefinition fields[5] = {
+      { "field1", PSO_TINYINT,       {0} },
+      { "field2", PSO_INTEGER,       {0} },
+      { "field3", PSO_CHAR,         {30} },
+      { "field4", PSO_SMALLINT,      {0} },
+      { "field5", PSO_LONGVARBINARY, {0} }
+   };
+
+   DataDefinition * retDataDef = NULL;
+   unsigned char * retFields = NULL;
 
    try {
-      queue.Definition( retDef, fields, fieldsLength );
+      retDataDef = queue.GetDataDefinition();
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -81,10 +71,6 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( hname, queueDef, NULL, &fieldDef );
-      queue.Open( hname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
@@ -93,31 +79,48 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      // This is valid
-      queue.Definition( retDef, NULL, 0 );
+      session.Init();
+      session.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session,
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 5*sizeof(psoFieldDefinition) );
+      session.CreateObject( qname, queueDef, dataDefObj );
+      queue.Open( session, qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
-   len = 5 * sizeof(psoFieldDefinition);
    try {
-      queue.DefinitionLength( &fieldsLength );
-      if ( fieldsLength != len ) {
+      retDataDef = queue.GetDataDefinition();
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+      return 1;
+   }
+
+   try {
+      if ( retDataDef->GetType() != PSO_DEF_PHOTON_ODBC_SIMPLE ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }
-      fields = new unsigned char [fieldsLength];
-      queue.Definition( retDef, fields, fieldsLength );
+      if ( retDataDef->GetLength() != 5*sizeof(psoFieldDefinition) ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
+      retFields = new unsigned char [5*sizeof(psoFieldDefinition)];
+      retDataDef->GetDefinition( retFields, 5*sizeof(psoFieldDefinition) );
+      if ( memcmp( retFields, fields, 5*sizeof(psoFieldDefinition) ) != 0 ) {
+         cerr << "Test failed - line " << __LINE__ << endl;
+         return 1;
+      }
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-      return 1;
-   }
-
-   if ( memcmp( fieldDef.GetDefinition(), fields, len ) != 0 ) {
-      cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
 

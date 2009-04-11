@@ -31,17 +31,13 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   Lifo queue(session);
+   Lifo queue;
    string fname = "/cpp_queue_close";
    string qname = fname + "/test";
-   psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
-
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
 
    try {
       if ( argc > 1 ) {
@@ -50,18 +46,27 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session.Init();
-      session.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( qname,
-                            queueDef,
-                            NULL,
-                            0,
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
+      session.Init();
+      session.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session,
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
+      session.CreateObject( qname, queueDef, dataDefObj );
+
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
@@ -80,7 +85,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      queue.Open( qname );
+      queue.Open( session, qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

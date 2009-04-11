@@ -47,7 +47,6 @@ int main( int argc, char * argv[] )
          process.Init( "10701" );
       }
       session.Init();
-      
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

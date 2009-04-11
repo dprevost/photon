@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session1, session2;
-   Lifo queue1(session1), queue2(session2);
+   Lifo queue1, queue2;
    string fname = "/cpp_queue_push";
    string qname = fname + "/test";
 
@@ -39,15 +39,11 @@ int main( int argc, char * argv[] )
    char buffer[50];
    uint32_t length;
    int rc;
-   psoObjectDefinition folderDef;
    psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
 
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
-   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -55,22 +51,30 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
-      session1.Init();
-      session2.Init();
-      session1.CreateObject( fname, folderDef, NULL, 0, NULL, 0 );
-      session1.CreateObject( qname,
-                            queueDef,
-                            NULL,
-                            0,
-                            (unsigned char *)fields,
-                            sizeof(psoFieldDefinition) );
-      session1.Commit();
-      queue1.Open( qname );
-      queue2.Open( qname );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;
       cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
+      session1.Init();
+      session2.Init();
+      session1.CreateFolder( fname );
+
+      DataDefinition dataDefObj( session1,
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)fields,
+                                 sizeof(psoFieldDefinition) );
+      session1.CreateObject( qname, queueDef, dataDefObj );
+      session1.Commit();
+      queue1.Open( session1, qname );
+      queue2.Open( session2, qname );
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

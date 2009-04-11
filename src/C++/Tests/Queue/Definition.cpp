@@ -57,8 +57,17 @@ int main( int argc, char * argv[] )
       else {
          process.Init( "10701" );
       }
+   }
+   catch( pso::Exception exc ) {
+      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
+      cerr << "Is the server running?" << endl;
+      return 1;
+   }
+
+   try {
       session.Init();
       session.CreateFolder( fname );
+
       DataDefinition dataDefObj( session, 
                                  "Data Definition",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
@@ -68,8 +77,7 @@ int main( int argc, char * argv[] )
       queue = new Queue( session, qname );
    }
    catch( pso::Exception exc ) {
-      cerr << "Test failed in init phase, error = " << exc.Message() << endl;
-      cerr << "Is the server running?" << endl;
+      cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 

@@ -62,6 +62,7 @@ int main( int argc, char * argv[] )
       session1.Init();
       session2.Init();
       session1.CreateFolder( fname );
+
       DataDefinition dataDefObj( session1, 
                                  "Data Definition",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
