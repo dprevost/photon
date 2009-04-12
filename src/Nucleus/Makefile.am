@@ -29,6 +29,8 @@ libNucleus_la_SOURCES =   \
         psoErrorHandler.h \
         BlockGroup.c      \
         BlockGroup.h      \
+        Cursor.c          \
+        Cursor.h          \
         DataType.h        \
         Engine.h          \
         FastMap.c         \
@@ -66,9 +68,13 @@ libNucleus_la_SOURCES =   \
         ProcessManager.h  \
         Queue.c           \
         Queue.h           \
+        SequentialSet.c   \
+        SequentialSet.h   \
         SessionContext.h  \
         Session.c         \
         Session.h         \
+        Set.c             \
+        Set.h             \
         TopFolder.c       \
         Transaction.c     \
         Transaction.h     \
