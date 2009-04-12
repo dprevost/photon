@@ -34,6 +34,9 @@
  
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/* The DataDefinition class */
+extern jfieldID g_idDataDefHandle;
+
 /* The KeyDefinition class */
 
 extern jfieldID g_idKeyDefType;
@@ -63,7 +66,9 @@ extern jweak *  g_weakFieldType;
 /* The ObjectDefinition class */
 
 extern jfieldID g_idObjDefType;
-extern jfieldID g_idObjDefNumFields;
+extern jfieldID g_idObjDefFlags;
+extern jfieldID g_idObjDefMinNumOfDataRecords;
+extern jfieldID g_idObjDefMinNumBlocks;
 
 /* The KeyType class (enum) */
 

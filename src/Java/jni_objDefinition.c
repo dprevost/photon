@@ -26,7 +26,9 @@
 #include "org_photon_FieldDefinition.h"
 
 jfieldID g_idObjDefType;
-jfieldID g_idObjDefNumFields;
+jfieldID g_idObjDefFlags;
+jfieldID g_idObjDefMinNumOfDataRecords;
+jfieldID g_idObjDefMinNumBlocks;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -40,8 +42,12 @@ Java_org_photon_ObjectDefinition_initIDs( JNIEnv * env, jclass defClass )
 {
    g_idObjDefType = (*env)->GetFieldID( env, defClass, "type", "Lorg/photon/ObjectType;" );
    if ( g_idObjDefType == NULL ) return;
-   g_idObjDefNumFields = (*env)->GetFieldID( env, defClass, "numFields", "I" );
-   if ( g_idObjDefNumFields == NULL ) return;
+   g_idObjDefFlags = (*env)->GetFieldID( env, defClass, "flags", "I" );
+   if ( g_idObjDefFlags == NULL ) return;
+   g_idObjDefMinNumOfDataRecords = (*env)->GetFieldID( env, defClass, "minNumOfDataRecords", "J" );
+   if ( g_idObjDefMinNumOfDataRecords == NULL ) return;
+   g_idObjDefMinNumBlocks = (*env)->GetFieldID( env, defClass, "minNumBlocks", "J" );
+   if ( g_idObjDefMinNumBlocks == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -20,9 +20,9 @@ CLEANFILES = \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
 Java_Source =                             \
+        org/photon/DataDefinition.java    \
         org/photon/DataRecord.java        \
         org/photon/Definition.java        \
-        org/photon/FieldDefinition.java   \
         org/photon/FieldType.java         \
         org/photon/Folder.java            \
         org/photon/FolderEntry.java       \
@@ -42,10 +42,12 @@ Java_Source =                             \
         org/photon/Tests/SessionTest.java \
         org/photon/Tests/Test.java        
 
+#        org/photon/FieldDefinition.java   
+
 Java_Classes =                             \
+        org/photon/DataDefinition.class    \
         org/photon/DataRecord.class        \
         org/photon/Definition.class        \
-        org/photon/FieldDefinition.class   \
         org/photon/FieldType.class         \
         org/photon/Folder.class            \
         org/photon/FolderEntry.class       \
@@ -60,6 +62,8 @@ Java_Classes =                             \
         org/photon/PhotonException.class   \
         org/photon/Queue.class             \
         org/photon/Session.class           
+
+#        org/photon/FieldDefinition.class   
 
 org_photondir = $(top_builddir)/src/Java
 JAVAROOT      = $(top_builddir)/src/Java

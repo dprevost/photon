@@ -45,7 +45,7 @@ Java_org_photon_Photon_psoInit( JNIEnv  * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
    
-   errcode = psoInit( address, 0 );
+   errcode = psoInit( address );
    (*env)->ReleaseStringUTFChars( env, jaddress, address );
    
    return errcode;
