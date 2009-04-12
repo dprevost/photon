@@ -97,12 +97,12 @@ int createMap()
          return -1;
       }
 
-      rc = psoCreateObject( session1,
-                            mapName,
-                            strlen(mapName),
-                            &def,
-                            keyDefHandle,
-                            dataDefHandle );
+      rc = psoCreateKeyedObject( session1,
+                                 mapName,
+                                 strlen(mapName),
+                                 &def,
+                                 keyDefHandle,
+                                 dataDefHandle );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
@@ -116,7 +116,7 @@ int createMap()
          return -1;
       }
 
-      rc = psoFastMapEdit( session1, mapName, strlen(mapName), &map1, NULL );
+      rc = psoFastMapEdit( session1, mapName, strlen(mapName), &map1 );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
@@ -147,7 +147,7 @@ int createMap()
          return -1;
       }
       
-      rc = psoFastMapOpen( session1, mapName, strlen(mapName), &map1, NULL );
+      rc = psoFastMapOpen( session1, mapName, strlen(mapName), &map1 );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoHashMapOpen error: %s\n", __LINE__, msg );
@@ -185,7 +185,7 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) return 1;
    
    /* Initialize shared memory and create our session */
-   rc = psoInit( argv[2], 0 );
+   rc = psoInit( argv[2] );
    if ( rc != 0 ) {
       fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;

@@ -98,8 +98,11 @@ extern psocErrMsgHandle g_psoErrorHandle;
    target = (type*) ( (unsigned char*) g_pBaseAddr + (ptrdiff_t) off ); \
 }
 
-//#define GET_PTR(target,offset,type) GET_PTR_OPT(target,offset,type)
-#define GET_PTR(target,offset,type) GET_PTR_DBG(target,offset,type)
+#if defined(USE_DBC)
+#  define GET_PTR(target,offset,type) GET_PTR_DBG(target,offset,type)
+#else
+#  define GET_PTR(target,offset,type) GET_PTR_OPT(target,offset,type)
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -48,16 +48,13 @@ int createMap()
    char msg[256];
    char countryCode[2];
    char description[100];
+   PSO_HANDLE keyDefHandle, dataDefHandle;
    
    /*
     * The content of the hash map is simple: a fixed length key, the country 
     * code, and the country name (a variable string - max length of 100).
     */
-   psoObjectDefinition def = { 
-      PSO_HASH_MAP, 
-      PSO_DEF_PHOTON_ODBC_SIMPLE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE 
-   };
+    psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    
    psoKeyDefinition keyDef     = { "CountryCode", PSO_KEY_CHAR, 2 };
    psoFieldDefinition fieldDef = { "CountryName", PSO_VARCHAR, {100} };
@@ -76,14 +73,38 @@ int createMap()
          return -1;
       }
       
-      rc = psoCreateObject( session1,
-                            mapName,
-                            strlen(mapName),
-                            &def,
+      rc = psoKeyDefCreate( session1,
+                            "Country Code",
+                            strlen("Country Code"),
+                            PSO_DEF_PHOTON_ODBC_SIMPLE,
                             (unsigned char *)&keyDef,
                             sizeof(psoKeyDefinition),
-                            (unsigned char *)&fieldDef,
-                            sizeof(psoFieldDefinition) );
+                            &keyDefHandle );
+      if ( rc != 0 ) {
+         psoErrorMsg(session1, msg, 256 );
+         fprintf( stderr, "At line %d, psoKeyDefCreate error: %s\n", __LINE__, msg );
+         return -1;
+      }
+      
+      rc = psoDataDefCreate( session1,
+                             "Country Name",
+                             strlen("Country Name"),
+                             PSO_DEF_PHOTON_ODBC_SIMPLE,
+                             (unsigned char *)&fieldDef,
+                             sizeof(psoFieldDefinition),
+                             &dataDefHandle );
+      if ( rc != 0 ) {
+         psoErrorMsg(session1, msg, 256 );
+         fprintf( stderr, "At line %d, psoDataDefCreate error: %s\n", __LINE__, msg );
+         return -1;
+      }
+
+      rc = psoCreateKeyedObject( session1,
+                                 mapName,
+                                 strlen(mapName),
+                                 &def,
+                                 keyDefHandle,
+                                 dataDefHandle );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
@@ -110,7 +131,7 @@ int createMap()
       rc = readData( countryCode, description );
       while ( rc > 0 ) {
          rc = psoHashMapInsert( map1, countryCode, 2, 
-            description, strlen(description) );
+            description, strlen(description), NULL );
          if ( rc != 0 ) {
             psoErrorMsg(session1, msg, 256 );
             fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
@@ -149,7 +170,7 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) return 1;
    
    /* Initialize shared memory and create our session */
-   rc = psoInit( argv[2], 0 );
+   rc = psoInit( argv[2] );
    if ( rc != 0 ) {
       fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
