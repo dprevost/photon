@@ -104,6 +104,31 @@ typedef struct psonQueue psonQueue;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
+void psonQueueCommitAdd( psonQueue * pQueue, 
+                         ptrdiff_t   itemOffset );
+
+PHOTON_ENGINE_EXPORT
+void psonQueueCommitRemove( psonQueue          * pQueue, 
+                            ptrdiff_t            itemOffset,
+                            psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+void psonQueueFini( psonQueue          * pQueue,
+                    psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonQueueGetFirst( psonQueue          * pQueue,
+                        psonQueueItem     ** ppIterator,
+                        uint32_t             bufferLength,
+                        psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonQueueGetNext( psonQueue          * pQueue,
+                       psonQueueItem     ** ppIterator,
+                       uint32_t             bufferLength,
+                       psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonQueueInit( psonQueue           * pQueue,
                     ptrdiff_t             parentOffset,
                     size_t                numberOfBlocks,
@@ -114,10 +139,6 @@ bool psonQueueInit( psonQueue           * pQueue,
                     psoObjectDefinition * pDefinition,
                     psonDataDefinition  * pDataDefinition,
                     psonSessionContext  * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonQueueFini( psonQueue          * pQueue,
-                    psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonQueueInsert( psonQueue          * pQueue,
@@ -136,6 +157,11 @@ bool psonQueueInsertNow( psonQueue          * pQueue,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
+bool psonQueueRelease( psonQueue          * pQueue,
+                       psonQueueItem      * pQueueItem,
+                       psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonQueueRemove( psonQueue          * pQueue,
                       psonQueueItem     ** ppQueueItem,
                       enum psonQueueEnum   firstOrLast,
@@ -143,30 +169,9 @@ bool psonQueueRemove( psonQueue          * pQueue,
                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonQueueGet( psonQueue          * pQueue,
-                   unsigned int         flag,
-                   psonQueueItem     ** ppIterator,
-                   uint32_t             bufferLength,
-                   psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonQueueRelease( psonQueue          * pQueue,
-                       psonQueueItem      * pQueueItem,
-                       psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonQueueCommitAdd( psonQueue * pQueue, 
-                         ptrdiff_t   itemOffset );
-
-PHOTON_ENGINE_EXPORT
 void psonQueueRollbackAdd( psonQueue          * pQueue, 
                            ptrdiff_t            itemOffset,
                            psonSessionContext * pContext  );
-
-PHOTON_ENGINE_EXPORT
-void psonQueueCommitRemove( psonQueue          * pQueue, 
-                            ptrdiff_t            itemOffset,
-                            psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 void psonQueueRollbackRemove( psonQueue * pQueue, 

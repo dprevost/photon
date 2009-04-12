@@ -320,11 +320,10 @@ fprintf(stderr, "commit 2\n" );
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonQueueGet( pQueue,
-                      PSO_FIRST,
-                      &pQueueItem,
-                      (uint32_t) -1,
-                      &context );
+   ok = psonQueueGetFirst( pQueue,
+                           &pQueueItem,
+                           (uint32_t) -1,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -386,11 +385,10 @@ fprintf(stderr, "commit 2\n" );
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonQueueGet( pQueue,
-                      PSO_FIRST,
-                      &pQueueItem,
-                      (uint32_t) -1,
-                      &context );
+   ok = psonQueueGetFirst( pQueue,
+                           &pQueueItem,
+                           (uint32_t) -1,
+                           &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -174,11 +174,10 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
       pLifo->iterator = NULL;
    }
 
-   ok = psonQueueGet( pMemLifo,
-                      PSO_FIRST,
-                      &pLifo->iterator,
-                      bufferLength,
-                      &pLifo->object.pSession->context );
+   ok = psonQueueGetFirst( pMemLifo,
+                           &pLifo->iterator,
+                           bufferLength,
+                           &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
@@ -236,11 +235,10 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
 
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
-   ok = psonQueueGet( pMemLifo,
-                      PSO_NEXT,
-                      &pLifo->iterator,
-                      bufferLength,
-                      &pLifo->object.pSession->context );
+   ok = psonQueueGetNext( pMemLifo,
+                          &pLifo->iterator,
+                          bufferLength,
+                          &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
    
@@ -604,11 +602,10 @@ int psoaLifoFirst( psoaLifo      * pLifo,
       pLifo->iterator = NULL;
    }
 
-   ok = psonQueueGet( pMemLifo,
-                      PSO_FIRST,
-                      &pLifo->iterator,
-                      (uint32_t) -1,
-                      &pLifo->object.pSession->context );
+   ok = psonQueueGetFirst( pMemLifo,
+                           &pLifo->iterator,
+                           (uint32_t) -1,
+                           &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
@@ -651,11 +648,10 @@ int psoaLifoNext( psoaLifo      * pLifo,
 
    pMemLifo = (psonQueue *) pLifo->object.pMyMemObject;
 
-   ok = psonQueueGet( pMemLifo,
-                      PSO_NEXT,
-                      &pLifo->iterator,
-                      (uint32_t) -1,
-                      &pLifo->object.pSession->context );
+   ok = psonQueueGetNext( pMemLifo,
+                          &pLifo->iterator,
+                          (uint32_t) -1,
+                          &pLifo->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
