@@ -147,6 +147,7 @@ Java_org_photon_Queue_psoInit( JNIEnv  * env,
    unsigned int numFields = 0, i;
    psoFieldDefinition  * pFields = NULL;
 
+#if 0
    queueName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( queueName == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
@@ -237,7 +238,8 @@ Java_org_photon_Queue_psoInit( JNIEnv  * env,
    if ( errcode == PSO_OK ) {
       (*env)->SetLongField( env, jobj, g_idQueueHandle, (size_t) handle );
    }
-   
+#endif
+
    return errcode;
 }
 

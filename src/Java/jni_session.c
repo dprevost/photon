@@ -100,6 +100,7 @@ Java_org_photon_Session_psoCreateObject( JNIEnv     * env,
    definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
    (*env)->DeleteLocalRef( env, jTypeObj );
 
+#if 0
    definition.numFields = (*env)->GetIntField( env, jdef, g_idObjDefNumFields );
    
    if ( jkey != NULL ) {
@@ -169,6 +170,7 @@ Java_org_photon_Session_psoCreateObject( JNIEnv     * env,
 
    (*env)->ReleaseStringUTFChars( env, jname, name );
    if ( pFields != NULL ) free(pFields);
+#endif
 
    return errcode;
 }
@@ -256,6 +258,7 @@ Java_org_photon_Session_psoGetDefinition( JNIEnv  * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
+#if 0
    /*
     * We call it a first time with numFields set to zero to retrieve the
     * number of fields.
@@ -348,7 +351,8 @@ Java_org_photon_Session_psoGetDefinition( JNIEnv  * env,
    }
 
    if ( pFields != NULL ) free(pFields);
-   
+#endif
+
    return errcode;
 }
 

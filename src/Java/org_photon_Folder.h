@@ -17,19 +17,27 @@ JNIEXPORT void JNICALL Java_org_photon_Folder_initIDs
 
 /*
  * Class:     org_photon_Folder
- * Method:    psoCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ * Method:    psoCreateFolder
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObject
-  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobjectArray);
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateFolder
+  (JNIEnv *, jobject, jlong, jstring);
 
 /*
  * Class:     org_photon_Folder
- * Method:    psoCreateObjectXML
- * Signature: (JLjava/lang/String;)I
+ * Method:    psoCreateObject
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/DataDefinition;)I
  */
-JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObjectXML
-  (JNIEnv *, jobject, jlong, jstring);
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObject
+  (JNIEnv *, jobject, jlong, jstring, jobject, jobject);
+
+/*
+ * Class:     org_photon_Folder
+ * Method:    psoCreateKeyedObject
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;Lorg/photon/DataDefinition;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateKeyedObject
+  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobject);
 
 /*
  * Class:     org_photon_Folder

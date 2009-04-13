@@ -103,14 +103,13 @@ void psonQueueFini( psonQueue          * pQueue,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonQueueGet( psonQueue          * pQueue,
-                   unsigned int         flag,
-                   psonQueueItem     ** ppIterator,
-                   uint32_t             bufferLength,
-                   psonSessionContext * pContext )
+bool psonQueueGetFirst( psonQueue          * pQueue,
+                        psonQueueItem     ** ppIterator,
+                        uint32_t             bufferLength,
+                        psonSessionContext * pContext )
 {
    psonQueueItem* pQueueItem = NULL;
-   psonQueueItem* pOldItem = NULL;
+//   psonQueueItem* pOldItem = NULL;
    psoErrors errcode;
    psonLinkNode * pNode = NULL;
    psonTxStatus * txItemStatus, * txQueueStatus;
@@ -120,24 +119,13 @@ bool psonQueueGet( psonQueue          * pQueue,
    PSO_PRE_CONDITION( pQueue     != NULL );
    PSO_PRE_CONDITION( ppIterator != NULL );
    PSO_PRE_CONDITION( pContext   != NULL );
-   PSO_PRE_CONDITION( flag == PSO_FIRST || flag == PSO_NEXT );
    PSO_PRE_CONDITION( pQueue->memObject.objType == PSON_IDENT_QUEUE );
    
    GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psonTxStatus );
    
    if ( psonLock( &pQueue->memObject, pContext ) ) {
-      if ( flag == PSO_NEXT ) {
-         
-         errcode = PSO_REACHED_THE_END;
-         pOldItem = (psonQueueItem*) *ppIterator;
-         okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
-                                           &pOldItem->node, 
-                                           &pNode );
-      }
-      else {
-         /* This call can only fail if the queue is empty. */
-         okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
-      }
+      /* This call can only fail if the queue is empty. */
+      okList = psonLinkedListPeakFirst( &pQueue->listOfElements, &pNode );
       
       while ( okList ) {
          pQueueItem = (psonQueueItem*)
@@ -198,9 +186,6 @@ bool psonQueueGet( psonQueue          * pQueue,
             txItemStatus->usageCounter++;
             txQueueStatus->usageCounter++;
             *ppIterator = pQueueItem;
-            if ( flag == PSO_NEXT ) {
-               psonQueueReleaseNoLock( pQueue, pOldItem, pContext );
-            }
             
             psonUnlock( &pQueue->memObject, pContext );
 
@@ -219,7 +204,6 @@ bool psonQueueGet( psonQueue          * pQueue,
    errcode = PSO_ITEM_IS_IN_USE;
    if ( queueIsEmpty ) {
       errcode = PSO_IS_EMPTY;   
-      if ( flag == PSO_NEXT ) errcode = PSO_REACHED_THE_END;
    }
    
    /* 
@@ -229,9 +213,131 @@ bool psonQueueGet( psonQueue          * pQueue,
     * at this point.
     */
    *ppIterator = NULL;
-   if ( flag == PSO_NEXT ) {
-      psonQueueReleaseNoLock( pQueue, pOldItem, pContext );
+   
+   psonUnlock( &pQueue->memObject, pContext );
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonQueueGetNext( psonQueue          * pQueue,
+                       psonQueueItem     ** ppIterator,
+                       uint32_t             bufferLength,
+                       psonSessionContext * pContext )
+{
+   psonQueueItem* pQueueItem = NULL;
+   psonQueueItem* pOldItem = NULL;
+   psoErrors errcode;
+   psonLinkNode * pNode = NULL;
+   psonTxStatus * txItemStatus, * txQueueStatus;
+   bool isOK, okList;
+   bool queueIsEmpty = true;
+   
+   PSO_PRE_CONDITION( pQueue     != NULL );
+   PSO_PRE_CONDITION( ppIterator != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pQueue->memObject.objType == PSON_IDENT_QUEUE );
+   
+   GET_PTR( txQueueStatus, pQueue->nodeObject.txStatusOffset, psonTxStatus );
+   
+   if ( psonLock( &pQueue->memObject, pContext ) ) {
+      errcode = PSO_REACHED_THE_END;
+      pOldItem = (psonQueueItem*) *ppIterator;
+      okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
+                                        &pOldItem->node, 
+                                        &pNode );
+      
+      while ( okList ) {
+         pQueueItem = (psonQueueItem*)
+            ((char*)pNode - offsetof( psonQueueItem, node ));
+         txItemStatus = &pQueueItem->txStatus;
+         
+         /* 
+          * If the transaction id of the item (to retrieve) is equal to the 
+          * current transaction id AND the object is marked as deleted, we 
+          * go to the next item.
+          *
+          * If the transaction id of the item (to retrieve) is NOT equal to the 
+          * current transaction id AND the object is added... next!
+          *
+          * If the item is flagged as deleted and committed, it does not exists
+          * from the API point of view.
+          */
+         isOK = true;
+         if ( txItemStatus->txOffset != PSON_NULL_OFFSET ) {
+            switch( txItemStatus->status ) {
+
+            case PSON_TXS_DESTROYED_COMMITTED:
+               isOK = false;
+               break;
+               
+            case PSON_TXS_DESTROYED:
+               if ( txItemStatus->txOffset == SET_OFFSET(pContext->pTransaction) ) {
+                  isOK = false;
+                  queueIsEmpty = false;
+               }
+               break;
+               
+            case PSON_TXS_ADDED:
+               if ( txItemStatus->txOffset != SET_OFFSET(pContext->pTransaction) ) {
+                  isOK = false;
+                  queueIsEmpty = false;
+               }
+               break;
+               
+            default:
+               break;
+            }
+         }
+         if ( isOK ) {
+            /*
+             * This test cannot be done in the API (before calling the current
+             * function) since we do not know the item size. It could be done
+             * after but this way makes the code faster.
+             */
+            if ( bufferLength < pQueueItem->dataLength ) {
+               psonUnlock( &pQueue->memObject, pContext );
+               psocSetError( &pContext->errorHandler,
+                             g_psoErrorHandle,
+                             PSO_INVALID_LENGTH );
+                return false;
+            }
+
+            txItemStatus->usageCounter++;
+            txQueueStatus->usageCounter++;
+            *ppIterator = pQueueItem;
+   
+            psonQueueReleaseNoLock( pQueue, pOldItem, pContext );
+            
+            psonUnlock( &pQueue->memObject, pContext );
+
+            return true;
+         }
+         okList =  psonLinkedListPeakNext( &pQueue->listOfElements, 
+                                           pNode, 
+                                           &pNode );
+      }
    }
+   else {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
+      return false;
+   }
+   
+   errcode = PSO_ITEM_IS_IN_USE;
+   if ( queueIsEmpty ) {
+      errcode = PSO_REACHED_THE_END;
+   }
+   
+   /* 
+    * If we come here, there are no additional data items to retrieve. As 
+    * long as we clearly say that the internal iterator is reset (in case a 
+    * "Get Previous" is implemented later), we can just release the iterator
+    * at this point.
+    */
+   *ppIterator = NULL;
+   psonQueueReleaseNoLock( pQueue, pOldItem, pContext );
    
    psonUnlock( &pQueue->memObject, pContext );
    psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );

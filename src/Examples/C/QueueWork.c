@@ -40,7 +40,7 @@ void cleanup()
       /* We flush it all before warning QueueOut to exit. */
       psoCommit( session );
       rc = psoHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
-         &controlData, sizeof(int) );
+         &controlData, sizeof(int), NULL );
       if ( rc != 0 ) {
          psoErrorMsg(session, msg, 256 );
          fprintf( stderr, "At line %d, psoHashMapReplace error: %s\n", __LINE__, msg );
@@ -77,7 +77,7 @@ int initObjects()
 
    controlData = 1;
    rc = psoHashMapReplace( control, workProcessKey, strlen(workProcessKey),
-      &controlData, sizeof(int) );
+      &controlData, sizeof(int), NULL );
    if ( rc != 0 ) {
       psoErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
@@ -132,7 +132,7 @@ int main( int argc, char *argv[] )
    }
 
    /* Initialize shared memory and create our session */
-   rc = psoInit( argv[1], 0 );
+   rc = psoInit( argv[1] );
    if ( rc != 0 ) {
       fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
@@ -192,7 +192,7 @@ int main( int argc, char *argv[] )
          workStruct.description[i] = toupper(workStruct.description[i]);
       }
       
-      rc = psoQueuePush( outQueue, &workStruct, length );
+      rc = psoQueuePush( outQueue, &workStruct, length, NULL );
       if ( rc != 0 ) {
          psoErrorMsg(session, msg, 256 );
          fprintf( stderr, "At line %d, psoQueuePush error: %s\n", __LINE__, msg );

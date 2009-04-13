@@ -181,11 +181,10 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
       pQueue->iterator = NULL;
    }
 
-   ok = psonQueueGet( pMemQueue,
-                      PSO_FIRST,
-                      &pQueue->iterator,
-                      bufferLength,
-                      &pQueue->object.pSession->context );
+   ok = psonQueueGetFirst( pMemQueue,
+                           &pQueue->iterator,
+                           bufferLength,
+                           &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
@@ -248,11 +247,10 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
 
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-   ok = psonQueueGet( pMemQueue,
-                      PSO_NEXT,
-                      &pQueue->iterator,
-                      bufferLength,
-                      &pQueue->object.pSession->context );
+   ok = psonQueueGetNext( pMemQueue,
+                          &pQueue->iterator,
+                          bufferLength,
+                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
    
@@ -701,11 +699,10 @@ int psoaQueueFirst( psoaQueue     * pQueue,
       pQueue->iterator = NULL;
    }
 
-   ok = psonQueueGet( pMemQueue,
-                      PSO_FIRST,
-                      &pQueue->iterator,
-                      (uint32_t) -1,
-                      &pQueue->object.pSession->context );
+   ok = psonQueueGetFirst( pMemQueue,
+                           &pQueue->iterator,
+                           (uint32_t) -1,
+                           &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
@@ -753,11 +750,10 @@ int psoaQueueNext( psoaQueue     * pQueue,
 
    pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
 
-   ok = psonQueueGet( pMemQueue,
-                      PSO_NEXT,
-                      &pQueue->iterator,
-                      (uint32_t) -1,
-                      &pQueue->object.pSession->context );
+   ok = psonQueueGetNext( pMemQueue,
+                          &pQueue->iterator,
+                          (uint32_t) -1,
+                          &pQueue->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 

@@ -44,7 +44,7 @@ void cleanup()
       /* We flush it all before warning QueueWork to exit. */
       psoCommit( session );
       rc = psoHashMapReplace( control, shutdownKey, strlen(shutdownKey), 
-         &controlData, sizeof(int) );
+         &controlData, sizeof(int), NULL );
       if ( rc != 0 ) {
          psoErrorMsg(session, msg, 256 );
          fprintf( stderr, "At line %d, psoHashMapReplace error: %s\n", __LINE__, msg );
@@ -69,36 +69,23 @@ int initObjects()
    char msg[256];
    int controlData;
    
-   psoObjectDefinition defFolder = { 
-      PSO_FOLDER,
-      PSO_DEF_NONE,
-      PSO_DEF_NONE
-   };
-
-   psoObjectDefinition defMap = { 
-      PSO_HASH_MAP, 
-      PSO_DEF_PHOTON_ODBC_SIMPLE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE 
-   };
+   psoObjectDefinition defMap = { PSO_HASH_MAP, 0, 0, 0 };
+   psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
    
    psoKeyDefinition keyDef     = { "ControlCode", PSO_KEY_VARCHAR, 20 };
    psoFieldDefinition fieldDef = { "Status",      PSO_INTEGER,    {0} };
 
-   psoObjectDefinition defQueue = { 
-      PSO_QUEUE,
-      PSO_DEF_NONE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE 
-   };
    psoFieldDefinition fieldDefQueue[2] = {
       { "CountryCode", PSO_CHAR,     {2} },
       { "CountryName", PSO_VARCHAR, {80} }
    };
+   PSO_HANDLE keyDefHandle, dataDefHandle;
    
    /* If the objects already exist, we remove them. */
    psoDestroyObject( session, inQueueName,  strlen(inQueueName)  );
    psoDestroyObject( session, outQueueName, strlen(outQueueName) );
    psoDestroyObject( session, controlName,  strlen(controlName)  );
-   /* Remove th folder last (to delete a folder it must be empty) */
+   /* Remove the folder last (to delete a folder it must be empty) */
    psoDestroyObject( session, folderName,   strlen(folderName)   );
    /* Commit the destruction of these objects */
    rc = psoCommit( session );
@@ -109,25 +96,45 @@ int initObjects()
    }
 
    /* Create the folder first, evidently */
-   rc = psoCreateObject( session,
-                         folderName,
-                         strlen(folderName),
-                         &defFolder,
-                         NULL, 0, NULL, 0 );
+   rc = psoCreateFolder( session, folderName, strlen(folderName) );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = psoCreateObject( session,
-                         controlName,
-                         strlen(controlName),
-                         &defMap,
+   rc = psoKeyDefCreate( session,
+                         "Country Code",
+                         strlen("Country Code"),
+                         PSO_DEF_PHOTON_ODBC_SIMPLE,
                          (unsigned char *)&keyDef,
                          sizeof(psoKeyDefinition),
-                         (unsigned char *)&fieldDef,
-                         sizeof(psoFieldDefinition) );
+                         &keyDefHandle );
+   if ( rc != 0 ) {
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoKeyDefCreate error: %s\n", __LINE__, msg );
+      return -1;
+   }
+      
+   rc = psoDataDefCreate( session,
+                          "Country Name",
+                          strlen("Country Name"),
+                          PSO_DEF_PHOTON_ODBC_SIMPLE,
+                          (unsigned char *)&fieldDef,
+                          sizeof(psoFieldDefinition),
+                          &dataDefHandle );
+   if ( rc != 0 ) {
+      psoErrorMsg(session, msg, 256 );
+      fprintf( stderr, "At line %d, psoDataDefCreate error: %s\n", __LINE__, msg );
+      return -1;
+   }
+
+   rc = psoCreateKeyedObject( session,
+                              controlName,
+                              strlen(controlName),
+                              &defMap,
+                              keyDefHandle,
+                              dataDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
@@ -138,10 +145,7 @@ int initObjects()
                          inQueueName,
                          strlen(inQueueName),
                          &defQueue,
-                         NULL,
-                         0,
-                         (unsigned char *)fieldDefQueue,
-                         2*sizeof(psoFieldDefinition) );
+                         dataDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
@@ -152,10 +156,7 @@ int initObjects()
                          outQueueName,
                          strlen(outQueueName),
                          &defQueue,
-                         NULL,
-                         0,
-                         (unsigned char *)fieldDefQueue,
-                         2*sizeof(psoFieldDefinition) );
+                         dataDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
@@ -172,7 +173,7 @@ int initObjects()
    /* Initialize the control object */
    controlData = 0; /* Will be set to one/two when it is time to shutdown */
    rc = psoHashMapInsert( control, shutdownKey, strlen(shutdownKey), 
-      &controlData, sizeof(int) );
+      &controlData, sizeof(int), NULL );
    if ( rc != 0 ) {
       psoErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
@@ -185,14 +186,14 @@ int initObjects()
     */
    controlData = 0;
    rc = psoHashMapInsert( control, workProcessKey, strlen(workProcessKey), 
-      &controlData, sizeof(int) );
+      &controlData, sizeof(int), NULL );
    if ( rc != 0 ) {
       psoErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
       return -1;
    }
    rc = psoHashMapInsert( control, outProcessKey, strlen(outProcessKey), 
-      &controlData, sizeof(int) );
+      &controlData, sizeof(int), NULL );
    if ( rc != 0 ) {
       psoErrorMsg(session, msg, 256 );
       fprintf( stderr, "At line %d, psoHashMapInsert error: %s\n", __LINE__, msg );
@@ -269,7 +270,7 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) return 1;
    
    /* Initialize shared memory and create our session */
-   rc = psoInit( argv[2], 0 );
+   rc = psoInit( argv[2] );
    if ( rc != 0 ) {
       fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;
@@ -314,7 +315,10 @@ int main( int argc, char *argv[] )
        */
       rc = readData( inStruct.countryCode, inStruct.description );
       if ( rc > 0 ) {
-         rc = psoQueuePush( inQueue, &inStruct, 2 + strlen( inStruct.description) );
+         rc = psoQueuePush( inQueue,
+                            &inStruct,
+                            2 + strlen( inStruct.description),
+                            NULL );
          if ( rc != 0 ) {
             psoErrorMsg(session, msg, 256 );
             fprintf( stderr, "At line %d, psoQueuePush error: %s\n", __LINE__, msg );
