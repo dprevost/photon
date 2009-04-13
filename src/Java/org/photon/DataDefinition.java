@@ -18,60 +18,263 @@
 
 package org.photon;
 
-public class DataDefinition {
+import java.lang.*;
+import java.util.*;
+
+public class DataDefinition implements Iterable<String>, Iterator<String> {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   /** The name of the field. */
+   /** To save the native pointer/handle of the C struct. */
+   long handle = 0;
+
+   /** The name of the data definition. */
    private String name;
    
-   /** The data type of the field/ */
-   private FieldType type;
+   /** The session we belong to. */
+   private Session session;
+
+   private int type;
+
+   /** Pointer to the actual data definition. */
+   private byte[] dataDef;
    
-   /** For fixed-length data types */
-   private int length;
+   /** Iterator */
+   private int currentLength = 0;
 
-   /** For variable-length data types */
-   private int minLength;
-
-   /** For variable-length data types */
-   private int maxLength;
-
-   /** Total number of digits in the decimal field. */
-   private int precision;
-
-   /** Number of digits following the decimal separator. */
-   private int scale;
-   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   DataDefinition( String name, FieldType type, int length, 
-      int minLength, int maxLength, int precision, int scale ) {
-      this.name      = name;
-      this.type      = type;
-      this.length    = length;
-      this.minLength = minLength;
-      this.maxLength = maxLength;
-      this.precision = precision;
-      this.scale     = scale;
+   static {
+      initIDs();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Default constructor.
+    * <p>
+    * You must use open() or create to access a data definition in 
+    * shared memory.
+    */
+   public DataDefinition( Session session ) {
+       
+      this.session = session;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public String    getName()      { return name; }
-   public FieldType getType()      { return type; }
-   public int       getLength()    { return length; }
-   public int       getMinLength() { return minLength; }
-   public int       getMaxLength() { return maxLength; }
-   public int       getPrecision() { return precision; }
-   public int       getScale()     { return scale; }
+   /**
+    * Creates a new data definition in shared memory.
+    *
+    * @param session The session we belong to.
+    * @param name The name of the definition.
+    * @param type The type of definition (ODBC, user defined, etc.)
+    * @param dataDef The data definition (as an opaque type)
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   public DataDefinition( Session        session,
+                          String         name,
+                          DefinitionType type,
+                          byte[]         dataDef ) throws PhotonException {
+   
+      int errcode;
+      
+      this.session = session;
+      
+      errcode = psoCreate( session.handle,
+                           name,
+                           type.getType(),
+                           dataDef,
+                           dataDef.length );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Opens an existing data definition in shared memory.
+    *
+    * @param session The session we belong to.
+    * @param name The name of the definition.
+    *
+    * @exception pso::Exception An abnormal error occured.
+    */
+   public DataDefinition( Session session,
+                          String  name ) throws PhotonException {
+   
+      int errcode;
+      
+      this.session = session;
+      
+      errcode = psoOpen( session.handle, name );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Closes our access to the data definition in shared memory.
+    *
+    * @exception pso::Exception An abnormal error occured.
+    */
+   public void close() throws PhotonException {
+      
+      int errcode;
+      
+      errcode = psoClose( handle );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+      
+      handle = 0;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Creates a new data definition in shared memory.
+    *
+    * @param name The name of the definition.
+    * @param type The type of definition (ODBC, user defined, etc.)
+    * @param dataDef The data definition (as an opaque type)
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   public void create( String         name,
+                       DefinitionType type,
+                       byte[]         dataDef ) throws PhotonException {
+   
+      int errcode;
+      
+      if ( handle != 0 ) {
+         throw new PhotonException( PhotonErrors.ALREADY_OPEN );
+      }
+      
+      errcode = psoCreate( session.handle,
+                           name,
+                           type.getType(),
+                           dataDef,
+                           dataDef.length );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Cleanup the object before GC.
+    */
+   protected void finalize() throws Throwable {     
+      
+      try {
+         psoClose(handle);
+      } finally {
+         handle = 0;
+         super.finalize();
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public byte[] getDefinition() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return dataDef;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public int getLength() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return dataDef.length;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public DefinitionType getType() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return DefinitionType.getEnum(type);
+   }
+   
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    */
+   public boolean hasNext() {
+
+      if ( currentLength < dataDef.length )
+         return true;
+      
+      return false;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** This method implements the Iterable interface */
+   public Iterator<String> iterator() {
+      return this;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    */
+   public String next() {
+      
+      if ( currentLength >= dataDef.length ) {
+         currentLength = 0;
+         throw new NoSuchElementException();
+      }
+      
+      return psoGetNext();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    * <p>
+    * Note: remove() will throw an UnsupportedOperation Exception
+    * since this operation is not supported.
+    */
+   public void remove() {
+      throw new UnsupportedOperationException();
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    private static native void initIDs();
 
-   static {
-      initIDs();
-   }
+   private native int psoClose( long h );
+
+   private native int psoCreate( long    hSession,
+                                 String  name,
+                                 int     type,
+                                 byte [] dataDef,
+                                 int     dataDefLength );
+
+   private native String psoGetNext();
+   
+   private native int psoOpen( long hSession, String name );
 }
 

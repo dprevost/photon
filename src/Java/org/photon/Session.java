@@ -41,7 +41,7 @@ package org.photon;
 public class Session {
 
    /* To save the native pointer/handle of the C struct. */
-   private long handle = 0;
+   long handle = 0;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

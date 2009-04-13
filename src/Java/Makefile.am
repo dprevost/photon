@@ -23,6 +23,7 @@ Java_Source =                             \
         org/photon/DataDefinition.java    \
         org/photon/DataRecord.java        \
         org/photon/Definition.java        \
+        org/photon/DefinitionType.java    \
         org/photon/FieldType.java         \
         org/photon/Folder.java            \
         org/photon/FolderEntry.java       \
@@ -88,6 +89,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
+        jni_dataDefinition.c          \
         jni_dataRecord.c              \
         jni_definition.c              \
         jni_fieldDef.c                \
@@ -104,6 +106,7 @@ libphoton_jni_la_SOURCES =            \
         jni_photon.c                  \
         jni_queue.c                   \
         jni_session.c                 \
+        org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
         org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \

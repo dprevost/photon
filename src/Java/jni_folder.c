@@ -379,7 +379,6 @@ Java_org_photon_Folder_psoInit( JNIEnv * env,
    size_t sessionHandle;
    const char *folderName;
 
-   
    folderName = (*env)->GetStringUTFChars( env, jstr, NULL );
    if ( folderName == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
