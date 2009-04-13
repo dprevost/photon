@@ -18,52 +18,297 @@
 
 package org.photon;
 
-public class KeyDefinition {
+import java.lang.*;
+import java.util.*;
 
-   /** The data type of the key. */
-   private KeyType type;
+public class KeyDefinition implements Iterable<String>, Iterator<String> {
 
-   /** For fixed-length data types */
-   private int length;
-
-   /** For variable-length data types */
-   private int minLength;
-
-   /** For variable-length data types */
-   private int maxLength;
- 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   /** The data type of the key (integer, string, etc). */
-   public KeyType getType() { return type; }
+   /** To save the native pointer/handle of the C struct. */
+   long handle = 0;
+
+   /** The name of the key definition. */
+   private String name;
    
-   /** The length of the key for fixed length data types. */
-   public int     getLength()    { return length; }
+   /** The session we belong to. */
+   private Session session;
 
-   /** The minimum length of the key for variable length data types. */
-   public int     getMinLength() { return minLength; }
+   /** The definition type of the key definition. */
+   private int type;
 
-   /** The maximum length of the key for variable length data types. */
-   public int     getMaxLength() { return maxLength; }
+   /** Pointer to the actual key definition. */
+   private byte[] keyDef;
+   
+   /** Iterator */
+   private int currentLength = 0;
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   KeyDefinition() {}
+   static {
+      initIDs();
+   }
 
-   public KeyDefinition( KeyType type, int length, int minLength, int maxLength ) {
-      this.type = type;
-      this.length = length;
-      this.minLength = minLength;
-      this.maxLength = maxLength;
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Default constructor.
+    * <p>
+    * You must use open() or create to access a key definition in 
+    * shared memory.
+    */
+   public KeyDefinition( Session session ) {
+       
+      this.session = session;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Creates a new key definition in shared memory.
+    *
+    * @param session The session we belong to.
+    * @param name The name of the definition.
+    * @param type The type of definition (ODBC, user defined, etc.)
+    * @param keyDef The key definition (as an opaque type)
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   public KeyDefinition( Session        session,
+                         String         name,
+                         DefinitionType type,
+                         byte[]         keyDef ) throws PhotonException {
+   
+      int errcode;
+      
+      errcode = psoCreate( session.handle,
+                           name,
+                           type.getType(),
+                           keyDef,
+                           keyDef.length );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
+      this.name    = name;
+      this.session = session;
+      this.keyDef  = keyDef;
+      this.type    = type.getType();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Opens an existing key definition in shared memory.
+    *
+    * @param session The session we belong to.
+    * @param name The name of the definition.
+    *
+    * @exception pso::Exception An abnormal error occured.
+    */
+   public KeyDefinition( Session session,
+                         String  name ) throws PhotonException {
+   
+      int errcode;
+      
+      errcode = psoOpen( session.handle, name );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
+      this.name = name;
+      this.session = session;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Closes our access to the key definition in shared memory.
+    *
+    * @exception pso::Exception An abnormal error occured.
+    */
+   public void close() throws PhotonException {
+      
+      int errcode;
+      
+      errcode = psoClose( handle );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+      
+      handle = 0;
+      name = "";
+      currentLength = 0;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Creates a new key definition in shared memory.
+    *
+    * @param name The name of the definition.
+    * @param type The type of definition (ODBC, user defined, etc.)
+    * @param keyDef The key definition (as an opaque type)
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   public void create( String         name,
+                       DefinitionType type,
+                       byte[]         keyDef ) throws PhotonException {
+   
+      int errcode;
+      
+      if ( handle != 0 ) {
+         throw new PhotonException( PhotonErrors.ALREADY_OPEN );
+      }
+      
+      errcode = psoCreate( session.handle,
+                           name,
+                           type.getType(),
+                           keyDef,
+                           keyDef.length );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
+      this.name   = name;
+      this.keyDef = keyDef;
+      this.type   = type.getType();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Cleanup the object before GC.
+    */
+   protected void finalize() throws Throwable {     
+      
+      try {
+         psoClose(handle);
+      } finally {
+         handle = 0;
+         super.finalize();
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public byte[] getDefinition() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return keyDef;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public int getLength() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return keyDef.length;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public DefinitionType getType() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return DefinitionType.getEnum(type);
+   }
+   
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    */
+   public boolean hasNext() {
+
+      if ( currentLength < keyDef.length )
+         return true;
+      
+      return false;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** This method implements the Iterable interface */
+   public Iterator<String> iterator() {
+      return this;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    */
+   public String next() {
+      
+      if ( currentLength >= keyDef.length ) {
+         currentLength = 0;
+         throw new NoSuchElementException();
+      }
+      
+      return psoGetNext();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Opens an existing key definition in shared memory.
+    *
+    * @param session The session we belong to.
+    * @param name The name of the definition.
+    *
+    * @exception pso::Exception An abnormal error occured.
+    */
+   public void open( String  name ) throws PhotonException {
+   
+      int errcode;
+      
+      errcode = psoOpen( session.handle, name );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
+      this.name = name;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    * <p>
+    * Note: remove() will throw an UnsupportedOperation Exception
+    * since this operation is not supported.
+    */
+   public void remove() {
+      throw new UnsupportedOperationException();
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    private static native void initIDs();
 
-   static {
-      initIDs();
-   }
+   private native int psoClose( long h );
+
+   private native int psoCreate( long    hSession,
+                                 String  name,
+                                 int     type,
+                                 byte [] keyDef,
+                                 int     keyDefLength );
+
+   private native String psoGetNext();
+   
+   private native int psoOpen( long hSession, String name );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

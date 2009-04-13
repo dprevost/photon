@@ -295,7 +295,7 @@ Java_org_photon_DataDefinition_psoOpen( JNIEnv * env,
    size_t handle = (size_t) jhandle;
    const char * name;
    PSO_HANDLE definitionHandle;
-   jbyte * dataDef;
+   unsigned char * dataDef;
    enum psoDefinitionType defType;
    unsigned int dataDefLength;
    jbyteArray jba;
@@ -315,7 +315,7 @@ Java_org_photon_DataDefinition_psoOpen( JNIEnv * env,
    
    errcode = psoaDataDefGetDef( definitionHandle,
                                 &defType,
-                                (unsigned char **)&dataDef,
+                                &dataDef,
                                 &dataDefLength );
    if ( errcode != 0 ) {
       psoDataDefClose( definitionHandle );
@@ -329,7 +329,7 @@ Java_org_photon_DataDefinition_psoOpen( JNIEnv * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   (*env)->SetByteArrayRegion( env, jba, 0, dataDefLength, dataDef );
+   (*env)->SetByteArrayRegion( env, jba, 0, dataDefLength, (jbyte *)dataDef );
 
    (*env)->SetObjectField( env, jobj, g_idDataDefDataDef, jba );
    (*env)->SetIntField(    env, jobj, g_idDataDefType,    defType );

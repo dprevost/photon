@@ -15,6 +15,38 @@ extern "C" {
 JNIEXPORT void JNICALL Java_org_photon_KeyDefinition_initIDs
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_photon_KeyDefinition
+ * Method:    psoClose
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_KeyDefinition_psoClose
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_photon_KeyDefinition
+ * Method:    psoCreate
+ * Signature: (JLjava/lang/String;I[BI)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_KeyDefinition_psoCreate
+  (JNIEnv *, jobject, jlong, jstring, jint, jbyteArray, jint);
+
+/*
+ * Class:     org_photon_KeyDefinition
+ * Method:    psoGetNext
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_photon_KeyDefinition_psoGetNext
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_photon_KeyDefinition
+ * Method:    psoOpen
+ * Signature: (JLjava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_KeyDefinition_psoOpen
+  (JNIEnv *, jobject, jlong, jstring);
+
 #ifdef __cplusplus
 }
 #endif

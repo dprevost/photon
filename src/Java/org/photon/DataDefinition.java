@@ -34,6 +34,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
    /** The session we belong to. */
    private Session session;
 
+   /** The definition type of the data definition. */
    private int type;
 
    /** Pointer to the actual data definition. */
@@ -80,8 +81,6 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
    
       int errcode;
       
-      this.session = session;
-      
       errcode = psoCreate( session.handle,
                            name,
                            type.getType(),
@@ -90,6 +89,11 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
+
+      this.name    = name;
+      this.session = session;
+      this.dataDef = dataDef;
+      this.type    = type.getType();
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -107,12 +111,13 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
    
       int errcode;
       
-      this.session = session;
-      
       errcode = psoOpen( session.handle, name );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
+
+      this.name = name;
+      this.session = session;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -132,6 +137,8 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       }
       
       handle = 0;
+      name = "";
+      currentLength = 0;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -163,6 +170,10 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
+
+      this.name    = name;
+      this.dataDef = dataDef;
+      this.type    = type.getType();
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -198,6 +209,16 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
       return dataDef.length;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public String getName() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return name;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -250,6 +271,28 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
+    * Opens an existing data definition in shared memory.
+    *
+    * @param session The session we belong to.
+    * @param name The name of the definition.
+    *
+    * @exception pso::Exception An abnormal error occured.
+    */
+   public void open( String  name ) throws PhotonException {
+   
+      int errcode;
+      
+      errcode = psoOpen( session.handle, name );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
+      this.name = name;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
     * Implement the Iterator interface.
     * <p>
     * The three methods, hasNext, next and remove implement Iterator.
@@ -276,5 +319,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
    private native String psoGetNext();
    
    private native int psoOpen( long hSession, String name );
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
 
