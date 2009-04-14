@@ -60,12 +60,12 @@ Java_org_photon_DataDefBuilderODBC_initIDs( JNIEnv * env,
  */
 JNIEXPORT jint JNICALL
 Java_org_photon_DataDefBuilderODBC_psoAddField( JNIEnv * env,
-                                                jobject jobj,
-                                                jstring jname,
-                                                jint    jtype,
-                                                jint    jlength,
-                                                jint    jscale,
-                                                jint    jprecision )
+                                                jobject  jobj,
+                                                jstring  jname,
+                                                jint     jtype,
+                                                jint     jlength,
+                                                jint     jscale,
+                                                jint     jprecision )
 {
    enum psoFieldType type = jtype;
    psoFieldDefinition * field;

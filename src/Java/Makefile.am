@@ -29,6 +29,8 @@ Java_Source =                              \
         org/photon/FieldType.java          \
         org/photon/Folder.java             \
         org/photon/FolderEntry.java        \
+        org/photon/KeyDefBuilderODBC.java  \
+        org/photon/KeyDefBuilderUser.java  \
         org/photon/KeyDefinition.java      \
         org/photon/KeyType.java            \
         org/photon/Info.java               \
@@ -103,6 +105,8 @@ libphoton_jni_la_SOURCES =            \
         jni_folderEntry.c             \
         jni_hashmap.c                 \
         jni_info.c                    \
+        jni_keyDefBuilderODBC.c       \
+        jni_keyDefBuilderUser.c       \
         jni_keyDefinition.c           \
         jni_keyType.c                 \
         jni_objDefinition.c           \
