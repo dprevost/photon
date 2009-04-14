@@ -19,50 +19,52 @@ CLEANFILES = \
         ./org/photon/Tests/*~                             \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
-Java_Source =                             \
-        org/photon/DataDefinition.java    \
-        org/photon/DataRecord.java        \
-        org/photon/Definition.java        \
-        org/photon/DefinitionType.java    \
-        org/photon/FieldType.java         \
-        org/photon/Folder.java            \
-        org/photon/FolderEntry.java       \
-        org/photon/KeyDefinition.java     \
-        org/photon/KeyType.java           \
-        org/photon/Info.java              \
-        org/photon/ObjectDefinition.java  \
-        org/photon/ObjectType.java        \
-        org/photon/ObjectStatus.java      \
-        org/photon/Photon.java            \
-        org/photon/PhotonErrors.java      \
-        org/photon/PhotonException.java   \
-        org/photon/Queue.java             \
-        org/photon/Session.java           \
-        org/photon/Tests/FolderTest.java  \
-        org/photon/Tests/QueueTest.java   \
-        org/photon/Tests/SessionTest.java \
-        org/photon/Tests/Test.java        
+Java_Source =                              \
+        org/photon/DataDefBuilderODBC.java \
+        org/photon/DataDefinition.java     \
+        org/photon/DataRecord.java         \
+        org/photon/Definition.java         \
+        org/photon/DefinitionType.java     \
+        org/photon/FieldType.java          \
+        org/photon/Folder.java             \
+        org/photon/FolderEntry.java        \
+        org/photon/KeyDefinition.java      \
+        org/photon/KeyType.java            \
+        org/photon/Info.java               \
+        org/photon/ObjectDefinition.java   \
+        org/photon/ObjectType.java         \
+        org/photon/ObjectStatus.java       \
+        org/photon/Photon.java             \
+        org/photon/PhotonErrors.java       \
+        org/photon/PhotonException.java    \
+        org/photon/Queue.java              \
+        org/photon/Session.java            \
+        org/photon/Tests/FolderTest.java   \
+        org/photon/Tests/QueueTest.java    \
+        org/photon/Tests/SessionTest.java  \
+        org/photon/Tests/Test.java         
 
 #        org/photon/FieldDefinition.java   
 
-Java_Classes =                             \
-        org/photon/DataDefinition.class    \
-        org/photon/DataRecord.class        \
-        org/photon/Definition.class        \
-        org/photon/FieldType.class         \
-        org/photon/Folder.class            \
-        org/photon/FolderEntry.class       \
-        org/photon/KeyDefinition.class     \
-        org/photon/KeyType.class           \
-        org/photon/Info.java               \
-        org/Photon/ObjectDefinition.class  \
-        org/photon/ObjectType.class        \
-        org/photon/ObjectStatus.class      \
-        org/photon/Photon.class            \
-        org/photon/PhotonErrors.class      \
-        org/photon/PhotonException.class   \
-        org/photon/Queue.class             \
-        org/photon/Session.class           
+Java_Classes =                              \
+        org/photon/DataDefBuilderODBC.class \
+        org/photon/DataDefinition.class     \
+        org/photon/DataRecord.class         \
+        org/photon/Definition.class         \
+        org/photon/FieldType.class          \
+        org/photon/Folder.class             \
+        org/photon/FolderEntry.class        \
+        org/photon/KeyDefinition.class      \
+        org/photon/KeyType.class            \
+        org/photon/Info.java                \
+        org/Photon/ObjectDefinition.class   \
+        org/photon/ObjectType.class         \
+        org/photon/ObjectStatus.class       \
+        org/photon/Photon.class             \
+        org/photon/PhotonErrors.class       \
+        org/photon/PhotonException.class    \
+        org/photon/Queue.class              \
+        org/photon/Session.class            
 
 #        org/photon/FieldDefinition.class   
 
@@ -89,6 +91,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
+        jni_dataDefBuilderODBC.c      \
         jni_dataDefinition.c          \
         jni_dataRecord.c              \
         jni_definition.c              \

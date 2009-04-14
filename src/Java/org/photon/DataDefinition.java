@@ -72,7 +72,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     * @param type The type of definition (ODBC, user defined, etc.)
     * @param dataDef The data definition (as an opaque type)
     *
-    * \exception pso::Exception An abnormal error occured.
+    * @exception PhotonException An abnormal error with the Photon library.
     */
    public DataDefinition( Session        session,
                           String         name,
@@ -104,7 +104,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     * @param session The session we belong to.
     * @param name The name of the definition.
     *
-    * @exception pso::Exception An abnormal error occured.
+    * @exception PhotonException An abnormal error with the Photon library.
     */
    public DataDefinition( Session session,
                           String  name ) throws PhotonException {
@@ -125,7 +125,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
    /**
     * Closes our access to the data definition in shared memory.
     *
-    * @exception pso::Exception An abnormal error occured.
+    * @exception PhotonException An abnormal error with the Photon library.
     */
    public void close() throws PhotonException {
       
@@ -150,7 +150,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     * @param type The type of definition (ODBC, user defined, etc.)
     * @param dataDef The data definition (as an opaque type)
     *
-    * \exception pso::Exception An abnormal error occured.
+    * @exception PhotonException An abnormal error with the Photon library.
     */
    public void create( String         name,
                        DefinitionType type,
@@ -276,7 +276,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     * @param session The session we belong to.
     * @param name The name of the definition.
     *
-    * @exception pso::Exception An abnormal error occured.
+    * @exception PhotonException An abnormal error with the Photon library.
     */
    public void open( String  name ) throws PhotonException {
    
