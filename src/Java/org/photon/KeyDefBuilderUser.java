@@ -22,12 +22,16 @@ public class KeyDefBuilderUser {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   /// The C struct array holding the definition of the fields
+   /// The definition of the key fields
    private byte[] keyFields;
 
-   /// Iterator
+   /// Number of fields in the definition
+   private int numKeyFields;
+
+   /// Current number of added fields
    private int currentKeyField = 0;
 
+   /// Current length of the buffer
    private int currentLength = 0;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -44,7 +48,13 @@ public class KeyDefBuilderUser {
     * Use this constructor to build a key definition to create new 
     * Photon objects.
     */
-   public KeyDefBuilderUser() {}
+   public KeyDefBuilderUser( int numKeyFields ) throws PhotonException {
+
+      if ( numKeyFields <= 0 ) {
+         throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
+      }
+      this.numKeyFields = numKeyFields;
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -59,6 +69,14 @@ public class KeyDefBuilderUser {
    
       int errcode;
             
+      if ( currentKeyField >= numKeyFields ) {
+         throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
+      }
+
+      if ( fieldDescription.length() == 0 ) {
+         throw new PhotonException( PhotonErrors.INVALID_LENGTH );
+      }
+
       errcode = psoAddKeyField( fieldDescription );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
@@ -74,7 +92,7 @@ public class KeyDefBuilderUser {
     */
    public byte[] GetDefinition() throws PhotonException {
 
-      if ( currentLength == 0 ) {
+      if ( currentKeyField != numKeyFields ) {
          throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
       }
       

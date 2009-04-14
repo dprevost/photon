@@ -33,7 +33,7 @@ KeyDefBuilderUser::KeyDefBuilderUser( int numKeyFields )
      currentKey    ( 0 ),
      currentLength ( 0 )
 {
-   if ( numKeyFields == 0 || numKeyFields > PSO_MAX_FIELDS ) {
+   if ( numKeyFields <= 0 || numKeyFields > PSO_MAX_FIELDS ) {
       throw pso::Exception( "KeyDefBuilderUser::KeyDefBuilderUser",
                             PSO_INVALID_NUM_FIELDS );
    }
