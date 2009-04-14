@@ -53,13 +53,18 @@ public class KeyDefBuilderODBC {
     *
     * @exception PhotonException An abnormal error with the Photon library.
     */
-   public KeyDefBuilderODBC( int numKeyFields, boolean simple ) {
+   public KeyDefBuilderODBC( int     numKeyFields,
+                             boolean simple ) throws PhotonException {
        
-       this.numKeyFields = numKeyFields;
-       this.simpleDef    = simple;
+      if ( numKeyFields <= 0 ) {
+         throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
+      }
+      this.numKeyFields = numKeyFields;
+      this.numKeyFields = numKeyFields;
+      this.simpleDef    = simple;
        
-       keyFields = new byte[psoGetLength()];
-    }
+      keyFields = new byte[numKeyFields*psoGetLength()];
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

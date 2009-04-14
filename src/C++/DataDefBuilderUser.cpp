@@ -27,19 +27,24 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-DataDefBuilderUser::DataDefBuilderUser()
-   : field         ( NULL ),
+DataDefBuilderUser::DataDefBuilderUser( int numFields )
+   : fields        ( NULL ),
+     numFields     ( numFields ),
      currentField  ( 0 ),
      currentLength ( 0 )
 {
+   if ( numFields <= 0 || numFields > PSO_MAX_FIELDS ) {
+      throw pso::Exception( "DataDefBuilderUser::DataDefBuilderUser",
+                            PSO_INVALID_NUM_FIELDS );
+   }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 DataDefBuilderUser::~DataDefBuilderUser()
 {
-   if ( field ) delete [] field;
-   field = NULL;
+   if ( fields ) delete [] fields;
+   fields = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -49,11 +54,16 @@ void DataDefBuilderUser::AddField( string fieldDescriptor )
    unsigned char * tmp = NULL;
    size_t length;
    
-   if ( currentField >= PSO_MAX_FIELDS ) {
+   if ( currentField >= numFields ) {
       throw pso::Exception( "DataDefBuilderUser::AddField",
                             PSO_INVALID_NUM_FIELDS );
    }
-   
+
+   if ( fieldDescriptor.length() == 0 ) {
+      throw pso::Exception( "DataDefBuilderUser::AddField",
+                            PSO_INVALID_LENGTH );
+   }
+
    if ( currentLength == 0 ) {
       length = fieldDescriptor.length();
       tmp = new unsigned char [length];
@@ -61,16 +71,49 @@ void DataDefBuilderUser::AddField( string fieldDescriptor )
    else {
       length = currentLength + fieldDescriptor.length() + 1;
       tmp = new unsigned char [length];
-      memcpy( tmp, field, currentLength );
+      memcpy( tmp, fields, currentLength );
       tmp[currentLength] = '\0';
       currentLength++;
-      delete [] field;
+      delete [] fields;
    }
    memcpy( &tmp[currentLength], fieldDescriptor.c_str(), fieldDescriptor.length() );
 
    currentField++;
-   field = tmp;
+   fields = tmp;
    currentLength = length;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+const unsigned char * DataDefBuilderUser::GetDefinition()
+{
+   if ( fields == NULL ) {
+      throw pso::Exception( "DataDefBuilderUser::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentField != numFields ) {
+      throw pso::Exception( "DataDefBuilderUser::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return fields;
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+/* Returns the length, in bytes, of the definition. */
+uint32_t DataDefBuilderUser::GetDefLength()
+{
+   if ( fields == NULL ) {
+      throw pso::Exception( "DataDefBuilderUser::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentField != numFields ) {
+      throw pso::Exception( "DataDefBuilderUser::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return currentLength;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

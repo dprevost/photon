@@ -53,12 +53,16 @@ public class DataDefBuilderODBC {
     *
     * @exception PhotonException An abnormal error with the Photon library.
     */
-   public DataDefBuilderODBC( int numFields, boolean simple ) {
+   public DataDefBuilderODBC( int     numFields,
+                              boolean simple ) throws PhotonException {
        
+      if ( numFields <= 0 ) {
+         throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
+      }
        this.numFields = numFields;
        this.simpleDef = simple;
        
-       fields = new byte[psoGetLength()];
+       fields = new byte[numFields*psoGetLength()];
     }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

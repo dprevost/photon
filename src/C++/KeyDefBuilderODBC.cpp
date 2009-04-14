@@ -28,40 +28,9 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefBuilderODBC::KeyDefBuilderODBC( unsigned char * serialKeyDef,
-                                      uint32_t        keyDefLen )
-   : key          ( NULL ),
-     currentKey   ( 0 ),
-     simpleDef    ( true )
-{
-   if ( serialKeyDef == NULL ) {
-      throw pso::Exception( "KeyDefBuilderODBC::KeyDefBuilderODBC", 
-                            PSO_NULL_POINTER );
-   }
-   if ( keyDefLen == 0 ) {
-      throw pso::Exception( "KeyDefBuilderODBC::KeyDefBuilderODBC", 
-                            PSO_INVALID_LENGTH );
-   }
-   if ( (keyDefLen%sizeof(psoKeyDefinition)) != 0 ) {
-      throw pso::Exception( "KeyDefBuilderODBC::KeyDefBuilderODBC", 
-                            PSO_INVALID_LENGTH );
-   }
-
-   numKeys = keyDefLen / sizeof(psoKeyDefinition);
-
-   key = (psoKeyDefinition *) malloc( keyDefLen );
-   if ( key == NULL ) {
-      throw pso::Exception( "KeyDefBuilderODBC::KeyDefBuilderODBC",
-                            PSO_NOT_ENOUGH_HEAP_MEMORY );
-   }
-   memcpy( key, serialKeyDef, keyDefLen );
-}
-
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
 KeyDefBuilderODBC::KeyDefBuilderODBC( uint32_t numKeyFields,
                                       bool     simple /* = true */ )
-   : key          ( NULL ),
+   : keys         ( NULL ),
      numKeys      ( numKeyFields ),
      currentKey   ( 0 ),
      simpleDef    ( simple )
@@ -73,8 +42,8 @@ KeyDefBuilderODBC::KeyDefBuilderODBC( uint32_t numKeyFields,
    
    // using calloc - being lazy...
    size_t len = numKeyFields * sizeof(psoKeyDefinition);
-   key = (psoKeyDefinition *)calloc( len, 1 );
-   if ( key == NULL ) {
+   keys = (psoKeyDefinition *)calloc( len, 1 );
+   if ( keys == NULL ) {
       throw pso::Exception( "KeyDefBuilderODBC::KeyDefBuilderODBC",
                             PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
@@ -84,8 +53,8 @@ KeyDefBuilderODBC::KeyDefBuilderODBC( uint32_t numKeyFields,
 
 KeyDefBuilderODBC::~KeyDefBuilderODBC()
 {
-   if ( key ) free( key );
-   key = NULL;
+   if ( keys ) free( keys );
+   keys = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -107,7 +76,7 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
                                      psoKeyType   type,
                                      uint32_t     length )
 {
-   if ( key == NULL ) {
+   if ( keys == NULL ) {
       throw pso::Exception( "KeyDefBuilderODBC::AddKeyField", PSO_NULL_POINTER );
    }
 
@@ -125,7 +94,7 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
       throw pso::Exception( "KeyDefBuilderODBC::AddKeyField",
                             PSO_INVALID_FIELD_NAME );
    }
-   memcpy( key[currentKey].name, name, nameLength );
+   memcpy( keys[currentKey].name, name, nameLength );
    
    
    switch ( type ) {
@@ -134,8 +103,8 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
    case PSO_KEY_DATE:
    case PSO_KEY_TIME:
    case PSO_KEY_TIMESTAMP:
-      key[currentKey].type = type;
-      key[currentKey].length = 0;
+      keys[currentKey].type = type;
+      keys[currentKey].length = 0;
       currentKey++;
       break;
 
@@ -145,8 +114,8 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
          throw pso::Exception( "KeyDefBuilderODBC::AddKeyField",
                                PSO_INVALID_FIELD_LENGTH );
       }
-      key[currentKey].type = type;
-      key[currentKey].length = length;
+      keys[currentKey].type = type;
+      keys[currentKey].length = length;
       currentKey++;
       break;
 
@@ -160,8 +129,8 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
          throw pso::Exception( "KeyDefBuilderODBC::AddKeyField",
                                PSO_INVALID_FIELD_LENGTH );
       }
-      key[currentKey].type = type;
-      key[currentKey].length = length;
+      keys[currentKey].type = type;
+      keys[currentKey].length = length;
       currentKey++;
       break;
 
@@ -171,8 +140,8 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
          throw pso::Exception( "KeyDefBuilderODBC::AddKeyField",
                                PSO_INVALID_FIELD_TYPE );
       }
-      key[currentKey].type = type;
-      key[currentKey].length = 0;
+      keys[currentKey].type = type;
+      keys[currentKey].length = 0;
       currentKey++;
       break;
 
@@ -186,7 +155,16 @@ void KeyDefBuilderODBC::AddKeyField( const char * name,
 
 const unsigned char * KeyDefBuilderODBC::GetDefinition()
 {
-   return (unsigned char *)key;
+   if ( keys == NULL ) {
+      throw pso::Exception( "KeyDefBuilderODBC::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentKey != numKeys ) {
+      throw pso::Exception( "KeyDefBuilderODBC::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return (unsigned char *)keys;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -194,6 +172,15 @@ const unsigned char * KeyDefBuilderODBC::GetDefinition()
 /* Returns the length, in bytes, of the definition. */
 uint32_t KeyDefBuilderODBC::GetDefLength()
 {
+   if ( keys == NULL ) {
+      throw pso::Exception( "KeyDefBuilderODBC::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentKey != numKeys ) {
+      throw pso::Exception( "KeyDefBuilderODBC::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
    return numKeys * sizeof(psoKeyDefinition);
 }
 

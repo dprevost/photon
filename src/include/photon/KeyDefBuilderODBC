@@ -48,22 +48,6 @@ public:
    /**
     * Construct a data-container definition.
     *
-    * This constructor is useful to query existing definitions but the
-    * new object cannot be used to create new data containers (without 
-    * calling ::Reset() - which is equivalent to the other constructor).
-    *
-    * \param[in] serializedKeyDef The serialized key definition as an 
-    *            array of bytes. 
-    * \param[in] keyDefLength The length in bytes of serializedKeyDef. 
-    *
-    * \exception pso::Exception An abnormal error occured.
-    */
-   KeyDefBuilderODBC( unsigned char * serializedKeyDef,
-                      psoUint32       keydefLength );
-
-   /**
-    * Construct a data-container definition.
-    *
     * \param[in] numKeyFields The number of key fields.
     * \param[in] simple Set this to true if the definition type is "simple"
     *            (fixed length fields) or false if not.
@@ -118,7 +102,7 @@ public:
 private:
 
    /// The C struct array holding the definition of the key fields
-   psoKeyDefinition *  key;
+   psoKeyDefinition *  keys;
 
    /// Number of keys in the definition
    psoUint32 numKeys;
