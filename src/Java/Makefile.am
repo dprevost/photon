@@ -21,6 +21,7 @@ CLEANFILES = \
 
 Java_Source =                              \
         org/photon/DataDefBuilderODBC.java \
+        org/photon/DataDefBuilderUser.java \
         org/photon/DataDefinition.java     \
         org/photon/DataRecord.java         \
         org/photon/Definition.java         \
@@ -92,6 +93,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
         jni_dataDefBuilderODBC.c      \
+        jni_dataDefBuilderUser.c      \
         jni_dataDefinition.c          \
         jni_dataRecord.c              \
         jni_definition.c              \

@@ -32,7 +32,7 @@ public class DataDefBuilderODBC {
    private int numFields;
 
    /// Iterator
-   private int currentField;
+   private int currentField = 0;
 
    /// true if the definition type is odbc simple, false otherwise.
    private boolean simpleDef;

@@ -24,12 +24,11 @@
 
 #include "jni_photon.h"
 #include "org_photon_DataDefBuilderODBC.h"
-//#include "API/DataDefinition.h"
 
-jfieldID g_idDDBODBC_fields;
-jfieldID g_idDDBODBC_current;
-jfieldID g_idDDBODBC_simple;
-jfieldID g_idDDBODBC_numFields;
+jfieldID g_id_fields;
+jfieldID g_id_current;
+jfieldID g_id_simple;
+jfieldID g_id_numFields;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -42,14 +41,14 @@ JNIEXPORT void JNICALL
 Java_org_photon_DataDefBuilderODBC_initIDs( JNIEnv * env,
                                             jclass classDefinition )
 {
-   g_idDDBODBC_fields = (*env)->GetFieldID( env, classDefinition, "fields", "[B" );
-   if ( g_idDDBODBC_fields == NULL ) return;
-   g_idDDBODBC_current = (*env)->GetFieldID( env, classDefinition, "currentField", "J" );
-   if ( g_idDDBODBC_current == NULL ) return;
-   g_idDDBODBC_simple = (*env)->GetFieldID( env, classDefinition, "simpleDef", "Z" );
-   if ( g_idDDBODBC_simple == NULL ) return;
-   g_idDDBODBC_numFields = (*env)->GetFieldID( env, classDefinition, "numFields", "J" );
-   if ( g_idDDBODBC_numFields == NULL ) return;
+   g_id_fields = (*env)->GetFieldID( env, classDefinition, "fields", "[B" );
+   if ( g_id_fields == NULL ) return;
+   g_id_current = (*env)->GetFieldID( env, classDefinition, "currentField", "J" );
+   if ( g_id_current == NULL ) return;
+   g_id_simple = (*env)->GetFieldID( env, classDefinition, "simpleDef", "Z" );
+   if ( g_id_simple == NULL ) return;
+   g_id_numFields = (*env)->GetFieldID( env, classDefinition, "numFields", "J" );
+   if ( g_id_numFields == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -75,10 +74,10 @@ Java_org_photon_DataDefBuilderODBC_psoAddField( JNIEnv * env,
    int currentField, numFields;
    jboolean simpleDef;
    
-   jfields = (*env)->GetObjectField( env, jobj, g_idDDBODBC_fields );
-   currentField = (*env)->GetIntField( env, jobj, g_idDDBODBC_current );
-   simpleDef = (*env)->GetBooleanField( env, jobj, g_idDDBODBC_simple );
-   numFields = (*env)->GetIntField( env, jobj, g_idDDBODBC_numFields );
+   jfields = (*env)->GetObjectField( env, jobj, g_id_fields );
+   currentField = (*env)->GetIntField( env, jobj, g_id_current );
+   simpleDef = (*env)->GetBooleanField( env, jobj, g_id_simple );
+   numFields = (*env)->GetIntField( env, jobj, g_id_numFields );
    
    name = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( name == NULL ) {
@@ -171,7 +170,7 @@ Java_org_photon_DataDefBuilderODBC_psoAddField( JNIEnv * env,
    }
    
    (*env)->ReleaseByteArrayElements( env, jfields, (jbyte *)field, 0 );
-   (*env)->SetIntField( env, jobj, g_idDDBODBC_current, currentField );
+   (*env)->SetIntField( env, jobj, g_id_current, currentField );
 
    return 0;
 }
