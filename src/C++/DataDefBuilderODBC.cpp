@@ -30,7 +30,7 @@ using namespace pso;
 
 DataDefBuilderODBC::DataDefBuilderODBC( uint32_t numFieldFields,
                                         bool     simple /* = true */ )
-   : field        ( NULL ),
+   : fields       ( NULL ),
      numFields    ( numFieldFields ),
      currentField ( 0 ),
      simpleDef    ( simple )
@@ -42,8 +42,8 @@ DataDefBuilderODBC::DataDefBuilderODBC( uint32_t numFieldFields,
    
    // using calloc - being lazy...
    size_t len = numFieldFields * sizeof(psoFieldDefinition);
-   field = (psoFieldDefinition *)calloc( len, 1 );
-   if ( field == NULL ) {
+   fields = (psoFieldDefinition *)calloc( len, 1 );
+   if ( fields == NULL ) {
       throw pso::Exception( "DataDefBuilderODBC::DataDefBuilderODBC",
                             PSO_NOT_ENOUGH_HEAP_MEMORY );
    }
@@ -53,8 +53,8 @@ DataDefBuilderODBC::DataDefBuilderODBC( uint32_t numFieldFields,
 
 DataDefBuilderODBC::~DataDefBuilderODBC()
 {
-   if ( field ) free( field );
-   field = NULL;
+   if ( fields ) free( fields );
+   fields = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -82,7 +82,7 @@ void DataDefBuilderODBC::AddField( const char * name,
                                     uint32_t     precision,
                                     uint32_t     scale )
 {
-   if ( field == NULL ) {
+   if ( fields == NULL ) {
       throw pso::Exception( "DataDefBuilderODBC::AddField", PSO_NULL_POINTER );
    }
 
@@ -100,7 +100,7 @@ void DataDefBuilderODBC::AddField( const char * name,
       throw pso::Exception( "DataDefBuilderODBC::AddField",
                             PSO_INVALID_FIELD_NAME );
    }
-   memcpy( field[currentField].name, name, nameLength );
+   memcpy( fields[currentField].name, name, nameLength );
    
    switch ( type ) {
    case PSO_TINYINT:
@@ -112,8 +112,8 @@ void DataDefBuilderODBC::AddField( const char * name,
    case PSO_DATE:
    case PSO_TIME:
    case PSO_TIMESTAMP:
-      field[currentField].type = type;
-      field[currentField].vals.length = 0;
+      fields[currentField].type = type;
+      fields[currentField].vals.length = 0;
       currentField++;
       break;
 
@@ -123,8 +123,8 @@ void DataDefBuilderODBC::AddField( const char * name,
          throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_LENGTH );
       }
-      field[currentField].type = type;
-      field[currentField].vals.length = length;
+      fields[currentField].type = type;
+      fields[currentField].vals.length = length;
       currentField++;
       break;
 
@@ -138,8 +138,8 @@ void DataDefBuilderODBC::AddField( const char * name,
          throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_LENGTH );
       }
-      field[currentField].type = type;
-      field[currentField].vals.length = length;
+      fields[currentField].type = type;
+      fields[currentField].vals.length = length;
       currentField++;
       break;
 
@@ -149,8 +149,8 @@ void DataDefBuilderODBC::AddField( const char * name,
          throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_FIELD_TYPE );
       }
-      field[currentField].type = type;
-      field[currentField].vals.length = 0;
+      fields[currentField].type = type;
+      fields[currentField].vals.length = 0;
       currentField++;
       break;
 
@@ -163,9 +163,9 @@ void DataDefBuilderODBC::AddField( const char * name,
          throw pso::Exception( "DataDefBuilderODBC::AddField",
                                PSO_INVALID_SCALE );
       }
-      field[currentField].type = type;
-      field[currentField].vals.decimal.precision = precision;
-      field[currentField].vals.decimal.scale = scale;
+      fields[currentField].type = type;
+      fields[currentField].vals.decimal.precision = precision;
+      fields[currentField].vals.decimal.scale = scale;
       currentField++;
       break;
 
@@ -179,7 +179,7 @@ void DataDefBuilderODBC::AddField( const char * name,
 
 const unsigned char * DataDefBuilderODBC::GetDefinition()
 {
-   if ( field == NULL ) {
+   if ( fields == NULL ) {
       throw pso::Exception( "DataDefBuilderODBC::GetDefinition", PSO_NULL_POINTER );
    }
 
@@ -188,14 +188,14 @@ const unsigned char * DataDefBuilderODBC::GetDefinition()
                             PSO_INVALID_NUM_FIELDS );
    }
 
-   return (const unsigned char *)field;
+   return (const unsigned char *)fields;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 psoUint32 DataDefBuilderODBC::GetDefLength()
 {
-   if ( field == NULL ) {
+   if ( fields == NULL ) {
       throw pso::Exception( "DataDefBuilderODBC::GetDefLength", PSO_NULL_POINTER );
    }
 

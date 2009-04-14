@@ -37,15 +37,20 @@ namespace pso {
 
 /** 
  * This class is a helper class to build the data definition of
- * Photon objects when the definition is user-defined.
+ * Photon objects when this definition is user-defined.
  *
- * It should be noted that you do not have to use this class, the data-record
- * definition can be set or retrieved directly as an array of bytes.
+ * How it works: you populate your definition with AddField(). When
+ * done, you retrieve the definition as an array of bytes and its length
+ * and you use that information to create a new data definition in
+ * shared memory (using the class ::DataDefinition).
  *
  * What's different about this class? You add a "description" for each of
  * your field and the builder will insert a null byte to separate them.
  * This will allow DataDefinition::GetNext() to display your definition
  * in a loop as strings.
+ *
+ * It should be noted that you do not have to use this class, the data-record
+ * definition can be set or retrieved directly as an array of bytes.
  */
 class PHOTON_EXPORT DataDefBuilderUser
 {
@@ -54,7 +59,7 @@ public:
    /**
     * Construct a helper class data definition builder
     */
-   DataDefBuilderUser();
+   DataDefBuilderUser( int numFields );
 
    virtual ~DataDefBuilderUser();
 
@@ -84,13 +89,16 @@ public:
 private:
 
    /// The definition of the data fields
-   unsigned char * field;
+   unsigned char * fields;
 
    /// Number of fields in the definition
-   psoUint32 currentField;
+   int numFields;
+
+   /// Current number of added fields
+   int currentField;
 
    /// Current length of the buffer
-   psoUint32 currentLength;
+   int currentLength;
 
 };
 

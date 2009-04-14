@@ -122,7 +122,7 @@ public:
 private:
 
    /// The C struct array holding the definition of the fields
-   psoFieldDefinition * field;
+   psoFieldDefinition * fields;
 
    /// Number of fields in the definition
    psoUint32 numFields;

@@ -27,12 +27,11 @@ using namespace pso;
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-KeyDefBuilderUser::KeyDefBuilderUser( uint32_t numKeyFields )
-   : key           ( NULL ),
+KeyDefBuilderUser::KeyDefBuilderUser( int numKeyFields )
+   : keys          ( NULL ),
      numKeys       ( numKeyFields ),
      currentKey    ( 0 ),
-     currentLength ( 0 ),
-     maxLength     ( 0 )
+     currentLength ( 0 )
 {
    if ( numKeyFields == 0 || numKeyFields > PSO_MAX_FIELDS ) {
       throw pso::Exception( "KeyDefBuilderUser::KeyDefBuilderUser",
@@ -44,8 +43,8 @@ KeyDefBuilderUser::KeyDefBuilderUser( uint32_t numKeyFields )
 
 KeyDefBuilderUser::~KeyDefBuilderUser()
 {
-   if ( key ) delete [] key;
-   key = NULL;
+   if ( keys ) delete [] keys;
+   keys = NULL;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -59,7 +58,12 @@ void KeyDefBuilderUser::AddKeyField( std::string fieldDescriptor )
       throw pso::Exception( "KeyDefBuilderUser::AddKeyField",
                             PSO_INVALID_NUM_FIELDS );
    }
-   
+
+   if ( fieldDescriptor.length() == 0 ) {
+      throw pso::Exception( "KeyDefBuilderUser::AddKeyField",
+                            PSO_INVALID_LENGTH );
+   }
+
    if ( currentLength == 0 ) {
       length = fieldDescriptor.length();
       tmp = new unsigned char [length];
@@ -67,22 +71,32 @@ void KeyDefBuilderUser::AddKeyField( std::string fieldDescriptor )
    else {
       length = currentLength + fieldDescriptor.length() + 1;
       tmp = new unsigned char [length];
-      memcpy( tmp, key, currentLength );
+      memcpy( tmp, keys, currentLength );
       tmp[currentLength] = '\0';
       currentLength++;
-      delete [] key;
+      delete [] keys;
    }
    memcpy( &tmp[currentLength], fieldDescriptor.c_str(), fieldDescriptor.length() );
 
-   key = tmp;
-   maxLength = currentLength = length;
+   currentKey++;
+   keys = tmp;
+   currentLength = length;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 const unsigned char * KeyDefBuilderUser::GetDefinition()
 {
-   return key;
+   if ( keys == NULL ) {
+      throw pso::Exception( "KeyDefBuilderUser::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentKey != numKeys ) {
+      throw pso::Exception( "KeyDefBuilderUser::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return keys;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -90,7 +104,16 @@ const unsigned char * KeyDefBuilderUser::GetDefinition()
 /* Returns the length, in bytes, of the definition. */
 uint32_t KeyDefBuilderUser::GetDefLength()
 {
-   return maxLength;
+   if ( keys == NULL ) {
+      throw pso::Exception( "KeyDefBuilderUser::GetDefinition", PSO_NULL_POINTER );
+   }
+
+   if ( currentKey != numKeys ) {
+      throw pso::Exception( "KeyDefBuilderUser::GetDefinition",
+                            PSO_INVALID_NUM_FIELDS );
+   }
+
+   return currentLength;
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

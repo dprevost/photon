@@ -20,8 +20,8 @@
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#ifndef KEY_DEFINITION_USER
-#define KEY_DEFINITION_USER
+#ifndef PHOTON_KEY_DEF_BUILDER_USER
+#define PHOTON_KEY_DEF_BUILDER_USER
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -36,11 +36,23 @@
 namespace pso {
 
 /** 
- * This class is a helper class to retrieve/create the definition of
- * Photon objects when the definition is user-defined.
+ * This class is a helper class to build the key definition of
+ * Photon objects when this definition is user-defined. 
+ *
+ * It can be very helpful when your key is made with multiple fields.
+ *
+ * How it works: you populate your definition with AddKeyField(). When
+ * done, you retrieve the definition as an array of bytes and its length
+ * and you use that information to create a new key definition in
+ * shared memory (using the class ::KeyDefinition).
+ *
+ * what different about this class? You add a "description" for each of
+ * your fields and the builder will insert a null byte to separate them.
+ * This will allow DataDefinition::GetNext() to display your definition
+ * in a loop as strings.
  *
  * It should be noted that you do not have to use this class, the key 
- * definition can be set or retrieved directly as an array of bytes.
+ * definition can be set directly as an array of bytes.
  */
 class PHOTON_EXPORT KeyDefBuilderUser
 {
@@ -55,7 +67,7 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   KeyDefBuilderUser( psoUint32 numFields );
+   KeyDefBuilderUser( int numFields );
 
    virtual ~KeyDefBuilderUser();
 
@@ -85,24 +97,24 @@ public:
 private:
 
    /// The definition of the key fields
-   unsigned char * key;
+   unsigned char * keys;
 
    /// Number of fields in the definition
    psoUint32 numKeys;
 
-   /// Iterator
+   /// Current number of added fields
    psoUint32 currentKey;
 
+   /// Current length of the buffer
    psoUint32 currentLength;
 
-   psoUint32 maxLength;
 };
 
 } // End of namespace
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-#endif // KEY_DEFINITION_USER
+#endif // PHOTON_KEY_DEF_BUILDER_USER
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
