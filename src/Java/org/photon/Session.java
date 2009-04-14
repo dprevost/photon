@@ -41,7 +41,7 @@ package org.photon;
 public class Session {
 
    /* To save the native pointer/handle of the C struct. */
-   private long handle = 0;
+   long handle = 0;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -77,11 +77,11 @@ public class Session {
    
    private native int psoCommit( long handle );
 
-   private native int psoCreateObject( long              handle,
-                                       String            objectName,
-                                       ObjectDefinition  definition, 
-                                       KeyDefinition     key,
-                                       FieldDefinition[] fields );
+   private native int psoCreateObject( long             handle,
+                                       String           objectName,
+                                       ObjectDefinition definition, 
+                                       KeyDefinition    key,
+                                       DataDefinition   fields );
 
    private native int psoDestroyObject( long handle, String objectName );
 
@@ -171,7 +171,7 @@ public class Session {
    public void createObject( String objectName,
                              ObjectDefinition  definition, 
                              KeyDefinition     key,
-                             FieldDefinition[] fields ) throws PhotonException {
+                             DataDefinition    fields ) throws PhotonException {
       int errcode;
       
       if ( handle == 0 ) {
@@ -242,7 +242,7 @@ public class Session {
       Definition definition = new Definition();
       /* Simplify the jni by preallocating some objects */
       ObjectDefinition objectDef = new ObjectDefinition();
-      KeyDefinition key = new KeyDefinition();
+      KeyDefinition key = new KeyDefinition(this);
       
       errcode = psoGetDefinition( handle, 
                                   objectName, 

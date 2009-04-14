@@ -69,7 +69,7 @@ int main()
    }
    
    /* Must commit the insert before we attempt to remove */
-   ok = psonQueueGet( pQueue, PSO_FIRST, &pQueueItem, 100, &context );
+   ok = psonQueueGetFirst( pQueue, &pQueueItem, 100, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }

@@ -23,45 +23,28 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_Photon.h"
+#include "org_photon_DefinitionType.h"
+
+jweak g_weakDefTypeClass;
+
+//jfieldID g_idDataDefHandle;
+//jfieldID g_idDataDefDataDef;
+//jfieldID g_idDataDefHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_Photon
- * Method:    psoInit
- * Signature: (Ljava/lang/String;)I
- */
-JNIEXPORT int JNICALL
-Java_org_photon_Photon_psoInit( JNIEnv  * env,
-                                jobject   obj, 
-                                jstring   jaddress )
-{
-   int errcode;
-   const char * address;
-   
-   address = (*env)->GetStringUTFChars( env, jaddress, NULL );
-   if ( address == NULL ) {
-      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
-   }
-   
-   errcode = psoInit( address );
-   (*env)->ReleaseStringUTFChars( env, jaddress, address );
-   
-   return errcode;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_Photon
- * Method:    psoFini
+ * Class:     org_photon_DefinitionType
+ * Method:    initIDs
  * Signature: ()V
  */
-JNIEXPORT void JNICALL 
-Java_org_photon_Photon_psoFini( JNIEnv * env, jobject obj )
+JNIEXPORT void JNICALL
+Java_org_photon_DefinitionType_initIDs( JNIEnv * env,
+                                        jclass   defTypeClass )
 {
-   psoExit();
+   g_weakDefTypeClass = (*env)->NewWeakGlobalRef( env, defTypeClass );
+   if ( g_weakDefTypeClass == NULL ) return;
+
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

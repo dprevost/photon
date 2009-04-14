@@ -20,9 +20,10 @@ CLEANFILES = \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
 Java_Source =                             \
+        org/photon/DataDefinition.java    \
         org/photon/DataRecord.java        \
         org/photon/Definition.java        \
-        org/photon/FieldDefinition.java   \
+        org/photon/DefinitionType.java    \
         org/photon/FieldType.java         \
         org/photon/Folder.java            \
         org/photon/FolderEntry.java       \
@@ -42,10 +43,12 @@ Java_Source =                             \
         org/photon/Tests/SessionTest.java \
         org/photon/Tests/Test.java        
 
+#        org/photon/FieldDefinition.java   
+
 Java_Classes =                             \
+        org/photon/DataDefinition.class    \
         org/photon/DataRecord.class        \
         org/photon/Definition.class        \
-        org/photon/FieldDefinition.class   \
         org/photon/FieldType.class         \
         org/photon/Folder.class            \
         org/photon/FolderEntry.class       \
@@ -60,6 +63,8 @@ Java_Classes =                             \
         org/photon/PhotonException.class   \
         org/photon/Queue.class             \
         org/photon/Session.class           
+
+#        org/photon/FieldDefinition.class   
 
 org_photondir = $(top_builddir)/src/Java
 JAVAROOT      = $(top_builddir)/src/Java
@@ -84,6 +89,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
+        jni_dataDefinition.c          \
         jni_dataRecord.c              \
         jni_definition.c              \
         jni_fieldDef.c                \
@@ -100,6 +106,7 @@ libphoton_jni_la_SOURCES =            \
         jni_photon.c                  \
         jni_queue.c                   \
         jni_session.c                 \
+        org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
         org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \

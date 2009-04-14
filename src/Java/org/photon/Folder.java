@@ -34,67 +34,38 @@ import java.util.*;
  */
 public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
-   /* To save the native pointer/handle of the C struct. */
+   /** To save the native pointer/handle of the C struct. */
    private long handle = 0;
+   
+   /** The session we belong to. */
    private Session session;
+   
+   /** Use to cache the next entry for hasNext(). */
    private FolderEntry entry;
    
+   /**
+    * A flag used by hasNext() and next(). Set to true if the next entry 
+    * is already cached.
+    */
    private boolean nextWasQueried = false;
 
+   /**
+    * A flag to indicate if we are starting the iteration or if we are in 
+    * the middle of it.
+    * <p>
+    * Iterations are started with GetFirst().
+    */
    private boolean endIteration = true;
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   // The next three methods implement Iterator.
-
-   // We cannot implement hasNext directly. What we do instead is to
-   // get the next item into this.entry and set nextWasQueried to true
-   public boolean hasNext() {
-      // In case hasNext is called twice without a call to next()
-      if ( nextWasQueried ) { return true; }
-      
-      try {
-         nextWasQueried = getNext();
-      } catch (PhotonException e) {
-         return false;
-      }
-      
-      return nextWasQueried;
+   /**
+    * Initialize some global values for the jni when the class is first loaded.
+    */
+   static {
+      initIDs();
    }
 
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   public FolderEntry next() {
-      
-      if ( nextWasQueried ) {
-         nextWasQueried = false;
-         return entry; 
-      }
-      
-      try {
-         if ( getNext() ) {
-            return entry;
-         }
-      } catch (PhotonException e) {
-         System.out.println( e.getMessage() );
-      }
-
-      throw new NoSuchElementException();
-   }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   public void remove() {
-      throw new UnsupportedOperationException();
-   }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   /** This method implements the Iterable interface */
-   public Iterator<FolderEntry> iterator() {
-      return this;
-   }
-   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
@@ -108,7 +79,15 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       entry = new FolderEntry();
    }
 
-   /** Opens a Photon folder */
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** 
+    * Opens a Photon folder 
+    *
+    * @param name The fully qualified name of the folder. 
+    *
+    * @exception PhotonException On an error with the Photon library.
+    */
    public Folder( Session session, String name ) throws PhotonException {
       
       int errcode;
@@ -123,48 +102,6 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       entry = new FolderEntry();
    }
 
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   private static native void initIDs();
-
-   static {
-      initIDs();
-   }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   private native int psoCreateObject( long              h, 
-                                       String            objectName, 
-                                       ObjectDefinition  definition, 
-                                       KeyDefinition     key,
-                                       FieldDefinition[] fields );
-
-   private native int psoCreateObjectXML( long h, String xmlBuffer );
-
-   private native int psoDestroyObject( long h, String objectName );
-
-   private native void psoFini( long h );
-
-   private native int psoGetFirst( long h, FolderEntry e );
-
-   private native int psoGetNext( long h, FolderEntry e );
-
-   private native int psoInit( Session session, String s );
-
-   private native int psoStatus( long h, ObjectStatus status );
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   protected void finalize() throws Throwable {     
-      
-      try {
-         psoFini(handle);
-      } finally {
-         handle = 0;
-         super.finalize();
-      }
-   }
-   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
@@ -183,26 +120,55 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Create a new object in shared memory as a child of the current folder.
+    * Create a new folder in shared memory as a child of the current folder.
     * <p>
     * The creation of the object only becomes permanent after a call to 
     * Session.commit.
     * <p>
     * This function does not return a Java object linked to the newly 
-    * created object. You must use org.photon.Queue and similar to 
+    * created object. You must use org.photon.Folder.open() to 
     * access the newly created object.
     *
-    * @param definition The object definition (its type, etc.)
-    * @param key        The definition of the key or null for objects without 
-    *                   keys (queues, etc.).
-    * @param fields     An array of field definitions. It can be set to
-    *                   null when creating a Folder.
+    * @param folderName The ma,e of the new folder.
+    *
     * @exception PhotonException On an error with the Photon library.
     */
-   public void createObject( String            objectName,
-                             ObjectDefinition  definition, 
-                             KeyDefinition     key,
-                             FieldDefinition[] fields ) throws PhotonException {
+   public void createFolder( String folderName ) throws PhotonException {
+      int errcode;
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateFolder( handle, folderName ); 
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    * <p>
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.).
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Queue.open and similar to 
+    * access the newly created object.
+    *
+    * @param objectName The name of the newly created object.
+    * @param definition The object definition (its type, etc.).
+    * @param dataDef    The definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             DataDefinition   dataDef ) throws PhotonException {
       int errcode;
 
       if ( handle == 0 ) {
@@ -212,8 +178,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       errcode = psoCreateObject( handle, 
                                  objectName, 
                                  definition,
-                                 key,
-                                 fields );
+                                 dataDef );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -231,19 +196,29 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
     * created object. You must use org.photon.Queue and similar to 
     * access the newly created object.
     *
-    * @param xmlBuffer  The XML string containing all the required
-    *                   information. 
+    * @param objectName The name of the newly created object.
+    * @param definition The object definition (its type, etc.)
+    * @param key        The definition of the key or null for objects without 
+    *                   keys (queues, etc.).
+    * @param fields     An array of field definitions. It can be set to
+    *                   null when creating a Folder.
     * @exception PhotonException On an error with the Photon library.
     */
-   public void createObjectXML(String xmlBuffer) throws PhotonException {
-
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             KeyDefinition    keyDef,
+                             DataDefinition   dataDef ) throws PhotonException {
       int errcode;
 
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      errcode = psoCreateObjectXML( handle, xmlBuffer );
+      errcode = psoCreateKeyedObject( handle, 
+                                      objectName, 
+                                      definition,
+                                      keyDef,
+                                      dataDef );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -258,6 +233,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
     * Session.commit.
     *
     * @param objectName          The name of the object. 
+    *
     * @exception PhotonException On an error with the Photon library.
     */
    public void destroyObject(String objectName) throws PhotonException {
@@ -274,6 +250,21 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       }
    }
 
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Cleanup the object before GC.
+    */
+   protected void finalize() throws Throwable {     
+      
+      try {
+         psoFini(handle);
+      } finally {
+         handle = 0;
+         super.finalize();
+      }
+   }
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    private boolean getNext() throws PhotonException {
@@ -304,6 +295,95 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   /**
+    * Access the current status of the folder.
+    *
+    * @return A new status object.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public ObjectStatus getStatus() throws PhotonException {
+
+      int errcode;
+      ObjectStatus status = new ObjectStatus();
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoStatus( handle, status );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+      
+      return status;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    */
+   public boolean hasNext() {
+
+      /*
+       * Note: We cannot implement hasNext directly. Technically, we could 
+       * but since the content of a Folder is shared, the next item might 
+       * be removed by the time we call next(). What we do instead is to 
+       * get the next item into this.entry and set nextWasQueried to true. 
+       * In other words, we cache it.
+       */
+
+      // In case hasNext is called twice without a call to next()
+      if ( nextWasQueried ) { return true; }
+      
+      try {
+         nextWasQueried = getNext();
+      } catch (PhotonException e) {
+         return false;
+      }
+      
+      return nextWasQueried;
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** This method implements the Iterable interface */
+   public Iterator<FolderEntry> iterator() {
+      return this;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    */
+   public FolderEntry next() {
+      
+      /*
+       * hasNext() may cache the next item. See hasNext() for more details.
+       */
+      if ( nextWasQueried ) {
+         nextWasQueried = false;
+         return entry; 
+      }
+      
+      try {
+         if ( getNext() ) {
+            return entry;
+         }
+      } catch (PhotonException e) {
+         System.out.println( e.getMessage() );
+      }
+
+      throw new NoSuchElementException();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    /** 
     * Open an existing folder. 
     * <p>
@@ -329,27 +409,46 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Access the current status of the folder.
-    *
-    * @return A new status object.
-    * @exception PhotonException On an error with the Photon library.
+    * Implement the Iterator interface.
+    * <p>
+    * The three methods, hasNext, next and remove implement Iterator.
+    * <p>
+    * Note: remove() will throw an UnsupportedOperation Exception
+    * since this operation is not currently supported.
     */
-   public ObjectStatus getStatus() throws PhotonException {
-
-      int errcode;
-      ObjectStatus status = new ObjectStatus();
-
-      if ( handle == 0 ) {
-         throw new PhotonException( PhotonErrors.NULL_HANDLE );
-      }
-
-      errcode = psoStatus( handle, status );
-      if ( errcode != 0 ) {
-         throw new PhotonException( PhotonErrors.getEnum(errcode) );
-      }
-      
-      return status;
+   public void remove() {
+      throw new UnsupportedOperationException();
    }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   private native int psoCreateFolder( long   h, 
+                                       String objectName );
+
+   private native int psoCreateObject( long             h, 
+                                       String           objectName, 
+                                       ObjectDefinition definition, 
+                                       DataDefinition   dataDef );
+
+   private native int psoCreateKeyedObject( long             h, 
+                                            String           objectName, 
+                                            ObjectDefinition definition, 
+                                            KeyDefinition    keyDef,
+                                            DataDefinition   dataDef );
+
+   private native int psoDestroyObject( long h, String objectName );
+
+   private native void psoFini( long h );
+
+   private native int psoGetFirst( long h, FolderEntry e );
+
+   private native int psoGetNext( long h, FolderEntry e );
+
+   private native int psoInit( Session session, String s );
+
+   private native int psoStatus( long h, ObjectStatus status );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

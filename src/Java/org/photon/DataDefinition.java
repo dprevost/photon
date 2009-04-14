@@ -21,24 +21,24 @@ package org.photon;
 import java.lang.*;
 import java.util.*;
 
-public class KeyDefinition implements Iterable<String>, Iterator<String> {
-
+public class DataDefinition implements Iterable<String>, Iterator<String> {
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /** To save the native pointer/handle of the C struct. */
    long handle = 0;
 
-   /** The name of the key definition. */
+   /** The name of the data definition. */
    private String name;
    
    /** The session we belong to. */
    private Session session;
 
-   /** The definition type of the key definition. */
+   /** The definition type of the data definition. */
    private int type;
 
-   /** Pointer to the actual key definition. */
-   private byte[] keyDef;
+   /** Pointer to the actual data definition. */
+   private byte[] dataDef;
    
    /** Iterator */
    private int currentLength = 0;
@@ -54,10 +54,10 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
    /**
     * Default constructor.
     * <p>
-    * You must use open() or create to access a key definition in 
+    * You must use open() or create to access a data definition in 
     * shared memory.
     */
-   public KeyDefinition( Session session ) {
+   public DataDefinition( Session session ) {
        
       this.session = session;
    }
@@ -65,49 +65,49 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Creates a new key definition in shared memory.
+    * Creates a new data definition in shared memory.
     *
     * @param session The session we belong to.
     * @param name The name of the definition.
     * @param type The type of definition (ODBC, user defined, etc.)
-    * @param keyDef The key definition (as an opaque type)
+    * @param dataDef The data definition (as an opaque type)
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   public KeyDefinition( Session        session,
-                         String         name,
-                         DefinitionType type,
-                         byte[]         keyDef ) throws PhotonException {
+   public DataDefinition( Session        session,
+                          String         name,
+                          DefinitionType type,
+                          byte[]         dataDef ) throws PhotonException {
    
       int errcode;
       
       errcode = psoCreate( session.handle,
                            name,
                            type.getType(),
-                           keyDef,
-                           keyDef.length );
+                           dataDef,
+                           dataDef.length );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
 
       this.name    = name;
       this.session = session;
-      this.keyDef  = keyDef;
+      this.dataDef = dataDef;
       this.type    = type.getType();
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Opens an existing key definition in shared memory.
+    * Opens an existing data definition in shared memory.
     *
     * @param session The session we belong to.
     * @param name The name of the definition.
     *
     * @exception pso::Exception An abnormal error occured.
     */
-   public KeyDefinition( Session session,
-                         String  name ) throws PhotonException {
+   public DataDefinition( Session session,
+                          String  name ) throws PhotonException {
    
       int errcode;
       
@@ -123,7 +123,7 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Closes our access to the key definition in shared memory.
+    * Closes our access to the data definition in shared memory.
     *
     * @exception pso::Exception An abnormal error occured.
     */
@@ -144,17 +144,17 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Creates a new key definition in shared memory.
+    * Creates a new data definition in shared memory.
     *
     * @param name The name of the definition.
     * @param type The type of definition (ODBC, user defined, etc.)
-    * @param keyDef The key definition (as an opaque type)
+    * @param dataDef The data definition (as an opaque type)
     *
     * \exception pso::Exception An abnormal error occured.
     */
    public void create( String         name,
                        DefinitionType type,
-                       byte[]         keyDef ) throws PhotonException {
+                       byte[]         dataDef ) throws PhotonException {
    
       int errcode;
       
@@ -165,15 +165,15 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
       errcode = psoCreate( session.handle,
                            name,
                            type.getType(),
-                           keyDef,
-                           keyDef.length );
+                           dataDef,
+                           dataDef.length );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
 
-      this.name   = name;
-      this.keyDef = keyDef;
-      this.type   = type.getType();
+      this.name    = name;
+      this.dataDef = dataDef;
+      this.type    = type.getType();
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -198,7 +198,7 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
-      return keyDef;
+      return dataDef;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -208,7 +208,17 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
-      return keyDef.length;
+      return dataDef.length;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public String getName() throws PhotonException {
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+      return name;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -228,7 +238,7 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
     */
    public boolean hasNext() {
 
-      if ( currentLength < keyDef.length )
+      if ( currentLength < dataDef.length )
          return true;
       
       return false;
@@ -250,7 +260,7 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
     */
    public String next() {
       
-      if ( currentLength >= keyDef.length ) {
+      if ( currentLength >= dataDef.length ) {
          currentLength = 0;
          throw new NoSuchElementException();
       }
@@ -261,7 +271,7 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Opens an existing key definition in shared memory.
+    * Opens an existing data definition in shared memory.
     *
     * @param session The session we belong to.
     * @param name The name of the definition.
@@ -303,8 +313,8 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
    private native int psoCreate( long    hSession,
                                  String  name,
                                  int     type,
-                                 byte [] keyDef,
-                                 int     keyDefLength );
+                                 byte [] dataDef,
+                                 int     dataDefLength );
 
    private native String psoGetNext();
    
@@ -312,3 +322,4 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
+

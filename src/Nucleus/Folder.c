@@ -66,6 +66,10 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
 
    /* The edit version which is about to become the latest */
    pMapEdit = GET_PTR_FAST( pDesc->offset, psonFastMap );
+
+   if ( pMapEdit->hashObj.enumResize != PSON_HASH_NO_RESIZE ) {
+      psonHashResize( &pMapEdit->hashObj, pContext );
+   }
    
    PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
    

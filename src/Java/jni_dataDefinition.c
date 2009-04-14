@@ -23,45 +23,45 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_KeyDefinition.h"
-#include "API/KeyDefinition.h"
+#include "org_photon_DataDefinition.h"
+#include "API/DataDefinition.h"
 
-jfieldID g_idKeyDefHandle;
-jfieldID g_idKeyDefKeyDef;
-jfieldID g_idKeyDefType;
-jfieldID g_idKeyDefCurrentLength;
+jfieldID g_idDataDefHandle;
+jfieldID g_idDataDefDataDef;
+jfieldID g_idDataDefType;
+jfieldID g_idDataDefCurrentLength;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_KeyDefinition
+ * Class:     org_photon_DataDefinition
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_org_photon_KeyDefinition_initIDs( JNIEnv * env,
-                                       jclass   classDefinition )
+Java_org_photon_DataDefinition_initIDs( JNIEnv * env,
+                                        jclass   classDefinition )
 {
-   g_idKeyDefHandle  = (*env)->GetFieldID( env, classDefinition, "handle", "J" );
-   if ( g_idKeyDefHandle == NULL ) return;
-   g_idKeyDefKeyDef = (*env)->GetFieldID( env, classDefinition, "keyDef", "[B" );
-   if ( g_idKeyDefKeyDef == NULL ) return;
-   g_idKeyDefType = (*env)->GetFieldID( env, classDefinition, "type", "J" );
-   if ( g_idKeyDefType == NULL ) return;
-   g_idKeyDefCurrentLength = (*env)->GetFieldID( env, classDefinition, 
+   g_idDataDefHandle  = (*env)->GetFieldID( env, classDefinition, "handle", "J" );
+   if ( g_idDataDefHandle == NULL ) return;
+   g_idDataDefDataDef = (*env)->GetFieldID( env, classDefinition, "dataDef", "[B" );
+   if ( g_idDataDefDataDef == NULL ) return;
+   g_idDataDefType = (*env)->GetFieldID( env, classDefinition, "type", "J" );
+   if ( g_idDataDefType == NULL ) return;
+   g_idDataDefCurrentLength = (*env)->GetFieldID( env, classDefinition, 
       "currentLength", "J" );
-   if ( g_idKeyDefCurrentLength == NULL ) return;
+   if ( g_idDataDefCurrentLength == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_KeyDefinition
+ * Class:     org_photon_DataDefinition
  * Method:    psoClose
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_KeyDefinition_psoClose( JNIEnv * env,
+Java_org_photon_DataDefinition_psoClose( JNIEnv * env,
                                          jobject  jobj,
                                          jlong    jhandle )
 {
@@ -70,7 +70,7 @@ Java_org_photon_KeyDefinition_psoClose( JNIEnv * env,
    /* Native variables */
    size_t handle = (size_t) jhandle;
 
-   errcode = psoKeyDefClose( (PSO_HANDLE)handle );
+   errcode = psoDataDefClose( (PSO_HANDLE)handle );
 
    return errcode;
 }
@@ -78,18 +78,18 @@ Java_org_photon_KeyDefinition_psoClose( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_KeyDefinition
+ * Class:     org_photon_DataDefinition
  * Method:    psoCreate
  * Signature: (JLjava/lang/String;I[BI)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_KeyDefinition_psoCreate( JNIEnv *   env,
-                                         jobject    jobj,
-                                         jlong      jhandle,
-                                         jstring    jname,
-                                         jint       jtype,
-                                         jbyteArray jkeyDef,
-                                         jint       jlength )
+Java_org_photon_DataDefinition_psoCreate( JNIEnv *   env,
+                                          jobject    jobj,
+                                          jlong      jhandle,
+                                          jstring    jname,
+                                          jint       jtype,
+                                          jbyteArray jdataDef,
+                                          jint       jlength )
 {
    int errcode;
 
@@ -97,31 +97,31 @@ Java_org_photon_KeyDefinition_psoCreate( JNIEnv *   env,
    size_t handle = (size_t) jhandle;
    const char * name;
    PSO_HANDLE definitionHandle;
-   jbyte * keyDef;
+   jbyte * dataDef;
    
    name = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( name == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   keyDef = (*env)->GetByteArrayElements( env, jkeyDef, NULL );
-   if ( keyDef == NULL ) {
+   dataDef = (*env)->GetByteArrayElements( env, jdataDef, NULL );
+   if ( dataDef == NULL ) {
       (*env)->ReleaseStringUTFChars( env, jname, name );
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
    
-   errcode = psoKeyDefCreate( (PSO_HANDLE)handle,
-                              name,
-                              strlen(name),
-                              jtype,
-                              (const unsigned char *)keyDef,
-                              jlength,
-                              &definitionHandle );
+   errcode = psoDataDefCreate( (PSO_HANDLE)handle,
+                               name,
+                               strlen(name),
+                               jtype,
+                               (const unsigned char *)dataDef,
+                               jlength,
+                               &definitionHandle );
    (*env)->ReleaseStringUTFChars( env, jname, name );
-   (*env)->ReleaseByteArrayElements( env, jkeyDef, keyDef, JNI_ABORT );
+   (*env)->ReleaseByteArrayElements( env, jdataDef, dataDef, JNI_ABORT );
 
    if ( errcode == PSO_OK ) {
-      (*env)->SetLongField( env, jobj, g_idKeyDefHandle, 
+      (*env)->SetLongField( env, jobj, g_idDataDefHandle, 
          (size_t) definitionHandle );
    }
 
@@ -131,39 +131,39 @@ Java_org_photon_KeyDefinition_psoCreate( JNIEnv *   env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_KeyDefinition
+ * Class:     org_photon_DataDefinition
  * Method:    psoGetNext
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL 
-Java_org_photon_KeyDefinition_psoGetNext( JNIEnv * env,
-                                          jobject  jobj )
+Java_org_photon_DataDefinition_psoGetNext( JNIEnv * env,
+                                           jobject  jobj )
 {
-   jbyte * keyDef;
-   jbyteArray jkeyDef;
+   jbyte * dataDef;
+   jbyteArray jdataDef;
    int type, i, count = 0;
    int currentLength;
-   jsize keyDefLength;
+   jsize dataDefLength;
    char msg[1000];
    
-   jkeyDef = (*env)->GetObjectField( env, jobj, g_idKeyDefKeyDef );
-   type = (*env)->GetIntField( env, jobj, g_idKeyDefType );
-   currentLength = (*env)->GetIntField( env, jobj, g_idKeyDefCurrentLength );
+   jdataDef = (*env)->GetObjectField( env, jobj, g_idDataDefDataDef );
+   type = (*env)->GetIntField( env, jobj, g_idDataDefType );
+   currentLength = (*env)->GetIntField( env, jobj, g_idDataDefCurrentLength );
    
-   keyDef = (*env)->GetByteArrayElements( env, jkeyDef, NULL );
-   if ( keyDef == NULL ) {
-      (*env)->NewStringUTF( env, "" );
+   dataDef = (*env)->GetByteArrayElements( env, jdataDef, NULL );
+   if ( dataDef == NULL ) {
+//      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
-   keyDefLength = (*env)->GetArrayLength( env, jkeyDef );
+   dataDefLength = (*env)->GetArrayLength( env, jdataDef );
 
    if ( type == PSO_DEF_USER_DEFINED ) {
       
-      for ( i = currentLength; i < keyDefLength; ++i ) {
-         if ( keyDef[i] == 0 ) {
+      for ( i = currentLength; i < dataDefLength; ++i ) {
+         if ( dataDef[i] == 0 ) {
             currentLength = i + 1;
             break;
          }
-         msg[count] = keyDef[i];
+         msg[count] = dataDef[i];
          currentLength++;
          count++;
          if ( count == 999 ) {
@@ -180,7 +180,7 @@ Java_org_photon_KeyDefinition_psoGetNext( JNIEnv * env,
       char name [PSO_MAX_FIELD_LENGTH+1];
       char tmp[20];
       uint32_t currentField = currentLength / sizeof(psoFieldDefinition);
-      psoFieldDefinition * field = (psoFieldDefinition *)keyDef;
+      psoFieldDefinition * field = (psoFieldDefinition *)dataDef;
    
       strcpy( msg, "Name: " );
       
@@ -196,61 +196,82 @@ Java_org_photon_KeyDefinition_psoGetNext( JNIEnv * env,
       strcat( msg, ", Type: " );
       switch ( field[currentField].type ) {
 
-      case PSO_KEY_INTEGER:
+      case PSO_TINYINT:
+         strcat( msg, "TinyInt" );
+         break;
+      case PSO_SMALLINT:
+         strcat( msg, "SmallInt" );
+         break;
+      case PSO_INTEGER:
          strcat( msg, "Integer" );
          break;
-      case PSO_KEY_BIGINT:
+      case PSO_BIGINT:
          strcat( msg, "BigInt" );
          break;
-      case PSO_KEY_DATE:
+      case PSO_REAL:
+         strcat( msg, "Real" );
+         break;
+      case PSO_DOUBLE:
+         strcat( msg, "Double" );
+         break;
+      case PSO_DATE:
          strcat( msg, "Date" );
          break;
-      case PSO_KEY_TIME:
+      case PSO_TIME:
          strcat( msg, "Time" );
          break;
-      case PSO_KEY_TIMESTAMP:
+      case PSO_TIMESTAMP:
          strcat( msg, "TimeStamp" );
          break;
 
-      case PSO_KEY_BINARY:
+      case PSO_BINARY:
          strcat( msg, "Binary, Length: " );
          sprintf( tmp, "%d", field[currentField].vals.length );
          strcat( msg, tmp );
          break;
-      case PSO_KEY_CHAR:
+      case PSO_CHAR:
          strcat( msg, "Char, Length: " );
          sprintf( tmp, "%d", field[currentField].vals.length );
          strcat( msg, tmp );
          break;
 
-      case PSO_KEY_VARBINARY:
+      case PSO_VARBINARY:
          strcat( msg, "VarBinary, Length: " );
          sprintf( tmp, "%d", field[currentField].vals.length );
          strcat( msg, tmp );
          break;
 
-      case PSO_KEY_VARCHAR:
+      case PSO_VARCHAR:
          strcat( msg, "VarChar, Length: " );
          sprintf( tmp, "%d", field[currentField].vals.length );
          strcat( msg, tmp );
          break;
 
-      case PSO_KEY_LONGVARBINARY:
+      case PSO_LONGVARBINARY:
          strcat( msg, "LongVarBinary" );
          break;
-      case PSO_KEY_LONGVARCHAR:
+      case PSO_LONGVARCHAR:
          strcat( msg, "LongVarChar" );
          break;
 
+      case PSO_NUMERIC:
+         strcat( msg, "Numeric, Precision = " );
+         sprintf( tmp, "%d", field[currentField].vals.decimal.precision );
+         strcat( msg, tmp );
+         strcat( msg, ", Scale = " );
+         sprintf( tmp, "%d", field[currentField].vals.decimal.scale );
+         strcat( msg, tmp );
+         break;
+
       default:
-         strcat( msg, "Invalid/unknown key type" );
+         strcat( msg, "Invalid/unknown data type" );
       }
 
       currentLength += sizeof(psoFieldDefinition);
    }
 
-   (*env)->SetIntField( env, jobj, g_idKeyDefCurrentLength, currentLength );
-   (*env)->ReleaseByteArrayElements( env, jkeyDef, keyDef, JNI_ABORT );
+   (*env)->SetIntField( env, jobj, g_idDataDefCurrentLength, currentLength );
+   (*env)->ReleaseByteArrayElements( env, jdataDef, dataDef, JNI_ABORT );
 
    return (*env)->NewStringUTF( env, msg );
 }
@@ -258,15 +279,15 @@ Java_org_photon_KeyDefinition_psoGetNext( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_KeyDefinition
+ * Class:     org_photon_DataDefinition
  * Method:    psoOpen
  * Signature: (JLjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_KeyDefinition_psoOpen( JNIEnv * env,
-                                       jobject  jobj,
-                                       jlong    jhandle,
-                                       jstring  jname )
+Java_org_photon_DataDefinition_psoOpen( JNIEnv * env,
+                                        jobject  jobj,
+                                        jlong    jhandle,
+                                        jstring  jname )
 {
    int errcode;
    
@@ -274,9 +295,9 @@ Java_org_photon_KeyDefinition_psoOpen( JNIEnv * env,
    size_t handle = (size_t) jhandle;
    const char * name;
    PSO_HANDLE definitionHandle;
-   unsigned char * keyDef;
+   unsigned char * dataDef;
    enum psoDefinitionType defType;
-   unsigned int keyDefLength;
+   unsigned int dataDefLength;
    jbyteArray jba;
    
    name = (*env)->GetStringUTFChars( env, jname, NULL );
@@ -284,34 +305,35 @@ Java_org_photon_KeyDefinition_psoOpen( JNIEnv * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
    
-   errcode = psoKeyDefOpen( (PSO_HANDLE)handle,
-                            name,
-                            strlen(name),
-                            &definitionHandle );
+   errcode = psoDataDefOpen( (PSO_HANDLE)handle,
+                             name,
+                             strlen(name),
+                             &definitionHandle );
    (*env)->ReleaseStringUTFChars( env, jname, name );
    
    if ( errcode != 0 ) return errcode;
    
-   errcode = psoaKeyDefGetDef( definitionHandle,
-                               &defType,
-                               &keyDef,
-                               &keyDefLength );
+   errcode = psoaDataDefGetDef( definitionHandle,
+                                &defType,
+                                &dataDef,
+                                &dataDefLength );
    if ( errcode != 0 ) {
-      psoKeyDefClose( definitionHandle );
+      psoDataDefClose( definitionHandle );
       return errcode;
    }
    
-   jba = (*env)->NewByteArray( env, keyDefLength );
+   //g_idDataDefDataDef
+   jba = (*env)->NewByteArray( env, dataDefLength );
    if ( jba == NULL ) {
-      psoKeyDefClose( definitionHandle );
+      psoDataDefClose( definitionHandle );
       return PSO_NOT_ENOUGH_HEAP_MEMORY;
    }
    
-   (*env)->SetByteArrayRegion( env, jba, 0, keyDefLength, (jbyte *)keyDef );
+   (*env)->SetByteArrayRegion( env, jba, 0, dataDefLength, (jbyte *)dataDef );
 
-   (*env)->SetObjectField( env, jobj, g_idKeyDefKeyDef, jba );
-   (*env)->SetIntField(    env, jobj, g_idKeyDefType,   defType );
-   (*env)->SetLongField(   env, jobj, g_idKeyDefHandle, (size_t)definitionHandle );
+   (*env)->SetObjectField( env, jobj, g_idDataDefDataDef, jba );
+   (*env)->SetIntField(    env, jobj, g_idDataDefType,    defType );
+   (*env)->SetLongField(   env, jobj, g_idDataDefHandle,  (size_t)definitionHandle );
 
    return 0;
 }

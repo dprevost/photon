@@ -729,7 +729,8 @@ enum psoErrors psonHashResize( psonHash           * pHash,
    ptrdiff_t currentOffset, nextOffset, newBucket, newOffset;
    psonHashItem * pItem, * pNewItem;
    psonMemObject * pMemObject;
-  
+   unsigned int loadFactor;
+   
    PSO_PRE_CONDITION( pHash != NULL );
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_INV_CONDITION( pHash->initialized == PSON_HASH_SIGNATURE );
@@ -741,13 +742,22 @@ enum psoErrors psonHashResize( psonHash           * pHash,
 
    GET_PTR( pMemObject, pHash->memObjOffset, psonMemObject );
 
+   newIndexLength = pHash->lengthIndex;
    if ( pHash->enumResize == PSON_HASH_TIME_TO_GROW ) {
-      newIndexLength = pHash->lengthIndex + 1;
+      do {
+         newIndexLength++;
+         loadFactor = 100 * pHash->numberOfItems/
+            g_psonArrayLengths[newIndexLength];
+      } while ( loadFactor >= g_maxLoadFactor );
    }
    else {
-      newIndexLength = pHash->lengthIndex - 1;     
+      do {
+         newIndexLength--;
+         loadFactor = 100 * pHash->numberOfItems/
+            g_psonArrayLengths[newIndexLength];
+      } while ( loadFactor < g_minLoadFactor );
    }
-   
+
    len = g_psonArrayLengths[newIndexLength] * sizeof(ptrdiff_t);
    
    ptr = (ptrdiff_t*) psonMalloc( pMemObject, len, pContext );

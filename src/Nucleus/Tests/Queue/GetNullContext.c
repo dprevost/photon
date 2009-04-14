@@ -68,11 +68,10 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonQueueGet( pQueue,
-                      PSO_FIRST,
-                      &pItem,
-                      20,
-                      NULL );
+   ok = psonQueueGetFirst( pQueue,
+                           &pItem,
+                           20,
+                           NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

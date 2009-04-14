@@ -36,7 +36,7 @@ public class Definition {
    public KeyDefinition key;
 
    /** Photon folders do not use this attribute. */
-   public FieldDefinition[] fields;
+   public DataDefinition fields;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

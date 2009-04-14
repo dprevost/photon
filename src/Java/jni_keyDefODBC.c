@@ -23,45 +23,35 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_Photon.h"
+#include "org_photon_KeyDefinition.h"
+
+jfieldID g_idKeyDefType;
+jfieldID g_idKeyDefLength;
+jfieldID g_idKeyDefMinLength;
+jfieldID g_idKeyDefMaxLength;
+jclass   g_keyDefClass;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_Photon
- * Method:    psoInit
- * Signature: (Ljava/lang/String;)I
- */
-JNIEXPORT int JNICALL
-Java_org_photon_Photon_psoInit( JNIEnv  * env,
-                                jobject   obj, 
-                                jstring   jaddress )
-{
-   int errcode;
-   const char * address;
-   
-   address = (*env)->GetStringUTFChars( env, jaddress, NULL );
-   if ( address == NULL ) {
-      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
-   }
-   
-   errcode = psoInit( address );
-   (*env)->ReleaseStringUTFChars( env, jaddress, address );
-   
-   return errcode;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/*
- * Class:     org_photon_Photon
- * Method:    psoFini
+ * Class:     org_photon_KeyDefinition
+ * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL 
-Java_org_photon_Photon_psoFini( JNIEnv * env, jobject obj )
+Java_org_photon_KeyDefinition_initIDs( JNIEnv * env, jclass keyClass )
 {
-   psoExit();
+   g_idKeyDefType = (*env)->GetFieldID( env, keyClass, "type", "Lorg/photon/KeyType;" );
+   if ( g_idKeyDefType == NULL ) return;
+   g_idKeyDefLength = (*env)->GetFieldID( env, keyClass, "length", "I" );
+   if ( g_idKeyDefLength == NULL ) return;
+   g_idKeyDefMinLength = (*env)->GetFieldID( env, keyClass, "minLength", "I" );
+   if ( g_idKeyDefMinLength == NULL ) return;
+   g_idKeyDefMaxLength = (*env)->GetFieldID( env, keyClass, "maxLength", "I" );
+   if ( g_idKeyDefMaxLength == NULL ) return;
+
+   g_keyDefClass = (*env)->NewWeakGlobalRef( env, keyClass );
+   if ( g_keyDefClass == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

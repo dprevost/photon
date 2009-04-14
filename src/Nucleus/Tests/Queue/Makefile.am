@@ -29,7 +29,6 @@ check_PROGRAMS =                 \
         GetNullQueue             \
         GetNullIterator          \
         GetPass                  \
-        GetWrongFlag             \
         GetWrongLength           \
         InitNullContext          \
         InitNullDataDef          \
@@ -95,7 +94,6 @@ GetNullContext_SOURCES           = $(COMMON_HEADER) GetNullContext.c
 GetNullQueue_SOURCES             = $(COMMON_HEADER) GetNullQueue.c
 GetNullIterator_SOURCES          = $(COMMON_HEADER) GetNullIterator.c
 GetPass_SOURCES                  = $(COMMON_HEADER) GetPass.c
-GetWrongFlag_SOURCES             = $(COMMON_HEADER) GetWrongFlag.c
 GetWrongLength_SOURCES           = $(COMMON_HEADER) GetWrongLength.c
 InitNullContext_SOURCES          = $(COMMON_HEADER) InitNullContext.c
 InitNullDataDef_SOURCES          = $(COMMON_HEADER) InitNullDataDef.c
@@ -170,7 +168,6 @@ TESTS =                          \
         GetNullQueue             \
         GetNullIterator          \
         GetPass                  \
-        GetWrongFlag             \
         GetWrongLength           \
         InitNullContext          \
         InitNullDataDef          \
@@ -231,7 +228,6 @@ XFAIL_TESTS =                    \
         GetNullContext           \
         GetNullQueue             \
         GetNullIterator          \
-        GetWrongFlag             \
         InitNullContext          \
         InitNullDataDef          \
         InitNullDefinition       \

@@ -79,8 +79,8 @@ Java_org_photon_FieldType_initIDs( JNIEnv * env , jclass typeClass )
    if ( id == NULL ) return;
    jobj = (*env)->GetStaticObjectField( env, typeClass, id );
    if ( jobj == NULL ) return;
-   g_weakFieldType[PSO_DECIMAL-1] = (*env)->NewWeakGlobalRef( env, jobj );
-   if ( g_weakFieldType[PSO_DECIMAL-1] == NULL ) return;
+   g_weakFieldType[PSO_NUMERIC-1] = (*env)->NewWeakGlobalRef( env, jobj );
+   if ( g_weakFieldType[PSO_NUMERIC-1] == NULL ) return;
 
    id = (*env)->GetStaticFieldID(env, typeClass, "BOOLEAN", "Lorg/photon/FieldType;");
    if ( id == NULL ) return;
