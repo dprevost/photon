@@ -136,6 +136,26 @@ public:
    /**
     * Create a new object in shared memory.
     *
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.).
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * ::Commit.
+    *
+    * \param[in] objectName  The fully qualified name of the object. 
+    * \param[in] definition  The type of object to create and more.
+    * \param[in] dataDefName The name of an existing data definition for
+    *                        the data fields of the object.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void CreateObject( const std::string   & objectName,
+                      psoObjectDefinition & definition,
+                      const std::string   & dataDefName );
+
+   /**
+    * Create a new object in shared memory.
+    *
     * This overloaded method should be used for objects requiring
     * a key definition (hash maps, etc.).
     *
@@ -154,6 +174,30 @@ public:
                       psoObjectDefinition & definition,
                       KeyDefinition       & keyDef,
                       DataDefinition      & dataDef );
+   
+   /**
+    * Create a new object in shared memory.
+    *
+    * This overloaded method should be used for objects requiring
+    * a key definition (hash maps, etc.).
+    *
+    * The creation of the object only becomes permanent after a call to 
+    * ::Commit.
+    *
+    * \param[in] objectName The fully qualified name of the object. 
+    * \param[in] definition The type of object to create (folder, queue, etc.),
+    *            the type of field definition, etc.
+    * \param[in] keyDefName  The name of the definition of the key of 
+    *                        the object.
+    * \param[in] dataDefName The name of the data definition for
+    *                        the data fields of the object.
+    *
+    * \exception pso::Exception An abnormal error occured.
+    */
+   void CreateObject( const std::string   & objectName,
+                      psoObjectDefinition & definition,
+                      const std::string   & keyDefName,
+                      const std::string   & dataDefName );
    
    /**
     * Destroy an existing object in shared memory.

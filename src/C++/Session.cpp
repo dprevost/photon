@@ -26,6 +26,8 @@
 #include <photon/psoException>
 #include <photon/DataDefinition>
 #include <photon/KeyDefinition>
+#include <photon/DataDefinition.h>
+#include <photon/KeyDefinition.h>
 
 using namespace pso;
 
@@ -104,6 +106,37 @@ void Session::CreateObject( const std::string   & objectName,
 
 void Session::CreateObject( const std::string   & objectName,
                             psoObjectDefinition & definition,
+                            const std::string   & dataDefName )
+{
+   int rc;
+   PSO_HANDLE dataDefHandle;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
+   }
+
+   rc = psoDataDefOpen( m_sessionHandle,
+                        dataDefName.c_str(),
+                        dataDefName.length(),
+                        &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
+   }
+
+   rc = psoCreateObject( m_sessionHandle,
+                         objectName.c_str(),
+                         objectName.length(),
+                         &definition,
+                         dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Session::CreateObject( const std::string   & objectName,
+                            psoObjectDefinition & definition,
                             KeyDefinition       & keyDefinition,
                             DataDefinition      & dataDefinition )
 {
@@ -119,6 +152,47 @@ void Session::CreateObject( const std::string   & objectName,
                               &definition,
                               keyDefinition.m_definitionHandle,
                               dataDefinition.m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Session::CreateObject( const std::string   & objectName,
+                            psoObjectDefinition & definition,
+                            const std::string   & keyDefName,
+                            const std::string   & dataDefName )
+{
+   int rc;
+   PSO_HANDLE keyDefHandle, dataDefHandle;
+   
+   if ( m_sessionHandle == NULL ) {
+      throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
+   }
+
+   rc = psoKeyDefOpen( m_sessionHandle,
+                       keyDefName.c_str(),
+                       keyDefName.length(),
+                       &keyDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
+   }
+
+   rc = psoDataDefOpen( m_sessionHandle,
+                        dataDefName.c_str(),
+                        dataDefName.length(),
+                        &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
+   }
+
+   rc = psoCreateKeyedObject( m_sessionHandle,
+                              objectName.c_str(),
+                              objectName.length(),
+                              &definition,
+                              keyDefHandle,
+                              dataDefHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }

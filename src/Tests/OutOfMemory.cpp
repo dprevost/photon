@@ -57,17 +57,10 @@ int main()
    char dataOut[50];
    uint32_t length;
    int countIn = 0, countOut = 0, errcode;
-   Queue q1(session), q2(session);
+   Queue q1, q2;
 
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
-   psoFieldDefinition fields[1] = { 
-      { "Field_1", PSO_VARCHAR, {100} } 
-   };
-   psoObjectDefinition folderDef;
 
-   memset( &folderDef, 0, sizeof folderDef );
-   folderDef.type = PSO_FOLDER;
-   
    try {
       process.Init( "10701" );
       session.Init();
@@ -80,11 +73,9 @@ int main()
       }
       catch ( Exception exc ) {}
 
-      session.CreateObject( folderName, folderDef, NULL, 0, NULL, 0 );
-      session.CreateObject( queueName1, queueDef,  NULL, 0,
-         (unsigned char *)fields, sizeof(psoFieldDefinition) );
-      session.CreateObject( queueName2, queueDef,  NULL, 0,
-         (unsigned char *)fields, sizeof(psoFieldDefinition) );
+      session.CreateFolder( folderName );
+      session.CreateObject( queueName1, queueDef, "Default" );
+      session.CreateObject( queueName2, queueDef, "Default" );
       session.GetInfo( info1 );
    }
    catch( Exception exc ) {
@@ -96,8 +87,8 @@ int main()
    cerr << "Total memory size:         " << info1.totalSizeInBytes << endl;
 
    try {
-      q1.Open( queueName1 );
-      q2.Open( queueName2 );
+      q1.Open( session, queueName1 );
+      q2.Open( session, queueName2 );
    }
    catch( Exception exc ) {
       cerr << "Error opening queues, error = " << exc.Message() << endl;

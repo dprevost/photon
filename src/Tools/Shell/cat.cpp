@@ -22,6 +22,7 @@
 #include "Tools/Shell/cat.h"
 #include <sstream>
 #include "API/DataDefinition.h" // for psoaGet*Offsets
+#include "API/KeyDefinition.h"  // for psoaGet*Offsets
 #include "Tools/Shell/util.h"
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -36,7 +37,9 @@ psoCat::psoCat( Session s, string name )
      fieldDef      ( NULL ),
      keyDef        ( NULL ),
      fieldDefLength( 0 ),
-     keyDefLength  ( 0 )
+     keyDefLength  ( 0 ),
+     pDataDef      ( NULL ),
+     pKeyDef       ( NULL )
 {
 }
 
@@ -77,80 +80,79 @@ string psoCat::Init()
    }
    
    try {
-      session.GetDefinitionLength( objectName, &keyDefLength, &fieldDefLength );
+      session.GetDefinition( objectName, objDefinition );
+      pDataDef = session.GetDataDefinition( objectName );
+      // Test for NULLs
+      if ( status.type == PSO_FAST_MAP || status.type == PSO_HASH_MAP ) {
+         pKeyDef = session.GetKeyDefinition( objectName );
+         // Test for NULLs
+         keyDefLength = pKeyDef->GetLength();
+      }
+      fieldDefLength = pDataDef->GetLength();
+
+      try {
+         if ( keyDefLength > 0 ) {
+            keyDef = new unsigned char [keyDefLength];
+         }
+         if ( fieldDefLength > 0 ) {
+            fieldDef = new unsigned char [fieldDefLength];
+         }
+      }
+      catch ( ... ) {
+         stream << "psosh: cat: Not enough memory ";
+         // The first new might have succeeded
+         if ( keyDef != NULL ) delete [] keyDef;
+         return stream.str();
+      }
+   
+      pDataDef->GetDefinition( fieldDef, fieldDefLength );
+      if ( pKeyDef != NULL ) {
+         pKeyDef->GetDefinition( keyDef, keyDefLength );
+      }
+      if ( pDataDef->GetType() == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
+         numFields = fieldDefLength/sizeof(psoFieldDefinition);
+         try {
+            fieldOffsets = new uint32_t[numFields];
+         }
+         catch ( ... ) {
+            stream << "psosh: cat: Not enough memory " << endl;
+            stream << "Number of fields in data definition = " << fieldDefLength/sizeof(psoFieldDefinition);
+            return stream.str();
+         }
+         psoaGetFieldOffsets( (psoFieldDefinition *)fieldDef, numFields, fieldOffsets );
+      }
+      
+      if ( pKeyDef != NULL && pKeyDef->GetType() == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
+         numKeys = keyDefLength/sizeof(psoKeyDefinition);
+         try {
+            keyOffsets = new uint32_t[numKeys];
+         }
+         catch ( ... ) {
+            stream << "psosh: cat: Not enough memory " << endl;
+            stream << "Number of keys in data definition = " << keyDefLength/sizeof(psoKeyDefinition);
+            return stream.str();
+         }
+         psoaGetKeyOffsets( (psoKeyDefinition *)keyDef, numKeys, keyOffsets );
+      }
+
+      try {
+         if ( status.maxDataLength > 0 ) {
+            buffer = new unsigned char[status.maxDataLength];
+         }
+         if ( status.maxKeyLength > 0 ) {
+            key = new unsigned char[status.maxKeyLength];
+         }
+      }
+      catch ( ... ) {
+         stream << "psosh: cat: Not enough memory ";
+         return stream.str();
+      }
    }
    catch ( Exception exc ) {
       stream << "psosh: cat: " << exc.Message();
       return stream.str();
    }
-
-   try {
-      if ( keyDefLength > 0 ) {
-         keyDef = new unsigned char [keyDefLength];
-      }
-      if ( fieldDefLength > 0 ) {
-         fieldDef = new unsigned char [fieldDefLength];
-      }
-   }
-   catch ( ... ) {
-      stream << "psosh: cat: Not enough memory ";
-      // The first new might have succeeded
-      if ( keyDef != NULL ) delete [] keyDef;
-      return stream.str();
-   }
    
-   try {
-      session.GetDefinition( objectName,
-                             objDefinition,
-                             keyDef,
-                             keyDefLength,
-                             fieldDef,
-                             fieldDefLength );
-   }
-   catch ( Exception exc ) {
-      stream << "psosh: cat: " << exc.Message();
-      return stream.str();
-   }
-   numKeys = keyDefLength/sizeof(psoKeyDefinition);
-   numFields = fieldDefLength/sizeof(psoFieldDefinition);
-   
-   if ( numKeys > 0 && objDefinition.keyDefType == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
-      try {
-         keyOffsets = new uint32_t[numKeys];
-      }
-      catch ( ... ) {
-         stream << "psosh: cat: Not enough memory " << endl;
-         stream << "Number of keys in data definition = " << keyDefLength/sizeof(psoKeyDefinition);
-         return stream.str();
-      }
-      psoaGetKeyOffsets( (psoKeyDefinition *)keyDef, numKeys, keyOffsets );
-   }
-
-   if ( numFields > 0 && objDefinition.fieldDefType == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
-      try {
-         fieldOffsets = new uint32_t[numFields];
-      }
-      catch ( ... ) {
-         stream << "psosh: cat: Not enough memory " << endl;
-         stream << "Number of fields in data definition = " << fieldDefLength/sizeof(psoFieldDefinition);
-         return stream.str();
-      }
-      psoaGetFieldOffsets( (psoFieldDefinition *)fieldDef, numFields, fieldOffsets );
-   }
-
-   try {
-      if ( status.maxDataLength > 0 ) {
-         buffer = new unsigned char[status.maxDataLength];
-      }
-      if ( status.maxKeyLength > 0 ) {
-         key = new unsigned char[status.maxKeyLength];
-      }
-   }
-   catch ( ... ) {
-      stream << "psosh: cat: Not enough memory ";
-      return stream.str();
-   }
-
    return "";
 }
 
@@ -162,9 +164,7 @@ void psoCat::Run()
    uint32_t keyLength, dataLength;
    
    if ( status.type == PSO_HASH_MAP ) {
-      HashMap hashMap(session);
-      
-      hashMap.Open( objectName );
+      HashMap hashMap( session, objectName );
       
       memset( key, 0, status.maxKeyLength );
       memset( buffer, 0, status.maxDataLength );
@@ -199,10 +199,8 @@ void psoCat::Run()
       hashMap.Close();
    }
    else if ( status.type == PSO_FAST_MAP ) {
-      FastMap hashMap(session);
-         
-      hashMap.Open( objectName );
-         
+      FastMap hashMap( session, objectName );
+      
       memset( key, 0, status.maxKeyLength );
       memset( buffer, 0, status.maxDataLength );
       rc = hashMap.GetFirst( key, status.maxKeyLength, 
@@ -236,10 +234,8 @@ void psoCat::Run()
       hashMap.Close();
    }
    else if ( status.type == PSO_QUEUE ) {
-      Queue queue(session);
+      Queue queue( session, objectName );
       
-      queue.Open( objectName );
-
       memset( buffer, 0, status.maxDataLength );
       rc = queue.GetFirst( buffer, status.maxDataLength, dataLength );
       while ( rc == 0 ) {
@@ -259,10 +255,8 @@ void psoCat::Run()
       queue.Close();
    }
    else if ( status.type == PSO_LIFO ) {
-      Lifo queue(session);
+      Lifo queue( session, objectName );
       
-      queue.Open( objectName );
-
       memset( buffer, 0, status.maxDataLength );
       rc = queue.GetFirst( buffer, status.maxDataLength, dataLength );
       while ( rc == 0 ) {
