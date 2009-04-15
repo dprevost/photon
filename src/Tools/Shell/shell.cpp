@@ -326,9 +326,11 @@ void psoShell::Cp()
    int rc;
    uint32_t keyLength, dataLength;
    psoObjectDefinition definition;
-   uint32_t keyDefLength, fieldDefLength;
-   unsigned char * keyDef = NULL;
-   unsigned char * fieldDef = NULL;
+//   uint32_t keyDefLength, fieldDefLength;
+//   unsigned char * keyDef = NULL;
+//   unsigned char * fieldDef = NULL;
+   DataDefinition * pDataDef = NULL;
+   KeyDefinition * pKeyDef = NULL;
    
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -361,32 +363,25 @@ void psoShell::Cp()
    }
    
    try {
-      session.GetDefinitionLength( srcName, &keyDefLength, &fieldDefLength );
-
-      if ( keyDefLength > 0 ) {
-         keyDef = new unsigned char [keyDefLength];
-      }
-      fieldDef = new unsigned char [fieldDefLength];
+      pDataDef = session.GetDataDefinition( srcName );
+      pKeyDef  = session.GetKeyDefinition( srcName );
       
-      session.GetDefinition( srcName, definition, keyDef, keyDefLength,
-         fieldDef, fieldDefLength );
-
-      session.CreateObject( destName, definition, keyDef, keyDefLength,
-         fieldDef, fieldDefLength );
-
+      if ( pKeyDef == NULL ) {
+         session.CreateObject( destName, definition, *pDataDef );
+      }
+      else {
+         session.CreateObject( destName, definition, *pKeyDef, *pDataDef );
+      }
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {
          
          buffer = new unsigned char[status.maxDataLength];
 
-         if ( status.type == PSO_HASH_MAP ) {
-         
-            HashMap srcHash(session), destHash(session);
+         if ( status.type == PSO_FAST_MAP ) {
+            FastMap srcHash( session, srcName );
+            FastMapEditor destHash( session, destName );
          
             key = new unsigned char[status.maxKeyLength];
-         
-            srcHash.Open( srcName );
-            destHash.Open( destName );
          
             rc = srcHash.GetFirst( key, status.maxKeyLength, 
                                    buffer, status.maxDataLength,
@@ -400,12 +395,42 @@ void psoShell::Cp()
             srcHash.Close();
             destHash.Close();
          }
+         else if ( status.type == PSO_HASH_MAP ) {
+         
+            HashMap srcHash( session, srcName);
+            HashMap destHash( session, destName );
+         
+            key = new unsigned char[status.maxKeyLength];
+         
+            rc = srcHash.GetFirst( key, status.maxKeyLength, 
+                                   buffer, status.maxDataLength,
+                                   keyLength, dataLength );
+            while ( rc == 0 ) {
+               destHash.Insert( key, keyLength, buffer, dataLength );
+               rc = srcHash.GetNext( key, status.maxKeyLength, 
+                                     buffer, status.maxDataLength,
+                                     keyLength, dataLength );
+            }
+            srcHash.Close();
+            destHash.Close();
+         }
+         else if ( status.type == PSO_LIFO ) {
+
+            Lifo srcQueue( session, srcName );
+            Lifo destQueue( session, destName );
+         
+            rc = srcQueue.GetFirst( buffer, status.maxDataLength, dataLength );
+            while ( rc == 0 ) {               
+               destQueue.Push( buffer, dataLength );
+               rc = srcQueue.GetNext( buffer, status.maxDataLength, dataLength );
+            }
+            srcQueue.Close();
+            destQueue.Close();
+         }
          else if ( status.type == PSO_QUEUE ) {
 
-            Queue srcQueue(session), destQueue(session);
-         
-            srcQueue.Open( srcName );
-            destQueue.Open( destName );
+            Queue srcQueue( session, srcName );
+            Queue destQueue( session, destName );
          
             rc = srcQueue.GetFirst( buffer, status.maxDataLength, dataLength );
             while ( rc == 0 ) {               
@@ -597,7 +622,7 @@ void psoShell::Free()
 
 void psoShell::Ls()
 {
-   Folder folder( session );
+   Folder folder;
    int rc;
    psoFolderEntry entry;
    string folderName = currentLocation;
@@ -613,7 +638,7 @@ void psoShell::Ls()
    }
    
    try {
-      folder.Open( folderName );
+      folder.Open( session, folderName );
       
       rc = folder.GetFirst( entry );
       cout << constants.TypeHeader() << " " << constants.StatusHeader() << " Name" << endl;
@@ -680,7 +705,6 @@ void psoShell::Man()
 void psoShell::Mkdir()
 {
    string folderName;
-   psoObjectDefinition definition;
 
    if ( tokens[1][0] == '/' ) {
       // Absolute path
@@ -691,8 +715,7 @@ void psoShell::Mkdir()
    }
    
    try {
-      definition.type = PSO_FOLDER;
-      session.CreateObject( folderName, definition, NULL, NULL );
+      session.CreateFolder( folderName );
       session.Commit();
    }
    catch ( Exception exc ) {

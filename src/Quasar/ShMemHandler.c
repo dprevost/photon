@@ -31,6 +31,7 @@
 #include "Nucleus/Session.h"
 #include "Nucleus/Transaction.h"
 #include "Nucleus/HashMap.h"
+#include <photon/psoPhotonODBC.h>
 
 extern psocErrMsgHandle g_qsrErrorHandle;
 
@@ -47,6 +48,11 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    
    psonFolderItem folderItem;
    psonObjectDescriptor * pDesc;
+   psonDataDefinition * pMemDataDefinition = NULL;
+   psonKeyDefinition  * pMemKeyDefinition = NULL;
+   uint32_t recLength;
+   psoFieldDefinition fields = { "Default", PSO_LONGVARBINARY, {0} };
+   psoKeyDefinition keys = { "Default", PSO_LONGVARBINARY, 0 };
 
    GET_PTR( pTree, pHandler->pMemHeader->treeMgrOffset, psonFolder )
 
@@ -135,7 +141,32 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    GET_PTR( pHashMap, pDesc->offset, psonHashMap );
    pHashMap->isSystemObject = true;
    pHandler->pMemHeader->dataDefMapOffset = pDesc->offset;
-   
+
+   /*
+    * Insert a default data definition.
+    */
+   /* We need to serialize the inputs to insert the record in the hash map */
+   recLength = offsetof( psonDataDefinition, definition ) + 
+      sizeof(psoFieldDefinition);
+   pMemDataDefinition = malloc( recLength );
+   if ( pMemDataDefinition == NULL ) {
+      return false;
+   }
+   pMemDataDefinition->type = PSO_DEF_PHOTON_ODBC_SIMPLE;
+   pMemDataDefinition->definitionLength = sizeof(psoFieldDefinition);
+   memcpy( pMemDataDefinition->definition, &fields, sizeof(psoFieldDefinition) );
+
+   ok = psonHashMapInsert( pHashMap,
+                           "Default",
+                           strlen("Default"),
+                           pMemDataDefinition,
+                           recLength,
+                           NULL,
+                           &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   free( pMemDataDefinition );
+   if ( ! ok ) return false;
+
    ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;
@@ -154,6 +185,31 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    pHashMap->isSystemObject = true;
    pHandler->pMemHeader->keyDefMapOffset = pDesc->offset;
    
+   /*
+    * Insert a default data definition.
+    */
+   /* We need to serialize the inputs to insert the record in the hash map */
+   recLength = offsetof( psonKeyDefinition, definition ) + 
+      sizeof(psoKeyDefinition);
+   pMemKeyDefinition = malloc( recLength );
+   if ( pMemKeyDefinition == NULL ) {
+      return false;
+   }
+   pMemKeyDefinition->type = PSO_DEF_PHOTON_ODBC_SIMPLE;
+   pMemKeyDefinition->definitionLength = sizeof(psoKeyDefinition);
+   memcpy( pMemKeyDefinition->definition, &keys, sizeof(psoKeyDefinition) );
+
+   ok = psonHashMapInsert( pHashMap,
+                           "Default",
+                           strlen("Default"),
+                           pMemKeyDefinition,
+                           recLength,
+                           NULL,
+                           &pHandler->context );
+   PSO_POST_CONDITION( ok == true || ok == false );
+   free( pMemKeyDefinition );
+   if ( ! ok ) return false;
+
    ok = psonTopFolderCloseObject( &folderItem, &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;

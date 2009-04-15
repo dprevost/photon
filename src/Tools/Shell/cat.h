@@ -76,6 +76,8 @@ private:
    unsigned char * keyDef;
    uint32_t fieldDefLength;
    uint32_t keyDefLength;
+   DataDefinition * pDataDef;
+   KeyDefinition  * pKeyDef;
    
    string binToStr( unsigned char * buff, uint32_t length );
 
