@@ -19,7 +19,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/psoSession.h>
+#include <photon/Session.h>
 #include "API/Session.h"
 #include "API/Process.h"
 #include "API/CommonObject.h"

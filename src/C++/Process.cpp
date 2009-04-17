@@ -19,10 +19,10 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/psoProcess>
+#include <photon/Process>
 #include <photon/psoProcess.h>
 #include <photon/psoErrors.h>
-#include <photon/psoException>
+#include <photon/Exception>
 
 using namespace pso;
 

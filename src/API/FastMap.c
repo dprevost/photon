@@ -19,7 +19,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/psoFastMap.h>
+#include <photon/FastMap.h>
 #include "API/FastMap.h"
 #include "API/Session.h"
 #include <photon/psoErrors.h>

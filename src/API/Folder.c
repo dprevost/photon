@@ -19,7 +19,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/psoFolder.h>
+#include <photon/Folder.h>
 #include "API/Folder.h"
 #include "API/Session.h"
 #include <photon/psoErrors.h>

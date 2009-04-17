@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include "Common/Common.h"
-#include <photon/psoException>
+#include <photon/Exception>
 #include <photon/psoSession.h>
 #include <Nucleus/psoErrorHandler.h>
 

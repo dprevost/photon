@@ -27,11 +27,11 @@
 #include <photon/psoCommon.h>
 #include <photon/psoPhotonODBC.h>
 
-#include <photon/psoProcess.h>
-#include <photon/psoSession.h>
+#include <photon/Process.h>
+#include <photon/Session.h>
 #include <photon/DataDefinition.h>
 #include <photon/KeyDefinition.h>
-#include <photon/psoFolder.h>
+#include <photon/Folder.h>
 /*
  * Hash maps and fast maps implements the same data container but differs 
  * with respect to transactions. 
@@ -40,10 +40,10 @@
  * Fast maps are read-only (with an update procedure) and no locks are 
  * required.
  */
-#include <photon/psoHashMap.h>
-#include <photon/psoFastMap.h>
-#include <photon/psoQueue.h>
-#include <photon/psoLifo.h>
+#include <photon/HashMap.h>
+#include <photon/FastMap.h>
+#include <photon/Queue.h>
+#include <photon/Lifo.h>
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
