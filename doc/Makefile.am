@@ -26,36 +26,41 @@ if COND_USE_LATEX
 
 all-local: refman_c.pdf refman_c++.pdf
 
-HEADER_FILES =                                           \
-        $(top_srcdir)/src/include/photon/photon.h        \
-        $(top_srcdir)/src/include/photon/psoCommon.h     \
-        $(top_srcdir)/src/include/photon/psoErrors.h     \
-        $(top_srcdir)/src/include/photon/psoFastMap.h    \
-        $(top_srcdir)/src/include/photon/psoFolder.h     \
-        $(top_srcdir)/src/include/photon/psoHashMap.h    \
-        $(top_srcdir)/src/include/photon/psoLifo.h       \
-        $(top_srcdir)/src/include/photon/psoPhotonODBC.h \
-        $(top_srcdir)/src/include/photon/psoQueue.h      \
-        $(top_srcdir)/src/include/photon/psoProcess.h    \
-        $(top_srcdir)/src/include/photon/psoSession.h    
+HEADER_FILES =                                            \
+        $(top_srcdir)/src/include/photon/DataDefinition.h \
+        $(top_srcdir)/src/include/photon/FastMap.h        \
+        $(top_srcdir)/src/include/photon/Folder.h         \
+        $(top_srcdir)/src/include/photon/HashMap.h        \
+        $(top_srcdir)/src/include/photon/KeyDefinition.h  \
+        $(top_srcdir)/src/include/photon/Lifo.h           \
+        $(top_srcdir)/src/include/photon/photon.h         \
+        $(top_srcdir)/src/include/photon/Process.h        \
+        $(top_srcdir)/src/include/photon/psoCommon.h      \
+        $(top_srcdir)/src/include/photon/psoErrors.h      \
+        $(top_srcdir)/src/include/photon/psoPhotonODBC.h  \
+        $(top_srcdir)/src/include/photon/Queue.h          \
+        $(top_srcdir)/src/include/photon/Session.h        
 
-CPP_HEADER_FILES =                                           \
-        $(top_srcdir)/src/include/photon/photon              \
-        $(top_srcdir)/src/include/photon/FieldDefinition     \
-        $(top_srcdir)/src/include/photon/FieldDefinitionODBC \
-        $(top_srcdir)/src/include/photon/FieldDefinitionUser \
-        $(top_srcdir)/src/include/photon/KeyDefinition       \
-        $(top_srcdir)/src/include/photon/KeyDefinitionODBC   \
-        $(top_srcdir)/src/include/photon/KeyDefinitionUser   \
-        $(top_srcdir)/src/include/photon/psoException        \
-        $(top_srcdir)/src/include/photon/psoFastMap          \
-        $(top_srcdir)/src/include/photon/psoFastMapEditor    \
-        $(top_srcdir)/src/include/photon/psoFolder           \
-        $(top_srcdir)/src/include/photon/psoHashMap          \
-        $(top_srcdir)/src/include/photon/psoLifo             \
-        $(top_srcdir)/src/include/photon/psoQueue            \
-        $(top_srcdir)/src/include/photon/psoProcess          \
-        $(top_srcdir)/src/include/photon/psoSession          
+CPP_HEADER_FILES =                                          \
+        $(top_srcdir)/src/include/photon/DataDefBuilderODBC \
+        $(top_srcdir)/src/include/photon/DataDefBuilderUser \
+        $(top_srcdir)/src/include/photon/DataDefinition     \
+        $(top_srcdir)/src/include/photon/Exception          \
+        $(top_srcdir)/src/include/photon/FastMap            \
+        $(top_srcdir)/src/include/photon/FastMapEditor      \
+        $(top_srcdir)/src/include/photon/Folder             \
+        $(top_srcdir)/src/include/photon/HashMap            \
+        $(top_srcdir)/src/include/photon/KeyDefBuilderODBC  \
+        $(top_srcdir)/src/include/photon/KeyDefBuilderUser  \
+        $(top_srcdir)/src/include/photon/KeyDefinition      \
+        $(top_srcdir)/src/include/photon/Lifo               \
+        $(top_srcdir)/src/include/photon/photon             \
+        $(top_srcdir)/src/include/photon/Process            \
+        $(top_srcdir)/src/include/photon/psoCommon.h        \
+        $(top_srcdir)/src/include/photon/psoErrors.h        \
+        $(top_srcdir)/src/include/photon/psoPhotonODBC.h    \
+        $(top_srcdir)/src/include/photon/Queue              \
+        $(top_srcdir)/src/include/photon/Session            
 
 refman_c.pdf: $(HEADER_FILES)
 	-rm -rf c
