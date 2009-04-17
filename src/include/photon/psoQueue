@@ -80,7 +80,7 @@ public:
     *
     * \warning Closing an object does not automatically commit or rollback 
     * data items that were inserted or removed. You still must use either 
-    * psoSession::Commit or psoSession::Rollback to end the current unit of 
+    * Session::Commit or Session::Rollback to end the current unit of 
     * work.
     *
     * \exception pso::Exception An abnormal error occured.
@@ -100,18 +100,19 @@ public:
    DataDefinition * GetDataDefinition();
 
    /** 
-    * Iterate through the queue - no data items are removed from the queue
-    * by this function.
+    * \brief Initiates an iteratation through the queue - no data items are 
+    * removed from the queue by this function.
     *
     * Data items which were added by another session and are not yet committed 
-    * will not be seen by the iterator. Likewise, destroyed data items (even if
-    * not yet committed) are invisible.
+    * will not be seen by the iterator. Likewise, destroyed data items (even
+    * if not yet committed) are invisible.
     *
-    * \param[out]  buffer The buffer provided by the user to hold the content of
-    *              the first element. Memory allocation for this buffer is the
-    *              responsability of the caller.
+    * \param[out]  buffer The buffer provided by the user to hold the content 
+    *              of the first element. Memory allocation for this buffer is
+    *              the responsability of the caller.
     * \param[in]   bufferLength The length of \em buffer (in bytes).
-    * \param[out]  returnedLength The actual number of bytes in the data item.
+    * \param[out]  returnedLength The actual number of bytes copied in the 
+    *              data buffer.
     *
     * \return 0 on success or PSO_IS_EMPTY if the queue is empty.
     *
@@ -138,7 +139,8 @@ public:
     *              the next element. Memory allocation for this buffer is the
     *              responsability of the caller.
     * \param[in]   bufferLength The length of \em buffer (in bytes).
-    * \param[out]  returnedLength The actual number of bytes in the data item.
+    * \param[out]  returnedLength The actual number of bytes copied in the 
+    *              data buffer.
     *
     * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the queue.
@@ -171,7 +173,7 @@ public:
     * This function returns a new object. It is the responsability of the
     * caller to delete the object.
     *
-    * \return A new data definition of the queue.
+    * \return A new data definition of the items retrieved from the queue.
     *
     * \exception pso::Exception An abnormal error occured.
     */
@@ -202,7 +204,8 @@ public:
     *              the data item. Memory allocation for this buffer is the
     *              responsability of the caller.
     * \param[in]   bufferLength The length of \em buffer (in bytes).
-    * \param[out]  returnedLength The actual number of bytes in the data item.
+    * \param[out]  returnedLength The actual number of bytes copied in the 
+    *              data buffer.
     *
     * \return 0 on success or PSO_IS_EMPTY if the queue is empty or
     *           PSO_ITEM_IS_IN_USE if all existing items are "invisible".

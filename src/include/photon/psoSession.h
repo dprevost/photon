@@ -46,12 +46,16 @@ extern "C" {
  *
  *   <li>
  *     If you need to open the same Photon object in multiple threads,
- *     simply open it multiple times, for each thread. The overhead of 
- *     having multiple handles to the same shared-memory data container 
- *     is minimal and using this technique instead of using multi-thread 
- *     locks will increases the overall performance of the software.
+ *     simply open it multiple times using a different session for each
+ *     thread. The overhead of having multiple handles to the same 
+ *     shared-memory data container is minimal and using this technique
+ *     instead of using multi-thread locks increases the overall 
+ *      performance of the software.
  *   </li>
- *
+ *   <li>
+ *     If you cannot use this, you must implement your own thread 
+ *     synchronization mecanism.
+ *   </li>
  *   <li>
  *     Signal handlers (and similar calls): you should not call ::psoExit or
  *     ::psoExitSession (or similar) from a signal handler. 
@@ -59,10 +63,6 @@ extern "C" {
  *     to terminate in an orderly fashion.
  *   </li>
  * </ul>
- *
- * If you cannot follow these guidelines for whatever reasons, you should set
- * the parameter \em protectionNeeded of ::psoInit to 1. This will introduce
- * additional multi-threaded protection (locking) for your applications.
  *
  * Additional note: API objects (or C handles) are just proxies for the real 
  * objects sitting in shared memory. Proper synchronization is already done 
@@ -83,12 +83,16 @@ extern "C" {
  *
  *   <li>
  *     If you need to open the same Photon object in multiple threads,
- *     simply open it multiple times, for each thread. The overhead of 
- *     having multiple handles to the same shared-memory data container 
- *     is minimal and using this technique instead of using multi-thread 
- *     locks will increases the overall performance of the software.
+ *     simply open it multiple times using a different session for each
+ *     thread. The overhead of having multiple handles to the same 
+ *     shared-memory data container is minimal and using this technique
+ *     instead of using multi-thread locks increases the overall 
+ *      performance of the software.
  *   </li>
- *
+ *   <li>
+ *     If you cannot use this, you must implement your own thread 
+ *     synchronization mecanism.
+ *   </li>
  *   <li>
  *     Signal handlers (and similar calls): you should not call ::psoExit or
  *     ::psoExitSession (or similar) from a signal handler. 
@@ -96,10 +100,6 @@ extern "C" {
  *     to terminate in an orderly fashion.
  *   </li>
  * </ul>
- *
- * If you cannot follow these guidelines for whatever reasons, you should set
- * the parameter \em protectionNeeded of ::psoInit to 1. This will introduce
- * additional multi-threaded protection (locking) for your applications.
  *
  * Additional note: API objects (or C handles) are just proxies for the real 
  * objects sitting in shared memory. Proper synchronization is already done 
@@ -276,7 +276,8 @@ int psoErrorMsg( PSO_HANDLE   sessionHandle,
  * An implicit call to ::psoRollback is executed by this function.
  *
  * Once this function is executed, attempts to use the session handle
- * might lead to memory violation (and, possibly, crashes).
+ * or the handles of objects accessed using this session might lead to
+ * memory violation (and, possibly, crashes).
  *
  * \param[in]  sessionHandle Handle to the current session.
  *

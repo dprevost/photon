@@ -81,8 +81,8 @@ int psoLifoDefinition( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \brief Iterate through the queue - no data items are removed from the queue
- * by this function.
+ * \brief Initiates an iteratation through the queue - no data items are 
+ * removed from the queue by this function.
  *
  * Data items which were added by another session and are not yet committed 
  * will not be seen by the iterator. Likewise, destroyed data items (even if
@@ -93,9 +93,11 @@ int psoLifoDefinition( PSO_HANDLE   objectHandle,
  *              the first element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[out]  returnedLength The actual number of bytes copied in the 
+ *              data buffer.
  *
- * \return 0 on success or a ::psoErrors on error.
+ * \return 0 on success, PSO_IS_EMPTY if the queue is empty or a ::psoErrors 
+ *         on error.
  */
 PHOTON_EXPORT
 int psoLifoGetFirst( PSO_HANDLE   objectHandle,
@@ -123,9 +125,11 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
  *              the next element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[out]  returnedLength The actual number of bytes copied in the 
+ *              data buffer.
  *
- * \return 0 on success or a ::psoErrors on error.
+ * \return 0 on success, PSO_REACHED_THE_END when the iteration reaches
+ *           the end of the queue or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoLifoGetNext( PSO_HANDLE   objectHandle,
@@ -172,7 +176,8 @@ int psoLifoOpen(  PSO_HANDLE   sessionHandle,
  *              the data item. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[out]  returnedLength The actual number of bytes copied in the 
+ *              data buffer.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
