@@ -120,7 +120,8 @@ int psoHashMapDelete( PSO_HANDLE   objectHandle,
  *             the data item. Memory allocation for this buffer is the
  *             responsability of the caller.
  * \param[in]  bufferLength The length of \em buffer (in bytes).
- * \param[out] returnedLength The actual number of bytes in the data item.
+ * \param[out] returnedLength The actual number of bytes copied in the 
+ *             data buffer.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -135,7 +136,7 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Iterate through the hash map.
+ * Initiates an iteratation through the hash map.
  *
  * Data items which were added by another session and are not yet committed 
  * will not be seen by the iterator. Likewise, destroyed data items (even if
@@ -152,10 +153,13 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
  *             the first element. Memory allocation for this buffer is the
  *             responsability of the caller.
  * \param[in]  bufferLength The length of \em buffer (in bytes).
- * \param[out] retKeyLength The actual number of bytes in the key
- * \param[out] retDataLength The actual number of bytes in the data item.
+ * \param[out] retKeyLength The actual number of bytes copied in the key
+ *              buffer.
+ * \param[out] retDataLength The actual number of bytes copied in the 
+ *             data buffer.
  *
- * \return 0 on success or a ::psoErrors on error.
+ * \return 0 on success, PSO_IS_EMPTY if the hash map is empty or a 
+ *           ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
@@ -191,10 +195,13 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
  *             the data element. Memory allocation for this buffer is the
  *             responsability of the caller.
  * \param[in]  bufferLength The length of \em buffer (in bytes).
- * \param[out] retKeyLength The actual number of bytes in the key
- * \param[out] retDataLength The actual number of bytes in the data item.
+ * \param[out] retKeyLength The actual number of bytes copied in the key
+ *              buffer.
+ * \param[out] retDataLength The actual number of bytes copied in the 
+ *             data buffer.
  *
- * \return 0 on success or a ::psoErrors on error.
+ * \return 0 on success, PSO_REACHED_THE_END when the iteration reaches
+ *           the end of the hash map or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoHashMapGetNext( PSO_HANDLE   objectHandle,
@@ -252,10 +259,6 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
  * the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The
  * layout defined when a map is created is then used as the default one.
  * 
- * To access the layout on a record-by-record base, use the argument 
- * \em dataDefHandle - it will be set to the layout of the last retrieved
- * record.
- *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  hashMapName The fully qualified name of the hash map. 
  * \param[in]  nameLengthInBytes The length of \em hashMapName (in bytes) not

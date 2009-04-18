@@ -81,8 +81,8 @@ int psoQueueDefinition( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * \brief Iterate through the queue - no data items are removed from the queue
- * by this function.
+ * \brief Initiates an iteratation through the queue - no data items are 
+ * removed from the queue by this function.
  *
  * Data items which were added by another session and are not yet committed 
  * will not be seen by the iterator. Likewise, destroyed data items (even if
@@ -93,9 +93,11 @@ int psoQueueDefinition( PSO_HANDLE   objectHandle,
  *              the first element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[out]  returnedLength The actual number of bytes copied in the 
+ *              data buffer.
  *
- * \return 0 on success or a ::psoErrors on error.
+ * \return 0 on success, PSO_IS_EMPTY if the queue is empty or a ::psoErrors 
+ *         on error.
  */
 PHOTON_EXPORT
 int psoQueueGetFirst( PSO_HANDLE   objectHandle,
@@ -123,9 +125,11 @@ int psoQueueGetFirst( PSO_HANDLE   objectHandle,
  *              the next element. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[out]  returnedLength The actual number of bytes copied in the 
+ *              data buffer.
  *
- * \return 0 on success or a ::psoErrors on error.
+ * \return 0 on success, PSO_REACHED_THE_END when the iteration reaches
+ *           the end of the queue or a ::psoErrors on error.
  */
 PHOTON_EXPORT
 int psoQueueGetNext( PSO_HANDLE   objectHandle,
@@ -141,8 +145,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  queueName The fully qualified name of the queue. 
  * \param[in]  nameLengthInBytes The length of \em queueName (in bytes) not
- *             counting the null terminator (null-terminators are not used by
- *             the Photon engine).
+ *             counting the null terminator.
  * \param[out] objectHandle The handle to the queue, allowing us access to
  *             the queue in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
@@ -172,7 +175,8 @@ int psoQueueOpen(  PSO_HANDLE   sessionHandle,
  *              the data item. Memory allocation for this buffer is the
  *              responsability of the caller.
  * \param[in]   bufferLength The length of \em buffer (in bytes).
- * \param[out]  returnedLength The actual number of bytes in the data item.
+ * \param[out]  returnedLength The actual number of bytes copied in the 
+ *              data buffer.
  *
  * \return 0 on success or a ::psoErrors on error.
  */

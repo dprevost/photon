@@ -21,9 +21,9 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/psoFastMap.h>
-#include <photon/psoSession>
+#include <photon/Session>
 #include <photon/psoErrors.h>
-#include <photon/psoException>
+#include <photon/Exception>
 
 using namespace pso;
 

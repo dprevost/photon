@@ -19,7 +19,7 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Common.h"
-#include <photon/psoLifo.h>
+#include <photon/Lifo.h>
 #include "API/Lifo.h"
 #include "API/Session.h"
 #include <photon/psoErrors.h>

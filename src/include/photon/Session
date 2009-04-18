@@ -49,11 +49,16 @@ class KeyDefinition;
  *
  *   <li>
  *     If you need to open the same Photon object in multiple threads,
- *     simply open it multiple times, for each thread. The overhead of 
- *     having multiple objects to the same shared-memory data container 
- *     is minimal and increases the overall performance of the framework.
+ *     simply open it multiple times using a different session for each
+ *     thread. The overhead of having multiple API objects to the same 
+ *     shared-memory data container is minimal and using this technique
+ *     instead of using multi-thread locks increases the overall 
+ *      performance of the software.
  *   </li>
- *
+ *   <li>
+ *     If you cannot use this, you must implement your own thread 
+ *     synchronization mecanism.
+ *   </li>
  *   <li>
  *     Signal handlers (and similar calls): you should not call the destructors
  *     of the Process or the Session from a signal handler. 
@@ -61,10 +66,6 @@ class KeyDefinition;
  *     to terminate in an orderly fashion.
  *   </li>
  * </ul>
- *
- * If you cannot follow these guidelines for whatever reasons, you should set
- * the parameter \em protectionNeeded of Process::Init to true. This will introduce
- * additional multi-threaded protection (locking) for your applications.
  *
  * Additional note: API objects (or C handles) are just proxies for the real 
  * objects sitting in shared memory. Proper synchronization is already done 
@@ -75,6 +76,10 @@ class PHOTON_EXPORT Session
 {
 public:
    
+   /**
+    * Creates a new empty Session. You must call ::Init() before doing 
+    * anything else.
+    */
    Session();
 
    /**
@@ -137,7 +142,9 @@ public:
     * Create a new object in shared memory.
     *
     * This overloaded method should be used for objects not requiring
-    * a key definition (queues, etc.).
+    * a key definition (queues, etc.). It also uses the name of an
+    * existing data definition instead of requiring a DataDefinition
+    * object.
     *
     * The creation of the object only becomes permanent after a call to 
     * ::Commit.
@@ -145,7 +152,8 @@ public:
     * \param[in] objectName  The fully qualified name of the object. 
     * \param[in] definition  The type of object to create and more.
     * \param[in] dataDefName The name of an existing data definition for
-    *                        the data fields of the object.
+    *                        the data fields of the object. This name is 
+    *                        case sensitive.
     *
     * \exception pso::Exception An abnormal error occured.
     */
@@ -179,7 +187,9 @@ public:
     * Create a new object in shared memory.
     *
     * This overloaded method should be used for objects requiring
-    * a key definition (hash maps, etc.).
+    * a key definition (hash maps, etc.). It also uses the names of 
+    * both an existing data definition and a key definition instead 
+    * of requiring a DataDefinition object and a KeyDefinition object.
     *
     * The creation of the object only becomes permanent after a call to 
     * ::Commit.

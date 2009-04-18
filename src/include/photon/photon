@@ -29,28 +29,28 @@
 #include <photon/psoCommon.h>
 #include <photon/psoPhotonODBC.h>
 
-#include <photon/psoException>
+#include <photon/Exception>
 
 #include <photon/DataDefinition>
 #include <photon/KeyDefinition>
 
-#include <photon/psoProcess>
-#include <photon/psoSession>
-#include <photon/psoFolder>
+#include <photon/Process>
+#include <photon/Session>
+#include <photon/Folder>
 /*
  * Hash maps and fast maps implements the same data container but differs 
  * with respect to transactions. 
  * 
  * Hash maps are read-write and locks are used to insure data integrity.
  * Fast maps are read-only (with an update procedure using the class
- * psoFastMapEditor) and no locks are required.
+ * FastMapEditor) and no locks are required.
  */
 
-#include <photon/psoHashMap>
-#include <photon/psoFastMap>
-#include <photon/psoFastMapEditor>
-#include <photon/psoLifo>
-#include <photon/psoQueue>
+#include <photon/HashMap>
+#include <photon/FastMap>
+#include <photon/FastMapEditor>
+#include <photon/Lifo>
+#include <photon/Queue>
 
 /*
  * The next classes are optional (helper classes).

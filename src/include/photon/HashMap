@@ -142,7 +142,8 @@ public:
     *             the data item. Memory allocation for this buffer is the
     *             responsability of the caller.
     * \param[in]  bufferLength The length of \em buffer (in bytes).
-    * \param[out] returnedLength The actual number of bytes in the data item.
+    * \param[out] returnedLength The actual number of bytes copied in the 
+    *             data buffer.
     *
     * \exception pso::Exception An abnormal error occured.
     */
@@ -169,8 +170,10 @@ public:
     *             the first element. Memory allocation for this buffer is the
     *             responsability of the caller.
     * \param[in]  bufferLength The length of \em buffer (in bytes).
-    * \param[out] retKeyLength The actual number of bytes in the key
-    * \param[out] retDataLength The actual number of bytes in the data item.
+    * \param[out] retKeyLength The actual number of bytes copied in the 
+    *             key buffer.
+    * \param[out] retDataLength The actual number of bytes copied in the 
+    *             data buffer..
     *
     * \return 0 on success or PSO_IS_EMPTY if the hash map is empty.
     *
@@ -205,8 +208,10 @@ public:
     *             the data element. Memory allocation for this buffer is the
     *             responsability of the caller.
     * \param[in]  bufferLength The length of \em buffer (in bytes).
-    * \param[out] retKeyLength The actual number of bytes in the key
-    * \param[out] retDataLength The actual number of bytes in the data item.
+    * \param[out] retKeyLength The actual number of bytes copied in the 
+    *             key buffer.
+    * \param[out] retDataLength The actual number of bytes copied in the 
+    *             data buffer..
     *
     * \return 0 on success or PSO_REACHED_THE_END when the iteration reaches
     *           the end of the hash map.

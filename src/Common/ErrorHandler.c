@@ -4,16 +4,16 @@
  * This file is part of Photon (photonsoftware.org).
  *
  * This file may be distributed and/or modified under the terms of the
- * GNU General Public License version 2 or version 3 as published by the 
- * Free Software Foundation and appearing in the file COPYING.GPL2 and 
+ * GNU General Public License version 2 or version 3 as published by the
+ * Free Software Foundation and appearing in the file COPYING.GPL2 and
  * COPYING.GPL3 included in the packaging of this software.
  *
- * Licensees holding a valid Photon Commercial license can use this file 
+ * Licensees holding a valid Photon Commercial license can use this file
  * in accordance with the terms of their license.
  *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 #include "Common/ErrorHandler.h"
@@ -41,7 +41,7 @@ static struct psocThreadLock g_lock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * Handles the generation of the error message for errno.
  *
  * This function is static (private to the current module).
@@ -59,18 +59,18 @@ static int psocGetErrnoMsg( int errnum, char * msg, unsigned int msgLength )
 {
    int errcode = 0;
    char* s = NULL;
-   
+
    PSO_PRE_CONDITION( msg != NULL );
-   
+
    /* To remove gcc warning messages */
    errcode = errcode;
    s = s;
-   
+
    if ( msgLength > 0 ) {
 #if HAVE_STRERROR_R
 #  if STRERROR_R_CHAR_P
       /* That's a weird API call. I've added checks which are likely redundant
-       * but... I think it's safer this way.  
+       * but... I think it's safer this way.
        */
       errno = 0;
       s = strerror_r( errnum, msg, msgLength );
@@ -95,7 +95,7 @@ static int psocGetErrnoMsg( int errnum, char * msg, unsigned int msgLength )
 
 #if defined (WIN32)
 
-/** 
+/**
  * Handles the generation of the error message for WSAGetLastError() on Win32.
  *
  * This function is static (private to the current module).
@@ -148,22 +148,22 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Operation now in progress", msgLength - 1 );
          break;
       case WSAEALREADY: /* 10037 */
-         strncpy( msg, "Operation already in progress", 
+         strncpy( msg, "Operation already in progress",
                   msgLength - 1 );
          break;
       case WSAENOTSOCK: /* 10038 */
-         strncpy( msg, "Socket operation on non-socket", 
+         strncpy( msg, "Socket operation on non-socket",
                   msgLength - 1 );
          break;
       case WSAEDESTADDRREQ: /* 10039 */
-         strncpy( msg, "Destination address required", 
+         strncpy( msg, "Destination address required",
                   msgLength - 1 );
          break;
       case WSAEMSGSIZE: /* 10040 */
          strncpy( msg, "Message too long", msgLength - 1 );
          break;
       case WSAEPROTOTYPE: /* 10041 */
-         strncpy( msg, "Protocol wrong type for socket", 
+         strncpy( msg, "Protocol wrong type for socket",
                   msgLength - 1 );
          break;
       case WSAENOPROTOOPT: /* 10042 */
@@ -176,22 +176,22 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Socket type not supported", msgLength - 1 );
          break;
       case WSAEOPNOTSUPP: /* 10045 */
-         strncpy( msg, "Operation not supported on socket", 
+         strncpy( msg, "Operation not supported on socket",
                   msgLength - 1 );
          break;
       case WSAEPFNOSUPPORT: /* 10046 */
-         strncpy( msg, "Protocol family not supported", 
+         strncpy( msg, "Protocol family not supported",
                   msgLength - 1 );
          break;
       case WSAEAFNOSUPPORT: /* 10047 */
-         strncpy( msg, "Address family not supported", 
+         strncpy( msg, "Address family not supported",
                   msgLength - 1 );
          break;
       case WSAEADDRINUSE: /* 10048 */
          strncpy( msg, "Address already in use", msgLength - 1 );
          break;
       case WSAEADDRNOTAVAIL: /* 10049 */
-         strncpy( msg, "Can't assign requested address", 
+         strncpy( msg, "Can't assign requested address",
                   msgLength - 1 );
          break;
       case WSAENETDOWN: /* 10050 */
@@ -204,7 +204,7 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Net connection reset", msgLength - 1 );
          break;
       case WSAECONNABORTED: /* 10053 */
-         strncpy( msg, "Software caused connection abort", 
+         strncpy( msg, "Software caused connection abort",
                   msgLength - 1 );
          break;
       case WSAECONNRESET: /* 10054 */
@@ -220,11 +220,11 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Socket is not connected", msgLength - 1 );
          break;
       case WSAESHUTDOWN: /* 10058 */
-         strncpy( msg, "Can't send after socket shutdown", 
+         strncpy( msg, "Can't send after socket shutdown",
                   msgLength - 1 );
          break;
       case WSAETOOMANYREFS: /* 10059 */
-         strncpy( msg, "Too many references, can't splice", 
+         strncpy( msg, "Too many references, can't splice",
                   msgLength - 1 );
          break;
       case WSAETIMEDOUT: /* 10060 */
@@ -234,7 +234,7 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Connection refused", msgLength - 1 );
          break;
       case WSAELOOP: /* 10062 */
-         strncpy( msg, "Too many levels of symbolic links", 
+         strncpy( msg, "Too many levels of symbolic links",
                   msgLength - 1 );
          break;
       case WSAENAMETOOLONG: /* 10063 */
@@ -262,29 +262,29 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Stale NFS file handle", msgLength - 1 );
          break;
       case WSAEREMOTE: /* 10071 */
-         strncpy( msg, "Too many levels of remote in path", 
+         strncpy( msg, "Too many levels of remote in path",
                   msgLength - 1 );
          break;
       case WSASYSNOTREADY: /* 10091 */
-         strncpy( msg, "Network system is unavailable", 
+         strncpy( msg, "Network system is unavailable",
                   msgLength - 1 );
          break;
       case WSAVERNOTSUPPORTED: /* 10092 */
-         strncpy( msg, "Winsock version out of range", 
+         strncpy( msg, "Winsock version out of range",
                   msgLength - 1 );
          break;
       case WSANOTINITIALISED: /* 10093 */
          strncpy( msg, "WSAStartup not yet called", msgLength - 1 );
          break;
       case WSAEDISCON: /* 10101 */
-         strncpy( msg, "Graceful shutdown in progress", 
+         strncpy( msg, "Graceful shutdown in progress",
                   msgLength - 1 );
          break;
       case WSAHOST_NOT_FOUND: /* 11001 */
          strncpy( msg, "Host not found", msgLength - 1 );
          break;
       case WSANO_DATA: /* 11004 */
-         strncpy( msg, "No host data of that type was found", 
+         strncpy( msg, "No host data of that type was found",
                   msgLength - 1 );
          break;
 
@@ -292,7 +292,7 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
          strncpy( msg, "Unknown socket error code", msgLength - 1 );
          msg[msgLength-1] = '\0';
          return -1;
-         
+
       }
    }
 
@@ -302,7 +302,7 @@ static int psocGetSockErrMsg( int errnum, char * msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * Handles the generation of the error message for GetLastError() on Win32.
  *
  * This function is static (private to the current module).
@@ -320,19 +320,19 @@ static int psocGetWinErrMsg( int errnum, char * msg, unsigned int msgLength )
 {
    char* buff = NULL;
    DWORD len;
-   
+
    PSO_PRE_CONDITION( msg != NULL );
 
    if ( msgLength > 0 ) {
       len = FormatMessageA(
-         FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+         FORMAT_MESSAGE_ALLOCATE_BUFFER |
          FORMAT_MESSAGE_FROM_SYSTEM,
          NULL,
          errnum,
          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
          buff,
          0, NULL );
-      
+
       if ( len == 0 ) {
          fprintf( stderr, "Abnormal error in FormatMessage, error = %d\n",
                   GetLastError() );
@@ -350,7 +350,7 @@ static int psocGetWinErrMsg( int errnum, char * msg, unsigned int msgLength )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * This function should normally be called at the beginning of a program.
  * If included in a dynamic library, it might be called by the library
  * initialization routine. This routine uses the singleton pattern in case
@@ -377,7 +377,7 @@ bool psocInitErrorDefs()
          psocAcquireThreadLock( &g_lock );
          if ( g_definition == NULL ) {
             length = offsetof(psocErrorDefinition,name) + strlen("errno") + 1;
-         
+
             g_definition = malloc( length );
             if ( g_definition == NULL ) {
                fprintf( stderr, "Abnormal error in malloc\n" );
@@ -390,9 +390,9 @@ bool psocInitErrorDefs()
                g_definition->next        = NULL;
                strcpy( g_definition->name, "errno" );
 #if defined (WIN32 )
-               length = offsetof(psocErrorDefinition,name) + 
+               length = offsetof(psocErrorDefinition,name) +
                   strlen("Windows error") + 1;
-         
+
                pDefinition = malloc( length );
                if ( pDefinition == NULL ) {
                   fprintf( stderr, "Abnormal error in malloc\n" );
@@ -404,13 +404,13 @@ bool psocInitErrorDefs()
                   pDefinition->handler     = &psocGetWinErrMsg;
                   pDefinition->next        = NULL;
                   strcpy( pDefinition->name, "Windows error" );
-              
+
                   g_definition->next = pDefinition;
                   previous = pDefinition;
 
-                  length = offsetof(psocErrorDefinition,name) + 
+                  length = offsetof(psocErrorDefinition,name) +
                      strlen("Windows socket error") + 1;
-         
+
                   pDefinition = malloc( length );
                   if ( pDefinition == NULL ) {
                      fprintf( stderr, "Abnormal error in malloc\n" );
@@ -422,7 +422,7 @@ bool psocInitErrorDefs()
                      pDefinition->handler     = &psocGetSockErrMsg;
                      pDefinition->next        = NULL;
                      strcpy( pDefinition->name, "Windows socket error" );
-          
+
                      previous->next = pDefinition;
                   }
                } /* The second check on malloc failure */
@@ -432,13 +432,13 @@ bool psocInitErrorDefs()
          psocReleaseThreadLock( &g_lock );
       } /* if initlock == true ) */
    } /* The first check on g_definition == NULL */
-   
+
    return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * This function should normally be called at the end of a program.
  * If included in a dynamic library, it might be called by the library
  * deallocation routine. This routine uses the singleton pattern in case
@@ -461,7 +461,7 @@ void psocFiniErrorDefs()
             pDefinition = pNext;
          }
          while ( pDefinition != NULL );
-         
+
       }
       psocReleaseThreadLock( &g_lock );
    }
@@ -470,13 +470,13 @@ void psocFiniErrorDefs()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * \param[in]   name    A name for the message type. It is use to identify
  *                      the provenance of the error in error messages.
- * \param[in]   handler A pointer to the function used to transform the 
+ * \param[in]   handler A pointer to the function used to transform the
  *                      error code into an error message.
  *
- * \return The function returns an opaque handle on success or 
+ * \return The function returns an opaque handle on success or
  *         ::PSOC_NO_ERRHANDLER on error.
 
  * \pre \em name cannot be NULL.
@@ -485,12 +485,12 @@ void psocFiniErrorDefs()
  * \invariant g_definition cannot be NULL.
  */
 
-psocErrMsgHandle psocAddErrorMsgHandler( const char          * name, 
+psocErrMsgHandle psocAddErrorMsgHandler( const char          * name,
                                          psocErrMsgHandler_T   handler )
 {
    int length;
    psocErrMsgHandle handle = PSOC_NO_ERRHANDLER, i;
-   
+
    psocErrorDefinition * pDefinition   = NULL;
    psocErrorDefinition * nextAvailable = NULL;
 
@@ -501,10 +501,10 @@ psocErrMsgHandle psocAddErrorMsgHandler( const char          * name,
    psocAcquireThreadLock( &g_lock );
 
    length = offsetof(psocErrorDefinition,name) + strlen( name ) + 1;
-         
+
    pDefinition = malloc( length );
    if ( pDefinition == NULL ) return handle;
-   
+
    pDefinition->initialized = PSOC_ERROR_DEFINITION_SIGNATURE;
    pDefinition->next = NULL;
    strcpy( pDefinition->name, name );
@@ -517,14 +517,14 @@ psocErrMsgHandle psocAddErrorMsgHandler( const char          * name,
          psocReleaseThreadLock( &g_lock );
          return handle;
       }
-      
+
       nextAvailable = nextAvailable->next;
       i++;
    }
-   
+
    nextAvailable->next = pDefinition;
    handle = i;
-   
+
    psocReleaseThreadLock( &g_lock );
 
    return handle;
@@ -532,7 +532,7 @@ psocErrMsgHandle psocAddErrorMsgHandler( const char          * name,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * \param[in]  pErrorHandler A pointer to the psocErrorHandler struct itself.
  *
  * \pre \em pErrorHandler cannot be NULL.
@@ -542,7 +542,7 @@ psocErrMsgHandle psocAddErrorMsgHandler( const char          * name,
 void psocInitErrorHandler( psocErrorHandler * pErrorHandler )
 {
    int i;
-   
+
    PSO_INV_CONDITION( g_definition  != NULL );
    PSO_PRE_CONDITION( pErrorHandler != NULL );
 
@@ -556,20 +556,20 @@ void psocInitErrorHandler( psocErrorHandler * pErrorHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
+/**
  * \param[in]  pErrorHandler A pointer to the psocErrorHandler struct itself.
  *
  * \pre \em pErrorHandler cannot be NULL.
  *
- * \invariant \em pErrorHandler->initialized must equal 
+ * \invariant \em pErrorHandler->initialized must equal
  *                ::PSOC_ERROR_HANDLER_SIGNATURE.
  */
 void psocFiniErrorHandler( psocErrorHandler * pErrorHandler )
 {
    int i;
-   
+
    PSO_PRE_CONDITION( pErrorHandler != NULL );
-   PSO_INV_CONDITION( 
+   PSO_INV_CONDITION(
       pErrorHandler->initialized == PSOC_ERROR_HANDLER_SIGNATURE );
 
    for ( i = 0; i < PSOC_ERROR_CHAIN_LENGTH; ++i ) {
@@ -582,13 +582,13 @@ void psocFiniErrorHandler( psocErrorHandler * pErrorHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
- * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct 
+/**
+ * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct
  *                              itself.
  * \param[in,out] msg           The buffer that will hold the message.
  * \param[in]     maxLength     The length (in bytes) of \em msg.
  *
- * \return The length of the message (or zero on error, for example when 
+ * \return The length of the message (or zero on error, for example when
  *         acquiring the lock fails).
  *
  * \pre \em pErrorHandler cannot be NULL.
@@ -596,12 +596,12 @@ void psocFiniErrorHandler( psocErrorHandler * pErrorHandler )
  * \pre \em maxLength must be greater than zero.
  *
  * \invariant \em g_definition cannot be NULL.
- * \invariant \em pErrorHandler->initialized must equal 
+ * \invariant \em pErrorHandler->initialized must equal
  *                ::PSOC_ERROR_HANDLER_SIGNATURE.
  */
-size_t 
+size_t
 psocGetErrorMsg( psocErrorHandler * pErrorHandler,
-                 char             * msg, 
+                 char             * msg,
                  size_t             maxLength )
 {
    size_t len, length = maxLength, msgStart = 0;
@@ -611,11 +611,11 @@ psocGetErrorMsg( psocErrorHandler * pErrorHandler,
 
    PSO_INV_CONDITION( g_definition != NULL );
    PSO_PRE_CONDITION( pErrorHandler != NULL );
-   PSO_INV_CONDITION( 
+   PSO_INV_CONDITION(
       pErrorHandler->initialized == PSOC_ERROR_HANDLER_SIGNATURE );
    PSO_PRE_CONDITION( msg != NULL );
-   PSO_PRE_CONDITION( maxLength > 0 );   
-   
+   PSO_PRE_CONDITION( maxLength > 0 );
+
    if ( ! psocTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
@@ -633,8 +633,8 @@ psocGetErrorMsg( psocErrorHandler * pErrorHandler,
          return 0;
       }
 
-      nextAvailable->handler( pErrorHandler->errorCode[k], 
-                              &msg[msgStart], 
+      nextAvailable->handler( pErrorHandler->errorCode[k],
+                              &msg[msgStart],
                               length );
       /* Just in case */
       len = strnlen( &msg[msgStart], length );
@@ -646,7 +646,7 @@ psocGetErrorMsg( psocErrorHandler * pErrorHandler,
       }
       msgStart += len;
    }
-   
+
    psocReleaseThreadLock( &g_lock );
 
    msg[maxLength-1] = '\0';
@@ -654,20 +654,20 @@ psocGetErrorMsg( psocErrorHandler * pErrorHandler,
    return strnlen( msg, maxLength );
 }
 
-/** 
- * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct 
+/**
+ * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct
  *                              itself.
  *
- * \return The length of the message (or zero on error, for example when 
+ * \return The length of the message (or zero on error, for example when
  *         acquiring the lock fails).
  *
  * \pre \em pErrorHandler cannot be NULL.
  *
  * \invariant \em g_definition cannot be NULL.
- * \invariant \em pErrorHandler->initialized must equal 
+ * \invariant \em pErrorHandler->initialized must equal
  *                ::PSOC_ERROR_HANDLER_SIGNATURE.
  */
-size_t 
+size_t
 psocGetErrorMsgLength( psocErrorHandler * pErrorHandler )
 {
    size_t len, sum = 0;
@@ -678,9 +678,9 @@ psocGetErrorMsgLength( psocErrorHandler * pErrorHandler )
 
    PSO_INV_CONDITION( g_definition != NULL );
    PSO_PRE_CONDITION( pErrorHandler != NULL );
-   PSO_INV_CONDITION( 
+   PSO_INV_CONDITION(
       pErrorHandler->initialized == PSOC_ERROR_HANDLER_SIGNATURE );
-   
+
    if ( ! psocTryAcquireThreadLock( &g_lock, 100 ) ) return 0;
 
    for ( k = 0; k < pErrorHandler->chainLength; ++k ) {
@@ -698,16 +698,16 @@ psocGetErrorMsgLength( psocErrorHandler * pErrorHandler )
          return 0;
       }
 
-      nextAvailable->handler( pErrorHandler->errorCode[k], 
-                              tmpMsg, 
+      nextAvailable->handler( pErrorHandler->errorCode[k],
+                              tmpMsg,
                               4096 );
       /* Just in case */
       len = strnlen( tmpMsg, 4096 );
-      PSO_POST_CONDITION( len < 4096 );      
+      PSO_POST_CONDITION( len < 4096 );
       sum += len;
 
    }
-   
+
    psocReleaseThreadLock( &g_lock );
 
    return sum;
@@ -715,8 +715,8 @@ psocGetErrorMsgLength( psocErrorHandler * pErrorHandler )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
- * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct 
+/**
+ * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct
  *                              itself.
  * \param[in,out] handle        Handle to the type of error codes/messages.
  * \param[in]     errorCode     The error code itself.
@@ -726,23 +726,25 @@ psocGetErrorMsgLength( psocErrorHandler * pErrorHandler )
  *          returned by ::psocAddErrorMsgHandler
  *
  * \invariant \em g_definition cannot be NULL.
- * \invariant \em pErrorHandler->initialized must equal 
+ * \invariant \em pErrorHandler->initialized must equal
  *                ::PSOC_ERROR_HANDLER_SIGNATURE.
  */
-void psocSetError( psocErrorHandler * pErrorHandler, 
+void psocSetError( psocErrorHandler * pErrorHandler,
                    psocErrMsgHandle   handle,
                    int                errorCode )
 {
+#if defined(USE_DBC)
    int i;
    psocErrorDefinition * nextAvailable = NULL;
+#endif
 
    PSO_INV_CONDITION( g_definition != NULL );
 
    PSO_PRE_CONDITION( pErrorHandler != NULL );
-   PSO_INV_CONDITION( 
+   PSO_INV_CONDITION(
       pErrorHandler->initialized == PSOC_ERROR_HANDLER_SIGNATURE );
 
-   /* 
+   /*
     * Was the error handler initialized?
     * Note: if we fail to get the lock we go on anyway since the lock
     * is only used for testing the pre-condition.
@@ -755,7 +757,7 @@ void psocSetError( psocErrorHandler * pErrorHandler,
          nextAvailable = nextAvailable->next;
          ++i;
       }
-   
+
       psocReleaseThreadLock( &g_lock );
       PSO_PRE_CONDITION(  i >= handle );
    }
@@ -768,8 +770,8 @@ void psocSetError( psocErrorHandler * pErrorHandler,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** 
- * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct 
+/**
+ * \param[in]     pErrorHandler A pointer to the psocErrorHandler struct
  *                              itself.
  * \param[in,out] handle        Handle to the type of error codes/messages.
  * \param[in]     errorCode     The error code itself.
@@ -779,27 +781,29 @@ void psocSetError( psocErrorHandler * pErrorHandler,
  *          returned by ::psocAddErrorMsgHandler.
  *
  * \invariant \em g_definition cannot be NULL.
- * \invariant \em pErrorHandler->initialized must equal 
+ * \invariant \em pErrorHandler->initialized must equal
  *                ::PSOC_ERROR_HANDLER_SIGNATURE.\
  * \invariant The length of the chain of errors must ge greater than zero
  *            and less than ::PSOC_ERROR_CHAIN_LENGTH.
  */
-void psocChainError( psocErrorHandler * pErrorHandler, 
+void psocChainError( psocErrorHandler * pErrorHandler,
                      psocErrMsgHandle   handle,
                      int                errorCode )
 {
+#if defined(USE_DBC)
    int i;
    psocErrorDefinition * nextAvailable = NULL;
+#endif
 
    PSO_INV_CONDITION( g_definition != NULL );
 
    PSO_PRE_CONDITION( pErrorHandler != NULL );
-   PSO_INV_CONDITION( 
+   PSO_INV_CONDITION(
       pErrorHandler->initialized == PSOC_ERROR_HANDLER_SIGNATURE );
-   PSO_INV_CONDITION( pErrorHandler->chainLength > 0 && 
+   PSO_INV_CONDITION( pErrorHandler->chainLength > 0 &&
                       pErrorHandler->chainLength < PSOC_ERROR_CHAIN_LENGTH );
-   
-   /* 
+
+   /*
     * Was the error handler initialized?
     * Note: if we fail to get the lock we go on anyway since the lock
     * is only used for testing the pre-condition.
@@ -812,7 +816,7 @@ void psocChainError( psocErrorHandler * pErrorHandler,
          nextAvailable = nextAvailable->next;
          ++i;
       }
-   
+
       psocReleaseThreadLock( &g_lock );
       PSO_PRE_CONDITION( i >= handle );
    }

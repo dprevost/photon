@@ -19,11 +19,11 @@
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 #include "Common/Common.h"
-#include <photon/psoSession>
+#include <photon/Session>
 #include <photon/psoSession.h>
 #include <photon/psoErrors.h>
 #include "API/Session.h"
-#include <photon/psoException>
+#include <photon/Exception>
 #include <photon/DataDefinition>
 #include <photon/KeyDefinition>
 #include <photon/DataDefinition.h>
