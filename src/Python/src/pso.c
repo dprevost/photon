@@ -138,6 +138,10 @@ initpso(void)
    PyModule_AddIntConstant( m, "FAST_MAP", PSO_FAST_MAP );
    PyModule_AddIntConstant( m, "QUEUE",    PSO_QUEUE );
 
+   /* Definition types */
+   PyModule_AddIntConstant( m, "USER_DEFINED", PSO_DEF_USER_DEFINED );
+   PyModule_AddIntConstant( m, "ODBC_SIMPLE",  PSO_DEF_PHOTON_ODBC_SIMPLE );
+   
    /* Iterators - needed ? */
    PyModule_AddIntConstant( m, "FIRST", PSO_FIRST );
    PyModule_AddIntConstant( m, "NEXT",  PSO_NEXT );

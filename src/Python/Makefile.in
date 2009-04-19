@@ -40,6 +40,6 @@ install: all
 clean:
 	-rm -rf build
 	-rm -rf dist
-	-rm -rf *~ core *.so
+	-rm -rf *~ core *.so src/*~
 
 

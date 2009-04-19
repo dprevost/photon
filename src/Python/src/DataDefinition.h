@@ -30,6 +30,8 @@ typedef struct {
    PyObject * name;
 
    PyObject * defType;
+   
+   /* dataDef is a PyBufferObject */
    PyObject * dataDef;
    int        dataDefLength;
    
@@ -87,12 +89,14 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    int type, length;
    PyObject * defType = NULL;
    
-   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "OSiOi", kwlist, 
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "OS|iOi", kwlist, 
       &session, &name, &type, &dataDef, &length) ) {
       return -1; 
    }
    
- //    DataDefinition( Session                & session,
+   def->sessionHandle = ((Session *)session)->handle;
+
+   //    DataDefinition( Session                & session,
    //                const std::string        name,
      //              enum psoDefinitionType   type,
        //            const unsigned char    * dataDef,
@@ -100,12 +104,20 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 
    defType = GetDefinitionType( type );
    if ( defType == NULL ) return -1;
-
+   tmp = def->defType;
+   def->defType = defType;
+   Py_XDECREF(tmp);
+   
    tmp = def->name;
    Py_INCREF(name);
    def->name = name;
    Py_XDECREF(tmp);
 
+   tmp = def->dataDef;
+   Py_INCREF(dataDef);
+   def->dataDef = dataDef;
+   Py_XDECREF(tmp);
+   
    def->fieldType = fieldType;
    def->intType = type;
    def->length = length;
