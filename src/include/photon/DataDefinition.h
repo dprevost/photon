@@ -35,7 +35,22 @@ extern "C" {
  */
 /**
  * \defgroup psoDataDefinition_c API functions for Photon data definitions.
+ *
+ * Objects in Photon must be associated with a data definition. These data
+ * definitions are useful for essentially two reasons:
+ *
+ *  They provide an easy way to examine the type of content of specific 
+ *  objects (the list of fields, for example).
  * 
+ *  Data definitions are also needed to identify the content to object
+ *  oriented languages to allow for the proper serialization of objects
+ *  as an array of bytes and the deserialization of the array of bytes
+ *  back to an object.
+ *
+ *  This last point is important since Photon can manage different types
+ *  of data: record-oriented structures (ideal for COBOL, C), RDB rows and 
+ *  serialized objects (Java, C#, etc.).
+ *
  */
 /*@{*/
 
