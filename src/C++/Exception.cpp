@@ -23,7 +23,7 @@
 
 #include "Common/Common.h"
 #include <photon/Exception>
-#include <photon/psoSession.h>
+#include <photon/Session.h>
 #include <Nucleus/psoErrorHandler.h>
 
 using namespace std;
