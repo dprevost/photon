@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/psoFolder.h>
+#include <photon/Folder.h>
 #include <photon/psoErrors.h>
 
 using namespace pso;

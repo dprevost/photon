@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/Session>
-#include <photon/psoSession.h>
+#include <photon/Session.h>
 #include <photon/psoErrors.h>
 #include "API/Session.h"
 #include <photon/Exception>
