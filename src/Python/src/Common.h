@@ -56,6 +56,23 @@ static void SetException( int errcode )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+PyObject * GetDefinitionType( enum psoDefinitionType type )
+{
+   switch (type) {
+      
+   case PSO_DEF_USER_DEFINED:
+      return PyString_FromString( "User defined" );
+   case PSO_DEF_PHOTON_ODBC_SIMPLE:
+      return PyString_FromString( "ODBC Simple" );
+   default:
+      return PyString_FromString( "Unknown definition type" );
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if 0
+
 PyObject * GetFieldType( enum psoFieldType type )
 {
    switch (type) {
@@ -99,6 +116,7 @@ PyObject * GetKeyType( enum psoKeyType type )
 
    return PyString_FromString( "Unknown Type" );
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -188,14 +206,15 @@ GetString( const char * s, Py_ssize_t len)
 
 /* The C struct first */
 #include "ObjStatus.h"
-#include "KeyDefinition.h"
-#include "BasicDef.h"
-#include "FieldDefinition.h"
+#include "DataDefinition.h"
+//#include "KeyDefinition.h"
+//#include "BasicDef.h"
+//#include "FieldDefinition.h"
 #include "FolderEntry.h"
 #include "Info.h"
 
-#include "Session.h"
-#include "Folder.h"
+//#include "Session.h"
+//#include "Folder.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
