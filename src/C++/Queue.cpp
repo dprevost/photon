@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/psoQueue.h>
+#include <photon/Queue.h>
 #include "API/Queue.h"
 #include "API/Session.h"
 

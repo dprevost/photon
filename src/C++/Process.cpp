@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/Process>
-#include <photon/psoProcess.h>
+#include <photon/Process.h>
 #include <photon/psoErrors.h>
 #include <photon/Exception>
 

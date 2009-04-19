@@ -20,7 +20,7 @@
 
 #include "Common/Common.h"
 #include <photon/photon>
-#include <photon/psoHashMap.h>
+#include <photon/HashMap.h>
 #include "API/HashMap.h"
 #include "API/Session.h"
 
