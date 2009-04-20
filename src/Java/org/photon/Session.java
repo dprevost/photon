@@ -177,7 +177,7 @@ public class Session {
       errcode = psoCreateObject( handle, 
                                  objectName, 
                                  definition,
-                                 dataDef );
+                                 dataDef.handle );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -257,8 +257,8 @@ public class Session {
       errcode = psoCreateKeyedObject( handle, 
                                       objectName, 
                                       definition,
-                                      keyDef,
-                                      dataDef );
+                                      keyDef.handle,
+                                      dataDef.handle );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -526,7 +526,7 @@ public class Session {
    private native int psoCreateObject( long             handle,
                                        String           objectName,
                                        ObjectDefinition definition, 
-                                       DataDefinition   dataDef );
+                                       long             dataDefHandle );
 
    private native int psoCreateObjectEx( long             handle,
                                          String           objectName,
@@ -536,8 +536,8 @@ public class Session {
    private native int psoCreateKeyedObject( long             handle,
                                             String           objectName,
                                             ObjectDefinition definition, 
-                                            KeyDefinition    keyDef,
-                                            DataDefinition   dataDef );
+                                            long             keyDefHandle,
+                                            long             dataDefHandle );
 
    private native int psoCreateKeyedObjectEx( long             handle,
                                               String           objectName,

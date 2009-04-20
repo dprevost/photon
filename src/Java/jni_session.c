@@ -65,99 +65,77 @@ Java_org_photon_Session_psoCommit( JNIEnv  * env,
 
 /*
  * Class:     org_photon_Session
- * Method:    psoCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;[Lorg/photon/FieldDefinition;)I
+ * Method:    psoCreateFolder
+ * Signature: (JLjava/lang/String;)I
  */
-JNIEXPORT jint JNICALL 
-Java_org_photon_Session_psoCreateObject( JNIEnv     * env,
-                                         jobject      jobj,
-                                         jlong        jhandle,
-                                         jstring      jname,
-                                         jobject      jdef,
-                                         jobject      jkey,
-                                         jobjectArray jfields )
+JNIEXPORT jint JNICALL
+Java_org_photon_Session_psoCreateFolder( JNIEnv * env,
+                                         jobject  jobj,
+                                         jlong    jhandle,
+                                         jstring  jname )
 {
    int errcode;
 
    /* Native variables */
    size_t handle = (size_t) jhandle;
    const char * name;
+
+   name = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( name == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoCreateFolder( (PSO_HANDLE) handle,
+                              name,
+                              strlen(name) );
+
+   (*env)->ReleaseStringUTFChars( env, jname, name );
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Session
+ * Method:    psoCreateObject
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;J)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_photon_Session_psoCreateObject( JNIEnv * env,
+                                         jobject  jobj,
+                                         jlong    jhandle,
+                                         jstring  jname,
+                                         jobject  jdefinition,
+                                         jlong    jdataDefHandle )
+{
+   int errcode;
+
+   /* Native variables */
+   size_t handle = (size_t) jhandle;
+   size_t dataDefHandle = (size_t) jdataDefHandle;
+   const char * name;
    psoObjectDefinition definition;
-   psoKeyDefinition key, * pKey = NULL;
-   psoFieldDefinition  * pFields = NULL;
    
    /* jni variables needed to access the jvm data */
-   jsize  length, i;
-   jobject objField;
-   jstring jfieldName;
    jobject jTypeObj;
    
    /*
     * Note: types are usually set using an enum. So we must extract
     * the enum object first before we can access the int field.
     */
-   jTypeObj = (*env)->GetObjectField( env, jdef, g_idObjDefType );
+   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
    definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
    (*env)->DeleteLocalRef( env, jTypeObj );
 
-#if 0
-   definition.numFields = (*env)->GetIntField( env, jdef, g_idObjDefNumFields );
-   
-   if ( jkey != NULL ) {
-      jTypeObj = (*env)->GetObjectField( env, jkey, g_idKeyDefType );
-      key.type = (*env)->GetIntField( env, jTypeObj, g_idKeyTypeType );
-      (*env)->DeleteLocalRef( env, jTypeObj );
-
-      key.length    = (*env)->GetIntField( env, jkey, g_idKeyDefLength );
-      key.minLength = (*env)->GetIntField( env, jkey, g_idKeyDefMinLength );
-      key.maxLength = (*env)->GetIntField( env, jkey, g_idKeyDefMaxLength );
-      
-      pKey = &key;
-   }
-
-   if ( jfields != NULL ) {
-      length = (*env)->GetArrayLength( env, jfields );
-      if ( (jsize)definition.numFields != length ) {
-         return PSO_INVALID_NUM_FIELDS;
-      }
-      else {
-         pFields = malloc( sizeof(psoFieldDefinition)*length );
-         if ( pFields == NULL ) { return PSO_NOT_ENOUGH_HEAP_MEMORY; }
-      }
-
-      /*
-       * Warning! At this point, memory leaks are possible. We have
-       * to be careful on errors.
-       */
-   
-      for ( i = 0; i < length; ++i ) {
-         objField = (*env)->GetObjectArrayElement( env, jfields, i );
-
-         jfieldName = (*env)->GetObjectField( env, objField, g_idFieldDefName );
-         name = (*env)->GetStringUTFChars( env, jfieldName, NULL );
-         if ( name == NULL ) {
-            free(pFields);
-            return PSO_NOT_ENOUGH_HEAP_MEMORY;
-         }
-         strncpy( pFields[i].name, name, PSO_MAX_FIELD_LENGTH );
-         (*env)->ReleaseStringUTFChars( env, jfieldName, name );
-
-         jTypeObj = (*env)->GetObjectField( env, objField, g_idFieldDefType );
-         pFields[i].type = (*env)->GetIntField( env, jTypeObj, g_idFieldTypeType );
-         (*env)->DeleteLocalRef( env, jTypeObj );
-      
-         pFields[i].length    = (*env)->GetIntField( env, objField, g_idFieldDefLength );
-         pFields[i].minLength = (*env)->GetIntField( env, objField, g_idFieldDefMinLength );
-         pFields[i].maxLength = (*env)->GetIntField( env, objField, g_idFieldDefMaxLength );
-         pFields[i].precision = (*env)->GetIntField( env, objField, g_idFieldDefPrecision );
-         pFields[i].scale     = (*env)->GetIntField( env, objField, g_idFieldDefScale );
-         (*env)->DeleteLocalRef( env, objField );
-      }
-   }
+   definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
+   definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumOfDataRecords );
+   definition.minNumBlocks = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumBlocks );
    
    name = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( name == NULL ) {
-      if ( pFields != NULL ) free(pFields);
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
@@ -165,12 +143,139 @@ Java_org_photon_Session_psoCreateObject( JNIEnv     * env,
                               name,
                               strlen(name),
                               &definition,
-                              pKey,
-                              pFields );
-
+                              (PSO_HANDLE)dataDefHandle );
+   
    (*env)->ReleaseStringUTFChars( env, jname, name );
-   if ( pFields != NULL ) free(pFields);
-#endif
+
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/*
+ * Class:     org_photon_Session
+ * Method:    psoCreateObjectEx
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_photon_Session_psoCreateObjectEx( JNIEnv * env,
+                                           jobject  jobj,
+                                           jlong    jhandle,
+                                           jstring  jname,
+                                           jobject  jdefinition,
+                                           jstring  jdataDefName )
+{
+   int errcode;
+
+   /* Native variables */
+   size_t handle = (size_t) jhandle;
+   PSO_HANDLE dataDefHandle = NULL;
+   const char * name;
+   psoObjectDefinition definition;
+   const char * dataDefName;
+   
+   /* jni variables needed to access the jvm data */
+   jobject jTypeObj;
+   
+   /*
+    * Note: types are usually set using an enum. So we must extract
+    * the enum object first before we can access the int field.
+    */
+   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
+   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
+   (*env)->DeleteLocalRef( env, jTypeObj );
+
+   definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
+   definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumOfDataRecords );
+   definition.minNumBlocks = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumBlocks );
+
+   dataDefName = (*env)->GetStringUTFChars( env, jdataDefName, NULL );
+   if ( dataDefName == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoDataDefOpen( (PSO_HANDLE)handle,
+                             dataDefName,
+                             strlen(dataDefName),
+                             &dataDefHandle );
+   (*env)->ReleaseStringUTFChars( env, jdataDefName, dataDefName );
+   if ( errcode == 0 ) {
+   
+      name = (*env)->GetStringUTFChars( env, jname, NULL );
+      if ( name == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+      }
+
+      errcode = psoCreateObject( (PSO_HANDLE) handle,
+                                 name,
+                                 strlen(name),
+                                 &definition,
+                                 (PSO_HANDLE)dataDefHandle );
+   
+      (*env)->ReleaseStringUTFChars( env, jname, name );
+      psoDataDefClose( dataDefHandle );
+   }
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Session
+ * Method:    psoCreateKeyedObject
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;JJ)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_photon_Session_psoCreateKeyedObject( JNIEnv * env,
+                                              jobject  jobj,
+                                              jlong    jhandle,
+                                              jstring  jname,
+                                              jobject  jdefinition,
+                                              jlong    jdataDefHandle,
+                                              jlong    jkeyDefHandle )
+{
+   int errcode;
+
+   /* Native variables */
+   size_t handle = (size_t) jhandle;
+   size_t dataDefHandle = (size_t) jdataDefHandle;
+   size_t keyDefHandle  = (size_t) jkeyDefHandle;
+   const char * name;
+   psoObjectDefinition definition;
+   
+   /* jni variables needed to access the jvm data */
+   jobject jTypeObj;
+   
+   /*
+    * Note: types are usually set using an enum. So we must extract
+    * the enum object first before we can access the int field.
+    */
+   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
+   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
+   (*env)->DeleteLocalRef( env, jTypeObj );
+
+   definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
+   definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumOfDataRecords );
+   definition.minNumBlocks = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumBlocks );
+   
+   name = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( name == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoCreateKeyedObject( (PSO_HANDLE) handle,
+                                   name,
+                                   strlen(name),
+                                   &definition,
+                                   (PSO_HANDLE)dataDefHandle,
+                                   (PSO_HANDLE)keyDefHandle );
+   
+   (*env)->ReleaseStringUTFChars( env, jname, name );
 
    return errcode;
 }
@@ -227,7 +332,7 @@ Java_org_photon_Session_psoFini( JNIEnv  * env,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
+#if 0
 /*
  * Class:     org_photon_Session
  * Method:    psoGetDefinition
@@ -355,6 +460,7 @@ Java_org_photon_Session_psoGetDefinition( JNIEnv  * env,
 
    return errcode;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

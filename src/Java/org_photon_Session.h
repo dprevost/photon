@@ -34,10 +34,10 @@ JNIEXPORT jint JNICALL Java_org_photon_Session_psoCreateFolder
 /*
  * Class:     org_photon_Session
  * Method:    psoCreateObject
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/DataDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;J)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Session_psoCreateObject
-  (JNIEnv *, jobject, jlong, jstring, jobject, jobject);
+  (JNIEnv *, jobject, jlong, jstring, jobject, jlong);
 
 /*
  * Class:     org_photon_Session
@@ -50,10 +50,10 @@ JNIEXPORT jint JNICALL Java_org_photon_Session_psoCreateObjectEx
 /*
  * Class:     org_photon_Session
  * Method:    psoCreateKeyedObject
- * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;Lorg/photon/DataDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;JJ)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Session_psoCreateKeyedObject
-  (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobject);
+  (JNIEnv *, jobject, jlong, jstring, jobject, jlong, jlong);
 
 /*
  * Class:     org_photon_Session
