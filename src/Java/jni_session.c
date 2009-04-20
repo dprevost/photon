@@ -284,6 +284,97 @@ Java_org_photon_Session_psoCreateKeyedObject( JNIEnv * env,
 
 /*
  * Class:     org_photon_Session
+ * Method:    psoCreateKeyedObjectEx
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Ljava/lang/String;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_photon_Session_psoCreateKeyedObjectEx( JNIEnv * env,
+                                                jobject  jobj,
+                                                jlong    jhandle,
+                                                jstring  jname,
+                                                jobject  jdefinition,
+                                                jstring  jkeyDefName,
+                                                jstring  jdataDefName )
+{
+   int errcode;
+
+   /* Native variables */
+   size_t handle = (size_t) jhandle;
+   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
+   const char * name;
+   psoObjectDefinition definition;
+   const char * dataDefName, * keyDefName;
+   
+   /* jni variables needed to access the jvm data */
+   jobject jTypeObj;
+   
+   /*
+    * Note: types are usually set using an enum. So we must extract
+    * the enum object first before we can access the int field.
+    */
+   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
+   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
+   (*env)->DeleteLocalRef( env, jTypeObj );
+
+   definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
+   definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumOfDataRecords );
+   definition.minNumBlocks = (size_t) (*env)->GetLongField( env,
+      jdefinition, g_idObjDefMinNumBlocks );
+
+   dataDefName = (*env)->GetStringUTFChars( env, jdataDefName, NULL );
+   if ( dataDefName == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoDataDefOpen( (PSO_HANDLE)handle,
+                             dataDefName,
+                             strlen(dataDefName),
+                             &dataDefHandle );
+   (*env)->ReleaseStringUTFChars( env, jdataDefName, dataDefName );
+   if ( errcode != 0 ) return errcode;
+   
+   keyDefName = (*env)->GetStringUTFChars( env, jkeyDefName, NULL );
+   if ( keyDefName == NULL ) {
+      psoDataDefClose( dataDefHandle );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoKeyDefOpen( (PSO_HANDLE)handle,
+                            keyDefName,
+                            strlen(keyDefName),
+                            &keyDefHandle );
+   (*env)->ReleaseStringUTFChars( env, jkeyDefName, dataDefName );
+   if ( errcode != 0 ) {
+      psoDataDefClose( dataDefHandle );
+      return errcode;
+   }
+   
+   name = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( name == NULL ) {
+      psoDataDefClose( dataDefHandle );
+      psoKeyDefClose( keyDefHandle );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoCreateKeyedObject( (PSO_HANDLE) handle,
+                                   name,
+                                   strlen(name),
+                                   &definition,
+                                   keyDefHandle,
+                                   dataDefHandle );
+   
+   (*env)->ReleaseStringUTFChars( env, jname, name );
+   psoDataDefClose( dataDefHandle );
+   psoKeyDefClose( keyDefHandle );
+   
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Session
  * Method:    psoDestroyObject
  * Signature: (JLjava/lang/String;)I
  */
@@ -332,6 +423,56 @@ Java_org_photon_Session_psoFini( JNIEnv  * env,
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * Class:     org_photon_Session
+ * Method:    psoGetDataDefinition
+ * Signature: (JLjava/lang/String;Lorg/photon/DataDefinition;)I
+ */
+JNIEXPORT jint JNICALL
+Java_org_photon_Session_psoGetDataDefinition( JNIEnv * env,
+                                              jobject  jobj,
+                                              jlong    jhandle,
+                                              jstring  jname,
+                                              jobject  jdefinition )
+{
+   int errcode;
+   size_t handle = (size_t) jhandle;
+   const char * objectName;
+   psoObjectDefinition objDefinition;
+   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
+   
+   objectName = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( objectName == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoGetDataDefinition( (PSO_HANDLE) handle,
+                                   objectName,
+                                   strlen(objectName),
+                                   &dataDefHandle );
+   (*env)->ReleaseStringUTFChars( env, jname, objectName );
+
+   if ( errcode == 0 ) {
+//      (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
+
+//      (*env)->SetIntField ( env, jstatus, g_idStatusStatus, status.status );
+      (*env)->SetLongField( env, jdefinition, g_idDataDefHandle, dataDefHandle );
+//      (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );
+//      (*env)->SetLongField( env, jstatus, g_idStatusNumDataItem, status.numDataItem );
+//      (*env)->SetLongField( env, jstatus, g_idStatusFreeBytes, status.freeBytes );
+//      (*env)->SetIntField ( env, jstatus, g_idStatusMaxDataLength, status.maxDataLength );
+//      (*env)->SetIntField ( env, jstatus, g_idStatusMaxKeyLength, status.maxKeyLength );
+   }
+      rc = psoaDataDefGetDef( m_definitionHandle, 
+                           &m_defType,
+                           (unsigned char **)&m_dataDef,
+                           &m_dataDefLength );
+   return errcode;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 #if 0
 /*
  * Class:     org_photon_Session
