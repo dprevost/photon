@@ -291,19 +291,37 @@ int psoExitSession( PSO_HANDLE sessionHandle );
 /**
  * \brief Retrieve the data definition of the named object.
  *
- * To avoid memory leaks, you must close the handles that will be 
- * returned by this function (see ::psoDataDefClose and ::psoKeyDefClose).
+ * To avoid memory leaks, you must close the handle that will be 
+ * returned by this function (see ::psoDataDefClose).
  *
- * The handles might be set to NULL by this function.
+ * The handle might be set to NULL by this function if the object is a folder.
  *
  * \param[in]  sessionHandle Handle to the current session.
  * \param[in]  objectName The fully qualified name of the object. 
  * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
  *             counting the null terminator (null-terminators are not used by
  *             the Photon engine).
+ * \param[out] dataDefHandle Handle to the definition of the data fields (or
+ *             NULL for folders).
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoGetDataDefinition( PSO_HANDLE   sessionHandle,
+                          const char * objectName,
+                          psoUint32    nameLengthInBytes,
+                          PSO_HANDLE * dataDefHandle );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * \brief Retrieve the object definition of the named object.
+ *
+ * \param[in]  sessionHandle Handle to the current session.
+ * \param[in]  objectName The fully qualified name of the object. 
+ * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+ *             counting the null terminator.
  * \param[out] definition The definition of the object.
- * \param[out] keyDefHandle Handle to the key definition. 
- * \param[out] dataDefHandle Handle to the definition of the data fields.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -311,9 +329,7 @@ PHOTON_EXPORT
 int psoGetDefinition( PSO_HANDLE            sessionHandle,
                       const char          * objectName,
                       psoUint32             nameLengthInBytes,
-                      psoObjectDefinition * definition,
-                      PSO_HANDLE          * keyDefHandle,
-                      PSO_HANDLE          * dataDefHandle );
+                      psoObjectDefinition * definition );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -331,6 +347,33 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
 PHOTON_EXPORT
 int psoGetInfo( PSO_HANDLE   sessionHandle,
                 psoInfo    * pInfo );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * \brief Retrieve the key definition of the named object.
+ *
+ * To avoid memory leaks, you must close the handle that will be 
+ * returned by this function (see ::psoKeyDefClose).
+ *
+ * The handle might be set to NULL by this function if the object does
+ * not have keys (folders and queues, for example).
+ *
+ * \param[in]  sessionHandle Handle to the current session.
+ * \param[in]  objectName The fully qualified name of the object. 
+ * \param[in]  nameLengthInBytes The length of \em objectName (in bytes) not
+ *             counting the null terminator (null-terminators are not used by
+ *             the Photon engine).
+ * \param[out] keyDefHandle Handle to the key definition (or NULL for folders,
+ *             queues, etc.).
+ *
+ * \return 0 on success or a ::psoErrors on error.
+ */
+PHOTON_EXPORT
+int psoGetKeyDefinition( PSO_HANDLE   sessionHandle,
+                         const char * objectName,
+                         psoUint32    nameLengthInBytes,
+                         PSO_HANDLE * keyDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
