@@ -128,6 +128,8 @@ void Session::CreateObject( const std::string   & objectName,
                          objectName.length(),
                          &definition,
                          dataDefHandle );
+   
+   psoDataDefClose( dataDefHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
@@ -184,6 +186,7 @@ void Session::CreateObject( const std::string   & objectName,
                         dataDefName.length(),
                         &dataDefHandle );
    if ( rc != 0 ) {
+      psoKeyDefClose( keyDefHandle );
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 
@@ -193,6 +196,9 @@ void Session::CreateObject( const std::string   & objectName,
                               &definition,
                               keyDefHandle,
                               dataDefHandle );
+
+   psoKeyDefClose(  keyDefHandle );
+   psoDataDefClose( dataDefHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }

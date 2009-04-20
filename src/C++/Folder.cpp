@@ -21,6 +21,8 @@
 #include "Common/Common.h"
 #include <photon/photon>
 #include <photon/Folder.h>
+#include <photon/DataDefinition.h>
+#include <photon/KeyDefinition.h>
 #include <photon/psoErrors.h>
 
 using namespace pso;
@@ -126,6 +128,39 @@ void Folder::CreateObject( const std::string   & objectName,
 
 void Folder::CreateObject( const std::string   & objectName,
                            psoObjectDefinition & definition,
+                           const std::string   & dataDefName )
+{
+   int rc;
+   PSO_HANDLE dataDefHandle;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
+   }
+
+   rc = psoDataDefOpen( m_sessionHandle,
+                        dataDefName.c_str(),
+                        dataDefName.length(),
+                        &dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+   }
+
+   rc = psoFolderCreateObject( m_objectHandle,
+                               objectName.c_str(),
+                               objectName.length(),
+                               &definition,
+                               dataDefHandle );
+
+   psoDataDefClose( dataDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Folder::CreateObject( const std::string   & objectName,
+                           psoObjectDefinition & definition,
                            KeyDefinition       & keyDefinition,
                            DataDefinition      & dataDefinition )
 {
@@ -141,6 +176,51 @@ void Folder::CreateObject( const std::string   & objectName,
                                     &definition,
                                     keyDefinition.m_definitionHandle,
                                     dataDefinition.m_definitionHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+   }
+}
+
+// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+void Folder::CreateObject( const std::string   & objectName,
+                           psoObjectDefinition & definition,
+                           const std::string   & keyDefName,
+                           const std::string   & dataDefName )
+{
+   int rc;
+   PSO_HANDLE keyDefHandle, dataDefHandle;
+   
+   if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
+      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
+   }
+
+   rc = psoKeyDefOpen( m_sessionHandle,
+                       keyDefName.c_str(),
+                       keyDefName.length(),
+                       &keyDefHandle );
+   if ( rc != 0 ) {
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+   }
+
+   rc = psoDataDefOpen( m_sessionHandle,
+                        dataDefName.c_str(),
+                        dataDefName.length(),
+                        &dataDefHandle );
+   if ( rc != 0 ) {
+      psoKeyDefClose( keyDefHandle );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+   }
+
+   rc = psoFolderCreateKeyedObject( m_objectHandle,
+                                    objectName.c_str(),
+                                    objectName.length(),
+                                    &definition,
+                                    keyDefHandle,
+                                    dataDefHandle );
+
+   psoKeyDefClose(  keyDefHandle );
+   psoDataDefClose( dataDefHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
    }
