@@ -247,10 +247,9 @@ void Folder::DestroyObject( const std::string & objectName )
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 void Folder::GetDefinition( const std::string   & objectName,
-                             psoObjectDefinition & definition )
+                            psoObjectDefinition & definition )
 {
    int rc;
-   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
 
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Folder::GetDefinition", PSO_NULL_HANDLE );
@@ -259,9 +258,7 @@ void Folder::GetDefinition( const std::string   & objectName,
    rc = psoFolderGetDefinition( m_objectHandle,
                                 objectName.c_str(),
                                 objectName.length(),
-                                &definition,
-                                &keyDefHandle,
-                                &dataDefHandle );
+                                &definition );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::GetDefinition" );
    }
@@ -273,20 +270,17 @@ DataDefinition *
 Folder::GetDataDefinition( const std::string & objectName )
 {
    int rc;
-   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
-   psoObjectDefinition definition;
+   PSO_HANDLE dataDefHandle = NULL;
    DataDefinition * pDefinition;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Folder::GetDataDefinition", PSO_NULL_HANDLE );
    }
    
-   rc = psoFolderGetDefinition( m_sessionHandle,
-                                objectName.c_str(),
-                                objectName.length(),
-                                &definition,
-                                &keyDefHandle,
-                                &dataDefHandle );
+   rc = psoFolderGetDataDefinition( m_sessionHandle,
+                                    objectName.c_str(),
+                                    objectName.length(),
+                                    &dataDefHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::GetDataDefinition" );
    }
@@ -302,20 +296,17 @@ KeyDefinition *
 Folder::GetKeyDefinition( const std::string & objectName )
 {
    int rc;
-   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
-   psoObjectDefinition definition;
+   PSO_HANDLE keyDefHandle = NULL;
    KeyDefinition * pDefinition;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Folder::GetKeyDefinition", PSO_NULL_HANDLE );
    }
    
-   rc = psoFolderGetDefinition( m_objectHandle,
-                                objectName.c_str(),
-                                objectName.length(),
-                                &definition,
-                                &keyDefHandle,
-                                &dataDefHandle );
+   rc = psoFolderGetKeyDefinition( m_objectHandle,
+                                   objectName.c_str(),
+                                   objectName.length(),
+                                   &keyDefHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::GetKeyDefinition" );
    }

@@ -270,7 +270,6 @@ void Session::GetDefinition( const std::string   & objectName,
                              psoObjectDefinition & definition )
 {
    int rc;
-   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
 
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::GetDefinition", PSO_NULL_HANDLE );
@@ -279,9 +278,7 @@ void Session::GetDefinition( const std::string   & objectName,
    rc = psoGetDefinition( m_sessionHandle,
                           objectName.c_str(),
                           objectName.length(),
-                          &definition,
-                          &keyDefHandle,
-                          &dataDefHandle );
+                          &definition );
 
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::GetDefinition" );
@@ -294,20 +291,17 @@ DataDefinition *
 Session::GetDataDefinition( const std::string & objectName )
 {
    int rc;
-   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
-   psoObjectDefinition definition;
+   PSO_HANDLE dataDefHandle = NULL;
    DataDefinition * pDefinition;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::GetDataDefinition", PSO_NULL_HANDLE );
    }
    
-   rc = psoGetDefinition( m_sessionHandle,
-                          objectName.c_str(),
-                          objectName.length(),
-                          &definition,
-                          &keyDefHandle,
-                          &dataDefHandle );
+   rc = psoGetDataDefinition( m_sessionHandle,
+                              objectName.c_str(),
+                              objectName.length(),
+                              &dataDefHandle );
 
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::GetDataDefinition" );
@@ -324,20 +318,17 @@ KeyDefinition *
 Session::GetKeyDefinition( const std::string & objectName )
 {
    int rc;
-   PSO_HANDLE dataDefHandle = NULL, keyDefHandle = NULL;
-   psoObjectDefinition definition;
+   PSO_HANDLE keyDefHandle = NULL;
    KeyDefinition * pDefinition;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "Session::GetKeyDefinition", PSO_NULL_HANDLE );
    }
    
-   rc = psoGetDefinition( m_sessionHandle,
-                          objectName.c_str(),
-                          objectName.length(),
-                          &definition,
-                          &keyDefHandle,
-                          &dataDefHandle );
+   rc = psoGetKeyDefinition( m_sessionHandle,
+                             objectName.c_str(),
+                             objectName.length(),
+                             &keyDefHandle );
 
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::GetKeyDefinition" );
