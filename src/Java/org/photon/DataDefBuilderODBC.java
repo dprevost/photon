@@ -59,11 +59,11 @@ public class DataDefBuilderODBC {
       if ( numFields <= 0 ) {
          throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
       }
-       this.numFields = numFields;
-       this.simpleDef = simple;
+      this.numFields = numFields;
+      this.simpleDef = simple;
        
-       fields = new byte[numFields*psoGetLength()];
-    }
+      fields = new byte[numFields*psoGetLength()];
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

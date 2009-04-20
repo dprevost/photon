@@ -22,20 +22,51 @@ import java.util.*;
 
 public enum FieldType {
    
-   INTEGER(1),
-   BINARY(2),
-   STRING(3),
-   /** The decimal type should be mapped to an array of bytes of length
-    *  precision + 2 (optional sign and the decimal separator).
-    */
-   DECIMAL(4),
-   /** The boolean type should be mapped to a single byte in a C struct. */
-   BOOLEAN(5),
-   /** Only valid for the last field of the data definition */
-   VAR_BINARY(6),
-   /** Only valid for the last field of the data definition */
-   VAR_STRING(7);
+   CHAR(101),
+
+   VARCHAR(102),
+
+   LONGVARCHAR(103),
    
+   /** A one-byte integer. */
+   TINYINT(104),
+   
+   /** A two-bytes integer. */
+   SMALLINT(105),
+   
+   /** A four-bytes integer. */
+   INTEGER(106),
+   
+   BIGINT(107),
+
+   /** The decimal type should be mapped to the psoNumericStruct struct. */
+   NUMERIC(108),
+   
+   REAL(109),
+
+   DOUBLE(110),
+   
+   /** An opaque type of fixed length. */
+   BINARY(111),
+
+   /** A variable length opaque type with a maximum length. */
+   VARBINARY(112),
+   
+   /**
+    * A variable length opaque type with no maximum length constraint.
+    *
+    * The length of that field is constrained by the maximum length
+    * of a data record.
+    */
+   /** Only valid for the last field of the data definition */
+   LONGVARBINARY(113),
+   
+   DATE(114),
+
+   TIME(115),
+
+   TIMESTAMP(116);
+
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    private int type;

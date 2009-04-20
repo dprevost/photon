@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_FieldDefinition.h"
+#include "org_photon_ObjectDefinition.h"
 
 jfieldID g_idObjDefType;
 jfieldID g_idObjDefFlags;

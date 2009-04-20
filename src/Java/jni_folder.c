@@ -141,13 +141,73 @@ Java_org_photon_Folder_psoCreateObject( JNIEnv   * env,
  */
 JNIEXPORT jint JNICALL 
 Java_org_photon_Folder_psoCreateKeyedObject( JNIEnv     * env,
-                                        jobject      jobj,
-                                        jlong        jhandle,
-                                        jstring      jname, 
-                                        jobject      jdef,
-                                        jobject      jkey,
-                                        jobjectArray jfields)
+                                             jobject      jobj,
+                                             jlong        jhandle,
+                                             jstring      jname, 
+                                             jobject      jdef,
+                                             jobject      jkeyDef,
+                                             jobjectArray jdataDef )
 {
+   int errcode;
+
+   /* Native variables */
+   size_t handle = (size_t) jhandle;
+   const char * name;
+   psoObjectDefinition definition;
+   size_t dataDefHandle = 0, keyDefHandle = 0;
+   
+   /* jni variables needed to access the jvm data */
+   jobject jTypeObj;
+
+   /*
+    * Note: types are usually set using an enum. So we must extract
+    * the enum object first before we can access the int field.
+    */
+   jTypeObj = (*env)->GetObjectField( env, jdef, g_idObjDefType );
+   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
+   (*env)->DeleteLocalRef( env, jTypeObj );
+
+   definition.flags = (*env)->GetIntField( env, jdef, g_idObjDefFlags );
+   
+   definition.minNumOfDataRecords = 
+      (*env)->GetIntField( env, jdef, g_idObjDefMinNumOfDataRecords );
+   definition.minNumBlocks = 
+      (*env)->GetIntField( env, jdef, g_idObjDefMinNumBlocks );
+   
+   dataDefHandle = (*env)->GetLongField( env, jdataDef, g_idDataDefHandle );
+   keyDefHandle  = (*env)->GetLongField( env, jkeyDef,  g_idKeyDefHandle );
+
+   name = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( name == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+
+   errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
+                                    name,
+                                    strlen(name),
+                                    &definition,
+                                    (PSO_HANDLE) dataDefHandle );
+
+   (*env)->ReleaseStringUTFChars( env, jname, name );
+
+   return errcode;
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0   
+
+
+
    int errcode;
 
    /* Native variables */
@@ -163,7 +223,6 @@ Java_org_photon_Folder_psoCreateKeyedObject( JNIEnv     * env,
    jstring jfieldName;
    jobject jTypeObj;
 
-#if 0   
    /*
     * Note: types are usually set using an enum. So we must extract
     * the enum object first before we can access the int field.
@@ -241,9 +300,10 @@ Java_org_photon_Folder_psoCreateKeyedObject( JNIEnv     * env,
 
    (*env)->ReleaseStringUTFChars( env, jname, name );
    if ( pFields != NULL ) free(pFields);
-#endif
 
    return errcode;
+#endif
+
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

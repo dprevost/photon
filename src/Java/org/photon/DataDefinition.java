@@ -57,10 +57,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     * You must use open() or create to access a data definition in 
     * shared memory.
     */
-   public DataDefinition( Session session ) {
-       
-      this.session = session;
-   }
+   public DataDefinition() {}
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -231,6 +228,8 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       return DefinitionType.getEnum(type);
    }
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    /**
     * Implement the Iterator interface.
     * <p>

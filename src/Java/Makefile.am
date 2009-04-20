@@ -24,7 +24,6 @@ Java_Source =                              \
         org/photon/DataDefBuilderUser.java \
         org/photon/DataDefinition.java     \
         org/photon/DataRecord.java         \
-        org/photon/Definition.java         \
         org/photon/DefinitionType.java     \
         org/photon/FieldType.java          \
         org/photon/Folder.java             \
@@ -53,7 +52,6 @@ Java_Classes =                              \
         org/photon/DataDefBuilderODBC.class \
         org/photon/DataDefinition.class     \
         org/photon/DataRecord.class         \
-        org/photon/Definition.class         \
         org/photon/FieldType.class          \
         org/photon/Folder.class             \
         org/photon/FolderEntry.class        \
@@ -98,7 +96,6 @@ libphoton_jni_la_SOURCES =            \
         jni_dataDefBuilderUser.c      \
         jni_dataDefinition.c          \
         jni_dataRecord.c              \
-        jni_definition.c              \
         jni_fieldDef.c                \
         jni_fieldType.c               \
         jni_folder.c                  \
@@ -117,7 +114,6 @@ libphoton_jni_la_SOURCES =            \
         jni_session.c                 \
         org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
-        org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \
         org_photon_FieldType.h        \
         org_photon_Folder.h           \

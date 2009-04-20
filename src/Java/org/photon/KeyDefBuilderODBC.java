@@ -60,7 +60,6 @@ public class KeyDefBuilderODBC {
          throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
       }
       this.numKeyFields = numKeyFields;
-      this.numKeyFields = numKeyFields;
       this.simpleDef    = simple;
        
       keyFields = new byte[numKeyFields*psoGetLength()];
