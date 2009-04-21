@@ -200,9 +200,9 @@ public class Session {
     * created object. You must use org.photon.Queue.open and similar to 
     * access the newly created object.
     *
-    * @param objectName The fully qualified name of the object.
-    * @param definition The object definition (its type, etc.).
-    * @param dataDef    The definition of the data fields.
+    * @param objectName  The fully qualified name of the object.
+    * @param definition  The object definition (its type, etc.).
+    * @param dataDefName The name of the definition of the data fields.
     * @exception PhotonException On an error with the Photon library.
     */
    public void createObject( String           objectName,

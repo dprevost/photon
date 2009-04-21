@@ -36,9 +36,13 @@
 
 /* The DataDefinition class */
 extern jfieldID g_idDataDefHandle;
+extern jfieldID g_idDataDefDataDef;
+extern jfieldID g_idDataDefType;
 
 /* The KeyDefinition class */
 extern jfieldID g_idKeyDefHandle;
+extern jfieldID g_idKeyDefKeyDef;
+extern jfieldID g_idKeyDefType;
 
 //extern jfieldID g_idKeyDefType;
 //extern jfieldID g_idKeyDefLength;

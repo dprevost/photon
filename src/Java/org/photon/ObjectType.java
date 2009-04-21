@@ -18,6 +18,8 @@
 
 package org.photon;
 
+import java.util.*;
+
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 public enum ObjectType {
@@ -51,16 +53,26 @@ public enum ObjectType {
       this.type = type;
    }
 
-   public int getValue() { return type; }
+   public int getType() { return type; }
 
    public abstract String getText();
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   private static final HashMap<Integer,ObjectType> reverseLookup 
+                  = new HashMap<Integer,ObjectType>();
+
    private static native void initIDs();
 
    static {
+      for ( ObjectType myType : ObjectType.values() ) {
+         reverseLookup.put( myType.getType(), myType );
+      }
       initIDs();
+   }
+
+   public static ObjectType getEnum(int type) {
+      return reverseLookup.get(type);
    }
 
 }

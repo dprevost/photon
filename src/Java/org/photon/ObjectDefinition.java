@@ -20,7 +20,8 @@ package org.photon;
 
 public class ObjectDefinition {
    
-   private ObjectType type;
+   /** Type of the object */
+   private int type;
    
    private int flags;
    
@@ -61,7 +62,7 @@ public class ObjectDefinition {
                             int        flags,
                             long       minNumOfDataRecords,
                             long       minNumBlocks ) {
-      this.type = type;
+      this.type = type.getType();
       this.flags = flags;
       this.minNumOfDataRecords = minNumOfDataRecords;
       this.minNumBlocks = minNumBlocks;
@@ -73,7 +74,7 @@ public class ObjectDefinition {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public ObjectType getType() { return type; }
+   public ObjectType getType() { return ObjectType.getEnum(type); }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

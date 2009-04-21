@@ -187,6 +187,46 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    /**
     * Create a new object in shared memory as a child of the current folder.
     * <p>
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.). It also uses the name of an
+    * existing data definition instead of requiring a DataDefinition
+    * object.
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Queue.open and similar to 
+    * access the newly created object.
+    *
+    * @param objectName  The name of the newly created object.
+    * @param definition  The object definition (its type, etc.).
+    * @param dataDefName The name of the definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             String           dataDefName ) throws PhotonException {
+      int errcode;
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateObjectEx( handle, 
+                                   objectName, 
+                                   definition,
+                                   dataDefName );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    * <p>
     * This overloaded method should only be used for objects requiring
     * a key definition (maps, etc.).
     * <p>
@@ -218,6 +258,49 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
                                       definition,
                                       keyDef,
                                       dataDef );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory as a child of the current folder.
+    * <p>
+    * This overloaded method should only be used for objects requiring
+    * a key definition (maps, etc.). It also uses the names of 
+    * both an existing data definition and a key definition instead 
+    * of requiring a DataDefinition object and a KeyDefinition object.
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Hashmap and similar to 
+    * access the newly created object.
+    *
+    * @param objectName  The name of the newly created object.
+    * @param definition  The object definition (its type, etc.)
+    * @param keyDefName  The definition of the key.
+    * @param dataDefName The definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             String           keyDefName,
+                             String           dataDefName ) throws PhotonException {
+      int errcode;
+
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateKeyedObjectEx( handle, 
+                                        objectName, 
+                                        definition,
+                                        keyDefName,
+                                        dataDefName );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -491,11 +574,22 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
                                        ObjectDefinition definition, 
                                        DataDefinition   dataDef );
 
+   private native int psoCreateObjectEx( long             h, 
+                                         String           objectName, 
+                                         ObjectDefinition definition, 
+                                         String           dataDefName );
+
    private native int psoCreateKeyedObject( long             h, 
                                             String           objectName, 
                                             ObjectDefinition definition, 
                                             KeyDefinition    keyDef,
                                             DataDefinition   dataDef );
+
+   private native int psoCreateKeyedObjectEx( long             h, 
+                                              String           objectName, 
+                                              ObjectDefinition definition, 
+                                              String           keyDefName,
+                                              String           dataDefName );
 
    private native int psoDataDefinition( long h, DataDefinition definition );
 
