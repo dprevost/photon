@@ -351,7 +351,8 @@ public class Session {
     * Retrieve the basic definition of the named object.
     *
     * @param objectName The fully qualified name of the object.
-    * @param definition The definition of the object.
+    *
+    * @return A new ObjectDefinition object for the named Photon object.
     *
     * @exception PhotonException On an error with the Photon library.
     */
@@ -379,7 +380,7 @@ public class Session {
     *
     * @param objectName The fully qualified name of the object. 
     *
-    * @return A new DataDefinition object.
+    * @return A new DataDefinition object for the named Photon object.
     *
     * @exception PhotonException On an error with the Photon library.
     */
@@ -407,7 +408,7 @@ public class Session {
     *
     * @param objectName The fully qualified name of the object. 
     * 
-    * @return A new KeyDefinition object.
+    * @return A new KeyDefinition object for the named Photon object.
     *
     * @exception PhotonException On an error with the Photon library.
     */

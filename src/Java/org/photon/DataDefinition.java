@@ -277,7 +277,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     *
     * @exception PhotonException An abnormal error with the Photon library.
     */
-   public void open( String  name ) throws PhotonException {
+   public void open( Session session, String name ) throws PhotonException {
    
       int errcode;
       
@@ -287,6 +287,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       }
 
       this.name = name;
+      this.session = session;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

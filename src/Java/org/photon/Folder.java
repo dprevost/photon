@@ -239,7 +239,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
     *
     * @param objectName The name of the newly created object.
     * @param definition The object definition (its type, etc.)
-    * @param key        The definition of the key.
+    * @param keyDef     The definition of the key.
     * @param dataDef    The definition of the data fields.
     * @exception PhotonException On an error with the Photon library.
     */
