@@ -40,6 +40,7 @@ Java_Source =                              \
         org/photon/PhotonErrors.java       \
         org/photon/PhotonException.java    \
         org/photon/Queue.java              \
+        org/photon/RawQueue.java           \
         org/photon/Session.java            \
         org/photon/Tests/FolderTest.java   \
         org/photon/Tests/QueueTest.java    \

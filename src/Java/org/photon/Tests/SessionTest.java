@@ -72,7 +72,7 @@ public class SessionTest {
 //                            null,
 //                            null );
       status = session.getStatus( "/SessionTest1" );
-      System.out.println( "Object Type: " + status.type );
+      System.out.println( "Object Type: " + status.getType() );
       
    }
    
