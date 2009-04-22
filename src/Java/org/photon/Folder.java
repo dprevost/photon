@@ -82,7 +82,8 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
    /** 
     * Opens a Photon folder 
     *
-    * @param name The fully qualified name of the folder. 
+    * @param session The session we belong to.
+    * @param name    The fully qualified name of the folder. 
     *
     * @exception PhotonException On an error with the Photon library.
     */
@@ -213,7 +214,8 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      errcode = psoCreateObjectEx( handle, 
+      errcode = psoCreateObjectEx( handle,
+                                   session.handle,
                                    objectName, 
                                    definition,
                                    dataDefName );
@@ -297,6 +299,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       }
 
       errcode = psoCreateKeyedObjectEx( handle, 
+                                        session.handle,
                                         objectName, 
                                         definition,
                                         keyDefName,
@@ -359,7 +362,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       }
       definition = new DataDefinition();
       
-      errcode = psoDataDefinition( handle, definition );
+      errcode = psoDataDefinition( handle, objectName, definition );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -379,7 +382,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       }
       definition = new ObjectDefinition();
       
-      errcode = psoDefinition( handle, definition );
+      errcode = psoDefinition( handle, objectName, definition );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -399,7 +402,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       }
       definition = new KeyDefinition();
       
-      errcode = psoKeyDefinition( handle, definition );
+      errcode = psoKeyDefinition( handle, objectName, definition );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -531,10 +534,11 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
     * <p>
     * If the folder is already open, you must close it first.
     *
+    * @param session The session we belong to.
     * @param folderName The fully qualified name of the folder. 
     * @exception PhotonException On an error with the Photon library.
     */
-   public void open( String folderName ) throws PhotonException {
+   public void open( Session session, String folderName ) throws PhotonException {
 
       int errcode;
       
@@ -546,6 +550,7 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
+      this.session = session;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -566,48 +571,56 @@ public class Folder implements Iterable<FolderEntry>, Iterator<FolderEntry> {
 
    private static native void initIDs();
 
-   private native int psoCreateFolder( long   h, 
+   private native int psoCreateFolder( long   handle,
                                        String objectName );
 
-   private native int psoCreateObject( long             h, 
+   private native int psoCreateObject( long             handle,
                                        String           objectName, 
                                        ObjectDefinition definition, 
                                        DataDefinition   dataDef );
 
-   private native int psoCreateObjectEx( long             h, 
+   private native int psoCreateObjectEx( long             handle,
+                                         long             sessionHandle,
                                          String           objectName, 
                                          ObjectDefinition definition, 
                                          String           dataDefName );
 
-   private native int psoCreateKeyedObject( long             h, 
+   private native int psoCreateKeyedObject( long             handle,
                                             String           objectName, 
                                             ObjectDefinition definition, 
                                             KeyDefinition    keyDef,
                                             DataDefinition   dataDef );
 
-   private native int psoCreateKeyedObjectEx( long             h, 
+   private native int psoCreateKeyedObjectEx( long             handle,
+                                              long             sessionHandle,
                                               String           objectName, 
                                               ObjectDefinition definition, 
                                               String           keyDefName,
                                               String           dataDefName );
 
-   private native int psoDataDefinition( long h, DataDefinition definition );
+   private native int psoDataDefinition( long           handle, 
+                                         String         objectName,
+                                         DataDefinition definition );
 
-   private native int psoDefinition( long h, ObjectDefinition definition );
+   private native int psoDefinition( long             handle,
+                                     String           objectName,
+                                     ObjectDefinition definition );
    
-   private native int psoDestroyObject( long h, String objectName );
+   private native int psoDestroyObject( long handle, String objectName );
 
-   private native void psoClose( long h );
+   private native void psoClose( long handle );
 
-   private native int psoGetFirst( long h, FolderEntry e );
+   private native int psoGetFirst( long handle, FolderEntry e );
 
-   private native int psoGetNext( long h, FolderEntry e );
+   private native int psoGetNext( long handle, FolderEntry e );
 
-   private native int psoKeyDefinition( long h, KeyDefinition definition );
+   private native int psoKeyDefinition( long          handle,
+                                        String        objectName,
+                                        KeyDefinition definition );
 
-   private native int psoOpen( Session session, String s );
+   private native int psoOpen( Session session, String name );
 
-   private native int psoStatus( long h, ObjectStatus status );
+   private native int psoStatus( long handle, ObjectStatus status );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

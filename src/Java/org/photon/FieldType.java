@@ -80,13 +80,10 @@ public enum FieldType {
    private static final HashMap<Integer,FieldType> reverseLookup 
                   = new HashMap<Integer,FieldType>();
 
-   private static native void initIDs();
-
    static {
       for ( FieldType myType : FieldType.values() ) {
          reverseLookup.put( myType.getType(), myType );
       }
-      initIDs();
    }
 
    public static FieldType getEnum(int type) {

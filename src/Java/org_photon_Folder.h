@@ -33,6 +33,14 @@ JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObject
 
 /*
  * Class:     org_photon_Folder
+ * Method:    psoCreateObjectEx
+ * Signature: (JJLjava/lang/String;Lorg/photon/ObjectDefinition;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObjectEx
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject, jstring);
+
+/*
+ * Class:     org_photon_Folder
  * Method:    psoCreateKeyedObject
  * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;Lorg/photon/DataDefinition;)I
  */
@@ -41,19 +49,27 @@ JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateKeyedObject
 
 /*
  * Class:     org_photon_Folder
+ * Method:    psoCreateKeyedObjectEx
+ * Signature: (JJLjava/lang/String;Lorg/photon/ObjectDefinition;Ljava/lang/String;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateKeyedObjectEx
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject, jstring, jstring);
+
+/*
+ * Class:     org_photon_Folder
  * Method:    psoDataDefinition
- * Signature: (JLorg/photon/DataDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/DataDefinition;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Folder_psoDataDefinition
-  (JNIEnv *, jobject, jlong, jobject);
+  (JNIEnv *, jobject, jlong, jstring, jobject);
 
 /*
  * Class:     org_photon_Folder
  * Method:    psoDefinition
- * Signature: (JLorg/photon/ObjectDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Folder_psoDefinition
-  (JNIEnv *, jobject, jlong, jobject);
+  (JNIEnv *, jobject, jlong, jstring, jobject);
 
 /*
  * Class:     org_photon_Folder
@@ -90,10 +106,10 @@ JNIEXPORT jint JNICALL Java_org_photon_Folder_psoGetNext
 /*
  * Class:     org_photon_Folder
  * Method:    psoKeyDefinition
- * Signature: (JLorg/photon/KeyDefinition;)I
+ * Signature: (JLjava/lang/String;Lorg/photon/KeyDefinition;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Folder_psoKeyDefinition
-  (JNIEnv *, jobject, jlong, jobject);
+  (JNIEnv *, jobject, jlong, jstring, jobject);
 
 /*
  * Class:     org_photon_Folder

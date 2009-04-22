@@ -31,7 +31,7 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
    /* To save the native pointer/handle of the C struct. */
    private long handle = 0;
    private Session session;
-   private Definition definition;
+//   private Definition definition;
    
    /* For iterations */
    DataRecord record;
@@ -92,14 +92,14 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
 
    public Queue( Session session, String name ) throws PhotonException {
       
-      int errcode;
+      int errcode = 0; // remove =0; later
       /* Simplify the jni by preallocating some objects */
       ObjectDefinition objectDef = new ObjectDefinition();
-      this.definition = new Definition();
+//      this.definition = new Definition();
       
       this.session = session;
       
-      errcode = psoInit( session, name, definition, objectDef );
+//      errcode = psoInit( session, name, definition, objectDef );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -128,7 +128,7 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
 
    private native int psoInit( Session          session,
                                String           queueName,
-                               Definition       def,
+//                               Definition       def,
                                ObjectDefinition objDef );
 
    private native int psoPop( long handle, DataRecord record );
@@ -162,16 +162,16 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public Definition getDefinition() throws PhotonException {
+//   public Definition getDefinition() throws PhotonException {
 
-      if ( handle == 0 ) {
-         throw new PhotonException( PhotonErrors.NULL_HANDLE );
-      }
+//      if ( handle == 0 ) {
+//         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+//      }
 
       // We get the definition when accessing/opening the queue - no need
       // to get it again, evidently.
-      return definition;
-   }
+//      return definition;
+//   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -254,15 +254,15 @@ public class Queue<DataRecord> implements Iterable<DataRecord>, Iterator<DataRec
 
    public void push( Object ... objects ) throws PhotonException {
 
-      int errcode;
+      int errcode = 0; // remove = 0; later
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      errcode = psoPush( handle, 
-                         definition.definition.numFields,
-                         objects );
+//      errcode = psoPush( handle, 
+//                         definition.definition.numFields,
+//                         objects );
       if ( errcode == 0 ) return;
 
       throw new PhotonException( PhotonErrors.getEnum(errcode) );

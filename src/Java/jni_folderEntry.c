@@ -39,7 +39,7 @@ jfieldID g_idEntryStatus;
 JNIEXPORT void JNICALL
 Java_org_photon_FolderEntry_initIDs( JNIEnv * env, jclass entryClass )
 {
-   g_idEntryType   = (*env)->GetFieldID( env, entryClass, "type", "Lorg/photon/ObjectType;");
+   g_idEntryType   = (*env)->GetFieldID( env, entryClass, "type", "I");
    if ( g_idEntryType == NULL ) return;
    g_idEntryName   = (*env)->GetFieldID( env, entryClass, "name", "Ljava/lang/String;" );
    if ( g_idEntryName == NULL ) return;

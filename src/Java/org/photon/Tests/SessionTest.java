@@ -67,10 +67,10 @@ public class SessionTest {
          }
       }
       
-      session.createObject( "/SessionTest1",
-                            new ObjectDefinition(ObjectType.FOLDER, 0),
-                            null,
-                            null );
+//      session.createObject( "/SessionTest1",
+//                            new ObjectDefinition(ObjectType.FOLDER, 0),
+//                            null,
+//                            null );
       status = session.getStatus( "/SessionTest1" );
       System.out.println( "Object Type: " + status.type );
       

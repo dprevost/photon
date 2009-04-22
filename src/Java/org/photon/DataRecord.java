@@ -25,31 +25,37 @@ package org.photon;
 // getDeclaredFields
 //  [Lorg/photon/DataRecord$FieldDescription; 
 
-
-public class DataRecord {
+public interface DataRecord {
    
-   class FieldDescription {
-      Object obj;
-      int    conversionType;
-      int    offset;
-   }
+   byte[] packObject();
    
-   private FieldDescription[] fields;
-   public java.lang.Object[] q; // objects;
-   public java.lang.Object[] QQQ() { return q; }
+   void unpackObject();
+}
 
-   public Boolean getBool  ( int i ) { return (Boolean) fields[i].obj; }
-   public byte[]  getBytes ( int i ) { return  (byte[]) fields[i].obj; }
-   public Integer getInt   ( int i ) { return (Integer) fields[i].obj; }
-   public Long    getLong  ( int i ) { return    (Long) fields[i].obj; }
-   public Short   getShort ( int i ) { return   (Short) fields[i].obj; }
-   public String  getString( int i ) { return  (String) fields[i].obj; }
+//public class DataRecord {
+   
+//   class FieldDescription {
+//      Object obj;
+//      int    conversionType;
+//      int    offset;
+//   }
+   
+//   private FieldDescription[] fields;
+//   public java.lang.Object[] q; // objects;
+//   public java.lang.Object[] QQQ() { return q; }
+
+//   public Boolean getBool  ( int i ) { return (Boolean) fields[i].obj; }
+//   public byte[]  getBytes ( int i ) { return  (byte[]) fields[i].obj; }
+//   public Integer getInt   ( int i ) { return (Integer) fields[i].obj; }
+//   public Long    getLong  ( int i ) { return    (Long) fields[i].obj; }
+//   public Short   getShort ( int i ) { return   (Short) fields[i].obj; }
+//   public String  getString( int i ) { return  (String) fields[i].obj; }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private static native void initIDs();
+//   private static native void initIDs();
 
-   static {
-      initIDs();
-   }
-}
+//   static {
+//      initIDs();
+//   }
+//}

@@ -107,8 +107,7 @@ Java_org_photon_Queue_psoGetStatus( JNIEnv  * env,
    errcode = psoQueueStatus( (PSO_HANDLE) handle, &status );
 
    if ( errcode == 0 ) {
-      (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
-
+      (*env)->SetIntField(  env, jstatus, g_idStatusType,          status.type );
       (*env)->SetIntField(  env, jstatus, g_idStatusStatus,        status.status );
       (*env)->SetLongField( env, jstatus, g_idStatusNumBlocks,     status.numBlocks );
       (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );

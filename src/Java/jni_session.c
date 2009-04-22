@@ -119,17 +119,7 @@ Java_org_photon_Session_psoCreateObject( JNIEnv * env,
    const char * name;
    psoObjectDefinition definition;
    
-   /* jni variables needed to access the jvm data */
-   jobject jTypeObj;
-   
-   /*
-    * Note: types are usually set using an enum. So we must extract
-    * the enum object first before we can access the int field.
-    */
-   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
-   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
-   (*env)->DeleteLocalRef( env, jTypeObj );
-
+   definition.type  = (*env)->GetIntField( env, jdefinition, g_idObjDefType );
    definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
    definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
       jdefinition, g_idObjDefMinNumOfDataRecords );
@@ -175,17 +165,7 @@ Java_org_photon_Session_psoCreateObjectEx( JNIEnv * env,
    psoObjectDefinition definition;
    const char * dataDefName;
    
-   /* jni variables needed to access the jvm data */
-   jobject jTypeObj;
-   
-   /*
-    * Note: types are usually set using an enum. So we must extract
-    * the enum object first before we can access the int field.
-    */
-   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
-   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
-   (*env)->DeleteLocalRef( env, jTypeObj );
-
+   definition.type  = (*env)->GetIntField( env, jdefinition, g_idObjDefType );
    definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
    definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
       jdefinition, g_idObjDefMinNumOfDataRecords );
@@ -248,17 +228,7 @@ Java_org_photon_Session_psoCreateKeyedObject( JNIEnv * env,
    const char * name;
    psoObjectDefinition definition;
    
-   /* jni variables needed to access the jvm data */
-   jobject jTypeObj;
-   
-   /*
-    * Note: types are usually set using an enum. So we must extract
-    * the enum object first before we can access the int field.
-    */
-   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
-   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
-   (*env)->DeleteLocalRef( env, jTypeObj );
-
+   definition.type  = (*env)->GetIntField( env, jdefinition, g_idObjDefType );
    definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
    definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
       jdefinition, g_idObjDefMinNumOfDataRecords );
@@ -307,17 +277,7 @@ Java_org_photon_Session_psoCreateKeyedObjectEx( JNIEnv * env,
    psoObjectDefinition definition;
    const char * dataDefName, * keyDefName;
    
-   /* jni variables needed to access the jvm data */
-   jobject jTypeObj;
-   
-   /*
-    * Note: types are usually set using an enum. So we must extract
-    * the enum object first before we can access the int field.
-    */
-   jTypeObj = (*env)->GetObjectField( env, jdefinition, g_idObjDefType );
-   definition.type = (*env)->GetIntField( env, jTypeObj, g_idObjTypeType );
-   (*env)->DeleteLocalRef( env, jTypeObj );
-
+   definition.type  = (*env)->GetIntField( env, jdefinition, g_idObjDefType );
    definition.flags = (*env)->GetIntField( env, jdefinition, g_idObjDefFlags );
    definition.minNumOfDataRecords = (size_t) (*env)->GetLongField( env,
       jdefinition, g_idObjDefMinNumOfDataRecords );
@@ -346,7 +306,7 @@ Java_org_photon_Session_psoCreateKeyedObjectEx( JNIEnv * env,
                             keyDefName,
                             strlen(keyDefName),
                             &keyDefHandle );
-   (*env)->ReleaseStringUTFChars( env, jkeyDefName, dataDefName );
+   (*env)->ReleaseStringUTFChars( env, jkeyDefName, keyDefName );
    if ( errcode != 0 ) {
       psoDataDefClose( dataDefHandle );
       return errcode;
@@ -684,8 +644,7 @@ Java_org_photon_Session_psoGetStatus( JNIEnv  * env,
    (*env)->ReleaseStringUTFChars( env, jname, objectName );
 
    if ( errcode == 0 ) {
-      (*env)->SetObjectField( env, jstatus, g_idStatusType, g_weakObjType[status.type-1] );
-
+      (*env)->SetIntField(  env, jstatus, g_idStatusType, status.type );
       (*env)->SetIntField ( env, jstatus, g_idStatusStatus, status.status );
       (*env)->SetLongField( env, jstatus, g_idStatusNumBlocks, status.numBlocks );
       (*env)->SetLongField( env, jstatus, g_idStatusNumBlockGroup, status.numBlockGroup );

@@ -39,7 +39,7 @@ public class QueueTest {
    
    public static void test1( org.photon.Session session ) throws PhotonException {
       
-      org.photon.Folder folder = new org.photon.Folder( session );
+      org.photon.Folder folder = new org.photon.Folder();
       Queue queue = new Queue( session, "myQueue" );
       myStruct s = new myStruct( 123, "45678" );
       
@@ -47,7 +47,7 @@ public class QueueTest {
       queue.push( s.a );
       queue.push( 234, "012345" );
       
-      folder.open( "/" );
+      folder.open( session, "/" );
       folder.close();
    }
 
@@ -60,18 +60,18 @@ public class QueueTest {
 
       org.photon.Folder folder = new org.photon.Folder( session, "/" );
       
-      folder.createObject( "java1",
-                           new ObjectDefinition(ObjectType.FOLDER, 0),
-                           null,
-                           null );
-      folder.createObject( "java2",
-                           new ObjectDefinition(ObjectType.FOLDER, 0),
-                           null,
-                           null );
-      folder.createObject( "java3",
-                           new ObjectDefinition(ObjectType.FOLDER, 0),
-                           null,
-                           null );
+//      folder.createObject( "java1",
+//                           new ObjectDefinition(ObjectType.FOLDER, 0),
+//                           null,
+//                           null );
+//      folder.createObject( "java2",
+//                           new ObjectDefinition(ObjectType.FOLDER, 0),
+//                           null,
+//                           null );
+//      folder.createObject( "java3",
+//                           new ObjectDefinition(ObjectType.FOLDER, 0),
+//                           null,
+//                           null );
       for (FolderEntry entry : folder) {
          System.out.println( "Name: " + entry.getName() + ", Type: " 
             + entry.getType() + " or " + entry.getType().getText() );

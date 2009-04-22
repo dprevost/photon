@@ -97,7 +97,6 @@ libphoton_jni_la_SOURCES =            \
         jni_dataDefinition.c          \
         jni_dataRecord.c              \
         jni_fieldDef.c                \
-        jni_fieldType.c               \
         jni_folder.c                  \
         jni_folderEntry.c             \
         jni_hashmap.c                 \
@@ -115,7 +114,6 @@ libphoton_jni_la_SOURCES =            \
         org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
         org_photon_FieldDefinition.h  \
-        org_photon_FieldType.h        \
         org_photon_Folder.h           \
         org_photon_FolderEntry.h      \
         org_photon_Info.h             \

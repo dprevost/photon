@@ -39,66 +39,6 @@ extern jfieldID g_idDataDefHandle;
 extern jfieldID g_idDataDefDataDef;
 extern jfieldID g_idDataDefType;
 
-/* The KeyDefinition class */
-extern jfieldID g_idKeyDefHandle;
-extern jfieldID g_idKeyDefKeyDef;
-extern jfieldID g_idKeyDefType;
-
-//extern jfieldID g_idKeyDefType;
-//extern jfieldID g_idKeyDefLength;
-//extern jfieldID g_idKeyDefMinLength;
-//extern jfieldID g_idKeyDefMaxLength;
-//extern jclass   g_keyDefClass;
-
-/* The FieldDefinition class */
-
-extern jfieldID g_idFieldDefName;
-extern jfieldID g_idFieldDefType;
-extern jfieldID g_idFieldDefLength;
-extern jfieldID g_idFieldDefMinLength;
-extern jfieldID g_idFieldDefMaxLength;
-extern jfieldID g_idFieldDefPrecision;
-extern jfieldID g_idFieldDefScale;
-
-extern jweak g_FieldDefClass;
-
-/* The FieldType class (enum) */
-
-extern jfieldID g_idFieldTypeType;
-
-extern jweak *  g_weakFieldType;
-
-/* The ObjectDefinition class */
-
-extern jfieldID g_idObjDefType;
-extern jfieldID g_idObjDefFlags;
-extern jfieldID g_idObjDefMinNumOfDataRecords;
-extern jfieldID g_idObjDefMinNumBlocks;
-
-/* The KeyType class (enum) */
-
-extern jfieldID g_idKeyTypeType;
-
-extern jweak * g_weakKeyType;
-
-/* The ObjectType class (enum) */
-
-extern jfieldID g_idObjTypeType;
-
-extern jweak *  g_weakObjType;
-
-/* The folder class */
-
-extern jfieldID g_idFolderHandle;
-
-/* The Queue class */
-
-extern jfieldID g_idQueueHandle;
-
-/* The Session class */
-
-extern jfieldID g_idSessionHandle;
-
 /* The FolderEntry class */
 
 extern jfieldID g_idEntryType;
@@ -123,6 +63,18 @@ extern jfieldID g_idInfoDllVersion;
 extern jfieldID g_idInfoQuasarVersion;
 extern jfieldID g_idInfoCreationTime;
 
+/* The KeyDefinition class */
+extern jfieldID g_idKeyDefHandle;
+extern jfieldID g_idKeyDefKeyDef;
+extern jfieldID g_idKeyDefType;
+
+/* The ObjectDefinition class */
+
+extern jfieldID g_idObjDefType;
+extern jfieldID g_idObjDefFlags;
+extern jfieldID g_idObjDefMinNumOfDataRecords;
+extern jfieldID g_idObjDefMinNumBlocks;
+
 /* The ObjectStatus class */
 
 extern jfieldID g_idStatusType;
@@ -134,11 +86,45 @@ extern jfieldID g_idStatusFreeBytes;
 extern jfieldID g_idStatusMaxDataLength;
 extern jfieldID g_idStatusMaxKeyLength;
 
+/* The Session class */
+
+extern jfieldID g_idSessionHandle;
+
+////////////////////// beyond this point - not vetted
+
+/* The FieldDefinition class */
+
+//extern jfieldID g_idFieldDefName;
+//extern jfieldID g_idFieldDefType;
+//extern jfieldID g_idFieldDefLength;
+//extern jfieldID g_idFieldDefMinLength;
+//extern jfieldID g_idFieldDefMaxLength;
+//extern jfieldID g_idFieldDefPrecision;
+//extern jfieldID g_idFieldDefScale;
+
+//extern jweak g_FieldDefClass;
+
+/* The KeyType class (enum) */
+
+//extern jfieldID g_idKeyTypeType;
+
+//extern jweak * g_weakKeyType;
+
+/* The folder class */
+
+extern jfieldID g_idFolderHandle;
+
+/* The Queue class */
+
+extern jfieldID g_idQueueHandle;
+
+
+
 /* The Definition class */
 
-extern jfieldID g_idDefinitionDef;
-extern jfieldID g_idDefinitionKey;
-extern jfieldID g_idDefinitionFields;
+//extern jfieldID g_idDefinitionDef;
+//extern jfieldID g_idDefinitionKey;
+//extern jfieldID g_idDefinitionFields;
 
 /* The DataRecord class */
 extern jfieldID g_idRecordFields;
