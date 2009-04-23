@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
-   psoKeyDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyFieldDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
 
    DataDefinition * dataDef = new DataDefinition();
    KeyDefinition  * keyDef  = new KeyDefinition();
@@ -99,7 +99,7 @@ int main( int argc, char * argv[] )
                                "Key Definition",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
-                               sizeof(psoKeyDefinition) );
+                               sizeof(psoKeyFieldDefinition) );
    try {
       session.CreateObject( name, mapDef, *keyDef, *dataDef );
       // Should never come here

@@ -34,7 +34,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   psoKeyDefinition keyDef = { "Key1", PSO_KEY_VARCHAR, 100 };
+   psoKeyFieldDefinition keyDef = { "Key1", PSO_KEY_VARCHAR, 100 };
    PSO_HANDLE dataDefHandle, keyDefHandle;
    
    if ( argc > 1 ) {
@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
                               strlen("Definition"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -34,7 +34,7 @@ extern "C" {
  * This file provides the API needed to access a Photon key definition.
  */
 /**
- * \defgroup psoKeyDefinition_c API functions for Photon key definitions.
+ * \defgroup psoKeyFieldDefinition_c API functions for Photon key definitions.
  * 
  */
 /*@{*/

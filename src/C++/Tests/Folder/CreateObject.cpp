@@ -37,7 +37,7 @@ int main( int argc, char * argv[] )
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} } 
    };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    DataDefinition dataDefObj;
    KeyDefinition keyDefObj;
@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
                         "Key Definition",
                         PSO_DEF_PHOTON_ODBC_SIMPLE,
                         (unsigned char *)&keyDef,
-                        sizeof(psoKeyDefinition) );
+                        sizeof(psoKeyFieldDefinition) );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

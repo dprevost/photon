@@ -1,56 +1,353 @@
-.TH "psoKeyDefinition" 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "pso::KeyDefinition" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoKeyDefinition \- 
+pso::KeyDefinition \- 
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <psoPhotonODBC.h>\fP
-.PP
 .SH "Detailed Description"
 .PP 
-Description of the structure of the hash map key. 
+This abstract base class provides the 'interface' needed to both define and retrieve the definition of the fields of the key. 
 .PP
-Definition at line 145 of file psoPhotonODBC.h.
-.SS "Data Fields"
+Definition at line 46 of file KeyDefinition.
+.SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "char \fBname\fP [PSO_MAX_FIELD_LENGTH]"
+.RI "\fBKeyDefinition\fP ()"
 .br
-.RI "\fIThe name of a field of the key. \fP"
+.RI "\fIThis constructor does nothing. \fP"
 .ti -1c
-.RI "enum \fBpsoKeyType\fP \fBtype\fP"
+.RI "\fBKeyDefinition\fP (Session &session, const std::string name, enum psoDefinitionType type, const unsigned char *keyDef, psoUint32 keyDefLength)"
 .br
-.RI "\fIThe data type of the key. \fP"
+.RI "\fICreates a new key definition in shared memory. \fP"
 .ti -1c
-.RI "\fBpsoUint32\fP \fBlength\fP"
+.RI "\fBKeyDefinition\fP (Session &session, const std::string name)"
 .br
-.RI "\fIFor some of the fixed and variable-length data types. \fP"
+.RI "\fIOpen an existing key definition in shared memory. \fP"
+.ti -1c
+.RI "virtual \fB~KeyDefinition\fP ()"
+.br
+.RI "\fIThe destructor will close the definition if not closed. \fP"
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fICloses the key definition. \fP"
+.ti -1c
+.RI "void \fBCreate\fP (Session &session, const std::string name, enum psoDefinitionType type, const unsigned char *keyDef, psoUint32 keyDefLength)"
+.br
+.RI "\fICreates a new key definition in shared memory. \fP"
+.ti -1c
+.RI "std::string \fBGetNext\fP ()"
+.br
+.RI "\fIIterates through the definition. \fP"
+.ti -1c
+.RI "void \fBGetDefinition\fP (unsigned char *buffer, psoUint32 bufferLength)"
+.br
+.RI "\fIRetrieves the key definition as an array of bytes. \fP"
+.ti -1c
+.RI "psoUint32 \fBGetLength\fP ()"
+.br
+.RI "\fIReturns the length, in bytes, of the definition. \fP"
+.ti -1c
+.RI "enum psoDefinitionType \fBGetType\fP ()"
+.br
+.RI "\fIReturns the type of the definition. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (Session &session, const std::string name)"
+.br
+.RI "\fIOpen an existing key definition in shared memory. \fP"
 .in -1c
-.SH "Field Documentation"
+.SS "Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBKeyDefinition\fP (PSO_HANDLE sessionHandle, PSO_HANDLE definitionHandle)"
+.br
+.RI "\fIThis constructor is used by the other objects of this API to build the key definition. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "PSO_HANDLE \fBm_definitionHandle\fP"
+.br
+.ti -1c
+.RI "PSO_HANDLE \fBm_sessionHandle\fP"
+.br
+.RI "\fIThe psoaSession struct (we belong to). \fP"
+.ti -1c
+.RI "enum psoDefinitionType \fBm_defType\fP"
+.br
+.ti -1c
+.RI "const unsigned char * \fBm_keyDef\fP"
+.br
+.ti -1c
+.RI "psoUint32 \fBm_keyDefLength\fP"
+.br
+.ti -1c
+.RI "psoUint32 \fBm_currentLength\fP"
+.br
+.in -1c
+.SS "Friends"
+
+.in +1c
+.ti -1c
+.RI "class \fBFastMap\fP"
+.br
+.ti -1c
+.RI "class \fBFastMapEditor\fP"
+.br
+.ti -1c
+.RI "class \fBFolder\fP"
+.br
+.ti -1c
+.RI "class \fBHashMap\fP"
+.br
+.ti -1c
+.RI "class \fBLifo\fP"
+.br
+.ti -1c
+.RI "class \fBQueue\fP"
+.br
+.ti -1c
+.RI "class \fBSession\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
 .PP 
-.SS "char \fBpsoKeyDefinition::name\fP[PSO_MAX_FIELD_LENGTH]"
+.SS "pso::KeyDefinition::KeyDefinition ()"
 .PP
-The name of a field of the key. 
+This constructor does nothing. 
+.PP
+You must use either Open or Create to use this object - otherwise a pso::Exception will be thrown. 
+.SS "pso::KeyDefinition::KeyDefinition (Session & session, const std::string name, enum psoDefinitionType type, const unsigned char * keyDef, psoUint32 keyDefLength)"
+.PP
+Creates a new key definition in shared memory. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIname\fP The name of the definition. 
+.br
+\fItype\fP The type of definition (ODBC, user defined, etc.) 
+.br
+\fIkeyDef\fP The key definition (as an opaque type) 
+.br
+\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
 .PP
 
+.SS "pso::KeyDefinition::KeyDefinition (Session & session, const std::string name)"
 .PP
-Definition at line 148 of file psoPhotonODBC.h.
-.SS "enum \fBpsoKeyType\fP \fBpsoKeyDefinition::type\fP"
+Open an existing key definition in shared memory. 
 .PP
-The data type of the key. 
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIname\fP The name of the definition.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
 .PP
 
+.SS "pso::KeyDefinition::KeyDefinition (PSO_HANDLE sessionHandle, PSO_HANDLE definitionHandle)\fC [private]\fP"
 .PP
-Definition at line 151 of file psoPhotonODBC.h.
-.SS "\fBpsoUint32\fP \fBpsoKeyDefinition::length\fP"
+This constructor is used by the other objects of this API to build the key definition. 
 .PP
-For some of the fixed and variable-length data types. 
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the session we belong to. 
+.br
+\fIdefinitionHandle\fP Handle to the definition
+.RE
 .PP
-Definition at line 154 of file psoPhotonODBC.h.
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::KeyDefinition::~KeyDefinition ()\fC [virtual]\fP"
+.PP
+The destructor will close the definition if not closed. 
+.PP
+This method won't throw an exception on error. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::KeyDefinition::Close ()"
+.PP
+Closes the key definition. 
+.PP
+This function terminates the current access to the key definition. The definition itself is left untouched in shared memory.
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::KeyDefinition::Create (Session & session, const std::string name, enum psoDefinitionType type, const unsigned char * keyDef, psoUint32 keyDefLength)"
+.PP
+Creates a new key definition in shared memory. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIname\fP The name of the definition. 
+.br
+\fItype\fP The type of definition (ODBC, user defined, etc.) 
+.br
+\fIkeyDef\fP The key definition (as an opaque type) 
+.br
+\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "std::string pso::KeyDefinition::GetNext ()"
+.PP
+Iterates through the definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+A formatted string containing the information on an item of the definition.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::KeyDefinition::GetDefinition (unsigned char * buffer, psoUint32 bufferLength)"
+.PP
+Retrieves the key definition as an array of bytes. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP A buffer to copy the data definition. 
+.br
+\fIbufferLength\fP The length in bytes of \fIbuffer\fP.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "psoUint32 pso::KeyDefinition::GetLength ()"
+.PP
+Returns the length, in bytes, of the definition. 
+.PP
+This function can be used to determine the length of the buffer that must be allocated for GetDefinition().
+.PP
+\fBReturns:\fP
+.RS 4
+The length, in bytes, of the definition
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "enum psoDefinitionType pso::KeyDefinition::GetType ()"
+.PP
+Returns the type of the definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The type of the definition.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::KeyDefinition::Open (Session & session, const std::string name)"
+.PP
+Open an existing key definition in shared memory. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIname\fP The name of the definition.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Friends And Related Function Documentation"
+.PP 
+.SS "friend class FastMap\fC [friend]\fP"
+.PP
+Definition at line 198 of file KeyDefinition.
+.SS "friend class FastMapEditor\fC [friend]\fP"
+.PP
+Definition at line 199 of file KeyDefinition.
+.SS "friend class Folder\fC [friend]\fP"
+.PP
+Definition at line 200 of file KeyDefinition.
+.SS "friend class HashMap\fC [friend]\fP"
+.PP
+Definition at line 201 of file KeyDefinition.
+.SS "friend class Lifo\fC [friend]\fP"
+.PP
+Definition at line 202 of file KeyDefinition.
+.SS "friend class Queue\fC [friend]\fP"
+.PP
+Definition at line 203 of file KeyDefinition.
+.SS "friend class Session\fC [friend]\fP"
+.PP
+Definition at line 204 of file KeyDefinition.
+.SH "Member Data Documentation"
+.PP 
+.SS "PSO_HANDLE \fBpso::KeyDefinition::m_definitionHandle\fP\fC [private]\fP"
+.PP
+Definition at line 188 of file KeyDefinition.
+.SS "PSO_HANDLE \fBpso::KeyDefinition::m_sessionHandle\fP\fC [private]\fP"
+.PP
+The psoaSession struct (we belong to). 
+.PP
+Definition at line 191 of file KeyDefinition.
+.SS "enum psoDefinitionType \fBpso::KeyDefinition::m_defType\fP\fC [private]\fP"
+.PP
+Definition at line 193 of file KeyDefinition.
+.SS "const unsigned char* \fBpso::KeyDefinition::m_keyDef\fP\fC [private]\fP"
+.PP
+Definition at line 194 of file KeyDefinition.
+.SS "psoUint32 \fBpso::KeyDefinition::m_keyDefLength\fP\fC [private]\fP"
+.PP
+Definition at line 195 of file KeyDefinition.
+.SS "psoUint32 \fBpso::KeyDefinition::m_currentLength\fP\fC [private]\fP"
+.PP
+Definition at line 196 of file KeyDefinition.
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for Photon Software from the source code.
+Generated automatically by Doxygen for Photon C++ API from the source code.

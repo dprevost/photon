@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle, folderHandle;
    int errcode;
    psoObjectDefinition definition;
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
 
    psoFieldDefinition fields[5] = {
       { "field1", PSO_TINYINT,   {0} },
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
                               strlen("Definition"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
