@@ -1,0 +1,135 @@
+.TH "pso::DataDefBuilderUser" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+pso::DataDefBuilderUser \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+This class is a helper class to build the data definition of Photon objects when this definition is user-defined. 
+
+How it works: you populate your definition with \fBAddField()\fP. When done, you retrieve the definition as an array of bytes and its length and you use that information to create a new data definition in shared memory (using the class DataDefinition).
+.PP
+What's different about this class? You add a 'description' for each of your field and the builder will insert a null byte to separate them. This will allow DataDefinition::GetNext() to display your definition in a loop as strings.
+.PP
+It should be noted that you do not have to use this class, the data-record definition can be set or retrieved directly as an array of bytes. 
+.PP
+Definition at line 55 of file DataDefBuilderUser.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataDefBuilderUser\fP (int \fBnumFields\fP)"
+.br
+.RI "\fIConstruct a helper class data definition builder. \fP"
+.ti -1c
+.RI "virtual \fB~DataDefBuilderUser\fP ()"
+.br
+.ti -1c
+.RI "void \fBAddField\fP (std::string fieldDescription)"
+.br
+.RI "\fIAdd a field to the definition. \fP"
+.ti -1c
+.RI "const unsigned char * \fBGetDefinition\fP ()"
+.br
+.RI "\fIRetrieve the data definition as an array of bytes. \fP"
+.ti -1c
+.RI "psoUint32 \fBGetDefLength\fP ()"
+.br
+.RI "\fIReturns the length, in bytes, of the definition. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char * \fBfields\fP"
+.br
+.RI "\fIThe definition of the data fields. \fP"
+.ti -1c
+.RI "int \fBnumFields\fP"
+.br
+.RI "\fINumber of fields in the definition. \fP"
+.ti -1c
+.RI "int \fBcurrentField\fP"
+.br
+.RI "\fICurrent number of added fields. \fP"
+.ti -1c
+.RI "int \fBcurrentLength\fP"
+.br
+.RI "\fICurrent length of the buffer. \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::DataDefBuilderUser::DataDefBuilderUser (int numFields)"
+.PP
+Construct a helper class data definition builder. 
+.PP
+.SS "virtual pso::DataDefBuilderUser::~DataDefBuilderUser ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::DataDefBuilderUser::AddField (std::string fieldDescription)"
+.PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfieldDescription\fP Your description/definition of the field.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "const unsigned char* pso::DataDefBuilderUser::GetDefinition ()"
+.PP
+Retrieve the data definition as an array of bytes. 
+.PP
+\fBReturns:\fP
+.RS 4
+The definition of the fields as an array of bytes. 
+.RE
+.PP
+
+.SS "psoUint32 pso::DataDefBuilderUser::GetDefLength ()"
+.PP
+Returns the length, in bytes, of the definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The length, in bytes, of the definition 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char* \fBpso::DataDefBuilderUser::fields\fP\fC [private]\fP"
+.PP
+The definition of the data fields. 
+.PP
+Definition at line 92 of file DataDefBuilderUser.
+.SS "int \fBpso::DataDefBuilderUser::numFields\fP\fC [private]\fP"
+.PP
+Number of fields in the definition. 
+.PP
+Definition at line 95 of file DataDefBuilderUser.
+.SS "int \fBpso::DataDefBuilderUser::currentField\fP\fC [private]\fP"
+.PP
+Current number of added fields. 
+.PP
+Definition at line 98 of file DataDefBuilderUser.
+.SS "int \fBpso::DataDefBuilderUser::currentLength\fP\fC [private]\fP"
+.PP
+Current length of the buffer. 
+.PP
+Definition at line 101 of file DataDefBuilderUser.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.

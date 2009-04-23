@@ -29,7 +29,7 @@ libNucleus_la_SOURCES =   \
         psoErrorHandler.h \
         BlockGroup.c      \
         BlockGroup.h      \
-        DataType.h        \
+        Definitions.h     \
         Engine.h          \
         FastMap.c         \
         FastMap.h         \

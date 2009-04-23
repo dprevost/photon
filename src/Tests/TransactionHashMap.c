@@ -1315,8 +1315,8 @@ int Run()
 int main(int argc, char *argv[]) 
 {
    int errcode = 0;
-   psoKeyDefinition keyDef = { "keyname", PSO_KEY_VARCHAR, 200 };
-   psoFieldDefinition dataDef = { "Field_1", PSO_VARCHAR, {200} };
+   psoKeyFieldDefinition keyDef = { "keyname", PSO_KEY_VARCHAR, 200 };
+   psoFieldDefinition dataDef   = { "Field_1", PSO_VARCHAR, {200} };
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -1357,7 +1357,7 @@ int main(int argc, char *argv[])
                               strlen("Dummy Key Definition"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &keyDefHandle );
    if ( errcode != PSO_OK ) {
       printf( " Error opening session 2 = %d\n", errcode );

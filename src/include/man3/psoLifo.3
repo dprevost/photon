@@ -1,31 +1,345 @@
-.TH "psoLifo" 3 "27 Jan 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.TH "pso::Lifo" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoLifo \- 
+pso::Lifo \- 
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <photon/psoCommon.h>\fP
-.br
-\fC#include <string>\fP
-.br
-
-.SS "Namespaces"
-
-.in +1c
-.ti -1c
-.RI "namespace \fBpso\fP"
-.br
-.in -1c
-.SS "Classes"
+.SH "Detailed Description"
+.PP 
+Photon LIFO queues (Last In, First Out - also known as stacks). 
+.PP
+Definition at line 44 of file Lifo.
+.SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "class \fBpso::Lifo\fP"
+.RI "\fBLifo\fP ()"
 .br
-.RI "\fIPhoton LIFO queues (Last In, First Out - also known as stacks). \fP"
+.RI "\fIThis constructor does nothing. \fP"
+.ti -1c
+.RI "\fBLifo\fP (Session &session, const std::string &queueName)"
+.br
+.RI "\fIOpen an existing LIFO queue. \fP"
+.ti -1c
+.RI "virtual \fB~Lifo\fP ()"
+.br
+.RI "\fIThe destructor will close the queue if not closed. \fP"
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fIClose a LIFO queue. \fP"
+.ti -1c
+.RI "DataDefinition * \fBGetDataDefinition\fP ()"
+.br
+.RI "\fIRetrieve the data definition of the queue. \fP"
+.ti -1c
+.RI "int \fBGetFirst\fP (void *buffer, psoUint32 bufferLength, psoUint32 &returnedLength)"
+.br
+.RI "\fIInitiates an iteratation through the queue - no data items are removed from the queue by this function. \fP"
+.ti -1c
+.RI "int \fBGetNext\fP (void *buffer, psoUint32 bufferLength, psoUint32 &returnedLength)"
+.br
+.RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
+.ti -1c
+.RI "DataDefinition * \fBGetRecordDefinition\fP ()"
+.br
+.RI "\fIRetrieve the data definition of the last accessed record. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (Session &session, const std::string &queueName)"
+.br
+.RI "\fIOpen an existing LIFO queue. \fP"
+.ti -1c
+.RI "int \fBPop\fP (void *buffer, psoUint32 bufferLength, psoUint32 &returnedLength)"
+.br
+.RI "\fIRemove the first item from the end of a LIFO queue and return it to the caller. \fP"
+.ti -1c
+.RI "void \fBPush\fP (const void *pItem, psoUint32 length)"
+.br
+.RI "\fIInsert a data element at the end of the LIFO queue. \fP"
+.ti -1c
+.RI "void \fBPush\fP (const void *pItem, psoUint32 length, const DataDefinition &dataDefinition)"
+.br
+.RI "\fIInsert a data record at the end of the LIFO queue. \fP"
+.ti -1c
+.RI "void \fBStatus\fP (psoObjStatus &status)"
+.br
+.RI "\fIReturn the status of the queue. \fP"
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "PSO_HANDLE \fBm_objectHandle\fP"
+.br
+.RI "\fIPointer to the psoaLifo struct. \fP"
+.ti -1c
+.RI "PSO_HANDLE \fBm_sessionHandle\fP"
+.br
+.RI "\fIThe psoaSession struct (we belong to). \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::Lifo::Lifo ()"
+.PP
+This constructor does nothing. 
+.PP
+You must use Open to access an in-memory LIFO queue object - otherwise a pso::Exception will be thrown. 
+.SS "pso::Lifo::Lifo (Session & session, const std::string & queueName)"
+.PP
+Open an existing LIFO queue. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIqueueName\fP The fully qualified name of the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::Lifo::~Lifo ()\fC [virtual]\fP"
+.PP
+The destructor will close the queue if not closed. 
+.PP
+This method won't throw an exception on error. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::Lifo::Close ()"
+.PP
+Close a LIFO queue. 
+.PP
+This function terminates the current access to the queue in shared memory (the queue itself, in shared memory is untouched).
+.PP
+\fBWarning:\fP
+.RS 4
+Closing an object does not automatically commit or rollback data items that were inserted or removed. You still must use either psoSession::Commit or psoSession::Rollback to end the current unit of work.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "DataDefinition* pso::Lifo::GetDataDefinition ()"
+.PP
+Retrieve the data definition of the queue. 
+.PP
+This function returns a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBReturns:\fP
+.RS 4
+definition A new data definition of the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::Lifo::GetFirst (void * buffer, psoUint32 bufferLength, psoUint32 & returnedLength)"
+.PP
+Initiates an iteratation through the queue - no data items are removed from the queue by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_IS_EMPTY if the queue is empty.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::Lifo::GetNext (void * buffer, psoUint32 bufferLength, psoUint32 & returnedLength)"
+.PP
+Iterate through the queue - no data items are removed from the queue by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call GetFirst to initialize the iterator. Not so evident - calling Pop will reset the iteration to the last element (they use the same internal storage). If this cause a problem, please let us know.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The buffer provided by the user to hold the content of the next element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_REACHED_THE_END when the iteration reaches the end of the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "DataDefinition* pso::Lifo::GetRecordDefinition ()"
+.PP
+Retrieve the data definition of the last accessed record. 
+.PP
+Queues will usually contain data records with an identical layout (data definition of the items). This layout was defined when the queue was created.
+.PP
+You can also insert and retrieve data records with different layouts if the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The layout defined when a queue is created is then used as the default one.
+.PP
+The DataDefinition object returned by this method can be used to access the layout on a record-by-record base.
+.PP
+Note: you only need to get this object once. The hidden fields associated with this object will be updated after each record is retrieved. The object will point to the data definition of the queue itself when initially constructed.
+.PP
+This function returns a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBReturns:\fP
+.RS 4
+A new data definition of the items retrieved from the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Lifo::Open (Session & session, const std::string & queueName)"
+.PP
+Open an existing LIFO queue. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIqueueName\fP The fully qualified name of the queue.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::Lifo::Pop (void * buffer, psoUint32 bufferLength, psoUint32 & returnedLength)"
+.PP
+Remove the first item from the end of a LIFO queue and return it to the caller. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+The removals only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_IS_EMPTY if the queue is empty or PSO_ITEM_IS_IN_USE if all existing items are 'invisible'.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Lifo::Push (const void * pItem, psoUint32 length)"
+.PP
+Insert a data element at the end of the LIFO queue. 
+.PP
+The additions only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpItem\fP The data item to be inserted. 
+.br
+\fIlength\fP The length of \fIpItem\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Lifo::Push (const void * pItem, psoUint32 length, const DataDefinition & dataDefinition)"
+.PP
+Insert a data record at the end of the LIFO queue. 
+.PP
+The additions only become permanent after a call to psoSession::Commit.
+.PP
+The additional argument of this overloaded function, \fIdataDefinition\fP, is used to provide an alternate data definition if the queue supports this feature.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpItem\fP The data item to be inserted. 
+.br
+\fIlength\fP The length of \fIpItem\fP (in bytes). 
+.br
+\fIdataDefinition\fP The data definition for this specific data record. The queue must have been created with the appropriate flag to support this feature.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Lifo::Status (psoObjStatus & status)"
+.PP
+Return the status of the queue. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstatus\fP A reference to the status structure.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "PSO_HANDLE \fBpso::Lifo::m_objectHandle\fP\fC [private]\fP"
+.PP
+Pointer to the psoaLifo struct. 
+.PP
+Definition at line 265 of file Lifo.
+.SS "PSO_HANDLE \fBpso::Lifo::m_sessionHandle\fP\fC [private]\fP"
+.PP
+The psoaSession struct (we belong to). 
+.PP
+Definition at line 268 of file Lifo.
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Photon C++ API from the source code.

@@ -1,4 +1,4 @@
-.TH "API functions for Photon hash maps." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon hash maps." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,13 +15,9 @@ Hash maps use unique keys - the data items are not sorted.
 .br
 .RI "\fIClose a Hash Map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, unsigned char *key, \fBpsoUint32\fP keyLength, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP *keyDefHandle, \fBPSO_HANDLE\fP *dataDefHandle)"
 .br
 .RI "\fIRetrieve the data definition of the hash map. \fP"
-.ti -1c
-.RI "PHOTON_EXPORT int \fBpsoHashMapDefLength\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP *keyLength, \fBpsoUint32\fP *fieldsLength)"
-.br
-.RI "\fIRetrieve the lengths of the variable elements of the definition of the hash map. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapDelete\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength)"
 .br
@@ -33,13 +29,13 @@ Hash maps use unique keys - the data items are not sorted.
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *key, \fBpsoUint32\fP keyLength, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *retKeyLength, \fBpsoUint32\fP *retDataLength)"
 .br
-.RI "\fIIterate through the hash map. \fP"
+.RI "\fIInitiates an iteratation through the hash map. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *key, \fBpsoUint32\fP keyLength, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *retKeyLength, \fBpsoUint32\fP *retDataLength)"
 .br
 .RI "\fIIterate through the hash map. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoHashMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, const void *data, \fBpsoUint32\fP dataLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapInsert\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, const void *data, \fBpsoUint32\fP dataLength, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fIInsert a data element in the hash map. \fP"
 .ti -1c
@@ -47,7 +43,11 @@ Hash maps use unique keys - the data items are not sorted.
 .br
 .RI "\fIOpen an existing hash map (see \fBpsoCreateObject\fP to create a new object). \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoHashMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, const void *data, \fBpsoUint32\fP dataLength)"
+.RI "PHOTON_EXPORT int \fBpsoHashMapRecordDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP *dataDefHandle)"
+.br
+.RI "\fIRetrieves a handle allowing you to access the data definition of the last accessed record. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoHashMapReplace\fP (\fBPSO_HANDLE\fP objectHandle, const void *key, \fBpsoUint32\fP keyLength, const void *data, \fBpsoUint32\fP dataLength, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fIReplace a data element in the hash map. \fP"
 .ti -1c
@@ -79,46 +79,19 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoHashMapDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP * definition, unsigned char * key, \fBpsoUint32\fP keyLength, unsigned char * fields, \fBpsoUint32\fP fieldsLength)"
+.SS "PHOTON_EXPORT int psoHashMapDefinition (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP * keyDefHandle, \fBPSO_HANDLE\fP * dataDefHandle)"
 .PP
 Retrieve the data definition of the hash map. 
 .PP
-You can call the function \fBpsoHashMapDefLength\fP to retrieve the length of the key and field definitions. This allows you to allocate the proper size for both \fIkey\fP and \fIfields\fP.
+To avoid memory leaks, you must close the handles that will be returned by this function (see \fBpsoDataDefClose\fP and \fBpsoKeyDefClose\fP).
 .PP
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the hash map (see \fBpsoHashMapOpen\fP). 
 .br
-\fIdefinition\fP The definition of the object. 
+\fIkeyDefHandle\fP Handle to the key definition. 
 .br
-\fIkey\fP An opaque definition of the key. You can set this field to NULL if you do not want to retrieve the key definition. 
-.br
-\fIkeyLength\fP The length in bytes of the buffer \fIkey\fP. It should be set to zero if \fIkey\fP is NULL. 
-.br
-\fIfields\fP An opaque definition of the data fields of the object. It can be set to NULL if you do not want to retrieve the definition. 
-.br
-\fIfieldsLength\fP The length in bytes of the buffer \fIfields\fP. It should be set to zero if \fIfields\fP is NULL.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBpsoErrors\fP on error. 
-.RE
-.PP
-
-.SS "PHOTON_EXPORT int psoHashMapDefLength (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP * keyLength, \fBpsoUint32\fP * fieldsLength)"
-.PP
-Retrieve the lengths of the variable elements of the definition of the hash map. 
-.PP
-This function is a helper function for \fBpsoHashMapDefinition\fP. It allows you to allocate the proper size for \fIkey\fP and \fIfields\fP.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the hash map (see \fBpsoHashMapOpen\fP). 
-.br
-\fIkeyLength\fP The length in bytes of the key buffer. 
-.br
-\fIfieldsLength\fP The length in bytes of the fields buffer.
+\fIdataDefHandle\fP Handle to the definition of the data fields.
 .RE
 .PP
 \fBReturns:\fP
@@ -168,7 +141,7 @@ Data items which were added by another session and are not yet committed will no
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIreturnedLength\fP The actual number of bytes in the data item.
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
 .RE
 .PP
 \fBReturns:\fP
@@ -179,7 +152,7 @@ Data items which were added by another session and are not yet committed will no
 
 .SS "PHOTON_EXPORT int psoHashMapGetFirst (\fBPSO_HANDLE\fP objectHandle, void * key, \fBpsoUint32\fP keyLength, void * buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP * retKeyLength, \fBpsoUint32\fP * retDataLength)"
 .PP
-Iterate through the hash map. 
+Initiates an iteratation through the hash map. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
@@ -197,14 +170,14 @@ Data items retrieved this way will not be sorted.
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIretKeyLength\fP The actual number of bytes in the key 
+\fIretKeyLength\fP The actual number of bytes copied in the key buffer. 
 .br
-\fIretDataLength\fP The actual number of bytes in the data item.
+\fIretDataLength\fP The actual number of bytes copied in the data buffer.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBpsoErrors\fP on error. 
+0 on success, PSO_IS_EMPTY if the hash map is empty or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
@@ -230,22 +203,26 @@ Data items retrieved this way will not be sorted.
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIretKeyLength\fP The actual number of bytes in the key 
+\fIretKeyLength\fP The actual number of bytes copied in the key buffer. 
 .br
-\fIretDataLength\fP The actual number of bytes in the data item.
+\fIretDataLength\fP The actual number of bytes copied in the data buffer.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBpsoErrors\fP on error. 
+0 on success, PSO_REACHED_THE_END when the iteration reaches the end of the hash map or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoHashMapInsert (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, const void * data, \fBpsoUint32\fP dataLength)"
+.SS "PHOTON_EXPORT int psoHashMapInsert (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, const void * data, \fBpsoUint32\fP dataLength, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
 Insert a data element in the hash map. 
 .PP
 The additions only become permanent after a call to \fBpsoCommit\fP.
+.PP
+The \fIdataDefHandle\fP argument should be used (non-NULL) only if you use this hash map to store data records having different data definitions.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -257,7 +234,9 @@ The additions only become permanent after a call to \fBpsoCommit\fP.
 .br
 \fIdata\fP The data item to be inserted. 
 .br
-\fIdataLength\fP The length of \fIdata\fP (in bytes).
+\fIdataLength\fP The length of \fIdata\fP (in bytes). 
+.br
+\fIdataDefHandle\fP An optional handle to a data definition for this specific data record. The hash map must have been created with the appropriate flag to support this feature. Set this handle to NULL to use the default data definition.
 .RE
 .PP
 \fBReturns:\fP
@@ -269,6 +248,10 @@ The additions only become permanent after a call to \fBpsoCommit\fP.
 .SS "PHOTON_EXPORT int psoHashMapOpen (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
 Open an existing hash map (see \fBpsoCreateObject\fP to create a new object). 
+.PP
+Hah maps will usually contain data records with an identical layout (data definition of the items). This layout was defined when the map was created.
+.PP
+You can also insert and retrieve data records with different layouts if the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The layout defined when a map is created is then used as the default one.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -287,11 +270,42 @@ Open an existing hash map (see \fBpsoCreateObject\fP to create a new object).
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoHashMapReplace (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, const void * data, \fBpsoUint32\fP dataLength)"
+.SS "PHOTON_EXPORT int psoHashMapRecordDefinition (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP * dataDefHandle)"
+.PP
+Retrieves a handle allowing you to access the data definition of the last accessed record. 
+.PP
+Explanation:
+.PP
+Hah maps will usually contain data records with an identical layout (data definition of the items). This layout was defined when the map was created.
+.PP
+You can also insert and retrieve data records with different layouts if the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The layout defined when a map is created is then used as the default one.
+.PP
+To access the layout on a record-by-record base, use the argument \fIdataDefHandle\fP - it will be set to the layout of the last retrieved record.
+.PP
+Note: you only need to get the handle once. The hidden fields associated with this handle will be updated after each record is retrieved. The handle will point to the data definition of the hash map upon initialization.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the hash map 
+.br
+\fIdataDefHandle\fP This optional handle gives you access to the data definition of the record on a record by record basis. This handle will be closed when the hash map is closed. You can also close it manually with \fBpsoDataDefClose\fP.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoHashMapReplace (\fBPSO_HANDLE\fP objectHandle, const void * key, \fBpsoUint32\fP keyLength, const void * data, \fBpsoUint32\fP dataLength, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
 Replace a data element in the hash map. 
 .PP
 The replacements only become permanent after a call to \fBpsoCommit\fP.
+.PP
+The \fIdataDefHandle\fP argument should be used (non-NULL) only if you use this hash map to store data records having different data definitions.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -303,7 +317,9 @@ The replacements only become permanent after a call to \fBpsoCommit\fP.
 .br
 \fIdata\fP The new data item that will replace the previous data. 
 .br
-\fIdataLength\fP The length of \fIdata\fP (in bytes).
+\fIdataLength\fP The length of \fIdata\fP (in bytes). 
+.br
+\fIdataDefHandle\fP An optional handle to a data definition for this specific data record. The hash map must have been created with the appropriate flag to support this feature. Set this handle to NULL to use the default data definition.
 .RE
 .PP
 \fBReturns:\fP

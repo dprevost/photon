@@ -1,4 +1,4 @@
-.TH "psoCommon.h" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoCommon.h" 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -46,6 +46,9 @@ psoCommon.h \-
 .RI "#define \fBPSO_MAX_FULL_NAME_LENGTH\fP   1024"
 .br
 .RI "\fIMaximum number of bytes of the fully qualified name of a pso object (including the name(s) of its parent folder(s)). \fP"
+.ti -1c
+.RI "#define \fBPSO_MULTIPLE_DATA_DEFINITIONS\fP   0x0001"
+.br
 .in -1c
 .SS "Typedefs"
 
@@ -64,12 +67,6 @@ psoCommon.h \-
 .br
 .RI "\fIPSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
 .ti -1c
-.RI "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
-.br
-.ti -1c
-.RI "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
-.br
-.ti -1c
 .RI "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .br
 .ti -1c
@@ -86,7 +83,7 @@ psoCommon.h \-
 
 .in +1c
 .ti -1c
-.RI "enum \fBpsoObjectType\fP { \fBPSO_FOLDER\fP =  1, \fBPSO_HASH_MAP\fP =  2, \fBPSO_LIFO\fP =  3, \fBPSO_FAST_MAP\fP =  4, \fBPSO_QUEUE\fP =  5, \fBPSO_LAST_OBJECT_TYPE\fP }"
+.RI "enum \fBpsoObjectType\fP { \fBPSO_FOLDER\fP =  1, \fBPSO_LIFO\fP =  2, \fBPSO_QUEUE\fP =  3, \fBPSO_HASH_MAP\fP =  4, \fBPSO_FAST_MAP\fP =  5, \fBPSO_LAST_OBJECT_TYPE\fP }"
 .br
 .RI "\fIThe object type as seen from the API. \fP"
 .ti -1c
@@ -114,6 +111,9 @@ Definition at line 89 of file psoCommon.h.
 Maximum number of bytes of the name of a pso object (not counting the name of the parent folder(s)). 
 .PP
 Definition at line 83 of file psoCommon.h.
+.SS "#define PSO_MULTIPLE_DATA_DEFINITIONS   0x0001"
+.PP
+Definition at line 116 of file psoCommon.h.
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef void* \fBPSO_HANDLE\fP"
@@ -123,25 +123,19 @@ PSO_HANDLE is an opaque data type used by the C API to reference objects created
 Definition at line 75 of file psoCommon.h.
 .SS "typedef struct \fBpsoFolderEntry\fP \fBpsoFolderEntry\fP"
 .PP
-Definition at line 211 of file psoCommon.h.
+Definition at line 242 of file psoCommon.h.
 .SS "typedef struct \fBpsoInfo\fP \fBpsoInfo\fP"
 .PP
-Definition at line 310 of file psoCommon.h.
+Definition at line 341 of file psoCommon.h.
 .SS "typedef int16_t \fBpsoInt16\fP"
 .PP
 Definition at line 40 of file psoCommon.h.
-.SS "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
-.PP
-Definition at line 114 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .PP
-Definition at line 182 of file psoCommon.h.
-.SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
-.PP
-Definition at line 106 of file psoCommon.h.
+Definition at line 213 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
-Definition at line 250 of file psoCommon.h.
+Definition at line 281 of file psoCommon.h.
 .SS "typedef uint16_t \fBpsoUint16\fP"
 .PP
 Definition at line 41 of file psoCommon.h.
@@ -187,8 +181,8 @@ Google Protocol Buffer.
 \fB\fIPSO_DEF_LAST_TYPE \fP\fP
 Last type (for boundary checking). 
 .PP
-Definition at line 136 of file psoCommon.h.
-.SS "enum \fBpsoIteratorType\fP"
+Definition at line 138 of file psoCommon.h.
+.SS "enum typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
 .PP
 \fBEnumerator: \fP
 .in +1c
@@ -199,7 +193,7 @@ Definition at line 136 of file psoCommon.h.
 
 .PP
 Definition at line 108 of file psoCommon.h.
-.SS "enum \fBpsoObjectType\fP"
+.SS "enum typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
 .PP
 The object type as seen from the API. 
 .PP
@@ -208,13 +202,13 @@ The object type as seen from the API.
 .TP
 \fB\fIPSO_FOLDER \fP\fP
 .TP
-\fB\fIPSO_HASH_MAP \fP\fP
-.TP
 \fB\fIPSO_LIFO \fP\fP
 .TP
-\fB\fIPSO_FAST_MAP \fP\fP
-.TP
 \fB\fIPSO_QUEUE \fP\fP
+.TP
+\fB\fIPSO_HASH_MAP \fP\fP
+.TP
+\fB\fIPSO_FAST_MAP \fP\fP
 .TP
 \fB\fIPSO_LAST_OBJECT_TYPE \fP\fP
 

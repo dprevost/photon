@@ -41,8 +41,8 @@ KeyDefBuilderODBC::KeyDefBuilderODBC( uint32_t numKeyFields,
    }
    
    // using calloc - being lazy...
-   size_t len = numKeyFields * sizeof(psoKeyDefinition);
-   keys = (psoKeyDefinition *)calloc( len, 1 );
+   size_t len = numKeyFields * sizeof(psoKeyFieldDefinition);
+   keys = (psoKeyFieldDefinition *)calloc( len, 1 );
    if ( keys == NULL ) {
       throw pso::Exception( "KeyDefBuilderODBC::KeyDefBuilderODBC",
                             PSO_NOT_ENOUGH_HEAP_MEMORY );
@@ -181,7 +181,7 @@ uint32_t KeyDefBuilderODBC::GetDefLength()
                             PSO_INVALID_NUM_FIELDS );
    }
 
-   return numKeys * sizeof(psoKeyDefinition);
+   return numKeys * sizeof(psoKeyFieldDefinition);
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

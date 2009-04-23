@@ -1,4 +1,4 @@
-.TH "psoObjectDefinition" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoObjectDefinition" 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -16,7 +16,7 @@ This struct will be expanded in the near future to add hints to the framework fo
 .PP
 For exmple: the expected minimal number of data records can be used to preallocate the internal hash array (avoiding unneeded Resize() and potential memory fragmentation). 
 .PP
-Definition at line 170 of file psoCommon.h.
+Definition at line 172 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -25,13 +25,17 @@ Definition at line 170 of file psoCommon.h.
 .br
 .RI "\fIThe object type. \fP"
 .ti -1c
-.RI "enum \fBpsoDefinitionType\fP \fBkeyDefType\fP"
+.RI "\fBpsoUint32\fP \fBflags\fP"
 .br
-.RI "\fIThe type of the key definition (metadata). \fP"
+.RI "\fIFlags defining the properties of the object. \fP"
 .ti -1c
-.RI "enum \fBpsoDefinitionType\fP \fBfieldDefType\fP"
+.RI "size_t \fBminNumOfDataRecords\fP"
 .br
-.RI "\fIThe type of the field definition (metadata). \fP"
+.RI "\fIOptimization feature - not implemented yet. \fP"
+.ti -1c
+.RI "size_t \fBminNumBlocks\fP"
+.br
+.RI "\fIOptimization feature - not implemented yet. \fP"
 .in -1c
 .SH "Field Documentation"
 .PP 
@@ -41,17 +45,37 @@ The object type.
 .PP
 
 .PP
-Definition at line 173 of file psoCommon.h.
-.SS "enum \fBpsoDefinitionType\fP \fBpsoObjectDefinition::keyDefType\fP"
+Definition at line 175 of file psoCommon.h.
+.SS "\fBpsoUint32\fP \fBpsoObjectDefinition::flags\fP"
 .PP
-The type of the key definition (metadata). 
+Flags defining the properties of the object. 
 .PP
-Definition at line 176 of file psoCommon.h.
-.SS "enum \fBpsoDefinitionType\fP \fBpsoObjectDefinition::fieldDefType\fP"
+Currently defined flags:
+.IP "\(bu" 2
+PSO_MULTIPLE_DATA_DEFINITIONS
 .PP
-The type of the field definition (metadata). 
 .PP
-Definition at line 179 of file psoCommon.h.
+Flags should be ORed. 
+.PP
+Definition at line 185 of file psoCommon.h.
+.SS "size_t \fBpsoObjectDefinition::minNumOfDataRecords\fP"
+.PP
+Optimization feature - not implemented yet. 
+.PP
+The expected minimum number of data records. This is used internally to avoid shrinking the internal 'holder' of the data beyond what is needed to hold this minimum number of data records. 
+.PP
+Definition at line 194 of file psoCommon.h.
+.SS "size_t \fBpsoObjectDefinition::minNumBlocks\fP"
+.PP
+Optimization feature - not implemented yet. 
+.PP
+The expected minimum number of blocks. This is used internally to avoid shrinking the shared-memory object beyond a certain predefined minimum size.
+.PP
+Potential issue: the amount of overhead used by Photon will vary; some potential factors includes the type of object, the number of data records, the length of the data records (and keys, if used).
+.PP
+You might want to retrieve the status of the object and evaluate the minimum number of blocks needed from it.. 
+.PP
+Definition at line 210 of file psoCommon.h.
 
 .SH "Author"
 .PP 

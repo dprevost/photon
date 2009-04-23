@@ -73,7 +73,7 @@ int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
  * The array of offsets must be allocated by the caller.
  */
 PHOTON_API_EXPORT
-void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
+void psoaGetKeyOffsets( psoKeyFieldDefinition * pDefinition,
                         int                numKeys,
                         uint32_t         * pOffsets );
 

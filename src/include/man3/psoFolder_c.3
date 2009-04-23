@@ -1,4 +1,4 @@
-.TH "API functions for Photon folders." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon folders." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,17 +25,37 @@ If a flat structure is preferred, simply make all your data containers children 
 .br
 .RI "\fIClose a folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateFolder\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
+.br
+.RI "\fICreate a new folder in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateKeyedObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.br
+.RI "\fICreate a new key-based object in shared memory as a child of the current folder. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoFolderDestroyObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .br
 .RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
 .ti -1c
+.RI "PHOTON_EXPORT int \fBpsoFolderGetDataDefinition\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *dataDefHandle)"
+.br
+.RI "\fIRetrieve the data definition of the named object. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoFolderGetDefinition\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition)"
+.br
+.RI "\fIRetrieve the object definition of the named object. \fP"
+.ti -1c
 .RI "PHOTON_EXPORT int \fBpsoFolderGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
 .br
 .RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoFolderGetKeyDefinition\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *keyDefHandle)"
+.br
+.RI "\fIRetrieve the key definition of the named object. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoFolderGetNext\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP *pEntry)"
 .br
@@ -68,13 +88,13 @@ This function terminates the current access to the folder in shared memory (the 
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.SS "PHOTON_EXPORT int psoFolderCreateFolder (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .PP
-Create a new object in shared memory as a child of the current folder. 
+Create a new folder in shared memory as a child of the current folder. 
 .PP
-The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
+The creation of the folder only becomes permanent after a call to \fBpsoCommit\fP.
 .PP
-This function does not provide a handle to the newly created object. Use psoQueueOpen and similar functions to get the handle.
+This function does not provide a handle to the newly created folder. Use psoFolderOpen to get the handle.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -82,11 +102,65 @@ This function does not provide a handle to the newly created object. Use psoQueu
 .br
 \fIobjectName\fP The name of the object. 
 .br
-\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoFolderCreateKeyedObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.PP
+Create a new key-based object in shared memory as a child of the current folder. 
+.PP
+The currently supported types of key-based objects are hash maps and read-only hash maps.
+.PP
+The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use \fBpsoHashMapOpen\fP and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
 .br
-\fIdefinition\fP The type of object to create (folder, queue, etc.), the type of the fields definition, etc. 
+\fIobjectName\fP The name of the object. 
 .br
-\fIkeyDefHandle\fP Handle to the definition of the key or NULL if the object has no key. 
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
+.br
+\fIdefinition\fP The basic information needed to create the object: the type of object to create, etc. 
+.br
+\fIkeyDefHandle\fP Handle to the definition of the key. 
+.br
+\fIdataDefHandle\fP Handle to the definition of the data fields.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+To create an object based on a key, use the function \fBpsoFolderCreateKeyedObject\fP instead of the current function.
+.PP
+The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use \fBpsoQueueOpen\fP and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
+.br
+\fIdefinition\fP The basic information needed to create the object: the type of object to create, etc. 
 .br
 \fIdataDefHandle\fP Handle to the definition of the data fields. It can be set to NULL when creating a Folder.
 .RE
@@ -118,6 +192,52 @@ The destruction of the object only becomes permanent after a call to \fBpsoCommi
 .RE
 .PP
 
+.SS "PHOTON_EXPORT int psoFolderGetDataDefinition (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * dataDefHandle)"
+.PP
+Retrieve the data definition of the named object. 
+.PP
+To avoid memory leaks, you must close the handle that will be returned by this function (see \fBpsoDataDefClose\fP).
+.PP
+The handle might be set to NULL by this function if the object is a folder.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
+.br
+\fIdataDefHandle\fP Handle to the definition of the data fields.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoFolderGetDefinition (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition)"
+.PP
+Retrieve the object definition of the named object. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
+.br
+\fIdefinition\fP The definition of the object.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
 .SS "PHOTON_EXPORT int psoFolderGetFirst (\fBPSO_HANDLE\fP objectHandle, \fBpsoFolderEntry\fP * pEntry)"
 .PP
 Iterate through the folder - no data items are removed from the folder by this function. 
@@ -129,6 +249,31 @@ Data items which were added by another session and are not yet committed will no
 \fIobjectHandle\fP The handle to the folder (see \fBpsoFolderOpen\fP). 
 .br
 \fIpEntry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoFolderGetKeyDefinition (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * keyDefHandle)"
+.PP
+Retrieve the key definition of the named object. 
+.PP
+To avoid memory leaks, you must close the handle that will be returned by this function (see \fBpsoKeyDefClose\fP).
+.PP
+The handle might be set to NULL by this function if the object does not have keys (folders and queues, for example).
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderHandle\fP Handle to the current folder. 
+.br
+\fIobjectName\fP The name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
+.br
+\fIkeyDefHandle\fP Handle to the key definition(or NULL for folders, queues, etc.).
 .RE
 .PP
 \fBReturns:\fP

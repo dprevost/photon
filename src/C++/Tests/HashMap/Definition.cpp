@@ -47,7 +47,7 @@ int main( int argc, char * argv[] )
       { "field4", PSO_SMALLINT,      {0} },
       { "field5", PSO_LONGVARBINARY, {0} }
    };
-   psoKeyDefinition keys[2] = {
+   psoKeyFieldDefinition keys[2] = {
       { "LastName",  PSO_KEY_CHAR,    30 },
       { "FirstName", PSO_KEY_VARCHAR, 30 }
    };
@@ -84,7 +84,7 @@ int main( int argc, char * argv[] )
                                "Key Definition",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)keys,
-                               2*sizeof(psoKeyDefinition) );
+                               2*sizeof(psoKeyFieldDefinition) );
       session.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
       hashmap = new HashMap( session, hname );
    }
@@ -135,13 +135,13 @@ int main( int argc, char * argv[] )
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }
-      if ( retKeyDef->GetLength() != 2*sizeof(psoKeyDefinition) ) {
+      if ( retKeyDef->GetLength() != 2*sizeof(psoKeyFieldDefinition) ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }
-      retKeys = new unsigned char [2*sizeof(psoKeyDefinition)];
-      retKeyDef->GetDefinition( retKeys, 2*sizeof(psoKeyDefinition) );
-      if ( memcmp( retKeys, keys, 2*sizeof(psoKeyDefinition) ) != 0 ) {
+      retKeys = new unsigned char [2*sizeof(psoKeyFieldDefinition)];
+      retKeyDef->GetDefinition( retKeys, 2*sizeof(psoKeyFieldDefinition) );
+      if ( memcmp( retKeys, keys, 2*sizeof(psoKeyFieldDefinition) ) != 0 ) {
          cerr << "Test failed - line " << __LINE__ << endl;
          return 1;
       }

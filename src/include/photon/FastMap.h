@@ -191,12 +191,6 @@ int psoFastMapDelete( PSO_HANDLE   objectHandle,
  * \param[out] objectHandle The handle to the hash map, allowing us access to
  *             the map in shared memory. On error, this handle will be set
  *             to zero (NULL) unless the objectHandle pointer itself is NULL.
- * \param[out] dataDefHandle This optional handle gives you access to the
- *             data definition of the record on a record by record basis.
- *             It can be set to NULL if you do not want to use this feature. 
- *             If not set to NULL, the returned handle will be closed when
- *             the hash map is closed. You can also close it manually with 
- *             ::psoDataDefClose.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
