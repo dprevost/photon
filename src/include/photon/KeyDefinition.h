@@ -136,6 +136,7 @@ int psoKeyDefOpen( PSO_HANDLE   sessionHandle,
                    PSO_HANDLE * definitionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/*@}*/
 
 #ifdef __cplusplus
 }

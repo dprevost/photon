@@ -1,8 +1,19 @@
-.TH "API functions for Photon data definitions." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon data definitions." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 API functions for Photon data definitions. \- 
+.SH "Detailed Description"
+.PP 
+Objects in Photon must be associated with a data definition. 
+.PP
+These data definitions are useful for essentially two reasons:
+.PP
+They provide an easy way to examine the type of content of specific objects (the list of fields, for example).
+.PP
+Data definitions are also needed to identify the content to object oriented languages to allow for the proper serialization of objects as an array of bytes and the deserialization of the array of bytes back to an object.
+.PP
+This last point is important since Photon can manage different types of data: record-oriented structures (ideal for COBOL, C), RDB rows and serialized objects (Java, C#, etc.). 
 .PP
 .SS "Functions"
 

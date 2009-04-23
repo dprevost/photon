@@ -10,28 +10,32 @@
 
 CLEANFILES = *~ photon/*~ Doxygen/*~
 
-C_HEADER_FILES =                                      \
-        $(top_srcdir)/src/include/photon/photon.h     \
-        $(top_srcdir)/src/include/photon/psoCommon.h  \
-        $(top_srcdir)/src/include/photon/psoFastMap.h \
-        $(top_srcdir)/src/include/photon/psoFolder.h  \
-        $(top_srcdir)/src/include/photon/psoHashMap.h \
-        $(top_srcdir)/src/include/photon/psoLifo.h    \
-        $(top_srcdir)/src/include/photon/psoQueue.h   \
-        $(top_srcdir)/src/include/photon/psoProcess.h \
-        $(top_srcdir)/src/include/photon/psoSession.h 
+C_HEADER_FILES =                                          \
+        $(top_srcdir)/src/include/photon/photon.h         \
+        $(top_srcdir)/src/include/photon/psoCommon.h      \
+        $(top_srcdir)/src/include/photon/DataDefinition.h \
+        $(top_srcdir)/src/include/photon/FastMap.h        \
+        $(top_srcdir)/src/include/photon/Folder.h         \
+        $(top_srcdir)/src/include/photon/HashMap.h        \
+        $(top_srcdir)/src/include/photon/KeyDefinition.h  \
+        $(top_srcdir)/src/include/photon/Lifo.h           \
+        $(top_srcdir)/src/include/photon/Queue.h          \
+        $(top_srcdir)/src/include/photon/Process.h        \
+        $(top_srcdir)/src/include/photon/Session.h        
 
-C_INSTALLED_FILES =         \
-        photon/photon.h     \
-        photon/psoCommon.h  \
-        photon/psoErrors.h  \
-        photon/psoFastMap.h \
-        photon/psoFolder.h  \
-        photon/psoHashMap.h \
-        photon/psoLifo.h    \
-        photon/psoQueue.h   \
-        photon/psoProcess.h \
-        photon/psoSession.h 
+C_INSTALLED_FILES =             \
+        photon/photon.h         \
+        photon/psoCommon.h      \
+        photon/psoErrors.h      \
+        photon/DataDefinition.h \
+        photon/FastMap.h        \
+        photon/Folder.h         \
+        photon/HashMap.h        \
+        photon/KeyDefinition.h  \
+        photon/Lifo.h           \
+        photon/Queue.h          \
+        photon/Process.h        \
+        photon/Session.h        
 
 CPP_INSTALLED_FILES =             \
         photon/photon             \
@@ -41,15 +45,15 @@ CPP_INSTALLED_FILES =             \
         photon/KeyDefBuilderODBC  \
         photon/KeyDefBuilderUser  \
         photon/KeyDefinition      \
-        photon/psoException       \
-        photon/psoFastMap         \
-        photon/psoFastMapEditor   \
-        photon/psoFolder          \
-        photon/psoHashMap         \
-        photon/psoLifo            \
-        photon/psoProcess         \
-        photon/psoQueue           \
-        photon/psoSession         
+        photon/Exception          \
+        photon/FastMap            \
+        photon/FastMapEditor      \
+        photon/Folder             \
+        photon/HashMap            \
+        photon/Lifo               \
+        photon/Process            \
+        photon/Queue              \
+        photon/Session            
 
 CPP_DOXY_FILES =                                                \
         $(top_srcdir)/src/include/Doxygen/DataDefBuilderODBc.in \
@@ -227,63 +231,63 @@ if COND_USE_DOXYGEN
 
 man3/DataDefBuilderODBC.3: $(top_srcdir)/src/include/Doxygen/DataDefBuilderODBC.in $(top_srcdir)/src/include/photon/DataDefBuilderODBC
 	doxygen $(top_srcdir)/src/include/Doxygen/DataDefBuilderODBC 
-	cp dummy/man/man3/DataDefBuilderODBC.3 man3/DataDefBuilderODBC.3
+	cp dummy/man/man3/pso_DataDefBuilderODBC.3 man3/psoDataDefBuilderODBC.3
 	-rm -rf dummy
 man3/DataDefBuilderUser.3: $(top_srcdir)/src/include/Doxygen/DataDefBuilderUser.in $(top_srcdir)/src/include/photon/DataDefBuilderUser
 	doxygen $(top_srcdir)/src/include/Doxygen/DataDefBuilderUser 
-	cp dummy/man/man3/DataDefBuilderUser.3 man3/DataDefBuilderUser.3
+	cp dummy/man/man3/pso_DataDefBuilderUser.3 man3/psoDataDefBuilderUser.3
 	-rm -rf dummy
 man3/DataDefinition.3: $(top_srcdir)/src/include/Doxygen/DataDefinition.in $(top_srcdir)/src/include/photon/DataDefinition
 	doxygen $(top_srcdir)/src/include/Doxygen/DataDefinition 
-	cp dummy/man/man3/DataDefinition.3 man3/DataDefinition.3
+	cp dummy/man/man3/pso_DataDefinition.3 man3/psoDataDefinition.3
 	-rm -rf dummy
 man3/KeyDefBuilderODBC.3: $(top_srcdir)/src/include/Doxygen/KeyDefBuilderODBC.in $(top_srcdir)/src/include/photon/KeyDefBuilderODBC
 	doxygen $(top_srcdir)/src/include/Doxygen/KeyDefBuilderODBC 
-	cp dummy/man/man3/KeyDefBuilderODBC.3 man3/KeyDefBuilderODBC.3
+	cp dummy/man/man3/pso_KeyDefBuilderODBC.3 man3/psoKeyDefBuilderODBC.3
 	-rm -rf dummy
 man3/KeyDefBuilderUser.3: $(top_srcdir)/src/include/Doxygen/KeyDefBuilderUser.in $(top_srcdir)/src/include/photon/KeyDefBuilderUser
 	doxygen $(top_srcdir)/src/include/Doxygen/KeyDefBuilderUser 
-	cp dummy/man/man3/KeyDefBuilderUser.3 man3/KeyDefBuilderUser.3
+	cp dummy/man/man3/pso_KeyDefBuilderUser.3 man3/psoKeyDefBuilderUser.3
 	-rm -rf dummy
 man3/KeyDefinition.3: $(top_srcdir)/src/include/Doxygen/KeyDefinition.in $(top_srcdir)/src/include/photon/KeyDefinition
 	doxygen $(top_srcdir)/src/include/Doxygen/KeyDefinition 
-	cp dummy/man/man3/KeyDefinition.3 man3/KeyDefinition.3
+	cp dummy/man/man3/pso_KeyDefinition.3 man3/psoKeyDefinition.3
 	-rm -rf dummy
-man3/psoException.3: $(top_srcdir)/src/include/Doxygen/psoException.in $(top_srcdir)/src/include/photon/psoException
+man3/psoException.3: $(top_srcdir)/src/include/Doxygen/psoException.in $(top_srcdir)/src/include/photon/Exception
 	doxygen $(top_srcdir)/src/include/Doxygen/psoException 
-	cp dummy/man/man3/psoException.3 man3/psoException.3
+	cp dummy/man/man3/pso_Exception.3 man3/psoException.3
 	-rm -rf dummy
-man3/psoFastMap.3: $(top_srcdir)/src/include/Doxygen/psoFastMap.in $(top_srcdir)/src/include/photon/psoFastMap
+man3/psoFastMap.3: $(top_srcdir)/src/include/Doxygen/psoFastMap.in $(top_srcdir)/src/include/photon/FastMap
 	doxygen $(top_srcdir)/src/include/Doxygen/psoFastMap 
-	cp dummy/man/man3/psoFastMap.3 man3/psoFastMap.3
+	cp dummy/man/man3/pso_FastMap.3 man3/psoFastMap.3
 	-rm -rf dummy
-man3/psoFastMapEditor.3: $(top_srcdir)/src/include/Doxygen/psoFastMapEditor.in $(top_srcdir)/src/include/photon/psoFastMapEditor
+man3/psoFastMapEditor.3: $(top_srcdir)/src/include/Doxygen/psoFastMapEditor.in $(top_srcdir)/src/include/photon/FastMapEditor
 	doxygen $(top_srcdir)/src/include/Doxygen/psoFastMapEditor 
-	cp dummy/man/man3/psoFastMapEditor.3 man3/psoFastMapEditor.3
+	cp dummy/man/man3/pso_FastMapEditor.3 man3/psoFastMapEditor.3
 	-rm -rf dummy
-man3/psoFolder.3: $(top_srcdir)/src/include/Doxygen/psoFolder.in $(top_srcdir)/src/include/photon/psoFolder
+man3/psoFolder.3: $(top_srcdir)/src/include/Doxygen/psoFolder.in $(top_srcdir)/src/include/photon/Folder
 	doxygen $(top_srcdir)/src/include/Doxygen/psoFolder 
-	cp dummy/man/man3/psoFolder.3 man3/psoFolder.3
+	cp dummy/man/man3/pso_Folder.3 man3/psoFolder.3
 	-rm -rf dummy
-man3/psoHashMap.3: $(top_srcdir)/src/include/Doxygen/psoHashMap.in $(top_srcdir)/src/include/photon/psoHashMap
+man3/psoHashMap.3: $(top_srcdir)/src/include/Doxygen/psoHashMap.in $(top_srcdir)/src/include/photon/HashMap
 	doxygen $(top_srcdir)/src/include/Doxygen/psoHashMap 
-	cp dummy/man/man3/psoHashMap.3 man3/psoHashMap.3
+	cp dummy/man/man3/pso_HashMap.3 man3/psoHashMap.3
 	-rm -rf dummy
-man3/psoLifo.3: $(top_srcdir)/src/include/Doxygen/psoLifo.in $(top_srcdir)/src/include/photon/psoLifo
+man3/psoLifo.3: $(top_srcdir)/src/include/Doxygen/psoLifo.in $(top_srcdir)/src/include/photon/Lifo
 	doxygen $(top_srcdir)/src/include/Doxygen/psoLifo 
-	cp dummy/man/man3/psoLifo.3 man3/psoLifo.3
+	cp dummy/man/man3/pso_Lifo.3 man3/psoLifo.3
 	-rm -rf dummy
-man3/psoProcess.3: $(top_srcdir)/src/include/Doxygen/psoProcess.in $(top_srcdir)/src/include/photon/psoProcess
+man3/psoProcess.3: $(top_srcdir)/src/include/Doxygen/psoProcess.in $(top_srcdir)/src/include/photon/Process
 	doxygen $(top_srcdir)/src/include/Doxygen/psoProcess 
-	cp dummy/man/man3/psoProcess.3 man3/psoProcess.3
+	cp dummy/man/man3/pso_Process.3 man3/psoProcess.3
 	-rm -rf dummy
-man3/psoQueue.3: $(top_srcdir)/src/include/Doxygen/psoQueue.in $(top_srcdir)/src/include/photon/psoQueue
+man3/psoQueue.3: $(top_srcdir)/src/include/Doxygen/psoQueue.in $(top_srcdir)/src/include/photon/Queue
 	doxygen $(top_srcdir)/src/include/Doxygen/psoQueue 
-	cp dummy/man/man3/psoQueue.3 man3/psoQueue.3
+	cp dummy/man/man3/pso_Queue.3 man3/psoQueue.3
 	-rm -rf dummy
-man3/psoSession.3: $(top_srcdir)/src/include/Doxygen/psoSession.in $(top_srcdir)/src/include/photon/psoSession
+man3/psoSession.3: $(top_srcdir)/src/include/Doxygen/psoSession.in $(top_srcdir)/src/include/photon/Session
 	doxygen $(top_srcdir)/src/include/Doxygen/psoSession 
-	cp dummy/man/man3/psoSession.3 man3/psoSession.3
+	cp dummy/man/man3/pso_Session.3 man3/psoSession.3
 	-rm -rf dummy
 
 # Warning: this doxygen run creates many more files which we do

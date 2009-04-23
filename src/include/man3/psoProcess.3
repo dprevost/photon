@@ -1,30 +1,79 @@
-.TH "psoProcess" 3 "27 Jan 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.TH "pso::Process" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoProcess \- 
+pso::Process \- 
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <stdlib.h>\fP
-.br
-\fC#include <photon/psoCommon.h>\fP
-.br
-
-.SS "Namespaces"
+.SH "Detailed Description"
+.PP 
+Definition at line 35 of file Process.
+.SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "namespace \fBpso\fP"
+.RI "\fBProcess\fP ()"
 .br
-.in -1c
-.SS "Classes"
-
-.in +1c
 .ti -1c
-.RI "class \fBpso::Process\fP"
+.RI "void \fBInit\fP (std::string &address)"
 .br
+.RI "\fIThis function initializes access to the shared-memory of Photon. \fP"
+.ti -1c
+.RI "void \fBInit\fP (const char *address)"
+.br
+.RI "\fIThis function initializes access to the shared-memory of Photon. \fP"
+.ti -1c
+.RI "virtual \fB~Process\fP ()"
+.br
+.RI "\fIThe destructor terminates all access to shared memory. \fP"
 .in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::Process::Process ()"
+.PP
+.SS "virtual pso::Process::~Process ()\fC [virtual]\fP"
+.PP
+The destructor terminates all access to shared memory. 
+.PP
+This function will also close all sessions and terminate all accesses to the different objects. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::Process::Init (std::string & address)"
+.PP
+This function initializes access to the shared-memory of Photon. 
+.PP
+It takes a single input argument, the address of Quasar, the Photon server or the name of the shared-memory file,
+.PP
+\fBParameters:\fP
+.RS 4
+\fIaddress\fP The address of Quasar, currently a string with the port number ('12345'). It can also be the name of the shared-memory file - in this case add the prefix 'file:' to the file name.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Process::Init (const char * address)"
+.PP
+This function initializes access to the shared-memory of Photon. 
+.PP
+It takes a single input argument, the address of Quasar, the Photon server or the name of the shared-memory file,
+.PP
+\fBParameters:\fP
+.RS 4
+\fIaddress\fP The address of Quasar, currently a string with the port number ('12345'). It can also be the name of the shared-memory file - in this case add the prefix 'file:' to the file name.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Photon C++ API from the source code.

@@ -1,43 +1,43 @@
-.TH "pso::KeyDefinition" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.TH "pso::DataDefinition" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-pso::KeyDefinition \- 
+pso::DataDefinition \- 
 .SH SYNOPSIS
 .br
 .PP
 .SH "Detailed Description"
 .PP 
-This abstract base class provides the 'interface' needed to both define and retrieve the definition of the fields of the key. 
+This base class provides the 'interface' needed to both define and retrieve the definition of the fields of a data record. 
 .PP
-Definition at line 46 of file KeyDefinition.
+Definition at line 46 of file DataDefinition.
 .SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBKeyDefinition\fP ()"
+.RI "\fBDataDefinition\fP ()"
 .br
 .RI "\fIThis constructor does nothing. \fP"
 .ti -1c
-.RI "\fBKeyDefinition\fP (Session &session, const std::string name, enum psoDefinitionType type, const unsigned char *keyDef, psoUint32 keyDefLength)"
+.RI "\fBDataDefinition\fP (Session &session, const std::string name, enum psoDefinitionType type, const unsigned char *dataDef, psoUint32 dataDefLength)"
 .br
-.RI "\fICreates a new key definition in shared memory. \fP"
+.RI "\fICreates a new data definition in shared memory. \fP"
 .ti -1c
-.RI "\fBKeyDefinition\fP (Session &session, const std::string name)"
+.RI "\fBDataDefinition\fP (Session &session, const std::string name)"
 .br
-.RI "\fIOpen an existing key definition in shared memory. \fP"
+.RI "\fIOpen an existing data definition in shared memory. \fP"
 .ti -1c
-.RI "virtual \fB~KeyDefinition\fP ()"
+.RI "virtual \fB~DataDefinition\fP ()"
 .br
 .RI "\fIThe destructor will close the definition if not closed. \fP"
 .ti -1c
 .RI "void \fBClose\fP ()"
 .br
-.RI "\fICloses the key definition. \fP"
+.RI "\fICloses the data definition. \fP"
 .ti -1c
-.RI "void \fBCreate\fP (Session &session, const std::string name, enum psoDefinitionType type, const unsigned char *keyDef, psoUint32 keyDefLength)"
+.RI "void \fBCreate\fP (Session &session, const std::string name, enum psoDefinitionType type, const unsigned char *dataDef, psoUint32 dataDefLength)"
 .br
-.RI "\fICreates a new key definition in shared memory. \fP"
+.RI "\fICreates a new data definition in shared memory. \fP"
 .ti -1c
 .RI "std::string \fBGetNext\fP ()"
 .br
@@ -45,7 +45,7 @@ Definition at line 46 of file KeyDefinition.
 .ti -1c
 .RI "void \fBGetDefinition\fP (unsigned char *buffer, psoUint32 bufferLength)"
 .br
-.RI "\fIRetrieves the key definition as an array of bytes. \fP"
+.RI "\fIRetrieves the data definition as an array of bytes. \fP"
 .ti -1c
 .RI "psoUint32 \fBGetLength\fP ()"
 .br
@@ -57,15 +57,19 @@ Definition at line 46 of file KeyDefinition.
 .ti -1c
 .RI "void \fBOpen\fP (Session &session, const std::string name)"
 .br
-.RI "\fIOpen an existing key definition in shared memory. \fP"
+.RI "\fIOpen an existing data definition in shared memory. \fP"
 .in -1c
 .SS "Private Member Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBKeyDefinition\fP (PSO_HANDLE sessionHandle, PSO_HANDLE definitionHandle)"
+.RI "\fBDataDefinition\fP (PSO_HANDLE sessionHandle, PSO_HANDLE definitionHandle)"
 .br
-.RI "\fIThis constructor is used by the other objects of this API to build the key definition. \fP"
+.RI "\fIThis constructor is used by the other objects of this API to build the data definition. \fP"
+.ti -1c
+.RI "std::string \fBGetNextODBC\fP ()"
+.br
+.RI "\fIIterates through an ODBC definition. \fP"
 .in -1c
 .SS "Private Attributes"
 
@@ -81,10 +85,10 @@ Definition at line 46 of file KeyDefinition.
 .RI "enum psoDefinitionType \fBm_defType\fP"
 .br
 .ti -1c
-.RI "const unsigned char * \fBm_keyDef\fP"
+.RI "const unsigned char * \fBm_dataDef\fP"
 .br
 .ti -1c
-.RI "psoUint32 \fBm_keyDefLength\fP"
+.RI "psoUint32 \fBm_dataDefLength\fP"
 .br
 .ti -1c
 .RI "psoUint32 \fBm_currentLength\fP"
@@ -117,14 +121,14 @@ Definition at line 46 of file KeyDefinition.
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
-.SS "pso::KeyDefinition::KeyDefinition ()"
+.SS "pso::DataDefinition::DataDefinition ()"
 .PP
 This constructor does nothing. 
 .PP
 You must use either Open or Create to use this object - otherwise a pso::Exception will be thrown. 
-.SS "pso::KeyDefinition::KeyDefinition (Session & session, const std::string name, enum psoDefinitionType type, const unsigned char * keyDef, psoUint32 keyDefLength)"
+.SS "pso::DataDefinition::DataDefinition (Session & session, const std::string name, enum psoDefinitionType type, const unsigned char * dataDef, psoUint32 dataDefLength)"
 .PP
-Creates a new key definition in shared memory. 
+Creates a new data definition in shared memory. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -134,9 +138,9 @@ Creates a new key definition in shared memory.
 .br
 \fItype\fP The type of definition (ODBC, user defined, etc.) 
 .br
-\fIkeyDef\fP The key definition (as an opaque type) 
+\fIdataDef\fP The data definition (as an opaque type) 
 .br
-\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP.
+\fIdataDefLength\fP The length in bytes of the buffer \fIdataDef\fP.
 .RE
 .PP
 \fBExceptions:\fP
@@ -145,9 +149,9 @@ Creates a new key definition in shared memory.
 .RE
 .PP
 
-.SS "pso::KeyDefinition::KeyDefinition (Session & session, const std::string name)"
+.SS "pso::DataDefinition::DataDefinition (Session & session, const std::string name)"
 .PP
-Open an existing key definition in shared memory. 
+Open an existing data definition in shared memory. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -162,9 +166,9 @@ Open an existing key definition in shared memory.
 .RE
 .PP
 
-.SS "pso::KeyDefinition::KeyDefinition (PSO_HANDLE sessionHandle, PSO_HANDLE definitionHandle)\fC [private]\fP"
+.SS "pso::DataDefinition::DataDefinition (PSO_HANDLE sessionHandle, PSO_HANDLE definitionHandle)\fC [private]\fP"
 .PP
-This constructor is used by the other objects of this API to build the key definition. 
+This constructor is used by the other objects of this API to build the data definition. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -179,18 +183,18 @@ This constructor is used by the other objects of this API to build the key defin
 .RE
 .PP
 
-.SS "virtual pso::KeyDefinition::~KeyDefinition ()\fC [virtual]\fP"
+.SS "virtual pso::DataDefinition::~DataDefinition ()\fC [virtual]\fP"
 .PP
 The destructor will close the definition if not closed. 
 .PP
 This method won't throw an exception on error. 
 .SH "Member Function Documentation"
 .PP 
-.SS "void pso::KeyDefinition::Close ()"
+.SS "void pso::DataDefinition::Close ()"
 .PP
-Closes the key definition. 
+Closes the data definition. 
 .PP
-This function terminates the current access to the key definition. The definition itself is left untouched in shared memory.
+This function terminates the current access to the data definition. The definition itself is left untouched in shared memory.
 .PP
 \fBExceptions:\fP
 .RS 4
@@ -198,9 +202,9 @@ This function terminates the current access to the key definition. The definitio
 .RE
 .PP
 
-.SS "void pso::KeyDefinition::Create (Session & session, const std::string name, enum psoDefinitionType type, const unsigned char * keyDef, psoUint32 keyDefLength)"
+.SS "void pso::DataDefinition::Create (Session & session, const std::string name, enum psoDefinitionType type, const unsigned char * dataDef, psoUint32 dataDefLength)"
 .PP
-Creates a new key definition in shared memory. 
+Creates a new data definition in shared memory. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -210,9 +214,9 @@ Creates a new key definition in shared memory.
 .br
 \fItype\fP The type of definition (ODBC, user defined, etc.) 
 .br
-\fIkeyDef\fP The key definition (as an opaque type) 
+\fIdataDef\fP The data definition (as an opaque type) 
 .br
-\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP.
+\fIdataDefLength\fP The length in bytes of the buffer \fIdataDef\fP.
 .RE
 .PP
 \fBExceptions:\fP
@@ -221,7 +225,7 @@ Creates a new key definition in shared memory.
 .RE
 .PP
 
-.SS "std::string pso::KeyDefinition::GetNext ()"
+.SS "std::string pso::DataDefinition::GetNext ()"
 .PP
 Iterates through the definition. 
 .PP
@@ -236,9 +240,9 @@ A formatted string containing the information on an item of the definition.
 .RE
 .PP
 
-.SS "void pso::KeyDefinition::GetDefinition (unsigned char * buffer, psoUint32 bufferLength)"
+.SS "void pso::DataDefinition::GetDefinition (unsigned char * buffer, psoUint32 bufferLength)"
 .PP
-Retrieves the key definition as an array of bytes. 
+Retrieves the data definition as an array of bytes. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -253,7 +257,7 @@ Retrieves the key definition as an array of bytes.
 .RE
 .PP
 
-.SS "psoUint32 pso::KeyDefinition::GetLength ()"
+.SS "psoUint32 pso::DataDefinition::GetLength ()"
 .PP
 Returns the length, in bytes, of the definition. 
 .PP
@@ -270,7 +274,7 @@ The length, in bytes, of the definition
 .RE
 .PP
 
-.SS "enum psoDefinitionType pso::KeyDefinition::GetType ()"
+.SS "enum psoDefinitionType pso::DataDefinition::GetType ()"
 .PP
 Returns the type of the definition. 
 .PP
@@ -285,9 +289,9 @@ The type of the definition.
 .RE
 .PP
 
-.SS "void pso::KeyDefinition::Open (Session & session, const std::string name)"
+.SS "void pso::DataDefinition::Open (Session & session, const std::string name)"
 .PP
-Open an existing key definition in shared memory. 
+Open an existing data definition in shared memory. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -302,51 +306,66 @@ Open an existing key definition in shared memory.
 .RE
 .PP
 
+.SS "std::string pso::DataDefinition::GetNextODBC ()\fC [private]\fP"
+.PP
+Iterates through an ODBC definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+A formatted string containing the information on an item of the definition.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
 .SH "Friends And Related Function Documentation"
 .PP 
 .SS "friend class FastMap\fC [friend]\fP"
 .PP
-Definition at line 198 of file KeyDefinition.
+Definition at line 198 of file DataDefinition.
 .SS "friend class FastMapEditor\fC [friend]\fP"
 .PP
-Definition at line 199 of file KeyDefinition.
+Definition at line 199 of file DataDefinition.
 .SS "friend class Folder\fC [friend]\fP"
 .PP
-Definition at line 200 of file KeyDefinition.
+Definition at line 200 of file DataDefinition.
 .SS "friend class HashMap\fC [friend]\fP"
 .PP
-Definition at line 201 of file KeyDefinition.
+Definition at line 201 of file DataDefinition.
 .SS "friend class Lifo\fC [friend]\fP"
 .PP
-Definition at line 202 of file KeyDefinition.
+Definition at line 202 of file DataDefinition.
 .SS "friend class Queue\fC [friend]\fP"
 .PP
-Definition at line 203 of file KeyDefinition.
+Definition at line 203 of file DataDefinition.
 .SS "friend class Session\fC [friend]\fP"
 .PP
-Definition at line 204 of file KeyDefinition.
+Definition at line 204 of file DataDefinition.
 .SH "Member Data Documentation"
 .PP 
-.SS "PSO_HANDLE \fBpso::KeyDefinition::m_definitionHandle\fP\fC [private]\fP"
+.SS "PSO_HANDLE \fBpso::DataDefinition::m_definitionHandle\fP\fC [private]\fP"
 .PP
-Definition at line 188 of file KeyDefinition.
-.SS "PSO_HANDLE \fBpso::KeyDefinition::m_sessionHandle\fP\fC [private]\fP"
+Definition at line 188 of file DataDefinition.
+.SS "PSO_HANDLE \fBpso::DataDefinition::m_sessionHandle\fP\fC [private]\fP"
 .PP
 The psoaSession struct (we belong to). 
 .PP
-Definition at line 191 of file KeyDefinition.
-.SS "enum psoDefinitionType \fBpso::KeyDefinition::m_defType\fP\fC [private]\fP"
+Definition at line 191 of file DataDefinition.
+.SS "enum psoDefinitionType \fBpso::DataDefinition::m_defType\fP\fC [private]\fP"
 .PP
-Definition at line 193 of file KeyDefinition.
-.SS "const unsigned char* \fBpso::KeyDefinition::m_keyDef\fP\fC [private]\fP"
+Definition at line 193 of file DataDefinition.
+.SS "const unsigned char* \fBpso::DataDefinition::m_dataDef\fP\fC [private]\fP"
 .PP
-Definition at line 194 of file KeyDefinition.
-.SS "psoUint32 \fBpso::KeyDefinition::m_keyDefLength\fP\fC [private]\fP"
+Definition at line 194 of file DataDefinition.
+.SS "psoUint32 \fBpso::DataDefinition::m_dataDefLength\fP\fC [private]\fP"
 .PP
-Definition at line 195 of file KeyDefinition.
-.SS "psoUint32 \fBpso::KeyDefinition::m_currentLength\fP\fC [private]\fP"
+Definition at line 195 of file DataDefinition.
+.SS "psoUint32 \fBpso::DataDefinition::m_currentLength\fP\fC [private]\fP"
 .PP
-Definition at line 196 of file KeyDefinition.
+Definition at line 196 of file DataDefinition.
 
 .SH "Author"
 .PP 

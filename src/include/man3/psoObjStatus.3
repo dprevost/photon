@@ -1,4 +1,4 @@
-.TH "psoObjStatus" 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "psoObjStatus" 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ psoObjStatus \-
 .PP 
 This data structure is used to retrieve the status of objects. 
 .PP
-Definition at line 218 of file psoCommon.h.
+Definition at line 249 of file psoCommon.h.
 .SS "Data Fields"
 
 .in +1c
@@ -57,54 +57,54 @@ The object type.
 .PP
 
 .PP
-Definition at line 221 of file psoCommon.h.
+Definition at line 252 of file psoCommon.h.
 .SS "int \fBpsoObjStatus::status\fP"
 .PP
 Status of the object. 
 .PP
 For example, created but not committed, etc. 
 .PP
-Definition at line 228 of file psoCommon.h.
+Definition at line 259 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numBlocks\fP"
 .PP
 The number of blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 231 of file psoCommon.h.
+Definition at line 262 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numBlockGroup\fP"
 .PP
 The number of groups of blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 234 of file psoCommon.h.
+Definition at line 265 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::numDataItem\fP"
 .PP
 The number of data items in this object. 
 .PP
 
 .PP
-Definition at line 237 of file psoCommon.h.
+Definition at line 268 of file psoCommon.h.
 .SS "size_t \fBpsoObjStatus::freeBytes\fP"
 .PP
 The amount of free space available in the blocks allocated to this object. 
 .PP
 
 .PP
-Definition at line 240 of file psoCommon.h.
+Definition at line 271 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoObjStatus::maxDataLength\fP"
 .PP
 Maximum data length (in bytes). 
 .PP
 
 .PP
-Definition at line 243 of file psoCommon.h.
+Definition at line 274 of file psoCommon.h.
 .SS "\fBpsoUint32\fP \fBpsoObjStatus::maxKeyLength\fP"
 .PP
 Maximum key length (in bytes) if keys are supported - zero otherwise. 
 .PP
-Definition at line 246 of file psoCommon.h.
+Definition at line 277 of file psoCommon.h.
 
 .SH "Author"
 .PP 

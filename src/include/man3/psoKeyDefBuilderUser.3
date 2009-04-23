@@ -1,0 +1,150 @@
+.TH "pso::KeyDefBuilderUser" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+pso::KeyDefBuilderUser \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+This class is a helper class to build the key definition of Photon objects when this definition is user-defined. 
+
+It can be very helpful when your key is made with multiple fields.
+.PP
+How it works: you populate your definition with \fBAddKeyField()\fP. When done, you retrieve the definition as an array of bytes and its length and you use that information to create a new key definition in shared memory (using the class KeyDefinition).
+.PP
+what different about this class? You add a 'description' for each of your fields and the builder will insert a null byte to separate them. This will allow DataDefinition::GetNext() to display your definition in a loop as strings.
+.PP
+It should be noted that you do not have to use this class, the key definition can be set directly as an array of bytes. 
+.PP
+Definition at line 57 of file KeyDefBuilderUser.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBKeyDefBuilderUser\fP (int numFields)"
+.br
+.RI "\fIConstruct a data-container definition. \fP"
+.ti -1c
+.RI "virtual \fB~KeyDefBuilderUser\fP ()"
+.br
+.ti -1c
+.RI "void \fBAddKeyField\fP (std::string fieldDescription)"
+.br
+.RI "\fIAdd a field to the definition. \fP"
+.ti -1c
+.RI "virtual const unsigned char * \fBGetDefinition\fP ()"
+.br
+.RI "\fIRetrieve the key definition. \fP"
+.ti -1c
+.RI "virtual psoUint32 \fBGetDefLength\fP ()"
+.br
+.RI "\fIReturns the length, in bytes, of the definition. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "unsigned char * \fBkeys\fP"
+.br
+.RI "\fIThe definition of the key fields. \fP"
+.ti -1c
+.RI "psoUint32 \fBnumKeys\fP"
+.br
+.RI "\fINumber of fields in the definition. \fP"
+.ti -1c
+.RI "psoUint32 \fBcurrentKey\fP"
+.br
+.RI "\fICurrent number of added fields. \fP"
+.ti -1c
+.RI "psoUint32 \fBcurrentLength\fP"
+.br
+.RI "\fICurrent length of the buffer. \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::KeyDefBuilderUser::KeyDefBuilderUser (int numFields)"
+.PP
+Construct a data-container definition. 
+.PP
+Use this constructor to build a definition to create new Photon objects.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInumFields\fP The number of data fields.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::KeyDefBuilderUser::~KeyDefBuilderUser ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::KeyDefBuilderUser::AddKeyField (std::string fieldDescription)"
+.PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfieldDescription\fP Your description/definition of the field.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual const unsigned char* pso::KeyDefBuilderUser::GetDefinition ()\fC [virtual]\fP"
+.PP
+Retrieve the key definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The definition of the key as an array of bytes. 
+.RE
+.PP
+
+.SS "virtual psoUint32 pso::KeyDefBuilderUser::GetDefLength ()\fC [virtual]\fP"
+.PP
+Returns the length, in bytes, of the definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The length, in bytes, of the definition 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "unsigned char* \fBpso::KeyDefBuilderUser::keys\fP\fC [private]\fP"
+.PP
+The definition of the key fields. 
+.PP
+Definition at line 100 of file KeyDefBuilderUser.
+.SS "psoUint32 \fBpso::KeyDefBuilderUser::numKeys\fP\fC [private]\fP"
+.PP
+Number of fields in the definition. 
+.PP
+Definition at line 103 of file KeyDefBuilderUser.
+.SS "psoUint32 \fBpso::KeyDefBuilderUser::currentKey\fP\fC [private]\fP"
+.PP
+Current number of added fields. 
+.PP
+Definition at line 106 of file KeyDefBuilderUser.
+.SS "psoUint32 \fBpso::KeyDefBuilderUser::currentLength\fP\fC [private]\fP"
+.PP
+Current length of the buffer. 
+.PP
+Definition at line 109 of file KeyDefBuilderUser.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.

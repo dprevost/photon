@@ -1,31 +1,432 @@
-.TH "psoFolder" 3 "27 Jan 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.TH "pso::Folder" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoFolder \- 
+pso::Folder \- 
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <photon/psoCommon.h>\fP
-.br
-\fC#include <string>\fP
-.br
+.SH "Detailed Description"
+.PP 
+Folders allow the organization of the data containers in a tree-like structure (similar to a filesystem). 
 
-.SS "Namespaces"
-
-.in +1c
-.ti -1c
-.RI "namespace \fBpso\fP"
-.br
-.in -1c
-.SS "Classes"
+If a flat structure is preferred, simply make all your data containers children of the top folder ('/') - for example, '/MyQueue', '/MyMap', etc. 
+.PP
+Definition at line 47 of file Folder.
+.SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "class \fBpso::Folder\fP"
+.RI "\fBFolder\fP ()"
 .br
-.RI "\fIFolders allow the organization of the data containers in a tree-like structure (similar to a filesystem). \fP"
+.RI "\fIThis constructor does nothing. \fP"
+.ti -1c
+.RI "\fBFolder\fP (Session &session, const std::string &folderName)"
+.br
+.RI "\fIOpens a \fBFolder\fP object. \fP"
+.ti -1c
+.RI "virtual \fB~Folder\fP ()"
+.br
+.RI "\fIThe destructor will close the folder if not closed. \fP"
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fIClose a folder. \fP"
+.ti -1c
+.RI "void \fBCreateFolder\fP (const std::string &folderName)"
+.br
+.RI "\fICreate a new folder in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition &definition, DataDefinition &dataDefinition)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition &definition, const std::string &dataDefName)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition &definition, KeyDefinition &keyDefinition, DataDefinition &dataDefinition)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "void \fBCreateObject\fP (const std::string &objectName, psoObjectDefinition &definition, const std::string &keyDefName, const std::string &dataDefName)"
+.br
+.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.ti -1c
+.RI "void \fBDestroyObject\fP (const std::string &objectName)"
+.br
+.RI "\fIDestroy an object, child of the current folder, in shared memory. \fP"
+.ti -1c
+.RI "void \fBGetDefinition\fP (const std::string &objectName, psoObjectDefinition &definition)"
+.br
+.RI "\fIRetrieve the basic definition of the object, a child of the folder. \fP"
+.ti -1c
+.RI "DataDefinition * \fBGetDataDefinition\fP (const std::string &objectName)"
+.br
+.RI "\fIRetrieve the data definition of the the object, a child of the folder. \fP"
+.ti -1c
+.RI "int \fBGetFirst\fP (psoFolderEntry &entry)"
+.br
+.RI "\fIIterate through the folder - no data items are removed from the folder by this function. \fP"
+.ti -1c
+.RI "KeyDefinition * \fBGetKeyDefinition\fP (const std::string &objectName)"
+.br
+.RI "\fIRetrieve the key definition of the the object, a child of the folder. \fP"
+.ti -1c
+.RI "int \fBGetNext\fP (psoFolderEntry &entry)"
+.br
+.RI "\fIIterate through the folder. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (Session &session, const std::string &folderName)"
+.br
+.RI "\fIOpens a \fBFolder\fP object. \fP"
+.ti -1c
+.RI "void \fBStatus\fP (psoObjStatus &status)"
+.br
+.RI "\fIReturn the status of the folder. \fP"
 .in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "PSO_HANDLE \fBm_objectHandle\fP"
+.br
+.RI "\fIPointer to the psoaFolder struct. \fP"
+.ti -1c
+.RI "PSO_HANDLE \fBm_sessionHandle\fP"
+.br
+.RI "\fIThe psoaSession struct (we belong to). \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::Folder::Folder ()"
+.PP
+This constructor does nothing. 
+.PP
+You must use Open to access an in-memory \fBFolder\fP object - otherwise a pso::Exception will be thrown. 
+.SS "pso::Folder::Folder (Session & session, const std::string & folderName)"
+.PP
+Opens a \fBFolder\fP object. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIfolderName\fP The name of the folder.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::Folder::~Folder ()\fC [virtual]\fP"
+.PP
+The destructor will close the folder if not closed. 
+.PP
+This method won't throw an exception on error. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::Folder::Close ()"
+.PP
+Close a folder. 
+.PP
+This function terminates the current access to the folder in shared memory (the folder itself is untouched).
+.PP
+\fBWarning:\fP
+.RS 4
+Closing an object does not automatically commit or rollback objects that were created or destroyed. You still must use either psoSession::Commit or psoSession::Rollback to end the current unit of work.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::CreateFolder (const std::string & folderName)"
+.PP
+Create a new folder in shared memory as a child of the current folder. 
+.PP
+The creation of the folder only becomes permanent after a call to Session::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfolderName\fP The name of the folder.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::CreateObject (const std::string & objectName, psoObjectDefinition & definition, DataDefinition & dataDefinition)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+This overloaded method should be used for objects not requiring a key definition (queues, etc.).
+.PP
+The creation of the object only becomes permanent after a call to Session::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object. 
+.br
+\fIdefinition\fP The type of object to create and more. 
+.br
+\fIdataDefinition\fP The definition of the data fields.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::CreateObject (const std::string & objectName, psoObjectDefinition & definition, const std::string & dataDefName)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+This overloaded method should be used for objects not requiring a key definition (queues, etc.). It also uses the name of an existing data definition instead of requiring a DataDefinition object.
+.PP
+The creation of the object only becomes permanent after a call to Session::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object. 
+.br
+\fIdefinition\fP The type of object to create and more. 
+.br
+\fIdataDefName\fP The name of an existing data definition for the data fields of the object. This name is case sensitive.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::CreateObject (const std::string & objectName, psoObjectDefinition & definition, KeyDefinition & keyDefinition, DataDefinition & dataDefinition)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+This overloaded method should be used for objects requiring a key definition (hash maps, etc.).
+.PP
+The creation of the object only becomes permanent after a call to Session::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object. 
+.br
+\fIdefinition\fP The type of object to create and more. 
+.br
+\fIkeyDefinition\fP The definition of the key. 
+.br
+\fIdataDefinition\fP The definition of the data fields.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::CreateObject (const std::string & objectName, psoObjectDefinition & definition, const std::string & keyDefName, const std::string & dataDefName)"
+.PP
+Create a new object in shared memory as a child of the current folder. 
+.PP
+This overloaded method should be used for objects requiring a key definition (hash maps, etc.). It also uses the names of both an existing data definition and a key definition instead of requiring a DataDefinition object and a KeyDefinition object.
+.PP
+The creation of the object only becomes permanent after a call to Session::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object. 
+.br
+\fIdefinition\fP The type of object to create and more. 
+.br
+\fIkeyDefName\fP The name of the definition of the key of the object. 
+.br
+\fIdataDefName\fP The name of the data definition for the data fields of the object.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::DestroyObject (const std::string & objectName)"
+.PP
+Destroy an object, child of the current folder, in shared memory. 
+.PP
+The destruction of the object only becomes permanent after a call to Session::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::GetDefinition (const std::string & objectName, psoObjectDefinition & definition)"
+.PP
+Retrieve the basic definition of the object, a child of the folder. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object. 
+.br
+\fIdefinition\fP The definition of the object
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "DataDefinition* pso::Folder::GetDataDefinition (const std::string & objectName)"
+.PP
+Retrieve the data definition of the the object, a child of the folder. 
+.PP
+This function may return a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A new DataDefinition object or NULL if the object is a \fBFolder\fP.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::Folder::GetFirst (psoFolderEntry & entry)"
+.PP
+Iterate through the folder - no data items are removed from the folder by this function. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIentry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_IS_EMPTY if the folder is empty.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "KeyDefinition* pso::Folder::GetKeyDefinition (const std::string & objectName)"
+.PP
+Retrieve the key definition of the the object, a child of the folder. 
+.PP
+This function may return a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectName\fP The name of the object.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A new KeyDefinition object or NULL if the object does not have a key definition (Folders, Queues, etc.).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::Folder::GetNext (psoFolderEntry & entry)"
+.PP
+Iterate through the folder. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call \fBFolder::GetFirst\fP to initialize the iterator.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIentry\fP The data structure provided by the user to hold the content of each item in the folder. Memory allocation for this buffer is the responsability of the caller.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_REACHED_THE_END when the iteration reaches the end of the folder.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::Open (Session & session, const std::string & folderName)"
+.PP
+Opens a \fBFolder\fP object. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIfolderName\fP The name of the folder.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::Folder::Status (psoObjStatus & status)"
+.PP
+Return the status of the folder. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstatus\fP A pointer to the status structure.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "PSO_HANDLE \fBpso::Folder::m_objectHandle\fP\fC [private]\fP"
+.PP
+Pointer to the psoaFolder struct. 
+.PP
+Definition at line 309 of file Folder.
+.SS "PSO_HANDLE \fBpso::Folder::m_sessionHandle\fP\fC [private]\fP"
+.PP
+The psoaSession struct (we belong to). 
+.PP
+Definition at line 312 of file Folder.
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Photon C++ API from the source code.

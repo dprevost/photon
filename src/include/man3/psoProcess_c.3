@@ -1,4 +1,4 @@
-.TH "API functions for Photon processes." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon processes." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -12,7 +12,7 @@ API functions for Photon processes. \-
 .br
 .RI "\fIThis function terminates all access to shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoInit\fP (const char *quasarAddress, int protectionNeeded)"
+.RI "PHOTON_EXPORT int \fBpsoInit\fP (const char *quasarAddress)"
 .br
 .RI "\fIThis function initializes access to the shared-memory of Photon. \fP"
 .in -1c
@@ -25,21 +25,15 @@ This function terminates all access to shared memory.
 This function will also close all sessions and terminate all accesses to the different objects.
 .PP
 This function takes no argument and always end successfully (even if called twice or if \fBpsoInit\fP was not called). 
-.SS "PHOTON_EXPORT int psoInit (const char * quasarAddress, int protectionNeeded)"
+.SS "PHOTON_EXPORT int psoInit (const char * quasarAddress)"
 .PP
 This function initializes access to the shared-memory of Photon. 
 .PP
-It takes 2 input arguments, the address of Quasar, the Photon server, and an integer (used as a boolean, 0 for false, 1 for true) to indicate if sessions and other objects (Queues, etc) are shared amongst threads (in the current process) and must be protected. Recommendation: always set protectionNeeded to 0 (false) unless you cannot do otherwise. In other words it is recommended to use one session handle for each thread. Also if the same queue needs to be accessed by two threads it is more efficient to have two different handles instead of sharing a single one.
-.PP
-[Additional note: API objects (or C handles) are just proxies for the real objects sitting in shared memory. Proper synchronization is already done in shared memory and it is best to avoid to synchronize these proxy objects.]
-.PP
-Upon successful completion, the process handle is set. Otherwise the error code is returned.
+It takes a single input argument, the address of Quasar, the Photon server or the name of the shared-memory file.
 .PP
 \fBParameters:\fP
 .RS 4
-\fIquasarAddress\fP The address of Quasar. Currently a string with the port number ('12345'). 
-.br
-\fIprotectionNeeded\fP A boolean value indicating if multi-threaded locks are needed or not.
+\fIquasarAddress\fP The address of Quasar, currently a string with the port number ('12345'). It can also be the name of the shared-memory file - in this case add the prefix 'file:' to the name.
 .RE
 .PP
 \fBReturns:\fP
