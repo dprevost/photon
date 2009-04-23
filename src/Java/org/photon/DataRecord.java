@@ -22,40 +22,10 @@ package org.photon;
  * Container class for the Photon library. This class is the base
  * class of all Photon containers.
  */
-// getDeclaredFields
-//  [Lorg/photon/DataRecord$FieldDescription; 
-
 public interface DataRecord {
    
    byte[] packObject();
    
-   void unpackObject();
+   void unpackObject( byte[] buffer );
 }
 
-//public class DataRecord {
-   
-//   class FieldDescription {
-//      Object obj;
-//      int    conversionType;
-//      int    offset;
-//   }
-   
-//   private FieldDescription[] fields;
-//   public java.lang.Object[] q; // objects;
-//   public java.lang.Object[] QQQ() { return q; }
-
-//   public Boolean getBool  ( int i ) { return (Boolean) fields[i].obj; }
-//   public byte[]  getBytes ( int i ) { return  (byte[]) fields[i].obj; }
-//   public Integer getInt   ( int i ) { return (Integer) fields[i].obj; }
-//   public Long    getLong  ( int i ) { return    (Long) fields[i].obj; }
-//   public Short   getShort ( int i ) { return   (Short) fields[i].obj; }
-//   public String  getString( int i ) { return  (String) fields[i].obj; }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-//   private static native void initIDs();
-
-//   static {
-//      initIDs();
-//   }
-//}

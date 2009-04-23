@@ -33,7 +33,7 @@ import java.util.*;
 public class RawQueue {
 
    /** To save the native pointer/handle of the C struct. */
-   private long handle = 0;
+   protected long handle = 0;
 
    private Session session;
 
@@ -336,10 +336,10 @@ public class RawQueue {
 
    private native int psoDataDefinition( long handle, DataDefinition definition );
 
-   private native int psoGetFirst( long   handle,
+   protected native int psoGetFirst( long   handle,
                                    byte[] buffer );
 
-   private native int psoGetNext( long   handle,
+   protected native int psoGetNext( long   handle,
                                   byte[] buffer );
 
    private native int psoGetRecordDefinition( long           handle, 
@@ -350,11 +350,11 @@ public class RawQueue {
 
    private native int psoOpen( Session session, String  name );
 
-   private native int psoPop( long handle, byte[] data );
+   protected native int psoPop( long handle, byte[] data );
 
-   private native int psoPush( long handle, byte[] data );
+   protected native int psoPush( long handle, byte[] data );
 
-   private native int psoPushNow( long handle, byte[] data );
+   protected native int psoPushNow( long handle, byte[] data );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }

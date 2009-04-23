@@ -110,7 +110,7 @@ libphoton_jni_la_SOURCES =            \
         jni_objectType.c              \
         jni_objStatus.c               \
         jni_photon.c                  \
-        jni_queue.c                   \
+        jni_rawQueue.c                \
         jni_session.c                 \
         org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
@@ -124,7 +124,7 @@ libphoton_jni_la_SOURCES =            \
         org_photon_ObjectType.h       \
         org_photon_ObjectStatus.h     \
         org_photon_Photon.h           \
-        org_photon_Queue.h            \
+        org_photon_RawQueue.h         \
         org_photon_Session.h          
 
 libphoton_jni_la_LIBADD = \
