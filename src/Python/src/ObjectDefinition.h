@@ -16,10 +16,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-#ifndef PSO_PY_BASIC_DEF_H
-#define PSO_PY_BASIC_DEF_H
-
-#include "KeyDefinition.h"
+#ifndef PSO_PY_OBJ_DEFINITION_H
+#define PSO_PY_OBJ_DEFINITION_H
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -27,38 +25,71 @@ typedef struct {
    PyObject_HEAD
 
    PyObject * objType;
-   int        numFields;
-   PyObject * keyDef;
 
+   /**
+    * Flags defining the properties of the object.
+    *
+    * Currently defined flags:
+    *     - PSO_MULTIPLE_DATA_DEFINITIONS
+    *
+    * Flags should be ORed.
+    */
+   unsigned int flags;
+   
+   /**
+    * Optimization feature - not implemented yet.
+    *
+    * The expected minimum number of data records. This is used internally
+    * to avoid shrinking the internal "holder" of the data beyond what is
+    * needed to hold this minimum number of data records.
+    */
+   size_t minNumOfDataRecords;
+   
+   /**
+    * Optimization feature - not implemented yet
+    *
+    * The expected minimum number of blocks. This is used internally
+    * to avoid shrinking the shared-memory object beyond a certain predefined
+    * minimum size. 
+    *
+    * Potential issue: the amount of overhead used by Photon will vary;
+    * some potential factors includes the type of object, the number of 
+    * data records, the length of the data records (and keys, if used).
+    *
+    * You might want to retrieve the status of the object and evaluate
+    * the minimum number of blocks needed from it..
+    */
+   size_t minNumBlocks;
+   
    /* This is completely private. Should not be put in the members struct */
    int intType; /* The type, as an integer. */
    
-} BaseDef;
+} ObjDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
-BaseDef_dealloc( PyObject * self )
+ObjDefinition_dealloc( PyObject * self )
 {
-   BaseDef * def = (BaseDef *)self;
+   ObjDefinition * def = (ObjDefinition *)self;
    
    Py_XDECREF( def->objType );
-   Py_XDECREF( def->keyDef );
    self->ob_type->tp_free( self );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-BaseDef_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
+ObjDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   BaseDef * self;
+   ObjDefinition * self;
 
-   self = (BaseDef *)type->tp_alloc( type, 0 );
+   self = (ObjDefinition *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->objType = NULL;
-      self->numFields = 0;
-      self->keyDef = NULL;
+      self->flags = 0;
+      self->minNumOfDataRecords = 0;
+      self->minNumBlocks = 0;
       self->intType = 0;
    }
 
@@ -68,86 +99,79 @@ BaseDef_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static int
-BaseDef_init( PyObject * self, PyObject * args, PyObject *kwds )
+ObjDefinition_init( PyObject * self, PyObject * args, PyObject *kwds )
 {
-   BaseDef * def = (BaseDef *)self;
-   PyObject * key = NULL, * objType = NULL, * tmp = NULL;
-   static char *kwlist[] = {"obj_type", "num_fields", "key_def", NULL};
-   int type, number;
+   ObjDefinition * def = (ObjDefinition *)self;
+   PyObject * objType = NULL, * tmp = NULL;
+   static char *kwlist[] = { "obj_type", "flags", "min_num_records", 
+                             "min_num_blocks", NULL};
+   int type, flags = 0, numRecords = 0, numBlocks = 0;
    
-   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "ii|O", kwlist, 
-      &type, &number, &key) ) {
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "i|iii", kwlist, 
+      &type, &flags, &numRecords, &numBlocks) ) {
       return -1; 
    }
 
-   objType = GetObjectType( type );
+   objType = GetObjectType( type ); // A new reference
    if ( objType == NULL ) return -1;
 
+   // This function can be called twice -> def->objType might already exist!
+   tmp = def->objType;
+   Py_XDECREF(tmp);
    def->objType = objType;
-   def->intType = type;
-   def->numFields = number;
    
-   if ( key ) {
-      tmp = def->keyDef;
-      Py_INCREF(key);
-      def->keyDef = key;
-      Py_XDECREF(tmp);
-   }
-
+   def->intType = type;
+   def->flags = flags;
+   def->minNumOfDataRecords = numRecords;
+   def->minNumBlocks = numBlocks;
+   
    return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-BaseDef_str( PyObject * self )
+ObjDefinition_str( PyObject * self )
 {
-   BaseDef * obj = (BaseDef *)self;
-   PyObject * key, * outStr;
+   ObjDefinition * obj = (ObjDefinition *)self;
+   PyObject * outStr;
    
    if ( obj->objType ) {
-      if ( obj->keyDef ) {
-         key = KeyDefinition_str( obj->keyDef );
-         outStr = PyString_FromFormat( 
-            "BaseDef{ obj_type: %s, num_fields: %d, key: %s }",
-            PyString_AsString(obj->objType),
-            obj->numFields,
-            PyString_AsString(key) );
-         Py_XDECREF( key );
-      }
-      else {
-         outStr = PyString_FromFormat( 
-            "BaseDef{ obj_type: %s, num_fields: %d }",
-            PyString_AsString(obj->objType),
-            obj->numFields );
-      }
+      outStr = PyString_FromFormat( 
+         "ObjDefinition{ obj_type: %s, flags: %d, minNumRecords: %d, minNumBlocks: %d }",
+         PyString_AsString(obj->objType),
+         obj->flags,
+         obj->minNumOfDataRecords,
+         obj->minNumBlocks );
       return outStr;
    }
    
-   return PyString_FromString("BaseDef is not set");
+   return PyString_FromString("ObjDefinition is not set");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyMemberDef BaseDef_members[] = {
-   { "obj_type", T_OBJECT_EX, offsetof(BaseDef, objType), RO,
+static PyMemberDef ObjDefinition_members[] = {
+   { "obj_type", T_OBJECT_EX, offsetof(ObjDefinition, objType), RO,
      "Status of the object"},
-   { "num_fields", T_INT, offsetof(BaseDef, numFields), RO,
-     "Status of the object"},
-   { "key_definition", T_OBJECT_EX, offsetof(BaseDef, keyDef), RO,
-     "The type of the object"},
+   { "flags", T_INT, offsetof(ObjDefinition, flags), RO,
+     "Creation flags for the object"},
+   { "min_num_records", T_INT, offsetof(ObjDefinition, minNumOfDataRecords), RO,
+     "The expected minimum number of data records"},
+   { "min_num_blocks", T_INT, offsetof(ObjDefinition, minNumBlocks), RO,
+     "The expected minimum number of memory blocks"},
    {NULL}  /* Sentinel */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyTypeObject BaseDefType = {
+static PyTypeObject ObjDefinitionType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
-   "pso.BaseDef",              /*tp_name*/
-   sizeof(BaseDef),            /*tp_basicsize*/
+   "pso.ObjDefinition",        /*tp_name*/
+   sizeof(ObjDefinition),      /*tp_basicsize*/
    0,                          /*tp_itemsize*/
-   BaseDef_dealloc,            /*tp_dealloc*/
+   ObjDefinition_dealloc,      /*tp_dealloc*/
    0,                          /*tp_print*/
    0,                          /*tp_getattr*/
    0,                          /*tp_setattr*/
@@ -158,7 +182,7 @@ static PyTypeObject BaseDefType = {
    0,                          /*tp_as_mapping*/
    0,                          /*tp_hash */
    0,                          /*tp_call*/
-   BaseDef_str,                /*tp_str*/
+   ObjDefinition_str,          /*tp_str*/
    0,                          /*tp_getattro*/
    0,                          /*tp_setattro*/
    0,                          /*tp_as_buffer*/
@@ -171,27 +195,30 @@ static PyTypeObject BaseDefType = {
    0,		                      /* tp_iter */
    0,		                      /* tp_iternext */
    0,                          /* tp_methods */
-   BaseDef_members,            /* tp_members */
+   ObjDefinition_members,      /* tp_members */
    0,                          /* tp_getset */
    0,                          /* tp_base */
    0,                          /* tp_dict */
    0,                          /* tp_descr_get */
    0,                          /* tp_descr_set */
    0,                          /* tp_dictoffset */
-   BaseDef_init,               /* tp_init */
+   ObjDefinition_init,         /* tp_init */
    0,                          /* tp_alloc */
-   BaseDef_new,                /* tp_new */
+   ObjDefinition_new,          /* tp_new */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static BaseDef *
-BaseDefToObject( psoObjectDefinition * def, PyObject * key ) 
+#if 0
+
+is this used? 
+static ObjDefinition *
+ObjDefinitionToObject( psoObjectDefinition * def, PyObject * key ) 
 {
-   BaseDef * base = NULL;
+   ObjDefinition * base = NULL;
    PyObject * objType;
    
-   base = (BaseDef *)BaseDef_new(&BaseDefType, NULL, NULL);
+   base = (ObjDefinition *)ObjDefinition_new(&ObjDefinitionType, NULL, NULL);
    if ( base == NULL ) return NULL;
    
    objType = GetObjectType( def->type );
@@ -204,10 +231,11 @@ BaseDefToObject( psoObjectDefinition * def, PyObject * key )
    
    return base;
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#endif /* PSO_PY_BASIC_DEF_H */
+#endif /* PSO_PY_OBJ_DEFINITION_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -102,7 +102,7 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
        //            const unsigned char    * dataDef,
          //          psoUint32                dataDefLength );
 
-   defType = GetDefinitionType( type );
+   defType = GetDefinitionType( type ); // A new reference
    if ( defType == NULL ) return -1;
    tmp = def->defType;
    def->defType = defType;

@@ -108,8 +108,8 @@ initpso(void)
    if ( rc != 0 ) return;
    
    /* C structs (and enums?) */
-//   Py_INCREF( &BaseDefType );
-//   PyModule_AddObject( m, "BaseDef", (PyObject *)&BaseDefType );
+   Py_INCREF( &ObjDefinitionType );
+   PyModule_AddObject( m, "ObjDefinition", (PyObject *)&ObjDefinitionType );
 //   Py_INCREF( &FieldDefinitionType );
 //   PyModule_AddObject( m, "FieldDefinition", (PyObject *)&FieldDefinitionType );
 ////   FolderEntryType.tp_new = PyType_GenericNew; needed???????????????????

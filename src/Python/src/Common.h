@@ -56,6 +56,9 @@ static void SetException( int errcode )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * This function always return a new reference.
+ */
 PyObject * GetDefinitionType( enum psoDefinitionType type )
 {
    switch (type) {
@@ -120,6 +123,9 @@ PyObject * GetKeyType( enum psoKeyType type )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * This function always return a new reference.
+ */
 PyObject * GetObjectType( enum psoObjectType objType )
 {
    switch (objType) {
@@ -208,7 +214,7 @@ GetString( const char * s, Py_ssize_t len)
 #include "ObjStatus.h"
 //#include "DataDefinition.h"
 //#include "KeyDefinition.h"
-//#include "BasicDef.h"
+#include "ObjectDefinition.h"
 //#include "FieldDefinition.h"
 #include "FolderEntry.h"
 #include "Info.h"
