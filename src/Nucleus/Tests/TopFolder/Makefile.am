@@ -63,7 +63,7 @@ check_PROGRAMS =                \
         StatusNullStatus        \
         StatusPass              
 
-COMMON_HEADER = ../Folder/folderTest.h
+COMMON_HEADER = folderTest.h
 
 CloseNullContext_SOURCES        = $(COMMON_HEADER) CloseNullContext.c
 CloseNullItem_SOURCES           = $(COMMON_HEADER) CloseNullItem.c

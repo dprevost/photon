@@ -19,8 +19,9 @@ C_HEADER_FILES =                                          \
         $(top_srcdir)/src/include/photon/HashMap.h        \
         $(top_srcdir)/src/include/photon/KeyDefinition.h  \
         $(top_srcdir)/src/include/photon/Lifo.h           \
-        $(top_srcdir)/src/include/photon/Queue.h          \
         $(top_srcdir)/src/include/photon/Process.h        \
+        $(top_srcdir)/src/include/photon/psoPhotonODBC.h  \
+        $(top_srcdir)/src/include/photon/Queue.h          \
         $(top_srcdir)/src/include/photon/Session.h        
 
 C_INSTALLED_FILES =             \
@@ -33,8 +34,9 @@ C_INSTALLED_FILES =             \
         photon/HashMap.h        \
         photon/KeyDefinition.h  \
         photon/Lifo.h           \
-        photon/Queue.h          \
+        photon/psoPhotonODBC.h  \
         photon/Process.h        \
+        photon/Queue.h          \
         photon/Session.h        
 
 CPP_INSTALLED_FILES =             \
@@ -56,7 +58,7 @@ CPP_INSTALLED_FILES =             \
         photon/Session            
 
 CPP_DOXY_FILES =                                                \
-        $(top_srcdir)/src/include/Doxygen/DataDefBuilderODBc.in \
+        $(top_srcdir)/src/include/Doxygen/DataDefBuilderODBC.in \
         $(top_srcdir)/src/include/Doxygen/DataDefBuilderUser.in \
         $(top_srcdir)/src/include/Doxygen/DataDefinition.in     \
         $(top_srcdir)/src/include/Doxygen/KeyDefBuilderODBC.in  \

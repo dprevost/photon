@@ -24,7 +24,7 @@
 // for explicit calls to terminate our access.
 Process process;
 Session session;
-HashMap theMap( session );
+HashMap theMap;
 string mapName = "MyHashMapLoop";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -34,17 +34,15 @@ int createMap()
    int rc;
    char countryCode[2];
    char description[100];
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
   
    /*
     * The content of the hash map is simple: a fixed length key, the country 
     * code, and the country name (a variable string - max length of 100).
     */
-   psoObjectDefinition def = { PSO_HASH_MAP, 
-                               PSO_DEF_PHOTON_ODBC_SIMPLE,
-                               PSO_DEF_PHOTON_ODBC_SIMPLE };
    
-   psoKeyDefinition keyDef     = { "CountryCode", PSO_KEY_CHAR, 2 };
-   psoFieldDefinition fieldDef = { "CountryName", PSO_VARCHAR, {100} };
+   psoKeyFieldDefinition keyDef = { "CountryCode", PSO_KEY_CHAR, 2 };
+   psoFieldDefinition fieldDef  = { "CountryName", PSO_VARCHAR, {100} };
 
    // If the map already exists, we remove it.
    try { 
@@ -58,15 +56,27 @@ int createMap()
       }
    }
 
-   try { 
-      session.CreateObject( mapName,
-                            def,
-                            (unsigned char *)&keyDef,
-                            sizeof(psoKeyDefinition),
-                            (unsigned char *)&fieldDef,
-                            sizeof(psoFieldDefinition) );
-      session.Commit();
-      theMap.Open( mapName );
+   try {
+      /*
+       * We create our own definitions. The main advantage of this approach
+       * is that it adds an implicit description of the content. It also
+       * can be useful when accessing the data in Java and others.
+       *
+       * See HashMap.cpp for a different, simpler, approach.
+       */
+      DataDefinition dataDefObj( session, 
+                                 "Data Definition",
+                                 PSO_DEF_PHOTON_ODBC_SIMPLE,
+                                 (unsigned char *)&fieldDef,
+                                 sizeof(psoFieldDefinition) );
+      KeyDefinition keyDefObj( session, 
+                               "Key Definition",
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)&keyDef,
+                               sizeof(psoKeyFieldDefinition) );
+
+      session.CreateObject( mapName, def, keyDefObj, dataDefObj );
+      theMap.Open( session, mapName );
       /*
        * rc < 0 -> error
        * rc = 0 -> nothing read - EOF

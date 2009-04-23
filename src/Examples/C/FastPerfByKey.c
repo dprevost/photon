@@ -58,7 +58,7 @@ int createMap()
     * The content of the hash map is simple: a fixed length key, the country 
     * code, and the country name (a variable string - max length of 100).
     */
-   psoKeyDefinition keyDef     = { "CountryName", PSO_KEY_VARCHAR, 100 };
+   psoKeyFieldDefinition keyDef = { "CountryName", PSO_KEY_VARCHAR, 100 };
    psoFieldDefinition fieldDef[2] = { 
       { "CountryCode", PSO_CHAR, {2} },
       { "CountryName", PSO_VARCHAR, {100} }
@@ -83,7 +83,7 @@ int createMap()
                             strlen("Country Name"),
                             PSO_DEF_PHOTON_ODBC_SIMPLE,
                             (unsigned char *)&keyDef,
-                            sizeof(psoKeyDefinition),
+                            sizeof(psoKeyFieldDefinition),
                             &keyDefHandle );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );

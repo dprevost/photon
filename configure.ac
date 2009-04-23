@@ -521,10 +521,8 @@ AC_CONFIG_FILES([
    src/C++/Makefile
    src/C++/Tests/Makefile
    src/C++/Tests/FastMap/Makefile
-   src/C++/Tests/FieldDefODBC/Makefile
    src/C++/Tests/Folder/Makefile
    src/C++/Tests/HashMap/Makefile
-   src/C++/Tests/KeyDefODBC/Makefile
    src/C++/Tests/Lifo/Makefile
    src/C++/Tests/Process/Makefile
    src/C++/Tests/Queue/Makefile
@@ -552,9 +550,7 @@ AC_CONFIG_FILES([
    src/Nucleus/Tests/Transaction/Makefile
    src/Quasar/Makefile
    src/Quasar/Tests/Makefile
-   src/Java/Makefile
    src/include/Makefile
-   src/Python/Makefile
    src/Tests/Makefile
    src/Tools/Makefile
    src/Tools/Shell/Makefile

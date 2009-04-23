@@ -72,8 +72,8 @@ int initObjects()
    psoObjectDefinition defMap = { PSO_HASH_MAP, 0, 0, 0 };
    psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
    
-   psoKeyDefinition keyDef     = { "ControlCode", PSO_KEY_VARCHAR, 20 };
-   psoFieldDefinition fieldDef = { "Status",      PSO_INTEGER,    {0} };
+   psoKeyFieldDefinition keyDef = { "ControlCode", PSO_KEY_VARCHAR, 20 };
+   psoFieldDefinition fieldDef  = { "Status",      PSO_INTEGER,    {0} };
 
    psoFieldDefinition fieldDefQueue[2] = {
       { "CountryCode", PSO_CHAR,     {2} },
@@ -108,7 +108,7 @@ int initObjects()
                          strlen("Country Code"),
                          PSO_DEF_PHOTON_ODBC_SIMPLE,
                          (unsigned char *)&keyDef,
-                         sizeof(psoKeyDefinition),
+                         sizeof(psoKeyFieldDefinition),
                          &keyDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg(session, msg, 256 );
