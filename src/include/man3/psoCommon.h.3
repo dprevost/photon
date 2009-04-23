@@ -67,6 +67,12 @@ psoCommon.h \-
 .br
 .RI "\fIPSO_HANDLE is an opaque data type used by the C API to reference objects created in the API module. \fP"
 .ti -1c
+.RI "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.br
+.ti -1c
+.RI "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.br
+.ti -1c
 .RI "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .br
 .ti -1c
@@ -130,9 +136,15 @@ Definition at line 341 of file psoCommon.h.
 .SS "typedef int16_t \fBpsoInt16\fP"
 .PP
 Definition at line 40 of file psoCommon.h.
+.SS "typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.PP
+Definition at line 114 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjectDefinition\fP \fBpsoObjectDefinition\fP"
 .PP
 Definition at line 213 of file psoCommon.h.
+.SS "typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.PP
+Definition at line 106 of file psoCommon.h.
 .SS "typedef struct \fBpsoObjStatus\fP \fBpsoObjStatus\fP"
 .PP
 Definition at line 281 of file psoCommon.h.
@@ -182,7 +194,7 @@ Google Protocol Buffer.
 Last type (for boundary checking). 
 .PP
 Definition at line 138 of file psoCommon.h.
-.SS "enum typedef enum \fBpsoIteratorType\fP \fBpsoIteratorType\fP"
+.SS "enum \fBpsoIteratorType\fP"
 .PP
 \fBEnumerator: \fP
 .in +1c
@@ -193,7 +205,7 @@ Definition at line 138 of file psoCommon.h.
 
 .PP
 Definition at line 108 of file psoCommon.h.
-.SS "enum typedef enum \fBpsoObjectType\fP \fBpsoObjectType\fP"
+.SS "enum \fBpsoObjectType\fP"
 .PP
 The object type as seen from the API. 
 .PP
