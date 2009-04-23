@@ -361,7 +361,7 @@ public class Session {
       int errcode;
       ObjectDefinition definition = new ObjectDefinition();
       
-      if ( handle != 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -389,7 +389,7 @@ public class Session {
       int errcode;
       DataDefinition definition = new DataDefinition();
       
-      if ( handle != 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -417,7 +417,7 @@ public class Session {
       int errcode;
       KeyDefinition definition = new KeyDefinition();
       
-      if ( handle != 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -445,7 +445,7 @@ public class Session {
       int errcode;
       Info info = new Info();
       
-      if ( handle != 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
@@ -471,7 +471,7 @@ public class Session {
       int errcode;
       ObjectStatus status = new ObjectStatus();
       
-      if ( handle != 0 ) {
+      if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 

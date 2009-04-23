@@ -230,6 +230,10 @@ public class RawQueue {
       int errcode;
       DataDefinition definition = new DataDefinition();
       
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
       errcode = psoGetRecordDefinition( handle, definition );
       if ( errcode == 0 ) return definition;
 
@@ -250,6 +254,10 @@ public class RawQueue {
       int errcode;
       ObjectStatus status = new ObjectStatus();
       
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
       errcode = psoGetStatus( handle, status );
       if ( errcode == 0 ) return status;
 
@@ -271,6 +279,10 @@ public class RawQueue {
       
       int errcode;
             
+      if ( handle != 0 ) {
+         throw new PhotonException( PhotonErrors.ALREADY_OPEN );
+      }
+
       errcode = psoOpen( session, name );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );

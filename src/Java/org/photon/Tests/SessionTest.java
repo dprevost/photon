@@ -66,11 +66,8 @@ public class SessionTest {
             throw e;
          }
       }
-      
-//      session.createObject( "/SessionTest1",
-//                            new ObjectDefinition(ObjectType.FOLDER, 0),
-//                            null,
-//                            null );
+
+      session.createFolder( "/SessionTest1" );
       status = session.getStatus( "/SessionTest1" );
       System.out.println( "Object Type: " + status.getType() );
       
