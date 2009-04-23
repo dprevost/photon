@@ -68,7 +68,7 @@ autoconf
 echo "- autoheader"
 autoheader
 echo "- automake"
-automake -a
+automake -a --foreign
 echo "- ./configure"
 ./configure
 #echo "- make distcheck"
