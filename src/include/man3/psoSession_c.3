@@ -1,4 +1,4 @@
-.TH "API functions for Photon sessions." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon sessions." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -15,14 +15,12 @@ Each thread of an MT program should have its own session, making it independent 
 .PP
 
 .IP "\(bu" 2
-If you need to open the same Photon object in multiple threads, simply open it multiple times, for each thread. The overhead of having multiple handles to the same shared-memory data container is minimal and using this technique instead of using multi-thread locks will increases the overall performance of the software. 
-.PP
-
+If you need to open the same Photon object in multiple threads, simply open it multiple times using a different session for each thread. The overhead of having multiple handles to the same shared-memory data container is minimal and using this technique instead of using multi-thread locks increases the overall performance of the software.  
+.IP "\(bu" 2
+If you cannot use this, you must implement your own thread synchronization mecanism.  
 .IP "\(bu" 2
 Signal handlers (and similar calls): you should not call \fBpsoExit\fP or \fBpsoExitSession\fP (or similar) from a signal handler. Instead, some global flags should be set that will allow each session to terminate in an orderly fashion.  
 .PP
-.PP
-If you cannot follow these guidelines for whatever reasons, you should set the parameter \fIprotectionNeeded\fP of \fBpsoInit\fP to 1. This will introduce additional multi-threaded protection (locking) for your applications.
 .PP
 Additional note: API objects (or C handles) are just proxies for the real objects sitting in shared memory. Proper synchronization is already done in shared memory and it is best to avoid the additional synchronization of these proxy objects. 
 .PP
@@ -34,9 +32,17 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fICommit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, const unsigned char *keyDef, \fBpsoUint32\fP keyDefLength, const unsigned char *dataDef, \fBpsoUint32\fP dataDefLength)"
+.RI "PHOTON_EXPORT int \fBpsoCreateFolder\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
+.br
+.RI "\fICreate a new folder in shared memory. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fICreate a new object in shared memory. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoCreateKeyedObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.br
+.RI "\fICreate a new key-based object in shared memory. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoDestroyObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes)"
 .br
@@ -50,17 +56,21 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fITerminate the current session. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, unsigned char *key, \fBpsoUint32\fP keyLength, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
+.RI "PHOTON_EXPORT int \fBpsoGetDataDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *dataDefHandle)"
 .br
 .RI "\fIRetrieve the data definition of the named object. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoGetDefLength\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoUint32\fP *keyLength, \fBpsoUint32\fP *fieldsLength)"
+.RI "PHOTON_EXPORT int \fBpsoGetDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition)"
 .br
-.RI "\fIRetrieve the lengths of the variable elements of the definition of the named object. \fP"
+.RI "\fIRetrieve the object definition of the named object. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoGetInfo\fP (\fBPSO_HANDLE\fP sessionHandle, \fBpsoInfo\fP *pInfo)"
 .br
 .RI "\fIReturn information on the current status of the shared memory. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoGetKeyDefinition\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *keyDefHandle)"
+.br
+.RI "\fIRetrieve the key definition of the named object. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoGetStatus\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjStatus\fP *pStatus)"
 .br
@@ -99,9 +109,65 @@ Note: the internal calls executed by the engine to satisfy this request cannot f
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, const unsigned char * keyDef, \fBpsoUint32\fP keyDefLength, const unsigned char * dataDef, \fBpsoUint32\fP dataDefLength)"
+.SS "PHOTON_EXPORT int psoCreateFolder (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes)"
+.PP
+Create a new folder in shared memory. 
+.PP
+The creation of the folder only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+This function does not provide a handle to the newly created folder. Use \fBpsoFolderOpen\fP to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the current session. 
+.br
+\fIobjectName\fP The fully qualified name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoCreateKeyedObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.PP
+Create a new key-based object in shared memory. 
+.PP
+The currently supported types of key-based objects are hash maps and read-only hash maps.
+.PP
+The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
+.PP
+This function does not provide a handle to the newly created object. Use \fBpsoHashMapOpen\fP and similar functions to get the handle.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the current session. 
+.br
+\fIobjectName\fP The fully qualified name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
+.br
+\fIdefinition\fP The basic information needed to create the object: the type of object to create, etc. 
+.br
+\fIkeyDefHandle\fP Handle to the definition of the key. 
+.br
+\fIdataDefHandle\fP Handle to the definition of the data fields.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
 Create a new object in shared memory. 
+.PP
+To create an object based on a key, use the function \fBpsoCreateKeyedObject\fP instead of the current function.
 .PP
 The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
 .PP
@@ -113,17 +179,11 @@ This function does not provide a handle to the newly created object. Use \fBpsoQ
 .br
 \fIobjectName\fP The fully qualified name of the object. 
 .br
-\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
 .br
-\fIdefinition\fP The basic information needed to create the object: the type of object to create (folder, queue, etc.), the type of key definition, etc. 
+\fIdefinition\fP The basic information needed to create the object: the type of object to create, etc. 
 .br
-\fIkeyDef\fP An opaque definition of the key. You can set this field to NULL if the object has no key. See \fBpsoDefinitionType\fP for a more in-depth explanation. 
-.br
-\fIkeyDefLength\fP The length in bytes of the buffer \fIkeyDef\fP. It should be set to zero if \fIkeyDef\fP is NULL. 
-.br
-\fIdataDef\fP An opaque definition of the data fields of the object. It can be set to NULL when creating a Folder. See \fBpsoDefinitionType\fP for a more in-depth explanation. 
-.br
-\fIdataDefLength\fP The length in bytes of the buffer \fIdataDef\fP. It should be set to zero if \fIdataDef\fP is NULL.
+\fIdataDefHandle\fP Handle to the definition of the data fields. It can be set to NULL when creating a Folder.
 .RE
 .PP
 \fBReturns:\fP
@@ -182,7 +242,7 @@ Terminate the current session.
 .PP
 An implicit call to \fBpsoRollback\fP is executed by this function.
 .PP
-Once this function is executed, attempts to use the session handle might lead to memory violation (and, possibly, crashes).
+Once this function is executed, attempts to use the session handle or the handles of objects accessed using this session might lead to memory violation (and, possibly, crashes).
 .PP
 \fBParameters:\fP
 .RS 4
@@ -195,11 +255,13 @@ Once this function is executed, attempts to use the session handle might lead to
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, unsigned char * key, \fBpsoUint32\fP keyLength, unsigned char * fields, \fBpsoUint32\fP fieldsLength)"
+.SS "PHOTON_EXPORT int psoGetDataDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * dataDefHandle)"
 .PP
 Retrieve the data definition of the named object. 
 .PP
-You can call the function \fBpsoGetDefLength\fP to retrieve the lengths of the key and the field definitions. This allows you to allocate the proper size for \fIkey\fP and \fIfields\fP.
+To avoid memory leaks, you must close the handle that will be returned by this function (see \fBpsoDataDefClose\fP).
+.PP
+The handle might be set to NULL by this function if the object is a folder.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -209,15 +271,7 @@ You can call the function \fBpsoGetDefLength\fP to retrieve the lengths of the k
 .br
 \fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
 .br
-\fIdefinition\fP The definition of the object. 
-.br
-\fIkey\fP An opaque definition of the key. You can set this field to NULL if the object has no key or if you do not want to retrieve the key definition. 
-.br
-\fIkeyLength\fP The length in bytes of the buffer \fIkey\fP. It should be set to zero if \fIkey\fP is NULL. 
-.br
-\fIfields\fP An opaque definition of the data fields of the object. It can be set to NULL if you do not want to retrieve the definition. 
-.br
-\fIfieldsLength\fP The length in bytes of the buffer \fIfields\fP. It should be set to zero if \fIfields\fP is NULL.
+\fIdataDefHandle\fP Handle to the definition of the data fields (or NULL for folders).
 .RE
 .PP
 \fBReturns:\fP
@@ -226,11 +280,9 @@ You can call the function \fBpsoGetDefLength\fP to retrieve the lengths of the k
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoGetDefLength (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoUint32\fP * keyLength, \fBpsoUint32\fP * fieldsLength)"
+.SS "PHOTON_EXPORT int psoGetDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition)"
 .PP
-Retrieve the lengths of the variable elements of the definition of the named object. 
-.PP
-This function is a helper function for \fBpsoGetDefinition\fP. It allows you to allocate the proper size for \fIkey\fP and \fIfields\fP.
+Retrieve the object definition of the named object. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -238,11 +290,9 @@ This function is a helper function for \fBpsoGetDefinition\fP. It allows you to 
 .br
 \fIobjectName\fP The fully qualified name of the object. 
 .br
-\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator. 
 .br
-\fIkeyLength\fP The length in bytes of the key buffer. keyLength cannot be NULL even if the objects has no key. 
-.br
-\fIfieldsLength\fP The length in bytes of the fields buffer. This pointer cannot be NULL.
+\fIdefinition\fP The definition of the object.
 .RE
 .PP
 \fBReturns:\fP
@@ -262,6 +312,31 @@ The fetched information is mainly about the current status of the memory allocat
 \fIsessionHandle\fP Handle to the current session. 
 .br
 \fIpInfo\fP A pointer to the \fBpsoInfo\fP structure.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoGetKeyDefinition (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * keyDefHandle)"
+.PP
+Retrieve the key definition of the named object. 
+.PP
+To avoid memory leaks, you must close the handle that will be returned by this function (see \fBpsoKeyDefClose\fP).
+.PP
+The handle might be set to NULL by this function if the object does not have keys (folders and queues, for example).
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsessionHandle\fP Handle to the current session. 
+.br
+\fIobjectName\fP The fully qualified name of the object. 
+.br
+\fInameLengthInBytes\fP The length of \fIobjectName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
+.br
+\fIkeyDefHandle\fP Handle to the key definition (or NULL for folders, queues, etc.).
 .RE
 .PP
 \fBReturns:\fP

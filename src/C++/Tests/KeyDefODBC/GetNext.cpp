@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
 {
    KeyDefinitionODBC def(2);
    string name;
-   psoKeyDefinition fields[6] = {
+   psoKeyFieldDefinition fields[6] = {
       { "abcd1", PSO_KEY_INTEGER,    0 },
       { "abcd2", PSO_KEY_CHAR,      12 },
       { "abcd3", PSO_KEY_BINARY,    12 },
@@ -42,7 +42,7 @@ int main( int argc, char * argv[] )
    };
    
    KeyDefinitionODBC defOK( (unsigned char *) fields, 
-      6*sizeof(psoKeyDefinition));
+      6*sizeof(psoKeyFieldDefinition));
 
    name = "abcd1";
    try {

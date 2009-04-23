@@ -578,7 +578,7 @@ unsigned char * shellInToKey( string        & inKey,
    bool ok = false;
 
    psoObjectDefinition def = definition.GetDef();
-   psoKeyDefinition keyDef = definition.GetKey();
+   psoKeyFieldDefinition keyDef = definition.GetKey();
    
    // We need to determine the length of the key buffer to allocate.
    switch( keyDef.type ) {

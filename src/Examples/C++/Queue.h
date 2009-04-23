@@ -26,8 +26,8 @@ const std::string controlName  = "QueueExample/QueueControl";
 
 pso::Process process;
 pso::Session session;
-pso::Queue   inQueue(session), outQueue(session);
-pso::HashMap control(session);
+pso::Queue   inQueue, outQueue;
+pso::HashMap control;
 
 // Keys for the control
 const char * workProcessKey = "Work Queue";

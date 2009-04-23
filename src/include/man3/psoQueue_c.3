@@ -1,4 +1,4 @@
-.TH "API functions for Photon FIFO queues." 3 "27 Mar 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon FIFO queues." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -17,17 +17,13 @@ Data items are placed at the end of the queue and retrieved from the beginning o
 .br
 .RI "\fIClose a FIFO queue. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoQueueDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP *definition, unsigned char *fields, \fBpsoUint32\fP fieldsLength)"
+.RI "PHOTON_EXPORT int \fBpsoQueueDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP *dataDefHandle)"
 .br
 .RI "\fIRetrieve the data definition of the queue. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoQueueDefLength\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP *fieldsLength)"
-.br
-.RI "\fIRetrieve the length of the fields definition of the queue. \fP"
-.ti -1c
 .RI "PHOTON_EXPORT int \fBpsoQueueGetFirst\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *returnedLength)"
 .br
-.RI "\fIIterate through the queue - no data items are removed from the queue by this function. \fP"
+.RI "\fIInitiates an iteratation through the queue - no data items are removed from the queue by this function. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoQueueGetNext\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *returnedLength)"
 .br
@@ -41,13 +37,17 @@ Data items are placed at the end of the queue and retrieved from the beginning o
 .br
 .RI "\fIRemove the first item from the beginning of a FIFO queue and return it to the caller. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoQueuePush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, \fBpsoUint32\fP length)"
+.RI "PHOTON_EXPORT int \fBpsoQueuePush\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, \fBpsoUint32\fP length, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoQueuePushNow\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, \fBpsoUint32\fP length)"
+.RI "PHOTON_EXPORT int \fBpsoQueuePushNow\fP (\fBPSO_HANDLE\fP objectHandle, const void *pItem, \fBpsoUint32\fP length, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
 .RI "\fIInsert a data element at the end of the FIFO queue. \fP"
+.ti -1c
+.RI "PHOTON_EXPORT int \fBpsoQueueRecordDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP *dataDefHandle)"
+.br
+.RI "\fIRetrieves a handle allowing you to access the data definition of the last accessed record. \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoQueueStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
@@ -77,40 +77,17 @@ Closing an object does not automatically commit or rollback data items that were
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoQueueDefinition (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjectDefinition\fP * definition, unsigned char * fields, \fBpsoUint32\fP fieldsLength)"
+.SS "PHOTON_EXPORT int psoQueueDefinition (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP * dataDefHandle)"
 .PP
 Retrieve the data definition of the queue. 
 .PP
-You can call the function \fBpsoQueueDefLength\fP to retrieve the length of the field definitions. This allows you to allocate the proper size for \fIfields\fP.
+To avoid memory leaks, you must close the handle that will be returned by this function (see \fBpsoDataDefClose\fP).
 .PP
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the queue (see \fBpsoQueueOpen\fP). 
 .br
-\fIdefinition\fP The definition of the object. 
-.br
-\fIfields\fP An opaque definition of the data fields of the object. It can be set to NULL if you do not want to retrieve the definition. 
-.br
-\fIfieldsLength\fP The length, in bytes, of the buffer \fIfields\fP. It should be set to zero if \fIfields\fP is NULL.
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-0 on success or a \fBpsoErrors\fP on error. 
-.RE
-.PP
-
-.SS "PHOTON_EXPORT int psoQueueDefLength (\fBPSO_HANDLE\fP objectHandle, \fBpsoUint32\fP * fieldsLength)"
-.PP
-Retrieve the length of the fields definition of the queue. 
-.PP
-This function is a helper function for \fBpsoQueueDefinition\fP. It allows you to allocate the proper size for \fIfields\fP.
-.PP
-\fBParameters:\fP
-.RS 4
-\fIobjectHandle\fP The handle to the queue (see \fBpsoQueueOpen\fP). 
-.br
-\fIfieldsLength\fP The length in bytes of the fields buffer.
+\fIdataDefHandle\fP Handle to the definition of the data fields.
 .RE
 .PP
 \fBReturns:\fP
@@ -121,7 +98,7 @@ This function is a helper function for \fBpsoQueueDefinition\fP. It allows you t
 
 .SS "PHOTON_EXPORT int psoQueueGetFirst (\fBPSO_HANDLE\fP objectHandle, void * buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP * returnedLength)"
 .PP
-Iterate through the queue - no data items are removed from the queue by this function. 
+Initiates an iteratation through the queue - no data items are removed from the queue by this function. 
 .PP
 Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
 .PP
@@ -133,12 +110,12 @@ Data items which were added by another session and are not yet committed will no
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIreturnedLength\fP The actual number of bytes in the data item.
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBpsoErrors\fP on error. 
+0 on success, PSO_IS_EMPTY if the queue is empty or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
@@ -158,12 +135,12 @@ Evidently, you must call \fBpsoQueueGetFirst\fP to initialize the iterator. Not 
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIreturnedLength\fP The actual number of bytes in the data item.
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
 .RE
 .PP
 \fBReturns:\fP
 .RS 4
-0 on success or a \fBpsoErrors\fP on error. 
+0 on success, PSO_REACHED_THE_END when the iteration reaches the end of the queue or a \fBpsoErrors\fP on error. 
 .RE
 .PP
 
@@ -177,7 +154,7 @@ Open an existing FIFO queue (see \fBpsoCreateObject\fP to create a new queue).
 .br
 \fIqueueName\fP The fully qualified name of the queue. 
 .br
-\fInameLengthInBytes\fP The length of \fIqueueName\fP (in bytes) not counting the null terminator (null-terminators are not used by the Photon engine). 
+\fInameLengthInBytes\fP The length of \fIqueueName\fP (in bytes) not counting the null terminator. 
 .br
 \fIobjectHandle\fP The handle to the queue, allowing us access to the queue in shared memory. On error, this handle will be set to zero (NULL) unless the objectHandle pointer itself is NULL.
 .RE
@@ -204,7 +181,7 @@ The removals only become permanent after a call to \fBpsoCommit\fP.
 .br
 \fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
 .br
-\fIreturnedLength\fP The actual number of bytes in the data item.
+\fIreturnedLength\fP The actual number of bytes copied in the data buffer.
 .RE
 .PP
 \fBReturns:\fP
@@ -213,19 +190,25 @@ The removals only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoQueuePush (\fBPSO_HANDLE\fP objectHandle, const void * pItem, \fBpsoUint32\fP length)"
+.SS "PHOTON_EXPORT int psoQueuePush (\fBPSO_HANDLE\fP objectHandle, const void * pItem, \fBpsoUint32\fP length, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
 Insert a data element at the end of the FIFO queue. 
 .PP
 The additions only become permanent after a call to \fBpsoCommit\fP.
 .PP
+The \fIdataDefHandle\fP argument should be used (non-NULL) only if you use this queue to store data records having different data definitions.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
+.PP
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the queue (see \fBpsoQueueOpen\fP). 
 .br
 \fIpItem\fP The data item to be inserted. 
 .br
-\fIlength\fP The length of \fIpItem\fP (in bytes).
+\fIlength\fP The length of \fIpItem\fP (in bytes). 
+.br
+\fIdataDefHandle\fP An optional handle to a data definition for this specific data record. The queue must have been created with the appropriate flag to support this feature. Set this handle to NULL to use the default data definition.
 .RE
 .PP
 \fBReturns:\fP
@@ -234,11 +217,15 @@ The additions only become permanent after a call to \fBpsoCommit\fP.
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoQueuePushNow (\fBPSO_HANDLE\fP objectHandle, const void * pItem, \fBpsoUint32\fP length)"
+.SS "PHOTON_EXPORT int psoQueuePushNow (\fBPSO_HANDLE\fP objectHandle, const void * pItem, \fBpsoUint32\fP length, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
 Insert a data element at the end of the FIFO queue. 
 .PP
 The additions become permanent immediately, not after a call to \fBpsoCommit\fP. (in other words, you cannot easily undo these insertions).
+.PP
+The \fIdataDefHandle\fP argument should be used (non-NULL) only if you use this queue to store data records having different data definitions.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
 .PP
 \fBParameters:\fP
 .RS 4
@@ -246,7 +233,36 @@ The additions become permanent immediately, not after a call to \fBpsoCommit\fP.
 .br
 \fIpItem\fP The data item to be inserted. 
 .br
-\fIlength\fP The length of \fIpItem\fP (in bytes).
+\fIlength\fP The length of \fIpItem\fP (in bytes). 
+.br
+\fIdataDefHandle\fP A handle to the data definition for this specific data record. The queue must have been created with the appropriate flag to support this feature.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or a \fBpsoErrors\fP on error. 
+.RE
+.PP
+
+.SS "PHOTON_EXPORT int psoQueueRecordDefinition (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP * dataDefHandle)"
+.PP
+Retrieves a handle allowing you to access the data definition of the last accessed record. 
+.PP
+Explanation:
+.PP
+Queues will usually contain data records with an identical layout (data definition of the items). This layout was defined when the queue was created.
+.PP
+You can also insert and retrieve data records with different layouts if the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The layout defined when a queue is created is then used as the default one.
+.PP
+To access the layout on a record-by-record base, use the argument \fIdataDefHandle\fP - it will be set to the layout of the last retrieved record.
+.PP
+Note: you only need to get the handle once. The hidden fields associated with this handle will be updated after each record is retrieved. The handle will point to the data definition of the queue map upon initialization.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIobjectHandle\fP The handle to the queue 
+.br
+\fIdataDefHandle\fP This optional handle gives you access to the data definition of the record on a record by record basis. This handle will be closed when the queue is closed. You can also close it manually with \fBpsoDataDefClose\fP.
 .RE
 .PP
 \fBReturns:\fP

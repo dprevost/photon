@@ -42,7 +42,7 @@ int main( int argc, char * argv[] )
    uint32_t length, keyLength;
    int rc;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
-   psoKeyDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyFieldDefinition keys = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
@@ -75,7 +75,7 @@ int main( int argc, char * argv[] )
                                "Key Definition",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
-                               sizeof(psoKeyDefinition) );
+                               sizeof(psoKeyFieldDefinition) );
       session1.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
       session1.Commit();
 

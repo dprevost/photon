@@ -52,7 +52,7 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
    psonKeyDefinition  * pMemKeyDefinition = NULL;
    uint32_t recLength;
    psoFieldDefinition fields = { "Default", PSO_LONGVARBINARY, {0} };
-   psoKeyDefinition keys = { "Default", PSO_LONGVARBINARY, 0 };
+   psoKeyFieldDefinition keys = { "Default", PSO_LONGVARBINARY, 0 };
 
    GET_PTR( pTree, pHandler->pMemHeader->treeMgrOffset, psonFolder )
 
@@ -190,14 +190,14 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
     */
    /* We need to serialize the inputs to insert the record in the hash map */
    recLength = offsetof( psonKeyDefinition, definition ) + 
-      sizeof(psoKeyDefinition);
+      sizeof(psoKeyFieldDefinition);
    pMemKeyDefinition = malloc( recLength );
    if ( pMemKeyDefinition == NULL ) {
       return false;
    }
    pMemKeyDefinition->type = PSO_DEF_PHOTON_ODBC_SIMPLE;
-   pMemKeyDefinition->definitionLength = sizeof(psoKeyDefinition);
-   memcpy( pMemKeyDefinition->definition, &keys, sizeof(psoKeyDefinition) );
+   pMemKeyDefinition->definitionLength = sizeof(psoKeyFieldDefinition);
+   memcpy( pMemKeyDefinition->definition, &keys, sizeof(psoKeyFieldDefinition) );
 
    ok = psonHashMapInsert( pHashMap,
                            "Default",

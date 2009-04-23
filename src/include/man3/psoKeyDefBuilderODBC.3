@@ -1,0 +1,173 @@
+.TH "pso::KeyDefBuilderODBC" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+pso::KeyDefBuilderODBC \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+This class is a wrapper for the C struct psoObjectDefinition. 
+
+It's main pupose is to encapsulate the memory management of the C struct. 
+.PP
+Definition at line 44 of file KeyDefBuilderODBC.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBKeyDefBuilderODBC\fP (psoUint32 numKeyFields, bool simple=true)"
+.br
+.RI "\fIConstruct a data-container definition. \fP"
+.ti -1c
+.RI "virtual \fB~KeyDefBuilderODBC\fP ()"
+.br
+.ti -1c
+.RI "void \fBAddKeyField\fP (std::string &name, psoKeyType type, psoUint32 length)"
+.br
+.RI "\fIAdd a key field to the definition. \fP"
+.ti -1c
+.RI "void \fBAddKeyField\fP (const char *name, psoUint32 nameLength, psoKeyType type, psoUint32 length)"
+.br
+.RI "\fIAdd a field to the definition. \fP"
+.ti -1c
+.RI "virtual const unsigned char * \fBGetDefinition\fP ()"
+.br
+.RI "\fIRetrieve the key definition. \fP"
+.ti -1c
+.RI "virtual psoUint32 \fBGetDefLength\fP ()"
+.br
+.RI "\fIReturns the length, in bytes, of the definition. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "psoKeyFieldDefinition * \fBkeys\fP"
+.br
+.RI "\fIThe C struct array holding the definition of the key fields. \fP"
+.ti -1c
+.RI "psoUint32 \fBnumKeys\fP"
+.br
+.RI "\fINumber of keys in the definition. \fP"
+.ti -1c
+.RI "psoUint32 \fBcurrentKey\fP"
+.br
+.RI "\fIIterator. \fP"
+.ti -1c
+.RI "bool \fBsimpleDef\fP"
+.br
+.RI "\fItrue if the definition type is odbc simple, false otherwise. \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::KeyDefBuilderODBC::KeyDefBuilderODBC (psoUint32 numKeyFields, bool simple = \fCtrue\fP)"
+.PP
+Construct a data-container definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fInumKeyFields\fP The number of key fields. 
+.br
+\fIsimple\fP Set this to true if the definition type is 'simple' (fixed length fields) or false if not.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::KeyDefBuilderODBC::~KeyDefBuilderODBC ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::KeyDefBuilderODBC::AddKeyField (std::string & name, psoKeyType type, psoUint32 length)"
+.PP
+Add a key field to the definition. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP The name of the field 
+.br
+\fItype\fP The data type of the field. 
+.br
+\fIlength\fP The length of the key (needed for some data types).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::KeyDefBuilderODBC::AddKeyField (const char * name, psoUint32 nameLength, psoKeyType type, psoUint32 length)"
+.PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP The name of the field 
+.br
+\fInameLength\fP The length of the name (in bytes). 
+.br
+\fItype\fP The data type of the field. 
+.br
+\fIlength\fP The length of the key (needed for some data types).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual const unsigned char* pso::KeyDefBuilderODBC::GetDefinition ()\fC [virtual]\fP"
+.PP
+Retrieve the key definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The definition of the key as an array of bytes. 
+.RE
+.PP
+
+.SS "virtual psoUint32 pso::KeyDefBuilderODBC::GetDefLength ()\fC [virtual]\fP"
+.PP
+Returns the length, in bytes, of the definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The length, in bytes, of the definition 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "psoKeyFieldDefinition* \fBpso::KeyDefBuilderODBC::keys\fP\fC [private]\fP"
+.PP
+The C struct array holding the definition of the key fields. 
+.PP
+Definition at line 105 of file KeyDefBuilderODBC.
+.SS "psoUint32 \fBpso::KeyDefBuilderODBC::numKeys\fP\fC [private]\fP"
+.PP
+Number of keys in the definition. 
+.PP
+Definition at line 108 of file KeyDefBuilderODBC.
+.SS "psoUint32 \fBpso::KeyDefBuilderODBC::currentKey\fP\fC [private]\fP"
+.PP
+Iterator. 
+.PP
+Definition at line 111 of file KeyDefBuilderODBC.
+.SS "bool \fBpso::KeyDefBuilderODBC::simpleDef\fP\fC [private]\fP"
+.PP
+true if the definition type is odbc simple, false otherwise. 
+.PP
+Definition at line 114 of file KeyDefBuilderODBC.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.

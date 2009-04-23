@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE defHandle, sessionHandle;
    int errcode;
-   psoKeyDefinition key = { "Key_1", PSO_KEY_VARCHAR, 10 };
+   psoKeyFieldDefinition key = { "Key_1", PSO_KEY_VARCHAR, 10 };
   
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -55,7 +55,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -31,7 +31,7 @@ libNucleus_la_SOURCES =   \
         BlockGroup.h      \
         Cursor.c          \
         Cursor.h          \
-        DataType.h        \
+        Definitions.h     \
         Engine.h          \
         FastMap.c         \
         FastMap.h         \

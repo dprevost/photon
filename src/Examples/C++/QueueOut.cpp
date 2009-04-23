@@ -41,7 +41,7 @@ void initObjects()
 {
    int controlData;
 
-   control.Open( controlName );
+   control.Open( session, controlName );
 
    controlData = 1;
    control.Replace( outProcessKey, strlen(outProcessKey), 
@@ -100,7 +100,7 @@ int main( int argc, char *argv[] )
    // Initialize objects
    try {
       initObjects();
-      outQueue.Open( outQueueName );
+      outQueue.Open( session, outQueueName );
    }
    catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;

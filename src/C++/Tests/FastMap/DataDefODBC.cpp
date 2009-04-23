@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
       }
       delete [] buffer;
       
-      len = 3 * sizeof(psoKeyDefinition);
+      len = 3 * sizeof(psoKeyFieldDefinition);
       buffer = new unsigned char [len];
       if ( len != returnedKeyDef->GetLength() ) {
          cerr << "Test failed - line " << __LINE__ << endl;

@@ -392,7 +392,7 @@ int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psoaGetKeyOffsets( psoKeyDefinition * pDefinition,
+void psoaGetKeyOffsets( psoKeyFieldDefinition * pDefinition,
                         int                numKeys,
                         uint32_t         * pOffsets )
 {

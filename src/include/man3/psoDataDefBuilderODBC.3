@@ -1,0 +1,187 @@
+.TH "pso::DataDefBuilderODBC" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+pso::DataDefBuilderODBC \- 
+.SH SYNOPSIS
+.br
+.PP
+.SH "Detailed Description"
+.PP 
+This class is a helper class to build the data definition of Photon objects when the definition is ODBC like. 
+
+It should be noted that you do not have to use this class, the data definition can be set or retrieved directly as an array of bytes.
+.PP
+Internally, this class will set the data definition as an array of psoFieldDefinition struct. 
+.PP
+Definition at line 49 of file DataDefBuilderODBC.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBDataDefBuilderODBC\fP (psoUint32 \fBnumFields\fP, bool simple=true)"
+.br
+.RI "\fIConstruct a data-container definition. \fP"
+.ti -1c
+.RI "virtual \fB~DataDefBuilderODBC\fP ()"
+.br
+.ti -1c
+.RI "void \fBAddField\fP (std::string &name, psoFieldType type, psoUint32 length, psoUint32 precision, psoUint32 scale)"
+.br
+.RI "\fIAdd a field to the definition. \fP"
+.ti -1c
+.RI "void \fBAddField\fP (const char *name, psoUint32 nameLength, psoFieldType type, psoUint32 length, psoUint32 precision, psoUint32 scale)"
+.br
+.RI "\fIAdd a field to the definition. \fP"
+.ti -1c
+.RI "const unsigned char * \fBGetDefinition\fP ()"
+.br
+.RI "\fIRetrieve the fields definition. \fP"
+.ti -1c
+.RI "psoUint32 \fBGetDefLength\fP ()"
+.br
+.RI "\fIReturns the length, in bytes, of the definition. \fP"
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "psoFieldDefinition * \fBfields\fP"
+.br
+.RI "\fIThe C struct array holding the definition of the fields. \fP"
+.ti -1c
+.RI "psoUint32 \fBnumFields\fP"
+.br
+.RI "\fINumber of fields in the definition. \fP"
+.ti -1c
+.RI "psoUint32 \fBcurrentField\fP"
+.br
+.RI "\fIIterator. \fP"
+.ti -1c
+.RI "bool \fBsimpleDef\fP"
+.br
+.RI "\fItrue if the definition type is odbc simple, false otherwise. \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::DataDefBuilderODBC::DataDefBuilderODBC (psoUint32 numFields, bool simple = \fCtrue\fP)"
+.PP
+Construct a data-container definition. 
+.PP
+Use this constructor to build a definition to create new Photon objects.
+.PP
+\fBParameters:\fP
+.RS 4
+\fInumFields\fP The number of data fields. 
+.br
+\fIsimple\fP Set this to true if the definition type is 'simple' (fixed length fields) or false if not.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::DataDefBuilderODBC::~DataDefBuilderODBC ()\fC [virtual]\fP"
+.PP
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::DataDefBuilderODBC::AddField (std::string & name, psoFieldType type, psoUint32 length, psoUint32 precision, psoUint32 scale)"
+.PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP The name of the field 
+.br
+\fItype\fP The data type of the field. 
+.br
+\fIlength\fP The length of the key (needed for some data types). 
+.br
+\fIprecision\fP The number of digits of a numeric field (not counting the separator or the sign). 
+.br
+\fIscale\fP The number of digits after the separator of a numeric field.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::DataDefBuilderODBC::AddField (const char * name, psoUint32 nameLength, psoFieldType type, psoUint32 length, psoUint32 precision, psoUint32 scale)"
+.PP
+Add a field to the definition. 
+.PP
+Fields must be added in order.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP The name of the field 
+.br
+\fInameLength\fP The length of the name (in bytes). 
+.br
+\fItype\fP The data type of the field. 
+.br
+\fIlength\fP The length of the key (needed for some data types). 
+.br
+\fIprecision\fP The number of digits of a numeric field (not counting the separator or the sign). 
+.br
+\fIscale\fP The number of digits after the separator of a numeric field.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "const unsigned char* pso::DataDefBuilderODBC::GetDefinition ()"
+.PP
+Retrieve the fields definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The definition of the fields as an array of bytes. 
+.RE
+.PP
+
+.SS "psoUint32 pso::DataDefBuilderODBC::GetDefLength ()"
+.PP
+Returns the length, in bytes, of the definition. 
+.PP
+\fBReturns:\fP
+.RS 4
+The length, in bytes, of the definition 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "psoFieldDefinition* \fBpso::DataDefBuilderODBC::fields\fP\fC [private]\fP"
+.PP
+The C struct array holding the definition of the fields. 
+.PP
+Definition at line 125 of file DataDefBuilderODBC.
+.SS "psoUint32 \fBpso::DataDefBuilderODBC::numFields\fP\fC [private]\fP"
+.PP
+Number of fields in the definition. 
+.PP
+Definition at line 128 of file DataDefBuilderODBC.
+.SS "psoUint32 \fBpso::DataDefBuilderODBC::currentField\fP\fC [private]\fP"
+.PP
+Iterator. 
+.PP
+Definition at line 131 of file DataDefBuilderODBC.
+.SS "bool \fBpso::DataDefBuilderODBC::simpleDef\fP\fC [private]\fP"
+.PP
+true if the definition type is odbc simple, false otherwise. 
+.PP
+Definition at line 134 of file DataDefBuilderODBC.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Photon C++ API from the source code.
