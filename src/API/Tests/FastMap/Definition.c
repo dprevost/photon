@@ -44,7 +44,7 @@ int main( int argc, char * argv[] )
    size_t lenData;
 
    psoObjectDefinition hashMapDef = { PSO_FAST_MAP, 0, 0, 0 };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_LONGVARCHAR, 0 };
 
    psoFieldDefinition fields[5] = {
       { "field1", PSO_TINYINT,   {0} },
@@ -58,10 +58,10 @@ int main( int argc, char * argv[] )
 
    psoFieldDefinition retFields[5];
    psoObjectDefinition retDef;
-   psoKeyDefinition retKeyDef;
+   psoKeyFieldDefinition retKeyDef;
    
    memset( &retDef,    0, sizeof(psoObjectDefinition) );
-   memset( &retKeyDef, 0, sizeof(psoKeyDefinition) );
+   memset( &retKeyDef, 0, sizeof(psoKeyFieldDefinition) );
    memset( &retFields, 0, 5*sizeof(psoFieldDefinition) );
 
    lenData = offsetof(struct dummy, bin) + 10;
@@ -97,7 +97,7 @@ int main( int argc, char * argv[] )
                               strlen("Definition"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -188,7 +188,7 @@ int main( int argc, char * argv[] )
 //   if ( memcmp( &hashMapDef, &retDef, sizeof(psoObjectDefinition) ) != 0 ) {
 //      ERROR_EXIT( expectedToPass, NULL, ; );
 //   }
-//   if ( memcmp( &keyDef, &retKeyDef, sizeof(psoKeyDefinition) ) != 0 ) {
+//   if ( memcmp( &keyDef, &retKeyDef, sizeof(psoKeyFieldDefinition) ) != 0 ) {
 //      ERROR_EXIT( expectedToPass, NULL, ; );
 //   }
 

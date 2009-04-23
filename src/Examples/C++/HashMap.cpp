@@ -25,7 +25,7 @@
 // for explicit calls to terminate our access.
 Process process;
 Session session1, session2;
-HashMap map1( session1 ), map2( session2 );
+HashMap map1, map2;
 string mapName = "MyHashMap";
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -36,18 +36,7 @@ int createMap()
    char countryCode[2];
    char description[100];
 
-   /*
-    * The content of the hash map is simple: a fixed length key, the country 
-    * code, and the country name (a variable string - max length of 100).
-    */
-   psoObjectDefinition def = { 
-      PSO_HASH_MAP, 
-      PSO_DEF_PHOTON_ODBC_SIMPLE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE 
-   };
-   
-   psoKeyDefinition keyDef     = { "CountryCode", PSO_KEY_CHAR, 2 };
-   psoFieldDefinition fieldDef = { "CountryName", PSO_VARCHAR, {100} };
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
 
    // If the map already exists, we remove it.
    try { 
@@ -61,15 +50,17 @@ int createMap()
       }
    }
    
-   try { 
+   try {
+      /*
+       * We use the default key and data definition to make our life simpler.
+       * See HashMapLoop.cpp for a different approach.
+       */
       session1.CreateObject( mapName,
                              def,
-                             (unsigned char *)&keyDef,
-                             sizeof(psoKeyDefinition),
-                             (unsigned char *)&fieldDef,
-                             sizeof(psoFieldDefinition) );
+                             "Default",
+                             "Default" );
       session1.Commit();
-      map1.Open( mapName );
+      map1.Open( session1, mapName );
       /*
        * rc < 0 -> error
        * rc = 0 -> nothing read - EOF
@@ -123,7 +114,7 @@ int main( int argc, char *argv[] )
    if ( rc != 0 ) { return 1; }
    cout << "Map created" << endl;
    
-   try { map2.Open( mapName ); }
+   try { map2.Open( session2, mapName ); }
    catch( Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;
       return 1;

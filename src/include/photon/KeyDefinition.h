@@ -34,7 +34,7 @@ extern "C" {
  * This file provides the API needed to access a Photon key definition.
  */
 /**
- * \defgroup psoKeyDefinition_c API functions for Photon key definitions.
+ * \defgroup psoKeyFieldDefinition_c API functions for Photon key definitions.
  * 
  */
 /*@{*/
@@ -136,6 +136,7 @@ int psoKeyDefOpen( PSO_HANDLE   sessionHandle,
                    PSO_HANDLE * definitionHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+/*@}*/
 
 #ifdef __cplusplus
 }

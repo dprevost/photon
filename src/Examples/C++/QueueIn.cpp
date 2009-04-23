@@ -61,33 +61,8 @@ void initObjects()
 {
    int controlData;
    
-   psoObjectDefinition defFolder = { 
-      PSO_FOLDER,
-      PSO_DEF_NONE,
-      PSO_DEF_NONE 
-   };
-   
-   psoObjectDefinition defMap = { 
-      PSO_HASH_MAP, 
-      PSO_DEF_PHOTON_ODBC_SIMPLE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE 
-   };
-   
-   psoKeyDefinition keyDef     = { "ControlCode", PSO_KEY_VARCHAR, 20 };
-   psoFieldDefinition fieldDef = { "Status",      PSO_INTEGER,    {0} };
-
-   /*
-    *
-    */
-   psoObjectDefinition defQueue = { 
-      PSO_QUEUE,
-      PSO_DEF_NONE,
-      PSO_DEF_PHOTON_ODBC_SIMPLE 
-   };
-   pso::FieldDefinitionODBC fieldDefQueue( 2 );
-
-   fieldDefQueue.AddField( "CountryCode", 11, PSO_CHAR,     2, 0, 0 );
-   fieldDefQueue.AddField( "CountryName", 11, PSO_VARCHAR, 80, 0, 0 );
+   psoObjectDefinition defMap = { PSO_HASH_MAP, 0, 0, 0 };
+   psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
 
    // If the objects already exist, we remove them.
    try {
@@ -103,17 +78,16 @@ void initObjects()
    catch(...) {} 
    
    // Create the folder first, evidently
-   session.CreateObject( folderName,   defFolder, NULL, 0, NULL, 0 );
-   session.CreateObject( controlName,
-                         defMap,
-                         (unsigned char *)&keyDef,
-                         sizeof(psoKeyDefinition),
-                         (unsigned char *)&fieldDef,
-                         sizeof(psoFieldDefinition) );
-   session.CreateObject( inQueueName,  defQueue, NULL, &fieldDefQueue );
-   session.CreateObject( outQueueName, defQueue, NULL, &fieldDefQueue );
+   session.CreateFolder( folderName );
+   /*
+    * We use the default key and data definition to make our life simpler.
+    * See HashMapLoop.cpp for a different approach.
+    */
+   session.CreateObject( controlName, defMap, "Default", "Default" );
+   session.CreateObject( inQueueName,  defQueue, "Default" );
+   session.CreateObject( outQueueName, defQueue, "Default" );
 
-   control.Open( controlName );
+   control.Open( session, controlName );
    // Initialize the control object
    controlData = 0; // Will be set to one/two when it is time to shutdown
    control.Insert( shutdownKey, strlen(shutdownKey), 
@@ -211,7 +185,7 @@ int main( int argc, char *argv[] )
    // Create and initialize objects
    try {
       initObjects();
-      inQueue.Open( inQueueName );
+      inQueue.Open( session, inQueueName );
    }
    catch( pso::Exception exc ) {
       cerr << "At line " << __LINE__ << ", " << exc.Message() << endl;

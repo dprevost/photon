@@ -123,16 +123,16 @@ string psoCat::Init()
       }
       
       if ( pKeyDef != NULL && pKeyDef->GetType() == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
-         numKeys = keyDefLength/sizeof(psoKeyDefinition);
+         numKeys = keyDefLength/sizeof(psoKeyFieldDefinition);
          try {
             keyOffsets = new uint32_t[numKeys];
          }
          catch ( ... ) {
             stream << "psosh: cat: Not enough memory " << endl;
-            stream << "Number of keys in data definition = " << keyDefLength/sizeof(psoKeyDefinition);
+            stream << "Number of keys in data definition = " << keyDefLength/sizeof(psoKeyFieldDefinition);
             return stream.str();
          }
-         psoaGetKeyOffsets( (psoKeyDefinition *)keyDef, numKeys, keyOffsets );
+         psoaGetKeyOffsets( (psoKeyFieldDefinition *)keyDef, numKeys, keyOffsets );
       }
 
       try {
@@ -392,12 +392,12 @@ string psoCat::odbcFieldToStr( uint32_t length )
 
 string psoCat::odbcKeyToStr( uint32_t length )
 {
-   psoKeyDefinition * keyODBC;
+   psoKeyFieldDefinition * keyODBC;
    int numKeys, i;
    string outStr;
    
-   keyODBC = (psoKeyDefinition *) keyDef;
-   numKeys = keyDefLength / sizeof(psoKeyDefinition);
+   keyODBC = (psoKeyFieldDefinition *) keyDef;
+   numKeys = keyDefLength / sizeof(psoKeyFieldDefinition);
    
    psoaGetKeyOffsets( keyODBC, numKeys, keyOffsets );
 

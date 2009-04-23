@@ -142,7 +142,7 @@ enum psoKeyType
 /**
  * Description of the structure of the hash map key.
  */
-struct psoKeyDefinition
+struct psoKeyFieldDefinition
 {
    /** The name of a field of the key. */
    char name[PSO_MAX_FIELD_LENGTH];
@@ -155,7 +155,7 @@ struct psoKeyDefinition
 
 };
 
-typedef struct psoKeyDefinition psoKeyDefinition;
+typedef struct psoKeyFieldDefinition psoKeyFieldDefinition;
 
 /**
  * Description of the structure of the data.

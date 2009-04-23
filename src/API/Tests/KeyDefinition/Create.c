@@ -31,7 +31,7 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE defHandle, sessionHandle;
    int errcode;
-   psoKeyDefinition key = { "Key_1", PSO_KEY_VARCHAR, 10 };
+   psoKeyFieldDefinition key = { "Key_1", PSO_KEY_VARCHAR, 10 };
   
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -57,7 +57,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -69,7 +69,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
                               0,
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -93,7 +93,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               0,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               NULL,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -129,7 +129,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -142,7 +142,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -162,7 +162,7 @@ int main( int argc, char * argv[] )
                               strlen("My Def"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &defHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );

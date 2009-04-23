@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    string fname = "/cpp_fastmap_close";
    string hname = fname + "/test";
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
-   psoKeyDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARBINARY, 20 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
                                "Key Definition",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keyDef,
-                               sizeof(psoKeyDefinition) );
+                               sizeof(psoKeyFieldDefinition) );
 
       session.CreateObject( hname,
                             mapDef,

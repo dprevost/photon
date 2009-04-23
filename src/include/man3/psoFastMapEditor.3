@@ -1,33 +1,498 @@
-.TH "psoFastMapEditor" 3 "27 Jan 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
+.TH "pso::FastMapEditor" 3 "23 Apr 2009" "Version 0.5.0" "Photon C++ API" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-psoFastMapEditor \- 
+pso::FastMapEditor \- 
 .SH SYNOPSIS
 .br
 .PP
-\fC#include <photon/psoCommon.h>\fP
-.br
-\fC#include <photon/psoFastMap>\fP
-.br
-\fC#include <string>\fP
-.br
+.SH "Detailed Description"
+.PP 
+Updater/editor for the read-only maps (pso::FastMap). 
 
-.SS "Namespaces"
-
-.in +1c
-.ti -1c
-.RI "namespace \fBpso\fP"
-.br
-.in -1c
-.SS "Classes"
+This class creates a working copy of the map in shared memory. This working copy can then be updated (no locks since only the updater can access the working copy).
+.PP
+When the session is committed, the working version becomes the latest version and can be open/accessed by readers.
+.PP
+If the session is rollbacked, the working copy is removed. 
+.PP
+Definition at line 54 of file FastMapEditor.
+.SS "Public Member Functions"
 
 .in +1c
 .ti -1c
-.RI "class \fBpso::FastMapEditor\fP"
+.RI "\fBFastMapEditor\fP ()"
 .br
-.RI "\fIUpdater/editor for the read-only maps (pso::FastMap). \fP"
+.RI "\fIThis constructor does nothing. \fP"
+.ti -1c
+.RI "\fBFastMapEditor\fP (Session &session, const std::string &hashMapName)"
+.br
+.RI "\fIOpen an existing read-only hash map in edit mode. \fP"
+.ti -1c
+.RI "virtual \fB~FastMapEditor\fP ()"
+.br
+.RI "\fIThe destructor will close the hash map if not closed. \fP"
+.ti -1c
+.RI "void \fBClose\fP ()"
+.br
+.RI "\fIClose a hash map. \fP"
+.ti -1c
+.RI "void \fBDelete\fP (const void *key, psoUint32 keyLength)"
+.br
+.RI "\fIRemove the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "void \fBEmpty\fP ()"
+.br
+.RI "\fIRemove all data items from the map. \fP"
+.ti -1c
+.RI "DataDefinition * \fBGetDataDefinition\fP ()"
+.br
+.RI "\fIRetrieve the data definition of the hash map. \fP"
+.ti -1c
+.RI "KeyDefinition * \fBGetKeyDefinition\fP ()"
+.br
+.RI "\fIRetrieve the key definition of the hash map. \fP"
+.ti -1c
+.RI "void \fBGet\fP (const void *key, psoUint32 keyLength, void *buffer, psoUint32 bufferLength, psoUint32 &returnedLength)"
+.br
+.RI "\fIRetrieve the data item identified by the given key from the hash map. \fP"
+.ti -1c
+.RI "int \fBGetFirst\fP (void *key, psoUint32 keyLength, void *buffer, psoUint32 bufferLength, psoUint32 &retKeyLength, psoUint32 &retDataLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "int \fBGetNext\fP (void *key, psoUint32 keyLength, void *buffer, psoUint32 bufferLength, psoUint32 &retKeyLength, psoUint32 &retDataLength)"
+.br
+.RI "\fIIterate through the hash map. \fP"
+.ti -1c
+.RI "DataDefinition * \fBGetRecordDefinition\fP ()"
+.br
+.RI "\fIRetrieve the data definition of the last accessed record. \fP"
+.ti -1c
+.RI "void \fBInsert\fP (const void *key, psoUint32 keyLength, const void *data, psoUint32 dataLength)"
+.br
+.RI "\fIInsert a data element in the hash map. \fP"
+.ti -1c
+.RI "void \fBInsert\fP (const void *key, psoUint32 keyLength, const void *data, psoUint32 dataLength, const DataDefinition &dataDefinition)"
+.br
+.RI "\fIInsert a data element in the hash map. \fP"
+.ti -1c
+.RI "void \fBOpen\fP (Session &session, const std::string &hashMapName)"
+.br
+.RI "\fIOpen an existing read-only hash map in edit mode. \fP"
+.ti -1c
+.RI "void \fBReplace\fP (const void *key, psoUint32 keyLength, const void *data, psoUint32 dataLength)"
+.br
+.RI "\fIReplace a data element in the hash map. \fP"
+.ti -1c
+.RI "void \fBReplace\fP (const void *key, psoUint32 keyLength, const void *data, psoUint32 dataLength, const DataDefinition &dataDefinition)"
+.br
+.RI "\fIReplace a data record in the hash map. \fP"
+.ti -1c
+.RI "void \fBStatus\fP (psoObjStatus &status)"
+.br
+.RI "\fIReturn the status of the hash map. \fP"
 .in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "PSO_HANDLE \fBm_objectHandle\fP"
+.br
+.RI "\fIPointer to the psoaFastMap struct. \fP"
+.ti -1c
+.RI "PSO_HANDLE \fBm_sessionHandle\fP"
+.br
+.RI "\fIThe psoaSession struct (we belong to). \fP"
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "pso::FastMapEditor::FastMapEditor ()"
+.PP
+This constructor does nothing. 
+.PP
+You must use Open to access an in-memory HashMap object - otherwise a pso::Exception will be thrown. 
+.SS "pso::FastMapEditor::FastMapEditor (Session & session, const std::string & hashMapName)"
+.PP
+Open an existing read-only hash map in edit mode. 
+.PP
+Updates are done using a temporary copy (in shared memory) and this copy becomes the latest version of the map only after a call to psoSession::Commit().
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIhashMapName\fP The fully qualified name of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "virtual pso::FastMapEditor::~FastMapEditor ()\fC [virtual]\fP"
+.PP
+The destructor will close the hash map if not closed. 
+.PP
+This method won't throw an exception on error. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void pso::FastMapEditor::Close ()"
+.PP
+Close a hash map. 
+.PP
+This function terminates the current access to the hash map in shared memory (the hash map itself is untouched).
+.PP
+\fBWarning:\fP
+.RS 4
+This object must be closed in order to commit the map. This restriction might be lifted in future releases.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Delete (const void * key, psoUint32 keyLength)"
+.PP
+Remove the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function and cannot be removed. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+The removals only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be removed. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Empty ()"
+.PP
+Remove all data items from the map. 
+.PP
+The removals only become permanent after a call to psoSession::Commit.
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "DataDefinition* pso::FastMapEditor::GetDataDefinition ()"
+.PP
+Retrieve the data definition of the hash map. 
+.PP
+This function returns a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBReturns:\fP
+.RS 4
+A new data definition of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "KeyDefinition* pso::FastMapEditor::GetKeyDefinition ()"
+.PP
+Retrieve the key definition of the hash map. 
+.PP
+This function returns a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBReturns:\fP
+.RS 4
+A new key definition of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Get (const void * key, psoUint32 keyLength, void * buffer, psoUint32 bufferLength, psoUint32 & returnedLength)"
+.PP
+Retrieve the data item identified by the given key from the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by this function. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be retrieved. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the data item. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIreturnedLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::FastMapEditor::GetFirst (void * key, psoUint32 keyLength, void * buffer, psoUint32 bufferLength, psoUint32 & retKeyLength, psoUint32 & retDataLength)"
+.PP
+Iterate through the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Data items retrieved this way will not be sorted.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key buffer provided by the user to hold the content of the key associated with the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the first element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIretKeyLength\fP The actual number of bytes in the key 
+.br
+\fIretDataLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_IS_EMPTY if the hash map is empty.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "int pso::FastMapEditor::GetNext (void * key, psoUint32 keyLength, void * buffer, psoUint32 bufferLength, psoUint32 & retKeyLength, psoUint32 & retDataLength)"
+.PP
+Iterate through the hash map. 
+.PP
+Data items which were added by another session and are not yet committed will not be seen by the iterator. Likewise, destroyed data items (even if not yet committed) are invisible.
+.PP
+Evidently, you must call psoHashMap::GetFirst to initialize the iterator. Not so evident - calling psoHashMap::Get will reset the iteration to the data item retrieved by this function (they use the same internal storage). If this cause a problem, please let us know.
+.PP
+Data items retrieved this way will not be sorted.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key buffer provided by the user to hold the content of the key associated with the data element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIbuffer\fP The buffer provided by the user to hold the content of the data element. Memory allocation for this buffer is the responsability of the caller. 
+.br
+\fIbufferLength\fP The length of \fIbuffer\fP (in bytes). 
+.br
+\fIretKeyLength\fP The actual number of bytes in the key 
+.br
+\fIretDataLength\fP The actual number of bytes in the data item.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+0 on success or PSO_REACHED_THE_END when the iteration reaches the end of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "DataDefinition* pso::FastMapEditor::GetRecordDefinition ()"
+.PP
+Retrieve the data definition of the last accessed record. 
+.PP
+Hah maps will usually contain data records with an identical layout (data definition of the items). This layout was defined when the map was created.
+.PP
+You can also insert and retrieve data records with different layouts if the object was created with the flag PSO_MULTIPLE_DATA_DEFINITIONS. The layout defined when a map is created is then used as the default one.
+.PP
+The DataDefinition object returned by this method can be used to access the layout on a record-by-record base.
+.PP
+Note: you only need to get this object once. The hidden fields associated with this object will be updated after each record is retrieved. The object will point to the data definition of the hash map itself when initially constructed.
+.PP
+This function returns a new object. It is the responsability of the caller to delete the object.
+.PP
+\fBReturns:\fP
+.RS 4
+A new data definition of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Insert (const void * key, psoUint32 keyLength, const void * data, psoUint32 dataLength)"
+.PP
+Insert a data element in the hash map. 
+.PP
+The additions only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be inserted. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The data item to be inserted. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Insert (const void * key, psoUint32 keyLength, const void * data, psoUint32 dataLength, const DataDefinition & dataDefinition)"
+.PP
+Insert a data element in the hash map. 
+.PP
+The additions only become permanent after a call to psoSession::Commit.
+.PP
+The additional argument of this overloaded function, \fIdataDefinition\fP, is used to store data records having different data definitions.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be inserted. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The data item to be inserted. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes). 
+.br
+\fIdataDefinition\fP The data definition for this specific data record. The hash map must have been created with the appropriate flag to support this feature.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Open (Session & session, const std::string & hashMapName)"
+.PP
+Open an existing read-only hash map in edit mode. 
+.PP
+Updates are done using a temporary copy (in shared memory) and this copy becomes the latest version of the map only after a call to psoSession::Commit().
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsession\fP The session we belong to. 
+.br
+\fIhashMapName\fP The fully qualified name of the hash map.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Replace (const void * key, psoUint32 keyLength, const void * data, psoUint32 dataLength)"
+.PP
+Replace a data element in the hash map. 
+.PP
+The replacements only become permanent after a call to psoSession::Commit.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be replaced. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The new data item that will replace the previous data. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes).
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Replace (const void * key, psoUint32 keyLength, const void * data, psoUint32 dataLength, const DataDefinition & dataDefinition)"
+.PP
+Replace a data record in the hash map. 
+.PP
+The replacements only become permanent after a call to psoSession::Commit.
+.PP
+The additional argument of this overloaded function, \fIdataDefinition\fP, is used to store data records having different data definitions.
+.PP
+This could be used to implement inheritance of the data records or to build a mismatched collection of records.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIkey\fP The key of the item to be replaced. 
+.br
+\fIkeyLength\fP The length of the \fIkey\fP buffer (in bytes). 
+.br
+\fIdata\fP The new data item that will replace the previous data. 
+.br
+\fIdataLength\fP The length of \fIdata\fP (in bytes). 
+.br
+\fIdataDefinition\fP The data definition for this specific data record. The hash map must have been created with the appropriate flag to support this feature.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SS "void pso::FastMapEditor::Status (psoObjStatus & status)"
+.PP
+Return the status of the hash map. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstatus\fP A reference to the status structure.
+.RE
+.PP
+\fBExceptions:\fP
+.RS 4
+\fIpso::Exception\fP An abnormal error occured. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "PSO_HANDLE \fBpso::FastMapEditor::m_objectHandle\fP\fC [protected]\fP"
+.PP
+Pointer to the psoaFastMap struct. 
+.PP
+Definition at line 383 of file FastMapEditor.
+.SS "PSO_HANDLE \fBpso::FastMapEditor::m_sessionHandle\fP\fC [protected]\fP"
+.PP
+The psoaSession struct (we belong to). 
+.PP
+Definition at line 386 of file FastMapEditor.
+
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for Photon C++ API from the source code.
