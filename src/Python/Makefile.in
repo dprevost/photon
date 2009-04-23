@@ -22,10 +22,12 @@ PYTHON = @PYTHON@
 #
 #-------------------------------------------------------------------
 
-SOURCE_FILES =          \
-        src/pso.c       \
-        src/ObjStatus.h \
-        src/Session.h   
+SOURCE_FILES =                 \
+        src/Common.h           \
+        src/pso.c              \
+        src/ObjectDefinition.h \
+        src/ObjStatus.h        \
+        src/Session.h          
 
 all: $(SOURCE_FILES) setup.py
 	${PYTHON} setup.py build_ext --include-dirs=$(PHOTON_INCLUDE_DIR) \
