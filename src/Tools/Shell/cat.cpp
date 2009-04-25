@@ -526,7 +526,7 @@ string psoCat::readFloat32( unsigned char * buffer )
 string psoCat::readFloat64( unsigned char * buffer )
 {
    ostringstream oss;
-   psoFloat32 f64;
+   psoFloat64 f64;
    
    f64 = *( (psoFloat64 *)buffer);
    oss << f64;
