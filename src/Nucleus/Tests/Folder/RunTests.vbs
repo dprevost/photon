@@ -20,6 +20,8 @@
 
 Option Explicit
 
+set the path to pick up the dlls
+
 ' ***********************************************************************
 '
 ' Declaration of variables

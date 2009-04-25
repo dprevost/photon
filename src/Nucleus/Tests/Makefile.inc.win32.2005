@@ -1,0 +1,47 @@
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# /MT multithreaded .exe
+# /W4 : warning level 4
+# /O2 : optimize
+# _MBCS Multi-bytes chars (not the 16 bits of win32 unicode). Not used yet.
+# /GX ???
+# /nologo - suppress MS banner since it is a bit hard to see errors with it
+#           turned on
+
+VBS_VERBOSE=
+
+CLEANFILES = *~  vc60.pdb
+
+W32_SYS_LIBS=kernel32.lib advapi32.lib
+LDD_FLAGS       = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release2005" 
+LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug2005"
+
+OUTDIR=.\Release2005
+INTDIR=.\Release2005
+OUTDIR_DEBUG=.\Debug2005
+INTDIR_DEBUG=.\Debug2005
+
+CFLAGS_DEBUG=   /nologo /MDd /W4 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+
+.c{$(OUTDIR)}.exe:
+	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
+
+.c{$(OUTDIR_DEBUG)}.exe:
+	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
+
+"$(OUTDIR)" :
+	if not exist "$(OUTDIR)/" mkdir "$(OUTDIR)"
+
+"$(OUTDIR_DEBUG)" :
+	if not exist "$(OUTDIR_DEBUG)/" mkdir "$(OUTDIR_DEBUG)"
+  
+
