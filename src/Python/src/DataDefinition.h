@@ -19,6 +19,12 @@
 #ifndef PSO_PY_DATA_DEFINITION_H
 #define PSO_PY_DATA_DEFINITION_H
 
+extern
+int psoaDataDefGetDef( PSO_HANDLE                definitionHandle,
+                       enum psoDefinitionType  * type,
+                       unsigned char          ** dataDef,
+                       psoUint32               * dataDefLength );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 typedef struct {
@@ -84,23 +90,53 @@ static int
 DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 {
    DataDefinition * def = (DataDefinition *)self;
-   PyObject * session = NULL, * name = NULL, *dataDef = NULL, * tmp = NULL;
+   PyObject * session = NULL, * name = NULL, *dataDefObj = NULL, * tmp = NULL;
    static char *kwlist[] = {"session", "name", "definition_type", "data_definition", "definition_length", NULL};
-   int type, length;
+   int type, length, errcode;
    PyObject * defType = NULL;
+   unsigned char  * dataDef;
+   char * definitionName;
    
    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "OS|iOi", kwlist, 
-      &session, &name, &type, &dataDef, &length) ) {
+      &session, &name, &type, &dataDefObj, &length) ) {
       return -1; 
    }
    
    def->sessionHandle = ((Session *)session)->handle;
 
-   //    DataDefinition( Session                & session,
-   //                const std::string        name,
-     //              enum psoDefinitionType   type,
-       //            const unsigned char    * dataDef,
-         //          psoUint32                dataDefLength );
+   tmp = def->name;
+   Py_INCREF(name);
+   def->name = name;
+   Py_XDECREF(tmp);
+
+   definitionName = PyString_AsString(def->name);
+   
+   if ( dataDef == NULL ) {
+      errcode = psoDataDefOpen( (PSO_HANDLE)def->sessionHandle,
+                                definitionName,
+                                strlen(definitionName),
+                                (PSO_HANDLE*)&def->definitionHandle );
+      if ( errcode != 0 ) return -1;
+      
+      errcode = psoaDataDefGetDef( (PSO_HANDLE)def->sessionHandle,
+                                   (enum psoDefinitionType *)&type,
+                                   &dataDef,
+                                   (unsigned int *)&length );
+      if ( errcode != 0 ) return -1;
+      
+      dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+   }
+   else {
+      errcode = psoDataDefCreate( (PSO_HANDLE)def->sessionHandle,
+                                  definitionName,
+                                  strlen(definitionName),
+                                  type,
+                                  dataDef,
+                                  length,
+                                  (PSO_HANDLE*)&def->definitionHandle );
+   }
+   
+   if ( errcode != 0 ) return -1;
 
    defType = GetDefinitionType( type ); // A new reference
    if ( defType == NULL ) return -1;
@@ -108,23 +144,12 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    def->defType = defType;
    Py_XDECREF(tmp);
    
-   tmp = def->name;
-   Py_INCREF(name);
-   def->name = name;
+   tmp = def->dataDef;
+   Py_INCREF(dataDefObj);
+   def->dataDef = dataDefObj;
    Py_XDECREF(tmp);
 
-   tmp = def->dataDef;
-   Py_INCREF(dataDef);
-   def->dataDef = dataDef;
-   Py_XDECREF(tmp);
-   
-   def->fieldType = fieldType;
-   def->intType = type;
-   def->length = length;
-   def->minLength = minLength;
-   def->maxLength = maxLength;
-   def->precision = precision;
-   def->scale = scale;
+   def->dataDefLength = length;
    
    return 0;
 }
@@ -136,23 +161,11 @@ DataDefinition_str( PyObject * self )
 {
    DataDefinition * def = (DataDefinition *)self;
 
-   if ( def->name && def->fieldType ) {
+   if ( def->name && def->defType ) {
       return PyString_FromFormat( 
-         "DataDefinition{ "
-         "name: %s, "
-         "field_type: %s, "
-         "length: %d, "
-         "min_length: %d, "
-         "max_length: %d, "
-         "precision: %d, "
-         "scale: %d }",
+         "DataDefinition{ name: %s, field_type: %s }",
          PyString_AsString(def->name),
-         PyString_AsString(def->fieldType),
-         def->length,
-         def->minLength,
-         def->maxLength,
-         def->precision,
-         def->scale );
+         PyString_AsString(def->defType) );
    }
 
    return PyString_FromString("DataDefinition is not set");
@@ -160,21 +173,95 @@ DataDefinition_str( PyObject * self )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+static PyObject *
+DataDefinition_Close( DataDefinition * self, PyObject * args )
+{
+   int errcode;
+
+   errcode = psoDataDefClose( (PSO_HANDLE)self->definitionHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   self->sessionHandle = self->definitionHandle = 0;
+
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
+ 
+static PyObject *
+Create( Session                & session,
+                const std::string        name,
+                enum psoDefinitionType   type,
+                const unsigned char    * dataDef,
+                psoUint32                dataDefLength );
+
+
+//std::string GetNext();
+
+
+void GetDefinition( unsigned char * buffer,
+                       psoUint32       bufferLength );
+
+psoUint32 GetLength();
+
+
+enum psoDefinitionType GetType();
+   
+
+void Open( Session & session, const std::string name );
+
+
 static PyMemberDef DataDefinition_members[] = {
    { "name", T_OBJECT_EX, offsetof(DataDefinition, name), RO,
      "Name of the field" },
-   { "field_type", T_OBJECT_EX, offsetof(DataDefinition, fieldType), RO,
-     "Type of field" },
-   { "length", T_INT, offsetof(DataDefinition, length), RO,
-     "Length of the key (if type is fixed length)" },
-   { "min_length", T_INT, offsetof(DataDefinition, minLength), RO,
-     "Minimum length of the key (if type is variable length)" },
-   { "max_length", T_INT, offsetof(DataDefinition, maxLength), RO,
-     "Maximum length of the key (if type is variable length)" },
-   { "precision", T_INT, offsetof(DataDefinition, precision), RO,
-     "Precision (used by decimal type)" },
-   { "scale", T_INT, offsetof(DataDefinition, scale), RO,
-     "Scale (used by decimal type)" },
+   { "definition_type", T_OBJECT_EX, offsetof(DataDefinition, defType), RO,
+     "Type of definition" },
+   { "definition_handle", T_INT, offsetof(DataDefinition, definitionHandle), RO,
+     "Handle to the definition" },
+   { "session_handle", T_INT, offsetof(DataDefinition, sessionHandle), RO,
+     "Handle to the session we belong to" },
+   { "data_definition", T_OBJECT_EX, offsetof(DataDefinition, dataDef), RO,
+     "Buffer containing the definition" },
+   { "length", T_INT, offsetof(DataDefinition, dataDefLength), RO,
+     "Length of the buffer definition" },
+   {NULL}  /* Sentinel */
+};
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyMethodDef Session_methods[] = {
+   { "commit", (PyCFunction)Session_Commit, METH_NOARGS,
+     "Commit the current session"
+   },
+   { "create_object", (PyCFunction)Session_CreateObject, METH_VARARGS,
+     "Create a new photon object in shared memory"
+   },
+   { "destroy_object", (PyCFunction)Session_DestroyObject, METH_VARARGS,
+     "Destroy an existing photon object in shared memory"
+   },
+   { "error_msg", (PyCFunction)Session_ErrorMsg, METH_NOARGS,
+     "Return the messages associated with the last error"
+   },
+   { "exit", (PyCFunction)Session_ExitSession, METH_NOARGS,
+     "Terminate the current session"
+   },
+   { "get_definition", (PyCFunction)Session_GetDefinition, METH_VARARGS,
+     "Get the definition of a Photon object"
+   },
+   { "get_info", (PyCFunction)Session_GetInfo, METH_NOARGS,
+     "Return information on the shared-memory system"
+   },
+   { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
+     "Get the status of a Photon object"
+   },
+   { "last_error", (PyCFunction)Session_LastError, METH_NOARGS,
+     "Return the error code of the last error"
+   },
+   { "rollback", (PyCFunction)Session_Rollback, METH_NOARGS,
+     "Rollback the current session"
+   },
    {NULL}  /* Sentinel */
 };
 
@@ -221,62 +308,6 @@ static PyTypeObject DataDefinitionType = {
    0,                          /* tp_alloc */
    DataDefinition_new,         /* tp_new */
 };
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject * DataDefToList( int number, psoFieldDefinition * fields )
-{
-   PyObject * list = NULL;
-   FieldDefinition * item = NULL;
-   int i, errcode;
-   
-   list = PyList_New(number);
-   if (list == NULL) return NULL;
-   
-   for ( i = 0; i < number; ++i ) {
-      item = (FieldDefinition *)
-         FieldDefinition_new( &FieldDefinitionType, NULL, NULL );
-      if (item == NULL) goto cleanup;
-      
-      item->fieldType = GetFieldType( fields[i].type );
-      if ( item->fieldType == NULL ) goto cleanup;
-
-      item->name = GetString( fields[i].name, PSO_MAX_FIELD_LENGTH );
-      if ( item->name == NULL ) goto cleanup;
-
-      item->intType   = fields[i].type;
-      item->length    = fields[i].length;
-      item->minLength = fields[i].minLength;
-      item->maxLength = fields[i].maxLength;
-      item->precision = fields[i].precision;
-      item->scale     = fields[i].scale;
-   
-      errcode = PyList_SetItem( list, i, (PyObject *)item );
-      item = NULL;
-      if ( errcode != 0 ) goto cleanup;
-   }
-   
-   return list;
-
-cleanup:
-   if ( item ) {
-      Py_XDECREF(item->fieldType);
-      Py_XDECREF(item->name);
-      Py_XDECREF(item);
-   }
-   
-   for ( i = 0; i < number; ++i ) {
-      item = (FieldDefinition *)PyList_GetItem( list, i );
-      if ( item ) {
-         Py_XDECREF(item->fieldType);
-         Py_XDECREF(item->name);
-         Py_XDECREF(item);
-      }
-   }   
-   Py_XDECREF(list);
-   
-   return NULL;
-}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

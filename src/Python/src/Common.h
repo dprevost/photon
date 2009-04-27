@@ -210,9 +210,11 @@ GetString( const char * s, Py_ssize_t len)
 
 #include "errors.h"
 
+#include "ForwardDeclare.h"
+
 /* The C struct first */
 #include "ObjStatus.h"
-//#include "DataDefinition.h"
+#include "DataDefinition.h"
 //#include "KeyDefinition.h"
 #include "ObjectDefinition.h"
 //#include "FieldDefinition.h"
