@@ -215,7 +215,7 @@ GetString( const char * s, Py_ssize_t len)
 /* The C struct first */
 #include "ObjStatus.h"
 #include "DataDefinition.h"
-//#include "KeyDefinition.h"
+#include "KeyDefinition.h"
 #include "ObjectDefinition.h"
 //#include "FieldDefinition.h"
 #include "FolderEntry.h"

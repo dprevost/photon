@@ -79,12 +79,12 @@ initpso(void)
    PyObject * m = NULL, * tup = NULL, * errs = NULL, * errNames = NULL;
    int rc;
    
-//   if (PyType_Ready(&BaseDefType) < 0) return;
    if (PyType_Ready(&DataDefinitionType) < 0) return;
 //   if (PyType_Ready(&FolderType) < 0) return;
    if (PyType_Ready(&FolderEntryType) < 0) return;
    if (PyType_Ready(&InfoType) < 0) return;
-//   if (PyType_Ready(&KeyDefinitionType) < 0) return;
+   if (PyType_Ready(&KeyDefinitionType) < 0) return;
+   if (PyType_Ready(&ObjDefinitionType) < 0) return;
    if (PyType_Ready(&ObjStatusType) < 0) return;
 //   if (PyType_Ready(&SessionType) < 0) return; 
 
@@ -108,20 +108,16 @@ initpso(void)
    if ( rc != 0 ) return;
    
    /* C structs (and enums?) */
-   Py_INCREF( &ObjDefinitionType );
-   PyModule_AddObject( m, "ObjDefinition", (PyObject *)&ObjDefinitionType );
    Py_INCREF( &DataDefinitionType );
    PyModule_AddObject( m, "DataDefinition", (PyObject *)&DataDefinitionType );
-////   FolderEntryType.tp_new = PyType_GenericNew; needed???????????????????
    Py_INCREF( &FolderEntryType );
    PyModule_AddObject( m, "FolderEntry", (PyObject *)&FolderEntryType );
-
-   InfoType.tp_new = PyType_GenericNew;
    Py_INCREF( &InfoType );
    PyModule_AddObject( m, "Info", (PyObject *)&InfoType );
-
-//   Py_INCREF( &KeyDefinitionType );
-//   PyModule_AddObject( m, "KeyDefinition", (PyObject *)&KeyDefinitionType );
+   Py_INCREF( &KeyDefinitionType );
+   PyModule_AddObject( m, "KeyDefinition", (PyObject *)&KeyDefinitionType );
+   Py_INCREF( &ObjDefinitionType );
+   PyModule_AddObject( m, "ObjDefinition", (PyObject *)&ObjDefinitionType );
    Py_INCREF( &ObjStatusType );
    PyModule_AddObject( m, "ObjStatus", (PyObject *)&ObjStatusType );
 

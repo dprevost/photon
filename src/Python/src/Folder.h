@@ -60,21 +60,12 @@ static PyObject *
 Folder_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
    Folder * self;
-   PyObject * session = NULL;
-   const char * folderName = NULL;
-   static char *kwlist[] = {"session", "name", NULL};
-
-   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "O|s", kwlist, 
-      &session, &folderName) ) {
-      return NULL; 
-   }
 
    self = (Folder *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->handle = 0;
       self->sessionHandle = 0;
       self->iteratorStarted = 0;
-      self->sessionHandle = ((Session *)session)->handle;
       self->name = NULL;
    }
 
@@ -87,7 +78,7 @@ static int
 Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
 {
    int errcode;
-   PSO_HANDLE h;
+   PSO_HANDLE handle;
    Folder * folder = (Folder *)self;
    PyObject * session = NULL, * name = NULL, * tmp = NULL;
    const char * folderName = NULL;
@@ -98,16 +89,19 @@ Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
       return -1; 
    }
 
-   if (folderName) {
+   if (session && folderName) {
 
-      name = PyString_FromString( folderName );
-      if ( name == NULL ) return -1;
-
-      errcode = psoFolderOpen( (PSO_HANDLE)folder->sessionHandle,
+      errcode = psoFolderOpen( (PSO_HANDLE)((Session *)session)->handle,
                                folderName,
                                (psoUint32)strlen(folderName),
-                               &h );
+                               &handle );
       if ( errcode == 0 ) {
+      
+         name = PyString_FromString( folderName );
+         if ( name == NULL ) {
+            psoFolderClose( handle );
+            return -1;
+         }
          /*
           * Copying the old value of 'name' before decreasing the ref.
           * counter. Likely overkill but safer according to Python
@@ -117,12 +111,12 @@ Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
          folder->name = name;
          Py_XDECREF(tmp);
          
-         folder->handle = (size_t)h;
-
+         folder->handle = (size_t)handle;
+         folder->sessionHandle = ((Session *)session)->handle;
+         
          return 0;
       }
 
-      Py_DECREF(name);
       SetException( errcode );
       return -1;
    }
@@ -216,6 +210,38 @@ Folder_Close( PyObject * self )
    
    Py_INCREF(Py_None);
    return Py_None;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_CreateFolder( PyObject * self, PyObject * args )
+{
+   int errcode;
+   Folder * folder = (Folder *) self;
+   const char * objectName;
+   PyObject * list = NULL;
+   psoObjectDefinition definition;
+   psoFieldDefinition  * fields = NULL;
+   BaseDef * baseDef;
+   KeyDefinition * key;
+   FieldDefinition * item = NULL;
+   Py_ssize_t i;
+   
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   errcode = psoFolderCreateFolder( (PSO_HANDLE)folder->handle,
+                                    objectName,
+                                    (psoUint32)strlen(objectName) );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
