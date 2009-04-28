@@ -32,7 +32,7 @@ typedef struct {
 
    /* size_t -> on 64 bits OSes, this int will be 64 bits */
    size_t definitionHandle;
-   size_t sessionHandle;
+
    PyObject * name;
 
    PyObject * defType;
@@ -72,7 +72,6 @@ KeyDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
    if (self != NULL) {
       self->name = NULL;
       self->definitionHandle = 0;
-      self->sessionHandle = 0;
       self->defType = NULL;
       self->keyDef = NULL;
       self->keyDefLength = 0;
@@ -148,8 +147,6 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    Py_XDECREF(tmp);
    def->intType = type;
    
-   def->sessionHandle = ((Session *)session)->handle;
-
    tmp = def->name;
    Py_INCREF(name);
    def->name = name;
@@ -196,7 +193,7 @@ KeyDefinition_Close( KeyDefinition * self )
       return NULL;
    }
 
-   self->sessionHandle = self->definitionHandle = 0;
+   self->definitionHandle = 0;
 
    Py_INCREF(Py_None);
    return Py_None;   
@@ -246,8 +243,6 @@ KeyDefinition_Create( KeyDefinition * self, PyObject * args )
    self->defType = defType;
    Py_XDECREF(tmp);
    self->intType = type;
-
-   self->sessionHandle = ((Session *)session)->handle;
 
    tmp = self->name;
    Py_INCREF(name);
@@ -438,8 +433,6 @@ KeyDefinition_Open( KeyDefinition * self, PyObject * args )
    self->keyDef = keyDefObj;
    Py_XDECREF(tmp);
 
-   self->sessionHandle = ((Session *)session)->handle;
-
    tmp = self->name;
    Py_INCREF(name);
    self->name = name;
@@ -456,13 +449,9 @@ KeyDefinition_Open( KeyDefinition * self, PyObject * args )
 
 static PyMemberDef KeyDefinition_members[] = {
    { "name", T_OBJECT_EX, offsetof(KeyDefinition, name), RO,
-     "Name of the field" },
+     "Name of the key definition" },
    { "definition_type", T_OBJECT_EX, offsetof(KeyDefinition, defType), RO,
      "Type of definition" },
-   { "definition_handle", T_INT, offsetof(KeyDefinition, definitionHandle), RO,
-     "Handle to the definition" },
-   { "session_handle", T_INT, offsetof(KeyDefinition, sessionHandle), RO,
-     "Handle to the session we belong to" },
    { "key_definition", T_OBJECT_EX, offsetof(KeyDefinition, keyDef), RO,
      "Buffer containing the definition" },
    { "length", T_INT, offsetof(KeyDefinition, keyDefLength), RO,

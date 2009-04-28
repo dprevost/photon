@@ -32,7 +32,7 @@ typedef struct {
 
    /* size_t -> on 64 bits OSes, this int will be 64 bits */
    size_t definitionHandle;
-   size_t sessionHandle;
+   
    PyObject * name;
 
    PyObject * defType;
@@ -72,7 +72,6 @@ DataDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
    if (self != NULL) {
       self->name = NULL;
       self->definitionHandle = 0;
-      self->sessionHandle = 0;
       self->defType = NULL;
       self->dataDef = NULL;
       self->dataDefLength = 0;
@@ -148,8 +147,6 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    Py_XDECREF(tmp);
    def->intType = type;
    
-   def->sessionHandle = ((Session *)session)->handle;
-
    tmp = def->name;
    Py_INCREF(name);
    def->name = name;
@@ -196,7 +193,7 @@ DataDefinition_Close( DataDefinition * self )
       return NULL;
    }
 
-   self->sessionHandle = self->definitionHandle = 0;
+   self->definitionHandle = 0;
 
    Py_INCREF(Py_None);
    return Py_None;   
@@ -246,8 +243,6 @@ DataDefinition_Create( DataDefinition * self, PyObject * args )
    self->defType = defType;
    Py_XDECREF(tmp);
    self->intType = type;
-
-   self->sessionHandle = ((Session *)session)->handle;
 
    tmp = self->name;
    Py_INCREF(name);
@@ -459,8 +454,6 @@ DataDefinition_Open( DataDefinition * self, PyObject * args )
    self->dataDef = dataDefObj;
    Py_XDECREF(tmp);
 
-   self->sessionHandle = ((Session *)session)->handle;
-
    tmp = self->name;
    Py_INCREF(name);
    self->name = name;
@@ -477,13 +470,9 @@ DataDefinition_Open( DataDefinition * self, PyObject * args )
 
 static PyMemberDef DataDefinition_members[] = {
    { "name", T_OBJECT_EX, offsetof(DataDefinition, name), RO,
-     "Name of the field" },
+     "Name of the data definition" },
    { "definition_type", T_OBJECT_EX, offsetof(DataDefinition, defType), RO,
      "Type of definition" },
-   { "definition_handle", T_INT, offsetof(DataDefinition, definitionHandle), RO,
-     "Handle to the definition" },
-   { "session_handle", T_INT, offsetof(DataDefinition, sessionHandle), RO,
-     "Handle to the session we belong to" },
    { "data_definition", T_OBJECT_EX, offsetof(DataDefinition, dataDef), RO,
      "Buffer containing the definition" },
    { "length", T_INT, offsetof(DataDefinition, dataDefLength), RO,

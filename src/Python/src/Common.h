@@ -25,6 +25,7 @@
 #include "structmember.h"
 
 #include <photon/photon.h>
+#include "config.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

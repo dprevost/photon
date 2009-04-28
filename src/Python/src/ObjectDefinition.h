@@ -43,7 +43,7 @@ typedef struct {
     * to avoid shrinking the internal "holder" of the data beyond what is
     * needed to hold this minimum number of data records.
     */
-   unsigned long minNumOfDataRecords;
+   size_t minNumOfDataRecords;
    
    /**
     * Optimization feature - not implemented yet
@@ -59,7 +59,7 @@ typedef struct {
     * You might want to retrieve the status of the object and evaluate
     * the minimum number of blocks needed from it..
     */
-   unsigned long minNumBlocks;
+   size_t minNumBlocks;
    
    /* This is completely private. Should not be put in the members struct */
    int intType; /* The type, as an integer. */
@@ -138,7 +138,7 @@ ObjDefinition_str( PyObject * self )
    
    if ( obj->objType ) {
       outStr = PyString_FromFormat( 
-         "ObjDefinition{ obj_type: %s, flags: %u, minNumRecords: %ul, minNumBlocks: %ul }",
+         "ObjDefinition{ obj_type: %s, flags: %u, minNumRecords: %zu, minNumBlocks: %zu }",
          PyString_AsString(obj->objType),
          obj->flags,
          obj->minNumOfDataRecords,
@@ -156,11 +156,22 @@ static PyMemberDef ObjDefinition_members[] = {
      "Status of the object"},
    { "flags", T_UINT, offsetof(ObjDefinition, flags), RO,
      "Creation flags for the object"},
-   { "min_num_records", T_ULONG, offsetof(ObjDefinition, minNumOfDataRecords), RO,
+#if SIZEOF_VOID_P == 4     
+   { "min_num_records", T_UINT, offsetof(ObjDefinition, minNumOfDataRecords), RO,
      "The expected minimum number of data records"},
-   { "min_num_blocks", T_ULONG, offsetof(ObjDefinition, minNumBlocks), RO,
+   { "min_num_blocks", T_UINT, offsetof(ObjDefinition, minNumBlocks), RO,
      "The expected minimum number of memory blocks"},
-   {NULL}  /* Sentinel */
+#else
+   /* 
+    * On 64 bits machine, long long is a solution. V 2.6 of Python 
+    * supports the T_PYSSIZET type - which would be a better solution.
+    */
+   { "min_num_records", T_ULONGLONG, offsetof(ObjDefinition, minNumOfDataRecords), RO,
+     "The expected minimum number of data records"},
+   { "min_num_blocks", T_ULONGLONG, offsetof(ObjDefinition, minNumBlocks), RO,
+     "The expected minimum number of memory blocks"},
+#endif
+     {NULL}  /* Sentinel */
 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
