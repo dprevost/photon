@@ -96,11 +96,57 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    PyObject * defType = NULL;
    unsigned char  * dataDef;
    char * definitionName;
+   PSO_HANDLE definitionHandle;
    
    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "OS|iOi", kwlist, 
       &session, &name, &type, &dataDefObj, &length) ) {
       return -1; 
    }
+   
+   definitionName = PyString_AsString(name);
+   
+   if ( dataDef == NULL ) {
+      errcode = psoDataDefOpen( (PSO_HANDLE)((Session *)session)->handle,
+                                definitionName,
+                                strlen(definitionName),
+                                &definitionHandle );
+      if ( errcode != 0 ) return -1;
+      
+      errcode = psoaDataDefGetDef( definitionHandle,
+                                   (enum psoDefinitionType *)&type,
+                                   &dataDef,
+                                   (unsigned int *)&length );
+      if ( errcode != 0 ) {
+         psoDataDefClose( definitionHandle );
+         return -1;
+      }
+      
+      dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+   }
+   else {
+      errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
+      if ( errcode != 0 ) return -1;
+
+      errcode = psoDataDefCreate( (PSO_HANDLE)((Session *)session)->handle,
+                                  definitionName,
+                                  strlen(definitionName),
+                                  type,
+                                  dataDef,
+                                  length,
+                                  (PSO_HANDLE*)&def->definitionHandle );
+      if ( errcode != 0 ) return -1;
+   }
+   
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      psoDataDefClose( definitionHandle );
+      return -1;
+   }
+   tmp = def->defType;
+   def->defType = defType;
+   Py_XDECREF(tmp);
+   def->intType = type;
    
    def->sessionHandle = ((Session *)session)->handle;
 
@@ -109,47 +155,13 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    def->name = name;
    Py_XDECREF(tmp);
 
-   definitionName = PyString_AsString(def->name);
-   
-   if ( dataDef == NULL ) {
-      errcode = psoDataDefOpen( (PSO_HANDLE)def->sessionHandle,
-                                definitionName,
-                                strlen(definitionName),
-                                (PSO_HANDLE*)&def->definitionHandle );
-      if ( errcode != 0 ) return -1;
-      
-      errcode = psoaDataDefGetDef( (PSO_HANDLE)def->sessionHandle,
-                                   (enum psoDefinitionType *)&type,
-                                   &dataDef,
-                                   (unsigned int *)&length );
-      if ( errcode != 0 ) return -1;
-      
-      dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
-   }
-   else {
-      errcode = psoDataDefCreate( (PSO_HANDLE)def->sessionHandle,
-                                  definitionName,
-                                  strlen(definitionName),
-                                  type,
-                                  dataDef,
-                                  length,
-                                  (PSO_HANDLE*)&def->definitionHandle );
-   }
-   
-   if ( errcode != 0 ) return -1;
-
-   defType = GetDefinitionType( type ); // A new reference
-   if ( defType == NULL ) return -1;
-   tmp = def->defType;
-   def->defType = defType;
-   Py_XDECREF(tmp);
-   
    tmp = def->dataDef;
    Py_INCREF(dataDefObj);
    def->dataDef = dataDefObj;
    Py_XDECREF(tmp);
 
    def->dataDefLength = length;
+   def->definitionHandle = (size_t)definitionHandle;
    
    return 0;
 }
@@ -174,7 +186,7 @@ DataDefinition_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-DataDefinition_Close( DataDefinition * self, PyObject * args )
+DataDefinition_Close( DataDefinition * self )
 {
    int errcode;
 
@@ -190,28 +202,278 @@ DataDefinition_Close( DataDefinition * self, PyObject * args )
    return Py_None;   
 }
  
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 static PyObject *
-Create( Session                & session,
-                const std::string        name,
-                enum psoDefinitionType   type,
-                const unsigned char    * dataDef,
-                psoUint32                dataDefLength );
-
-
-//std::string GetNext();
-
-
-void GetDefinition( unsigned char * buffer,
-                       psoUint32       bufferLength );
-
-psoUint32 GetLength();
-
-
-enum psoDefinitionType GetType();
+DataDefinition_Create( DataDefinition * self, PyObject * args )
+{
+   PyObject * session = NULL, * name = NULL, *dataDefObj = NULL, * tmp = NULL;
+   int type, length, errcode;
+   PyObject * defType = NULL;
+   unsigned char  * dataDef;
+   char * definitionName;
+   PSO_HANDLE definitionHandle;
    
+   if ( ! PyArg_ParseTuple(args, "OSiOi", 
+      &session, &name, &type, &dataDefObj, &length) ) {
+      return NULL; 
+   }
 
-void Open( Session & session, const std::string name );
+   definitionName = PyString_AsString(name);
+   
+   errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
+   if ( errcode != 0 ) return NULL;
+   
+   errcode = psoDataDefCreate( (PSO_HANDLE)((Session *)session)->handle,
+                               definitionName,
+                               strlen(definitionName),
+                               type,
+                               dataDef,
+                               length,
+                               &definitionHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
 
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      psoDataDefClose( definitionHandle );
+      SetException( 666 );
+      return NULL;
+   }
+   tmp = self->defType;
+   self->defType = defType;
+   Py_XDECREF(tmp);
+   self->intType = type;
+
+   self->sessionHandle = ((Session *)session)->handle;
+
+   tmp = self->name;
+   Py_INCREF(name);
+   self->name = name;
+   Py_XDECREF(tmp);
+   
+   tmp = self->dataDef;
+   Py_INCREF(dataDefObj);
+   self->dataDef = dataDefObj;
+   Py_XDECREF(tmp);
+
+   self->dataDefLength = length;
+   self->definitionHandle = (size_t) definitionHandle;
+
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+//std::string 
+static PyObject *
+DataDefinition_GetNext(DataDefinition * self )
+{
+   int length, errcode;
+   unsigned char  * dataDef;
+   char msg[1000];
+   int i, count = 0;
+   
+   errcode = PyObject_AsCharBuffer(	self->dataDef, (const char **)&dataDef, &length );
+   if ( errcode != 0 ) return NULL;
+   
+   if ( self->currentLength >= length ) {
+      self->currentLength = 0;
+
+      Py_INCREF(Py_None);
+      return Py_None;   
+   }
+
+   if ( self->intType == PSO_DEF_USER_DEFINED ) {
+      
+      for ( i = self->currentLength; i < length; ++i ) {
+         if ( dataDef[i] == 0 ) {
+            self->currentLength = i + 1;
+            break;
+         }
+         msg[count] = dataDef[i];
+         self->currentLength++;
+         count++;
+         if ( count == 999 ) {
+            // Reallocation would be better here
+            msg[count] = 0;
+            break;
+         }
+      }
+   }
+   else if ( self->intType == PSO_DEF_PHOTON_ODBC_SIMPLE ) {
+      /*
+       * We don't need to count - msg cannot overflow with this type.
+       */
+      char name [PSO_MAX_FIELD_LENGTH+1];
+      char tmp[20];
+      uint32_t currentField = self->currentLength / sizeof(psoFieldDefinition);
+      psoFieldDefinition * field = (psoFieldDefinition *)dataDef;
+   
+      strcpy( msg, "Name: " );
+      
+      if ( field[currentField].name[PSO_MAX_FIELD_LENGTH-1] == '\0' ) {
+         strcat( msg, field[currentField].name );
+      }
+      else {
+         memcpy( name, field[currentField].name, PSO_MAX_FIELD_LENGTH );
+         name[PSO_MAX_FIELD_LENGTH] = '\0';
+         strcat( msg, name );
+      }
+      
+      strcat( msg, ", Type: " );
+      switch ( field[currentField].type ) {
+
+      case PSO_TINYINT:
+         strcat( msg, "TinyInt" );
+         break;
+      case PSO_SMALLINT:
+         strcat( msg, "SmallInt" );
+         break;
+      case PSO_INTEGER:
+         strcat( msg, "Integer" );
+         break;
+      case PSO_BIGINT:
+         strcat( msg, "BigInt" );
+         break;
+      case PSO_REAL:
+         strcat( msg, "Real" );
+         break;
+      case PSO_DOUBLE:
+         strcat( msg, "Double" );
+         break;
+      case PSO_DATE:
+         strcat( msg, "Date" );
+         break;
+      case PSO_TIME:
+         strcat( msg, "Time" );
+         break;
+      case PSO_TIMESTAMP:
+         strcat( msg, "TimeStamp" );
+         break;
+
+      case PSO_BINARY:
+         strcat( msg, "Binary, Length: " );
+         sprintf( tmp, "%d", field[currentField].vals.length );
+         strcat( msg, tmp );
+         break;
+      case PSO_CHAR:
+         strcat( msg, "Char, Length: " );
+         sprintf( tmp, "%d", field[currentField].vals.length );
+         strcat( msg, tmp );
+         break;
+
+      case PSO_VARBINARY:
+         strcat( msg, "VarBinary, Length: " );
+         sprintf( tmp, "%d", field[currentField].vals.length );
+         strcat( msg, tmp );
+         break;
+
+      case PSO_VARCHAR:
+         strcat( msg, "VarChar, Length: " );
+         sprintf( tmp, "%d", field[currentField].vals.length );
+         strcat( msg, tmp );
+         break;
+
+      case PSO_LONGVARBINARY:
+         strcat( msg, "LongVarBinary" );
+         break;
+      case PSO_LONGVARCHAR:
+         strcat( msg, "LongVarChar" );
+         break;
+
+      case PSO_NUMERIC:
+         strcat( msg, "Numeric, Precision = " );
+         sprintf( tmp, "%d", field[currentField].vals.decimal.precision );
+         strcat( msg, tmp );
+         strcat( msg, ", Scale = " );
+         sprintf( tmp, "%d", field[currentField].vals.decimal.scale );
+         strcat( msg, tmp );
+         break;
+
+      default:
+         strcat( msg, "Invalid/unknown data type" );
+      }
+
+      self->currentLength += sizeof(psoFieldDefinition);
+   }
+
+   return PyString_FromString( msg );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+DataDefinition_Open( DataDefinition * self, PyObject * args )
+{
+   PyObject * session = NULL, * name = NULL, *dataDefObj = NULL, * tmp = NULL;
+   int type, length, errcode;
+   PyObject * defType = NULL;
+   unsigned char  * dataDef;
+   char * definitionName;
+   PSO_HANDLE definitionHandle;
+   
+   if ( !PyArg_ParseTuple(args, "Os", &session, &name) ) {
+      return NULL;
+   }
+
+   definitionName = PyString_AsString(name);
+   
+   errcode = psoDataDefOpen( (PSO_HANDLE)((Session *)session)->handle,
+                             definitionName,
+                             strlen(definitionName),
+                             &definitionHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+      
+   errcode = psoaDataDefGetDef( definitionHandle,
+                                (enum psoDefinitionType *)&type,
+                                &dataDef,
+                                (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      psoDataDefClose( definitionHandle );
+      SetException( errcode );
+      return NULL;
+   }
+
+   dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      psoDataDefClose( definitionHandle );
+      SetException( 666 );
+      return NULL;
+   }
+   tmp = self->defType;
+   self->defType = defType;
+   Py_XDECREF(tmp);
+   self->intType = type;
+   
+   tmp = self->dataDef;
+   Py_INCREF(dataDefObj);
+   self->dataDef = dataDefObj;
+   Py_XDECREF(tmp);
+
+   self->sessionHandle = ((Session *)session)->handle;
+
+   tmp = self->name;
+   Py_INCREF(name);
+   self->name = name;
+   Py_XDECREF(tmp);
+
+   self->dataDefLength = length;
+   self->definitionHandle = (size_t) definitionHandle;
+   
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef DataDefinition_members[] = {
    { "name", T_OBJECT_EX, offsetof(DataDefinition, name), RO,
@@ -231,36 +493,18 @@ static PyMemberDef DataDefinition_members[] = {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-static PyMethodDef Session_methods[] = {
-   { "commit", (PyCFunction)Session_Commit, METH_NOARGS,
-     "Commit the current session"
+static PyMethodDef DataDefinition_methods[] = {
+   { "close", (PyCFunction)DataDefinition_Close, METH_NOARGS,
+     "Close the current data definition object"
    },
-   { "create_object", (PyCFunction)Session_CreateObject, METH_VARARGS,
-     "Create a new photon object in shared memory"
+   { "create", (PyCFunction)DataDefinition_Create, METH_VARARGS,
+     "Create a new data definition in shared memory"
    },
-   { "destroy_object", (PyCFunction)Session_DestroyObject, METH_VARARGS,
-     "Destroy an existing photon object in shared memory"
+   { "get_next", (PyCFunction)DataDefinition_GetNext, METH_NOARGS,
+     "Display the definition of each field"
    },
-   { "error_msg", (PyCFunction)Session_ErrorMsg, METH_NOARGS,
-     "Return the messages associated with the last error"
-   },
-   { "exit", (PyCFunction)Session_ExitSession, METH_NOARGS,
-     "Terminate the current session"
-   },
-   { "get_definition", (PyCFunction)Session_GetDefinition, METH_VARARGS,
-     "Get the definition of a Photon object"
-   },
-   { "get_info", (PyCFunction)Session_GetInfo, METH_NOARGS,
-     "Return information on the shared-memory system"
-   },
-   { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
-     "Get the status of a Photon object"
-   },
-   { "last_error", (PyCFunction)Session_LastError, METH_NOARGS,
-     "Return the error code of the last error"
-   },
-   { "rollback", (PyCFunction)Session_Rollback, METH_NOARGS,
-     "Rollback the current session"
+   { "open", (PyCFunction)DataDefinition_Open, METH_VARARGS,
+     "Open an existing data definition in shared memory"
    },
    {NULL}  /* Sentinel */
 };
@@ -296,7 +540,7 @@ static PyTypeObject DataDefinitionType = {
    0,		                      /* tp_weaklistoffset */
    0,		                      /* tp_iter */
    0,		                      /* tp_iternext */
-   0,                          /* tp_methods */
+   DataDefinition_methods,     /* tp_methods */
    DataDefinition_members,     /* tp_members */
    0,                          /* tp_getset */
    0,                          /* tp_base */
