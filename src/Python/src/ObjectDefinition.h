@@ -43,7 +43,7 @@ typedef struct {
     * to avoid shrinking the internal "holder" of the data beyond what is
     * needed to hold this minimum number of data records.
     */
-   size_t minNumOfDataRecords;
+   unsigned long minNumOfDataRecords;
    
    /**
     * Optimization feature - not implemented yet
@@ -59,7 +59,7 @@ typedef struct {
     * You might want to retrieve the status of the object and evaluate
     * the minimum number of blocks needed from it..
     */
-   size_t minNumBlocks;
+   unsigned long minNumBlocks;
    
    /* This is completely private. Should not be put in the members struct */
    int intType; /* The type, as an integer. */
@@ -107,7 +107,7 @@ ObjDefinition_init( PyObject * self, PyObject * args, PyObject *kwds )
                              "min_num_blocks", NULL};
    int type, flags = 0, numRecords = 0, numBlocks = 0;
    
-   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "i|iii", kwlist, 
+   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "i|ikk", kwlist, 
       &type, &flags, &numRecords, &numBlocks) ) {
       return -1; 
    }
@@ -138,7 +138,7 @@ ObjDefinition_str( PyObject * self )
    
    if ( obj->objType ) {
       outStr = PyString_FromFormat( 
-         "ObjDefinition{ obj_type: %s, flags: %d, minNumRecords: %d, minNumBlocks: %d }",
+         "ObjDefinition{ obj_type: %s, flags: %u, minNumRecords: %ul, minNumBlocks: %ul }",
          PyString_AsString(obj->objType),
          obj->flags,
          obj->minNumOfDataRecords,
@@ -154,11 +154,11 @@ ObjDefinition_str( PyObject * self )
 static PyMemberDef ObjDefinition_members[] = {
    { "obj_type", T_OBJECT_EX, offsetof(ObjDefinition, objType), RO,
      "Status of the object"},
-   { "flags", T_INT, offsetof(ObjDefinition, flags), RO,
+   { "flags", T_UINT, offsetof(ObjDefinition, flags), RO,
      "Creation flags for the object"},
-   { "min_num_records", T_INT, offsetof(ObjDefinition, minNumOfDataRecords), RO,
+   { "min_num_records", T_ULONG, offsetof(ObjDefinition, minNumOfDataRecords), RO,
      "The expected minimum number of data records"},
-   { "min_num_blocks", T_INT, offsetof(ObjDefinition, minNumBlocks), RO,
+   { "min_num_blocks", T_ULONG, offsetof(ObjDefinition, minNumBlocks), RO,
      "The expected minimum number of memory blocks"},
    {NULL}  /* Sentinel */
 };

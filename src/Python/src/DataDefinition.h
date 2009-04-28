@@ -270,7 +270,7 @@ DataDefinition_Create( DataDefinition * self, PyObject * args )
 
 //std::string 
 static PyObject *
-DataDefinition_GetNext(DataDefinition * self )
+DataDefinition_GetNext( DataDefinition * self )
 {
    int length, errcode;
    unsigned char  * dataDef;
@@ -416,7 +416,7 @@ DataDefinition_Open( DataDefinition * self, PyObject * args )
    char * definitionName;
    PSO_HANDLE definitionHandle;
    
-   if ( !PyArg_ParseTuple(args, "Os", &session, &name) ) {
+   if ( !PyArg_ParseTuple(args, "OS", &session, &name) ) {
       return NULL;
    }
 

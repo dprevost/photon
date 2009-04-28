@@ -395,7 +395,7 @@ KeyDefinition_Open( KeyDefinition * self, PyObject * args )
    char * definitionName;
    PSO_HANDLE definitionHandle;
    
-   if ( !PyArg_ParseTuple(args, "Os", &session, &name) ) {
+   if ( !PyArg_ParseTuple(args, "OS", &session, &name) ) {
       return NULL;
    }
 
