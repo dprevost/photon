@@ -64,14 +64,14 @@ typedef struct {
    /* This is completely private. Should not be put in the members struct */
    int intType; /* The type, as an integer. */
    
-} ObjDefinition;
+} pyObjDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 ObjDefinition_dealloc( PyObject * self )
 {
-   ObjDefinition * def = (ObjDefinition *)self;
+   pyObjDefinition * def = (pyObjDefinition *)self;
    
    Py_XDECREF( def->objType );
    self->ob_type->tp_free( self );
@@ -82,9 +82,9 @@ ObjDefinition_dealloc( PyObject * self )
 static PyObject *
 ObjDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   ObjDefinition * self;
+   pyObjDefinition * self;
 
-   self = (ObjDefinition *)type->tp_alloc( type, 0 );
+   self = (pyObjDefinition *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->objType = NULL;
       self->flags = 0;
@@ -101,7 +101,7 @@ ObjDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 static int
 ObjDefinition_init( PyObject * self, PyObject * args, PyObject *kwds )
 {
-   ObjDefinition * def = (ObjDefinition *)self;
+   pyObjDefinition * def = (pyObjDefinition *)self;
    PyObject * objType = NULL, * tmp = NULL;
    static char *kwlist[] = { "obj_type", "flags", "min_num_records", 
                              "min_num_blocks", NULL};
@@ -133,7 +133,7 @@ ObjDefinition_init( PyObject * self, PyObject * args, PyObject *kwds )
 static PyObject *
 ObjDefinition_str( PyObject * self )
 {
-   ObjDefinition * obj = (ObjDefinition *)self;
+   pyObjDefinition * obj = (pyObjDefinition *)self;
    PyObject * outStr;
    
    if ( obj->objType ) {
@@ -152,23 +152,23 @@ ObjDefinition_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef ObjDefinition_members[] = {
-   { "obj_type", T_OBJECT_EX, offsetof(ObjDefinition, objType), RO,
+   { "obj_type", T_OBJECT_EX, offsetof(pyObjDefinition, objType), RO,
      "Status of the object"},
-   { "flags", T_UINT, offsetof(ObjDefinition, flags), RO,
+   { "flags", T_UINT, offsetof(pyObjDefinition, flags), RO,
      "Creation flags for the object"},
 #if SIZEOF_VOID_P == 4     
-   { "min_num_records", T_UINT, offsetof(ObjDefinition, minNumOfDataRecords), RO,
+   { "min_num_records", T_UINT, offsetof(pyObjDefinition, minNumOfDataRecords), RO,
      "The expected minimum number of data records"},
-   { "min_num_blocks", T_UINT, offsetof(ObjDefinition, minNumBlocks), RO,
+   { "min_num_blocks", T_UINT, offsetof(pyObjDefinition, minNumBlocks), RO,
      "The expected minimum number of memory blocks"},
 #else
    /* 
     * On 64 bits machine, long long is a solution. V 2.6 of Python 
     * supports the T_PYSSIZET type - which would be a better solution.
     */
-   { "min_num_records", T_ULONGLONG, offsetof(ObjDefinition, minNumOfDataRecords), RO,
+   { "min_num_records", T_ULONGLONG, offsetof(pyObjDefinition, minNumOfDataRecords), RO,
      "The expected minimum number of data records"},
-   { "min_num_blocks", T_ULONGLONG, offsetof(ObjDefinition, minNumBlocks), RO,
+   { "min_num_blocks", T_ULONGLONG, offsetof(pyObjDefinition, minNumBlocks), RO,
      "The expected minimum number of memory blocks"},
 #endif
      {NULL}  /* Sentinel */
@@ -180,7 +180,7 @@ static PyTypeObject ObjDefinitionType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.ObjDefinition",        /*tp_name*/
-   sizeof(ObjDefinition),      /*tp_basicsize*/
+   sizeof(pyObjDefinition),    /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    ObjDefinition_dealloc,      /*tp_dealloc*/
    0,                          /*tp_print*/
@@ -223,13 +223,13 @@ static PyTypeObject ObjDefinitionType = {
 #if 0
 
 is this used? 
-static ObjDefinition *
+static pyObjDefinition *
 ObjDefinitionToObject( psoObjectDefinition * def, PyObject * key ) 
 {
-   ObjDefinition * base = NULL;
+   pyObjDefinition * base = NULL;
    PyObject * objType;
    
-   base = (ObjDefinition *)ObjDefinition_new(&ObjDefinitionType, NULL, NULL);
+   base = (pyObjDefinition *)ObjDefinition_new(&ObjDefinitionType, NULL, NULL);
    if ( base == NULL ) return NULL;
    
    objType = GetObjectType( def->type );

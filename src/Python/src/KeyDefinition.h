@@ -39,21 +39,22 @@ typedef struct {
    
    /* keyDef is a PyBufferObject */
    PyObject * keyDef;
-   int        keyDefLength;
+
+   unsigned int keyDefLength;
    
    /* This is completely private. Should not be put in the members struct */
    int intType; /* The definition type, as an integer. */
 
-   int currentLength;
+   unsigned int currentLength;
 
-} KeyDefinition;
+} pyKeyDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 KeyDefinition_dealloc( PyObject * self )
 {
-   KeyDefinition * def = (KeyDefinition *)self;
+   pyKeyDefinition * def = (pyKeyDefinition *)self;
    
    Py_XDECREF( def->name );
    Py_XDECREF( def->defType );
@@ -66,9 +67,9 @@ KeyDefinition_dealloc( PyObject * self )
 static PyObject *
 KeyDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   KeyDefinition * self;
+   pyKeyDefinition * self;
 
-   self = (KeyDefinition *)type->tp_alloc( type, 0 );
+   self = (pyKeyDefinition *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->name = NULL;
       self->definitionHandle = 0;
@@ -88,7 +89,7 @@ KeyDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 static int
 KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 {
-   KeyDefinition * def = (KeyDefinition *)self;
+   pyKeyDefinition * def = (pyKeyDefinition *)self;
    PyObject * session = NULL, * name = NULL, *keyDefObj = NULL, * tmp = NULL;
    static char *kwlist[] = {"session", "name", "definition_type", "key_definition", "definition_length", NULL};
    int type, length, errcode;
@@ -105,7 +106,7 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    definitionName = PyString_AsString(name);
    
    if ( keyDef == NULL ) {
-      errcode = psoKeyDefOpen( (PSO_HANDLE)((Session *)session)->handle,
+      errcode = psoKeyDefOpen( (PSO_HANDLE)((pySession *)session)->handle,
                                 definitionName,
                                 strlen(definitionName),
                                 &definitionHandle );
@@ -126,7 +127,7 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       errcode = PyObject_AsCharBuffer(	keyDefObj, (const char **)&keyDef, &length );
       if ( errcode != 0 ) return -1;
 
-      errcode = psoKeyDefCreate( (PSO_HANDLE)((Session *)session)->handle,
+      errcode = psoKeyDefCreate( (PSO_HANDLE)((pySession *)session)->handle,
                                   definitionName,
                                   strlen(definitionName),
                                   type,
@@ -168,7 +169,7 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 static PyObject *
 KeyDefinition_str( PyObject * self )
 {
-   KeyDefinition * def = (KeyDefinition *)self;
+   pyKeyDefinition * def = (pyKeyDefinition *)self;
 
    if ( def->name && def->defType ) {
       return PyString_FromFormat( 
@@ -183,7 +184,7 @@ KeyDefinition_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-KeyDefinition_Close( KeyDefinition * self )
+KeyDefinition_Close( pyKeyDefinition * self )
 {
    int errcode;
 
@@ -202,7 +203,7 @@ KeyDefinition_Close( KeyDefinition * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-KeyDefinition_Create( KeyDefinition * self, PyObject * args )
+KeyDefinition_Create( pyKeyDefinition * self, PyObject * args )
 {
    PyObject * session = NULL, * name = NULL, *keyDefObj = NULL, * tmp = NULL;
    int type, length, errcode;
@@ -221,7 +222,7 @@ KeyDefinition_Create( KeyDefinition * self, PyObject * args )
    errcode = PyObject_AsCharBuffer(	keyDefObj, (const char **)&keyDef, &length );
    if ( errcode != 0 ) return NULL;
    
-   errcode = psoKeyDefCreate( (PSO_HANDLE)((Session *)session)->handle,
+   errcode = psoKeyDefCreate( (PSO_HANDLE)((pySession *)session)->handle,
                                definitionName,
                                strlen(definitionName),
                                type,
@@ -265,7 +266,7 @@ KeyDefinition_Create( KeyDefinition * self, PyObject * args )
 
 //std::string 
 static PyObject *
-KeyDefinition_GetNext(KeyDefinition * self )
+KeyDefinition_GetNext(pyKeyDefinition * self )
 {
    int length, errcode;
    unsigned char  * keyDef;
@@ -381,7 +382,7 @@ KeyDefinition_GetNext(KeyDefinition * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-KeyDefinition_Open( KeyDefinition * self, PyObject * args )
+KeyDefinition_Open( pyKeyDefinition * self, PyObject * args )
 {
    PyObject * session = NULL, * name = NULL, *keyDefObj = NULL, * tmp = NULL;
    int type, length, errcode;
@@ -396,7 +397,7 @@ KeyDefinition_Open( KeyDefinition * self, PyObject * args )
 
    definitionName = PyString_AsString(name);
    
-   errcode = psoKeyDefOpen( (PSO_HANDLE)((Session *)session)->handle,
+   errcode = psoKeyDefOpen( (PSO_HANDLE)((pySession *)session)->handle,
                              definitionName,
                              strlen(definitionName),
                              &definitionHandle );
@@ -448,13 +449,13 @@ KeyDefinition_Open( KeyDefinition * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef KeyDefinition_members[] = {
-   { "name", T_OBJECT_EX, offsetof(KeyDefinition, name), RO,
+   { "name", T_OBJECT_EX, offsetof(pyKeyDefinition, name), RO,
      "Name of the key definition" },
-   { "definition_type", T_OBJECT_EX, offsetof(KeyDefinition, defType), RO,
+   { "definition_type", T_OBJECT_EX, offsetof(pyKeyDefinition, defType), RO,
      "Type of definition" },
-   { "key_definition", T_OBJECT_EX, offsetof(KeyDefinition, keyDef), RO,
+   { "key_definition", T_OBJECT_EX, offsetof(pyKeyDefinition, keyDef), RO,
      "Buffer containing the definition" },
-   { "length", T_INT, offsetof(KeyDefinition, keyDefLength), RO,
+   { "length", T_UINT, offsetof(pyKeyDefinition, keyDefLength), RO,
      "Length of the buffer definition" },
    {NULL}  /* Sentinel */
 };
@@ -483,7 +484,7 @@ static PyTypeObject KeyDefinitionType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.KeyDefinition",        /*tp_name*/
-   sizeof(KeyDefinition),      /*tp_basicsize*/
+   sizeof(pyKeyDefinition),    /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    KeyDefinition_dealloc,      /*tp_dealloc*/
    0,                          /*tp_print*/

@@ -39,21 +39,22 @@ typedef struct {
    
    /* dataDef is a PyBufferObject */
    PyObject * dataDef;
-   int        dataDefLength;
+   
+   unsigned int dataDefLength;
    
    /* This is completely private. Should not be put in the members struct */
    int intType; /* The definition type, as an integer. */
 
-   int currentLength;
+   unsigned int currentLength;
 
-} DataDefinition;
+} pyDataDefinition;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 DataDefinition_dealloc( PyObject * self )
 {
-   DataDefinition * def = (DataDefinition *)self;
+   pyDataDefinition * def = (pyDataDefinition *)self;
    
    Py_XDECREF( def->name );
    Py_XDECREF( def->defType );
@@ -66,9 +67,9 @@ DataDefinition_dealloc( PyObject * self )
 static PyObject *
 DataDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   DataDefinition * self;
+   pyDataDefinition * self;
 
-   self = (DataDefinition *)type->tp_alloc( type, 0 );
+   self = (pyDataDefinition *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->name = NULL;
       self->definitionHandle = 0;
@@ -88,7 +89,7 @@ DataDefinition_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 static int
 DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 {
-   DataDefinition * def = (DataDefinition *)self;
+   pyDataDefinition * def = (pyDataDefinition *)self;
    PyObject * session = NULL, * name = NULL, *dataDefObj = NULL, * tmp = NULL;
    static char *kwlist[] = {"session", "name", "definition_type", "data_definition", "definition_length", NULL};
    int type, length, errcode;
@@ -105,7 +106,7 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    definitionName = PyString_AsString(name);
    
    if ( dataDef == NULL ) {
-      errcode = psoDataDefOpen( (PSO_HANDLE)((Session *)session)->handle,
+      errcode = psoDataDefOpen( (PSO_HANDLE)((pySession *)session)->handle,
                                 definitionName,
                                 strlen(definitionName),
                                 &definitionHandle );
@@ -126,7 +127,7 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
       if ( errcode != 0 ) return -1;
 
-      errcode = psoDataDefCreate( (PSO_HANDLE)((Session *)session)->handle,
+      errcode = psoDataDefCreate( (PSO_HANDLE)((pySession *)session)->handle,
                                   definitionName,
                                   strlen(definitionName),
                                   type,
@@ -168,7 +169,7 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
 static PyObject *
 DataDefinition_str( PyObject * self )
 {
-   DataDefinition * def = (DataDefinition *)self;
+   pyDataDefinition * def = (pyDataDefinition *)self;
 
    if ( def->name && def->defType ) {
       return PyString_FromFormat( 
@@ -183,7 +184,7 @@ DataDefinition_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-DataDefinition_Close( DataDefinition * self )
+DataDefinition_Close( pyDataDefinition * self )
 {
    int errcode;
 
@@ -202,7 +203,7 @@ DataDefinition_Close( DataDefinition * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-DataDefinition_Create( DataDefinition * self, PyObject * args )
+DataDefinition_Create( pyDataDefinition * self, PyObject * args )
 {
    PyObject * session = NULL, * name = NULL, *dataDefObj = NULL, * tmp = NULL;
    int type, length, errcode;
@@ -221,7 +222,7 @@ DataDefinition_Create( DataDefinition * self, PyObject * args )
    errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
    if ( errcode != 0 ) return NULL;
    
-   errcode = psoDataDefCreate( (PSO_HANDLE)((Session *)session)->handle,
+   errcode = psoDataDefCreate( (PSO_HANDLE)((pySession *)session)->handle,
                                definitionName,
                                strlen(definitionName),
                                type,
@@ -265,7 +266,7 @@ DataDefinition_Create( DataDefinition * self, PyObject * args )
 
 //std::string 
 static PyObject *
-DataDefinition_GetNext( DataDefinition * self )
+DataDefinition_GetNext( pyDataDefinition * self )
 {
    int length, errcode;
    unsigned char  * dataDef;
@@ -402,7 +403,7 @@ DataDefinition_GetNext( DataDefinition * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-DataDefinition_Open( DataDefinition * self, PyObject * args )
+DataDefinition_Open( pyDataDefinition * self, PyObject * args )
 {
    PyObject * session = NULL, * name = NULL, *dataDefObj = NULL, * tmp = NULL;
    int type, length, errcode;
@@ -417,7 +418,7 @@ DataDefinition_Open( DataDefinition * self, PyObject * args )
 
    definitionName = PyString_AsString(name);
    
-   errcode = psoDataDefOpen( (PSO_HANDLE)((Session *)session)->handle,
+   errcode = psoDataDefOpen( (PSO_HANDLE)((pySession *)session)->handle,
                              definitionName,
                              strlen(definitionName),
                              &definitionHandle );
@@ -469,13 +470,13 @@ DataDefinition_Open( DataDefinition * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef DataDefinition_members[] = {
-   { "name", T_OBJECT_EX, offsetof(DataDefinition, name), RO,
+   { "name", T_OBJECT_EX, offsetof(pyDataDefinition, name), RO,
      "Name of the data definition" },
-   { "definition_type", T_OBJECT_EX, offsetof(DataDefinition, defType), RO,
+   { "definition_type", T_OBJECT_EX, offsetof(pyDataDefinition, defType), RO,
      "Type of definition" },
-   { "data_definition", T_OBJECT_EX, offsetof(DataDefinition, dataDef), RO,
+   { "data_definition", T_OBJECT_EX, offsetof(pyDataDefinition, dataDef), RO,
      "Buffer containing the definition" },
-   { "length", T_INT, offsetof(DataDefinition, dataDefLength), RO,
+   { "length", T_UINT, offsetof(pyDataDefinition, dataDefLength), RO,
      "Length of the buffer definition" },
    {NULL}  /* Sentinel */
 };
@@ -504,7 +505,7 @@ static PyTypeObject DataDefinitionType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.DataDefinition",       /*tp_name*/
-   sizeof(DataDefinition),     /*tp_basicsize*/
+   sizeof(pyDataDefinition),   /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    DataDefinition_dealloc,     /*tp_dealloc*/
    0,                          /*tp_print*/

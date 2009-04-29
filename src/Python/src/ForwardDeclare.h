@@ -37,9 +37,11 @@
 
 typedef struct {
    PyObject_HEAD
+
    /* size_t -> on 64 bits OSes, this int will be 64 bits */
    size_t handle;
-} Session;
+
+} pySession;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

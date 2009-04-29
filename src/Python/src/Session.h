@@ -330,7 +330,7 @@ static PyObject *
 Session_GetInfo( Session * self, PyObject * args )
 {
    int errcode;
-   Info * pInfo;
+   pyInfo * pInfo;
    psoInfo info;
    PyObject * compiler = NULL;
    PyObject * compilerVersion = NULL;
@@ -358,7 +358,7 @@ Session_GetInfo( Session * self, PyObject * args )
    creationTime    = GetString( info.creationTime, 30 );
    if ( creationTime == NULL ) goto cleanup;
 
-   pInfo = (Info *)PyObject_New(Info, &InfoType);
+   pInfo = (pyInfo *)PyObject_New(pyInfo, &InfoType);
    if ( pInfo == NULL ) return NULL;
 
    pInfo->totalSizeInBytes = info.totalSizeInBytes;
@@ -397,7 +397,7 @@ Session_GetStatus( Session * self, PyObject * args )
 {
    int errcode;
    const char * objectName;
-   ObjStatus * pStatusPy;
+   pyObjStatus * pStatusPy;
    psoObjStatus status;
    PyObject * objType = NULL, * objStatus = NULL;
    
@@ -423,7 +423,7 @@ Session_GetStatus( Session * self, PyObject * args )
       return NULL;
    }
    
-   pStatusPy = (ObjStatus *)PyObject_New(ObjStatus, &ObjStatusType);
+   pStatusPy = (pyObjStatus *)PyObject_New(pyObjStatus, &ObjStatusType);
    if ( pStatusPy == NULL ) {
       Py_XDECREF(objType);
       Py_XDECREF(objStatus);

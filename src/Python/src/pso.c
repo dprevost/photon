@@ -80,7 +80,7 @@ initpso(void)
    int rc;
    
    if (PyType_Ready(&DataDefinitionType) < 0) return;
-//   if (PyType_Ready(&FolderType) < 0) return;
+   if (PyType_Ready(&FolderType) < 0) return;
    if (PyType_Ready(&FolderEntryType) < 0) return;
    if (PyType_Ready(&InfoType) < 0) return;
    if (PyType_Ready(&KeyDefinitionType) < 0) return;
@@ -122,8 +122,8 @@ initpso(void)
    PyModule_AddObject( m, "ObjStatus", (PyObject *)&ObjStatusType );
 
    /* Photon objects */
-//   Py_INCREF( &FolderType );
-//   PyModule_AddObject( m, "Folder", (PyObject *)&FolderType );
+   Py_INCREF( &FolderType );
+   PyModule_AddObject( m, "Folder", (PyObject *)&FolderType );
 //   Py_INCREF( &SessionType );
 //   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
    
