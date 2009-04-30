@@ -330,10 +330,7 @@ Folder_CreateKeyObject( PyObject * self, PyObject * args )
       return NULL;
    }
 
-   definition.type = pyObjDefinition->intType;
-   definition.flags = pyObjDefinition->flags;
-   definition.minNumOfDataRecords = pyObjDefinition->minNumOfDataRecords;
-   definition.minNumBlocks = pyObjDefinition->minNumBlocks;
+   ObjectToObjDefinition( &definition, pyObjDefinition );
 
    if ( PyString_Check( pyKeyObj ) ) {
       if ( ! PyString_Check( pyDataObj ) ) {
@@ -419,6 +416,122 @@ Folder_DestroyObject( PyObject * self, PyObject * args )
    
    Py_INCREF(Py_None);
    return Py_None;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_GetDataDefinition( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pyFolder * folder = (pyFolder *) self;
+   pyDataDefinition * pyDef = NULL;
+   PSO_HANDLE dataDefHandle;
+   int type, length;
+   PyObject * defType = NULL;
+   unsigned char  * dataDef;
+   char * definitionName;
+   PyObject * name = NULL, *dataDefObj = NULL, * tmp = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+
+   errcode = psoFolderGetDataDefinition( (PSO_HANDLE)folder->handle,
+                                         objectName,
+                                         strlen(objectName),
+                                         &dataDefHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+   //
+   pyDef = (pyDataDefinition *) DataDefinition_new( &DataDefinitionType, 
+                                                    NULL, NULL );
+   if (pyDef == NULL) return NULL;
+   
+   errcode = psoaDataDefGetDef( dataDefHandle,
+                                (enum psoDefinitionType *)&type,
+                                &dataDef,
+                                (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      Py_XDECREF(pyDef);
+      SetException( errcode );
+      return NULL;
+   }
+
+   name = PyString_FromString(definitionName);
+   if ( name == NULL ) {
+      Py_XDECREF(pyDef);
+      return NULL;
+   }
+
+   dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+   if ( dataDefObj == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      return NULL;
+   }
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      Py_XDECREF(dataDefObj);
+      return NULL;
+   }
+   tmp = pyDef->defType;
+   pyDef->defType = defType;
+   Py_XDECREF(tmp);
+   pyDef->intType = type;
+   
+   tmp = pyDef->dataDef;
+   Py_INCREF(dataDefObj);
+   pyDef->dataDef = dataDefObj;
+   Py_XDECREF(tmp);
+
+   tmp = pyDef->name;
+   Py_INCREF(name);
+   pyDef->name = name;
+   Py_XDECREF(tmp);
+
+   pyDef->dataDefLength = length;
+   pyDef->definitionHandle = (size_t) dataDefHandle;
+
+   return (PyObject *)pyDef;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_GetDefinition( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pyFolder * folder = (pyFolder *) self;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyDef = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   errcode = psoFolderGetDefinition( (PSO_HANDLE)folder->handle,
+                                     objectName,
+                                     strlen(objectName),
+                                     &definition );
+
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = ObjDefinitionToObject( &definition );
+   if ( pyDef == NULL ) return NULL;
+   
+   return (PyObject *)pyDef;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -625,8 +738,17 @@ static PyMethodDef Folder_methods[] = {
    { "destroy_object", (PyCFunction)Folder_DestroyObject, METH_VARARGS,
      "Destroy an existing photon object (child of the current folder)"
    },
+   { "get_data_definition", (PyCFunction)Folder_GetDataDefinition, METH_VARARGS,
+     "Get the data definition of a Photon object"
+   },
+   { "get_definition", (PyCFunction)Folder_GetDefinition, METH_VARARGS,
+     "Get the definition of a Photon object"
+   },
    { "get_first", (PyCFunction)Folder_GetFirst, METH_VARARGS,
      ""
+   },
+   { "get_key_definition", (PyCFunction)Folder_GetKeyDefinition, METH_VARARGS,
+     "Get the key definition of a Photon object"
    },
    { "get_next", (PyCFunction)Folder_GetNext, METH_VARARGS,
      ""

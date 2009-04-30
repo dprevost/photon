@@ -485,8 +485,14 @@ static PyMethodDef Session_methods[] = {
    { "commit", (PyCFunction)Session_Commit, METH_NOARGS,
      "Commit the current session"
    },
+   { "create_folder", (PyCFunction)Session_CreateFolder, METH_VARARGS,
+     "Create a new photon folder in shared memory"
+   },
    { "create_object", (PyCFunction)Session_CreateObject, METH_VARARGS,
      "Create a new photon object in shared memory"
+   },
+   { "create_key_object", (PyCFunction)Session_CreateKeyObject, METH_VARARGS,
+     "Create a new keyed photon object in shared memory"
    },
    { "destroy_object", (PyCFunction)Session_DestroyObject, METH_VARARGS,
      "Destroy an existing photon object in shared memory"
@@ -497,11 +503,17 @@ static PyMethodDef Session_methods[] = {
    { "exit", (PyCFunction)Session_ExitSession, METH_NOARGS,
      "Terminate the current session"
    },
+   { "get_data_definition", (PyCFunction)Session_GetDataDefinition, METH_VARARGS,
+     "Get the data definition of a Photon object"
+   },
    { "get_definition", (PyCFunction)Session_GetDefinition, METH_VARARGS,
      "Get the definition of a Photon object"
    },
    { "get_info", (PyCFunction)Session_GetInfo, METH_NOARGS,
      "Return information on the shared-memory system"
+   },
+   { "get_key_definition", (PyCFunction)Session_GetKeyDefinition, METH_VARARGS,
+     "Get the key definition of a Photon object"
    },
    { "get_status", (PyCFunction)Session_GetStatus, METH_VARARGS,
      "Get the status of a Photon object"

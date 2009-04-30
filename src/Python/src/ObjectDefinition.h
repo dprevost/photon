@@ -220,11 +220,8 @@ static PyTypeObject ObjDefinitionType = {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if 0
-
-is this used? 
 static pyObjDefinition *
-ObjDefinitionToObject( psoObjectDefinition * def, PyObject * key ) 
+ObjDefinitionToObject( psoObjectDefinition * def ) 
 {
    pyObjDefinition * base = NULL;
    PyObject * objType;
@@ -233,16 +230,29 @@ ObjDefinitionToObject( psoObjectDefinition * def, PyObject * key )
    if ( base == NULL ) return NULL;
    
    objType = GetObjectType( def->type );
-   if ( objType == NULL ) return NULL;
-
+   if ( objType == NULL ) {
+      Py_XDECREF( base );
+      return NULL;
+   }
+   
    base->objType   = objType;
-   base->intType   = def->type;
-   base->numFields = def->numFields;
-   base->keyDef    = key;
+   base->flags     = def->flags;
+   base->minNumOfDataRecords = def->minNumOfDataRecords;
+   base->minNumBlocks        = def->minNumBlocks;
+   base->intType = def->type;
    
    return base;
 }
-#endif
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void ObjectToObjDefinition( psoObjectDefinition * definition, 
+                            pyObjDefinition     * pyObjDefinition )
+{
+   definition->type = pyObjDefinition->intType;
+   definition->flags = pyObjDefinition->flags;
+   definition->minNumOfDataRecords = pyObjDefinition->minNumOfDataRecords;
+   definition->minNumBlocks = pyObjDefinition->minNumBlocks;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
