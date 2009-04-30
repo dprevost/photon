@@ -43,6 +43,11 @@ struct psoaKeyDefinition
    psoaSession * pSession;
    
    psonKeyDefinition * pMemDefinition;
+
+   char * name;
+   
+   uint32_t nameLength;
+
 };
 
 typedef struct psoaKeyDefinition psoaKeyDefinition;
@@ -63,6 +68,8 @@ int psoaKeyDefDestroy( PSO_HANDLE   sessionHandle,
 
 PHOTON_EXPORT
 int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
+                      char                   ** name,
+                      psoUint32               * nameLength,
                       enum psoDefinitionType  * type,
                       unsigned char          ** keyDef,
                       psoUint32               * keyDefLength );
