@@ -44,6 +44,10 @@ struct psoaDataDefinition
    
    psonDataDefinition * pMemDefinition;
    
+   char * name;
+   
+   uint32_t nameLength;
+   
    /*
     * If this is non-NULL, we are used by an API object and if we are
     * closed, we must set this location to NULL to avoid memory violation.
@@ -69,6 +73,8 @@ int psoaDataDefDestroy( PSO_HANDLE   sessionHandle,
 
 PHOTON_EXPORT
 int psoaDataDefGetDef( PSO_HANDLE                definitionHandle,
+                       char                   ** name,
+                       psoUint32               * nameLength,
                        enum psoDefinitionType  * type,
                        unsigned char          ** dataDef,
                        psoUint32               * dataDefLength );

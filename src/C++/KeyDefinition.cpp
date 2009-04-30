@@ -79,6 +79,8 @@ KeyDefinition::KeyDefinition( Session & session, const std::string name )
      m_currentLength    ( 0 )
 {
    int rc;
+   char * dummyName;
+   uint32_t length;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "KeyDefinition::KeyDefinition", PSO_NULL_HANDLE );
@@ -93,6 +95,8 @@ KeyDefinition::KeyDefinition( Session & session, const std::string name )
    }
    
    rc = psoaKeyDefGetDef( m_definitionHandle, 
+                          &dummyName,
+                          &length,
                           &m_defType,
                           (unsigned char **)&m_keyDef,
                           &m_keyDefLength );
@@ -110,15 +114,19 @@ KeyDefinition::KeyDefinition( PSO_HANDLE sessionHandle,
      m_currentLength    ( 0 )
 {
    int rc;
+   char * dummyName;
+   uint32_t length;
 
    if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
       throw pso::Exception( "KeyDefinition::KeyDefinition", PSO_NULL_HANDLE );
    }
 
    rc = psoaKeyDefGetDef( m_definitionHandle, 
-                           &m_defType,
-                           (unsigned char **)&m_keyDef,
-                           &m_keyDefLength );
+                          &dummyName,
+                          &length,
+                          &m_defType,
+                          (unsigned char **)&m_keyDef,
+                          &m_keyDefLength );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "KeyDefinition::KeyDefinition" );
    }
@@ -269,6 +277,8 @@ enum psoDefinitionType KeyDefinition::GetType()
 void KeyDefinition::Open( Session & session, const std::string name )
 {
    int rc;
+   char * dummyName;
+   uint32_t length;
    
    if ( session.m_sessionHandle == NULL ) {
       throw pso::Exception( "KeyDefinition::Open", PSO_NULL_HANDLE );
@@ -289,6 +299,8 @@ void KeyDefinition::Open( Session & session, const std::string name )
    }
    
    rc = psoaKeyDefGetDef( m_definitionHandle, 
+                          &dummyName,
+                          &length,
                           &m_defType,
                           (unsigned char **)&m_keyDef,
                           &m_keyDefLength );
