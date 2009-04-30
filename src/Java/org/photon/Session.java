@@ -45,6 +45,12 @@ public class Session {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   static {
+      initIDs();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   
    /**
     * This function initializes a Photon session. 
     * <p>
@@ -67,53 +73,15 @@ public class Session {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private static native void initIDs();
-
-   static {
-      initIDs();
-   }
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-   
-   private native int psoCommit( long handle );
-
-   private native int psoCreateObject( long             handle,
-                                       String           objectName,
-                                       ObjectDefinition definition, 
-                                       KeyDefinition    key,
-                                       DataDefinition   fields );
-
-   private native int psoDestroyObject( long handle, String objectName );
-
-   private native int psoFini( long handle );
-
-   private native int psoGetDefinition( long             handle,
-                                        String           objectName,
-                                        Definition       definition,
-                                        ObjectDefinition objectDef,
-                                        KeyDefinition    key );
-
-   private native int psoGetInfo( long handle,
-                                  Info info );
-
-   private native int psoGetStatus( long      handle,
-                                    String    objectName,
-                                    ObjectStatus status );
-
-   private native int psoInit();
-
-   private native int psoRollback( long handle );
-
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   protected void finalize() throws Throwable {     
-      
-      try {
-         psoFini(handle);
-      } finally {
-         handle = 0;
-         super.finalize();
-      }
+   /**
+    * Terminate the current session. 
+    * 
+    * An implicit call to rollback is executed by this method. You must
+    * call commit to save any pending operations.
+    */
+   public void close() { 
+      psoFini(handle); 
+      handle = 0;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -151,27 +119,55 @@ public class Session {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
-    * Create a new object in shared memory.
+    * Create a new folder in shared memory.
     * <p>
     * The creation of the object only becomes permanent after a call to 
     * commit.
     * <p>
     * This function does not provide a handle to the newly created object. 
-    * Use the appropriate object (PhotonQueue, etc.) to access this new
-    * object.
+    * You must use org.photon.Folder.open() to access the newly created object.
     *
-    * @param objectName The fully qualified name of the object.
-    * @param definition The object definition (its type, etc.)
-    * @param key        The definition of the key or null for objects without 
-    *                   keys (queues, etc.).
-    * @param fields     An array of field definitions. It can be set to
-    *                   null when creating a Folder.
+    * @param folderName The fully qualified name of the object.
+    *
     * @exception PhotonException On an error with the Photon library.
     */
-   public void createObject( String objectName,
-                             ObjectDefinition  definition, 
-                             KeyDefinition     key,
-                             DataDefinition    fields ) throws PhotonException {
+   public void createFolder( String folderName ) throws PhotonException {
+
+      int errcode;
+      
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateFolder( handle, folderName );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory.
+    * <p>
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.).
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Queue.open and similar to 
+    * access the newly created object.
+    *
+    * @param objectName The fully qualified name of the object.
+    * @param definition The object definition (its type, etc.).
+    * @param dataDef    The definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             DataDefinition   dataDef ) throws PhotonException {
       int errcode;
       
       if ( handle == 0 ) {
@@ -181,8 +177,131 @@ public class Session {
       errcode = psoCreateObject( handle, 
                                  objectName, 
                                  definition,
-                                 key,
-                                 fields );
+                                 dataDef.handle );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory.
+    * <p>
+    * This overloaded method should be used for objects not requiring
+    * a key definition (queues, etc.). It also uses the name of an
+    * existing data definition instead of requiring a DataDefinition
+    * object.
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Queue.open and similar to 
+    * access the newly created object.
+    *
+    * @param objectName  The fully qualified name of the object.
+    * @param definition  The object definition (its type, etc.).
+    * @param dataDefName The name of the definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             String           dataDefName ) throws PhotonException {
+      int errcode;
+      
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateObjectEx( handle, 
+                                   objectName, 
+                                   definition,
+                                   dataDefName );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory.
+    * <p>
+    * This overloaded method should only be used for objects requiring
+    * a key definition (maps, etc.).
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Hashmap and similar to 
+    * access the newly created object.
+    *
+    * @param objectName The fully qualified name of the object.
+    * @param definition The object definition (its type, etc.)
+    * @param keyDef     The definition of the key.
+    * @param dataDef    The definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             KeyDefinition    keyDef,
+                             DataDefinition   dataDef ) throws PhotonException {
+      int errcode;
+      
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateKeyedObject( handle, 
+                                      objectName, 
+                                      definition,
+                                      keyDef.handle,
+                                      dataDef.handle );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Create a new object in shared memory.
+    * <p>
+    * This overloaded method should only be used for objects requiring
+    * a key definition (maps, etc.). It also uses the names of 
+    * both an existing data definition and a key definition instead 
+    * of requiring a DataDefinition object and a KeyDefinition object.
+    * <p>
+    * The creation of the object only becomes permanent after a call to 
+    * Session.commit.
+    * <p>
+    * This function does not return a Java object linked to the newly 
+    * created object. You must use org.photon.Hashmap and similar to 
+    * access the newly created object.
+    *
+    * @param objectName  The fully qualified name of the object.
+    * @param definition  The object definition (its type, etc.)
+    * @param keyDefName  The definition of the key.
+    * @param dataDefName The definition of the data fields.
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public void createObject( String           objectName,
+                             ObjectDefinition definition, 
+                             String           keyDefName,
+                             String           dataDefName ) throws PhotonException {
+      int errcode;
+      
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoCreateKeyedObjectEx( handle, 
+                                        objectName, 
+                                        definition,
+                                        keyDefName,
+                                        dataDefName );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -216,43 +335,97 @@ public class Session {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   /**
-    * Terminate the current session. 
-    * 
-    * An implicit call to rollback is executed by this method. You must
-    * call commit to save any pending operations.
-    */
-   public void close() { 
-      psoFini(handle); 
-      handle = 0;
+   protected void finalize() throws Throwable {     
+      
+      try {
+         psoFini(handle);
+      } finally {
+         handle = 0;
+         super.finalize();
+      }
    }
 
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Retrieve the basic definition of the named object.
+    *
+    * @param objectName The fully qualified name of the object.
+    *
+    * @return A new ObjectDefinition object for the named Photon object.
+    *
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public ObjectDefinition getDefinition( String objectName ) throws PhotonException {
+
+      int errcode;
+      ObjectDefinition definition = new ObjectDefinition();
+      
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoGetDefinition( handle, objectName, definition );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
+      return definition;
+   }
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
     * Retrieve the data definition of the named object.
     *
     * @param objectName The fully qualified name of the object. 
-    * @return A new Definition object.
+    *
+    * @return A new DataDefinition object for the named Photon object.
+    *
     * @exception PhotonException On an error with the Photon library.
     */
-   public Definition getDefinition( String objectName ) throws PhotonException {
+   public DataDefinition getDataDefinition( String objectName ) throws PhotonException {
 
       int errcode;
-      Definition definition = new Definition();
-      /* Simplify the jni by preallocating some objects */
-      ObjectDefinition objectDef = new ObjectDefinition();
-      KeyDefinition key = new KeyDefinition(this);
+      DataDefinition definition = new DataDefinition();
       
-      errcode = psoGetDefinition( handle, 
-                                  objectName, 
-                                  definition,
-                                  objectDef,
-                                  key );
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoGetDataDefinition( handle, objectName, definition );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
+
+      return definition;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Retrieve the key definition of the named object.
+    *
+    * @param objectName The fully qualified name of the object. 
+    * 
+    * @return A new KeyDefinition object for the named Photon object.
+    *
+    * @exception PhotonException On an error with the Photon library.
+    */
+   public KeyDefinition getKeyDefinition( String objectName ) throws PhotonException {
+
+      int errcode;
+      KeyDefinition definition = new KeyDefinition();
       
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
+      errcode = psoGetKeyDefinition( handle, objectName, definition );
+      if ( errcode != 0 ) {
+         throw new PhotonException( PhotonErrors.getEnum(errcode) );
+      }
+
       return definition;
    }
 
@@ -272,6 +445,10 @@ public class Session {
       int errcode;
       Info info = new Info();
       
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
       errcode = psoGetInfo( handle, info );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
@@ -294,6 +471,10 @@ public class Session {
       int errcode;
       ObjectStatus status = new ObjectStatus();
       
+      if ( handle == 0 ) {
+         throw new PhotonException( PhotonErrors.NULL_HANDLE );
+      }
+
       errcode = psoGetStatus( handle, objectName, status );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
@@ -337,5 +518,61 @@ public class Session {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   private static native void initIDs();
+
+   private native int psoCommit( long handle );
+
+   private native int psoCreateFolder( long handle, String objectName );
+
+   private native int psoCreateObject( long             handle,
+                                       String           objectName,
+                                       ObjectDefinition definition, 
+                                       long             dataDefHandle );
+
+   private native int psoCreateObjectEx( long             handle,
+                                         String           objectName,
+                                         ObjectDefinition definition, 
+                                         String           dataDefName );
+
+   private native int psoCreateKeyedObject( long             handle,
+                                            String           objectName,
+                                            ObjectDefinition definition, 
+                                            long             keyDefHandle,
+                                            long             dataDefHandle );
+
+   private native int psoCreateKeyedObjectEx( long             handle,
+                                              String           objectName,
+                                              ObjectDefinition definition, 
+                                              String           keyDefName,
+                                              String           dataDefName );
+
+   private native int psoDestroyObject( long handle, String objectName );
+
+   private native int psoFini( long handle );
+
+   private native int psoGetDataDefinition( long           handle,
+                                            String         objectName,
+                                            DataDefinition dataDef );
+
+   private native int psoGetDefinition( long             handle,
+                                        String           objectName,
+                                        ObjectDefinition objectDef );
+
+   private native int psoGetInfo( long handle,
+                                  Info info );
+
+   private native int psoGetKeyDefinition( long          handle,
+                                           String        objectName,
+                                           KeyDefinition dataDef );
+
+   private native int psoGetStatus( long      handle,
+                                    String    objectName,
+                                    ObjectStatus status );
+
+   private native int psoInit();
+
+   private native int psoRollback( long handle );
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
 

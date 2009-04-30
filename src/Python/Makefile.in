@@ -14,7 +14,7 @@
 #
 PHOTON_INCLUDE_DIR = $(PWD)/../include
 PHOTON_LIB_DIR     = $(PWD)/../API/.libs
-PYTHON = @PYTHON@
+PYTHON = python
 #
 ## Possible alternatives (if Photon is installed in /usr/local):
 #PHOTON_INCLUDE_DIR = /usr/local/include
@@ -22,12 +22,27 @@ PYTHON = @PYTHON@
 #
 #-------------------------------------------------------------------
 
-SOURCE_FILES =          \
-        src/pso.c       \
-        src/ObjStatus.h \
-        src/Session.h   
+SOURCE_FILES =                 \
+        src/Common.h           \
+        src/config.h           \
+        src/DataDefinition.h   \
+        src/errors.h           \
+        src/FieldDefinition.h  \
+        src/FolderEntry.h      \
+        src/Folder.h           \
+        src/ForwardDeclare.h   \
+        src/Info.h             \
+        src/KeyDefinition.h    \
+        src/ObjectDefinition.h \
+        src/ObjStatus.h        \
+        src/pso.c              \
+        src/Session.h          
 
-all: $(SOURCE_FILES) setup.py
+all: pso.so
+
+pso.so: $(SOURCE_FILES) setup.py
+	-rm -rf pso.so
+	-rm -rf build
 	${PYTHON} setup.py build_ext --include-dirs=$(PHOTON_INCLUDE_DIR) \
       --library-dirs=$(PHOTON_LIB_DIR) -i
 
@@ -37,9 +52,11 @@ dist: all
 install: all
 	${PYTHON} setup.py install
 
+distclean: clean
+
 clean:
 	-rm -rf build
 	-rm -rf dist
-	-rm -rf *~ core *.so
+	-rm -rf *~ core *.so src/*~
 
 

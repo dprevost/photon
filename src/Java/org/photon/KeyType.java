@@ -22,12 +22,38 @@ import java.util.*;
 
 public enum KeyType {
    
-   INTEGER(101),
-   BINARY(102),
-   STRING(103),
-   VAR_BINARY(104),
-   VAR_STRING(105);
+   KEY_CHAR(1001),
    
+   KEY_VARCHAR(1002),
+
+   KEY_LONGVARCHAR(1003),
+   
+   /** A four-bytes integer. */
+   KEY_INTEGER(1004),
+   
+   KEY_BIGINT(1005),
+   
+   /** An opaque type of fixed length. */
+   KEY_BINARY(1006),
+
+   /** A variable length opaque type with a maximum length. */
+   KEY_VARBINARY(1007),
+   
+   /**
+    * A variable length opaque type with no maximum length constraint.
+    *
+    * The length of that field is constrained by the maximum length
+    * of a data record.
+    */
+   /** Only valid for the last field of the data definition */
+   KEY_LONGVARBINARY(1008),
+   
+   KEY_DATE(1009),
+
+   KEY_TIME(1010),
+
+   KEY_TIMESTAMP(1011);
+
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    private int type;

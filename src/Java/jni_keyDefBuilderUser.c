@@ -26,8 +26,7 @@
 #include "org_photon_DataDefBuilderUser.h"
 
 jfieldID g_id_keyFields;
-//jfieldID g_id_current;
-jfieldID g_id_length;
+jfieldID g_id_currentLength;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -42,10 +41,8 @@ Java_org_photon_KeyDefBuilderUser_initIDs( JNIEnv * env,
 {
    g_id_keyFields = (*env)->GetFieldID( env, classDefinition, "keyFields", "[B" );
    if ( g_id_keyFields == NULL ) return;
-//   g_id_current = (*env)->GetFieldID( env, classDefinition, "currentKeyField", "J" );
-//   if ( g_id_current == NULL ) return;
-   g_id_length = (*env)->GetFieldID( env, classDefinition, "currentLength", "J" );
-   if ( g_id_length == NULL ) return;
+   g_id_currentLength = (*env)->GetFieldID( env, classDefinition, "currentLength", "J" );
+   if ( g_id_currentLength == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -60,6 +57,64 @@ Java_org_photon_KeyDefBuilderUser_psoAddKeyField( JNIEnv * env,
                                                   jobject  jobj,
                                                   jstring  jdesc )
 {
+   int currentLength;
+   const char * desc;
+   int length = 0;
+   jbyteArray jarray, jfields;
+   unsigned char * data;
+   char separator = '\0';
+   
+   currentLength = (*env)->GetIntField( env, jobj, g_id_currentLength );
+   
+   desc = (*env)->GetStringUTFChars( env, jdesc, NULL );
+   if ( desc == NULL ) {
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
+   if ( strlen(desc) == 0 ) {
+      (*env)->ReleaseStringUTFChars( env, jdesc, desc );
+      return PSO_INVALID_LENGTH;
+   }
+
+   length = strlen(desc);
+
+   if ( currentLength > 0 ) {
+      length = currentLength + 1;
+   }
+
+   jarray = (*env)->NewByteArray( env, length );
+   if ( jarray == NULL ) {
+      (*env)->ReleaseStringUTFChars( env, jdesc, desc );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY;
+   }
+   
+   if ( currentLength == 0 ) {
+      (*env)->SetByteArrayRegion( env, jarray, 0, length, (jbyte *)desc );
+   }
+   else {
+      /* We copied the old definition into "data" */
+      jfields = (*env)->GetObjectField( env, jobj, g_id_keyFields );
+      if ( jfields == NULL ) {
+         (*env)->ReleaseStringUTFChars( env, jdesc, desc );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      data = malloc(currentLength);
+      if ( data == NULL ) {
+         (*env)->ReleaseStringUTFChars( env, jdesc, desc );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      (*env)->GetByteArrayRegion( env, jfields, 0, currentLength, (jbyte *)data );
+
+      /* Copy the data into the new array */
+      (*env)->SetByteArrayRegion( env, jarray, 0, currentLength, (jbyte *)data );
+      (*env)->SetByteArrayRegion( env, jarray, currentLength, 1, (jbyte *)&separator );
+      (*env)->SetByteArrayRegion( env, jarray, currentLength+1, length, (jbyte *)desc );
+      
+   }
+   (*env)->ReleaseStringUTFChars( env, jdesc, desc );
+   
+   (*env)->SetIntField( env, jobj, g_id_currentLength, currentLength );
+   (*env)->SetObjectField( env, jobj, g_id_keyFields, jarray );
+
    return 0;
 }
 
