@@ -79,6 +79,8 @@ DataDefinition::DataDefinition( Session & session, const std::string name )
      m_currentLength    ( 0 )
 {
    int rc;
+   char * dummyName;
+   uint32_t length;
    
    if ( m_sessionHandle == NULL ) {
       throw pso::Exception( "DataDefinition::DataDefinition", PSO_NULL_HANDLE );
@@ -92,7 +94,9 @@ DataDefinition::DataDefinition( Session & session, const std::string name )
       throw pso::Exception( m_sessionHandle, "DataDefinition::DataDefinition" );
    }
    
-   rc = psoaDataDefGetDef( m_definitionHandle, 
+   rc = psoaDataDefGetDef( m_definitionHandle,
+                           &dummyName,
+                           &length,
                            &m_defType,
                            (unsigned char **)&m_dataDef,
                            &m_dataDefLength );
@@ -110,12 +114,16 @@ DataDefinition::DataDefinition( PSO_HANDLE sessionHandle,
      m_currentLength    ( 0 )
 {
    int rc;
+   char * dummyName;
+   uint32_t length;
 
    if ( m_sessionHandle == NULL || m_definitionHandle == NULL ) {
       throw pso::Exception( "DataDefinition::DataDefinition", PSO_NULL_HANDLE );
    }
 
    rc = psoaDataDefGetDef( m_definitionHandle, 
+                           &dummyName,
+                           &length,
                            &m_defType,
                            (unsigned char **)&m_dataDef,
                            &m_dataDefLength );
@@ -363,6 +371,8 @@ enum psoDefinitionType DataDefinition::GetType()
 void DataDefinition::Open( Session & session, const std::string name )
 {
    int rc;
+   char * dummyName;
+   uint32_t length;
    
    if ( session.m_sessionHandle == NULL ) {
       throw pso::Exception( "DataDefinition::Open", PSO_NULL_HANDLE );
@@ -383,6 +393,8 @@ void DataDefinition::Open( Session & session, const std::string name )
    }
    
    rc = psoaDataDefGetDef( m_definitionHandle, 
+                           &dummyName,
+                           &length,
                            &m_defType,
                            (unsigned char **)&m_dataDef,
                            &m_dataDefLength );
