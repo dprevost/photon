@@ -26,24 +26,21 @@
 
 #include <photon/photon.h>
 
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-typedef struct {
-   PyObject_HEAD
-   /* size_t -> on 64 bits OSes, this int will be 64 bits */
-   size_t handle;
-} Session;
+/*
+ * The declaration of pySession is in ForwardDeclare.h
+ */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 Session_dealloc( PyObject * self )
 {
-   Session * s = (Session *)self;
+   pySession * session = (pySession *)self;
 
-   if ( s->handle != 0 ) {
-      psoExitSession( (PSO_HANDLE)s->handle );
+   if ( session->handle != 0 ) {
+      psoExitSession( (PSO_HANDLE)session->handle );
    }
+   session->handle = 0;
    
    self->ob_type->tp_free( self );
 }
@@ -53,9 +50,9 @@ Session_dealloc( PyObject * self )
 static PyObject *
 Session_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   Session * self;
+   pySession * self;
 
-   self = (Session *)type->tp_alloc( type, 0 );
+   self = (pySession *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->handle = 0;
    }
@@ -69,12 +66,12 @@ static int
 Session_init( PyObject * self, PyObject * args, PyObject * kwds )
 {
    int errcode;
-   PSO_HANDLE h;
-   Session * s = (Session *)self;
+   PSO_HANDLE handle;
+   pySession * session = (pySession *)self;
     
-   errcode = psoInitSession( &h );
+   errcode = psoInitSession( &handle );
    if ( errcode == 0 ) {
-      s->handle = (size_t)h;
+      session->handle = (size_t)handle;
       return 0;
    }
    
@@ -85,11 +82,12 @@ Session_init( PyObject * self, PyObject * args, PyObject * kwds )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_Commit( Session * self )
+Session_Commit( PyObject * self )
 {
    int errcode;
+   pySession * session = (pySession *) self;
    
-   errcode = psoCommit( (PSO_HANDLE)self->handle );
+   errcode = psoCommit( (PSO_HANDLE)session->handle );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
@@ -102,110 +100,191 @@ Session_Commit( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_CreateObject( Session * self, PyObject * args )
+Session_CreateFolder( PyObject * self, PyObject * args )
 {
    int errcode;
-   const char * objectName;
-   PyObject * list = NULL;
-   psoObjectDefinition definition;
-   psoFieldDefinition  * fields = NULL;
-   BaseDef * baseDef;
-   KeyDefinition * key;
-   FieldDefinition * item = NULL;
-   Py_ssize_t i;
-   
-   if ( !PyArg_ParseTuple(args, "sO|O", &objectName, &baseDef, &list) ) {
-      return NULL;
-   }
-
-   if ( list == NULL ) {
-      if ( baseDef->numFields != 0 ) {
-         SetException( PSO_INVALID_NUM_FIELDS );
-         return NULL;
-      }
-   }
-   else {
-      if ( (Py_ssize_t)baseDef->numFields != PyList_Size(list) ) {
-         SetException( PSO_INVALID_NUM_FIELDS );
-         return NULL;
-      }
-      
-      fields = (psoFieldDefinition *) 
-         PyMem_Malloc(baseDef->numFields*sizeof(psoFieldDefinition));
-      if ( fields == NULL ) {
-         return PyErr_NoMemory();
-      }
-      
-      for ( i = 0; i < (Py_ssize_t)baseDef->numFields; ++i ) {
-
-         item = (FieldDefinition *) PyList_GetItem( list, i );
-         if ( item == NULL ) {
-            PyMem_Free( fields );
-            return NULL;
-         }
-         
-         // Validate that it is a definition!
-         if ( ! PyObject_TypeCheck(item, &FieldDefinitionType) ) {
-            PyMem_Free( fields );
-            PyErr_SetString( PyExc_TypeError, 
-               "One item of the list is not a FieldDefinition" );
-            return NULL;
-         }
-
-         if ( item->name == NULL ) {
-            PyMem_Free( fields );
-            SetException( PSO_INVALID_FIELD_NAME );
-            return NULL;
-         }
-         strncpy( fields[i].name, PyString_AsString(item->name), 
-            PSO_MAX_FIELD_LENGTH );
-         fields[i].type = item->intType;
-         fields[i].length = item->length;
-         fields[i].minLength = item->minLength;
-         fields[i].maxLength = item->maxLength;
-         fields[i].precision = item->precision;
-         fields[i].scale = item->scale;
-      }
-   }
-   
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
-   definition.type = baseDef->intType;
-   definition.numFields = baseDef->numFields;
-   key = (KeyDefinition *) baseDef->keyDef;
-   if ( key != NULL ) {
-      definition.key.type      = key->intType;
-      definition.key.length    = key->length;
-      definition.key.minLength = key->minLength;
-      definition.key.maxLength = key->maxLength;
-   }
-   errcode = psoCreateObject( (PSO_HANDLE)self->handle,
-                              objectName,
-                              (psoUint32)strlen(objectName),
-                              &definition,
-                              fields );
-   if ( fields ) PyMem_Free( fields );
-   if ( errcode != 0 ) {
-      SetException( errcode );
-      return NULL;
-   }
-
-   Py_INCREF(Py_None);
-   return Py_None;   
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Session_DestroyObject( Session * self, PyObject * args )
-{
-   int errcode;
+   pySession * session = (pySession *) self;
    const char * objectName;
    
    if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
       return NULL;
    }
    
-   errcode = psoDestroyObject( (PSO_HANDLE)self->handle,
+   errcode = psoCreateFolder( (PSO_HANDLE)session->handle,
+                              objectName,
+                              (psoUint32)strlen(objectName) );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_CreateObject( PyObject * self, PyObject * args )
+{
+   int errcode;
+   pySession * session = (pySession *) self;
+   const char * objectName;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyObjDefinition;
+   PyObject * pyObj;
+   char * definitionName;
+   PSO_HANDLE dataDefHandle;
+
+   if ( !PyArg_ParseTuple( args, "sOO", &objectName, 
+                                        &pyObjDefinition,
+                                        &pyObj ) ) {
+      return NULL;
+   }
+
+   definition.type = pyObjDefinition->intType;
+   definition.flags = pyObjDefinition->flags;
+   definition.minNumOfDataRecords = pyObjDefinition->minNumOfDataRecords;
+   definition.minNumBlocks = pyObjDefinition->minNumBlocks;
+
+   if ( PyString_Check( pyObj ) ) {
+      definitionName = PyString_AsString(pyObj);
+
+      errcode = psoDataDefOpen( (PSO_HANDLE) session->handle,
+                                definitionName,
+                                strlen(definitionName),
+                                &dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+
+      errcode = psoCreateObject( (PSO_HANDLE)session->handle,
+                                 objectName,
+                                 strlen(objectName),
+                                 &definition,
+                                 dataDefHandle );
+      psoDataDefClose( dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+   }
+   else {
+      dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyObj)->definitionHandle;
+      errcode = psoCreateObject( (PSO_HANDLE)session->handle,
+                                 objectName,
+                                 strlen(objectName),
+                                 &definition,
+                                 dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_CreateKeyObject( PyObject * self, PyObject * args )
+{
+   int errcode;
+   pySession * session = (pySession *) self;
+   const char * objectName;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyObjDefinition;
+   PyObject * pyKeyObj, * pyDataObj;
+   char * dataDefName, * keyDefName;
+   PSO_HANDLE dataDefHandle, keyDefHandle;
+
+   if ( !PyArg_ParseTuple( args, "sOOO", &objectName, 
+                                         &pyObjDefinition,
+                                         &pyKeyObj,
+                                         &pyDataObj ) ) {
+      return NULL;
+   }
+
+   ObjectToObjDefinition( &definition, pyObjDefinition );
+
+   if ( PyString_Check( pyKeyObj ) ) {
+      if ( ! PyString_Check( pyDataObj ) ) {
+         return NULL;
+      }
+      dataDefName = PyString_AsString(pyDataObj);
+      keyDefName  = PyString_AsString(pyKeyObj);
+
+      errcode = psoKeyDefOpen( (PSO_HANDLE) session->handle,
+                               keyDefName,
+                               strlen(keyDefName),
+                               &keyDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+      errcode = psoDataDefOpen( (PSO_HANDLE) session->handle,
+                                dataDefName,
+                                strlen(dataDefName),
+                                &dataDefHandle );
+      if ( errcode != 0 ) {
+         psoKeyDefClose( keyDefHandle );
+         SetException( errcode );
+         return NULL;
+      }
+
+      errcode = psoCreateKeyedObject( (PSO_HANDLE)session->handle,
+                                      objectName,
+                                      strlen(objectName),
+                                      &definition,
+                                      keyDefHandle,
+                                      dataDefHandle );
+      psoDataDefClose( dataDefHandle );
+      psoKeyDefClose( keyDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+   }
+   else {
+      if ( PyString_Check( pyDataObj ) ) {
+         return NULL;
+      }
+      dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyDataObj)->definitionHandle;
+      keyDefHandle  = (PSO_HANDLE) ((pyKeyDefinition *)pyKeyObj)->definitionHandle;
+
+      errcode = psoCreateKeyedObject( (PSO_HANDLE)session->handle,
+                                      objectName,
+                                      strlen(objectName),
+                                      &definition,
+                                      keyDefHandle,
+                                      dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+   }
+
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_DestroyObject( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pySession * session = (pySession *)self;
+   
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   errcode = psoDestroyObject( (PSO_HANDLE)session->handle,
                                objectName,
                                (psoUint32)strlen(objectName) );
    if ( errcode != 0 ) {
@@ -220,13 +299,14 @@ Session_DestroyObject( Session * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_ErrorMsg( Session * self )
+Session_ErrorMsg( PyObject * self )
 {
    int errcode;
    char message[1024];
    PyObject * str = NULL;
+   pySession * session = (pySession *)self;
    
-   errcode = psoErrorMsg( (PSO_HANDLE)self->handle,
+   errcode = psoErrorMsg( (PSO_HANDLE)session->handle,
                           message,
                           1024 );
    if ( errcode != 0 ) {
@@ -245,12 +325,14 @@ Session_ErrorMsg( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_ExitSession( Session * self )
+Session_ExitSession( PyObject * self )
 {
-   if ( self->handle != 0 ) {
-      psoExitSession( (PSO_HANDLE)self->handle );
+   pySession * session = (pySession *)self;
+
+   if ( session->handle != 0 ) {
+      psoExitSession( (PSO_HANDLE)session->handle );
    }
-   self->handle = 0;
+   session->handle = 0;
 
    Py_INCREF(Py_None);
    return Py_None;   
@@ -259,77 +341,128 @@ Session_ExitSession( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_GetDefinition( Session * self, PyObject * args )
+Session_GetDataDefinition( PyObject * self, PyObject * args )
 {
    int errcode;
    const char * objectName;
-   PyObject * list = NULL;
-   psoObjectDefinition definition;
-   psoFieldDefinition  * fields = NULL;
-   BaseDef * baseDef;
-   KeyDefinition * key = NULL;
-   
+   pySession * session = (pySession *)self;
+   pyDataDefinition * pyDef = NULL;
+   PSO_HANDLE dataDefHandle;
+   int type, length;
+   unsigned int nameLength;
+   PyObject * defType = NULL;
+   unsigned char  * dataDef;
+   char * definitionName;
+   PyObject * name = NULL, *dataDefObj = NULL, * tmp = NULL;
+
    if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
       return NULL;
    }
 
-   errcode = psoGetDefinition( (PSO_HANDLE)self->handle,
-                               objectName,
-                               (psoUint32)strlen(objectName),
-                               &definition,
-                               0,
-                               NULL );
+   errcode = psoGetDataDefinition( (PSO_HANDLE)session->handle,
+                                   objectName,
+                                   strlen(objectName),
+                                   &dataDefHandle );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
    }
 
-   fields = (psoFieldDefinition *) 
-      PyMem_Malloc(definition.numFields*sizeof(psoFieldDefinition));
-   if ( fields == NULL ) return PyErr_NoMemory();
-
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
-   errcode = psoGetDefinition( (PSO_HANDLE)self->handle,
-                               objectName,
-                               (psoUint32)strlen(objectName),
-                               &definition,
-                               definition.numFields,
-                               fields );
-   if ( errcode != 0 ) {
-      PyMem_Free( fields );
-      SetException( errcode );
-      return NULL;
-   }
-
-   /* Start building the key definition, if any */
-   if ( definition.key.type != 0 ) {
-      key = keyDefToObject( &definition.key );
-      if ( key == NULL ) {
-         PyMem_Free( fields );
-         return NULL;
-      }
-   }
-   baseDef = BaseDefToObject( &definition, (PyObject *)key );
-   if ( baseDef == NULL ) {
-      PyMem_Free( fields );
-      return NULL;
-   }
+   pyDef = (pyDataDefinition *) DataDefinition_new( &DataDefinitionType, 
+                                                    NULL, NULL );
+   if (pyDef == NULL) return NULL;
    
-   list = FieldDefToList( definition.numFields, fields );
-   if ( list == NULL ) {
-      PyMem_Free( fields );
+   errcode = psoaDataDefGetDef( dataDefHandle,
+                                &definitionName,
+                                &nameLength,
+                                (enum psoDefinitionType *)&type,
+                                &dataDef,
+                                (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      Py_XDECREF(pyDef);
+      SetException( errcode );
       return NULL;
    }
 
-   return Py_BuildValue( "OO", baseDef, list );     
+   name = PyString_FromStringAndSize(definitionName, nameLength);
+   if ( name == NULL ) {
+      Py_XDECREF(pyDef);
+      return NULL;
+   }
+
+   dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+   if ( dataDefObj == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      return NULL;
+   }
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      Py_XDECREF(dataDefObj);
+      return NULL;
+   }
+   tmp = pyDef->defType;
+   pyDef->defType = defType;
+   Py_XDECREF(tmp);
+   pyDef->intType = type;
+   
+   tmp = pyDef->dataDef;
+   Py_INCREF(dataDefObj);
+   pyDef->dataDef = dataDefObj;
+   Py_XDECREF(tmp);
+
+   tmp = pyDef->name;
+   Py_INCREF(name);
+   pyDef->name = name;
+   Py_XDECREF(tmp);
+
+   pyDef->dataDefLength = length;
+   pyDef->definitionHandle = (size_t) dataDefHandle;
+
+   return (PyObject *)pyDef;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_GetInfo( Session * self, PyObject * args )
+Session_GetDefinition( PyObject * self, PyObject * args )
 {
    int errcode;
+   const char * objectName;
+   pySession * session = (pySession *)self;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyDef = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   errcode = psoGetDefinition( (PSO_HANDLE)session->handle,
+                               objectName,
+                               strlen(objectName),
+                               &definition );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = ObjDefinitionToObject( &definition );
+   if ( pyDef == NULL ) return NULL;
+   
+   return (PyObject *)pyDef;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_GetInfo( PyObject * self, PyObject * args )
+{
+   int errcode;
+   pySession * session = (pySession *)self;
    pyInfo * pInfo;
    psoInfo info;
    PyObject * compiler = NULL;
@@ -339,7 +472,7 @@ Session_GetInfo( Session * self, PyObject * args )
    PyObject * quasarVersion = NULL;
    PyObject * creationTime = NULL;
    
-   errcode = psoGetInfo( (PSO_HANDLE)self->handle, &info );
+   errcode = psoGetInfo( (PSO_HANDLE)session->handle, &info );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
@@ -393,10 +526,98 @@ cleanup:
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_GetStatus( Session * self, PyObject * args )
+Session_GetKeyDefinition( PyObject * self, PyObject * args )
 {
    int errcode;
    const char * objectName;
+   pySession * session = (pySession *)self;
+   pyKeyDefinition * pyDef = NULL;
+   PSO_HANDLE keyDefHandle;
+   int type, length;
+   unsigned int nameLength;
+   PyObject * defType = NULL;
+   unsigned char  * keyDef;
+   char * definitionName;
+   PyObject * name = NULL, *keyDefObj = NULL, * tmp = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+
+   errcode = psoGetKeyDefinition( (PSO_HANDLE)session->handle,
+                                  objectName,
+                                  strlen(objectName),
+                                  &keyDefHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = (pyKeyDefinition *) KeyDefinition_new( &KeyDefinitionType, 
+                                                  NULL, NULL );
+   if (pyDef == NULL) return NULL;
+   
+   errcode = psoaKeyDefGetDef( keyDefHandle,
+                               &definitionName,
+                               &nameLength,
+                               (enum psoDefinitionType *)&type,
+                               &keyDef,
+                               (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      Py_XDECREF(pyDef);
+      SetException( errcode );
+      return NULL;
+   }
+
+   name = PyString_FromStringAndSize(definitionName, nameLength);
+   if ( name == NULL ) {
+      Py_XDECREF(pyDef);
+      return NULL;
+   }
+
+   keyDefObj = PyBuffer_FromMemory( keyDef, length ); 
+   if ( keyDefObj == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      return NULL;
+   }
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      Py_XDECREF(keyDefObj);
+      return NULL;
+   }
+   tmp = pyDef->defType;
+   pyDef->defType = defType;
+   Py_XDECREF(tmp);
+   pyDef->intType = type;
+   
+   tmp = pyDef->keyDef;
+   Py_INCREF(keyDefObj);
+   pyDef->keyDef = keyDefObj;
+   Py_XDECREF(tmp);
+
+   tmp = pyDef->name;
+   Py_INCREF(name);
+   pyDef->name = name;
+   Py_XDECREF(tmp);
+
+   pyDef->keyDefLength = length;
+   pyDef->definitionHandle = (size_t) keyDefHandle;
+
+   return (PyObject *)pyDef;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Session_GetStatus( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pySession * session = (pySession *)self;
    pyObjStatus * pStatusPy;
    psoObjStatus status;
    PyObject * objType = NULL, * objStatus = NULL;
@@ -405,7 +626,7 @@ Session_GetStatus( Session * self, PyObject * args )
       return NULL;
    }
 
-   errcode = psoGetStatus( (PSO_HANDLE)self->handle,
+   errcode = psoGetStatus( (PSO_HANDLE)session->handle,
                            objectName,
                            (psoUint32)strlen(objectName),
                            &status );
@@ -445,11 +666,12 @@ Session_GetStatus( Session * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_LastError( Session * self )
+Session_LastError( PyObject * self )
 {
    int errcode;
+   pySession * session = (pySession *)self;
    
-   errcode = psoLastError( (PSO_HANDLE)self->handle );
+   errcode = psoLastError( (PSO_HANDLE)session->handle );
    
    return Py_BuildValue("i", errcode);
 }
@@ -457,11 +679,12 @@ Session_LastError( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Session_Rollback( Session * self )
+Session_Rollback( PyObject * self )
 {
    int errcode;
+   pySession * session = (pySession *)self;
    
-   errcode = psoRollback( (PSO_HANDLE)self->handle );
+   errcode = psoRollback( (PSO_HANDLE)session->handle );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
@@ -474,7 +697,7 @@ Session_Rollback( Session * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef Session_members[] = {
-   {"handle", T_INT, offsetof(Session, handle), RO,
+   {"handle", T_INT, offsetof(pySession, handle), RO,
     "Session handle"},
    {NULL}  /* Sentinel */
 };
@@ -533,7 +756,7 @@ static PyTypeObject SessionType = {
    PyObject_HEAD_INIT(NULL)
    0,                           /*ob_size*/
    "pso.Session",               /*tp_name*/
-   sizeof(Session),             /*tp_basicsize*/
+   sizeof(pySession),           /*tp_basicsize*/
    0,                           /*tp_itemsize*/
    Session_dealloc,             /*tp_dealloc*/
    0,                           /*tp_print*/

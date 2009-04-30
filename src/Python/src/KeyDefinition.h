@@ -21,9 +21,11 @@
 
 extern
 int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
-                       enum psoDefinitionType  * type,
-                       unsigned char          ** keyDef,
-                       psoUint32               * keyDefLength );
+                      char                   ** name,
+                      psoUint32               * nameLength,
+                      enum psoDefinitionType  * type,
+                      unsigned char          ** keyDef,
+                      psoUint32               * keyDefLength );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -97,6 +99,8 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    unsigned char  * keyDef;
    char * definitionName;
    PSO_HANDLE definitionHandle;
+   char * dummyName;
+   uint32_t dummyLength;
    
    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "OS|iOi", kwlist, 
       &session, &name, &type, &keyDefObj, &length) ) {
@@ -113,27 +117,33 @@ KeyDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       if ( errcode != 0 ) return -1;
       
       errcode = psoaKeyDefGetDef( definitionHandle,
-                                   (enum psoDefinitionType *)&type,
-                                   &keyDef,
-                                   (unsigned int *)&length );
+                                  &dummyName,
+                                  &dummyLength,
+                                  (enum psoDefinitionType *)&type,
+                                  &keyDef,
+                                  (unsigned int *)&length );
       if ( errcode != 0 ) {
          psoKeyDefClose( definitionHandle );
          return -1;
       }
       
       keyDefObj = PyBuffer_FromMemory( keyDef, length ); 
+      if ( keyDefObj == NULL ) {
+         psoKeyDefClose( definitionHandle );
+         return -1;
+      }
    }
    else {
       errcode = PyObject_AsCharBuffer(	keyDefObj, (const char **)&keyDef, &length );
       if ( errcode != 0 ) return -1;
 
       errcode = psoKeyDefCreate( (PSO_HANDLE)((pySession *)session)->handle,
-                                  definitionName,
-                                  strlen(definitionName),
-                                  type,
-                                  keyDef,
-                                  length,
-                                  (PSO_HANDLE*)&def->definitionHandle );
+                                 definitionName,
+                                 strlen(definitionName),
+                                 type,
+                                 keyDef,
+                                 length,
+                                 (PSO_HANDLE*)&def->definitionHandle );
       if ( errcode != 0 ) return -1;
    }
    
@@ -390,6 +400,8 @@ KeyDefinition_Open( pyKeyDefinition * self, PyObject * args )
    unsigned char  * keyDef;
    char * definitionName;
    PSO_HANDLE definitionHandle;
+   char * dummyName;
+   uint32_t dummyLength;
    
    if ( !PyArg_ParseTuple(args, "OS", &session, &name) ) {
       return NULL;
@@ -407,9 +419,11 @@ KeyDefinition_Open( pyKeyDefinition * self, PyObject * args )
    }
       
    errcode = psoaKeyDefGetDef( definitionHandle,
-                                (enum psoDefinitionType *)&type,
-                                &keyDef,
-                                (unsigned int *)&length );
+                               &dummyName,
+                               &dummyLength,
+                               (enum psoDefinitionType *)&type,
+                               &keyDef,
+                               (unsigned int *)&length );
    if ( errcode != 0 ) {
       psoKeyDefClose( definitionHandle );
       SetException( errcode );
@@ -417,11 +431,15 @@ KeyDefinition_Open( pyKeyDefinition * self, PyObject * args )
    }
 
    keyDefObj = PyBuffer_FromMemory( keyDef, length ); 
+   if ( keyDefObj == NULL ) {
+      psoKeyDefClose( definitionHandle );
+      return NULL;
+   }
 
    defType = GetDefinitionType( type ); // A new reference
    if ( defType == NULL ) {
       psoKeyDefClose( definitionHandle );
-      SetException( 666 );
+      Py_XDECREF(keyDefObj);
       return NULL;
    }
    tmp = self->defType;

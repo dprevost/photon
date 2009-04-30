@@ -222,7 +222,7 @@ GetString( const char * s, Py_ssize_t len)
 #include "FolderEntry.h"
 #include "Info.h"
 
-//#include "Session.h"
+#include "Session.h"
 #include "Folder.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

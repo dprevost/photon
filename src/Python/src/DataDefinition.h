@@ -21,6 +21,8 @@
 
 extern
 int psoaDataDefGetDef( PSO_HANDLE                definitionHandle,
+                       char                   ** name,
+                       psoUint32               * nameLength,
                        enum psoDefinitionType  * type,
                        unsigned char          ** dataDef,
                        psoUint32               * dataDefLength );
@@ -97,6 +99,8 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
    unsigned char  * dataDef;
    char * definitionName;
    PSO_HANDLE definitionHandle;
+   char * dummyName;
+   uint32_t dummyLength;
    
    if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "OS|iOi", kwlist, 
       &session, &name, &type, &dataDefObj, &length) ) {
@@ -113,6 +117,8 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       if ( errcode != 0 ) return -1;
       
       errcode = psoaDataDefGetDef( definitionHandle,
+                                   &dummyName,
+                                   &dummyLength,
                                    (enum psoDefinitionType *)&type,
                                    &dataDef,
                                    (unsigned int *)&length );
@@ -122,6 +128,10 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       }
       
       dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+      if ( dataDefObj == NULL ) {
+         psoDataDefClose( definitionHandle );
+         return -1;
+      }
    }
    else {
       errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
@@ -137,7 +147,6 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       if ( errcode != 0 ) return -1;
    }
    
-
    defType = GetDefinitionType( type ); // A new reference
    if ( defType == NULL ) {
       psoDataDefClose( definitionHandle );
@@ -411,6 +420,8 @@ DataDefinition_Open( pyDataDefinition * self, PyObject * args )
    unsigned char  * dataDef;
    char * definitionName;
    PSO_HANDLE definitionHandle;
+   char * dummyName;
+   uint32_t dummyLength;
    
    if ( !PyArg_ParseTuple(args, "OS", &session, &name) ) {
       return NULL;
@@ -428,6 +439,8 @@ DataDefinition_Open( pyDataDefinition * self, PyObject * args )
    }
       
    errcode = psoaDataDefGetDef( definitionHandle,
+                                &dummyName,
+                                &dummyLength,
                                 (enum psoDefinitionType *)&type,
                                 &dataDef,
                                 (unsigned int *)&length );
@@ -438,11 +451,15 @@ DataDefinition_Open( pyDataDefinition * self, PyObject * args )
    }
 
    dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+   if ( dataDefObj == NULL ) {
+      psoDataDefClose( definitionHandle );
+      return NULL;
+   }
 
    defType = GetDefinitionType( type ); // A new reference
    if ( defType == NULL ) {
       psoDataDefClose( definitionHandle );
-      SetException( 666 );
+      Py_XDECREF(dataDefObj);
       return NULL;
    }
    tmp = self->defType;

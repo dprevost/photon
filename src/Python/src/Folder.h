@@ -241,7 +241,7 @@ Folder_CreateFolder( PyObject * self, PyObject * args )
    }
 
    Py_INCREF(Py_None);
-   return Py_None;   
+   return Py_None;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -429,6 +429,7 @@ Folder_GetDataDefinition( PyObject * self, PyObject * args )
    pyDataDefinition * pyDef = NULL;
    PSO_HANDLE dataDefHandle;
    int type, length;
+   unsigned int nameLength;
    PyObject * defType = NULL;
    unsigned char  * dataDef;
    char * definitionName;
@@ -446,12 +447,14 @@ Folder_GetDataDefinition( PyObject * self, PyObject * args )
       SetException( errcode );
       return NULL;
    }
-   //
+
    pyDef = (pyDataDefinition *) DataDefinition_new( &DataDefinitionType, 
                                                     NULL, NULL );
    if (pyDef == NULL) return NULL;
    
    errcode = psoaDataDefGetDef( dataDefHandle,
+                                &definitionName,
+                                &nameLength,
                                 (enum psoDefinitionType *)&type,
                                 &dataDef,
                                 (unsigned int *)&length );
@@ -461,7 +464,7 @@ Folder_GetDataDefinition( PyObject * self, PyObject * args )
       return NULL;
    }
 
-   name = PyString_FromString(definitionName);
+   name = PyString_FromStringAndSize(definitionName, nameLength);
    if ( name == NULL ) {
       Py_XDECREF(pyDef);
       return NULL;
@@ -569,6 +572,93 @@ Folder_GetFirst( PyObject * self, PyObject * args )
    e->objType = objType;
 
    return (PyObject *)e;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_GetKeyDefinition( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pyFolder * folder = (pyFolder *) self;
+   pyKeyDefinition * pyDef = NULL;
+   PSO_HANDLE keyDefHandle;
+   int type, length;
+   unsigned int nameLength;
+   PyObject * defType = NULL;
+   unsigned char  * keyDef;
+   char * definitionName;
+   PyObject * name = NULL, *keyDefObj = NULL, * tmp = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+
+   errcode = psoFolderGetKeyDefinition( (PSO_HANDLE)folder->handle,
+                                        objectName,
+                                        strlen(objectName),
+                                        &keyDefHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = (pyKeyDefinition *) KeyDefinition_new( &KeyDefinitionType, 
+                                                  NULL, NULL );
+   if (pyDef == NULL) return NULL;
+   
+   errcode = psoaKeyDefGetDef( keyDefHandle,
+                               &definitionName,
+                               &nameLength,
+                               (enum psoDefinitionType *)&type,
+                               &keyDef,
+                               (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      Py_XDECREF(pyDef);
+      SetException( errcode );
+      return NULL;
+   }
+
+   name = PyString_FromStringAndSize(definitionName, nameLength);
+   if ( name == NULL ) {
+      Py_XDECREF(pyDef);
+      return NULL;
+   }
+
+   keyDefObj = PyBuffer_FromMemory( keyDef, length ); 
+   if ( keyDefObj == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      return NULL;
+   }
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      Py_XDECREF(keyDefObj);
+      return NULL;
+   }
+   tmp = pyDef->defType;
+   pyDef->defType = defType;
+   Py_XDECREF(tmp);
+   pyDef->intType = type;
+   
+   tmp = pyDef->keyDef;
+   Py_INCREF(keyDefObj);
+   pyDef->keyDef = keyDefObj;
+   Py_XDECREF(tmp);
+
+   tmp = pyDef->name;
+   Py_INCREF(name);
+   pyDef->name = name;
+   Py_XDECREF(tmp);
+
+   pyDef->keyDefLength = length;
+   pyDef->definitionHandle = (size_t) keyDefHandle;
+
+   return (PyObject *)pyDef;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
