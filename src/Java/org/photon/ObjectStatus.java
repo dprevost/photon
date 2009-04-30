@@ -24,32 +24,38 @@ package org.photon;
 public class ObjectStatus {
 
    /** The object type. */
-   public ObjectType type;
+   int type = 0;
 
    /**
     * Status of the object.
     * <p>
     * For example, created but not committed, etc.
     */
-   public int status;
+   int status = 0;
 
    /** The number of blocks allocated to this object. */
-   public long numBlocks;
+   long numBlocks = 0;
 
    /** The number of groups of blocks allocated to this object. */
-   public long numBlockGroup;
+   long numBlockGroup = 0;
 
    /** The number of data items in this object. */
-   public long numDataItem;
+   long numDataItem = 0;
    
    /** The amount of free space available in the blocks allocated to this object. */
-   public long freeBytes;
+   long freeBytes = 0;
 
    /** Maximum data length (in bytes). */
-   public int maxDataLength;
+   int maxDataLength = 0;
    
    /** Maximum key length (in bytes) if keys are supported - zero otherwise */
-   public int maxKeyLength;
+   int maxKeyLength = 0;
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   static {
+      initIDs();
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -57,11 +63,51 @@ public class ObjectStatus {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private static native void initIDs();
+   /** The amount of free space available in the blocks allocated to this object. */
+   public long getFreeBytes() { return freeBytes; }
 
-   static {
-      initIDs();
-   }
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** Maximum data length (in bytes). */
+   public int getMaxDataLength() { return maxDataLength; }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** Maximum key length (in bytes) if keys are supported - zero otherwise */
+   public int getMaxKeyLength() { return maxKeyLength; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** The number of groups of blocks allocated to this object. */
+   public long getNumBlockGroup() { return numBlockGroup; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** The number of blocks allocated to this object. */
+   public long getNumBlocks() { return numBlocks; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** The number of data items in this object. */
+   public long getNumDataItem() { return numDataItem; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /**
+    * Status of the object.
+    * <p>
+    * For example, created but not committed, etc.
+    */
+   public int getStatus() { return status; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   /** The object type. */
+   public ObjectType getType() { return ObjectType.getEnum(type); }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
 
 };
 

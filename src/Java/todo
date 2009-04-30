@@ -1,0 +1,7 @@
+jni_folder.c
+ - missing create calls
+ - getdefinition ?
+
+remove unused stuff
+
+start with queues

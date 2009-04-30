@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_FieldDefinition.h"
+#include "org_photon_ObjectDefinition.h"
 
 jfieldID g_idObjDefType;
 jfieldID g_idObjDefFlags;
@@ -40,7 +40,7 @@ jfieldID g_idObjDefMinNumBlocks;
 JNIEXPORT void JNICALL 
 Java_org_photon_ObjectDefinition_initIDs( JNIEnv * env, jclass defClass )
 {
-   g_idObjDefType = (*env)->GetFieldID( env, defClass, "type", "Lorg/photon/ObjectType;" );
+   g_idObjDefType = (*env)->GetFieldID( env, defClass, "type", "I" );
    if ( g_idObjDefType == NULL ) return;
    g_idObjDefFlags = (*env)->GetFieldID( env, defClass, "flags", "I" );
    if ( g_idObjDefFlags == NULL ) return;

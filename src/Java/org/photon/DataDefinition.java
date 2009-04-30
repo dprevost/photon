@@ -57,10 +57,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     * You must use open() or create to access a data definition in 
     * shared memory.
     */
-   public DataDefinition( Session session ) {
-       
-      this.session = session;
-   }
+   public DataDefinition() {}
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -231,6 +228,8 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       return DefinitionType.getEnum(type);
    }
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    /**
     * Implement the Iterator interface.
     * <p>
@@ -278,7 +277,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
     *
     * @exception PhotonException An abnormal error with the Photon library.
     */
-   public void open( String  name ) throws PhotonException {
+   public void open( Session session, String name ) throws PhotonException {
    
       int errcode;
       
@@ -288,6 +287,7 @@ public class DataDefinition implements Iterable<String>, Iterator<String> {
       }
 
       this.name = name;
+      this.session = session;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

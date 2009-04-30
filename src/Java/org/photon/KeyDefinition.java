@@ -57,10 +57,7 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
     * You must use open() or create to access a key definition in 
     * shared memory.
     */
-   public KeyDefinition( Session session ) {
-       
-      this.session = session;
-   }
+   public KeyDefinition() {}
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -221,6 +218,8 @@ public class KeyDefinition implements Iterable<String>, Iterator<String> {
       return DefinitionType.getEnum(type);
    }
    
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    /**
     * Implement the Iterator interface.
     * <p>

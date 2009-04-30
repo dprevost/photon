@@ -25,29 +25,50 @@ import java.util.*;
 
 public class FolderEntry {
    
-   private ObjectType type;
-   private String     name;
-   private int        status = -1;
-
-   public ObjectType getType()   { return type; }
-   public String     getName()   { return name; }
-   public int        getStatus() { return status; }
-
-   private FolderEntry( ObjectType entryType, String entryName, int entryStatus ) {
-      type = entryType;
-      name = entryName;
-      status = entryStatus;
-   }
-   
-   public FolderEntry() {}
-
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private static native void initIDs();
+   /** Type of the object described in this entry */
+   int type = 0;
+   
+   /** Name of the object described in this entry */
+   String name;
+   
+   /** Status of the object described in this entry*/
+   int status = -1;
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    static {
       initIDs();
    }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private FolderEntry( ObjectType entryType, String entryName, int entryStatus ) {
+      type = entryType.getType();
+      name = entryName;
+      status = entryStatus;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public FolderEntry() {}
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public String getName()   { return name; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public int getStatus() { return status; }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public ObjectType getType() { return ObjectType.getEnum(type); }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
 
 }
 
