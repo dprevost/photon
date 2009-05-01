@@ -86,7 +86,7 @@ initpso(void)
    if (PyType_Ready(&KeyDefinitionType) < 0) return;
    if (PyType_Ready(&ObjDefinitionType) < 0) return;
    if (PyType_Ready(&ObjStatusType) < 0) return;
-//   if (PyType_Ready(&SessionType) < 0) return; 
+   if (PyType_Ready(&SessionType) < 0) return; 
 
    m = Py_InitModule3( "pso", 
                        pso_methods,
@@ -124,8 +124,8 @@ initpso(void)
    /* Photon objects */
    Py_INCREF( &FolderType );
    PyModule_AddObject( m, "Folder", (PyObject *)&FolderType );
-//   Py_INCREF( &SessionType );
-//   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
+   Py_INCREF( &SessionType );
+   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
    
    /* Object types */
    PyModule_AddIntConstant( m, "FOLDER",   PSO_FOLDER );

@@ -218,9 +218,12 @@ GetString( const char * s, Py_ssize_t len)
 #include "DataDefinition.h"
 #include "KeyDefinition.h"
 #include "ObjectDefinition.h"
-//#include "FieldDefinition.h"
 #include "FolderEntry.h"
 #include "Info.h"
+#include "DataDefBuilderODBC.h"
+#include "DataDefBuilderUser.h"
+#include "KeyDefBuilderODBC.h"
+#include "KeyDefBuilderUser.h"
 
 #include "Session.h"
 #include "Folder.h"
