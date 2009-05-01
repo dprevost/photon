@@ -18,25 +18,24 @@
 
 VBS_VERBOSE=
 
-CLEANFILES = *~
+CLEANFILES = *~  vc60.pdb
 
-DIR_RELEASE = .\Release2005
-DIR_DEBUG   = .\Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG   = ..\..\..\Debug2005
+W32_SYS_LIBS = kernel32.lib advapi32.lib ws2_32.lib
+LDD_FLAGS = $(W32_SYS_LIBS)     photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug" 
 
-W32_SYS_LIBS=kernel32.lib advapi32.lib
-LDD_FLAGS       = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release2005" 
-LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug2005" /PDB:"$(DIR_DEBUG)\\"
+DIR_RELEASE=.\Release
+DIR_RELEASE=.\Release
+DIR_DEBUG=.\Debug
+DIR_DEBUG=.\Debug
 
+CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" /EHsc
+CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\"       /EHsc
 
-CFLAGS_DEBUG=   /nologo /MDd /W4 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\" 
-
-.c{$(DIR_RELEASE)}.exe:
+.cpp{$(DIR_RELEASE)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
 
-.c{$(DIR_DEBUG)}.exe:
+.cpp{$(DIR_DEBUG)}.exe:
 	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
 "$(DIR_RELEASE)" :

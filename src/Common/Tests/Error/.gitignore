@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /AddHandlerNullDef
 /AddHandlerNullHandler
 /AddHandlerNullName
@@ -30,5 +32,4 @@
 /SetErrorInvalidValue
 /SetErrorNullError
 /Tests
-/Debug
-/Release
+

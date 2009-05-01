@@ -8,63 +8,71 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 CLEANFILES = *~ 
 
 check_PROGRAMS =                                 \
-        .\Release\GetLongOptNullHandle.exe       \
-        .\Release\GetLongOptNullOpt.exe          \
-        .\Release\GetLongOptNullValue.exe        \
-        .\Release\GetLongOptPass.exe             \
-        .\Release\GetShortOptNullHandle.exe      \
-        .\Release\GetShortOptNullValue.exe       \
-        .\Release\GetShortOptPass.exe            \
-        .\Release\IsLongPresentNullHandle.exe    \
-        .\Release\IsLongPresentNullOpt.exe       \
-        .\Release\IsLongPresentPass.exe          \
-        .\Release\IsShortPresentNullHandle.exe   \
-        .\Release\IsShortPresentPass.exe         \
-        .\Release\SetOptionsNullHandle.exe       \
-        .\Release\SetOptionsNullOpts.exe         \
-        .\Release\SetOptionsNullEndedOpt.exe     \
-        .\Release\SetOptionsNullEndedComment.exe \
-        .\Release\SetOptionsNullEndedValue.exe   \
-        .\Release\SetOptionsNumOptsZero.exe      \
-        .\Release\SetOptionsPass.exe             \
-        .\Release\SetOptionsRepeatedLong.exe     \
-        .\Release\SetOptionsRepeatedShort.exe    \
-        .\Release\ShowUsageNullAddArgs.exe       \
-        .\Release\ShowUsageNullHandle.exe        \
-        .\Release\ShowUsageNullProgName.exe      \
-        .\Release\ShowUsagePass.exe              \
-        .\Release\Tests.exe                      \
-        .\Release\UnsetOptNullHandle.exe         \
-        .\Release\ValidateArgcZero.exe           \
-        .\Release\ValidateNullArgv.exe           \
-        .\Release\ValidateNULLArgvi.exe          \
-        .\Release\ValidateNullHandle.exe         \
-        .\Release\ValidatePass.exe               
+        $(DIR_RELEASE)\GetLongOptNullHandle.exe       \
+        $(DIR_RELEASE)\GetLongOptNullOpt.exe          \
+        $(DIR_RELEASE)\GetLongOptNullValue.exe        \
+        $(DIR_RELEASE)\GetLongOptPass.exe             \
+        $(DIR_RELEASE)\GetShortOptNullHandle.exe      \
+        $(DIR_RELEASE)\GetShortOptNullValue.exe       \
+        $(DIR_RELEASE)\GetShortOptPass.exe            \
+        $(DIR_RELEASE)\IsLongPresentNullHandle.exe    \
+        $(DIR_RELEASE)\IsLongPresentNullOpt.exe       \
+        $(DIR_RELEASE)\IsLongPresentPass.exe          \
+        $(DIR_RELEASE)\IsShortPresentNullHandle.exe   \
+        $(DIR_RELEASE)\IsShortPresentPass.exe         \
+        $(DIR_RELEASE)\SetOptionsNullHandle.exe       \
+        $(DIR_RELEASE)\SetOptionsNullOpts.exe         \
+        $(DIR_RELEASE)\SetOptionsNullEndedOpt.exe     \
+        $(DIR_RELEASE)\SetOptionsNullEndedComment.exe \
+        $(DIR_RELEASE)\SetOptionsNullEndedValue.exe   \
+        $(DIR_RELEASE)\SetOptionsNumOptsZero.exe      \
+        $(DIR_RELEASE)\SetOptionsPass.exe             \
+        $(DIR_RELEASE)\SetOptionsRepeatedLong.exe     \
+        $(DIR_RELEASE)\SetOptionsRepeatedShort.exe    \
+        $(DIR_RELEASE)\ShowUsageNullAddArgs.exe       \
+        $(DIR_RELEASE)\ShowUsageNullHandle.exe        \
+        $(DIR_RELEASE)\ShowUsageNullProgName.exe      \
+        $(DIR_RELEASE)\ShowUsagePass.exe              \
+        $(DIR_RELEASE)\Tests.exe                      \
+        $(DIR_RELEASE)\UnsetOptNullHandle.exe         \
+        $(DIR_RELEASE)\ValidateArgcZero.exe           \
+        $(DIR_RELEASE)\ValidateNullArgv.exe           \
+        $(DIR_RELEASE)\ValidateNULLArgvi.exe          \
+        $(DIR_RELEASE)\ValidateNullHandle.exe         \
+        $(DIR_RELEASE)\ValidatePass.exe               
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug\Tests
-	-@rmdir /Q Debug\Tests
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release\Tests
-	-@rmdir /Q Release\Tests
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)\Tests
+	-@rmdir /Q $(DIR_DEBUG)\Tests
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)\Tests
+	-@rmdir /Q $(DIR_RELEASE)\Tests
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q ProjectFiles\*.dep
 	-@erase /Q ProjectFiles\*.plg
 	-@erase /Q ProjectFiles\*.mak

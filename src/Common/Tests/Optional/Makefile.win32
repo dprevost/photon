@@ -8,26 +8,34 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 CLEANFILES = *~ 
 check_PROGRAMS =                            \
-        .\Release\ProcessLockShouldFail.exe \
-        .\Release\ThreadLockShouldFail.exe  
+        $(DIR_RELEASE)\ProcessLockShouldFail.exe \
+        $(DIR_RELEASE)\ThreadLockShouldFail.exe  
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
 # -----------------------------------------
 
-check: $(OUTDIR) $(check_PROGRAMS) 
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS) 
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-.\Release\Barrier.obj: ..\ThreadLock\Barrier.h ..\ThreadLock\Barrier.c
+$(DIR_RELEASE)\Barrier.obj: ..\ThreadLock\Barrier.h ..\ThreadLock\Barrier.c
 	$(CPP) /c $(CFLAGS_RELEASE) ..\ThreadLock\Barrier.c 
    
-.\Release\ThreadWrap.obj: ..\ThreadLock\ThreadWrap.h ..\ThreadLock\ThreadWrap.c
+$(DIR_RELEASE)\ThreadWrap.obj: ..\ThreadLock\ThreadWrap.h ..\ThreadLock\ThreadWrap.c
 	$(CPP) /c $(CFLAGS_RELEASE) ..\ThreadLock\ThreadWrap.c 
 
 .\Debug\Barrier.obj: ..\ThreadLock\Barrier.h ..\ThreadLock\Barrier.c
@@ -36,28 +44,28 @@ check: $(OUTDIR) $(check_PROGRAMS)
 .\Debug\ThreadWrap.obj: ..\ThreadLock\ThreadWrap.h ..\ThreadLock\ThreadWrap.c
 	$(CPP) /c $(CFLAGS_DEBUG) ..\ThreadLock\ThreadWrap.c 
 
-.\Release\ThreadLockShouldFail.exe: .\Release\ThreadWrap.obj .\Release\Barrier.obj ThreadLockShouldFail.c
-	$(CPP) $(CFLAGS_RELEASE) ThreadLockShouldFail.c .\Release\ThreadWrap.obj .\Release\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
+$(DIR_RELEASE)\ThreadLockShouldFail.exe: $(DIR_RELEASE)\ThreadWrap.obj $(DIR_RELEASE)\Barrier.obj ThreadLockShouldFail.c
+	$(CPP) $(CFLAGS_RELEASE) ThreadLockShouldFail.c $(DIR_RELEASE)\ThreadWrap.obj $(DIR_RELEASE)\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
 
 .\Debug\ThreadLockShouldFail.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj ThreadLockShouldFail.c
 	$(CPP) $(CFLAGS_DEBUG) ThreadLockShouldFail.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug\ProcessLockShouldFail.exe
-	-@rmdir /Q Debug\ProcessLockShouldFail
-	-@erase /Q Debug\ThreadLockShouldFail.exe
-	-@rmdir /Q Debug\ThreadLockShouldFail
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release\ProcessLockShouldFail.exe
-	-@rmdir /Q Release\ProcessLockShouldFail
-	-@erase /Q Release\LockShouldFail.exe
-	-@rmdir /Q Release\LockShouldFail
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)\ProcessLockShouldFail.exe
+	-@rmdir /Q $(DIR_DEBUG)\ProcessLockShouldFail
+	-@erase /Q $(DIR_DEBUG)\ThreadLockShouldFail.exe
+	-@rmdir /Q $(DIR_DEBUG)\ThreadLockShouldFail
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)\ProcessLockShouldFail.exe
+	-@rmdir /Q $(DIR_RELEASE)\ProcessLockShouldFail
+	-@erase /Q $(DIR_RELEASE)\LockShouldFail.exe
+	-@rmdir /Q $(DIR_RELEASE)\LockShouldFail
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q ProjectFiles\*.dep
 	-@erase /Q ProjectFiles\*.plg
 	-@erase /Q ProjectFiles\*.mak

@@ -32,13 +32,14 @@ Option Explicit
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 Dim consoleMode, verbose, status, rc
-Dim progPath, tmpDir
+Dim tmpDir
 Dim objArgs, strArg, i
 Dim exeName
 Dim objWshScriptExec
 Dim objShell
 Dim fso
 Dim cmdFile
+Dim dll_path
 
 ' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 '
@@ -52,7 +53,6 @@ If Right(LCase(Wscript.FullName), 11) = "wscript.exe" Then
 End If
 
 verbose = False
-progPath = "..\Release"
 Set objArgs = WScript.Arguments
 Set objShell = CreateObject("WScript.Shell")
 
@@ -71,18 +71,25 @@ tmpDir = tmpDir + "\quasar"
 
 For Each strArg in objArgs
    If Left(LCase(strArg), 6) = "--path" AND Len(strArg) > 6 Then
-      progPath = Right(strArg, Len(strArg)-7)
+      dll_path = Right(strArg, Len(strArg)-7)
+   end if
+   If Left(LCase(strArg), 9) = "--dllpath" AND Len(strArg) > 9 Then
+      dll_path = Right(strArg, Len(strArg)-10)
    end if
    if LCase(strArg) = "--verbose" then 
       verbose = True
    end if
 Next 
 
+dim WshEnv
+Set WshEnv = objShell.Environment("Process") 
+WshEnv("Path") = WshEnv("Path") & ";" & fso.GetAbsolutePathName(dll_path)
+
 if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
 end if
 
-exeName = progPath & "\" & "quasar.exe -z"
+exeName = dll_path & "\" & "quasar.exe -z"
 if consoleMode then 
    WScript.Echo "Running " & exeName
    Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exeName & Chr(34))
@@ -108,7 +115,7 @@ end if
 fso.CreateFolder(tmpDir)
 
 ' Run it with a missing config file
-exeName = progPath & "\" & "quasar.exe -c " & tmpDir & "\cfg.xml"
+exeName = dll_path & "\" & "quasar.exe -c " & tmpDir & "\cfg.xml"
 if consoleMode then 
    WScript.Echo "Running " & exeName
    Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exeName & Chr(34))
@@ -131,7 +138,7 @@ end if
 ' Run it with an empty file
 Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
 cmdFile.Close
-exeName = progPath & "\" & "quasar.exe -c " & tmpDir & "\cfg.xml"
+exeName = dll_path & "\" & "quasar.exe -c " & tmpDir & "\cfg.xml"
 if consoleMode then 
    WScript.Echo "Running " & exeName
    Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exeName & Chr(34))
@@ -165,7 +172,7 @@ cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
-exeName = progPath & "\" & "quasar.exe --test -c " & tmpDir & "\cfg.xml"
+exeName = dll_path & "\" & "quasar.exe --test -c " & tmpDir & "\cfg.xml"
 if consoleMode then 
    WScript.Echo "Running " & exeName
    Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exeName & Chr(34))
@@ -197,7 +204,7 @@ cmdFile.WriteLine("  <file_access access=""group"" />")
 cmdFile.WriteLine("</quasar_config>")
 cmdFile.Close
 
-exeName = progPath & "\" & "quasar.exe --test -c " & tmpDir & "\cfg.xml"
+exeName = dll_path & "\" & "quasar.exe --test -c " & tmpDir & "\cfg.xml"
 if consoleMode then 
    WScript.Echo "Running " & exeName
    Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exeName & Chr(34))

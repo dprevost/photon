@@ -42,7 +42,7 @@ Dim failed_tests(22)
 Dim ok_programs(11)
 Dim fail_programs(10)
 
-Dim exe_name, prog_path, program, qsr_path, tmpDir, cmdFile, exeName
+Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
 Dim objArgs, strArg, i
 dim strOutput
@@ -95,7 +95,7 @@ Set objShellqsr = CreateObject("WScript.Shell")
 verbose = False
 
 prog_path = "Release"
-qsr_path = "..\..\..\Release"
+qsr_path = "..\..\..\Release2005"
 Set objArgs = WScript.Arguments
 
 ' ***********************************************************************
@@ -108,6 +108,9 @@ For Each strArg in objArgs
    If Left(LCase(strArg), 6) = "--path" AND Len(strArg) > 6 Then
       prog_path = Right(strArg, Len(strArg)-7)
    end if
+   If Left(LCase(strArg), 9) = "--dllpath" AND Len(strArg) > 9 Then
+      dll_path = Right(strArg, Len(strArg)-10)
+   end if
    If Left(LCase(strArg), 6) = "--qsrpath" AND Len(strArg) > 8 Then
       qsr_path = Right(strArg, Len(strArg)-9)
    end if
@@ -115,6 +118,10 @@ For Each strArg in objArgs
       verbose = True
    end if
 Next 
+
+dim WshEnv
+Set WshEnv = objShell.Environment("Process") 
+WshEnv("Path") = WshEnv("Path") & ";" & fso.GetAbsolutePathName(dll_path)
 
 if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
