@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /FiniNullBitmap
 /FiniPass
 /GetLengthPass
@@ -24,5 +26,3 @@
 /SetFreeNullOffset
 /SetFreeNullBitmap
 /SetFreePass
-/Debug
-/Release

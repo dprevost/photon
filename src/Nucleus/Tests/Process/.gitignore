@@ -1,3 +1,7 @@
+/Makefile
+/Makefile.in
+/Debug2005
+/Release2005
 /AddNullApiSession
 /AddNullContext
 /AddNullProcess
@@ -19,10 +23,7 @@
 /InitNullProcess
 /InitPass
 /InitZeroPid
-/Makefile
-/Makefile.in
 /RemoveNullContext
 /RemoveNullProcess
 /RemoveNullSession
 /RemovePass
-/Release

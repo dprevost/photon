@@ -34,20 +34,18 @@ int main()
    char * key  = "my key";
    char * data = "my data";
    psonHashTxItem * pItem;
-   psoObjectDefinition def = { 
-      PSO_HASH_MAP, 
-      1, 
-      { "MyKey", PSO_KEY_VARCHAR, 100 }, 
-      { { "Field_1", PSO_VARCHAR, 0, 1, 100, 0, 0 } } 
-   };
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
+   psonKeyDefinition keyDef;
+   psonDataDefinition fields;
    
    pHashMap = initHashMapTest( expectedToPass, &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonHashMapInit( pHashMap, 
-                         0, 1, 0, &status, 4, 
-                         "Map1", SET_OFFSET(pHashMap), &def, &context );
+   ok = psonHashMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
+                         SET_OFFSET(pHashMap), 
+                         &def, &keyDef,
+                         &fields, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
@@ -57,6 +55,7 @@ int main()
                            6,
                            (const void *) data,
                            7,
+                           NULL,
                            &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

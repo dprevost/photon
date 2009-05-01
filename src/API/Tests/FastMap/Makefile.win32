@@ -8,54 +8,62 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 check_PROGRAMS =                           \
-        .\Release\Close.exe                \
-        .\Release\Create.exe               \
-        .\Release\Delete.exe               \
-        .\Release\Definition.exe           \
-        .\Release\Edit.exe                 \
-        .\Release\Empty.exe                \
-        .\Release\FirstNullEntry.exe       \
-        .\Release\FirstNullHandle.exe      \
-        .\Release\FirstPass.exe            \
-        .\Release\FirstWrongHandle.exe     \
-        .\Release\Get.exe                  \
-        .\Release\GetFirst.exe             \
-        .\Release\GetNext.exe              \
-        .\Release\Insert.exe               \
-        .\Release\NextNoFirst.exe          \
-        .\Release\NextNullEntry.exe        \
-        .\Release\NextNullHandle.exe       \
-        .\Release\NextPass.exe             \
-        .\Release\NextWrongHandle.exe      \
-        .\Release\OpenNoSession.exe        \
-        .\Release\OpenPass.exe             \
-        .\Release\Replace.exe              \
-        .\Release\RetrieveNullEntry.exe    \
-        .\Release\RetrieveNullHandle.exe   \
-        .\Release\RetrieveNullKey.exe      \
-        .\Release\RetrievePass.exe         \
-        .\Release\RetrieveWrongHandle.exe  \
-        .\Release\RetrieveZeroLength.exe   \
-        .\Release\Status.exe               \
-        .\Release\Tests.exe                
+        $(DIR_RELEASE)\Close.exe                \
+        $(DIR_RELEASE)\Create.exe               \
+        $(DIR_RELEASE)\Delete.exe               \
+        $(DIR_RELEASE)\Definition.exe           \
+        $(DIR_RELEASE)\Edit.exe                 \
+        $(DIR_RELEASE)\Empty.exe                \
+        $(DIR_RELEASE)\FirstNullEntry.exe       \
+        $(DIR_RELEASE)\FirstNullHandle.exe      \
+        $(DIR_RELEASE)\FirstPass.exe            \
+        $(DIR_RELEASE)\FirstWrongHandle.exe     \
+        $(DIR_RELEASE)\Get.exe                  \
+        $(DIR_RELEASE)\GetFirst.exe             \
+        $(DIR_RELEASE)\GetNext.exe              \
+        $(DIR_RELEASE)\Insert.exe               \
+        $(DIR_RELEASE)\NextNoFirst.exe          \
+        $(DIR_RELEASE)\NextNullEntry.exe        \
+        $(DIR_RELEASE)\NextNullHandle.exe       \
+        $(DIR_RELEASE)\NextPass.exe             \
+        $(DIR_RELEASE)\NextWrongHandle.exe      \
+        $(DIR_RELEASE)\OpenNoSession.exe        \
+        $(DIR_RELEASE)\OpenPass.exe             \
+        $(DIR_RELEASE)\Replace.exe              \
+        $(DIR_RELEASE)\RetrieveNullEntry.exe    \
+        $(DIR_RELEASE)\RetrieveNullHandle.exe   \
+        $(DIR_RELEASE)\RetrieveNullKey.exe      \
+        $(DIR_RELEASE)\RetrievePass.exe         \
+        $(DIR_RELEASE)\RetrieveWrongHandle.exe  \
+        $(DIR_RELEASE)\RetrieveZeroLength.exe   \
+        $(DIR_RELEASE)\Status.exe               \
+        $(DIR_RELEASE)\Tests.exe                
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

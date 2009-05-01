@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /*.tlog
 /CloseNoInit
 /CloseNULLLog
@@ -15,5 +17,3 @@
 /LogNULLLog
 /LogPass
 /LogFileTest
-/Debug
-/Release

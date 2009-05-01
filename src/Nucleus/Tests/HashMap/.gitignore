@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /CommitAddNullContext
 /CommitAddNullHash
 /CommitAddNullItem
@@ -78,4 +80,3 @@
 /StatusNullHash
 /StatusNullStatus
 /StatusPass
-/Release

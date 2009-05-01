@@ -18,44 +18,44 @@
 
 LINK32=link.exe
 
-OUTDIR_RELEASE = .\Release
-INTDIR_RELEASE = .\Release
-OUTDIR_DEBUG   = .\Debug
-INTDIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
+DLL_RELEASE = ..\Release2005
+DLL_DEBUG   = ..\Debug2005
 
-CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
+CLEANFILES = *~ *.dep *.plg *.ncb
 
 W32_SYS_LIBS=kernel32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\photonNucleus.dll" /implib:"$(OUTDIR_RELEASE)\photonNucleus.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\photonNucleus.dll"   /implib:"$(OUTDIR_DEBUG)\photonNucleus.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(DIR_RELEASE)\photonNucleus.dll" /implib:"$(DIR_RELEASE)\photonNucleus.lib" /libpath:"$(DLL_RELEASE)"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(DIR_DEBUG)\photonNucleus.dll"   /implib:"$(DIR_DEBUG)\photonNucleus.lib"   /libpath:"$(DLL_DEBUG)"
 
-CFLAGS_DEBUG   = /Od /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd /Fp".\Debug/Nucleus.pch" /Fo".\Debug/" /Fd".\Debug/" /W4 /nologo /c /Zi /TC /errorReport:prompt
-CFLAGS_RELEASE = /O2 /Ob1 /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc /MD /Gy /Fp".\Release/Nucleus.pch" /Fo".\Release/" /Fd".\Release/" /W4 /nologo /c /TC /errorReport:prompt
+CFLAGS_DEBUG   = /Od /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd /Fp"$(DIR_DEBUG)/Nucleus.pch" /Fo"$(DIR_DEBUG)/" /Fd"$(DIR_DEBUG)/" /W4 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_ENGINE" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc /MD /Gy /Fp"$(DIR_RELEASE)/Nucleus.pch" /Fo"$(DIR_RELEASE)/" /Fd"$(DIR_RELEASE)/" /W4 /nologo /c /TC /errorReport:prompt
 
-OBJS_RELEASE=                                   \
-        "$(INTDIR_RELEASE)\BlockGroup.obj"      \
-        "$(INTDIR_RELEASE)\Folder.obj"          \
-        "$(INTDIR_RELEASE)\Hash.obj"            \
-        "$(INTDIR_RELEASE)\HashTx.obj"          \
-        "$(INTDIR_RELEASE)\hash_fnv.obj"        \
-        "$(INTDIR_RELEASE)\HashMap.obj"         \
-        "$(INTDIR_RELEASE)\InitEngine.obj"      \
-        "$(INTDIR_RELEASE)\LinkedList.obj"      \
-        "$(INTDIR_RELEASE)\LogFile.obj"         \
-        "$(INTDIR_RELEASE)\Map.obj"             \
-        "$(INTDIR_RELEASE)\MemBitmap.obj"       \
-        "$(INTDIR_RELEASE)\MemoryAllocator.obj" \
-        "$(INTDIR_RELEASE)\MemoryObject.obj"    \
-        "$(INTDIR_RELEASE)\Process.obj"         \
-        "$(INTDIR_RELEASE)\ProcessManager.obj"  \
-        "$(INTDIR_RELEASE)\Queue.obj"           \
-        "$(INTDIR_RELEASE)\Session.obj"         \
-        "$(INTDIR_RELEASE)\TopFolder.obj"       \
-        "$(INTDIR_RELEASE)\Transaction.obj"     \
-        "$(INTDIR_RELEASE)\psoErrorHandler.obj" 
+OBJS_RELEASE=                                \
+        "$(DIR_RELEASE)\BlockGroup.obj"      \
+        "$(DIR_RELEASE)\FastMap.obj"         \
+        "$(DIR_RELEASE)\Folder.obj"          \
+        "$(DIR_RELEASE)\Hash.obj"            \
+        "$(DIR_RELEASE)\HashTx.obj"          \
+        "$(DIR_RELEASE)\hash_fnv.obj"        \
+        "$(DIR_RELEASE)\HashMap.obj"         \
+        "$(DIR_RELEASE)\InitEngine.obj"      \
+        "$(DIR_RELEASE)\LinkedList.obj"      \
+        "$(DIR_RELEASE)\LogFile.obj"         \
+        "$(DIR_RELEASE)\MemBitmap.obj"       \
+        "$(DIR_RELEASE)\MemoryAllocator.obj" \
+        "$(DIR_RELEASE)\MemoryObject.obj"    \
+        "$(DIR_RELEASE)\Process.obj"         \
+        "$(DIR_RELEASE)\ProcessManager.obj"  \
+        "$(DIR_RELEASE)\Queue.obj"           \
+        "$(DIR_RELEASE)\Session.obj"         \
+        "$(DIR_RELEASE)\TopFolder.obj"       \
+        "$(DIR_RELEASE)\Transaction.obj"     \
+        "$(DIR_RELEASE)\psoErrorHandler.obj" 
 
-OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release2005\=.\Debug2005\)
 
 ###########################################################################
 #
@@ -63,29 +63,29 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 #
 ###########################################################################
 
-.c{$(INTDIR_RELEASE)}.obj::
+.c{$(DIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
-.c{$(INTDIR_DEBUG)}.obj::
+.c{$(DIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonNucleus.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\photonNucleus.dll
+all: $(DIR_RELEASE) $(DIR_RELEASE)\photonNucleus.dll $(DIR_DEBUG) $(DIR_DEBUG)\photonNucleus.dll
 
-"$(OUTDIR_RELEASE)\photonNucleus.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\Release\photonNucleus.dll
-	-del ..\Release\photonNucleus.lib
+"$(DIR_RELEASE)\photonNucleus.dll" : "$(DIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del $(DLL_RELEASE)\photonNucleus.dll
+	-del $(DLL_RELEASE)\photonNucleus.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-	mt.exe -manifest $(OUTDIR_RELEASE)\photonNucleus.dll.manifest -outputresource:$(OUTDIR_RELEASE)\photonNucleus.dll;2
-   copy Release\photonNucleus.dll ..\Release
-	copy Release\photonNucleus.lib ..\Release
+	mt.exe -manifest $(DIR_RELEASE)\photonNucleus.dll.manifest -outputresource:$(DIR_RELEASE)\photonNucleus.dll;2
+   copy $(DIR_RELEASE)\photonNucleus.dll $(DLL_RELEASE)
+	copy $(DIR_RELEASE)\photonNucleus.lib $(DLL_RELEASE)
 
-"$(OUTDIR_DEBUG)\photonNucleus.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   -del ..\Debug\photonNucleus.dll
-	-del ..\Debug\photonNucleus.lib
+"$(DIR_DEBUG)\photonNucleus.dll" : "$(DIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del $(DLL_DEBUG)\photonNucleus.dll
+	-del $(DLL_DEBUG)\photonNucleus.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-	mt.exe -manifest $(OUTDIR_DEBUG)\photonNucleus.dll.manifest -outputresource:$(OUTDIR_DEBUG)\photonNucleus.dll;2
-   copy debug\photonNucleus.dll ..\Debug
-	copy debug\photonNucleus.lib ..\Debug
+	mt.exe -manifest $(DIR_DEBUG)\photonNucleus.dll.manifest -outputresource:$(DIR_DEBUG)\photonNucleus.dll;2
+   copy $(DIR_DEBUG)\photonNucleus.dll $(DLL_DEBUG)
+	copy $(DIR_DEBUG)\photonNucleus.lib $(DLL_DEBUG)
 
 ###########################################################################
 #
@@ -99,18 +99,18 @@ check: all
 checkdebug: all
 	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-"$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)" mkdir "$(DIR_DEBUG)"
    
 clean: 
 	cd Tests && nmake -f Makefile.win32 clean && cd ..
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 
 

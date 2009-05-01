@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
-AddKeyField
-Construct
-GetNext
+/Debug2005
+/Release2005
+/AddKeyField
+/Construct
+/GetNext

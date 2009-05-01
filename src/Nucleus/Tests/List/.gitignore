@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /FiniInvSig
 /FiniNullList
 /FiniPass
@@ -71,5 +73,3 @@
 /ResetPass
 /TestSmall
 /TestBig
-/Debug
-/Release

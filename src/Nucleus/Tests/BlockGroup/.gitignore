@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /FiniNullGroup
 /FiniPass
 /InitInvalidType
@@ -7,5 +9,3 @@
 /InitNullOffset
 /InitPass
 /InitZeroPages
-/Debug
-/Release

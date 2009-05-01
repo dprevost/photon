@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Release2005
+/Debug2005
 /BackStatusInvalidSig
 /BackStatusMemNull
 /BackStatusNameEmpty
@@ -52,6 +54,4 @@
 /SynchMemNull
 /SynchPass
 /Tests
-/Release
-/Debug
 /MemFile.mem

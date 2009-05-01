@@ -8,66 +8,74 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 check_PROGRAMS =                              \
-        .\Release\CloseNullContext.exe        \
-        .\Release\CloseNullItem.exe           \
-        .\Release\ClosePass.exe               \
-        .\Release\CreateInvalidNameLength.exe \
-        .\Release\CreateNullContext.exe       \
-        .\Release\CreateNullDefinition.exe    \
-        .\Release\CreateNullFolder.exe        \
-        .\Release\CreateNullName.exe          \
-        .\Release\CreatePass.exe              \
-        .\Release\CreateWrongType.exe         \
-        .\Release\DestroyNullContext.exe      \
-        .\Release\DestroyNullFolder.exe       \
-        .\Release\DestroyNullName.exe         \
-        .\Release\DestroyPass.exe             \
-        .\Release\EditNullContext.exe         \
-        .\Release\EditNullFolder.exe          \
-        .\Release\EditNullItem.exe            \
-        .\Release\EditNullName.exe            \
-        .\Release\EditPass.exe                \
-        .\Release\EditWrongLength.exe         \
-        .\Release\EditWrongType.exe           \
-        .\Release\EditZeroLength.exe          \
-        .\Release\GetDefNullContext.exe       \
-        .\Release\GetDefNullDataDef.exe       \
-        .\Release\GetDefNullDef.exe           \
-        .\Release\GetDefNullFolder.exe        \
-        .\Release\GetDefNullKeyDef.exe        \
-        .\Release\GetDefNullName.exe          \
-        .\Release\GetDefPass.exe              \
-        .\Release\OpenNullContext.exe         \
-        .\Release\OpenNullItem.exe            \
-        .\Release\OpenNullFolder.exe          \
-        .\Release\OpenNullName.exe            \
-        .\Release\OpenPass.exe                \
-        .\Release\OpenWrongLength.exe         \
-        .\Release\OpenWrongType.exe           \
-        .\Release\OpenZeroLength.exe          \
-        .\Release\StatusNullContext.exe       \
-        .\Release\StatusNullFolder.exe        \
-        .\Release\StatusNullName.exe          \
-        .\Release\StatusNullStatus.exe        \
-        .\Release\StatusPass.exe              
+        $(DIR_RELEASE)\CloseNullContext.exe        \
+        $(DIR_RELEASE)\CloseNullItem.exe           \
+        $(DIR_RELEASE)\ClosePass.exe               \
+        $(DIR_RELEASE)\CreateInvalidNameLength.exe \
+        $(DIR_RELEASE)\CreateNullContext.exe       \
+        $(DIR_RELEASE)\CreateNullDefinition.exe    \
+        $(DIR_RELEASE)\CreateNullFolder.exe        \
+        $(DIR_RELEASE)\CreateNullName.exe          \
+        $(DIR_RELEASE)\CreatePass.exe              \
+        $(DIR_RELEASE)\CreateWrongType.exe         \
+        $(DIR_RELEASE)\DestroyNullContext.exe      \
+        $(DIR_RELEASE)\DestroyNullFolder.exe       \
+        $(DIR_RELEASE)\DestroyNullName.exe         \
+        $(DIR_RELEASE)\DestroyPass.exe             \
+        $(DIR_RELEASE)\EditNullContext.exe         \
+        $(DIR_RELEASE)\EditNullFolder.exe          \
+        $(DIR_RELEASE)\EditNullItem.exe            \
+        $(DIR_RELEASE)\EditNullName.exe            \
+        $(DIR_RELEASE)\EditPass.exe                \
+        $(DIR_RELEASE)\EditWrongLength.exe         \
+        $(DIR_RELEASE)\EditWrongType.exe           \
+        $(DIR_RELEASE)\EditZeroLength.exe          \
+        $(DIR_RELEASE)\GetDefNullContext.exe       \
+        $(DIR_RELEASE)\GetDefNullDataDef.exe       \
+        $(DIR_RELEASE)\GetDefNullDef.exe           \
+        $(DIR_RELEASE)\GetDefNullFolder.exe        \
+        $(DIR_RELEASE)\GetDefNullKeyDef.exe        \
+        $(DIR_RELEASE)\GetDefNullName.exe          \
+        $(DIR_RELEASE)\GetDefPass.exe              \
+        $(DIR_RELEASE)\OpenNullContext.exe         \
+        $(DIR_RELEASE)\OpenNullItem.exe            \
+        $(DIR_RELEASE)\OpenNullFolder.exe          \
+        $(DIR_RELEASE)\OpenNullName.exe            \
+        $(DIR_RELEASE)\OpenPass.exe                \
+        $(DIR_RELEASE)\OpenWrongLength.exe         \
+        $(DIR_RELEASE)\OpenWrongType.exe           \
+        $(DIR_RELEASE)\OpenZeroLength.exe          \
+        $(DIR_RELEASE)\StatusNullContext.exe       \
+        $(DIR_RELEASE)\StatusNullFolder.exe        \
+        $(DIR_RELEASE)\StatusNullName.exe          \
+        $(DIR_RELEASE)\StatusNullStatus.exe        \
+        $(DIR_RELEASE)\StatusPass.exe              
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

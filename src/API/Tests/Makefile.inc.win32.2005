@@ -12,7 +12,6 @@
 # /W4 : warning level 4
 # /O2 : optimize
 # _MBCS Multi-bytes chars (not the 16 bits of win32 unicode). Not used yet.
-# /GX ???
 # /nologo - suppress MS banner since it is a bit hard to see errors with it
 #           turned on
 
@@ -25,13 +24,12 @@ DIR_DEBUG   = .\Debug2005
 DLL_RELEASE = ..\..\..\Release2005
 DLL_DEBUG   = ..\..\..\Debug2005
 
-W32_SYS_LIBS=kernel32.lib advapi32.lib
-LDD_FLAGS       = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release2005" 
-LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug2005" /PDB:"$(DIR_DEBUG)\\"
+W32_SYS_LIBS = kernel32.lib ws2_32.lib
+LDD_FLAGS       = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"$(DLL_RELEASE)" 
+LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"$(DLL_DEBUG)"  /PDB:"$(DIR_DEBUG)\\"
 
-
-CFLAGS_DEBUG=   /nologo /MDd /W4 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../../.." /I "../../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\" 
+CFLAGS_RELEASE= /O2 /Ob1 /I "..\..\.." /I "..\..\..\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MD  /Gy  /Fo"$(DIR_RELEASE)\\"       /W4 /nologo /TC /errorReport:prompt
+CFLAGS_DEBUG  = /Od      /I "..\..\.." /I "..\..\..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MDd      /Fo"$(DIR_DEBUG)\\" /W4 /nologo /TC /errorReport:prompt
 
 .c{$(DIR_RELEASE)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"

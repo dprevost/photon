@@ -20,56 +20,56 @@ W32_SYS_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi3
 LDD_FLAGS = $(W32_SYS_LIBS)     photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Release" 
 LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Debug" 
 
-OUTDIR=.\Release
-INTDIR=.\Release
-OUTDIR_DEBUG=.\Debug
-INTDIR_DEBUG=.\Debug
+DIR_RELEASE=.\Release
+DIR_RELEASE=.\Release
+DIR_DEBUG=.\Debug
+DIR_DEBUG=.\Debug
 
-CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\" 
 CPPFLAGS_DEBUG=   $(CFLAGS_DEBUG)   /GX
 CPPFLAGS_RELEASE= $(CFLAGS_RELEASE) /GX
 
-.c{$(OUTDIR)}.exe:
+.c{$(DIR_RELEASE)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
 
-.cpp{$(OUTDIR)}.exe:
+.cpp{$(DIR_RELEASE)}.exe:
 	$(CPP) $(CPPFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
 
-.c{$(OUTDIR_DEBUG)}.exe:
+.c{$(DIR_DEBUG)}.exe:
 	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-.cpp{$(OUTDIR_DEBUG)}.exe:
+.cpp{$(DIR_DEBUG)}.exe:
 	$(CPP) $(CPPFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-"$(OUTDIR)" :
-	if not exist "$(OUTDIR)/" mkdir "$(OUTDIR)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)/" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)/" mkdir "$(DIR_DEBUG)"
 
 ###########################################################################
 
 all: 
 
 check_PROGRAMS =                         \
-        .\Release\TransactionHashMap.exe \
-        .\Release\TransactionQueue.exe   \
-        .\Release\InjectErrorsShMem.exe  \
-        .\Release\OutOfMemory.exe        
+        $(DIR_RELEASE)\TransactionHashMap.exe \
+        $(DIR_RELEASE)\TransactionQueue.exe   \
+        $(DIR_RELEASE)\InjectErrorsShMem.exe  \
+        $(DIR_RELEASE)\OutOfMemory.exe        
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

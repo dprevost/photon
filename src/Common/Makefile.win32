@@ -18,33 +18,33 @@
 
 LINK32=link.exe
 
-OUTDIR_RELEASE = .\Release
-INTDIR_RELEASE = .\Release
-OUTDIR_DEBUG   = .\Debug
-INTDIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
+DLL_RELEASE = ..\Release2005
+DLL_DEBUG   = ..\Debug2005
 
-CLEANFILES = *~ Common.plg Common.dep vc60.idb vc60.pdb Common.mak Common.ncb
+CLEANFILES = *~ Common.plg Common.dep Common.mak Common.ncb
 
 W32_SYS_LIBS=kernel32.lib advapi32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\photonCommon.dll" /implib:"$(OUTDIR_RELEASE)\photonCommon.lib"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\photonCommon.dll"   /implib:"$(OUTDIR_DEBUG)\photonCommon.lib"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(DIR_RELEASE)\photonCommon.dll" /implib:"$(DIR_RELEASE)\photonCommon.lib"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(DIR_DEBUG)\photonCommon.dll"   /implib:"$(DIR_DEBUG)\photonCommon.lib"
 
-CFLAGS_DEBUG   = /Od      /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd     /Fp".\Debug/Common.pch"   /Fo".\Debug/"   /Fd".\Debug/" /FR".\Debug\\" /W4 /nologo /c /Zi /TC /errorReport:prompt
-CFLAGS_RELEASE = /O2 /Ob1 /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc   /MD  /Gy /Fp".\Release/Common.pch" /Fo".\Release/" /Fd".\Release/" /W4 /nologo /c /TC /errorReport:prompt
+CFLAGS_DEBUG   = /Od      /I ".." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd     /Fp"$(DIR_DEBUG)/Common.pch"   /Fo"$(DIR_DEBUG)/"   /Fd"$(DIR_DEBUG)/" /FR"$(DIR_DEBUG)\\" /W4 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I ".." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_COMMON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc   /MD  /Gy /Fp"$(DIR_RELEASE)/Common.pch" /Fo"$(DIR_RELEASE)/" /Fd"$(DIR_RELEASE)/" /W4 /nologo /c /TC /errorReport:prompt
 
 OBJS_RELEASE=                                \
-        "$(INTDIR_RELEASE)\DirAccess.obj"    \
-        "$(INTDIR_RELEASE)\ErrorHandler.obj" \
-        "$(INTDIR_RELEASE)\localtime_r.obj"  \
-        "$(INTDIR_RELEASE)\MemoryFile.obj"   \
-        "$(INTDIR_RELEASE)\Options.obj"      \
-        "$(INTDIR_RELEASE)\ProcessLock.obj"  \
-        "$(INTDIR_RELEASE)\strnlen.obj"      \
-        "$(INTDIR_RELEASE)\ThreadLock.obj"   \
-        "$(INTDIR_RELEASE)\Timer.obj"        
+        "$(DIR_RELEASE)\DirAccess.obj"    \
+        "$(DIR_RELEASE)\ErrorHandler.obj" \
+        "$(DIR_RELEASE)\localtime_r.obj"  \
+        "$(DIR_RELEASE)\MemoryFile.obj"   \
+        "$(DIR_RELEASE)\Options.obj"      \
+        "$(DIR_RELEASE)\ProcessLock.obj"  \
+        "$(DIR_RELEASE)\strnlen.obj"      \
+        "$(DIR_RELEASE)\ThreadLock.obj"   \
+        "$(DIR_RELEASE)\Timer.obj"        
 
-OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release2005\=.\Debug2005\)
 
 ###########################################################################
 #
@@ -52,29 +52,29 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 #
 ###########################################################################
 
-.c{$(INTDIR_RELEASE)}.obj::
+.c{$(DIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
-.c{$(INTDIR_DEBUG)}.obj::
+.c{$(DIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\photonCommon.dll $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\photonCommon.dll
+all: $(DIR_RELEASE) $(DIR_RELEASE)\photonCommon.dll $(DIR_DEBUG) $(DIR_DEBUG)\photonCommon.dll
 
-"$(OUTDIR_RELEASE)\photonCommon.dll" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\Release\photonCommon.dll
-	-del ..\Release\photonCommon.lib
+"$(DIR_RELEASE)\photonCommon.dll" : "$(DIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del $(DLL_RELEASE)\photonCommon.dll
+	-del $(DLL_RELEASE)\photonCommon.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
-	mt.exe -manifest $(OUTDIR_RELEASE)\photonCommon.dll.manifest -outputresource:$(OUTDIR_RELEASE)\photonCommon.dll;2
-   copy Release\photonCommon.dll ..\Release\photonCommon.dll
-	copy Release\photonCommon.lib ..\Release\photonCommon.lib
+	mt.exe -manifest $(DIR_RELEASE)\photonCommon.dll.manifest -outputresource:$(DIR_RELEASE)\photonCommon.dll;2
+   copy $(DIR_RELEASE)\photonCommon.dll $(DLL_RELEASE)\photonCommon.dll
+	copy $(DIR_RELEASE)\photonCommon.lib $(DLL_RELEASE)\photonCommon.lib
 
-"$(OUTDIR_DEBUG)\photonCommon.dll" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-   -del ..\Debug\photonCommon.dll
-	-del ..\Debug\photonCommon.lib
+"$(DIR_DEBUG)\photonCommon.dll" : "$(DIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+   -del $(DLL_DEBUG)\photonCommon.dll
+	-del $(DLL_DEBUG)\photonCommon.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
-	mt.exe -manifest $(OUTDIR_DEBUG)\photonCommon.dll.manifest -outputresource:$(OUTDIR_DEBUG)\photonCommon.dll;2
-   copy debug\photonCommon.dll ..\Debug\photonCommon.dll
-	copy debug\photonCommon.lib ..\Debug\photonCommon.lib
+	mt.exe -manifest $(DIR_DEBUG)\photonCommon.dll.manifest -outputresource:$(DIR_DEBUG)\photonCommon.dll;2
+   copy $(DIR_DEBUG)\photonCommon.dll $(DLL_DEBUG)\photonCommon.dll
+	copy $(DIR_DEBUG)\photonCommon.lib $(DLL_DEBUG)\photonCommon.lib
 
 ###########################################################################
 #
@@ -88,18 +88,18 @@ check: all
 checkdebug: all
 	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-"$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)" mkdir "$(DIR_DEBUG)"
    
 clean: 
 	cd Tests && nmake -f Makefile.win32 clean && cd ..
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 
 

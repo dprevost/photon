@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /AcquireInvalidSig
 /AcquireNullLock
 /AcquirePass
@@ -18,5 +20,3 @@
 /TryAcqInvalidSig
 /TryAcqNullLock
 /TryAcqPass
-/Debug
-/Release
