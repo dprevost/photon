@@ -30,8 +30,8 @@ W32_SYS_LIBS = kernel32.lib ws2_32.lib
 LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonCommon.lib photonNucleus.lib /nologo /dll /incremental:no        /MANIFEST /machine:I386 /out:"$(DIR_RELEASE)\photon.dll" /implib:"$(DIR_RELEASE)\photon.lib" /libpath:"$(DLL_RELEASE)"
 LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonCommon.lib photonNucleus.lib /nologo /dll /incremental:no /debug /MANIFEST /machine:I386 /out:"$(DIR_DEBUG)\photon.dll"   /implib:"$(DIR_DEBUG)\photon.lib"   /libpath:"$(DLL_DEBUG)"
 
-CFLAGS_RELEASE= /O2 /Ob1 /I ".." /I "..\include" /I /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc       /MD /Gy /Fp"$(DIR_RELEASE)\\API.pch" /Fo"$(DIR_RELEASE)\\" /Fd"$(DIR_RELEASE)\\" /W4 /nologo /c     /TC /errorReport:prompt
-CFLAGS_DEBUG  = /Od      /I ".." /I "..\include" /I /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm     /EHsc /RTC1 /MDd    /Fp"$(DIR_DEBUG)\\API.pch"   /Fo"$(DIR_DEBUG)\\"   /Fd"$(DIR_DEBUG)\\"   /W4 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE= /O2 /Ob1 /I ".." /I "..\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc       /MD /Gy /Fp"$(DIR_RELEASE)\\API.pch" /Fo"$(DIR_RELEASE)\\" /Fd"$(DIR_RELEASE)\\" /W4 /nologo /c     /TC /errorReport:prompt
+CFLAGS_DEBUG  = /Od      /I ".." /I "..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BUILD_PHOTON_API" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm     /EHsc /RTC1 /MDd    /Fp"$(DIR_DEBUG)\\API.pch"   /Fo"$(DIR_DEBUG)\\"   /Fd"$(DIR_DEBUG)\\"   /W4 /nologo /c /Zi /TC /errorReport:prompt
 
 OBJS_RELEASE=                               \
         "$(DIR_RELEASE)\api.obj"            \
@@ -41,6 +41,7 @@ OBJS_RELEASE=                               \
         "$(DIR_RELEASE)\FastMap.obj"        \
         "$(DIR_RELEASE)\Folder.obj"         \
         "$(DIR_RELEASE)\HashMap.obj"        \
+        "$(DIR_RELEASE)\KeyDefinition.obj"  \
         "$(DIR_RELEASE)\Lifo.obj"           \
         "$(DIR_RELEASE)\Process.obj"        \
         "$(DIR_RELEASE)\Queue.obj"          \

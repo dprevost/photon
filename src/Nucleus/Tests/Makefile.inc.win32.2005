@@ -27,7 +27,7 @@ DLL_DEBUG   = ..\..\..\Debug2005
 
 W32_SYS_LIBS=kernel32.lib advapi32.lib
 LDD_FLAGS       = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Release2005" 
-LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug2005"
+LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /incremental:no /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../../../Debug2005" /PDB:"$(DIR_DEBUG)\\"
 
 
 CFLAGS_DEBUG=   /nologo /MDd /W4 /Zi /I "../../.." /I "../../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 

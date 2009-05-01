@@ -11,8 +11,8 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-DIR_RELEASE = .\Release
-DIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
 
 ###########################################################################
 #

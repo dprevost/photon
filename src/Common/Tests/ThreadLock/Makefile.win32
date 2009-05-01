@@ -53,17 +53,17 @@ $(DIR_RELEASE)\Barrier.obj: Barrier.h Barrier.c
 $(DIR_RELEASE)\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
 	$(CPP) /c $(CFLAGS_RELEASE) ThreadWrap.c 
 
-.\Debug\Barrier.obj: Barrier.h Barrier.c
+$(DIR_DEBUG)\Barrier.obj: Barrier.h Barrier.c
 	$(CPP) /c $(CFLAGS_DEBUG) Barrier.c 
    
-.\Debug\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
+$(DIR_DEBUG)\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
 	$(CPP) /c $(CFLAGS_DEBUG) ThreadWrap.c 
 
 $(DIR_RELEASE)\LockConcurrency.exe: $(DIR_RELEASE)\ThreadWrap.obj $(DIR_RELEASE)\Barrier.obj LockConcurrency.c
 	$(CPP) $(CFLAGS_RELEASE) LockConcurrency.c $(DIR_RELEASE)\ThreadWrap.obj $(DIR_RELEASE)\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
 
-.\Debug\LockConcurrency.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj LockConcurrency.c
-	$(CPP) $(CFLAGS_DEBUG) LockConcurrency.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
+$(DIR_DEBUG)\LockConcurrency.exe: $(DIR_DEBUG)\ThreadWrap.obj $(DIR_DEBUG)\Barrier.obj LockConcurrency.c
+	$(CPP) $(CFLAGS_DEBUG) LockConcurrency.c $(DIR_DEBUG)\ThreadWrap.obj $(DIR_DEBUG)\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
 checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)

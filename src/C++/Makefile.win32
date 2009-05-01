@@ -18,34 +18,39 @@
 
 LINK32=link.exe
 
-DIR_RELEASE = .\Release
-DIR_RELEASE = .\Release
-DIR_DEBUG   = .\Debug
-DIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
+DLL_RELEASE = ..\Release2005
+DLL_DEBUG   = ..\Debug2005
 
-CLEANFILES = *~ *.dep *.plg vc60.* *.ncb
+CLEANFILES = *~ *.dep *.plg *.ncb
 
 W32_SYS_LIBS=kernel32.lib advapi32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /dll /incremental:no /MANIFEST        /machine:I386 /out:"$(DIR_RELEASE)\photoncpp.dll" /implib:"$(DIR_RELEASE)\photoncpp.lib" /libpath:"..\Release"
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /dll /incremental:no /MANIFEST /debug /machine:I386 /out:"$(DIR_DEBUG)\photoncpp.dll"   /implib:"$(DIR_DEBUG)\photoncpp.lib"   /libpath:"..\Debug"
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /dll /incremental:no /MANIFEST        /machine:I386 /out:"$(DIR_RELEASE)\photoncpp.dll" /implib:"$(DIR_RELEASE)\photoncpp.lib" /libpath:"$(DLL_RELEASE)"
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /dll /incremental:no /MANIFEST /debug /machine:I386 /out:"$(DIR_DEBUG)\photoncpp.dll"   /implib:"$(DIR_DEBUG)\photoncpp.lib"   /libpath:"$(DLL_DEBUG)"
 
-CFLAGS_DEBUG   = /Od /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "CPP_EXPORTS" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd /Fp".\Debug/CPP.pch" /Fo".\Debug/" /Fd".\Debug/" /W3 /nologo /c /Zi /TP /errorReport:prompt
-CFLAGS_RELEASE = /O2 /Ob1 /I ".." /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "CPP_EXPORTS" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc /MD /Gy /Fp".\Release/CPP.pch" /Fo".\Release/" /Fd".\Release/" /W3 /nologo /c /TP /errorReport:prompt
+CFLAGS_DEBUG   = /Od /I ".." /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "CPP_EXPORTS" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MDd /Fp"$(DIR_DEBUG)/CPP.pch" /Fo"$(DIR_DEBUG)/" /Fd"$(DIR_DEBUG)/" /W3 /nologo /c /Zi /TP /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I ".." /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "CPP_EXPORTS" /D "BUILD_PHOTON" /D "_VC80_UPGRADE=0x0600" /D "_WINDLL" /D "_MBCS" /GF /FD /EHsc /MD /Gy /Fp"$(DIR_RELEASE)/CPP.pch" /Fo"$(DIR_RELEASE)/" /Fd"$(DIR_RELEASE)/" /W3 /nologo /c /TP /errorReport:prompt
 
-OBJS_RELEASE=                                 \
-        "$(DIR_RELEASE)\Definition.obj"    \
-        "$(DIR_RELEASE)\Exception.obj"     \
-        "$(DIR_RELEASE)\FastMap.obj"       \
-        "$(DIR_RELEASE)\FastMapEditor.obj" \
-        "$(DIR_RELEASE)\Folder.obj"        \
-        "$(DIR_RELEASE)\HashMap.obj"       \
-        "$(DIR_RELEASE)\Lifo.obj"          \
-        "$(DIR_RELEASE)\Process.obj"       \
-        "$(DIR_RELEASE)\Queue.obj"         \
-        "$(DIR_RELEASE)\Session.obj"       
+OBJS_RELEASE=                                   \
+        "$(DIR_RELEASE)\DataDefBuilderODBC.obj" \
+        "$(DIR_RELEASE)\DataDefBuilderUser.obj" \
+        "$(DIR_RELEASE)\DataDefinition.obj"     \
+        "$(DIR_RELEASE)\Exception.obj"          \
+        "$(DIR_RELEASE)\FastMap.obj"            \
+        "$(DIR_RELEASE)\FastMapEditor.obj"      \
+        "$(DIR_RELEASE)\Folder.obj"             \
+        "$(DIR_RELEASE)\HashMap.obj"            \
+        "$(DIR_RELEASE)\KeyDefBuilderODBC.obj"  \
+        "$(DIR_RELEASE)\KeyDefBuilderUser.obj"  \
+        "$(DIR_RELEASE)\KeyDefinition.obj"      \
+        "$(DIR_RELEASE)\Lifo.obj"               \
+        "$(DIR_RELEASE)\Process.obj"            \
+        "$(DIR_RELEASE)\Queue.obj"              \
+        "$(DIR_RELEASE)\Session.obj"            
 
-OBJS_DEBUG = $(OBJS_RELEASE:$(DIR_RELEASE)\=.\Debug\)
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release2005\=.\Debug2005\)
 
 ###########################################################################
 #
@@ -62,20 +67,20 @@ OBJS_DEBUG = $(OBJS_RELEASE:$(DIR_RELEASE)\=.\Debug\)
 all: $(DIR_RELEASE) $(DIR_RELEASE)\photoncpp.dll $(DIR_DEBUG) $(DIR_DEBUG)\photoncpp.dll
 
 "$(DIR_RELEASE)\photoncpp.dll" : "$(DIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-	-del .$(DIR_RELEASE)\photoncpp.dll
-	-del .$(DIR_RELEASE)\photoncpp.lib
+	-del $(DLL_RELEASE)\photoncpp.dll
+	-del $(DLL_RELEASE)\photoncpp.lib
 	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE)
 	mt.exe -manifest $(DIR_RELEASE)\photoncpp.dll.manifest -outputresource:$(DIR_RELEASE)\photoncpp.dll;2
-	copy Release\photoncpp.dll ..\Release
-	copy Release\photoncpp.lib ..\Release
+	copy $(DIR_RELEASE)\photoncpp.dll $(DLL_RELEASE)
+	copy $(DIR_RELEASE)\photoncpp.lib $(DLL_RELEASE)
 
 "$(DIR_DEBUG)\photoncpp.dll" : "$(DIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
-	-del ..\Debug\photoncpp.dll
-	-del ..\Debug\photoncpp.lib
+	-del $(DLL_DEBUG)\photoncpp.dll
+	-del $(DLL_DEBUG)\photoncpp.lib
 	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG)
 	mt.exe -manifest $(DIR_DEBUG)\photoncpp.dll.manifest -outputresource:$(DIR_DEBUG)\photoncpp.dll;2
-	copy debug\photoncpp.dll ..\Debug
-	copy debug\photoncpp.lib ..\Debug
+	copy $(DIR_DEBUG)\photoncpp.dll $(DLL_DEBUG)
+	copy $(DIR_DEBUG)\photoncpp.lib $(DLL_DEBUG)
 
 ###########################################################################
 #

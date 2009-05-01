@@ -36,7 +36,7 @@ check: $(DIR_RELEASE) $(check_PROGRAMS)
 	cd HashMap      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Lifo         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd ListReaders  && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Map          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd FastMap      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Session      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -48,7 +48,7 @@ checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	cd HashMap      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Lifo         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd ListReaders  && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Map          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd FastMap      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Session      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -60,7 +60,7 @@ clean:
 	cd HashMap      && nmake -f Makefile.win32 clean && cd ..
 	cd Lifo         && nmake -f Makefile.win32 clean && cd ..
 	cd ListReaders  && nmake -f Makefile.win32 clean && cd ..
-	cd Map          && nmake -f Makefile.win32 clean && cd ..
+	cd FastMap      && nmake -f Makefile.win32 clean && cd ..
 	cd Process      && nmake -f Makefile.win32 clean && cd ..
 	cd Queue        && nmake -f Makefile.win32 clean && cd ..
 	cd Session      && nmake -f Makefile.win32 clean && cd ..
