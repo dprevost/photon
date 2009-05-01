@@ -8,48 +8,56 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 check_PROGRAMS =                          \
-        .\Release\CloseNullSession.exe    \
-        .\Release\ClosePass.exe           \
-        .\Release\CloseObjNullObject.exe  \
-        .\Release\CloseObjNullSession.exe \
-        .\Release\CloseObjPass.exe        \
-        .\Release\CommitPass.exe          \
-        .\Release\CreatePass.exe          \
-        .\Release\CreateQueue.exe         \
-        .\Release\DestroyPass.exe         \
-        .\Release\ErrorMsg.exe            \
-        .\Release\ExitPass.exe            \
-        .\Release\ExitWithOpenObjects.exe \
-        .\Release\GetInfo.exe             \
-        .\Release\InitPass.exe            \
-        .\Release\LastError.exe           \
-        .\Release\OpenObjNotCreated.exe   \
-        .\Release\OpenObjNullName.exe     \
-        .\Release\OpenObjNullObject.exe   \
-        .\Release\OpenObjNullSession.exe  \
-        .\Release\OpenObjPass.exe         \
-        .\Release\OpenObjWrongType.exe    \
-        .\Release\OpenObjZeroLength.exe   \
-        .\Release\RollbackPass.exe        \
-        .\Release\StatusPass.exe          
+        $(DIR_RELEASE)\CloseNullSession.exe    \
+        $(DIR_RELEASE)\ClosePass.exe           \
+        $(DIR_RELEASE)\CloseObjNullObject.exe  \
+        $(DIR_RELEASE)\CloseObjNullSession.exe \
+        $(DIR_RELEASE)\CloseObjPass.exe        \
+        $(DIR_RELEASE)\CommitPass.exe          \
+        $(DIR_RELEASE)\CreatePass.exe          \
+        $(DIR_RELEASE)\CreateQueue.exe         \
+        $(DIR_RELEASE)\DestroyPass.exe         \
+        $(DIR_RELEASE)\ErrorMsg.exe            \
+        $(DIR_RELEASE)\ExitPass.exe            \
+        $(DIR_RELEASE)\ExitWithOpenObjects.exe \
+        $(DIR_RELEASE)\GetInfo.exe             \
+        $(DIR_RELEASE)\InitPass.exe            \
+        $(DIR_RELEASE)\LastError.exe           \
+        $(DIR_RELEASE)\OpenObjNotCreated.exe   \
+        $(DIR_RELEASE)\OpenObjNullName.exe     \
+        $(DIR_RELEASE)\OpenObjNullObject.exe   \
+        $(DIR_RELEASE)\OpenObjNullSession.exe  \
+        $(DIR_RELEASE)\OpenObjPass.exe         \
+        $(DIR_RELEASE)\OpenObjWrongType.exe    \
+        $(DIR_RELEASE)\OpenObjZeroLength.exe   \
+        $(DIR_RELEASE)\RollbackPass.exe        \
+        $(DIR_RELEASE)\StatusPass.exe          
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

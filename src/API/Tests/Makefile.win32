@@ -8,15 +8,18 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include .\Makefile.inc.Win32
+include .\Makefile.inc.win32.2005
 
 #
-# Override the values in Makefile.inc.Win32
+# Override the values in Makefile.inc.win32.2005
 #
-LDD_FLAGS = $(W32_SYS_LIBS)     photon.lib photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
-CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+DLL_RELEASE = ..\..\Release2005
+DLL_DEBUG   = ..\..\Debug2005
+
+LDD_FLAGS = $(W32_SYS_LIBS)     photon.lib photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"$(DLL_RELEASE)" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"$(DLL_DEBUG)" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\" 
 
 all: 
 
@@ -24,9 +27,9 @@ CLEANFILES = *~
 
 check_PROGRAMS =                                
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
 	cd Api          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd CommonObject && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -38,7 +41,7 @@ check: $(OUTDIR) $(check_PROGRAMS)
 	cd Queue        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Session      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cd Api          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd CommonObject && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -61,9 +64,9 @@ clean:
 	cd Process      && nmake -f Makefile.win32 clean && cd ..
 	cd Queue        && nmake -f Makefile.win32 clean && cd ..
 	cd Session      && nmake -f Makefile.win32 clean && cd ..
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

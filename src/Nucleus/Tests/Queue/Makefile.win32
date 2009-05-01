@@ -8,87 +8,94 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 check_PROGRAMS =                               \
-        .\Release\CommitAddNullOffset.exe      \
-        .\Release\CommitAddNullQueue.exe       \
-        .\Release\CommitAddPass.exe            \
-        .\Release\CommitRemoveNullContext.exe  \
-        .\Release\CommitRemoveNullOffset.exe   \
-        .\Release\CommitRemoveNullQueue.exe    \
-        .\Release\CommitRemovePass.exe         \
-        .\Release\FiniNullContext.exe          \
-        .\Release\FiniNullQueue.exe            \
-        .\Release\FiniPass.exe                 \
-        .\Release\GetNullContext.exe           \
-        .\Release\GetNullQueue.exe             \
-        .\Release\GetNullIterator.exe          \
-        .\Release\GetPass.exe                  \
-        .\Release\GetWrongFlag.exe             \
-        .\Release\GetWrongLength.exe           \
-        .\Release\InitNullContext.exe          \
-        .\Release\InitNullDataDef.exe          \
-        .\Release\InitNullDefinition.exe       \
-        .\Release\InitNullHashItem.exe         \
-        .\Release\InitNullQueue.exe            \
-        .\Release\InitNullName.exe             \
-        .\Release\InitNullParent.exe           \
-        .\Release\InitNullStatus.exe           \
-        .\Release\InitPass.exe                 \
-        .\Release\InitZeroBlocks.exe           \
-        .\Release\InitZeroLength.exe           \
-        .\Release\InsertNowNullContext.exe     \
-        .\Release\InsertNowNullItem.exe        \
-        .\Release\InsertNowNullQueue.exe       \
-        .\Release\InsertNowPass.exe            \
-        .\Release\InsertNowWrongFlag.exe       \
-        .\Release\InsertNowZeroLengthItem.exe  \
-        .\Release\InsertNullContext.exe        \
-        .\Release\InsertNullQueue.exe          \
-        .\Release\InsertNullItem.exe           \
-        .\Release\InsertPass.exe               \
-        .\Release\InsertWrongFlag.exe          \
-        .\Release\InsertZeroLengthItem.exe     \
-        .\Release\ReleaseNullContext.exe       \
-        .\Release\ReleaseNullItem.exe          \
-        .\Release\ReleaseNullQueue.exe         \
-        .\Release\ReleasePass.exe              \
-        .\Release\ReleaseNoLockNullContext.exe \
-        .\Release\ReleaseNoLockNullItem.exe    \
-        .\Release\ReleaseNoLockNullQueue.exe   \
-        .\Release\ReleaseNoLockPass.exe        \
-        .\Release\RemoveNullContext.exe        \
-        .\Release\RemoveNullItem.exe           \
-        .\Release\RemoveNullQueue.exe          \
-        .\Release\RemovePass.exe               \
-        .\Release\RemoveWrongFlag.exe          \
-        .\Release\RemoveWrongLength.exe        \
-        .\Release\RollbackAddNullContext.exe   \
-        .\Release\RollbackAddNullOffset.exe    \
-        .\Release\RollbackAddNullQueue.exe     \
-        .\Release\RollbackAddPass.exe          \
-        .\Release\RollbackRemoveNullOffset.exe \
-        .\Release\RollbackRemoveNullQueue.exe  \
-        .\Release\RollbackRemovePass.exe       \
-        .\Release\StatusNullQueue.exe          \
-        .\Release\StatusNullStatus.exe         \
-        .\Release\StatusPass.exe               
+        $(DIR_RELEASE)\CommitAddNullOffset.exe      \
+        $(DIR_RELEASE)\CommitAddNullQueue.exe       \
+        $(DIR_RELEASE)\CommitAddPass.exe            \
+        $(DIR_RELEASE)\CommitRemoveNullContext.exe  \
+        $(DIR_RELEASE)\CommitRemoveNullOffset.exe   \
+        $(DIR_RELEASE)\CommitRemoveNullQueue.exe    \
+        $(DIR_RELEASE)\CommitRemovePass.exe         \
+        $(DIR_RELEASE)\FiniNullContext.exe          \
+        $(DIR_RELEASE)\FiniNullQueue.exe            \
+        $(DIR_RELEASE)\FiniPass.exe                 \
+        $(DIR_RELEASE)\GetNullContext.exe           \
+        $(DIR_RELEASE)\GetNullQueue.exe             \
+        $(DIR_RELEASE)\GetNullIterator.exe          \
+        $(DIR_RELEASE)\GetPass.exe                  \
+        $(DIR_RELEASE)\GetWrongLength.exe           \
+        $(DIR_RELEASE)\InitNullContext.exe          \
+        $(DIR_RELEASE)\InitNullDataDef.exe          \
+        $(DIR_RELEASE)\InitNullDefinition.exe       \
+        $(DIR_RELEASE)\InitNullHashItem.exe         \
+        $(DIR_RELEASE)\InitNullQueue.exe            \
+        $(DIR_RELEASE)\InitNullName.exe             \
+        $(DIR_RELEASE)\InitNullParent.exe           \
+        $(DIR_RELEASE)\InitNullStatus.exe           \
+        $(DIR_RELEASE)\InitPass.exe                 \
+        $(DIR_RELEASE)\InitZeroBlocks.exe           \
+        $(DIR_RELEASE)\InitZeroLength.exe           \
+        $(DIR_RELEASE)\InsertNowNullContext.exe     \
+        $(DIR_RELEASE)\InsertNowNullItem.exe        \
+        $(DIR_RELEASE)\InsertNowNullQueue.exe       \
+        $(DIR_RELEASE)\InsertNowPass.exe            \
+        $(DIR_RELEASE)\InsertNowWrongFlag.exe       \
+        $(DIR_RELEASE)\InsertNowZeroLengthItem.exe  \
+        $(DIR_RELEASE)\InsertNullContext.exe        \
+        $(DIR_RELEASE)\InsertNullQueue.exe          \
+        $(DIR_RELEASE)\InsertNullItem.exe           \
+        $(DIR_RELEASE)\InsertPass.exe               \
+        $(DIR_RELEASE)\InsertWrongFlag.exe          \
+        $(DIR_RELEASE)\InsertZeroLengthItem.exe     \
+        $(DIR_RELEASE)\ReleaseNullContext.exe       \
+        $(DIR_RELEASE)\ReleaseNullItem.exe          \
+        $(DIR_RELEASE)\ReleaseNullQueue.exe         \
+        $(DIR_RELEASE)\ReleasePass.exe              \
+        $(DIR_RELEASE)\ReleaseNoLockNullContext.exe \
+        $(DIR_RELEASE)\ReleaseNoLockNullItem.exe    \
+        $(DIR_RELEASE)\ReleaseNoLockNullQueue.exe   \
+        $(DIR_RELEASE)\ReleaseNoLockPass.exe        \
+        $(DIR_RELEASE)\RemoveNullContext.exe        \
+        $(DIR_RELEASE)\RemoveNullItem.exe           \
+        $(DIR_RELEASE)\RemoveNullQueue.exe          \
+        $(DIR_RELEASE)\RemovePass.exe               \
+        $(DIR_RELEASE)\RemoveWrongFlag.exe          \
+        $(DIR_RELEASE)\RemoveWrongLength.exe        \
+        $(DIR_RELEASE)\RollbackAddNullContext.exe   \
+        $(DIR_RELEASE)\RollbackAddNullOffset.exe    \
+        $(DIR_RELEASE)\RollbackAddNullQueue.exe     \
+        $(DIR_RELEASE)\RollbackAddPass.exe          \
+        $(DIR_RELEASE)\RollbackRemoveNullOffset.exe \
+        $(DIR_RELEASE)\RollbackRemoveNullQueue.exe  \
+        $(DIR_RELEASE)\RollbackRemovePass.exe       \
+        $(DIR_RELEASE)\StatusNullQueue.exe          \
+        $(DIR_RELEASE)\StatusNullStatus.exe         \
+        $(DIR_RELEASE)\StatusPass.exe               
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

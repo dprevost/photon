@@ -20,8 +20,6 @@
 
 Option Explicit
 
-set the path to pick up the dlls
-
 ' ***********************************************************************
 '
 ' Declaration of variables
@@ -43,7 +41,7 @@ Dim failed_tests(109)
 Dim ok_programs(21)
 Dim fail_programs(87)
 
-Dim exe_name, prog_path, program
+Dim exe_name, prog_path, program, dll_path
 Dim consoleMode
 Dim objArgs, strArg, i
 dim strOutput
@@ -194,10 +192,17 @@ For Each strArg in objArgs
    If Left(LCase(strArg), 6) = "--path" AND Len(strArg) > 6 Then
       prog_path = Right(strArg, Len(strArg)-7)
    end if
+   If Left(LCase(strArg), 9) = "--dllpath" AND Len(strArg) > 9 Then
+      dll_path = Right(strArg, Len(strArg)-10)
+   end if
    if LCase(strArg) = "--verbose" then 
       verbose = True
    end if
 Next 
+
+dim WshEnv
+Set WshEnv = objShell.Environment("Process") 
+WshEnv("Path") = WshEnv("Path") & ";" & fso.GetAbsolutePathName(dll_path)
 
 if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
@@ -213,9 +218,9 @@ For Each program in ok_programs
          WScript.Sleep 100
       Loop
       strOutput = objWshScriptExec.StdOut.ReadAll
-      if verbose then 
+'      if verbose then 
          WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
-      end if
+'      end if
       rc = objWshScriptExec.ExitCode
    else
       rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
@@ -225,6 +230,8 @@ For Each program in ok_programs
       numFailed = numFailed + 1
    end if
 Next
+
+'WshEnv("Path") = oldpath
 
 For Each program in fail_programs
    exe_name = prog_path & "\" & program & ".exe"

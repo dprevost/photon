@@ -11,8 +11,8 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-OUTDIR_RELEASE = .\Release
-OUTDIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release
+DIR_DEBUG   = .\Debug
 
 ###########################################################################
 #
@@ -20,7 +20,7 @@ OUTDIR_DEBUG   = .\Debug
 #
 ###########################################################################
 
-all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
+all: "$(DIR_RELEASE)" "$(DIR_DEBUG)"
 	cd Errors   && nmake -f Makefile.win32 && cd ..
 	cd Common   && nmake -f Makefile.win32 && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 && cd ..
@@ -31,7 +31,7 @@ all: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Tests    && nmake -f Makefile.win32 && cd ..
 	cd Tools    && nmake -f Makefile.win32 && cd ..
    
-check: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
+check: "$(DIR_RELEASE)" "$(DIR_DEBUG)"
 	cd Errors   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Common   && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -42,7 +42,7 @@ check: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
 	cd Tests    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Tools    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-checkdebug: "$(OUTDIR_RELEASE)" "$(OUTDIR_DEBUG)"
+checkdebug: "$(DIR_RELEASE)" "$(DIR_DEBUG)"
 	cd Errors   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Common   && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Nucleus  && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -64,9 +64,9 @@ clean:
 	cd Tests    && nmake -f Makefile.win32 clean && cd ..
 	cd Tools    && nmake -f Makefile.win32 clean && cd ..
 
-"$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)" mkdir "$(DIR_DEBUG)"
 

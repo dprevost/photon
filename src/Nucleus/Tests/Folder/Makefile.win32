@@ -8,137 +8,142 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
 include ..\Makefile.inc.Win32.2005
 
 RELEASE = Release2005
 DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
-check_PROGRAMS =                               \
-        .\$(RELEASE)\CommitEditNullContext.exe    \
-        .\$(RELEASE)\CommitEditNullFolder.exe     \
-        .\$(RELEASE)\CommitEditNullItem.exe       \
-        .\$(RELEASE)\CommitEditNullMemObj.exe     \
-        .\$(RELEASE)\CommitEditPass.exe           \
-        .\$(RELEASE)\CommitEditWrongObjType.exe   \
-        .\$(RELEASE)\CreateInvalidNameLength.exe  \
-        .\$(RELEASE)\CreateNullContext.exe        \
-        .\$(RELEASE)\CreateNullDefinition.exe     \
-        .\$(RELEASE)\CreateNullFolder.exe         \
-        .\$(RELEASE)\CreateNullName.exe           \
-        .\$(RELEASE)\CreatePass.exe               \
-        .\$(RELEASE)\CreateWrongType.exe          \
-        .\$(RELEASE)\DeleteNullContext.exe        \
-        .\$(RELEASE)\DeleteNullFolder.exe         \
-        .\$(RELEASE)\DeleteNullName.exe           \
-        .\$(RELEASE)\DeletePass.exe               \
-        .\$(RELEASE)\DeleteWrongObjType.exe       \
-        .\$(RELEASE)\DeleteZeroNameLength.exe     \
-        .\$(RELEASE)\DestroyNullContext.exe       \
-        .\$(RELEASE)\DestroyNullFolder.exe        \
-        .\$(RELEASE)\DestroyNullName.exe          \
-        .\$(RELEASE)\DestroyPass.exe              \
-        .\$(RELEASE)\EditNullContext.exe          \
-        .\$(RELEASE)\EditNullFolder.exe           \
-        .\$(RELEASE)\EditNullItem.exe             \
-        .\$(RELEASE)\EditNullName.exe             \
-        .\$(RELEASE)\EditPass.exe                 \
-        .\$(RELEASE)\EditWrongObjectType.exe      \
-        .\$(RELEASE)\EditZeroNameLength.exe       \
-        .\$(RELEASE)\FiniNullContext.exe          \
-        .\$(RELEASE)\FiniNullFolder.exe           \
-        .\$(RELEASE)\FiniPass.exe                 \
-        .\$(RELEASE)\FiniWrongObjType.exe         \
-        .\$(RELEASE)\GetDefinitionNullContext.exe \
-        .\$(RELEASE)\GetDefinitionNullDataDef.exe \
-        .\$(RELEASE)\GetDefinitionNullDef.exe     \
-        .\$(RELEASE)\GetDefinitionNullFolder.exe  \
-        .\$(RELEASE)\GetDefinitionNullKey.exe     \
-        .\$(RELEASE)\GetDefinitionNullName.exe    \
-        .\$(RELEASE)\GetDefinitionPass.exe        \
-        .\$(RELEASE)\GetDefinitionZeroLength.exe  \
-        .\$(RELEASE)\GetFirstEmpty.exe            \
-        .\$(RELEASE)\GetFirstNullContext.exe      \
-        .\$(RELEASE)\GetFirstNullFolder.exe       \
-        .\$(RELEASE)\GetFirstNullItem.exe         \
-        .\$(RELEASE)\GetFirstPass.exe             \
-        .\$(RELEASE)\GetFirstWrongObjType.exe     \
-        .\$(RELEASE)\GetInvalidSig.exe            \
-        .\$(RELEASE)\GetNextItemNullHashItem.exe  \
-        .\$(RELEASE)\GetNextItemNullOffset.exe    \
-        .\$(RELEASE)\GetNextNullContext.exe       \
-        .\$(RELEASE)\GetNextNullFolder.exe        \
-        .\$(RELEASE)\GetNextNullItem.exe          \
-        .\$(RELEASE)\GetNextPass.exe              \
-        .\$(RELEASE)\GetNextWrongObjType.exe      \
-        .\$(RELEASE)\GetNullContext.exe           \
-        .\$(RELEASE)\GetNullItem.exe              \
-        .\$(RELEASE)\GetNullFolder.exe            \
-        .\$(RELEASE)\GetNullName.exe              \
-        .\$(RELEASE)\GetPass.exe                  \
-        .\$(RELEASE)\GetStatusNullContext.exe     \
-        .\$(RELEASE)\GetStatusNullFolder.exe      \
-        .\$(RELEASE)\GetStatusNullName.exe        \
-        .\$(RELEASE)\GetStatusNullStatus.exe      \
-        .\$(RELEASE)\GetStatusPass.exe            \
-        .\$(RELEASE)\GetStatusZeroLength.exe      \
-        .\$(RELEASE)\GetWrongObjType.exe          \
-        .\$(RELEASE)\GetZeroNameLength.exe        \
-        .\$(RELEASE)\InitNullContext.exe          \
-        .\$(RELEASE)\InitNullFolder.exe           \
-        .\$(RELEASE)\InitNullHashItemOffset.exe   \
-        .\$(RELEASE)\InitNullName.exe             \
-        .\$(RELEASE)\InitNullParentOffset.exe     \
-        .\$(RELEASE)\InitNullStatus.exe           \
-        .\$(RELEASE)\InitPass.exe                 \
-        .\$(RELEASE)\InitZeroBlocks.exe           \
-        .\$(RELEASE)\InitZeroNameLength.exe       \
-        .\$(RELEASE)\InsertNullContext.exe        \
-        .\$(RELEASE)\InsertNullDefinition.exe     \
-        .\$(RELEASE)\InsertNullFolder.exe         \
-        .\$(RELEASE)\InsertNullName.exe           \
-        .\$(RELEASE)\InsertNullOrigName.exe       \
-        .\$(RELEASE)\InsertPass.exe               \
-        .\$(RELEASE)\InsertWrongObjType.exe       \
-        .\$(RELEASE)\InsertZeroBlocks.exe         \
-        .\$(RELEASE)\InsertZeroNameLength.exe     \
-        .\$(RELEASE)\ReleaseNullContext.exe       \
-        .\$(RELEASE)\ReleaseNullFolder.exe        \
-        .\$(RELEASE)\ReleaseNullItem.exe          \
-        .\$(RELEASE)\ReleasePass.exe              \
-        .\$(RELEASE)\ReleaseWrongObjType.exe      \
-        .\$(RELEASE)\RemoveNullContext.exe        \
-        .\$(RELEASE)\RemoveNullFolder.exe         \
-        .\$(RELEASE)\RemoveNullItem.exe           \
-        .\$(RELEASE)\RemovePass.exe               \
-        .\$(RELEASE)\RemoveWrongObjType.exe       \
-        .\$(RELEASE)\ResizeNullContext.exe        \
-        .\$(RELEASE)\ResizeNullFolder.exe         \
-        .\$(RELEASE)\ResizePass.exe               \
-        .\$(RELEASE)\RollbackEditNullContext.exe  \
-        .\$(RELEASE)\RollbackEditNullFolder.exe   \
-        .\$(RELEASE)\RollbackEditNullHashItem.exe \
-        .\$(RELEASE)\RollbackEditPass.exe         \
-        .\$(RELEASE)\RollbackEditWrongObjType.exe \
-        .\$(RELEASE)\StatusNullFolder.exe         \
-        .\$(RELEASE)\StatusNullStatus.exe         \
-        .\$(RELEASE)\StatusPass.exe               \
-        .\$(RELEASE)\Tests.exe                    \
-        .\$(RELEASE)\ValidatePass.exe             
+check_PROGRAMS =                                  \
+        $(DIR_RELEASE)\CommitEditNullContext.exe    \
+        $(DIR_RELEASE)\CommitEditNullFolder.exe     \
+        $(DIR_RELEASE)\CommitEditNullItem.exe       \
+        $(DIR_RELEASE)\CommitEditNullMemObj.exe     \
+        $(DIR_RELEASE)\CommitEditPass.exe           \
+        $(DIR_RELEASE)\CommitEditWrongObjType.exe   \
+        $(DIR_RELEASE)\CreateInvalidNameLength.exe  \
+        $(DIR_RELEASE)\CreateNullContext.exe        \
+        $(DIR_RELEASE)\CreateNullDefinition.exe     \
+        $(DIR_RELEASE)\CreateNullFolder.exe         \
+        $(DIR_RELEASE)\CreateNullName.exe           \
+        $(DIR_RELEASE)\CreatePass.exe               \
+        $(DIR_RELEASE)\CreateWrongType.exe          \
+        $(DIR_RELEASE)\DeleteNullContext.exe        \
+        $(DIR_RELEASE)\DeleteNullFolder.exe         \
+        $(DIR_RELEASE)\DeleteNullName.exe           \
+        $(DIR_RELEASE)\DeletePass.exe               \
+        $(DIR_RELEASE)\DeleteWrongObjType.exe       \
+        $(DIR_RELEASE)\DeleteZeroNameLength.exe     \
+        $(DIR_RELEASE)\DestroyNullContext.exe       \
+        $(DIR_RELEASE)\DestroyNullFolder.exe        \
+        $(DIR_RELEASE)\DestroyNullName.exe          \
+        $(DIR_RELEASE)\DestroyPass.exe              \
+        $(DIR_RELEASE)\EditNullContext.exe          \
+        $(DIR_RELEASE)\EditNullFolder.exe           \
+        $(DIR_RELEASE)\EditNullItem.exe             \
+        $(DIR_RELEASE)\EditNullName.exe             \
+        $(DIR_RELEASE)\EditPass.exe                 \
+        $(DIR_RELEASE)\EditWrongObjectType.exe      \
+        $(DIR_RELEASE)\EditZeroNameLength.exe       \
+        $(DIR_RELEASE)\FiniNullContext.exe          \
+        $(DIR_RELEASE)\FiniNullFolder.exe           \
+        $(DIR_RELEASE)\FiniPass.exe                 \
+        $(DIR_RELEASE)\FiniWrongObjType.exe         \
+        $(DIR_RELEASE)\GetDefinitionNullContext.exe \
+        $(DIR_RELEASE)\GetDefinitionNullDataDef.exe \
+        $(DIR_RELEASE)\GetDefinitionNullDef.exe     \
+        $(DIR_RELEASE)\GetDefinitionNullFolder.exe  \
+        $(DIR_RELEASE)\GetDefinitionNullKey.exe     \
+        $(DIR_RELEASE)\GetDefinitionNullName.exe    \
+        $(DIR_RELEASE)\GetDefinitionPass.exe        \
+        $(DIR_RELEASE)\GetDefinitionZeroLength.exe  \
+        $(DIR_RELEASE)\GetFirstEmpty.exe            \
+        $(DIR_RELEASE)\GetFirstNullContext.exe      \
+        $(DIR_RELEASE)\GetFirstNullFolder.exe       \
+        $(DIR_RELEASE)\GetFirstNullItem.exe         \
+        $(DIR_RELEASE)\GetFirstPass.exe             \
+        $(DIR_RELEASE)\GetFirstWrongObjType.exe     \
+        $(DIR_RELEASE)\GetInvalidSig.exe            \
+        $(DIR_RELEASE)\GetNextItemNullHashItem.exe  \
+        $(DIR_RELEASE)\GetNextItemNullOffset.exe    \
+        $(DIR_RELEASE)\GetNextNullContext.exe       \
+        $(DIR_RELEASE)\GetNextNullFolder.exe        \
+        $(DIR_RELEASE)\GetNextNullItem.exe          \
+        $(DIR_RELEASE)\GetNextPass.exe              \
+        $(DIR_RELEASE)\GetNextWrongObjType.exe      \
+        $(DIR_RELEASE)\GetNullContext.exe           \
+        $(DIR_RELEASE)\GetNullItem.exe              \
+        $(DIR_RELEASE)\GetNullFolder.exe            \
+        $(DIR_RELEASE)\GetNullName.exe              \
+        $(DIR_RELEASE)\GetPass.exe                  \
+        $(DIR_RELEASE)\GetStatusNullContext.exe     \
+        $(DIR_RELEASE)\GetStatusNullFolder.exe      \
+        $(DIR_RELEASE)\GetStatusNullName.exe        \
+        $(DIR_RELEASE)\GetStatusNullStatus.exe      \
+        $(DIR_RELEASE)\GetStatusPass.exe            \
+        $(DIR_RELEASE)\GetStatusZeroLength.exe      \
+        $(DIR_RELEASE)\GetWrongObjType.exe          \
+        $(DIR_RELEASE)\GetZeroNameLength.exe        \
+        $(DIR_RELEASE)\InitNullContext.exe          \
+        $(DIR_RELEASE)\InitNullFolder.exe           \
+        $(DIR_RELEASE)\InitNullHashItemOffset.exe   \
+        $(DIR_RELEASE)\InitNullName.exe             \
+        $(DIR_RELEASE)\InitNullParentOffset.exe     \
+        $(DIR_RELEASE)\InitNullStatus.exe           \
+        $(DIR_RELEASE)\InitPass.exe                 \
+        $(DIR_RELEASE)\InitZeroBlocks.exe           \
+        $(DIR_RELEASE)\InitZeroNameLength.exe       \
+        $(DIR_RELEASE)\InsertNullContext.exe        \
+        $(DIR_RELEASE)\InsertNullDefinition.exe     \
+        $(DIR_RELEASE)\InsertNullFolder.exe         \
+        $(DIR_RELEASE)\InsertNullName.exe           \
+        $(DIR_RELEASE)\InsertNullOrigName.exe       \
+        $(DIR_RELEASE)\InsertPass.exe               \
+        $(DIR_RELEASE)\InsertWrongObjType.exe       \
+        $(DIR_RELEASE)\InsertZeroBlocks.exe         \
+        $(DIR_RELEASE)\InsertZeroNameLength.exe     \
+        $(DIR_RELEASE)\ReleaseNullContext.exe       \
+        $(DIR_RELEASE)\ReleaseNullFolder.exe        \
+        $(DIR_RELEASE)\ReleaseNullItem.exe          \
+        $(DIR_RELEASE)\ReleasePass.exe              \
+        $(DIR_RELEASE)\ReleaseWrongObjType.exe      \
+        $(DIR_RELEASE)\RemoveNullContext.exe        \
+        $(DIR_RELEASE)\RemoveNullFolder.exe         \
+        $(DIR_RELEASE)\RemoveNullItem.exe           \
+        $(DIR_RELEASE)\RemovePass.exe               \
+        $(DIR_RELEASE)\RemoveWrongObjType.exe       \
+        $(DIR_RELEASE)\ResizeNullContext.exe        \
+        $(DIR_RELEASE)\ResizeNullFolder.exe         \
+        $(DIR_RELEASE)\ResizePass.exe               \
+        $(DIR_RELEASE)\RollbackEditNullContext.exe  \
+        $(DIR_RELEASE)\RollbackEditNullFolder.exe   \
+        $(DIR_RELEASE)\RollbackEditNullHashItem.exe \
+        $(DIR_RELEASE)\RollbackEditPass.exe         \
+        $(DIR_RELEASE)\RollbackEditWrongObjType.exe \
+        $(DIR_RELEASE)\StatusNullFolder.exe         \
+        $(DIR_RELEASE)\StatusNullStatus.exe         \
+        $(DIR_RELEASE)\StatusPass.exe               \
+        $(DIR_RELEASE)\Tests.exe                    \
+        $(DIR_RELEASE)\ValidatePass.exe             
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=$(RELEASE) $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=$(DEBUG) $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q $(DEBUG)
-	-@rmdir /Q $(DEBUG)
-	-@erase /Q $(RELEASE)
-	-@rmdir /Q $(RELEASE)
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

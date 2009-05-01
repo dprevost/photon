@@ -15,10 +15,10 @@ VBS_VERBOSE=
 
 LINK32=link.exe
 
-OUTDIR_RELEASE = .\Release
-INTDIR_RELEASE = .\Release
-OUTDIR_DEBUG   = .\Debug
-INTDIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release
+DIR_RELEASE = .\Release
+DIR_DEBUG   = .\Debug
+DIR_DEBUG   = .\Debug
 
 CLEANFILES = *~  vc60.pdb
 
@@ -34,12 +34,12 @@ RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo".\Debug/psosh.res"
 RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/psosh.res"
 
 OBJS_RELEASE=                             \
-        "$(INTDIR_RELEASE)\constants.obj" \
-        "$(INTDIR_RELEASE)\shell.obj"     \
-        "$(INTDIR_RELEASE)\psosh.obj"     \
-        "$(INTDIR_RELEASE)\util.obj"      
+        "$(DIR_RELEASE)\constants.obj" \
+        "$(DIR_RELEASE)\shell.obj"     \
+        "$(DIR_RELEASE)\psosh.obj"     \
+        "$(DIR_RELEASE)\util.obj"      
 
-OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+OBJS_DEBUG = $(OBJS_RELEASE:$(DIR_RELEASE)\=.\Debug\)
 
 ###########################################################################
 #
@@ -47,10 +47,10 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 #
 ###########################################################################
 
-.cpp{$(INTDIR_RELEASE)}.obj::
+.cpp{$(DIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
-.cpp{$(INTDIR_DEBUG)}.obj::
+.cpp{$(DIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
 ###########################################################################
@@ -59,37 +59,37 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 #
 ###########################################################################
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\psosh.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\psosh.exe
+all: $(DIR_RELEASE) $(DIR_RELEASE)\psosh.exe $(DIR_DEBUG) $(DIR_DEBUG)\psosh.exe
 
-"$(OUTDIR_RELEASE)\psosh.exe" : "$(OUTDIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
-   -del ..\..\Release\psosh.exe
+"$(DIR_RELEASE)\psosh.exe" : "$(DIR_RELEASE)" $(DEF_FILE) $(OBJS_RELEASE)
+   -del ..\.$(DIR_RELEASE)\psosh.exe
 	rc.exe $(RC_FLAGS_RELEASE) psosh.rc 
-	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\psosh.exe" $(OBJS_RELEASE) .\Release\psosh.res
-	mt.exe -manifest $(OUTDIR_RELEASE)\psosh.exe.manifest -outputresource:$(OUTDIR_RELEASE)\psosh.exe;1
+	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(DIR_RELEASE)\psosh.exe" $(OBJS_RELEASE) $(DIR_RELEASE)\psosh.res
+	mt.exe -manifest $(DIR_RELEASE)\psosh.exe.manifest -outputresource:$(DIR_RELEASE)\psosh.exe;1
    copy Release\psosh.exe ..\..\Release
 
-"$(OUTDIR_DEBUG)\psosh.exe" : "$(OUTDIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
+"$(DIR_DEBUG)\psosh.exe" : "$(DIR_DEBUG)" $(DEF_FILE) $(OBJS_DEBUG)
    -del ..\..\Debug\psosh.exe
 	rc.exe $(RC_FLAGS_DEBUG) psosh.rc 
-	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\psosh.exe" $(OBJS_DEBUG) .\Debug\psosh.res
-	mt.exe -manifest $(OUTDIR_DEBUG)\psosh.exe.manifest -outputresource:$(OUTDIR_DEBUG)\psosh.exe;1
+	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(DIR_DEBUG)\psosh.exe" $(OBJS_DEBUG) .\Debug\psosh.res
+	mt.exe -manifest $(DIR_DEBUG)\psosh.exe.manifest -outputresource:$(DIR_DEBUG)\psosh.exe;1
    copy debug\psosh.exe ..\..\Debug
 
 check: all
 
 checkdebug: all
 
-"$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)/$(NULL)" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)/$(NULL)" mkdir "$(DIR_DEBUG)"
    
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 
 
