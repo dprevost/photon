@@ -20,7 +20,7 @@ package org.photon.Tests;
 
 import org.photon.*;
 
-   class myStruct {
+   class myStruct implements DataRecord {
       Integer i;
       String  str;
       Object[] a;
@@ -32,6 +32,13 @@ import org.photon.*;
          a[0] = this.i;
          a[1] = this.str;
       }
+      
+      public byte[] packObject() {
+         byte[]x = new byte[10];
+         return x;
+      }
+   
+      public void unpackObject( byte[] buffer ) {}
    }
 
 public class QueueTest {
@@ -39,16 +46,16 @@ public class QueueTest {
    
    public static void test1( org.photon.Session session ) throws PhotonException {
       
-      org.photon.Folder folder = new org.photon.Folder( session );
-      Queue queue = new Queue( session, "myQueue" );
+//      org.photon.Folder folder = new org.photon.Folder();
+      Queue<myStruct> queue = new Queue<myStruct>( session, "myQueue" );
       myStruct s = new myStruct( 123, "45678" );
       
-      queue.push( s.i, s.str );
-      queue.push( s.a );
-      queue.push( 234, "012345" );
+//      queue.push( s.i, s.str );
+//      queue.push( s.a );
+//      queue.push( 234, "012345" );
       
-      folder.open( "/" );
-      folder.close();
+//      folder.open( session, "/" );
+//      folder.close();
    }
 
    public static void test2( org.photon.Session session ) throws PhotonException {
@@ -60,18 +67,18 @@ public class QueueTest {
 
       org.photon.Folder folder = new org.photon.Folder( session, "/" );
       
-      folder.createObject( "java1",
-                           new ObjectDefinition(ObjectType.FOLDER, 0),
-                           null,
-                           null );
-      folder.createObject( "java2",
-                           new ObjectDefinition(ObjectType.FOLDER, 0),
-                           null,
-                           null );
-      folder.createObject( "java3",
-                           new ObjectDefinition(ObjectType.FOLDER, 0),
-                           null,
-                           null );
+//      folder.createObject( "java1",
+//                           new ObjectDefinition(ObjectType.FOLDER, 0),
+//                           null,
+//                           null );
+//      folder.createObject( "java2",
+//                           new ObjectDefinition(ObjectType.FOLDER, 0),
+//                           null,
+//                           null );
+//      folder.createObject( "java3",
+//                           new ObjectDefinition(ObjectType.FOLDER, 0),
+//                           null,
+//                           null );
       for (FolderEntry entry : folder) {
          System.out.println( "Name: " + entry.getName() + ", Type: " 
             + entry.getType() + " or " + entry.getType().getText() );

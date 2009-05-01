@@ -47,7 +47,7 @@ public class KeyDefBuilderODBC {
     *
     * Use this constructor to build a key definition based on ODBC.
     *
-    * @param numKeys The number of keys.
+    * @param numKeyFields The number of fields in the key.
     * @param simple Set this to true if the definition type is "simple"
     *               (fixed length fields) or false if not.
     *
@@ -59,7 +59,6 @@ public class KeyDefBuilderODBC {
       if ( numKeyFields <= 0 ) {
          throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
       }
-      this.numKeyFields = numKeyFields;
       this.numKeyFields = numKeyFields;
       this.simpleDef    = simple;
        

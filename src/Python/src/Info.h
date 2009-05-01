@@ -73,14 +73,14 @@ typedef struct {
    /** Timestamp of creation of the shared memory. */
    PyObject * creationTime;
 
-} Info;
+} pyInfo;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 Info_dealloc( PyObject * self )
 {
-   Info * info = (Info *) self;
+   pyInfo * info = (pyInfo *) self;
 
    Py_XDECREF(info->compiler);
    Py_XDECREF(info->compilerVersion);
@@ -97,7 +97,7 @@ Info_dealloc( PyObject * self )
 static PyObject *
 Info_str( PyObject * self )
 {
-   Info * obj = (Info *)self;
+   pyInfo * obj = (pyInfo *)self;
 
    if ( obj->compiler ) {
       return PyString_FromFormat( 
@@ -139,35 +139,56 @@ Info_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef Info_members[] = {
-   { "total_size", T_INT, offsetof(Info, totalSizeInBytes), RO,
+#if SIZEOF_VOID_P == 4     
+   { "total_size", T_UINT, offsetof(pyInfo, totalSizeInBytes), RO,
      "Total size of the shared memory"},
-   { "allocated_size", T_INT, offsetof(Info, allocatedSizeInBytes), RO,
+   { "allocated_size", T_UINT, offsetof(pyInfo, allocatedSizeInBytes), RO,
      "Total size of the allocated blocks"},
-   { "num_objects", T_INT, offsetof(Info, numObjects), RO,
+   { "num_objects", T_UINT, offsetof(pyInfo, numObjects), RO,
      "Number of API objects in shared memory"},
-   { "num_groups", T_INT, offsetof(Info, numGroups), RO,
+   { "num_groups", T_UINT, offsetof(pyInfo, numGroups), RO,
      "Total number of groups of blocks"},
-   { "num_mallocs", T_INT, offsetof(Info, numMallocs), RO,
+   { "num_mallocs", T_UINT, offsetof(pyInfo, numMallocs), RO,
      "Number of calls to allocate groups of blocks"},
-   { "num_frees", T_INT, offsetof(Info, numFrees), RO,
+   { "num_frees", T_UINT, offsetof(pyInfo, numFrees), RO,
      "Number of calls to free groups of blocks"},
-   { "largest_free", T_INT, offsetof(Info, largestFreeInBytes), RO,
+   { "largest_free", T_UINT, offsetof(pyInfo, largestFreeInBytes), RO,
      "Largest contiguous group of free blocks"},
-   { "memory_version", T_INT, offsetof(Info, memoryVersion), RO,
+#else
+   /* 
+    * On 64 bits machine, long long is a solution. V 2.6 of Python 
+    * supports the T_PYSSIZET type - which would be a better solution.
+    */
+   { "total_size", T_ULONGLONG, offsetof(pyInfo, totalSizeInBytes), RO,
+     "Total size of the shared memory"},
+   { "allocated_size", T_ULONGLONG, offsetof(pyInfo, allocatedSizeInBytes), RO,
+     "Total size of the allocated blocks"},
+   { "num_objects", T_ULONGLONG, offsetof(pyInfo, numObjects), RO,
+     "Number of API objects in shared memory"},
+   { "num_groups", T_ULONGLONG, offsetof(pyInfo, numGroups), RO,
+     "Total number of groups of blocks"},
+   { "num_mallocs", T_ULONGLONG, offsetof(pyInfo, numMallocs), RO,
+     "Number of calls to allocate groups of blocks"},
+   { "num_frees", T_ULONGLONG, offsetof(pyInfo, numFrees), RO,
+     "Number of calls to free groups of blocks"},
+   { "largest_free", T_ULONGLONG, offsetof(pyInfo, largestFreeInBytes), RO,
+     "Largest contiguous group of free blocks"},
+#endif
+   { "memory_version", T_INT, offsetof(pyInfo, memoryVersion), RO,
      "Shared-memory version"},
-   { "big_endian", T_INT, offsetof(Info, bigEndian), RO,
+   { "big_endian", T_INT, offsetof(pyInfo, bigEndian), RO,
      "Endianess (0 for little endian, 1 for big endian)."},
-   { "compiler_name", T_OBJECT_EX, offsetof(Info, compiler), RO,
+   { "compiler_name", T_OBJECT_EX, offsetof(pyInfo, compiler), RO,
      "Compiler name"},
-   { "compiler_version", T_OBJECT_EX, offsetof(Info, compilerVersion), RO,
+   { "compiler_version", T_OBJECT_EX, offsetof(pyInfo, compilerVersion), RO,
      "Compiler version (if available)"},
-   { "platform", T_OBJECT_EX, offsetof(Info, platform), RO,
+   { "platform", T_OBJECT_EX, offsetof(pyInfo, platform), RO,
      "Platform"},
-   { "dll_version", T_OBJECT_EX, offsetof(Info, dllVersion), RO,
+   { "dll_version", T_OBJECT_EX, offsetof(pyInfo, dllVersion), RO,
      "Shared lib version"},
-   { "quasar_version", T_OBJECT_EX, offsetof(Info, quasarVersion), RO,
+   { "quasar_version", T_OBJECT_EX, offsetof(pyInfo, quasarVersion), RO,
      "The server version (of the pso creator)"},
-   { "creation_time", T_OBJECT_EX, offsetof(Info, creationTime), RO,
+   { "creation_time", T_OBJECT_EX, offsetof(pyInfo, creationTime), RO,
      "Timestamp of creation of the shared memory"},
    {NULL}  /* Sentinel */
 };
@@ -178,7 +199,7 @@ static PyTypeObject InfoType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.Info",                 /*tp_name*/
-   sizeof(Info),               /*tp_basicsize*/
+   sizeof(pyInfo),             /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    Info_dealloc,               /*tp_dealloc*/
    0,                          /*tp_print*/

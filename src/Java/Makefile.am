@@ -24,7 +24,6 @@ Java_Source =                              \
         org/photon/DataDefBuilderUser.java \
         org/photon/DataDefinition.java     \
         org/photon/DataRecord.java         \
-        org/photon/Definition.java         \
         org/photon/DefinitionType.java     \
         org/photon/FieldType.java          \
         org/photon/Folder.java             \
@@ -41,6 +40,7 @@ Java_Source =                              \
         org/photon/PhotonErrors.java       \
         org/photon/PhotonException.java    \
         org/photon/Queue.java              \
+        org/photon/RawQueue.java           \
         org/photon/Session.java            \
         org/photon/Tests/FolderTest.java   \
         org/photon/Tests/QueueTest.java    \
@@ -53,7 +53,6 @@ Java_Classes =                              \
         org/photon/DataDefBuilderODBC.class \
         org/photon/DataDefinition.class     \
         org/photon/DataRecord.class         \
-        org/photon/Definition.class         \
         org/photon/FieldType.class          \
         org/photon/Folder.class             \
         org/photon/FolderEntry.class        \
@@ -98,9 +97,7 @@ libphoton_jni_la_SOURCES =            \
         jni_dataDefBuilderUser.c      \
         jni_dataDefinition.c          \
         jni_dataRecord.c              \
-        jni_definition.c              \
         jni_fieldDef.c                \
-        jni_fieldType.c               \
         jni_folder.c                  \
         jni_folderEntry.c             \
         jni_hashmap.c                 \
@@ -113,13 +110,11 @@ libphoton_jni_la_SOURCES =            \
         jni_objectType.c              \
         jni_objStatus.c               \
         jni_photon.c                  \
-        jni_queue.c                   \
+        jni_rawQueue.c                \
         jni_session.c                 \
         org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
-        org_photon_Definition.h       \
         org_photon_FieldDefinition.h  \
-        org_photon_FieldType.h        \
         org_photon_Folder.h           \
         org_photon_FolderEntry.h      \
         org_photon_Info.h             \
@@ -129,7 +124,7 @@ libphoton_jni_la_SOURCES =            \
         org_photon_ObjectType.h       \
         org_photon_ObjectStatus.h     \
         org_photon_Photon.h           \
-        org_photon_Queue.h            \
+        org_photon_RawQueue.h         \
         org_photon_Session.h          
 
 libphoton_jni_la_LIBADD = \

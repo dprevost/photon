@@ -143,6 +143,8 @@ int psoKeyDefCreate( PSO_HANDLE               sessionHandle,
    pDefinition->definitionType = PSOA_DEF_KEY;
    GET_PTR( pMemDefinition, pHashItem->dataOffset, psonKeyDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
+   pDefinition->name = (char *)pHashItem->key;
+   pDefinition->nameLength = pHashItem->keyLength;
    
    *definitionHandle = (PSO_HANDLE) pDefinition;
 
@@ -281,6 +283,8 @@ int psoKeyDefOpen( PSO_HANDLE   sessionHandle,
    pDefinition->definitionType = PSOA_DEF_KEY;
    GET_PTR( pMemDefinition, pHashItem->dataOffset, psonKeyDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
+   pDefinition->name = (char *)pHashItem->key;
+   pDefinition->nameLength = pHashItem->keyLength;
    
    *definitionHandle = (PSO_HANDLE) pDefinition;
 
@@ -358,6 +362,8 @@ int psoaKeyDefDestroy( PSO_HANDLE   sessionHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
+                      char                   ** name,
+                      psoUint32               * nameLength,
                       enum psoDefinitionType  * type,
                       unsigned char          ** keyDef,
                       psoUint32               * keyDefLength )
@@ -386,6 +392,8 @@ int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
    *type = pDefinition->pMemDefinition->type;
    *keyDef = pDefinition->pMemDefinition->definition,
    *keyDefLength = pDefinition->pMemDefinition->definitionLength;
+   *name = pDefinition->name;
+   *nameLength = pDefinition->nameLength;
    
    return PSO_OK;
 }

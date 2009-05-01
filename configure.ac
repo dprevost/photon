@@ -466,6 +466,8 @@ fi
 #                  #
 ####################
 
+AC_CONFIG_SUBDIRS(src/Python)
+
 AC_CONFIG_FILES([
    doc/doxyfile.photon_c
    doc/doxyfile.photon_cpp

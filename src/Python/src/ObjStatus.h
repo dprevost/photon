@@ -48,14 +48,14 @@ typedef struct {
    /** Maximum key length (in bytes) if keys are supported - zero otherwise */
    psoUint32 maxKeyLength;
 
-} ObjStatus;
+} pyObjStatus;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 ObjStatus_dealloc( PyObject * self )
 {
-   ObjStatus * status = (ObjStatus *) self;
+   pyObjStatus * status = (pyObjStatus *) self;
 
    Py_XDECREF(status->objType);
    Py_XDECREF(status->status);
@@ -68,13 +68,13 @@ ObjStatus_dealloc( PyObject * self )
 static PyObject *
 ObjStatus_str( PyObject * self )
 {
-   ObjStatus * obj = (ObjStatus *)self;
+   pyObjStatus * obj = (pyObjStatus *)self;
 
    if ( obj->objType && obj->status ) {
       return PyString_FromFormat( 
-         "ObjStatus{ obj_type: %s, status: %s, num_blocks: %d, "
-         "num_groups: %d, num_data_items: %d, free_bytes: %d, "
-         "max_data_length: %d, max_key_length: %d }",
+         "ObjStatus{ obj_type: %s, status: %s, num_blocks: %zu, "
+         "num_groups: %zu, num_data_items: %zu, free_bytes: %zu, "
+         "max_data_length: %u, max_key_length: %u }",
          PyString_AsString(obj->objType),
          PyString_AsString(obj->status),
          obj->numBlocks,
@@ -91,21 +91,36 @@ ObjStatus_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef ObjStatus_members[] = {
-   { "obj_type", T_OBJECT_EX, offsetof(ObjStatus, objType), RO,
+   { "obj_type", T_OBJECT_EX, offsetof(pyObjStatus, objType), RO,
      "The type of the object"},
-   { "status", T_OBJECT_EX, offsetof(ObjStatus, status), RO,
+   { "status", T_OBJECT_EX, offsetof(pyObjStatus, status), RO,
      "Status of the object"},
-   { "num_blocks", T_INT, offsetof(ObjStatus, numBlocks), RO,
+#if SIZEOF_VOID_P == 4
+   { "num_blocks", T_UINT, offsetof(pyObjStatus, numBlocks), RO,
      "The number of blocks allocated to this object"},
-   { "num_groups", T_INT, offsetof(ObjStatus, numBlockGroup), RO,
+   { "num_groups", T_UINT, offsetof(pyObjStatus, numBlockGroup), RO,
      "The number of groups of blocks allocated to this object"},
-   { "num_data_items", T_INT, offsetof(ObjStatus, numDataItem), RO,
+   { "num_data_items", T_UINT, offsetof(pyObjStatus, numDataItem), RO,
      "The number of data items in this object"},
-   { "free_bytes", T_INT, offsetof(ObjStatus, freeBytes), RO,
+   { "free_bytes", T_UINT, offsetof(pyObjStatus, freeBytes), RO,
      "The amount of free space available in the blocks allocated to this object"},
-   { "max_data_length", T_INT, offsetof(ObjStatus, maxDataLength), RO,
+#else
+   /* 
+    * On 64 bits machine, long long is a solution. V 2.6 of Python 
+    * supports the T_PYSSIZET type - which would be a better solution.
+    */
+   { "num_blocks", T_ULONGLONG, offsetof(pyObjStatus, numBlocks), RO,
+     "The number of blocks allocated to this object"},
+   { "num_groups", T_ULONGLONG, offsetof(pyObjStatus, numBlockGroup), RO,
+     "The number of groups of blocks allocated to this object"},
+   { "num_data_items", T_ULONGLONG, offsetof(pyObjStatus, numDataItem), RO,
+     "The number of data items in this object"},
+   { "free_bytes", T_ULONGLONG, offsetof(pyObjStatus, freeBytes), RO,
+     "The amount of free space available in the blocks allocated to this object"},
+#endif
+   { "max_data_length", T_UINT, offsetof(pyObjStatus, maxDataLength), RO,
      "Maximum data length (in bytes)"},
-   { "max_key_length", T_INT, offsetof(ObjStatus, maxKeyLength), RO,
+   { "max_key_length", T_UINT, offsetof(pyObjStatus, maxKeyLength), RO,
      "Maximum key length (in bytes) if keys are supported - zero otherwise"},
    {NULL}  /* Sentinel */
 };
@@ -116,7 +131,7 @@ static PyTypeObject ObjStatusType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.ObjStatus",            /*tp_name*/
-   sizeof(ObjStatus),          /*tp_basicsize*/
+   sizeof(pyObjStatus),        /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    ObjStatus_dealloc,          /*tp_dealloc*/
    0,                          /*tp_print*/

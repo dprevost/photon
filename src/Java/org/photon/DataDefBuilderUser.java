@@ -25,9 +25,12 @@ public class DataDefBuilderUser {
    /// The C struct array holding the definition of the fields
    private byte[] fields;
 
+   private int numFields;
+   
    /// Iterator
    private int currentField = 0;
 
+   /// Current length of the buffer
    private int currentLength = 0;
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -43,8 +46,14 @@ public class DataDefBuilderUser {
     *
     * Use this constructor to build a definition to create new Photon objects.
     */
-   public DataDefBuilderUser() {}
+   public DataDefBuilderUser( int numFields ) throws PhotonException {
 
+      if ( numFields <= 0 ) {
+         throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
+      }
+      this.numFields = numFields;
+   }
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /**
@@ -58,10 +67,19 @@ public class DataDefBuilderUser {
    
       int errcode;
             
+      if ( currentField >= numFields ) {
+         throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
+      }
+
+      if ( fieldDescription.length() == 0 ) {
+         throw new PhotonException( PhotonErrors.INVALID_LENGTH );
+      }
+
       errcode = psoAddField( fieldDescription );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
+      currentField++;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
@@ -73,7 +91,7 @@ public class DataDefBuilderUser {
     */
    public byte[] GetDefinition() throws PhotonException {
 
-      if ( currentLength == 0 ) {
+      if ( currentField != numFields ) {
          throw new PhotonException( PhotonErrors.INVALID_NUM_FIELDS );
       }
       
