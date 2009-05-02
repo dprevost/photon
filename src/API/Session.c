@@ -201,8 +201,8 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
-                                      NULL,
                                       pMemDataDefinition,
+                                      NULL,
                                       &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
@@ -292,8 +292,8 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
                                       objectName,
                                       nameLengthInBytes,
                                       pDefinition,
-                                      pMemKeyDefinition,
                                       pMemDataDefinition,
+                                      pMemKeyDefinition,
                                       &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
@@ -518,8 +518,8 @@ int psoGetDataDefinition( PSO_HANDLE   sessionHandle,
                                 objectName,
                                 nameLengthInBytes,
                                 &definition,
-                                &pKeyMemDefinition,
                                 &pDataDefinition->pMemDefinition,
+                                &pKeyMemDefinition,
                                 &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
@@ -589,8 +589,8 @@ int psoGetDefinition( PSO_HANDLE            sessionHandle,
                                 objectName,
                                 nameLengthInBytes,
                                 pDefinition,
-                                &pKeyMemDefinition,
                                 &pDataMemDefinition,
+                                &pKeyMemDefinition,
                                 &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
@@ -708,8 +708,8 @@ int psoGetKeyDefinition( PSO_HANDLE   sessionHandle,
                                 objectName,
                                 nameLengthInBytes,
                                 &definition,
-                                &pKeyDefinition->pMemDefinition,
                                 &pDataMemDefinition,
+                                &pKeyDefinition->pMemDefinition,
                                 &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {

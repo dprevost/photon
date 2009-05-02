@@ -74,8 +74,8 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
                                    "system/Data_Definition",
                                    strlen("system/Data_Definition"),
                                    &defMap,
-                                   &dummyKeyDefinition,
                                    &dummyDataDefinition,
+                                   &dummyKeyDefinition,
                                    &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;
@@ -84,8 +84,8 @@ bool qsrHandlerAddSystemObjects( qsrHandler * pHandler )
                                    "system/Key_Definition",
                                    strlen("system/Key_Definition"),
                                    &defMap,
-                                   &dummyKeyDefinition,
                                    &dummyDataDefinition,
+                                   &dummyKeyDefinition,
                                    &pHandler->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) return false;
