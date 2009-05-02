@@ -370,7 +370,7 @@ void psoShell::Cp()
          session.CreateObject( destName, definition, *pDataDef );
       }
       else {
-         session.CreateObject( destName, definition, *pKeyDef, *pDataDef );
+         session.CreateObject( destName, definition, *pDataDef, *pKeyDef );
       }
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {

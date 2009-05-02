@@ -234,8 +234,8 @@ int psoFolderCreateKeyedObject( PSO_HANDLE            objectHandle,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
-                                PSO_HANDLE            keyDefHandle,
-                                PSO_HANDLE            dataDefHandle )
+                                PSO_HANDLE            dataDefHandle,
+                                PSO_HANDLE            keyDefHandle )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;

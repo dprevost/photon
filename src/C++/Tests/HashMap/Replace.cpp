@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
 
       session1.CreateObject( hname,
                              mapDef,
-                             keyDefObj,
-                             dataDefObj );
+                             dataDefObj,
+                             keyDefObj );
 
       map1.Open( session1, hname );
       session1.Commit();

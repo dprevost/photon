@@ -227,8 +227,8 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
                           const char          * objectName,
                           uint32_t              nameLengthInBytes,
                           psoObjectDefinition * pDefinition,
-                          PSO_HANDLE            keyDefHandle,
-                          PSO_HANDLE            dataDefHandle )
+                          PSO_HANDLE            dataDefHandle,
+                          PSO_HANDLE            keyDefHandle )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;

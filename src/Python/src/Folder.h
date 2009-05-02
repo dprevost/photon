@@ -361,8 +361,8 @@ Folder_CreateKeyObject( PyObject * self, PyObject * args )
                                             objectName,
                                             strlen(objectName),
                                             &definition,
-                                            keyDefHandle,
-                                            dataDefHandle );
+                                            dataDefHandle,
+                                            keyDefHandle );
       psoDataDefClose( dataDefHandle );
       psoKeyDefClose( keyDefHandle );
       if ( errcode != 0 ) {
@@ -381,8 +381,8 @@ Folder_CreateKeyObject( PyObject * self, PyObject * args )
                                             objectName,
                                             strlen(objectName),
                                             &definition,
-                                            keyDefHandle,
-                                            dataDefHandle );
+                                            dataDefHandle,
+                                            keyDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
          return NULL;

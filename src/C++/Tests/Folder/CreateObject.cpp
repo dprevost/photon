@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      folder->CreateObject( "", mapDef, keyDefObj, dataDefObj );
+      folder->CreateObject( "", mapDef, dataDefObj, keyDefObj );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -93,7 +93,7 @@ int main( int argc, char * argv[] )
    
    mapDef.type = (psoObjectType)0;
    try {
-      folder->CreateObject( subname, mapDef, keyDefObj, dataDefObj );
+      folder->CreateObject( subname, mapDef, dataDefObj, keyDefObj );
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
@@ -119,7 +119,7 @@ int main( int argc, char * argv[] )
    
    // End of invalid args. This call should succeed.
    try {
-      folder->CreateObject( subname, mapDef, keyDefObj, dataDefObj );
+      folder->CreateObject( subname, mapDef, dataDefObj, keyDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
@@ -128,7 +128,7 @@ int main( int argc, char * argv[] )
 
    try {
       dataDefObj.Close();
-      folder->CreateObject( subname, mapDef, keyDefObj, dataDefObj );
+      folder->CreateObject( subname, mapDef, dataDefObj, keyDefObj );
    }
    catch( pso::Exception exc ) {
       if ( exc.ErrorCode() != PSO_NULL_HANDLE ) {

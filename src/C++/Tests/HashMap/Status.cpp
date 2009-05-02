@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
 
       session.CreateObject( hname,
                             mapDef,
-                            keyDefObj,
-                            dataDefObj );
+                            dataDefObj,
+                            keyDefObj );
       hashmap = new HashMap( session, hname );
       hashmap->Insert( key1, 7, data, 7 );
       hashmap->Insert( key2, 7, data, 7 );

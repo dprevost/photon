@@ -323,8 +323,8 @@ Java_org_photon_Session_psoCreateKeyedObjectEx( JNIEnv * env,
                                    name,
                                    strlen(name),
                                    &definition,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    
    (*env)->ReleaseStringUTFChars( env, jname, name );
    psoDataDefClose( dataDefHandle );

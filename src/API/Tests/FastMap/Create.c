@@ -107,8 +107,8 @@ int main( int argc, char * argv[] )
                                          "ahmcr",
                                          strlen("ahmcr"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -121,7 +121,7 @@ int main( int argc, char * argv[] )
                                          strlen("ahmcr"),
                                          &definition,
                                          NULL,
-                                         dataDefHandle );
+                                         keyDefHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -131,7 +131,7 @@ int main( int argc, char * argv[] )
                                          "ahmcr",
                                          strlen("ahmcr"),
                                          &definition,
-                                         keyDefHandle,
+                                         dataDefHandle,
                                          NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -154,8 +154,8 @@ int main( int argc, char * argv[] )
                                          "ahmcr",
                                          strlen("ahmcr"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -172,8 +172,8 @@ int main( int argc, char * argv[] )
                                          "ahmcr2",
                                          strlen("ahmcr2"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -195,8 +195,8 @@ int main( int argc, char * argv[] )
                                          "ahmcr3",
                                          strlen("ahmcr3"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

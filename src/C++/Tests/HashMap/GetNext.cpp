@@ -79,8 +79,8 @@ int main( int argc, char * argv[] )
 
       session.CreateObject( hname,
                             mapDef,
-                            keyDefObj,
-                            dataDefObj );
+                            dataDefObj,
+                            keyDefObj );
 
       hashmap.Open( session, hname );
       hashmap.Insert( key1, 7, data1, 8 );

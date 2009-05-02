@@ -93,7 +93,7 @@ int main( int argc, char * argv[] )
                                keyDef.GetDefinition(),
                                keyDef.GetDefLength() );
 
-      session.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+      session.CreateObject( hname, mapDef, dataDefObj, keyDefObj );
 
       map = new FastMap( session, hname );
    }

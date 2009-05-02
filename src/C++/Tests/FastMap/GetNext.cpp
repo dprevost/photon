@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
                                sizeof(psoKeyFieldDefinition) );
-      session2.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+      session2.CreateObject( hname, mapDef, dataDefObj, keyDefObj );
       session2.Commit();
 
       hashmap = new FastMap( session1, hname );

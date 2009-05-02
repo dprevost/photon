@@ -133,8 +133,8 @@ int initObjects()
                               controlName,
                               strlen(controlName),
                               &defMap,
-                              keyDefHandle,
-                              dataDefHandle );
+                              dataDefHandle,
+                              keyDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
       fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
