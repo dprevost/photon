@@ -134,6 +134,7 @@ DataDefinition_init( PyObject * self, PyObject * args, PyObject * kwds )
       }
    }
    else {
+      // This interface is deprecated in python version 3.0
       errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
       if ( errcode != 0 ) return -1;
 
@@ -220,7 +221,7 @@ DataDefinition_Create( pyDataDefinition * self, PyObject * args )
    unsigned char  * dataDef;
    char * definitionName;
    PSO_HANDLE definitionHandle;
-   
+
    if ( ! PyArg_ParseTuple(args, "OSiOi", 
       &session, &name, &type, &dataDefObj, &length) ) {
       return NULL; 
@@ -228,6 +229,7 @@ DataDefinition_Create( pyDataDefinition * self, PyObject * args )
 
    definitionName = PyString_AsString(name);
    
+   // This interface is deprecated in python version 3.0
    errcode = PyObject_AsCharBuffer(	dataDefObj, (const char **)&dataDef, &length );
    if ( errcode != 0 ) return NULL;
    
@@ -282,6 +284,7 @@ DataDefinition_GetNext( pyDataDefinition * self )
    char msg[1000];
    int i, count = 0;
    
+   // This interface is deprecated in python version 3.0
    errcode = PyObject_AsCharBuffer(	self->dataDef, (const char **)&dataDef, &length );
    if ( errcode != 0 ) return NULL;
    
