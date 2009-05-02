@@ -47,8 +47,8 @@ int main()
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -58,8 +58,8 @@ int main()
                                    "Test3/Test2",
                                    strlen("Test3/Test2"),
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

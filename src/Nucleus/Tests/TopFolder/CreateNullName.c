@@ -39,8 +39,8 @@ int main()
                                    NULL,
                                    4,
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

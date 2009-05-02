@@ -43,8 +43,8 @@ int main()
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
-                                   &keyDef,
                                    &fieldDef,
+                                   &keyDef,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
@@ -54,8 +54,8 @@ int main()
                              "Test1",
                              strlen("Test1"),
                              &retDef,
-                             NULL,
                              &retDataDef,
+                             NULL,
                              &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

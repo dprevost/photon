@@ -51,8 +51,8 @@ int main()
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &mapDef,
-                                   &key,
                                    &fields,
+                                   &key,
                                    &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );

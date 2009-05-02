@@ -101,8 +101,8 @@ int createMap()
                                  mapName,
                                  strlen(mapName),
                                  &def,
-                                 keyDefHandle,
-                                 dataDefHandle );
+                                 dataDefHandle,
+                                 keyDefHandle );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
          fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );

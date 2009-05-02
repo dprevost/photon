@@ -85,7 +85,7 @@ int main( int argc, char * argv[] )
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)keys,
                                2*sizeof(psoKeyFieldDefinition) );
-      session.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+      session.CreateObject( hname, mapDef, dataDefObj, keyDefObj );
       hashmap = new HashMap( session, hname );
    }
    catch( pso::Exception exc ) {

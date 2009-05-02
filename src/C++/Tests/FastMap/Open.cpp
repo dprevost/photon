@@ -69,7 +69,7 @@ int main( int argc, char * argv[] )
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
                                sizeof(psoKeyFieldDefinition) );
-      session1.CreateObject( hname, mapDef, keyDefObj, dataDefObj );
+      session1.CreateObject( hname, mapDef, dataDefObj, keyDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed in init phase, error = " << exc.Message() << endl;

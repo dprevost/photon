@@ -100,8 +100,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create",
                                          strlen("api_folder_create"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -111,8 +111,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create",
                                          strlen("api_folder_create"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -122,8 +122,8 @@ int main( int argc, char * argv[] )
                                          NULL,
                                          strlen("api_folder_create"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -133,8 +133,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create",
                                          0,
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -144,8 +144,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create",
                                          strlen("api_folder_create"),
                                          NULL,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -156,8 +156,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create",
                                          strlen("api_folder_create"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -169,18 +169,7 @@ int main( int argc, char * argv[] )
                                          strlen("api_folder_create"),
                                          &def,
                                          NULL,
-                                         dataDefHandle );
-   if ( errcode != PSO_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoFolderCreateKeyedObject( folderHandle,
-                                         "api_folder_create",
-                                         strlen("api_folder_create"),
-                                         &def,
-                                         keyDefHandle,
-                                         NULL );
+                                         keyDefHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -191,7 +180,18 @@ int main( int argc, char * argv[] )
                                          strlen("api_folder_create"),
                                          &def,
                                          dataDefHandle,
-                                         keyDefHandle );
+                                         NULL );
+   if ( errcode != PSO_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFolderCreateKeyedObject( folderHandle,
+                                         "api_folder_create",
+                                         strlen("api_folder_create"),
+                                         &def,
+                                         keyDefHandle,
+                                         dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -202,8 +202,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create",
                                          strlen("api_folder_create"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -220,8 +220,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create2",
                                          strlen("api_folder_create2"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -243,8 +243,8 @@ int main( int argc, char * argv[] )
                                          "api_folder_create3",
                                          strlen("api_folder_create3"),
                                          &def,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

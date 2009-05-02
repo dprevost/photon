@@ -199,8 +199,8 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              nameLengthInBytes,
                              psoObjectDefinition * pDefinition,
-                             psonKeyDefinition   * pKeyDefinition,
                              psonDataDefinition  * pDataDefinition,
+                             psonKeyDefinition   * pKeyDefinition,
                              psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
@@ -258,8 +258,8 @@ bool psonFolderCreateObject( psonFolder          * pFolder,
                                    &(name[first]),
                                    strLength, 
                                    pDefinition,
-                                   pKeyDefinition,
                                    pDataDefinition,
+                                   pKeyDefinition,
                                    1, /* numBlocks, */
                                    0, /* expectedNumOfChilds, */
                                    pContext );
@@ -980,8 +980,8 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                               const char          * objectName,
                               uint32_t              strLength,
                               psoObjectDefinition * pDefinition,
-                              psonKeyDefinition  ** ppKeyDefinition,
                               psonDataDefinition ** ppDataDefinition,
+                              psonKeyDefinition  ** ppKeyDefinition,
                               psonSessionContext  * pContext )
 {
    bool lastIteration = true;
@@ -1115,8 +1115,8 @@ bool psonFolderGetDefinition( psonFolder          * pFolder,
                                  &objectName[partialLength+1], 
                                  strLength - partialLength - 1, 
                                  pDefinition,
-                                 ppKeyDefinition,
                                  ppDataDefinition,
+                                 ppKeyDefinition,
                                  pContext );
    PSO_POST_CONDITION( ok == true || ok == false );
 
@@ -1142,8 +1142,8 @@ the_exit:
 bool psonFolderGetDefLength( psonFolder          * pFolder,
                              const char          * objectName,
                              uint32_t              strLength,
-                             uint32_t            * pKeyDefLength,
                              uint32_t            * pDataDefLength,
+                             uint32_t            * pKeyDefLength,
                              psonSessionContext  * pContext )
 {
    bool lastIteration = true;
@@ -1273,8 +1273,8 @@ bool psonFolderGetDefLength( psonFolder          * pFolder,
    ok = psonFolderGetDefLength( pNextFolder,
                                 &objectName[partialLength+1], 
                                 strLength - partialLength - 1, 
-                                pKeyDefLength,
                                 pDataDefLength,
+                                pKeyDefLength,
                                 pContext );
    PSO_POST_CONDITION( ok == true || ok == false );
 
@@ -1769,8 +1769,8 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              const char          * originalName,
                              uint32_t              strLength, 
                              psoObjectDefinition * pDefinition,
-                             psonKeyDefinition   * pKeyDefinition,
                              psonDataDefinition  * pDataDefinition,
+                             psonKeyDefinition   * pKeyDefinition,
                              size_t                numBlocks,
                              size_t                expectedNumOfChilds,
                              psonSessionContext  * pContext )
@@ -2058,8 +2058,8 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                                 &originalName[partialLength+1],
                                 strLength - partialLength - 1,
                                 pDefinition,
-                                pKeyDefinition,
                                 pDataDefinition,
+                                pKeyDefinition,
                                 numBlocks,
                                 expectedNumOfChilds,
                                 pContext );

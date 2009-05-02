@@ -39,8 +39,8 @@ int main()
                                    "Test1",
                                    strlen("Test1"),
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

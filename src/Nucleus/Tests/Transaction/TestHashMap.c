@@ -62,8 +62,8 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
-                                &key,
                                 &fields,
+                                &key,
                                 1,
                                 0,
                                 &context );

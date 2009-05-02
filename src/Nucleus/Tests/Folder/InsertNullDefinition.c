@@ -48,8 +48,8 @@ int main()
                                 "Test2",
                                 5,
                                 NULL,
-                                NULL,
                                 &fields,
+                                NULL,
                                 1,
                                 0,
                                 &context );

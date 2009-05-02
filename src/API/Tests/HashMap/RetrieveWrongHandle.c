@@ -95,8 +95,8 @@ int main( int argc, char * argv[] )
                                    "/ahgwh/test",
                                    strlen("/ahgwh/test"),
                                    &mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

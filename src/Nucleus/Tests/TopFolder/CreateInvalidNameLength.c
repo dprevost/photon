@@ -43,8 +43,8 @@ int main()
                                    "Test1",
                                    0,
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -58,8 +58,8 @@ int main()
                                    "/Test2",
                                    1,
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -73,8 +73,8 @@ int main()
                                    name,
                                    PSO_MAX_FULL_NAME_LENGTH+1,
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -91,8 +91,8 @@ int main()
                                    name,
                                    PSO_MAX_NAME_LENGTH+1,
                                    &def,
-                                   NULL,
                                    &dataDef,
+                                   NULL,
                                    &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

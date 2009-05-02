@@ -72,8 +72,8 @@ int main( int argc, char * argv[] )
 
       session.CreateObject( hname,
                             mapDef,
-                            keyDefObj,
-                            dataDefObj );
+                            dataDefObj,
+                            keyDefObj );
       hashmap = new FastMap( session, hname );
       editor  = new FastMapEditor( session, hname );
    }

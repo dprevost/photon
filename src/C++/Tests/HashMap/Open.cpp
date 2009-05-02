@@ -72,8 +72,8 @@ int main( int argc, char * argv[] )
 
       session1.CreateObject( hname,
                              mapDef,
-                             keyDefObj,
-                             dataDefObj );
+                             dataDefObj,
+                             keyDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

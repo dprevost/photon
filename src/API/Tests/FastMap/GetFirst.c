@@ -95,8 +95,8 @@ int main( int argc, char * argv[] )
                                    "/api_fast_map_getfirst/test",
                                    strlen("/api_fast_map_getfirst/test"),
                                    &mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -69,7 +69,7 @@ void Session::CreateFolder( const std::string & objectName )
    int rc;
 
    if ( m_sessionHandle == NULL ) {
-      throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Session::CreateFolder", PSO_NULL_HANDLE );
    }
     
    rc = psoCreateFolder( m_sessionHandle,
@@ -139,8 +139,8 @@ void Session::CreateObject( const std::string   & objectName,
 
 void Session::CreateObject( const std::string   & objectName,
                             psoObjectDefinition & definition,
-                            KeyDefinition       & keyDefinition,
-                            DataDefinition      & dataDefinition )
+                            DataDefinition      & dataDefinition,
+                            KeyDefinition       & keyDefinition )
 {
    int rc;
 
@@ -152,8 +152,8 @@ void Session::CreateObject( const std::string   & objectName,
                               objectName.c_str(),
                               objectName.length(),
                               &definition,
-                              keyDefinition.m_definitionHandle,
-                              dataDefinition.m_definitionHandle );
+                              dataDefinition.m_definitionHandle,
+                              keyDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
@@ -163,8 +163,8 @@ void Session::CreateObject( const std::string   & objectName,
 
 void Session::CreateObject( const std::string   & objectName,
                             psoObjectDefinition & definition,
-                            const std::string   & keyDefName,
-                            const std::string   & dataDefName )
+                            const std::string   & dataDefName,
+                            const std::string   & keyDefName )
 {
    int rc;
    PSO_HANDLE keyDefHandle, dataDefHandle;
@@ -194,8 +194,8 @@ void Session::CreateObject( const std::string   & objectName,
                               objectName.c_str(),
                               objectName.length(),
                               &definition,
-                              keyDefHandle,
-                              dataDefHandle );
+                              dataDefHandle,
+                              keyDefHandle );
 
    psoKeyDefClose(  keyDefHandle );
    psoDataDefClose( dataDefHandle );

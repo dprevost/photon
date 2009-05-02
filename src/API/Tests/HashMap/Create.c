@@ -101,8 +101,8 @@ int main( int argc, char * argv[] )
                                          "my_map",
                                          strlen("my_map"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -113,7 +113,7 @@ int main( int argc, char * argv[] )
                                          "my_map",
                                          strlen("my_map"),
                                          &definition,
-                                         keyDefHandle,
+                                         dataDefHandle,
                                          NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
                                          strlen("my_map"),
                                          &definition,
                                          NULL,
-                                         dataDefHandle );
+                                         keyDefHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -136,8 +136,8 @@ int main( int argc, char * argv[] )
                                          "my_map",
                                          strlen("my_map"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -154,8 +154,8 @@ int main( int argc, char * argv[] )
                                          "my_map2",
                                          strlen("my_map2"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -177,8 +177,8 @@ int main( int argc, char * argv[] )
                                          "my_map3",
                                          strlen("my_map3"),
                                          &definition,
-                                         keyDefHandle,
-                                         dataDefHandle );
+                                         dataDefHandle,
+                                         keyDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

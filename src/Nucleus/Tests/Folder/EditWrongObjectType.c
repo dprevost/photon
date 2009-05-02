@@ -51,8 +51,8 @@ int main()
                                 "Test2",
                                 5,
                                 &mapDef,
-                                &key,
                                 &fields,
+                                &key,
                                 1,
                                 0,
                                 &context );
