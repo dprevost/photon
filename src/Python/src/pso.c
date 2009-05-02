@@ -79,14 +79,18 @@ initpso(void)
    PyObject * m = NULL, * tup = NULL, * errs = NULL, * errNames = NULL;
    int rc;
    
+   if (PyType_Ready(&DataDefBuilderODBCType) < 0) return;
+   if (PyType_Ready(&DataDefBuilderUserType) < 0) return;
    if (PyType_Ready(&DataDefinitionType) < 0) return;
    if (PyType_Ready(&FolderType) < 0) return;
    if (PyType_Ready(&FolderEntryType) < 0) return;
    if (PyType_Ready(&InfoType) < 0) return;
+   if (PyType_Ready(&KeyDefBuilderODBCType) < 0) return;
+   if (PyType_Ready(&KeyDefBuilderUserType) < 0) return;
    if (PyType_Ready(&KeyDefinitionType) < 0) return;
    if (PyType_Ready(&ObjDefinitionType) < 0) return;
    if (PyType_Ready(&ObjStatusType) < 0) return;
-//   if (PyType_Ready(&SessionType) < 0) return; 
+   if (PyType_Ready(&SessionType) < 0) return; 
 
    m = Py_InitModule3( "pso", 
                        pso_methods,
@@ -108,12 +112,23 @@ initpso(void)
    if ( rc != 0 ) return;
    
    /* C structs (and enums?) */
+   Py_INCREF( &DataDefBuilderODBCType );
+   PyModule_AddObject( m, "DataDefBuilderODBC", (PyObject *)&DataDefBuilderODBCType );
+   Py_INCREF( &DataDefBuilderUserType );
+   PyModule_AddObject( m, "DataDefBuilderUser", (PyObject *)&DataDefBuilderUserType );
+
    Py_INCREF( &DataDefinitionType );
    PyModule_AddObject( m, "DataDefinition", (PyObject *)&DataDefinitionType );
    Py_INCREF( &FolderEntryType );
    PyModule_AddObject( m, "FolderEntry", (PyObject *)&FolderEntryType );
    Py_INCREF( &InfoType );
    PyModule_AddObject( m, "Info", (PyObject *)&InfoType );
+
+   Py_INCREF( &KeyDefBuilderODBCType );
+   PyModule_AddObject( m, "KeyDefBuilderODBC", (PyObject *)&KeyDefBuilderODBCType );
+   Py_INCREF( &KeyDefBuilderUserType );
+   PyModule_AddObject( m, "KeyDefBuilderUser", (PyObject *)&KeyDefBuilderUserType );
+
    Py_INCREF( &KeyDefinitionType );
    PyModule_AddObject( m, "KeyDefinition", (PyObject *)&KeyDefinitionType );
    Py_INCREF( &ObjDefinitionType );
@@ -124,8 +139,8 @@ initpso(void)
    /* Photon objects */
    Py_INCREF( &FolderType );
    PyModule_AddObject( m, "Folder", (PyObject *)&FolderType );
-//   Py_INCREF( &SessionType );
-//   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
+   Py_INCREF( &SessionType );
+   PyModule_AddObject( m, "Session", (PyObject *)&SessionType );
    
    /* Object types */
    PyModule_AddIntConstant( m, "FOLDER",   PSO_FOLDER );

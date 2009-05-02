@@ -22,21 +22,25 @@ PYTHON = python
 #
 #-------------------------------------------------------------------
 
-SOURCE_FILES =                 \
-        src/Common.h           \
-        src/config.h           \
-        src/DataDefinition.h   \
-        src/errors.h           \
-        src/FieldDefinition.h  \
-        src/FolderEntry.h      \
-        src/Folder.h           \
-        src/ForwardDeclare.h   \
-        src/Info.h             \
-        src/KeyDefinition.h    \
-        src/ObjectDefinition.h \
-        src/ObjStatus.h        \
-        src/pso.c              \
-        src/Session.h          
+SOURCE_FILES =                   \
+        src/Common.h             \
+        src/config.h             \
+        src/DataDefBuilderODBC.h \
+        src/DataDefBuilderUser.h \
+        src/DataDefinition.h     \
+        src/errors.h             \
+        src/FieldDefinition.h    \
+        src/FolderEntry.h        \
+        src/Folder.h             \
+        src/ForwardDeclare.h     \
+        src/Info.h               \
+        src/KeyDefBuilderODBC.h  \
+        src/KeyDefBuilderUser.h  \
+        src/KeyDefinition.h      \
+        src/ObjectDefinition.h   \
+        src/ObjStatus.h          \
+        src/pso.c                \
+        src/Session.h            
 
 all: pso.so
 
