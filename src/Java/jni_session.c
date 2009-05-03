@@ -406,6 +406,9 @@ Java_org_photon_Session_psoGetDataDefinition( JNIEnv * env,
    unsigned char * dataDef;
    unsigned int  dataDefLength; 
    jbyteArray jba;
+   char * defName, * dataDefName;
+   unsigned int defNameLength;
+   jstring jdataDefName;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( objectName == NULL ) {
@@ -420,6 +423,8 @@ Java_org_photon_Session_psoGetDataDefinition( JNIEnv * env,
 
    if ( errcode == 0 ) {
       errcode = psoaDataDefGetDef( dataDefHandle,
+                                   &defName,
+                                   &defNameLength,
                                    &defType,
                                    (unsigned char **)&dataDef,
                                    &dataDefLength );
@@ -428,9 +433,24 @@ Java_org_photon_Session_psoGetDataDefinition( JNIEnv * env,
          return errcode;
       }
    
+      // The name is the key in the hashmap and is not null-terminated
+      dataDefName = calloc( defNameLength + 1, 1 );
+      if ( dataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      memcpy( dataDefName, defName, defNameLength );
+      jdataDefName = (*env)->NewStringUTF( env, dataDefName );
+      free( dataDefName );
+      if ( jdataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      
       jba = (*env)->NewByteArray( env, dataDefLength );
       if ( jba == NULL ) {
          psoDataDefClose( dataDefHandle );
+         (*env)->DeleteLocalRef( env, jdataDefName );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
    
@@ -439,6 +459,7 @@ Java_org_photon_Session_psoGetDataDefinition( JNIEnv * env,
       (*env)->SetObjectField( env, jdefinition, g_idDataDefDataDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idDataDefType,    defType );
       (*env)->SetLongField(   env, jdefinition, g_idDataDefHandle,  (size_t)dataDefHandle );
+      (*env)->SetObjectField( env, jdefinition, g_idDataDefName,    jdataDefName );
    }
 
    return errcode;
@@ -510,6 +531,9 @@ Java_org_photon_Session_psoGetKeyDefinition( JNIEnv * env,
    unsigned char * keyDef;
    unsigned int  keyDefLength; 
    jbyteArray jba;
+   char * defName, * keyDefName;
+   unsigned int defNameLength;
+   jstring jkeyDefName;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( objectName == NULL ) {
@@ -524,6 +548,8 @@ Java_org_photon_Session_psoGetKeyDefinition( JNIEnv * env,
 
    if ( errcode == 0 ) {
       errcode = psoaKeyDefGetDef( keyDefHandle,
+                                  &defName,
+                                  &defNameLength,
                                   &defType,
                                   (unsigned char **)&keyDef,
                                   &keyDefLength );
@@ -532,9 +558,24 @@ Java_org_photon_Session_psoGetKeyDefinition( JNIEnv * env,
          return errcode;
       }
    
+      // The name is the key in the hashmap and is not null-terminated
+      keyDefName = calloc( defNameLength + 1, 1 );
+      if ( keyDefName == NULL ) {
+         psoKeyDefClose( keyDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      memcpy( keyDefName, defName, defNameLength );
+      jkeyDefName = (*env)->NewStringUTF( env, keyDefName );
+      free( keyDefName );
+      if ( jkeyDefName == NULL ) {
+         psoKeyDefClose( keyDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+
       jba = (*env)->NewByteArray( env, keyDefLength );
       if ( jba == NULL ) {
          psoKeyDefClose( keyDefHandle );
+         (*env)->DeleteLocalRef( env, jkeyDefName );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
    
@@ -543,6 +584,7 @@ Java_org_photon_Session_psoGetKeyDefinition( JNIEnv * env,
       (*env)->SetObjectField( env, jdefinition, g_idKeyDefKeyDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idKeyDefType,   defType );
       (*env)->SetLongField(   env, jdefinition, g_idKeyDefHandle, (size_t)keyDefHandle );
+      (*env)->SetObjectField( env, jdefinition, g_idKeyDefName,   jkeyDefName );
    }
 
    return errcode;

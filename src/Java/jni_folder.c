@@ -397,7 +397,9 @@ Java_org_photon_Folder_psoDataDefinition( JNIEnv * env,
          psoDataDefClose( dataDefHandle );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
+      memcpy( dataDefName, defName, defNameLength );
       jdataDefName = (*env)->NewStringUTF( env, dataDefName );
+      free( dataDefName );
       if ( jdataDefName == NULL ) {
          psoDataDefClose( dataDefHandle );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
@@ -406,13 +408,11 @@ Java_org_photon_Folder_psoDataDefinition( JNIEnv * env,
       jba = (*env)->NewByteArray( env, dataDefLength );
       if ( jba == NULL ) {
          psoDataDefClose( dataDefHandle );
-         (*env)->ReleaseStringUTFChars( env, jdataDefName, dataDefName );
-         free( dataDefName );
+         (*env)->DeleteLocalRef( env, jdataDefName );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
       
       (*env)->SetByteArrayRegion( env, jba, 0, dataDefLength, (jbyte *)dataDef );
-      memcpy( dataDefName, defName, defNameLength );
 
       (*env)->SetObjectField( env, jdefinition, g_idDataDefDataDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idDataDefType,    defType );
@@ -584,6 +584,9 @@ Java_org_photon_Folder_psoKeyDefinition( JNIEnv * env,
    unsigned char * keyDef;
    unsigned int  keyDefLength; 
    jbyteArray jba;
+   char * defName, * keyDefName;
+   unsigned int defNameLength;
+   jstring jkeyDefName;
    
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( objectName == NULL ) {
@@ -598,6 +601,8 @@ Java_org_photon_Folder_psoKeyDefinition( JNIEnv * env,
 
    if ( errcode == 0 ) {
       errcode = psoaKeyDefGetDef( keyDefHandle,
+                                  &defName,
+                                  &defNameLength,
                                   &defType,
                                   (unsigned char **)&keyDef,
                                   &keyDefLength );
@@ -606,9 +611,24 @@ Java_org_photon_Folder_psoKeyDefinition( JNIEnv * env,
          return errcode;
       }
    
+      // The name is the key in the hashmap and is not null-terminated
+      keyDefName = calloc( defNameLength + 1, 1 );
+      if ( keyDefName == NULL ) {
+         psoKeyDefClose( keyDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      memcpy( keyDefName, defName, defNameLength );
+      jkeyDefName = (*env)->NewStringUTF( env, keyDefName );
+      free( keyDefName );
+      if ( jkeyDefName == NULL ) {
+         psoKeyDefClose( keyDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+
       jba = (*env)->NewByteArray( env, keyDefLength );
       if ( jba == NULL ) {
          psoKeyDefClose( keyDefHandle );
+         (*env)->DeleteLocalRef( env, jkeyDefName );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
    
@@ -617,6 +637,7 @@ Java_org_photon_Folder_psoKeyDefinition( JNIEnv * env,
       (*env)->SetObjectField( env, jdefinition, g_idKeyDefKeyDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idKeyDefType,   defType );
       (*env)->SetLongField(   env, jdefinition, g_idKeyDefHandle, (size_t)keyDefHandle );
+      (*env)->SetObjectField( env, jdefinition, g_idKeyDefName,   jkeyDefName );
    }
 
    return errcode;
