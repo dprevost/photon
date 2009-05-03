@@ -38,6 +38,7 @@
 extern jfieldID g_idDataDefHandle;
 extern jfieldID g_idDataDefDataDef;
 extern jfieldID g_idDataDefType;
+extern jfieldID g_idDataDefName;
 
 /* The FolderEntry class */
 

@@ -30,6 +30,7 @@ jfieldID g_idDataDefHandle;
 jfieldID g_idDataDefDataDef;
 jfieldID g_idDataDefType;
 jfieldID g_idDataDefCurrentLength;
+jfieldID g_idDataDefName;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -51,6 +52,9 @@ Java_org_photon_DataDefinition_initIDs( JNIEnv * env,
    g_idDataDefCurrentLength = (*env)->GetFieldID( env, classDefinition, 
       "currentLength", "J" );
    if ( g_idDataDefCurrentLength == NULL ) return;
+   g_idDataDefName = (*env)->GetFieldID( env, classDefinition, 
+      "name", "Ljava/lang/String;" );
+   if ( g_idDataDefName == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -299,6 +303,8 @@ Java_org_photon_DataDefinition_psoOpen( JNIEnv * env,
    enum psoDefinitionType defType;
    unsigned int dataDefLength;
    jbyteArray jba;
+   char * dummyName;
+   unsigned int dummyLength;
    
    name = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( name == NULL ) {
@@ -314,6 +320,8 @@ Java_org_photon_DataDefinition_psoOpen( JNIEnv * env,
    if ( errcode != 0 ) return errcode;
    
    errcode = psoaDataDefGetDef( definitionHandle,
+                                &dummyName,
+                                &dummyLength,
                                 &defType,
                                 &dataDef,
                                 &dataDefLength );

@@ -364,7 +364,10 @@ Java_org_photon_Folder_psoDataDefinition( JNIEnv * env,
    unsigned char * dataDef;
    unsigned int  dataDefLength; 
    jbyteArray jba;
-   
+   char * defName, * dataDefName;
+   unsigned int defNameLength;
+   jstring jdataDefName;
+
    objectName = (*env)->GetStringUTFChars( env, jname, NULL );
    if ( objectName == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
@@ -378,6 +381,8 @@ Java_org_photon_Folder_psoDataDefinition( JNIEnv * env,
 
    if ( errcode == 0 ) {
       errcode = psoaDataDefGetDef( dataDefHandle,
+                                   &defName,
+                                   &defNameLength,
                                    &defType,
                                    (unsigned char **)&dataDef,
                                    &dataDefLength );
@@ -385,18 +390,34 @@ Java_org_photon_Folder_psoDataDefinition( JNIEnv * env,
          psoDataDefClose( dataDefHandle );
          return errcode;
       }
-   
-      jba = (*env)->NewByteArray( env, dataDefLength );
-      if ( jba == NULL ) {
+
+      // The name is the key in the hashmap and is not null-terminated
+      dataDefName = calloc( defNameLength + 1, 1 );
+      if ( dataDefName == NULL ) {
          psoDataDefClose( dataDefHandle );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
-   
+      jdataDefName = (*env)->NewStringUTF( env, dataDefName );
+      if ( jdataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      
+      jba = (*env)->NewByteArray( env, dataDefLength );
+      if ( jba == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         (*env)->ReleaseStringUTFChars( env, jdataDefName, dataDefName );
+         free( dataDefName );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      
       (*env)->SetByteArrayRegion( env, jba, 0, dataDefLength, (jbyte *)dataDef );
+      memcpy( dataDefName, defName, defNameLength );
 
       (*env)->SetObjectField( env, jdefinition, g_idDataDefDataDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idDataDefType,    defType );
-      (*env)->SetLongField(   env, jdefinition, g_idDataDefHandle,  (size_t)dataDefHandle );
+      (*env)->SetLongField(   env, jdefinition, g_idDataDefHandle,  (size_t)dataDefHandle );\
+      (*env)->SetObjectField( env, jdefinition, g_idDataDefName,    jdataDefName );
    }
 
    return errcode;
