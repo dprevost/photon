@@ -530,6 +530,7 @@ AC_CONFIG_FILES([
    src/C++/Tests/Queue/Makefile
    src/C++/Tests/Session/Makefile
    src/Errors/Makefile
+   src/Java/Makefile
    src/Nucleus/Makefile
    src/Nucleus/Tests/Makefile
    src/Nucleus/Tests/BlockGroup/Makefile

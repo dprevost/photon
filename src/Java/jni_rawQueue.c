@@ -81,10 +81,15 @@ Java_org_photon_RawQueue_psoDataDefinition( JNIEnv * env,
    unsigned char * dataDef;
    unsigned int  dataDefLength; 
    jbyteArray jba;
+   char * defName, * dataDefName;
+   unsigned int defNameLength;
+   jstring jdataDefName;
    
    errcode = psoQueueDefinition( (PSO_HANDLE) handle, &dataDefHandle );
    if ( errcode == 0 ) {
       errcode = psoaDataDefGetDef( dataDefHandle,
+                                   &defName,
+                                   &defNameLength,
                                    &defType,
                                    (unsigned char **)&dataDef,
                                    &dataDefLength );
@@ -93,9 +98,24 @@ Java_org_photon_RawQueue_psoDataDefinition( JNIEnv * env,
          return errcode;
       }
    
+      // The name is the key in the hashmap and is not null-terminated
+      dataDefName = calloc( defNameLength + 1, 1 );
+      if ( dataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      memcpy( dataDefName, defName, defNameLength );
+      jdataDefName = (*env)->NewStringUTF( env, dataDefName );
+      free( dataDefName );
+      if ( jdataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      
       jba = (*env)->NewByteArray( env, dataDefLength );
       if ( jba == NULL ) {
          psoDataDefClose( dataDefHandle );
+         (*env)->DeleteLocalRef( env, jdataDefName );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
    
@@ -104,6 +124,7 @@ Java_org_photon_RawQueue_psoDataDefinition( JNIEnv * env,
       (*env)->SetObjectField( env, jdefinition, g_idDataDefDataDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idDataDefType,    defType );
       (*env)->SetLongField(   env, jdefinition, g_idDataDefHandle,  (size_t)dataDefHandle );
+      (*env)->SetObjectField( env, jdefinition, g_idDataDefName,    jdataDefName );
    }
 
    return errcode;
@@ -180,10 +201,15 @@ Java_org_photon_RawQueue_psoGetRecordDefinition( JNIEnv * env,
    unsigned char * dataDef;
    unsigned int  dataDefLength; 
    jbyteArray jba;
+   char * defName, * dataDefName;
+   unsigned int defNameLength;
+   jstring jdataDefName;
    
    errcode = psoQueueRecordDefinition( (PSO_HANDLE) handle, &dataDefHandle );
    if ( errcode == 0 ) {
       errcode = psoaDataDefGetDef( dataDefHandle,
+                                   &defName,
+                                   &defNameLength,
                                    &defType,
                                    (unsigned char **)&dataDef,
                                    &dataDefLength );
@@ -192,9 +218,24 @@ Java_org_photon_RawQueue_psoGetRecordDefinition( JNIEnv * env,
          return errcode;
       }
    
+      // The name is the key in the hashmap and is not null-terminated
+      dataDefName = calloc( defNameLength + 1, 1 );
+      if ( dataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      memcpy( dataDefName, defName, defNameLength );
+      jdataDefName = (*env)->NewStringUTF( env, dataDefName );
+      free( dataDefName );
+      if ( jdataDefName == NULL ) {
+         psoDataDefClose( dataDefHandle );
+         return PSO_NOT_ENOUGH_HEAP_MEMORY;
+      }
+      
       jba = (*env)->NewByteArray( env, dataDefLength );
       if ( jba == NULL ) {
          psoDataDefClose( dataDefHandle );
+         (*env)->DeleteLocalRef( env, jdataDefName );
          return PSO_NOT_ENOUGH_HEAP_MEMORY;
       }
    
@@ -203,6 +244,7 @@ Java_org_photon_RawQueue_psoGetRecordDefinition( JNIEnv * env,
       (*env)->SetObjectField( env, jdefinition, g_idDataDefDataDef, jba );
       (*env)->SetIntField(    env, jdefinition, g_idDataDefType,    defType );
       (*env)->SetLongField(   env, jdefinition, g_idDataDefHandle,  (size_t)dataDefHandle );
+      (*env)->SetObjectField( env, jdefinition, g_idDataDefName,    jdataDefName );
    }
 
    return errcode;
