@@ -896,10 +896,11 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaHashMapRetrieve( psoaHashMap  * pHashMap,
-                        const void    * key,
-                        uint32_t        keyLength,
-                        psoaDataEntry * pEntry )
+int psoaHashMapRetrieve( psoaHashMap    * pHashMap,
+                         const void     * key,
+                         uint32_t         keyLength,
+                         unsigned char ** pData,
+                         uint32_t       * pLength )
 {
    psonHashMap * pMemHashMap;
    int errcode = 0;
@@ -908,7 +909,8 @@ int psoaHashMapRetrieve( psoaHashMap  * pHashMap,
    
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( key      != NULL );
-   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( pData    != NULL );
+   PSO_PRE_CONDITION( pLength  != NULL );
    PSO_PRE_CONDITION( keyLength > 0 );
    PSO_PRE_CONDITION( pHashMap->object.type == PSOA_HASH_MAP );
 
@@ -939,8 +941,8 @@ int psoaHashMapRetrieve( psoaHashMap  * pHashMap,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   GET_PTR( pEntry->data, pHashItem->dataOffset, void );
-   pEntry->length = pHashItem->dataLength;
+   GET_PTR( *pData, pHashItem->dataOffset, void );
+   *pLength = pHashItem->dataLength;
 
    return 0;
 

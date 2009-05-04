@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Lifo.h"
+#include "API/FastMap.h"
 
 const bool expectedToPass = false;
 
@@ -30,16 +30,17 @@ const bool expectedToPass = false;
 int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
-   PSO_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   const char * data1 = "My Data1";
-   const char * data2 = "My Data2";
-   psoaDataEntry entry;
-   psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
+   const char * key  = "My Key";
+   const char * data = "My Data";
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   PSO_HANDLE dataDefHandle;
+   PSO_HANDLE keyDefHandle, dataDefHandle;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -59,13 +60,24 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_nne",
-                              strlen("/api_lifo_nne") );
+                              "/api_fast_map_retrieve_null_entry",
+                              strlen("/api_fast_map_retrieve_null_entry") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "Definition",
+                              strlen("Definition"),
+                              PSO_DEF_PHOTON_ODBC_SIMPLE,
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyFieldDefinition),
+                              &keyDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    errcode = psoDataDefCreate( sessionHandle,
                                "Definition",
                                strlen("Definition"),
@@ -78,44 +90,42 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_nne/test",
-                              strlen("/api_lifo_nne/test"),
-                              &defLifo,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/api_fast_map_retrieve_null_entry/test",
+                                   strlen("/api_fast_map_retrieve_null_entry/test"),
+                                   &mapDef,
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_nne/test",
-                           strlen("/api_lifo_nne/test"),
-                           &objHandle );
+   errcode = psoFastMapEdit( sessionHandle,
+                             "/api_fast_map_retrieve_null_entry/test",
+                             strlen("/api_fast_map_retrieve_null_entry/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, data1, strlen(data1), NULL );
+   errcode = psoFastMapInsert( objHandle,
+                               key,
+                               6,
+                               data,
+                               7,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, data2, strlen(data2), NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoaLifoFirst( objHandle, &entry );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoaLifoNext( objHandle, NULL );
+   errcode = psoaFastMapRetrieve( objHandle,
+                                  key,
+                                  6,
+                                  NULL,
+                                  &length );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

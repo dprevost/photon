@@ -58,21 +58,24 @@ typedef struct psoaLifo
  * by this function.
  */
 PHOTON_API_EXPORT
-int psoaLifoFirst( psoaLifo      * pLifo,
-                  psoaDataEntry * pEntry );
+int psoaLifoFirst( psoaLifo       * pLifo,
+                   unsigned char ** data,
+                   uint32_t       * length );
 
 /** 
  * Iterates through the queue - no data items are removed from the queue
  * by this function.
  */
 PHOTON_API_EXPORT
-int psoaLifoNext( psoaLifo      * pLifo,
-                 psoaDataEntry * pEntry );
+int psoaLifoNext( psoaLifo       * pLifo,
+                  unsigned char ** data,
+                  uint32_t       * length );
 
 /** Remove the first inserted item from a FIFO queue. */
 PHOTON_API_EXPORT
-int psoaLifoRemove( psoaLifo      * pLifo,
-                   psoaDataEntry * pEntry );
+int psoaLifoRemove( psoaLifo       * pLifo,
+                    unsigned char ** data,
+                    uint32_t       * length );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

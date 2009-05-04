@@ -33,12 +33,13 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   psoaDataEntry entry;
    psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
+   unsigned char * buffer;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -108,14 +109,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaQueueFirst( objHandle, &entry );
+   errcode = psoaQueueFirst( objHandle, &buffer, &length );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaQueueNext( objHandle,
-                            &entry );
+   errcode = psoaQueueNext( objHandle, &buffer, &length );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

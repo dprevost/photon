@@ -25,9 +25,10 @@
 /OpenNoSession
 /OpenPass
 /Replace
-/RetrieveNullEntry
+/RetrieveNullData
 /RetrieveNullHandle
 /RetrieveNullKey
+/RetrieveNullLength
 /RetrievePass
 /RetrieveWrongHandle
 /RetrieveZeroLength

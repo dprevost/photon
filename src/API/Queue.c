@@ -670,15 +670,17 @@ int psoQueueStatus( PSO_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaQueueFirst( psoaQueue     * pQueue,
-                    psoaDataEntry * pEntry )
+int psoaQueueFirst( psoaQueue      * pQueue,
+                    unsigned char ** pData,
+                    uint32_t       * pLength )
 {
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   PSO_PRE_CONDITION( pQueue != NULL );
-   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pQueue  != NULL );
+   PSO_PRE_CONDITION( pData   != NULL );
+   PSO_PRE_CONDITION( pLength != NULL );
    PSO_PRE_CONDITION( pQueue->object.type == PSOA_QUEUE );
    
    if ( pQueue->object.pSession->terminated ) {
@@ -706,8 +708,8 @@ int psoaQueueFirst( psoaQueue     * pQueue,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   pEntry->data = pQueue->iterator->data;
-   pEntry->length = pQueue->iterator->dataLength;
+   *pData = pQueue->iterator->data;
+   *pLength = pQueue->iterator->dataLength;
    if ( pQueue->pRecordDefinition != NULL ) {
       GET_PTR( pQueue->pRecordDefinition->pMemDefinition, 
                pQueue->iterator->dataDefOffset, 
@@ -731,15 +733,17 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaQueueNext( psoaQueue     * pQueue,
-                   psoaDataEntry * pEntry )
+int psoaQueueNext( psoaQueue      * pQueue,
+                   unsigned char ** pData,
+                   uint32_t       * pLength )
 {
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   PSO_PRE_CONDITION( pQueue != NULL );
-   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pQueue  != NULL );
+   PSO_PRE_CONDITION( pData   != NULL );
+   PSO_PRE_CONDITION( pLength != NULL );
    PSO_PRE_CONDITION( pQueue->object.type == PSOA_QUEUE );
    PSO_PRE_CONDITION( pQueue->iterator != NULL );
    
@@ -757,8 +761,8 @@ int psoaQueueNext( psoaQueue     * pQueue,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   pEntry->data = pQueue->iterator->data;
-   pEntry->length = pQueue->iterator->dataLength;
+   *pData = pQueue->iterator->data;
+   *pLength = pQueue->iterator->dataLength;
    if ( pQueue->pRecordDefinition != NULL ) {
       GET_PTR( pQueue->pRecordDefinition->pMemDefinition, 
                pQueue->iterator->dataDefOffset, 
@@ -782,15 +786,17 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaQueueRemove( psoaQueue     * pQueue,
-                     psoaDataEntry * pEntry )
+int psoaQueueRemove( psoaQueue      * pQueue,
+                     unsigned char ** pData,
+                     uint32_t       * pLength )
 {
    psonQueue * pMemQueue;
    int errcode = PSO_OK;
    bool ok = true;
 
-   PSO_PRE_CONDITION( pQueue != NULL );
-   PSO_PRE_CONDITION( pEntry != NULL )
+   PSO_PRE_CONDITION( pQueue  != NULL );
+   PSO_PRE_CONDITION( pData   != NULL );
+   PSO_PRE_CONDITION( pLength != NULL );
    PSO_PRE_CONDITION( pQueue->object.type == PSOA_QUEUE )
 
    if ( pQueue->object.pSession->terminated ) {
@@ -819,8 +825,8 @@ int psoaQueueRemove( psoaQueue     * pQueue,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   pEntry->data = (const void *) pQueue->iterator->data;
-   pEntry->length = pQueue->iterator->dataLength;
+   *pData = pQueue->iterator->data;
+   *pLength = pQueue->iterator->dataLength;
    if ( pQueue->pRecordDefinition != NULL ) {
       GET_PTR( pQueue->pRecordDefinition->pMemDefinition, 
                pQueue->iterator->dataDefOffset, 

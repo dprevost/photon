@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Queue.h"
+#include "API/HashMap.h"
 
 const bool expectedToPass = false;
 
@@ -30,14 +30,17 @@ const bool expectedToPass = false;
 int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
-   PSO_HANDLE sessionHandle, objHandle;
+   PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   const char * data1 = "My Data1";
-   psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
+   const char * key  = "My Key";
+   const char * data = "My Data";
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   PSO_HANDLE dataDefHandle;
+   PSO_HANDLE keyDefHandle, dataDefHandle;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -57,13 +60,25 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqfne",
-                              strlen("/aqfne") );
+                              "/ahgne",
+                              strlen("/ahgne") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "Definition",
+                              strlen("Definition"),
+                              PSO_DEF_PHOTON_ODBC_SIMPLE,
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyFieldDefinition),
+                              &keyDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
    errcode = psoDataDefCreate( sessionHandle,
                                "Definition",
                                strlen("Definition"),
@@ -76,32 +91,42 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/aqfne/test",
-                              strlen("/aqfne/test"),
-                              &defQueue,
-                              dataDefHandle );
+   errcode = psoCreateKeyedObject( sessionHandle,
+                                   "/ahgne/test",
+                                   strlen("/ahgne/test"),
+                                   &mapDef,
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueueOpen( sessionHandle,
-                           "/aqfne/test",
-                           strlen("/aqfne/test"),
-                           &objHandle );
+   errcode = psoHashMapOpen( sessionHandle,
+                             "/ahgne/test",
+                             strlen("/ahgne/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoQueuePush( objHandle, data1, strlen(data1), NULL );
+   errcode = psoHashMapInsert( objHandle,
+                               key,
+                               6,
+                               data,
+                               7,
+                               NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaQueueFirst( objHandle, NULL );
+   errcode = psoaHashMapRetrieve( objHandle,
+                                  key,
+                                  6,
+                                  NULL,
+                                  &length );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

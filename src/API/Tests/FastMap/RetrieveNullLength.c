@@ -41,7 +41,6 @@ int main( int argc, char * argv[] )
    };
    PSO_HANDLE keyDefHandle, dataDefHandle;
    unsigned char * buffer;
-   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -61,8 +60,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_fast_map_retrieve_wrong_handle",
-                              strlen("/api_fast_map_retrieve_wrong_handle") );
+                              "/api_fast_map_retrieve_null_entry",
+                              strlen("/api_fast_map_retrieve_null_entry") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -92,8 +91,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_fast_map_retrieve_wrong_handle/test",
-                                   strlen("/api_fast_map_retrieve_wrong_handle/test"),
+                                   "/api_fast_map_retrieve_null_entry/test",
+                                   strlen("/api_fast_map_retrieve_null_entry/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -103,8 +102,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/api_fast_map_retrieve_wrong_handle/test",
-                             strlen("/api_fast_map_retrieve_wrong_handle/test"),
+                             "/api_fast_map_retrieve_null_entry/test",
+                             strlen("/api_fast_map_retrieve_null_entry/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -122,11 +121,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaFastMapRetrieve( sessionHandle,
+   errcode = psoaFastMapRetrieve( objHandle,
                                   key,
                                   6,
                                   &buffer,
-                                  &length );
+                                  NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

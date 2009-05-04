@@ -38,6 +38,7 @@ int main( int argc, char * argv[] )
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -57,8 +58,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_rne",
-                              strlen("/api_lifo_rne") );
+                              "/api_lifo_fne",
+                              strlen("/api_lifo_fne") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -77,8 +78,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_rne/test",
-                              strlen("/api_lifo_rne/test"),
+                              "/api_lifo_fne/test",
+                              strlen("/api_lifo_fne/test"),
                               &defLifo,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -87,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_rne/test",
-                           strlen("/api_lifo_rne/test"),
+                           "/api_lifo_fne/test",
+                           strlen("/api_lifo_fne/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -101,14 +102,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCommit( sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   errcode = psoaLifoRemove( objHandle, NULL );
-   
+   errcode = psoaLifoFirst( objHandle, NULL, &length );
+
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
 #  if defined(WIN32)

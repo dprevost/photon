@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Lifo.h"
+#include "API/Queue.h"
 
 const bool expectedToPass = false;
 
@@ -33,11 +33,14 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
-   psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
+   const char * data2 = "My Data2";
+   psoObjectDefinition defQueue = { PSO_QUEUE, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
+   unsigned char * buffer;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -57,8 +60,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_fne",
-                              strlen("/api_lifo_fne") );
+                              "/aqnne",
+                              strlen("/aqnne") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -77,31 +80,43 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_fne/test",
-                              strlen("/api_lifo_fne/test"),
-                              &defLifo,
+                              "/aqnne/test",
+                              strlen("/aqnne/test"),
+                              &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_fne/test",
-                           strlen("/api_lifo_fne/test"),
+   errcode = psoQueueOpen( sessionHandle,
+                           "/aqnne/test",
+                           strlen("/aqnne/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoLifoPush( objHandle, data1, strlen(data1), NULL );
+   errcode = psoQueuePush( objHandle, data1, strlen(data1), NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaLifoFirst( objHandle, NULL );
+   errcode = psoQueuePush( objHandle, data2, strlen(data2), NULL );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoaQueueFirst( objHandle, &buffer, &length );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoaQueueNext( objHandle, &buffer, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else
