@@ -66,7 +66,7 @@ Java_org_photon_KeyDefBuilderODBC_psoAddKeyField(JNIEnv * env,
                                                  jint     jlength )
 {
    enum psoKeyType type = jtype;
-   psoKeyDefinition * key;
+   psoKeyFieldDefinition * key;
    const char * name;
    jbyteArray jkeys;
    int currentKey, numKeys;
@@ -86,7 +86,7 @@ Java_org_photon_KeyDefBuilderODBC_psoAddKeyField(JNIEnv * env,
       return PSO_INVALID_FIELD_NAME;
    }
 
-   key = (psoKeyDefinition *)(*env)->GetByteArrayElements( env, jkeys, NULL );
+   key = (psoKeyFieldDefinition *)(*env)->GetByteArrayElements( env, jkeys, NULL );
    if ( key == NULL ) {
       (*env)->ReleaseStringUTFChars( env, jname, name );
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
@@ -165,7 +165,7 @@ JNIEXPORT jint JNICALL
 Java_org_photon_KeyDefBuilderODBC_psoGetLength( JNIEnv * env,
                                                 jobject  jobj )
 {
-   return (jint) sizeof(psoKeyDefinition);
+   return (jint) sizeof(psoKeyFieldDefinition);
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

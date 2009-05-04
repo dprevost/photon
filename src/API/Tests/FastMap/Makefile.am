@@ -37,9 +37,10 @@ check_PROGRAMS =            \
         OpenNoSession       \
         OpenPass            \
         Replace             \
-        RetrieveNullEntry   \
+        RetrieveNullData    \
         RetrieveNullHandle  \
         RetrieveNullKey     \
+        RetrieveNullLength  \
         RetrievePass        \
         RetrieveWrongHandle \
         RetrieveZeroLength  \
@@ -68,9 +69,10 @@ NextWrongHandle_SOURCES     = NextWrongHandle.c
 OpenNoSession_SOURCES       = OpenNoSession.c
 OpenPass_SOURCES            = OpenPass.c
 Replace_SOURCES             = Replace.c
-RetrieveNullEntry_SOURCES   = RetrieveNullEntry.c
+RetrieveNullData_SOURCES    = RetrieveNullData.c
 RetrieveNullHandle_SOURCES  = RetrieveNullHandle.c
 RetrieveNullKey_SOURCES     = RetrieveNullKey.c
+RetrieveNullLength_SOURCES  = RetrieveNullLength.c
 RetrievePass_SOURCES        = RetrievePass.c
 RetrieveWrongHandle_SOURCES = RetrieveWrongHandle.c
 RetrieveZeroLength_SOURCES  = RetrieveZeroLength.c
@@ -101,9 +103,10 @@ EXTRA_DIST =                   \
         OpenNoSession.sh       \
         OpenPass.sh            \
         Replace.sh             \
-        RetrieveNullEntry.sh   \
+        RetrieveNullData.sh    \
         RetrieveNullHandle.sh  \
         RetrieveNullKey.sh     \
+        RetrieveNullLength.sh  \
         RetrievePass.sh        \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \
@@ -142,9 +145,10 @@ TESTS =                        \
         OpenNoSession.sh       \
         OpenPass.sh            \
         Replace.sh             \
-        RetrieveNullEntry.sh   \
+        RetrieveNullData.sh    \
         RetrieveNullHandle.sh  \
         RetrieveNullKey.sh     \
+        RetrieveNullLength.sh  \
         RetrievePass.sh        \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \

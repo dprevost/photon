@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=NextNullEntry
+test_name=FirstNullData
 test_dir=src/API/Tests/Lifo
 
 # -6 for SIGABRT (failure of a pre-condition forces a call to abort()).

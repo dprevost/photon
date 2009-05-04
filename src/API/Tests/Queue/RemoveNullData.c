@@ -38,6 +38,7 @@ int main( int argc, char * argv[] )
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -107,7 +108,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psoaQueueRemove( objHandle, NULL );
+   errcode = psoaQueueRemove( objHandle, NULL, &length );
    
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

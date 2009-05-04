@@ -31,7 +31,7 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=NextNullEntry
+test_name=RemoveNullLength
 test_dir=src/API/Tests/Queue
 
 # -6 for SIGABRT (failure of a pre-condition forces a call to abort()).

@@ -18,15 +18,17 @@ check_PROGRAMS =          \
         ClosePass         \
         Create            \
         Definition        \
-        FirstNullEntry    \
+        FirstNullData     \
         FirstNullHandle   \
+        FirstNullLength   \
         FirstPass         \
         FirstWrongHandle  \
         GetFirst          \
         GetNext           \
         NextNoFirst       \
-        NextNullEntry     \
+        NextNullData      \
         NextNullHandle    \
+        NextNullLength    \
         NextPass          \
         NextWrongHandle   \
         OpenNoSession     \
@@ -34,8 +36,9 @@ check_PROGRAMS =          \
         Pop               \
         PushNow           \
         PushPass          \
-        RemoveNullEntry   \
+        RemoveNullData    \
         RemoveNullHandle  \
+        RemoveNullLength  \
         RemovePass        \
         RemoveWrongHandle \
         StatusPass        
@@ -43,15 +46,17 @@ check_PROGRAMS =          \
 ClosePass_SOURCES         = ClosePass.c
 Create_SOURCES            = Create.c
 Definition_SOURCES        = Definition.c
-FirstNullEntry_SOURCES    = FirstNullEntry.c
+FirstNullData_SOURCES     = FirstNullData.c
 FirstNullHandle_SOURCES   = FirstNullHandle.c
+FirstNullLength_SOURCES   = FirstNullLength.c
 FirstPass_SOURCES         = FirstPass.c
 FirstWrongHandle_SOURCES  = FirstWrongHandle.c
 GetFirst_SOURCES          = GetFirst.c
 GetNext_SOURCES           = GetNext.c
 NextNoFirst_SOURCES       = NextNoFirst.c
-NextNullEntry_SOURCES     = NextNullEntry.c
+NextNullData_SOURCES      = NextNullData.c
 NextNullHandle_SOURCES    = NextNullHandle.c
+NextNullLength_SOURCES    = NextNullLength.c
 NextPass_SOURCES          = NextPass.c
 NextWrongHandle_SOURCES   = NextWrongHandle.c
 OpenNoSession_SOURCES     = OpenNoSession.c
@@ -59,8 +64,9 @@ OpenPass_SOURCES          = OpenPass.c
 Pop_SOURCES               = Pop.c
 PushNow_SOURCES           = PushNow.c
 PushPass_SOURCES          = PushPass.c
-RemoveNullEntry_SOURCES   = RemoveNullEntry.c
+RemoveNullData_SOURCES    = RemoveNullData.c
 RemoveNullHandle_SOURCES  = RemoveNullHandle.c
+RemoveNullLength_SOURCES  = RemoveNullLength.c
 RemovePass_SOURCES        = RemovePass.c
 RemoveWrongHandle_SOURCES = RemoveWrongHandle.c
 StatusPass_SOURCES        = StatusPass.c
@@ -69,16 +75,18 @@ EXTRA_DIST =                 \
         ClosePass.sh         \
         Create.sh            \
         Definition.sh        \
-        FirstNullEntry.sh    \
+        FirstNullData.sh     \
         FirstNullHandle.sh   \
+        FirstNullLength.sh   \
         FirstPass.sh         \
         FirstWrongHandle.sh  \
         GetFirst.sh          \
         GetNext.sh           \
         Makefile.win32       \
         NextNoFirst.sh       \
-        NextNullEntry.sh     \
+        NextNullData.sh      \
         NextNullHandle.sh    \
+        NextNullLength.sh    \
         NextPass.sh          \
         NextWrongHandle.sh   \
         OpenNoSession.sh     \
@@ -86,8 +94,9 @@ EXTRA_DIST =                 \
         Pop.sh               \
         PushNow.sh           \
         PushPass.sh          \
-        RemoveNullEntry.sh   \
+        RemoveNullData.sh    \
         RemoveNullHandle.sh  \
+        RemoveNullLength.sh  \
         RemovePass.sh        \
         RemoveWrongHandle.sh \
         RunTests.vbs         \
@@ -105,15 +114,17 @@ TESTS =                      \
         ClosePass.sh         \
         Create.sh            \
         Definition.sh        \
-        FirstNullEntry.sh    \
+        FirstNullData.sh     \
         FirstNullHandle.sh   \
+        FirstNullLength.sh   \
         FirstPass.sh         \
         FirstWrongHandle.sh  \
         GetFirst.sh          \
         GetNext.sh           \
         NextNoFirst.sh       \
-        NextNullEntry.sh     \
+        NextNullData.sh      \
         NextNullHandle.sh    \
+        NextNullLength.sh    \
         NextPass.sh          \
         NextWrongHandle.sh   \
         OpenNoSession.sh     \
@@ -121,8 +132,9 @@ TESTS =                      \
         Pop.sh               \
         PushNow.sh           \
         PushPass.sh          \
-        RemoveNullEntry.sh   \
+        RemoveNullData.sh    \
         RemoveNullHandle.sh  \
+        RemoveNullLength.sh  \
         RemovePass.sh        \
         RemoveWrongHandle.sh \
         StatusPass.sh        

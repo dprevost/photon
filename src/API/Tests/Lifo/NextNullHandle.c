@@ -34,12 +34,13 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * data1 = "My Data1";
    const char * data2 = "My Data2";
-   psoaDataEntry entry;
    psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
+   unsigned char * buffer;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -109,13 +110,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaLifoFirst( objHandle, &entry );
+   errcode = psoaLifoFirst( objHandle, &buffer, &length );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaLifoNext( NULL, &entry );
+   errcode = psoaLifoNext( NULL, &buffer, &length );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

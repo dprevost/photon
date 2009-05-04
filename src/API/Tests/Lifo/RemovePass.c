@@ -32,12 +32,13 @@ int main( int argc, char * argv[] )
    PSO_HANDLE sessionHandle, objHandle;
    int errcode;
    const char * data1 = "My Data1";
-   psoaDataEntry entry;
    psoObjectDefinition defLifo = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE dataDefHandle;
+   unsigned char * buffer;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -107,12 +108,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psoaLifoRemove( objHandle, &entry );
+   errcode = psoaLifoRemove( objHandle, &buffer, &length );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( memcmp( entry.data, data1, strlen(data1) ) != 0 ) {
+   if ( memcmp( buffer, data1, strlen(data1) ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    

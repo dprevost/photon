@@ -73,10 +73,11 @@ int psoaHashMapNext( psoaHashMap      * pHashMap,
                      psoaHashMapEntry * pEntry );
 
 PHOTON_API_EXPORT
-int psoaHashMapRetrieve( psoaHashMap   * pHashMap,
-                         const void    * key,
-                         uint32_t        keyLength,
-                         psoaDataEntry * pEntry );
+int psoaHashMapRetrieve( psoaHashMap    * pHashMap,
+                         const void     * key,
+                         uint32_t         keyLength,
+                         unsigned char ** data,
+                         uint32_t       * length );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
