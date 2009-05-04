@@ -226,7 +226,6 @@ static PyObject *
 Queue_GetDataDefinition( PyObject * self )
 {
    int errcode;
-   const char * objectName;
    pyQueue * queue = (pyQueue *) self;
    pyDataDefinition * pyDef = NULL;
    PSO_HANDLE dataDefHandle;
@@ -308,33 +307,20 @@ Queue_GetFirst( PyObject * self, PyObject * args )
 {
    int errcode;
    pyQueue * queue = (pyQueue *) self;
-   PyObject * objType = NULL, * entryName = NULL, * status = NULL;
-   psoaDataEntry entry;
-
-   errcode = psoaQueueFirst( (PSO_HANDLE)queue->handle, &entry );
+   PyObject * pyData = NULL;
+   unsigned char * data;
+   unsigned int dataLength;
+   
+   errcode = psoaQueueFirst( (PSO_HANDLE)queue->handle, &data, &dataLength );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
    }
    
-   objType = GetObjectType( entry.type );
-   if ( objType == NULL ) return NULL;
-   status = GetObjectStatus( entry.status );
-   if ( status == NULL ) return NULL;
    
-   entryName = PyString_FromStringAndSize( entry.name,
-                                           entry.nameLengthInBytes );
-   if ( entryName == NULL ) return NULL;
+   pyData = PyByteArray_FromStringAndSize( (char *)data, dataLength );
 
-   e = (pyFolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
-   if ( e == NULL ) return NULL;
-   
-   e->status = status;
-   e->nameLength = entry.nameLengthInBytes;
-   e->name = entryName;
-   e->objType = objType;
-
-   return (PyObject *)e;
+   return (PyObject *)pyData;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
