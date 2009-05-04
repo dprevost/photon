@@ -145,12 +145,13 @@ Java_org_photon_RawQueue_psoGetFirst( JNIEnv   * env,
 {
    int errcode;
    size_t handle = (size_t) jhandle;
-   psoaDataEntry entry;
+   unsigned char * data;
+   unsigned int length;
    
-   errcode = psoaQueueFirst( (psoaQueue *) handle, &entry );
+   errcode = psoaQueueFirst( (psoaQueue *) handle, &data, &length );
    if ( errcode == 0 ) {
-      jbuffer = (*env)->NewByteArray( env, entry.length );
-      (*env)->SetByteArrayRegion( env, jbuffer, 0, entry.length, entry.data );
+      jbuffer = (*env)->NewByteArray( env, length );
+      (*env)->SetByteArrayRegion( env, jbuffer, 0, length, (jbyte*)data );
    }
    
    return errcode;
@@ -171,12 +172,13 @@ Java_org_photon_RawQueue_psoGetNext( JNIEnv   * env,
 {
    int errcode;
    size_t handle = (size_t) jhandle;
-   psoaDataEntry entry;
+   unsigned char * data;
+   unsigned int length;
    
-   errcode = psoaQueueNext( (psoaQueue *) handle, &entry );
+   errcode = psoaQueueNext( (psoaQueue *) handle, &data, &length );
    if ( errcode == 0 ) {
-      jbuffer = (*env)->NewByteArray( env, entry.length );
-      (*env)->SetByteArrayRegion( env, jbuffer, 0, entry.length, entry.data );
+      jbuffer = (*env)->NewByteArray( env, length );
+      (*env)->SetByteArrayRegion( env, jbuffer, 0, length, (jbyte*)data );
    }
    
    return errcode;
@@ -333,12 +335,13 @@ Java_org_photon_RawQueue_psoPop( JNIEnv   * env,
 {
    int errcode;
    size_t handle = (size_t) jhandle;
-   psoaDataEntry entry;
+   unsigned char * data;
+   unsigned int length;
    
-   errcode = psoaQueueRemove( (psoaQueue *) handle, &entry );
+   errcode = psoaQueueRemove( (psoaQueue *) handle, &data, &length );
    if ( errcode == 0 ) {
-      jbuffer = (*env)->NewByteArray( env, entry.length );
-      (*env)->SetByteArrayRegion( env, jbuffer, 0, entry.length, entry.data );
+      jbuffer = (*env)->NewByteArray( env, length );
+      (*env)->SetByteArrayRegion( env, jbuffer, 0, length, (jbyte*)data );
    }
    
    return errcode;
