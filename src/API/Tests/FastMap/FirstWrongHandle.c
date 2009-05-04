@@ -34,13 +34,14 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   psoaHashMapEntry entry;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE keyDefHandle, dataDefHandle;
+   unsigned char * keyBuffer, * buffer;
+   unsigned int keyLength, bufferLength;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -121,7 +122,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaFastMapFirst( sessionHandle, &entry );
+   errcode = psoaFastMapFirst( sessionHandle, &keyBuffer, &keyLength, 
+                               &buffer, &bufferLength );
  
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

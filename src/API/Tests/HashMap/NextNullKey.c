@@ -63,8 +63,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahnwh",
-                              strlen("/ahnwh") );
+                              "/ahnne",
+                              strlen("/ahnne") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -95,8 +95,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahnwh/test",
-                                   strlen("/ahnwh/test"),
+                                   "/ahnne/test",
+                                   strlen("/ahnne/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -106,9 +106,9 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                            "/ahnwh/test",
-                             strlen("/ahnwh/test"),
-                            &objHandle );
+                             "/ahnne/test",
+                             strlen("/ahnne/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -143,7 +143,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaHashMapNext( sessionHandle, &keyBuffer, &keyLength, 
+   errcode = psoaHashMapNext( objHandle, NULL, &keyLength, 
                               &buffer, &bufferLength );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
