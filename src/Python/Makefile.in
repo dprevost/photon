@@ -40,6 +40,7 @@ SOURCE_FILES =                   \
         src/ObjectDefinition.h   \
         src/ObjStatus.h          \
         src/pso.c                \
+        src/Queue.h              \
         src/Session.h            
 
 all: pso.so
