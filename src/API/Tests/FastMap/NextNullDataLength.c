@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/HashMap.h"
+#include "API/FastMap.h"
 
 const bool expectedToPass = false;
 
@@ -36,7 +36,7 @@ int main( int argc, char * argv[] )
    const char * data1 = "My Data1";
    const char * key2  = "My Key2";
    const char * data2 = "My Data2";
-   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
@@ -63,8 +63,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahnwh",
-                              strlen("/ahnwh") );
+                              "/api_fast_map_next_null_entry",
+                              strlen("/api_fast_map_next_null_entry") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -81,7 +81,6 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
    errcode = psoDataDefCreate( sessionHandle,
                                "Definition",
                                strlen("Definition"),
@@ -95,8 +94,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahnwh/test",
-                                   strlen("/ahnwh/test"),
+                                   "/api_fast_map_next_null_entry/test",
+                                   strlen("/api_fast_map_next_null_entry/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -105,16 +104,16 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapOpen( sessionHandle,
-                            "/ahnwh/test",
-                             strlen("/ahnwh/test"),
-                            &objHandle );
+   errcode = psoFastMapEdit( sessionHandle,
+                             "/api_fast_map_next_null_entry/test",
+                             strlen("/api_fast_map_next_null_entry/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapInsert( objHandle,
+   errcode = psoFastMapInsert( objHandle,
                                key1,
                                7,
                                data1,
@@ -125,7 +124,7 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoHashMapInsert( objHandle,
+   errcode = psoFastMapInsert( objHandle,
                                key2,
                                7,
                                data2,
@@ -136,15 +135,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaHashMapFirst( objHandle, &keyBuffer, &keyLength, 
+   errcode = psoaFastMapFirst( objHandle, &keyBuffer, &keyLength, 
                                &buffer, &bufferLength );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaHashMapNext( sessionHandle, &keyBuffer, &keyLength, 
-                              &buffer, &bufferLength );
+   errcode = psoaFastMapNext( objHandle, &keyBuffer, &keyLength, 
+                              &buffer, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

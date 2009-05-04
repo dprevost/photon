@@ -6,8 +6,11 @@
 /Create
 /Definition
 /DeletePass
-/FirstNullEntry
+/FirstNullData
+/FirstNullDataLength
 /FirstNullHandle
+/FirstNullKey
+/FirstNullKeyLength
 /FirstPass
 /FirstWrongHandle
 /Get
@@ -15,8 +18,11 @@
 /GetNext
 /InsertPass
 /NextNoFirst
-/NextNullEntry
+/NextNullData
+/NextNullDataLength
 /NextNullHandle
+/NextNullKey
+/NextNullKeyLength
 /NextPass
 /NextWrongHandle
 /OpenNoSession
