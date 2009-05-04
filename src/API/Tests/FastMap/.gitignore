@@ -9,8 +9,11 @@
 /Delete
 /Edit
 /Empty
-/FirstNullEntry
+/FirstNullData
+/FirstNullDataLength
 /FirstNullHandle
+/FirstNullKey
+/FirstNullKeyLength
 /FirstPass
 /FirstWrongHandle
 /Get
@@ -18,8 +21,11 @@
 /GetNext
 /Insert
 /NextNoFirst
-/NextNullEntry
+/NextNullData
+/NextNullDataLength
 /NextNullHandle
+/NextNullKey
+/NextNullKeyLength
 /NextPass
 /NextWrongHandle
 /OpenNoSession

@@ -32,10 +32,8 @@ int main( int argc, char * argv[] )
 #if defined(USE_DBC)
    PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   const char * key1  = "My Key1";
-   const char * data1 = "My Data1";
-   const char * key2  = "My Key2";
-   const char * data2 = "My Data2";
+   const char * key  = "My Key";
+   const char * data = "My Data";
    psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
@@ -43,7 +41,7 @@ int main( int argc, char * argv[] )
    };
    PSO_HANDLE keyDefHandle, dataDefHandle;
    unsigned char * keyBuffer, * buffer;
-   unsigned int keyLength, bufferLength;
+   unsigned int keyLength;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -63,8 +61,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahnwh",
-                              strlen("/ahnwh") );
+                              "/ahfne",
+                              strlen("/ahfne") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -95,8 +93,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahnwh/test",
-                                   strlen("/ahnwh/test"),
+                                   "/ahfne/test",
+                                   strlen("/ahfne/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -106,30 +104,19 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                            "/ahnwh/test",
-                             strlen("/ahnwh/test"),
-                            &objHandle );
+                             "/ahfne/test",
+                             strlen("/ahfne/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoHashMapInsert( objHandle,
-                               key1,
+                               key,
+                               6,
+                               data,
                                7,
-                               data1,
-                               8,
-                               NULL );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoHashMapInsert( objHandle,
-                               key2,
-                               7,
-                               data2,
-                               8,
                                NULL );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -137,14 +124,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoaHashMapFirst( objHandle, &keyBuffer, &keyLength, 
-                               &buffer, &bufferLength );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoaHashMapNext( sessionHandle, &keyBuffer, &keyLength, 
-                              &buffer, &bufferLength );
+                               &buffer, NULL );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

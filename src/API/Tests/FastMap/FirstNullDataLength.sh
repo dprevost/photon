@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,8 +31,8 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-test_name=FirstNullEntry
-test_dir=src/API/Tests/HashMap
+test_name=FirstNullDataLength
+test_dir=src/API/Tests/FastMap
 
 # -6 for SIGABRT (failure of a pre-condition forces a call to abort()).
 # The value "6" might not be always constant across OSes, YMMV.

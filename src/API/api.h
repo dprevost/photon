@@ -74,21 +74,6 @@ typedef enum psoaEditMode psoaEditMode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-/** A simple struct to simplify arguments to a few functions. */
-struct psoaDataEntry
-{
-   /** Length of the data in bytes. */
-   uint32_t length;
-   
-   /** Pointer to the data. */
-   const void * data;
-
-};
-
-typedef struct psoaDataEntry psoaDataEntry;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 #endif /* PSOA_API_H */
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
