@@ -14,7 +14,7 @@
 #
 PHOTON_INCLUDE_DIR = $(PWD)/../include
 PHOTON_LIB_DIR     = $(PWD)/../API/.libs
-PYTHON = python
+PYTHON = @PYTHON@
 #
 ## Possible alternatives (if Photon is installed in /usr/local):
 #PHOTON_INCLUDE_DIR = /usr/local/include
