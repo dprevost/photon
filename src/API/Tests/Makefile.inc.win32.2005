@@ -1,0 +1,46 @@
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# /MT multithreaded .exe
+# /W4 : warning level 4
+# /O2 : optimize
+# _MBCS Multi-bytes chars (not the 16 bits of win32 unicode). Not used yet.
+# /nologo - suppress MS banner since it is a bit hard to see errors with it
+#           turned on
+
+VBS_VERBOSE=
+
+CLEANFILES = *~
+
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG   = ..\..\..\Debug2005
+
+W32_SYS_LIBS = kernel32.lib ws2_32.lib
+LDD_FLAGS       = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"$(DLL_RELEASE)" 
+LDD_FLAGS_DEBUG = $(W32_SYS_LIBS) photon.lib photonNucleus.lib photonCommon.lib /nologo /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"$(DLL_DEBUG)"  /PDB:"$(DIR_DEBUG)\\"
+
+CFLAGS_RELEASE= /O2 /Ob1 /I "..\..\.." /I "..\..\..\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MD  /Gy  /Fo"$(DIR_RELEASE)\\"       /W4 /nologo /TC /errorReport:prompt
+CFLAGS_DEBUG  = /Od      /I "..\..\.." /I "..\..\..\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /MDd      /Fo"$(DIR_DEBUG)\\" /W4 /nologo /TC /errorReport:prompt
+
+.c{$(DIR_RELEASE)}.exe:
+	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"
+
+.c{$(DIR_DEBUG)}.exe:
+	$(CPP) $(CFLAGS_DEBUG) $< /link $(LDD_FLAGS_DEBUG) /out:"$@"
+
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)/" mkdir "$(DIR_RELEASE)"
+
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)/" mkdir "$(DIR_DEBUG)"
+  
+

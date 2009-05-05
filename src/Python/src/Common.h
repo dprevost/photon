@@ -25,6 +25,7 @@
 #include "structmember.h"
 
 #include <photon/photon.h>
+#include "config.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -55,6 +56,26 @@ static void SetException( int errcode )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
+ * This function always return a new reference.
+ */
+PyObject * GetDefinitionType( enum psoDefinitionType type )
+{
+   switch (type) {
+      
+   case PSO_DEF_USER_DEFINED:
+      return PyString_FromString( "User defined" );
+   case PSO_DEF_PHOTON_ODBC_SIMPLE:
+      return PyString_FromString( "ODBC Simple" );
+   default:
+      return PyString_FromString( "Unknown definition type" );
+   }
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+#if 0
 
 PyObject * GetFieldType( enum psoFieldType type )
 {
@@ -99,9 +120,13 @@ PyObject * GetKeyType( enum psoKeyType type )
 
    return PyString_FromString( "Unknown Type" );
 }
+#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+/*
+ * This function always return a new reference.
+ */
 PyObject * GetObjectType( enum psoObjectType objType )
 {
    switch (objType) {
@@ -186,13 +211,19 @@ GetString( const char * s, Py_ssize_t len)
 
 #include "errors.h"
 
+#include "ForwardDeclare.h"
+
 /* The C struct first */
 #include "ObjStatus.h"
+#include "DataDefinition.h"
 #include "KeyDefinition.h"
-#include "BasicDef.h"
-#include "FieldDefinition.h"
+#include "ObjectDefinition.h"
 #include "FolderEntry.h"
 #include "Info.h"
+#include "DataDefBuilderODBC.h"
+#include "DataDefBuilderUser.h"
+#include "KeyDefBuilderODBC.h"
+#include "KeyDefBuilderUser.h"
 
 #include "Session.h"
 #include "Folder.h"

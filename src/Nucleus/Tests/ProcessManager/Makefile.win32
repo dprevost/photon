@@ -8,41 +8,49 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 check_PROGRAMS =                        \
-        .\Release\AddNullContext.exe    \
-        .\Release\AddNullManager.exe    \
-        .\Release\AddNullProcess.exe    \
-        .\Release\AddPass.exe           \
-        .\Release\AddZeroPid.exe        \
-        .\Release\FindNullContext.exe   \
-        .\Release\FindNullManager.exe   \
-        .\Release\FindNullProcess.exe   \
-        .\Release\FindPass.exe          \
-        .\Release\FindZeroPid.exe       \
-        .\Release\InitNullContext.exe   \
-        .\Release\InitNullManager.exe   \
-        .\Release\InitPass.exe          \
-        .\Release\RemoveNullContext.exe \
-        .\Release\RemoveNullManager.exe \
-        .\Release\RemoveNullProcess.exe \
-        .\Release\RemovePass.exe        
+        $(DIR_RELEASE)\AddNullContext.exe    \
+        $(DIR_RELEASE)\AddNullManager.exe    \
+        $(DIR_RELEASE)\AddNullProcess.exe    \
+        $(DIR_RELEASE)\AddPass.exe           \
+        $(DIR_RELEASE)\AddZeroPid.exe        \
+        $(DIR_RELEASE)\FindNullContext.exe   \
+        $(DIR_RELEASE)\FindNullManager.exe   \
+        $(DIR_RELEASE)\FindNullProcess.exe   \
+        $(DIR_RELEASE)\FindPass.exe          \
+        $(DIR_RELEASE)\FindZeroPid.exe       \
+        $(DIR_RELEASE)\InitNullContext.exe   \
+        $(DIR_RELEASE)\InitNullManager.exe   \
+        $(DIR_RELEASE)\InitPass.exe          \
+        $(DIR_RELEASE)\RemoveNullContext.exe \
+        $(DIR_RELEASE)\RemoveNullManager.exe \
+        $(DIR_RELEASE)\RemoveNullProcess.exe \
+        $(DIR_RELEASE)\RemovePass.exe        
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 

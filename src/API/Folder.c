@@ -208,8 +208,8 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition,
-                                   NULL,
                                    pMemDataDefinition,
+                                   NULL,
                                    &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
@@ -234,8 +234,8 @@ int psoFolderCreateKeyedObject( PSO_HANDLE            objectHandle,
                                 const char          * objectName,
                                 uint32_t              nameLengthInBytes,
                                 psoObjectDefinition * pDefinition,
-                                PSO_HANDLE            keyDefHandle,
-                                PSO_HANDLE            dataDefHandle )
+                                PSO_HANDLE            dataDefHandle,
+                                PSO_HANDLE            keyDefHandle )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -304,8 +304,8 @@ int psoFolderCreateKeyedObject( PSO_HANDLE            objectHandle,
                                    objectName,
                                    nameLengthInBytes,
                                    pDefinition,
-                                   pMemKeyDefinition,
                                    pMemDataDefinition,
+                                   pMemKeyDefinition,
                                    &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
@@ -430,8 +430,8 @@ int psoFolderGetDataDefinition( PSO_HANDLE   objectHandle,
                                     objectName,
                                     nameLengthInBytes,
                                     &definition,
-                                    &pKeyMemDefinition,
                                     &pDataDefinition->pMemDefinition,
+                                    &pKeyMemDefinition,
                                     &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
@@ -506,8 +506,8 @@ int psoFolderGetDefinition( PSO_HANDLE            objectHandle,
                                     objectName,
                                     nameLengthInBytes,
                                     pDefinition,
-                                    &pKeyMemDefinition,
                                     &pDataMemDefinition,
+                                    &pKeyMemDefinition,
                                     &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
@@ -649,8 +649,8 @@ int psoFolderGetKeyDefinition( PSO_HANDLE   objectHandle,
                                     objectName,
                                     nameLengthInBytes,
                                     &definition,
-                                    &pKeyDefinition->pMemDefinition,
                                     &pDataMemDefinition,
+                                    &pKeyDefinition->pMemDefinition,
                                     &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {

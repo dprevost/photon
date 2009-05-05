@@ -19,8 +19,11 @@ check_PROGRAMS =            \
         Create              \
         DeletePass          \
         Definition          \
-        FirstNullEntry      \
+        FirstNullData       \
+        FirstNullDataLength \
         FirstNullHandle     \
+        FirstNullKey        \
+        FirstNullKeyLength  \
         FirstPass           \
         FirstWrongHandle    \
         Get                 \
@@ -28,16 +31,20 @@ check_PROGRAMS =            \
         GetNext             \
         InsertPass          \
         NextNoFirst         \
-        NextNullEntry       \
+        NextNullData        \
+        NextNullDataLength  \
         NextNullHandle      \
+        NextNullKey         \
+        NextNullKeyLength   \
         NextPass            \
         NextWrongHandle     \
         OpenNoSession       \
         OpenPass            \
         Replace             \
-        RetrieveNullEntry   \
+        RetrieveNullData    \
         RetrieveNullHandle  \
         RetrieveNullKey     \
+        RetrieveNullLength  \
         RetrievePass        \
         RetrieveWrongHandle \
         RetrieveZeroLength  \
@@ -47,8 +54,11 @@ ClosePass_SOURCES           = ClosePass.c
 Create_SOURCES              = Create.c
 DeletePass_SOURCES          = DeletePass.c
 Definition_SOURCES          = Definition.c
-FirstNullEntry_SOURCES      = FirstNullEntry.c
+FirstNullData_SOURCES       = FirstNullData.c
+FirstNullDataLength_SOURCES = FirstNullDataLength.c
 FirstNullHandle_SOURCES     = FirstNullHandle.c
+FirstNullKey_SOURCES        = FirstNullKey.c
+FirstNullKeyLength_SOURCES  = FirstNullKeyLength.c
 FirstPass_SOURCES           = FirstPass.c
 FirstWrongHandle_SOURCES    = FirstWrongHandle.c
 Get_SOURCES                 = Get.c
@@ -56,16 +66,20 @@ GetFirst_SOURCES            = GetFirst.c
 GetNext_SOURCES             = GetNext.c
 InsertPass_SOURCES          = InsertPass.c
 NextNoFirst_SOURCES         = NextNoFirst.c
-NextNullEntry_SOURCES       = NextNullEntry.c
+NextNullData_SOURCES        = NextNullData.c
+NextNullDataLength_SOURCES  = NextNullDataLength.c
 NextNullHandle_SOURCES      = NextNullHandle.c
+NextNullKey_SOURCES         = NextNullKey.c
+NextNullKeyLength_SOURCES   = NextNullKeyLength.c
 NextPass_SOURCES            = NextPass.c
 NextWrongHandle_SOURCES     = NextWrongHandle.c
 OpenNoSession_SOURCES       = OpenNoSession.c
 OpenPass_SOURCES            = OpenPass.c
 Replace_SOURCES             = Replace.c
-RetrieveNullEntry_SOURCES   = RetrieveNullEntry.c
+RetrieveNullData_SOURCES    = RetrieveNullData.c
 RetrieveNullHandle_SOURCES  = RetrieveNullHandle.c
 RetrieveNullKey_SOURCES     = RetrieveNullKey.c
+RetrieveNullLength_SOURCES  = RetrieveNullLength.c
 RetrievePass_SOURCES        = RetrievePass.c
 RetrieveWrongHandle_SOURCES = RetrieveWrongHandle.c
 RetrieveZeroLength_SOURCES  = RetrieveZeroLength.c
@@ -76,16 +90,22 @@ EXTRA_DIST =                   \
         Create.sh              \
         DeletePass.sh          \
         Definition.sh          \
-        FirstNullEntry.sh      \
+        FirstNullData.sh       \
+        FirstNullDataLength.sh \
         FirstNullHandle.sh     \
+        FirstNullKey.sh        \
+        FirstNullKeyLength.sh  \
         FirstPass.sh           \
         FirstWrongHandle.sh    \
         Get.sh                 \
         GetFirst.sh            \
         GetNext.sh             \
         NextNoFirst.sh         \
-        NextNullEntry.sh       \
+        NextNullData.sh        \
+        NextNullDataLength.sh  \
         NextNullHandle.sh      \
+        NextNullKey.sh         \
+        NextNullKeyLength.sh   \
         NextPass.sh            \
         NextWrongHandle.sh     \
         InsertPass.sh          \
@@ -93,9 +113,10 @@ EXTRA_DIST =                   \
         OpenNoSession.sh       \
         OpenPass.sh            \
         Replace.sh             \
-        RetrieveNullEntry.sh   \
+        RetrieveNullData.sh    \
         RetrieveNullHandle.sh  \
         RetrieveNullKey.sh     \
+        RetrieveNullLength.sh  \
         RetrievePass.sh        \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \
@@ -115,8 +136,11 @@ TESTS =                        \
         Create.sh              \
         DeletePass.sh          \
         Definition.sh          \
-        FirstNullEntry.sh      \
+        FirstNullData.sh       \
+        FirstNullDataLength.sh \
         FirstNullHandle.sh     \
+        FirstNullKey.sh        \
+        FirstNullKeyLength.sh  \
         FirstPass.sh           \
         FirstWrongHandle.sh    \
         Get.sh                 \
@@ -124,16 +148,20 @@ TESTS =                        \
         GetNext.sh             \
         InsertPass.sh          \
         NextNoFirst.sh         \
-        NextNullEntry.sh       \
+        NextNullData.sh        \
+        NextNullDataLength.sh  \
         NextNullHandle.sh      \
+        NextNullKey.sh         \
+        NextNullKeyLength.sh   \
         NextPass.sh            \
         NextWrongHandle.sh     \
         OpenNoSession.sh       \
         OpenPass.sh            \
         Replace.sh             \
-        RetrieveNullEntry.sh   \
+        RetrieveNullData.sh    \
         RetrieveNullHandle.sh  \
         RetrieveNullKey.sh     \
+        RetrieveNullLength.sh  \
         RetrievePass.sh        \
         RetrieveWrongHandle.sh \
         RetrieveZeroLength.sh  \

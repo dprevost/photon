@@ -790,15 +790,21 @@ int psoHashMapStatus( PSO_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaHashMapFirst( psoaHashMap      * pHashMap,
-                      psoaHashMapEntry * pEntry )
+int psoaHashMapFirst( psoaHashMap    * pHashMap,
+                      unsigned char ** pKey,
+                      uint32_t       * pKeyLength,
+                      unsigned char ** pData,
+                      uint32_t       * pDataLength )
 {
    psonHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok;
    
-   PSO_PRE_CONDITION( pHashMap != NULL );
-   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( pHashMap    != NULL );
+   PSO_PRE_CONDITION( pKey        != NULL );
+   PSO_PRE_CONDITION( pKeyLength  != NULL );
+   PSO_PRE_CONDITION( pData       != NULL );
+   PSO_PRE_CONDITION( pDataLength != NULL );
    PSO_PRE_CONDITION( pHashMap->object.type == PSOA_HASH_MAP );
    
    if ( pHashMap->object.pSession->terminated ) {
@@ -827,10 +833,10 @@ int psoaHashMapFirst( psoaHashMap      * pHashMap,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
-   pEntry->dataLength = pHashMap->iterator.pHashItem->dataLength;
-   pEntry->keyLength = pHashMap->iterator.pHashItem->keyLength;
-   pEntry->key = pHashMap->iterator.pHashItem->key;
+   GET_PTR( *pData, pHashMap->iterator.pHashItem->dataOffset, void );
+   *pDataLength = pHashMap->iterator.pHashItem->dataLength;
+   *pKeyLength = pHashMap->iterator.pHashItem->keyLength;
+   *pKey = pHashMap->iterator.pHashItem->key;
    
    return 0;
 
@@ -848,15 +854,21 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaHashMapNext( psoaHashMap      * pHashMap,
-                     psoaHashMapEntry * pEntry )
+int psoaHashMapNext( psoaHashMap    * pHashMap,
+                     unsigned char ** pKey,
+                     uint32_t       * pKeyLength,
+                     unsigned char ** pData,
+                     uint32_t       * pDataLength )
 {
    psonHashMap * pMemHashMap;
    int errcode = PSO_OK;
    bool ok;
    
-   PSO_PRE_CONDITION( pHashMap != NULL );
-   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( pHashMap    != NULL );
+   PSO_PRE_CONDITION( pKey        != NULL );
+   PSO_PRE_CONDITION( pKeyLength  != NULL );
+   PSO_PRE_CONDITION( pData       != NULL );
+   PSO_PRE_CONDITION( pDataLength != NULL );
    PSO_PRE_CONDITION( pHashMap->object.type == PSOA_HASH_MAP );
    PSO_PRE_CONDITION( pHashMap->iterator.pHashItem != NULL );
    
@@ -875,10 +887,10 @@ int psoaHashMapNext( psoaHashMap      * pHashMap,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
    
-   GET_PTR( pEntry->data, pHashMap->iterator.pHashItem->dataOffset, void );
-   pEntry->dataLength = pHashMap->iterator.pHashItem->dataLength;
-   pEntry->keyLength = pHashMap->iterator.pHashItem->keyLength;
-   pEntry->key = pHashMap->iterator.pHashItem->key;
+   GET_PTR( *pData, pHashMap->iterator.pHashItem->dataOffset, void );
+   *pDataLength = pHashMap->iterator.pHashItem->dataLength;
+   *pKeyLength = pHashMap->iterator.pHashItem->keyLength;
+   *pKey = pHashMap->iterator.pHashItem->key;
 
    return PSO_OK;
 
@@ -896,10 +908,11 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaHashMapRetrieve( psoaHashMap  * pHashMap,
-                        const void    * key,
-                        uint32_t        keyLength,
-                        psoaDataEntry * pEntry )
+int psoaHashMapRetrieve( psoaHashMap    * pHashMap,
+                         const void     * key,
+                         uint32_t         keyLength,
+                         unsigned char ** pData,
+                         uint32_t       * pLength )
 {
    psonHashMap * pMemHashMap;
    int errcode = 0;
@@ -908,7 +921,8 @@ int psoaHashMapRetrieve( psoaHashMap  * pHashMap,
    
    PSO_PRE_CONDITION( pHashMap != NULL );
    PSO_PRE_CONDITION( key      != NULL );
-   PSO_PRE_CONDITION( pEntry   != NULL );
+   PSO_PRE_CONDITION( pData    != NULL );
+   PSO_PRE_CONDITION( pLength  != NULL );
    PSO_PRE_CONDITION( keyLength > 0 );
    PSO_PRE_CONDITION( pHashMap->object.type == PSOA_HASH_MAP );
 
@@ -939,8 +953,8 @@ int psoaHashMapRetrieve( psoaHashMap  * pHashMap,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   GET_PTR( pEntry->data, pHashItem->dataOffset, void );
-   pEntry->length = pHashItem->dataLength;
+   GET_PTR( *pData, pHashItem->dataOffset, void );
+   *pLength = pHashItem->dataLength;
 
    return 0;
 

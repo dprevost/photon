@@ -60,35 +60,35 @@ Java_org_photon_KeyType_initIDs( JNIEnv * env , jclass keyClass )
    jobj = (*env)->GetStaticObjectField( env, keyClass, id );
    if ( jobj == NULL ) return;
    g_weakKeyType[0] = (*env)->NewWeakGlobalRef( env, jobj );
-   if ( g_weakObjType[0] == NULL ) return;
+   if ( g_weakKeyType[0] == NULL ) return;
 
    id = (*env)->GetStaticFieldID(env, keyClass, "BINARY", "Lorg/photon/KeyType;");
    if ( id == NULL ) return;
    jobj = (*env)->GetStaticObjectField( env, keyClass, id );
    if ( jobj == NULL ) return;
    g_weakKeyType[1] = (*env)->NewWeakGlobalRef( env, jobj );
-   if ( g_weakObjType[1] == NULL ) return;
+   if ( g_weakKeyType[1] == NULL ) return;
 
    id = (*env)->GetStaticFieldID(env, keyClass, "STRING", "Lorg/photon/KeyType;");
    if ( id == NULL ) return;
    jobj = (*env)->GetStaticObjectField( env, keyClass, id );
    if ( jobj == NULL ) return;
    g_weakKeyType[2] = (*env)->NewWeakGlobalRef( env, jobj );
-   if ( g_weakObjType[2] == NULL ) return;
+   if ( g_weakKeyType[2] == NULL ) return;
 
    id = (*env)->GetStaticFieldID(env, keyClass, "VAR_STRING", "Lorg/photon/KeyType;");
    if ( id == NULL ) return;
    jobj = (*env)->GetStaticObjectField( env, keyClass, id );
    if ( jobj == NULL ) return;
    g_weakKeyType[3] = (*env)->NewWeakGlobalRef( env, jobj );
-   if ( g_weakObjType[3] == NULL ) return;
+   if ( g_weakKeyType[3] == NULL ) return;
 
    id = (*env)->GetStaticFieldID(env, keyClass, "VAR_BINARY", "Lorg/photon/KeyType;");
    if ( id == NULL ) return;
    jobj = (*env)->GetStaticObjectField( env, keyClass, id );
    if ( jobj == NULL ) return;
    g_weakKeyType[4] = (*env)->NewWeakGlobalRef( env, jobj );
-   if ( g_weakObjType[4] == NULL ) return;
+   if ( g_weakKeyType[4] == NULL ) return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
-AddField
-Construct
-GetNext
+/Debug2005
+/Release2005
+/AddField
+/Construct
+/GetNext

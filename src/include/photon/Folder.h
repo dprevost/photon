@@ -79,9 +79,9 @@ int psoFolderClose( PSO_HANDLE objectHandle );
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoFolderCreateFolder( PSO_HANDLE            folderHandle,
-                           const char          * objectName,
-                           psoUint32             nameLengthInBytes );
+int psoFolderCreateFolder( PSO_HANDLE   folderHandle,
+                           const char * objectName,
+                           psoUint32    nameLengthInBytes );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -136,8 +136,8 @@ int psoFolderCreateObject( PSO_HANDLE            folderHandle,
  *            counting the null terminator.
  * \param[in] definition The basic information needed to create the object:
  *            the type of object to create, etc.
- * \param[in] keyDefHandle Handle to the definition of the key.
  * \param[in] dataDefHandle Handle to the definition of the data fields.
+ * \param[in] keyDefHandle Handle to the definition of the key.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -146,8 +146,8 @@ int psoFolderCreateKeyedObject( PSO_HANDLE            folderHandle,
                                 const char          * objectName,
                                 psoUint32             nameLengthInBytes,
                                 psoObjectDefinition * definition,
-                                PSO_HANDLE            keyDefHandle,
-                                PSO_HANDLE            dataDefHandle );
+                                PSO_HANDLE            dataDefHandle,
+                                PSO_HANDLE            keyDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

@@ -44,7 +44,7 @@ jfieldID g_idStatusMaxKeyLength;
 JNIEXPORT void JNICALL
 Java_org_photon_ObjectStatus_initIDs( JNIEnv * env, jclass statusClass )
 {
-   g_idStatusType = (*env)->GetFieldID( env, statusClass, "type", "Lorg/photon/ObjectType;" );
+   g_idStatusType = (*env)->GetFieldID( env, statusClass, "type", "I" );
    if ( g_idStatusType == NULL ) return;
    g_idStatusStatus = (*env)->GetFieldID( env, statusClass, "status", "I" );
    if ( g_idStatusStatus == NULL ) return;

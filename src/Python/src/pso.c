@@ -43,18 +43,16 @@ pso_init( PyObject * self, PyObject * args )
 {
    int errcode;
    const char * quasarAddress;
-   int protectionNeeded;
    
-   if ( !PyArg_ParseTuple(args, "si", &quasarAddress, &protectionNeeded) ) {
+   if ( !PyArg_ParseTuple(args, "s", &quasarAddress) ) {
       return NULL;
    }
    
-   errcode = psoInit( quasarAddress, protectionNeeded );
+   errcode = psoInit( quasarAddress );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
    }
-   
 
    Py_INCREF(Py_None);
    return Py_None;
@@ -81,14 +79,18 @@ initpso(void)
    PyObject * m = NULL, * tup = NULL, * errs = NULL, * errNames = NULL;
    int rc;
    
-   if (PyType_Ready(&BaseDefType) < 0) return;
-   if (PyType_Ready(&FieldDefinitionType) < 0) return;
+   if (PyType_Ready(&DataDefBuilderODBCType) < 0) return;
+   if (PyType_Ready(&DataDefBuilderUserType) < 0) return;
+   if (PyType_Ready(&DataDefinitionType) < 0) return;
    if (PyType_Ready(&FolderType) < 0) return;
    if (PyType_Ready(&FolderEntryType) < 0) return;
    if (PyType_Ready(&InfoType) < 0) return;
+   if (PyType_Ready(&KeyDefBuilderODBCType) < 0) return;
+   if (PyType_Ready(&KeyDefBuilderUserType) < 0) return;
    if (PyType_Ready(&KeyDefinitionType) < 0) return;
+   if (PyType_Ready(&ObjDefinitionType) < 0) return;
    if (PyType_Ready(&ObjStatusType) < 0) return;
-   if (PyType_Ready(&SessionType) < 0) return;
+   if (PyType_Ready(&SessionType) < 0) return; 
 
    m = Py_InitModule3( "pso", 
                        pso_methods,
@@ -110,21 +112,27 @@ initpso(void)
    if ( rc != 0 ) return;
    
    /* C structs (and enums?) */
-   Py_INCREF( &BaseDefType );
-   PyModule_AddObject( m, "BaseDef", (PyObject *)&BaseDefType );
-   Py_INCREF( &FieldDefinitionType );
-   PyModule_AddObject( m, "FieldDefinition", (PyObject *)&FieldDefinitionType );
-//   FolderEntryType.tp_new = PyType_GenericNew; needed???????????????????
+   Py_INCREF( &DataDefBuilderODBCType );
+   PyModule_AddObject( m, "DataDefBuilderODBC", (PyObject *)&DataDefBuilderODBCType );
+   Py_INCREF( &DataDefBuilderUserType );
+   PyModule_AddObject( m, "DataDefBuilderUser", (PyObject *)&DataDefBuilderUserType );
+
+   Py_INCREF( &DataDefinitionType );
+   PyModule_AddObject( m, "DataDefinition", (PyObject *)&DataDefinitionType );
    Py_INCREF( &FolderEntryType );
    PyModule_AddObject( m, "FolderEntry", (PyObject *)&FolderEntryType );
-
-   InfoType.tp_new = PyType_GenericNew;
    Py_INCREF( &InfoType );
    PyModule_AddObject( m, "Info", (PyObject *)&InfoType );
 
+   Py_INCREF( &KeyDefBuilderODBCType );
+   PyModule_AddObject( m, "KeyDefBuilderODBC", (PyObject *)&KeyDefBuilderODBCType );
+   Py_INCREF( &KeyDefBuilderUserType );
+   PyModule_AddObject( m, "KeyDefBuilderUser", (PyObject *)&KeyDefBuilderUserType );
+
    Py_INCREF( &KeyDefinitionType );
    PyModule_AddObject( m, "KeyDefinition", (PyObject *)&KeyDefinitionType );
-   ObjStatusType.tp_new = PyType_GenericNew;
+   Py_INCREF( &ObjDefinitionType );
+   PyModule_AddObject( m, "ObjDefinition", (PyObject *)&ObjDefinitionType );
    Py_INCREF( &ObjStatusType );
    PyModule_AddObject( m, "ObjStatus", (PyObject *)&ObjStatusType );
 
@@ -141,25 +149,29 @@ initpso(void)
    PyModule_AddIntConstant( m, "FAST_MAP", PSO_FAST_MAP );
    PyModule_AddIntConstant( m, "QUEUE",    PSO_QUEUE );
 
+   /* Definition types */
+   PyModule_AddIntConstant( m, "USER_DEFINED", PSO_DEF_USER_DEFINED );
+   PyModule_AddIntConstant( m, "ODBC_SIMPLE",  PSO_DEF_PHOTON_ODBC_SIMPLE );
+   
    /* Iterators - needed ? */
    PyModule_AddIntConstant( m, "FIRST", PSO_FIRST );
    PyModule_AddIntConstant( m, "NEXT",  PSO_NEXT );
 
    /* Field types */
-   PyModule_AddIntConstant( m, "INTEGER",    PSO_INTEGER );
-   PyModule_AddIntConstant( m, "BINARY",     PSO_BINARY );
-   PyModule_AddIntConstant( m, "STRING",     PSO_CHAR );
-   PyModule_AddIntConstant( m, "DECIMAL",    PSO_DECIMAL );
-   PyModule_AddIntConstant( m, "BOOLEAN",    PSO_TINYINT );
-   PyModule_AddIntConstant( m, "VAR_BINARY", PSO_VARBINARY );
-   PyModule_AddIntConstant( m, "VAR_STRING", PSO_VARCHAR );
+//   PyModule_AddIntConstant( m, "INTEGER",    PSO_INTEGER );
+//   PyModule_AddIntConstant( m, "BINARY",     PSO_BINARY );
+//   PyModule_AddIntConstant( m, "STRING",     PSO_CHAR );
+//   PyModule_AddIntConstant( m, "DECIMAL",    PSO_DECIMAL );
+//   PyModule_AddIntConstant( m, "BOOLEAN",    PSO_TINYINT );
+//   PyModule_AddIntConstant( m, "VAR_BINARY", PSO_VARBINARY );
+//   PyModule_AddIntConstant( m, "VAR_STRING", PSO_VARCHAR );
 
    /* Key types */
-   PyModule_AddIntConstant( m, "KEY_INTEGER",    PSO_KEY_INTEGER );
-   PyModule_AddIntConstant( m, "KEY_BINARY",     PSO_KEY_BINARY );
-   PyModule_AddIntConstant( m, "KEY_STRING",     PSO_KEY_STRING );
-   PyModule_AddIntConstant( m, "KEY_VAR_BINARY", PSO_KEY_VAR_BINARY );
-   PyModule_AddIntConstant( m, "KEY_VAR_STRING", PSO_KEY_VAR_STRING );
+//   PyModule_AddIntConstant( m, "KEY_INTEGER",    PSO_KEY_INTEGER );
+//   PyModule_AddIntConstant( m, "KEY_BINARY",     PSO_KEY_BINARY );
+//   PyModule_AddIntConstant( m, "KEY_STRING",     PSO_KEY_STRING );
+//   PyModule_AddIntConstant( m, "KEY_VAR_BINARY", PSO_KEY_VAR_BINARY );
+//   PyModule_AddIntConstant( m, "KEY_VAR_STRING", PSO_KEY_VAR_STRING );
 
 }
 

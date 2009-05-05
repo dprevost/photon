@@ -59,18 +59,25 @@ typedef struct psoaFastMap
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_API_EXPORT
-int psoaFastMapFirst( psoaFastMap      * pHashMap,
-                      psoaHashMapEntry * pEntry );
+int psoaFastMapFirst( psoaFastMap    * pHashMap,
+                      unsigned char ** key,
+                      uint32_t       * keyLength,
+                      unsigned char ** data,
+                      uint32_t       * dataLength );
 
 PHOTON_API_EXPORT
-int psoaFastMapNext( psoaFastMap      * pHashMap,
-                     psoaHashMapEntry * pEntry );
+int psoaFastMapNext( psoaFastMap    * pHashMap,
+                     unsigned char ** key,
+                     uint32_t       * keyLength,
+                     unsigned char ** data,
+                     uint32_t       * dataLength );
 
 PHOTON_API_EXPORT
-int psoaFastMapRetrieve( psoaFastMap   * pHashMap,
-                         const void    * key,
-                         uint32_t        keyLength,
-                         psoaDataEntry * pEntry );
+int psoaFastMapRetrieve( psoaFastMap    * pHashMap,
+                         const void     * key,
+                         uint32_t         keyLength,
+                         unsigned char ** data,
+                         uint32_t       * length );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

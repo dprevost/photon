@@ -67,10 +67,11 @@ echo "- autoconf"
 autoconf
 echo "- autoheader"
 autoheader
-echo "- automake"
+echo "- automake -a --foreign"
 automake -a --foreign
 echo "- ./configure"
 ./configure
-#echo "- make distcheck"
-#make distcheck
+echo "- running the python autogen.sh"
+cd src/Python; ./autogen.sh; cd -
+
 exit

@@ -51,8 +51,8 @@ int main()
                                 "Test2",
                                 5,
                                 &def,
-                                &keyDef,
                                 &fieldDef,
+                                &keyDef,
                                 1,
                                 0,
                                 &context );
@@ -64,8 +64,8 @@ int main()
                                  "test2",
                                  5,
                                  &retDef,
-                                 &retKeyDef,
                                  NULL,
+                                 &retKeyDef,
                                  &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

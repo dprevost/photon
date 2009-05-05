@@ -33,11 +33,43 @@ JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObject
 
 /*
  * Class:     org_photon_Folder
+ * Method:    psoCreateObjectEx
+ * Signature: (JJLjava/lang/String;Lorg/photon/ObjectDefinition;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateObjectEx
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject, jstring);
+
+/*
+ * Class:     org_photon_Folder
  * Method:    psoCreateKeyedObject
  * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;Lorg/photon/KeyDefinition;Lorg/photon/DataDefinition;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateKeyedObject
   (JNIEnv *, jobject, jlong, jstring, jobject, jobject, jobject);
+
+/*
+ * Class:     org_photon_Folder
+ * Method:    psoCreateKeyedObjectEx
+ * Signature: (JJLjava/lang/String;Lorg/photon/ObjectDefinition;Ljava/lang/String;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoCreateKeyedObjectEx
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject, jstring, jstring);
+
+/*
+ * Class:     org_photon_Folder
+ * Method:    psoDataDefinition
+ * Signature: (JLjava/lang/String;Lorg/photon/DataDefinition;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoDataDefinition
+  (JNIEnv *, jobject, jlong, jstring, jobject);
+
+/*
+ * Class:     org_photon_Folder
+ * Method:    psoDefinition
+ * Signature: (JLjava/lang/String;Lorg/photon/ObjectDefinition;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoDefinition
+  (JNIEnv *, jobject, jlong, jstring, jobject);
 
 /*
  * Class:     org_photon_Folder
@@ -49,10 +81,10 @@ JNIEXPORT jint JNICALL Java_org_photon_Folder_psoDestroyObject
 
 /*
  * Class:     org_photon_Folder
- * Method:    psoFini
+ * Method:    psoClose
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_org_photon_Folder_psoFini
+JNIEXPORT void JNICALL Java_org_photon_Folder_psoClose
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -73,10 +105,18 @@ JNIEXPORT jint JNICALL Java_org_photon_Folder_psoGetNext
 
 /*
  * Class:     org_photon_Folder
- * Method:    psoInit
+ * Method:    psoKeyDefinition
+ * Signature: (JLjava/lang/String;Lorg/photon/KeyDefinition;)I
+ */
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoKeyDefinition
+  (JNIEnv *, jobject, jlong, jstring, jobject);
+
+/*
+ * Class:     org_photon_Folder
+ * Method:    psoOpen
  * Signature: (Lorg/photon/Session;Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_org_photon_Folder_psoInit
+JNIEXPORT jint JNICALL Java_org_photon_Folder_psoOpen
   (JNIEnv *, jobject, jobject, jstring);
 
 /*

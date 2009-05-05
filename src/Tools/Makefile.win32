@@ -15,22 +15,22 @@ VBS_VERBOSE=
 
 LINK32=link.exe
 
-CLEANFILES = *~  vc60.pdb
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
+DLL_RELEASE = ..\Release2005
+DLL_DEBUG   = ..\Debug2005
+
+CLEANFILES = *~  
 
 W32_SYS_LIBS = kernel32.lib advapi32.lib 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /incremental:no /MANIFEST /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Release" 
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /incremental:no /MANIFEST /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"../Debug" 
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /incremental:no /MANIFEST /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"$(DLL_RELEASE)" 
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photonCommon.lib /nologo /incremental:no /MANIFEST /IGNORE:4089 /subsystem:console /machine:I386 /libpath:"$(DLL_DEBUG)" 
 
-OUTDIR_RELEASE=.\Release
-INTDIR_RELEASE=.\Release
-OUTDIR_DEBUG=.\Debug
-INTDIR_DEBUG=.\Debug
-
-CFLAGS_DEBUG   = /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MTd /Fp".\Debug/psoInfo.pch" /Fo".\Debug/" /Fd".\Debug/" /W3 /nologo /c /Zi /TP /errorReport:prompt
-CFLAGS_RELEASE = /O2 /Ob1 /I "..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc /MT /Gy /Fp".\Release/psoInfo.pch" /Fo".\Release/" /Fd".\Release/" /W3 /nologo /c /TP /errorReport:prompt
+CFLAGS_DEBUG   = /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MTd /Fp"$(DIR_DEBUG)/psoInfo.pch" /Fo"$(DIR_DEBUG)/" /Fd"$(DIR_DEBUG)/" /W3 /nologo /c /Zi /TP /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I "..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc /MT /Gy /Fp"$(DIR_RELEASE)/psoInfo.pch" /Fo"$(DIR_RELEASE)/" /Fd"$(DIR_RELEASE)/" /W3 /nologo /c /TP /errorReport:prompt
 
 RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo".\Debug/psoInfo.res"
-RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/psoInfo.res"
+RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo"$(DIR_RELEASE)/psoInfo.res"
 
 ###########################################################################
 #
@@ -38,10 +38,10 @@ RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/psoInfo.res"
 #
 ###########################################################################
 
-.cpp{$(INTDIR_RELEASE)}.obj::
+.cpp{$(DIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
-.cpp{$(INTDIR_DEBUG)}.obj::
+.cpp{$(DIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
 ###########################################################################
@@ -50,22 +50,22 @@ RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/psoInfo.res"
 #
 ###########################################################################
 
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\psoInfo.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\psoInfo.exe
+all: $(DIR_RELEASE) $(DIR_RELEASE)\psoInfo.exe $(DIR_DEBUG) $(DIR_DEBUG)\psoInfo.exe
 	cd Shell && nmake -f Makefile.win32 && cd ..
 
-"$(OUTDIR_RELEASE)\psoInfo.exe" : "$(OUTDIR_RELEASE)" $(DEF_FILE) .\Release\info.obj
-   -del ..\Release\psoInfo.exe
+"$(DIR_RELEASE)\psoInfo.exe" : "$(DIR_RELEASE)" $(DEF_FILE) $(DIR_RELEASE)\info.obj
+   -del $(DLL_RELEASE)\psoInfo.exe
 	rc.exe $(RC_FLAGS_RELEASE) psoInfo.rc 
-	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(OUTDIR_RELEASE)\psoInfo.exe" .\Release\info.obj .\Release\psoInfo.res
-	mt.exe -manifest $(OUTDIR_RELEASE)\psoInfo.exe.manifest -outputresource:$(OUTDIR_RELEASE)\psoInfo.exe;1
-   copy Release\psoInfo.exe ..\Release
+	$(LINK32) $(LDD_FLAGS_RELEASE) /out:"$(DIR_RELEASE)\psoInfo.exe" $(DIR_RELEASE)\info.obj $(DIR_RELEASE)\psoInfo.res
+	mt.exe -manifest $(DIR_RELEASE)\psoInfo.exe.manifest -outputresource:$(DIR_RELEASE)\psoInfo.exe;1
+   copy $(DIR_RELEASE)\psoInfo.exe $(DLL_RELEASE)
 
-"$(OUTDIR_DEBUG)\psoInfo.exe" : "$(OUTDIR_DEBUG)" $(DEF_FILE) .\Debug\info.obj
-   -del ..\Debug\psoInfo.exe
+"$(DIR_DEBUG)\psoInfo.exe" : "$(DIR_DEBUG)" $(DEF_FILE) $(DIR_DEBUG)\info.obj
+   -del $(DLL_DEBUG)\psoInfo.exe
 	rc.exe $(RC_FLAGS_DEBUG) psoInfo.rc 
-	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(OUTDIR_DEBUG)\psoInfo.exe" .\Debug\info.obj .\Debug\psoInfo.res
-	mt.exe -manifest $(OUTDIR_DEBUG)\psoInfo.exe.manifest -outputresource:$(OUTDIR_DEBUG)\psoInfo.exe;1
-   copy Debug\psoInfo.exe ..\Debug
+	$(LINK32) $(LDD_FLAGS_DEBUG) /out:"$(DIR_DEBUG)\psoInfo.exe" $(DIR_DEBUG)\info.obj $(DIR_DEBUG)\psoInfo.res
+	mt.exe -manifest $(DIR_DEBUG)\psoInfo.exe.manifest -outputresource:$(DIR_DEBUG)\psoInfo.exe;1
+   copy $(DIR_DEBUG)\psoInfo.exe $(DLL_DEBUG)
 
 check: all
 	cd Shell && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -75,15 +75,15 @@ checkdebug: all
 
 clean: 
 	cd Shell && nmake -f Makefile.win32 clean && cd ..
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 
-"$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)" mkdir "$(OUTDIR_RELEASE)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)" mkdir "$(DIR_DEBUG)"
 

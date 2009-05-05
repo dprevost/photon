@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /FiniNullContext
 /FiniNullObj
 /FiniPass
@@ -19,8 +21,6 @@
 /MallocNullObj
 /MallocPass
 /MallocZeroBytes
-/Debug
-/Release
 /StatusNullMemObj
 /StatusNullStatus
 /StatusPass

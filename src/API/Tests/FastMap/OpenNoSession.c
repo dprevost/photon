@@ -90,8 +90,8 @@ int main( int argc, char * argv[] )
                                    "/api_fast_map_open_nosession/test",
                                    strlen("/api_fast_map_open_nosession/test"),
                                    &mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

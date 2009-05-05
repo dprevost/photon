@@ -207,8 +207,8 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
  *            counting the null terminator.
  * \param[in] definition The basic information needed to create the object:
  *            the type of object to create, etc.
- * \param[in] keyDefHandle Handle to the definition of the key.
  * \param[in] dataDefHandle Handle to the definition of the data fields.
+ * \param[in] keyDefHandle Handle to the definition of the key.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
@@ -217,8 +217,8 @@ int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
                           const char          * objectName,
                           psoUint32             nameLengthInBytes,
                           psoObjectDefinition * definition,
-                          PSO_HANDLE            keyDefHandle,
-                          PSO_HANDLE            dataDefHandle );
+                          PSO_HANDLE            dataDefHandle,
+                          PSO_HANDLE            keyDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

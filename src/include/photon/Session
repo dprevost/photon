@@ -173,15 +173,15 @@ public:
     * \param[in] objectName The fully qualified name of the object. 
     * \param[in] definition The type of object to create (folder, queue, etc.),
     *            the type of field definition, etc.
-    * \param[in] keyDef The definition of the key of the object.
     * \param[in] dataDef The definition of the data fields of the object.
+    * \param[in] keyDef The definition of the key of the object.
     *
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string   & objectName,
                       psoObjectDefinition & definition,
-                      KeyDefinition       & keyDef,
-                      DataDefinition      & dataDef );
+                      DataDefinition      & dataDef,
+                      KeyDefinition       & keyDef );
    
    /**
     * Create a new object in shared memory.
@@ -197,17 +197,17 @@ public:
     * \param[in] objectName The fully qualified name of the object. 
     * \param[in] definition The type of object to create (folder, queue, etc.),
     *            the type of field definition, etc.
-    * \param[in] keyDefName  The name of the definition of the key of 
-    *                        the object.
     * \param[in] dataDefName The name of the data definition for
     *                        the data fields of the object.
+    * \param[in] keyDefName  The name of the definition of the key of 
+    *                        the object.
     *
     * \exception pso::Exception An abnormal error occured.
     */
    void CreateObject( const std::string   & objectName,
                       psoObjectDefinition & definition,
-                      const std::string   & keyDefName,
-                      const std::string   & dataDefName );
+                      const std::string   & dataDefName,
+                      const std::string   & keyDefName );
    
    /**
     * Destroy an existing object in shared memory.

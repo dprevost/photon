@@ -8,71 +8,79 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include ..\Makefile.inc.Win32
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+RELEASE = Release2005
+DEBUG = Debug2005
+DLL_RELEASE = ..\..\..\Release2005
+DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
 CLEANFILES = *~ 
 
 check_PROGRAMS =                        \
-        .\Release\AcquireInvalidSig.exe \
-        .\Release\AcquireNullLock.exe   \
-        .\Release\AcquirePass.exe       \
-        .\Release\FiniInvalidSig.exe    \
-        .\Release\FiniNullLock.exe      \
-        .\Release\FiniPass.exe          \
-        .\Release\InitNullLock.exe      \
-        .\Release\InitPass.exe          \
-        .\Release\LockTests.exe         \
-        .\Release\ReleaseInvalidSig.exe \
-        .\Release\ReleaseNullLock.exe   \
-        .\Release\ReleasePass.exe       \
-        .\Release\TryAcqInvalidSig.exe  \
-        .\Release\TryAcqNullLock.exe    \
-        .\Release\TryAcqPass.exe        \
-        .\Release\LockConcurrency.exe   
+        $(DIR_RELEASE)\AcquireInvalidSig.exe \
+        $(DIR_RELEASE)\AcquireNullLock.exe   \
+        $(DIR_RELEASE)\AcquirePass.exe       \
+        $(DIR_RELEASE)\FiniInvalidSig.exe    \
+        $(DIR_RELEASE)\FiniNullLock.exe      \
+        $(DIR_RELEASE)\FiniPass.exe          \
+        $(DIR_RELEASE)\InitNullLock.exe      \
+        $(DIR_RELEASE)\InitPass.exe          \
+        $(DIR_RELEASE)\LockTests.exe         \
+        $(DIR_RELEASE)\ReleaseInvalidSig.exe \
+        $(DIR_RELEASE)\ReleaseNullLock.exe   \
+        $(DIR_RELEASE)\ReleasePass.exe       \
+        $(DIR_RELEASE)\TryAcqInvalidSig.exe  \
+        $(DIR_RELEASE)\TryAcqNullLock.exe    \
+        $(DIR_RELEASE)\TryAcqPass.exe        \
+        $(DIR_RELEASE)\LockConcurrency.exe   
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
 # -----------------------------------------
 
-check: $(OUTDIR) $(check_PROGRAMS) 
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS) 
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 
-.\Release\Barrier.obj: Barrier.h Barrier.c
+$(DIR_RELEASE)\Barrier.obj: Barrier.h Barrier.c
 	$(CPP) /c $(CFLAGS_RELEASE) Barrier.c 
    
-.\Release\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
+$(DIR_RELEASE)\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
 	$(CPP) /c $(CFLAGS_RELEASE) ThreadWrap.c 
 
-.\Debug\Barrier.obj: Barrier.h Barrier.c
+$(DIR_DEBUG)\Barrier.obj: Barrier.h Barrier.c
 	$(CPP) /c $(CFLAGS_DEBUG) Barrier.c 
    
-.\Debug\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
+$(DIR_DEBUG)\ThreadWrap.obj: ThreadWrap.h ThreadWrap.c
 	$(CPP) /c $(CFLAGS_DEBUG) ThreadWrap.c 
 
-.\Release\LockConcurrency.exe: .\Release\ThreadWrap.obj .\Release\Barrier.obj LockConcurrency.c
-	$(CPP) $(CFLAGS_RELEASE) LockConcurrency.c .\Release\ThreadWrap.obj .\Release\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
+$(DIR_RELEASE)\LockConcurrency.exe: $(DIR_RELEASE)\ThreadWrap.obj $(DIR_RELEASE)\Barrier.obj LockConcurrency.c
+	$(CPP) $(CFLAGS_RELEASE) LockConcurrency.c $(DIR_RELEASE)\ThreadWrap.obj $(DIR_RELEASE)\Barrier.obj /link $(LDD_FLAGS) /out:"$@"
 
-.\Debug\LockConcurrency.exe: .\Debug\ThreadWrap.obj .\Debug\Barrier.obj LockConcurrency.c
-	$(CPP) $(CFLAGS_DEBUG) LockConcurrency.c .\Debug\ThreadWrap.obj .\Debug\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
+$(DIR_DEBUG)\LockConcurrency.exe: $(DIR_DEBUG)\ThreadWrap.obj $(DIR_DEBUG)\Barrier.obj LockConcurrency.c
+	$(CPP) $(CFLAGS_DEBUG) LockConcurrency.c $(DIR_DEBUG)\ThreadWrap.obj $(DIR_DEBUG)\Barrier.obj /link $(LDD_FLAGS_DEBUG) /out:"$@"
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 
 clean: 
-	-@erase /Q Debug\LockConcurrency
-	-@rmdir /Q Debug\LockConcurrency
-	-@erase /Q Debug\LockTests
-	-@rmdir /Q Debug\LockTests
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release\LockConcurrency
-	-@rmdir /Q Release\LockConcurrency
-	-@erase /Q Release\LockTests
-	-@rmdir /Q Release\LockTests
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)\LockConcurrency
+	-@rmdir /Q $(DIR_DEBUG)\LockConcurrency
+	-@erase /Q $(DIR_DEBUG)\LockTests
+	-@rmdir /Q $(DIR_DEBUG)\LockTests
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)\LockConcurrency
+	-@rmdir /Q $(DIR_RELEASE)\LockConcurrency
+	-@erase /Q $(DIR_RELEASE)\LockTests
+	-@rmdir /Q $(DIR_RELEASE)\LockTests
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q ProjectFiles\*.dep
 	-@erase /Q ProjectFiles\*.plg
 	-@erase /Q ProjectFiles\*.mak

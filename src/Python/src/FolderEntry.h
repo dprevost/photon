@@ -35,14 +35,14 @@ typedef struct {
    PyObject * objType;
    PyObject * status;
    int        nameLength;
-} FolderEntry;
+} pyFolderEntry;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 FolderEntry_dealloc( PyObject * self )
 {
-   FolderEntry * entry = (FolderEntry *)self;
+   pyFolderEntry * entry = (pyFolderEntry *)self;
    
    Py_XDECREF( entry->name );
    Py_XDECREF( entry->objType );
@@ -55,9 +55,9 @@ FolderEntry_dealloc( PyObject * self )
 static PyObject *
 FolderEntry_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   FolderEntry * self;
+   pyFolderEntry * self;
 
-   self = (FolderEntry *)type->tp_alloc( type, 0 );
+   self = (pyFolderEntry *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->name       = NULL;
       self->objType    = NULL;
@@ -73,7 +73,7 @@ FolderEntry_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 static PyObject *
 FolderEntry_str( PyObject * self )
 {
-   FolderEntry * entry = (FolderEntry *)self;
+   pyFolderEntry * entry = (pyFolderEntry *)self;
 
    if ( entry->name && entry->objType && entry->status ) {
       return PyString_FromFormat( 
@@ -90,13 +90,13 @@ FolderEntry_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef FolderEntry_members[] = {
-   { "name", T_OBJECT_EX, offsetof(FolderEntry, name), RO,
+   { "name", T_OBJECT_EX, offsetof(pyFolderEntry, name), RO,
      "The name of the object"},
-   { "obj_type", T_OBJECT_EX, offsetof(FolderEntry, objType), RO,
+   { "obj_type", T_OBJECT_EX, offsetof(pyFolderEntry, objType), RO,
      "The type of the object"},
-   { "status", T_OBJECT_EX, offsetof(FolderEntry, status), RO,
+   { "status", T_OBJECT_EX, offsetof(pyFolderEntry, status), RO,
      "Status of the object"},
-   { "name_length", T_INT, offsetof(FolderEntry, nameLength), RO,
+   { "name_length", T_INT, offsetof(pyFolderEntry, nameLength), RO,
      "The length of the name of the object"},
    {NULL}  /* Sentinel */
 };
@@ -107,7 +107,7 @@ static PyTypeObject FolderEntryType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.FolderEntry",          /*tp_name*/
-   sizeof(FolderEntry),        /*tp_basicsize*/
+   sizeof(pyFolderEntry),      /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    FolderEntry_dealloc,        /*tp_dealloc*/
    0,                          /*tp_print*/

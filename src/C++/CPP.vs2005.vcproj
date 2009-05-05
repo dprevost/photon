@@ -205,6 +205,18 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\DataDefBuilderODBC.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DataDefBuilderUser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DataDefinition.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Exception.cpp"
 				>
 				<FileConfiguration
@@ -271,18 +283,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\FieldDefinition.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FieldDefinitionODBC.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FieldDefinitionUser.cpp"
-				>
-			</File>
-			<File
 				RelativePath="Folder.cpp"
 				>
 				<FileConfiguration
@@ -327,15 +327,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\KeyDefBuilderODBC.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KeyDefBuilderUser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\KeyDefinition.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KeyDefinitionODBC.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KeyDefinitionUser.cpp"
 				>
 			</File>
 			<File

@@ -48,6 +48,7 @@ public class Test {
 
       } catch ( PhotonException e ) {
          e.printStackTrace();
+         Photon.exit();
 //         System.exit(1);
       }
       System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());

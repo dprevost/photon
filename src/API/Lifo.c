@@ -573,15 +573,17 @@ int psoLifoStatus( PSO_HANDLE     objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaLifoFirst( psoaLifo      * pLifo,
-                   psoaDataEntry * pEntry )
+int psoaLifoFirst( psoaLifo       * pLifo,
+                   unsigned char ** pData,
+                   uint32_t       * pLength )
 {
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
-   PSO_PRE_CONDITION( pLifo != NULL );
-   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pLifo   != NULL );
+   PSO_PRE_CONDITION( pData   != NULL );
+   PSO_PRE_CONDITION( pLength != NULL );
    PSO_PRE_CONDITION( pLifo->object.type == PSOA_LIFO );
    
    if ( pLifo->object.pSession->terminated ) {
@@ -609,8 +611,8 @@ int psoaLifoFirst( psoaLifo      * pLifo,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   pEntry->data = pLifo->iterator->data;
-   pEntry->length = pLifo->iterator->dataLength;
+   *pData = pLifo->iterator->data;
+   *pLength = pLifo->iterator->dataLength;
       
    return PSO_OK;
 
@@ -629,15 +631,17 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaLifoNext( psoaLifo      * pLifo,
-                  psoaDataEntry * pEntry )
+int psoaLifoNext( psoaLifo       * pLifo,
+                  unsigned char ** pData,
+                  uint32_t       * pLength )
 {
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
-   PSO_PRE_CONDITION( pLifo != NULL );
-   PSO_PRE_CONDITION( pEntry != NULL );
+   PSO_PRE_CONDITION( pLifo   != NULL );
+   PSO_PRE_CONDITION( pData   != NULL );
+   PSO_PRE_CONDITION( pLength != NULL );
    PSO_PRE_CONDITION( pLifo->object.type == PSOA_LIFO );
    PSO_PRE_CONDITION( pLifo->iterator != NULL );
    
@@ -655,8 +659,8 @@ int psoaLifoNext( psoaLifo      * pLifo,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   pEntry->data = pLifo->iterator->data;
-   pEntry->length = pLifo->iterator->dataLength;
+   *pData = pLifo->iterator->data;
+   *pLength = pLifo->iterator->dataLength;
 
    return PSO_OK;
 
@@ -675,15 +679,17 @@ error_handler:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaLifoRemove( psoaLifo      * pLifo,
-                    psoaDataEntry * pEntry )
+int psoaLifoRemove( psoaLifo       * pLifo,
+                    unsigned char ** pData,
+                    uint32_t       * pLength )
 {
    psonQueue * pMemLifo;
    int errcode = PSO_OK;
    bool ok = true;
 
-   PSO_PRE_CONDITION( pLifo != NULL );
-   PSO_PRE_CONDITION( pEntry != NULL )
+   PSO_PRE_CONDITION( pLifo   != NULL );
+   PSO_PRE_CONDITION( pData   != NULL );
+   PSO_PRE_CONDITION( pLength != NULL );
    PSO_PRE_CONDITION( pLifo->object.type == PSOA_LIFO )
 
    if ( pLifo->object.pSession->terminated ) {
@@ -712,8 +718,8 @@ int psoaLifoRemove( psoaLifo      * pLifo,
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
-   pEntry->data = (const void *) pLifo->iterator->data;
-   pEntry->length = pLifo->iterator->dataLength;
+   *pData = pLifo->iterator->data;
+   *pLength = pLifo->iterator->dataLength;
       
    return PSO_OK;
 

@@ -67,8 +67,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
                                 &fields,
+                                &key,
                                 1,
                                 0,
                                 &context );
@@ -118,8 +118,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
                                 &fields,
+                                &key,
                                 1,
                                 0,
                                 &context );
@@ -221,8 +221,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
                                 &fields,
+                                &key,
                                 1,
                                 0,
                                 &context );
@@ -279,8 +279,8 @@ int main()
                                 "Test3",
                                 5,
                                 &mapDef,
-                                &key,
                                 &fields,
+                                &key,
                                 1,
                                 0,
                                 &context );

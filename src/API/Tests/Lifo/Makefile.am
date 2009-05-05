@@ -18,23 +18,26 @@ check_PROGRAMS =          \
         Close             \
         Create            \
         Definition        \
-        FirstNullEntry    \
+        FirstNullData     \
         FirstNullHandle   \
+        FirstNullLength   \
         FirstPass         \
         FirstWrongHandle  \
         GetFirst          \
         GetNext           \
         NextNoFirst       \
-        NextNullEntry     \
+        NextNullData      \
         NextNullHandle    \
+        NextNullLength    \
         NextPass          \
         NextWrongHandle   \
         OpenNoSession     \
         OpenPass          \
         Pop               \
         Push              \
-        RemoveNullEntry   \
+        RemoveNullData    \
         RemoveNullHandle  \
+        RemoveNullLength  \
         RemovePass        \
         RemoveWrongHandle \
         Status            
@@ -42,23 +45,26 @@ check_PROGRAMS =          \
 Close_SOURCES             = Close.c
 Create_SOURCES            = Create.c
 Definition_SOURCES        = Definition.c
-FirstNullEntry_SOURCES    = FirstNullEntry.c
+FirstNullData_SOURCES     = FirstNullData.c
 FirstNullHandle_SOURCES   = FirstNullHandle.c
+FirstNullLength_SOURCES   = FirstNullLength.c
 FirstPass_SOURCES         = FirstPass.c
 FirstWrongHandle_SOURCES  = FirstWrongHandle.c
 GetFirst_SOURCES          = GetFirst.c
 GetNext_SOURCES           = GetNext.c
 NextNoFirst_SOURCES       = NextNoFirst.c
-NextNullEntry_SOURCES     = NextNullEntry.c
+NextNullData_SOURCES      = NextNullData.c
 NextNullHandle_SOURCES    = NextNullHandle.c
+NextNullLength_SOURCES    = NextNullLength.c
 NextPass_SOURCES          = NextPass.c
 NextWrongHandle_SOURCES   = NextWrongHandle.c
 OpenNoSession_SOURCES     = OpenNoSession.c
 OpenPass_SOURCES          = OpenPass.c
 Pop_SOURCES               = Pop.c
 Push_SOURCES              = Push.c
-RemoveNullEntry_SOURCES   = RemoveNullEntry.c
+RemoveNullData_SOURCES    = RemoveNullData.c
 RemoveNullHandle_SOURCES  = RemoveNullHandle.c
+RemoveNullLength_SOURCES  = RemoveNullLength.c
 RemovePass_SOURCES        = RemovePass.c
 RemoveWrongHandle_SOURCES = RemoveWrongHandle.c
 Status_SOURCES            = Status.c
@@ -67,24 +73,27 @@ EXTRA_DIST =                 \
         Close.sh             \
         Create.sh            \
         Definition.sh        \
-        FirstNullEntry.sh    \
+        FirstNullData.sh     \
         FirstNullHandle.sh   \
+        FirstNullLength.sh   \
         FirstPass.sh         \
         FirstWrongHandle.sh  \
         GetFirst.sh          \
         GetNext.sh           \
         Makefile.win32       \
         NextNoFirst.sh       \
-        NextNullEntry.sh     \
+        NextNullData.sh      \
         NextNullHandle.sh    \
+        NextNullLength.sh    \
         NextPass.sh          \
         NextWrongHandle.sh   \
         OpenNoSession.sh     \
         OpenPass.sh          \
         Pop.sh               \
         Push.sh              \
-        RemoveNullEntry.sh   \
+        RemoveNullData.sh    \
         RemoveNullHandle.sh  \
+        RemoveNullLength.sh  \
         RemovePass.sh        \
         RemoveWrongHandle.sh \
         RunTests.vbs         \
@@ -102,23 +111,26 @@ TESTS =                      \
         Close.sh             \
         Create.sh            \
         Definition.sh        \
-        FirstNullEntry.sh    \
+        FirstNullData.sh     \
         FirstNullHandle.sh   \
+        FirstNullLength.sh   \
         FirstPass.sh         \
         FirstWrongHandle.sh  \
         GetFirst.sh          \
         GetNext.sh           \
         NextNoFirst.sh       \
-        NextNullEntry.sh     \
+        NextNullData.sh      \
         NextNullHandle.sh    \
+        NextNullLength.sh    \
         NextPass.sh          \
         NextWrongHandle.sh   \
         OpenNoSession.sh     \
         OpenPass.sh          \
         Pop.sh               \
         Push.sh              \
-        RemoveNullEntry.sh   \
+        RemoveNullData.sh    \
         RemoveNullHandle.sh  \
+        RemoveNullLength.sh  \
         RemovePass.sh        \
         RemoveWrongHandle.sh \
         Status.sh            

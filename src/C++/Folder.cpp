@@ -161,8 +161,8 @@ void Folder::CreateObject( const std::string   & objectName,
 
 void Folder::CreateObject( const std::string   & objectName,
                            psoObjectDefinition & definition,
-                           KeyDefinition       & keyDefinition,
-                           DataDefinition      & dataDefinition )
+                           DataDefinition      & dataDefinition,
+                           KeyDefinition       & keyDefinition )
 {
    int rc;
    
@@ -174,8 +174,8 @@ void Folder::CreateObject( const std::string   & objectName,
                                     objectName.c_str(),
                                     objectName.length(),
                                     &definition,
-                                    keyDefinition.m_definitionHandle,
-                                    dataDefinition.m_definitionHandle );
+                                    dataDefinition.m_definitionHandle,
+                                    keyDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
    }
@@ -185,8 +185,8 @@ void Folder::CreateObject( const std::string   & objectName,
 
 void Folder::CreateObject( const std::string   & objectName,
                            psoObjectDefinition & definition,
-                           const std::string   & keyDefName,
-                           const std::string   & dataDefName )
+                           const std::string   & dataDefName,
+                           const std::string   & keyDefName )
 {
    int rc;
    PSO_HANDLE keyDefHandle, dataDefHandle;
@@ -216,8 +216,8 @@ void Folder::CreateObject( const std::string   & objectName,
                                     objectName.c_str(),
                                     objectName.length(),
                                     &definition,
-                                    keyDefHandle,
-                                    dataDefHandle );
+                                    dataDefHandle,
+                                    keyDefHandle );
 
    psoKeyDefClose(  keyDefHandle );
    psoDataDefClose( dataDefHandle );

@@ -33,13 +33,14 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   psoaHashMapEntry entry;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE keyDefHandle, dataDefHandle;
+   unsigned char * keyBuffer, * buffer;
+   unsigned int keyLength, bufferLength;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -93,8 +94,8 @@ int main( int argc, char * argv[] )
                                    "/api_fast_map_first_pass/test",
                                    strlen("/api_fast_map_first_pass/test"),
                                    &mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -120,12 +121,13 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaFastMapFirst( objHandle, &entry );
+   errcode = psoaFastMapFirst( objHandle, &keyBuffer, &keyLength, 
+                               &buffer, &bufferLength );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   if ( memcmp( entry.data, data, 7 ) != 0 ) {
+   if ( memcmp( buffer, data, 7 ) != 0 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -138,7 +140,8 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psoaFastMapFirst( roHandle, &entry );
+   errcode = psoaFastMapFirst( roHandle, &keyBuffer, &keyLength, 
+                               &buffer, &bufferLength );
    if ( errcode != PSO_IS_EMPTY ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -157,7 +160,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoaFastMapFirst( roHandle, &entry );
+   errcode = psoaFastMapFirst( roHandle, &keyBuffer, &keyLength, 
+                               &buffer, &bufferLength );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /CloseNullContext
 /CloseNullProcess
 /ClosePass
@@ -13,4 +15,3 @@
 /OpenNullFilename
 /OpenNullProcess
 /OpenPass
-/Release

@@ -23,33 +23,37 @@
 
 typedef struct {
    PyObject_HEAD
-   /* size_t -> on 64 bits OSes, this int will be 64 bits */
-   size_t handle;
-   size_t sessionHandle;
+
    PyObject * name;
    
    /* This is completely private. Should not be put in the members struct */
 
+   /* size_t -> on 64 bits OSes, this int will be 64 bits */
+   size_t handle;
+
+   PyObject * session;
+   
    /* 
     * Set to one when iter() is called so that we know we need call 
     * GetFirst and not GetNext.
     */
    int iteratorStarted;
    
-} Folder;
+} pyFolder;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static void
 Folder_dealloc( PyObject * self )
 {
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
 
    if ( folder->handle != 0 ) {
       psoFolderClose( (PSO_HANDLE)folder->handle );
    }
 
    Py_XDECREF(folder->name);
+   Py_XDECREF(folder->session);
 
    self->ob_type->tp_free( (PyObject *)self );
 }
@@ -59,23 +63,14 @@ Folder_dealloc( PyObject * self )
 static PyObject *
 Folder_new( PyTypeObject * type, PyObject * args, PyObject * kwds )
 {
-   Folder * self;
-   PyObject * session = NULL;
-   const char * folderName = NULL;
-   static char *kwlist[] = {"session", "name", NULL};
+   pyFolder * self;
 
-   if ( ! PyArg_ParseTupleAndKeywords(args, kwds, "O|s", kwlist, 
-      &session, &folderName) ) {
-      return NULL; 
-   }
-
-   self = (Folder *)type->tp_alloc( type, 0 );
+   self = (pyFolder *)type->tp_alloc( type, 0 );
    if (self != NULL) {
       self->handle = 0;
-      self->sessionHandle = 0;
       self->iteratorStarted = 0;
-      self->sessionHandle = ((Session *)session)->handle;
       self->name = NULL;
+      self->session = NULL;
    }
 
    return (PyObject *)self;
@@ -87,8 +82,8 @@ static int
 Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
 {
    int errcode;
-   PSO_HANDLE h;
-   Folder * folder = (Folder *)self;
+   PSO_HANDLE handle;
+   pyFolder * folder = (pyFolder *)self;
    PyObject * session = NULL, * name = NULL, * tmp = NULL;
    const char * folderName = NULL;
    static char *kwlist[] = {"session", "name", NULL};
@@ -98,16 +93,19 @@ Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
       return -1; 
    }
 
-   if (folderName) {
+   if (session && folderName) {
 
-      name = PyString_FromString( folderName );
-      if ( name == NULL ) return -1;
-
-      errcode = psoFolderOpen( (PSO_HANDLE)folder->sessionHandle,
+      errcode = psoFolderOpen( (PSO_HANDLE)((pySession *)session)->handle,
                                folderName,
                                (psoUint32)strlen(folderName),
-                               &h );
+                               &handle );
       if ( errcode == 0 ) {
+      
+         name = PyString_FromString( folderName );
+         if ( name == NULL ) {
+            psoFolderClose( handle );
+            return -1;
+         }
          /*
           * Copying the old value of 'name' before decreasing the ref.
           * counter. Likely overkill but safer according to Python
@@ -117,12 +115,15 @@ Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
          folder->name = name;
          Py_XDECREF(tmp);
          
-         folder->handle = (size_t)h;
+         tmp = folder->session;
+         folder->session = session;
+         Py_XDECREF(tmp);
 
+         folder->handle = (size_t)handle;
+         
          return 0;
       }
 
-      Py_DECREF(name);
       SetException( errcode );
       return -1;
    }
@@ -135,7 +136,7 @@ Folder_init( PyObject * self, PyObject * args, PyObject *kwds )
 static PyObject *
 Folder_iter( PyObject * self )
 {
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
 
    Py_INCREF(self); 
    folder->iteratorStarted = 1;
@@ -150,8 +151,8 @@ Folder_next( PyObject * self )
 {
    int errcode;
    psoFolderEntry entry;
-   Folder * folder = (Folder *) self;
-   FolderEntry * e;
+   pyFolder * folder = (pyFolder *) self;
+   pyFolderEntry * e;
    PyObject * objType = NULL, * entryName = NULL, * status = NULL;
    
    if ( folder->iteratorStarted == 1 ) {
@@ -183,7 +184,7 @@ Folder_next( PyObject * self )
                                            entry.nameLengthInBytes );
    if ( entryName == NULL ) return NULL;
 
-   e = (FolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
+   e = (pyFolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
    if ( e == NULL ) return NULL;
    
    e->status = status;
@@ -200,7 +201,7 @@ static PyObject *
 Folder_Close( PyObject * self )
 {
    int errcode;
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
    PyObject * tmp;
    
    errcode = psoFolderClose( (PSO_HANDLE)folder->handle );
@@ -221,93 +222,171 @@ Folder_Close( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Folder_CreateObject( PyObject * self, PyObject * args )
+Folder_CreateFolder( PyObject * self, PyObject * args )
 {
    int errcode;
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
    const char * objectName;
-   PyObject * list = NULL;
-   psoObjectDefinition definition;
-   psoFieldDefinition  * fields = NULL;
-   BaseDef * baseDef;
-   KeyDefinition * key;
-   FieldDefinition * item = NULL;
-   Py_ssize_t i;
    
-   if ( !PyArg_ParseTuple(args, "sO|O", &objectName, &baseDef, &list) ) {
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   errcode = psoFolderCreateFolder( (PSO_HANDLE)folder->handle,
+                                    objectName,
+                                    (psoUint32)strlen(objectName) );
+   if ( errcode != 0 ) {
+      SetException( errcode );
       return NULL;
    }
 
-   if ( list == NULL ) {
-      if ( baseDef->numFields != 0 ) {
-         SetException( PSO_INVALID_NUM_FIELDS );
+   Py_INCREF(Py_None);
+   return Py_None;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_CreateObject( PyObject * self, PyObject * args )
+{
+   int errcode;
+   pyFolder * folder = (pyFolder *) self;
+   const char * objectName;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyObjDefinition;
+   PyObject * pyObj;
+   char * definitionName;
+   PSO_HANDLE dataDefHandle;
+
+   if ( !PyArg_ParseTuple( args, "sOO", &objectName, 
+                                        &pyObjDefinition,
+                                        &pyObj ) ) {
+      return NULL;
+   }
+
+   definition.type = pyObjDefinition->intType;
+   definition.flags = pyObjDefinition->flags;
+   definition.minNumOfDataRecords = pyObjDefinition->minNumOfDataRecords;
+   definition.minNumBlocks = pyObjDefinition->minNumBlocks;
+
+   if ( PyString_Check( pyObj ) ) {
+      definitionName = PyString_AsString(pyObj);
+
+      errcode = psoDataDefOpen( (PSO_HANDLE) ((pySession*)(folder->session))->handle,
+                                definitionName,
+                                strlen(definitionName),
+                                &dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+
+      errcode = psoFolderCreateObject( (PSO_HANDLE)folder->handle,
+                                       objectName,
+                                       strlen(objectName),
+                                       &definition,
+                                       dataDefHandle );
+      psoDataDefClose( dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
          return NULL;
       }
    }
    else {
-      if ( (Py_ssize_t)baseDef->numFields != PyList_Size(list) ) {
-         SetException( PSO_INVALID_NUM_FIELDS );
+      dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyObj)->definitionHandle;
+      errcode = psoFolderCreateObject( (PSO_HANDLE)folder->handle,
+                                       objectName,
+                                       strlen(objectName),
+                                       &definition,
+                                       dataDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
          return NULL;
       }
-      
-      fields = (psoFieldDefinition *) 
-         PyMem_Malloc(baseDef->numFields*sizeof(psoFieldDefinition));
-      if ( fields == NULL ) {
-         return PyErr_NoMemory();
-      }
-      
-      for ( i = 0; i < (Py_ssize_t)baseDef->numFields; ++i ) {
-
-         item = (FieldDefinition *) PyList_GetItem( list, i );
-         if ( item == NULL ) {
-            PyMem_Free( fields );
-            return NULL;
-         }
-         
-         // Validate that it is a definition!
-         if ( ! PyObject_TypeCheck(item, &FieldDefinitionType) ) {
-            PyMem_Free( fields );
-            PyErr_SetString( PyExc_TypeError, 
-               "One item of the list is not a FieldDefinition" );
-            return NULL;
-         }
-
-         if ( item->name == NULL ) {
-            PyMem_Free( fields );
-            SetException( PSO_INVALID_FIELD_NAME );
-            return NULL;
-         }
-         strncpy( fields[i].name, PyString_AsString(item->name), 
-            PSO_MAX_FIELD_LENGTH );
-         fields[i].type = item->intType;
-         fields[i].length = item->length;
-         fields[i].minLength = item->minLength;
-         fields[i].maxLength = item->maxLength;
-         fields[i].precision = item->precision;
-         fields[i].scale = item->scale;
-      }
    }
-   
-   memset( &definition, 0, sizeof(psoObjectDefinition) );
-   definition.type = baseDef->intType;
-   definition.numFields = baseDef->numFields;
-   key = (KeyDefinition *) baseDef->keyDef;
-   if ( key != NULL ) {
-      definition.key.type      = key->intType;
-      definition.key.length    = key->length;
-      definition.key.minLength = key->minLength;
-      definition.key.minLength = key->maxLength;      
-   }
-   
-   errcode = psoFolderCreateObject( (PSO_HANDLE)folder->handle,
-                                    objectName,
-                                    (psoUint32)strlen(objectName),
-                                    &definition,
-                                    fields );
-   PyMem_Free( fields );
-   if ( errcode != 0 ) {
-      SetException( errcode );
+
+   Py_INCREF(Py_None);
+   return Py_None;   
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_CreateKeyObject( PyObject * self, PyObject * args )
+{
+   int errcode;
+   pyFolder * folder = (pyFolder *) self;
+   const char * objectName;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyObjDefinition;
+   PyObject * pyKeyObj, * pyDataObj;
+   char * dataDefName, * keyDefName;
+   PSO_HANDLE dataDefHandle, keyDefHandle;
+
+   if ( !PyArg_ParseTuple( args, "sOOO", &objectName, 
+                                         &pyObjDefinition,
+                                         &pyKeyObj,
+                                         &pyDataObj ) ) {
       return NULL;
+   }
+
+   ObjectToObjDefinition( &definition, pyObjDefinition );
+
+   if ( PyString_Check( pyKeyObj ) ) {
+      if ( ! PyString_Check( pyDataObj ) ) {
+         return NULL;
+      }
+      dataDefName = PyString_AsString(pyDataObj);
+      keyDefName  = PyString_AsString(pyKeyObj);
+
+      errcode = psoKeyDefOpen( (PSO_HANDLE) ((pySession*)(folder->session))->handle,
+                               keyDefName,
+                               strlen(keyDefName),
+                               &keyDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+      errcode = psoDataDefOpen( (PSO_HANDLE) ((pySession*)(folder->session))->handle,
+                                dataDefName,
+                                strlen(dataDefName),
+                                &dataDefHandle );
+      if ( errcode != 0 ) {
+         psoKeyDefClose( keyDefHandle );
+         SetException( errcode );
+         return NULL;
+      }
+
+      errcode = psoFolderCreateKeyedObject( (PSO_HANDLE)folder->handle,
+                                            objectName,
+                                            strlen(objectName),
+                                            &definition,
+                                            dataDefHandle,
+                                            keyDefHandle );
+      psoDataDefClose( dataDefHandle );
+      psoKeyDefClose( keyDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
+   }
+   else {
+      if ( PyString_Check( pyDataObj ) ) {
+         return NULL;
+      }
+      dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyDataObj)->definitionHandle;
+      keyDefHandle  = (PSO_HANDLE) ((pyKeyDefinition *)pyKeyObj)->definitionHandle;
+
+      errcode = psoFolderCreateKeyedObject( (PSO_HANDLE)folder->handle,
+                                            objectName,
+                                            strlen(objectName),
+                                            &definition,
+                                            dataDefHandle,
+                                            keyDefHandle );
+      if ( errcode != 0 ) {
+         SetException( errcode );
+         return NULL;
+      }
    }
 
    Py_INCREF(Py_None);
@@ -321,7 +400,7 @@ Folder_DestroyObject( PyObject * self, PyObject * args )
 {
    int errcode;
    const char * objectName;
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
    
    if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
       return NULL;
@@ -342,12 +421,131 @@ Folder_DestroyObject( PyObject * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
+Folder_GetDataDefinition( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pyFolder * folder = (pyFolder *) self;
+   pyDataDefinition * pyDef = NULL;
+   PSO_HANDLE dataDefHandle;
+   int type, length;
+   unsigned int nameLength;
+   PyObject * defType = NULL;
+   unsigned char  * dataDef;
+   char * definitionName;
+   PyObject * name = NULL, *dataDefObj = NULL, * tmp = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+
+   errcode = psoFolderGetDataDefinition( (PSO_HANDLE)folder->handle,
+                                         objectName,
+                                         strlen(objectName),
+                                         &dataDefHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = (pyDataDefinition *) DataDefinition_new( &DataDefinitionType, 
+                                                    NULL, NULL );
+   if (pyDef == NULL) return NULL;
+   
+   errcode = psoaDataDefGetDef( dataDefHandle,
+                                &definitionName,
+                                &nameLength,
+                                (enum psoDefinitionType *)&type,
+                                &dataDef,
+                                (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      Py_XDECREF(pyDef);
+      SetException( errcode );
+      return NULL;
+   }
+
+   name = PyString_FromStringAndSize(definitionName, nameLength);
+   if ( name == NULL ) {
+      Py_XDECREF(pyDef);
+      return NULL;
+   }
+
+   dataDefObj = PyBuffer_FromMemory( dataDef, length ); 
+   if ( dataDefObj == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      return NULL;
+   }
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      Py_XDECREF(dataDefObj);
+      return NULL;
+   }
+   tmp = pyDef->defType;
+   pyDef->defType = defType;
+   Py_XDECREF(tmp);
+   pyDef->intType = type;
+   
+   tmp = pyDef->dataDef;
+   Py_INCREF(dataDefObj);
+   pyDef->dataDef = dataDefObj;
+   Py_XDECREF(tmp);
+
+   tmp = pyDef->name;
+   Py_INCREF(name);
+   pyDef->name = name;
+   Py_XDECREF(tmp);
+
+   pyDef->dataDefLength = length;
+   pyDef->definitionHandle = (size_t) dataDefHandle;
+
+   return (PyObject *)pyDef;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
+Folder_GetDefinition( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pyFolder * folder = (pyFolder *) self;
+   psoObjectDefinition definition;
+   pyObjDefinition * pyDef = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+   
+   memset( &definition, 0, sizeof(psoObjectDefinition) );
+   errcode = psoFolderGetDefinition( (PSO_HANDLE)folder->handle,
+                                     objectName,
+                                     strlen(objectName),
+                                     &definition );
+
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = ObjDefinitionToObject( &definition );
+   if ( pyDef == NULL ) return NULL;
+   
+   return (PyObject *)pyDef;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
 Folder_GetFirst( PyObject * self, PyObject * args )
 {
    int errcode;
    psoFolderEntry entry;
-   Folder * folder = (Folder *) self;
-   FolderEntry * e;
+   pyFolder * folder = (pyFolder *) self;
+   pyFolderEntry * e;
    PyObject * objType = NULL, * entryName = NULL, * status = NULL;
 
    errcode = psoFolderGetFirst( (PSO_HANDLE)folder->handle, &entry );
@@ -365,7 +563,7 @@ Folder_GetFirst( PyObject * self, PyObject * args )
                                            entry.nameLengthInBytes );
    if ( entryName == NULL ) return NULL;
 
-   e = (FolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
+   e = (pyFolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
    if ( e == NULL ) return NULL;
    
    e->status = status;
@@ -379,12 +577,99 @@ Folder_GetFirst( PyObject * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
+Folder_GetKeyDefinition( PyObject * self, PyObject * args )
+{
+   int errcode;
+   const char * objectName;
+   pyFolder * folder = (pyFolder *) self;
+   pyKeyDefinition * pyDef = NULL;
+   PSO_HANDLE keyDefHandle;
+   int type, length;
+   unsigned int nameLength;
+   PyObject * defType = NULL;
+   unsigned char  * keyDef;
+   char * definitionName;
+   PyObject * name = NULL, *keyDefObj = NULL, * tmp = NULL;
+
+   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
+      return NULL;
+   }
+
+   errcode = psoFolderGetKeyDefinition( (PSO_HANDLE)folder->handle,
+                                        objectName,
+                                        strlen(objectName),
+                                        &keyDefHandle );
+   if ( errcode != 0 ) {
+      SetException( errcode );
+      return NULL;
+   }
+
+   pyDef = (pyKeyDefinition *) KeyDefinition_new( &KeyDefinitionType, 
+                                                  NULL, NULL );
+   if (pyDef == NULL) return NULL;
+   
+   errcode = psoaKeyDefGetDef( keyDefHandle,
+                               &definitionName,
+                               &nameLength,
+                               (enum psoDefinitionType *)&type,
+                               &keyDef,
+                               (unsigned int *)&length );
+   if ( errcode != 0 ) {
+      Py_XDECREF(pyDef);
+      SetException( errcode );
+      return NULL;
+   }
+
+   name = PyString_FromStringAndSize(definitionName, nameLength);
+   if ( name == NULL ) {
+      Py_XDECREF(pyDef);
+      return NULL;
+   }
+
+   keyDefObj = PyBuffer_FromMemory( keyDef, length ); 
+   if ( keyDefObj == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      return NULL;
+   }
+
+   defType = GetDefinitionType( type ); // A new reference
+   if ( defType == NULL ) {
+      Py_XDECREF(pyDef);
+      Py_XDECREF(name);
+      Py_XDECREF(keyDefObj);
+      return NULL;
+   }
+   tmp = pyDef->defType;
+   pyDef->defType = defType;
+   Py_XDECREF(tmp);
+   pyDef->intType = type;
+   
+   tmp = pyDef->keyDef;
+   Py_INCREF(keyDefObj);
+   pyDef->keyDef = keyDefObj;
+   Py_XDECREF(tmp);
+
+   tmp = pyDef->name;
+   Py_INCREF(name);
+   pyDef->name = name;
+   Py_XDECREF(tmp);
+
+   pyDef->keyDefLength = length;
+   pyDef->definitionHandle = (size_t) keyDefHandle;
+
+   return (PyObject *)pyDef;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+static PyObject *
 Folder_GetNext( PyObject * self, PyObject * args )
 {
    int errcode;
    psoFolderEntry entry;
-   Folder * folder = (Folder *) self;
-   FolderEntry * e;
+   pyFolder * folder = (pyFolder *) self;
+   pyFolderEntry * e;
    PyObject * objType = NULL, * entryName = NULL, * status = NULL;
 
    errcode = psoFolderGetNext( (PSO_HANDLE)folder->handle, &entry );
@@ -402,7 +687,7 @@ Folder_GetNext( PyObject * self, PyObject * args )
                                            entry.nameLengthInBytes );
    if ( entryName == NULL ) return NULL;
 
-   e = (FolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
+   e = (pyFolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
    if ( e == NULL ) return NULL;
    
    e->status = status;
@@ -419,12 +704,12 @@ static PyObject *
 Folder_Open( PyObject * self, PyObject * args )
 {
    int errcode;
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
    const char * folderName;
-   PSO_HANDLE h;
-   PyObject * name = NULL, * tmp = NULL;
+   PSO_HANDLE handle;
+   PyObject * name = NULL, *session = NULL, * tmp = NULL;
    
-   if ( !PyArg_ParseTuple(args, "s", &folderName) ) {
+   if ( !PyArg_ParseTuple(args, "Os", &session, &folderName) ) {
       return NULL;
    }
 
@@ -433,31 +718,32 @@ Folder_Open( PyObject * self, PyObject * args )
       return NULL;
    }
 
-   name = PyString_FromString( folderName );
-   if ( name == NULL ) return NULL;
-
-   errcode = psoFolderOpen( (PSO_HANDLE)folder->sessionHandle,
+   errcode = psoFolderOpen( (PSO_HANDLE)((pySession *)session)->handle,
                             folderName,
                             (psoUint32)strlen(folderName),
-                            &h );
+                            &handle );
    if ( errcode == 0 ) {
-      /*
-       * Copying the old value of 'name' before decreasing the ref.
-       * counter. Likely overkill but safer according to Python
-       * documentation.
-       */
+
+      name = PyString_FromString( folderName );
+      if ( name == NULL ) {
+         psoFolderClose( handle );
+         return NULL;
+      }
       tmp = folder->name;
       folder->name = name;
       Py_XDECREF(tmp);
-         
-      folder->handle = (size_t)h;
+
+      tmp = folder->session;
+      folder->session = session;
+      Py_XDECREF(tmp);
+
+      folder->handle = (size_t)handle;
 
       Py_INCREF(Py_None);
       return Py_None;
    }
-
-   Py_DECREF(name);
    SetException( errcode );
+
    return NULL;
 }
 
@@ -467,9 +753,9 @@ static PyObject *
 Folder_Status( PyObject * self )
 {
    int errcode;
-   ObjStatus * pStatusPy;
+   pyObjStatus * pStatusPy;
    psoObjStatus status;
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
    PyObject * objType = NULL, * objStatus = NULL;
    
    errcode = psoFolderStatus( (PSO_HANDLE)folder->handle, &status );
@@ -485,7 +771,7 @@ fprintf( stderr, "TYPE = %d\n", status.type );
    objStatus = GetObjectStatus( status.status );
    if ( objStatus == NULL ) return NULL;
 
-   pStatusPy = (ObjStatus *)PyObject_New(ObjStatus, &ObjStatusType);
+   pStatusPy = (pyObjStatus *)PyObject_New(pyObjStatus, &ObjStatusType);
    if ( pStatusPy == NULL ) return NULL;
    
    pStatusPy->objType       = objType;
@@ -505,7 +791,7 @@ fprintf( stderr, "TYPE = %d\n", status.type );
 static PyObject *
 Folder_str( PyObject * self )
 {
-   Folder * folder = (Folder *) self;
+   pyFolder * folder = (pyFolder *) self;
    
    if ( folder->name != NULL ) {
       return PyString_FromFormat( 
@@ -519,7 +805,7 @@ Folder_str( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyMemberDef Folder_members[] = {
-   { "name", T_OBJECT_EX, offsetof(Folder, name), RO,
+   { "name", T_OBJECT_EX, offsetof(pyFolder, name), RO,
      "The name of the folder"},
    {NULL}  /* Sentinel */
 };
@@ -530,14 +816,29 @@ static PyMethodDef Folder_methods[] = {
    { "close", (PyCFunction)Folder_Close, METH_NOARGS,
      "Close the current folder"
    },
+   { "create_folder", (PyCFunction)Folder_CreateFolder, METH_VARARGS,
+     "Create a new photon folder as a child of the current folder"
+   },
    { "create_object", (PyCFunction)Folder_CreateObject, METH_VARARGS,
      "Create a new photon object as a child of the current folder"
+   },
+   { "create_key_object", (PyCFunction)Folder_CreateKeyObject, METH_VARARGS,
+     "Create a new photon keyed object as a child of the current folder"
    },
    { "destroy_object", (PyCFunction)Folder_DestroyObject, METH_VARARGS,
      "Destroy an existing photon object (child of the current folder)"
    },
+   { "get_data_definition", (PyCFunction)Folder_GetDataDefinition, METH_VARARGS,
+     "Get the data definition of a Photon object"
+   },
+   { "get_definition", (PyCFunction)Folder_GetDefinition, METH_VARARGS,
+     "Get the definition of a Photon object"
+   },
    { "get_first", (PyCFunction)Folder_GetFirst, METH_VARARGS,
      ""
+   },
+   { "get_key_definition", (PyCFunction)Folder_GetKeyDefinition, METH_VARARGS,
+     "Get the key definition of a Photon object"
    },
    { "get_next", (PyCFunction)Folder_GetNext, METH_VARARGS,
      ""
@@ -557,7 +858,7 @@ static PyTypeObject FolderType = {
    PyObject_HEAD_INIT(NULL)
    0,                          /*ob_size*/
    "pso.Folder",               /*tp_name*/
-   sizeof(Folder),             /*tp_basicsize*/
+   sizeof(pyFolder),           /*tp_basicsize*/
    0,                          /*tp_itemsize*/
    Folder_dealloc,             /*tp_dealloc*/
    0,                          /*tp_print*/

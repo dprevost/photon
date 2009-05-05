@@ -102,8 +102,8 @@ int Test1()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -136,8 +136,8 @@ int Test2()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -178,8 +178,8 @@ int Test3()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -215,8 +215,8 @@ int Test4()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoRollback( g_session1 );
@@ -254,8 +254,8 @@ int Test5()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -294,8 +294,8 @@ int Test6()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -336,8 +336,8 @@ int Test7()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -376,8 +376,8 @@ int Test8()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -421,8 +421,8 @@ int Test9()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -464,8 +464,8 @@ int Test10()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    errcode = psoCommit( g_session1 );
@@ -509,8 +509,8 @@ int Test11()
                                    "A_Folder/A_Queue", 
                                    strlen("A_Folder/A_Queue"),
                                    &g_mapDef, 
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_NO_SUCH_FOLDER,
@@ -549,8 +549,8 @@ int Test12()
                                    "A_Folder/A_Queue",
                                    strlen("A_Folder/A_Queue"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_OK,
@@ -587,8 +587,8 @@ int Test13()
                                    "A_Folder/A_Queue",
                                    strlen("A_Folder/A_Queue"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_NO_SUCH_FOLDER ) {
       printf( " Expected error = %d, returned error = %d\n", 
               PSO_NO_SUCH_FOLDER,
@@ -625,8 +625,8 @@ int Test21()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -668,8 +668,8 @@ int Test22()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -715,8 +715,8 @@ int Test23()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -768,8 +768,8 @@ int Test24()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -824,8 +824,8 @@ int Test25()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
 
    // So that the object can be open by session 2
@@ -876,8 +876,8 @@ int Test26()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -928,8 +928,8 @@ int Test27()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -983,8 +983,8 @@ int Test28()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -1038,8 +1038,8 @@ int Test29()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -1096,8 +1096,8 @@ int Test30()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -1148,8 +1148,8 @@ int Test31()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );
@@ -1204,8 +1204,8 @@ int Test32()
                                    "A_Map",
                                    strlen("A_Map"),
                                    &g_mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) goto end;
    
    errcode = psoHashMapOpen( g_session1, "A_Map", strlen("A_Map"), &h1 );

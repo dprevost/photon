@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
+/Debug2005
+/Release2005
 /CloseInvalidSig
 /CloseNullDir
 /ClosePass
@@ -24,5 +26,4 @@
 /OpenNullError
 /OpenPass
 /Tests
-/Debug
-/Release
+

@@ -34,13 +34,14 @@ int main( int argc, char * argv[] )
    int errcode;
    const char * key  = "My Key";
    const char * data = "My Data";
-   psoaDataEntry entry;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE keyDefHandle, dataDefHandle;
+   unsigned char * buffer;
+   unsigned int length;
 
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -94,8 +95,8 @@ int main( int argc, char * argv[] )
                                    "/api_fast_map_retrieve_zero_length/test",
                                    strlen("/api_fast_map_retrieve_zero_length/test"),
                                    &mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -122,9 +123,10 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoaFastMapRetrieve( objHandle,
-                              key,
-                              0,
-                              &entry );
+                                  key,
+                                  0,
+                                  &buffer,
+                                  &length );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

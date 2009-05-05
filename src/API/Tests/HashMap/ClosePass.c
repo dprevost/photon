@@ -91,8 +91,8 @@ int main( int argc, char * argv[] )
                                    "/api_hashmap_close/test",
                                    strlen("/api_hashmap_close/test"),
                                    &mapDef,
-                                   keyDefHandle,
-                                   dataDefHandle );
+                                   dataDefHandle,
+                                   keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

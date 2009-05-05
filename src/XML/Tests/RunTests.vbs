@@ -88,6 +88,10 @@ For Each strArg in objArgs
    end if
 Next 
 
+dim WshEnv
+Set WshEnv = objShell.Environment("Process") 
+WshEnv("Path") = WshEnv("Path") & ";" & fso.GetAbsolutePathName(dll_path)
+
 if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
 end if

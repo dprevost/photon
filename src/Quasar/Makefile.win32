@@ -20,10 +20,10 @@ VBS_VERBOSE =
 
 LINK32=link.exe
 
-OUTDIR_RELEASE = .\Release
-INTDIR_RELEASE = .\Release
-OUTDIR_DEBUG   = .\Debug
-INTDIR_DEBUG   = .\Debug
+DIR_RELEASE = .\Release2005
+DIR_DEBUG   = .\Debug2005
+DLL_RELEASE = ..\Release2005
+DLL_DEBUG   = ..\Debug2005
 
 LIBXML2_INCLUDE = "C:\Program Files\libxml2\include"
 LIBXML2_LIB     = libxml2_a.lib zlib.lib iconv_a.lib 
@@ -32,35 +32,35 @@ CLEANFILES = *~ quasar.plg quasar.dep vc60.idb vc60.pdb quasar.mak BuildTools.nc
 
 W32_SYS_LIBS=kernel32.lib advapi32.lib ws2_32.lib
 
-LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no        /MANIFEST /machine:I386 /out:"$(OUTDIR_RELEASE)\quasar.exe" /libpath:"..\Release" 
-LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no /debug /MANIFEST /machine:I386 /out:"$(OUTDIR_DEBUG)\quasar.exe"   /libpath:"..\Debug" 
+LDD_FLAGS_RELEASE = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no        /MANIFEST /machine:I386 /out:"$(DIR_RELEASE)\quasar.exe" /libpath:"$(DLL_RELEASE)" 
+LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib $(LIBXML2_LIB) /nologo /version:0.1 /subsystem:console /incremental:no /debug /MANIFEST /machine:I386 /out:"$(DIR_DEBUG)\quasar.exe"   /libpath:"$(DLL_DEBUG)" 
 
-CFLAGS_DEBUG   = /Od      /I ".." /I "..\include" /D LIBXML_STATIC /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MD     /Fp".\Debug/quasar.pch"   /Fo".\Debug/"   /Fd".\Debug/"   /W3 /nologo /c /Zi /TC /errorReport:prompt
-CFLAGS_RELEASE = /O2 /Ob1 /I ".." /I "..\include" /D LIBXML_STATIC /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc   /MD /Gy /Fp".\Release/quasar.pch" /Fo".\Release/" /Fd".\Release/" /W3 /nologo /c /TC /errorReport:prompt
+CFLAGS_DEBUG   = /Od      /I ".." /I "..\include" /D LIBXML_STATIC /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MD     /Fp"$(DIR_DEBUG)/quasar.pch"   /Fo"$(DIR_DEBUG)/"   /Fd"$(DIR_DEBUG)/"   /W3 /nologo /c /Zi /TC /errorReport:prompt
+CFLAGS_RELEASE = /O2 /Ob1 /I ".." /I "..\include" /D LIBXML_STATIC /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc   /MD /Gy /Fp"$(DIR_RELEASE)/quasar.pch" /Fo"$(DIR_RELEASE)/" /Fd"$(DIR_RELEASE)/" /W3 /nologo /c /TC /errorReport:prompt
 
-RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo".\Debug/quasar.res"
-RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo".\Release/quasar.res"
+RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo"$(DIR_DEBUG)/quasar.res"
+RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo"$(DIR_RELEASE)/quasar.res"
 
 OBJS_RELEASE=                                      \
-        "$(INTDIR_RELEASE)\Acceptor.obj"           \
-        "$(INTDIR_RELEASE)\Config.obj"             \
-        "$(INTDIR_RELEASE)\LogMsg.obj"             \
-        "$(INTDIR_RELEASE)\MemoryManager.obj"      \
-        "$(INTDIR_RELEASE)\ShMemHandler.obj"       \
-        "$(INTDIR_RELEASE)\VerifyFastMap.obj"      \
-        "$(INTDIR_RELEASE)\VerifyFolder.obj"       \
-        "$(INTDIR_RELEASE)\VerifyHash.obj"         \
-        "$(INTDIR_RELEASE)\VerifyHashMap.obj"      \
-        "$(INTDIR_RELEASE)\VerifyHashTx.obj"       \
-        "$(INTDIR_RELEASE)\VerifyList.obj"         \
-        "$(INTDIR_RELEASE)\VerifyMemObj.obj"       \
-        "$(INTDIR_RELEASE)\VerifyQueue.obj"        \
-        "$(INTDIR_RELEASE)\VerifyShMem.obj"        \
-        "$(INTDIR_RELEASE)\Quasar.obj"             \
-        "$(INTDIR_RELEASE)\qsrMain.obj"            \
-        "$(INTDIR_RELEASE)\quasarErrorHandler.obj" 
+        "$(DIR_RELEASE)\Acceptor.obj"           \
+        "$(DIR_RELEASE)\Config.obj"             \
+        "$(DIR_RELEASE)\LogMsg.obj"             \
+        "$(DIR_RELEASE)\MemoryManager.obj"      \
+        "$(DIR_RELEASE)\ShMemHandler.obj"       \
+        "$(DIR_RELEASE)\VerifyFastMap.obj"      \
+        "$(DIR_RELEASE)\VerifyFolder.obj"       \
+        "$(DIR_RELEASE)\VerifyHash.obj"         \
+        "$(DIR_RELEASE)\VerifyHashMap.obj"      \
+        "$(DIR_RELEASE)\VerifyHashTx.obj"       \
+        "$(DIR_RELEASE)\VerifyList.obj"         \
+        "$(DIR_RELEASE)\VerifyMemObj.obj"       \
+        "$(DIR_RELEASE)\VerifyQueue.obj"        \
+        "$(DIR_RELEASE)\VerifyShMem.obj"        \
+        "$(DIR_RELEASE)\Quasar.obj"             \
+        "$(DIR_RELEASE)\qsrMain.obj"            \
+        "$(DIR_RELEASE)\quasarErrorHandler.obj" 
 
-OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
+OBJS_DEBUG = $(OBJS_RELEASE:.\Release2005\=.\Debug2005\)
 
 ###########################################################################
 #
@@ -68,34 +68,32 @@ OBJS_DEBUG = $(OBJS_RELEASE:.\Release\=.\Debug\)
 #
 ###########################################################################
 
-.cpp{$(INTDIR_RELEASE)}.obj::
+.cpp{$(DIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
-.c{$(INTDIR_RELEASE)}.obj::
+.c{$(DIR_RELEASE)}.obj::
 	$(CPP) $(CFLAGS_RELEASE) $< 
 
-.cpp{$(INTDIR_DEBUG)}.obj::
+.cpp{$(DIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
-.c{$(INTDIR_DEBUG)}.obj::
+.c{$(DIR_DEBUG)}.obj::
 	$(CPP) $(CFLAGS_DEBUG) $< 
 
+all: $(DIR_RELEASE) $(DIR_RELEASE)\quasar.exe $(DIR_DEBUG) $(DIR_DEBUG)\quasar.exe
 
-   
-all: $(OUTDIR_RELEASE) $(OUTDIR_RELEASE)\quasar.exe $(OUTDIR_DEBUG) $(OUTDIR_DEBUG)\quasar.exe
-
-"$(OUTDIR_RELEASE)\quasar.exe" : "$(OUTDIR_RELEASE)" $(OBJS_RELEASE)
-	-del ..\Release\quasar.exe
+"$(DIR_RELEASE)\quasar.exe" : "$(DIR_RELEASE)" $(OBJS_RELEASE)
+	-del $(DLL_RELEASE)\quasar.exe
 	rc.exe $(RC_FLAGS_RELEASE) quasar.rc 
-	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE) .\Release\quasar.res
-	mt.exe -manifest $(OUTDIR_RELEASE)\quasar.exe.manifest -outputresource:$(OUTDIR_RELEASE)\quasar.exe;1
-	copy Release\quasar.exe ..\Release
+	$(LINK32) $(LDD_FLAGS_RELEASE) $(OBJS_RELEASE) $(DIR_RELEASE)\quasar.res
+	mt.exe -manifest $(DIR_RELEASE)\quasar.exe.manifest -outputresource:$(DIR_RELEASE)\quasar.exe;1
+	copy $(DIR_RELEASE)\quasar.exe $(DLL_RELEASE)
 
-"$(OUTDIR_DEBUG)\quasar.exe" : "$(OUTDIR_DEBUG)" $(OBJS_DEBUG)
-	-del ..\Debug\quasar.exe
+"$(DIR_DEBUG)\quasar.exe" : "$(DIR_DEBUG)" $(OBJS_DEBUG)
+	-del $(DLL_DEBUG)\quasar.exe
 	rc.exe $(RC_FLAGS_DEBUG) quasar.rc 
-	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG) .\Debug\quasar.res
-	mt.exe -manifest $(OUTDIR_DEBUG)\quasar.exe.manifest -outputresource:$(OUTDIR_DEBUG)\quasar.exe;1
-	copy debug\quasar.exe ..\Debug
+	$(LINK32) $(LDD_FLAGS_DEBUG) $(OBJS_DEBUG) $(DIR_DEBUG)\quasar.res
+	mt.exe -manifest $(DIR_DEBUG)\quasar.exe.manifest -outputresource:$(DIR_DEBUG)\quasar.exe;1
+	copy $(DIR_DEBUG)\quasar.exe $(DLL_DEBUG)
 
 ###########################################################################
 #
@@ -109,18 +107,18 @@ check: all
 checkdebug: all
 	cd Tests && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-"$(OUTDIR_RELEASE)" :
-	if not exist "$(OUTDIR_RELEASE)/$(NULL)" mkdir "$(OUTDIR_RELEASE)"
+"$(DIR_RELEASE)" :
+	if not exist "$(DIR_RELEASE)/$(NULL)" mkdir "$(DIR_RELEASE)"
 
-"$(OUTDIR_DEBUG)" :
-	if not exist "$(OUTDIR_DEBUG)/$(NULL)" mkdir "$(OUTDIR_DEBUG)"
+"$(DIR_DEBUG)" :
+	if not exist "$(DIR_DEBUG)/$(NULL)" mkdir "$(DIR_DEBUG)"
    
 clean: 
 	cd Tests && nmake -f Makefile.win32 clean && cd ..
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 
 

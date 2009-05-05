@@ -8,29 +8,32 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-include .\Makefile.inc.Win32
+include .\Makefile.inc.Win32.2005
 
 #
 # Override the values in Makefile.inc.Win32
 #
-LDD_FLAGS = $(W32_SYS_LIBS)     photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release" 
-LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug" 
-CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR_DEBUG)\\" 
-CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" 
+DLL_RELEASE = ..\..\Release2005
+DLL_DEBUG   = ..\..\Debug2005
+
+LDD_FLAGS = $(W32_SYS_LIBS)     photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Release2005" 
+LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photonNucleus.lib photonCommon.lib /nologo /subsystem:console /machine:I386 /libpath:"../../Debug2005" 
+CFLAGS_DEBUG=   /nologo /MDd /W4     /I "../.." /I "../../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 
+CFLAGS_RELEASE= /nologo /MD  /W4 /O2 /I "../.." /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\" 
 
 all: 
 
 CLEANFILES = *~ 
 
 check_PROGRAMS =                       \
-        .\Release\LinkNodeNULLInit.exe \
-        .\Release\LinkNodeNULLTest.exe \
-        .\Release\LinkNodeTestTest.exe 
+        $(DIR_RELEASE)\LinkNodeNULLInit.exe \
+        $(DIR_RELEASE)\LinkNodeNULLTest.exe \
+        $(DIR_RELEASE)\LinkNodeTestTest.exe 
 
-check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release\=.\Debug\)
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
-check: $(OUTDIR) $(check_PROGRAMS)
-	cscript RunTests.vbs --path=Release $(VBS_VERBOSE)
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
 	cd List           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd LogFile        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemAlloc       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -46,11 +49,11 @@ check: $(OUTDIR) $(check_PROGRAMS)
 	cd Folder         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd TopFolder      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Map            && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd FastMap        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
-checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cscript RunTests.vbs --path=Debug $(VBS_VERBOSE)
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
 	cd List           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd LogFile        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemAlloc       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -66,7 +69,7 @@ checkdebug: $(OUTDIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	cd Folder         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd TopFolder      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Map            && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd FastMap        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
@@ -85,11 +88,11 @@ clean:
 	cd Folder         && nmake -f Makefile.win32 clean && cd ..
 	cd TopFolder      && nmake -f Makefile.win32 clean && cd ..
 	cd HashMap        && nmake -f Makefile.win32 clean && cd ..
-	cd Map            && nmake -f Makefile.win32 clean && cd ..
+	cd FastMap        && nmake -f Makefile.win32 clean && cd ..
 	cd Queue          && nmake -f Makefile.win32 clean && cd ..
-	-@erase /Q Debug
-	-@rmdir /Q Debug
-	-@erase /Q Release
-	-@rmdir /Q Release
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
 	-@erase /Q $(CLEANFILES)
 
