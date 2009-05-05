@@ -38,6 +38,15 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+struct psonSeqSetItem
+{
+   size_t dummy;
+};
+
+typedef struct psonSeqSetItem psonSeqSetItem;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 struct psonSequentialSet
 {
    /** Always first */
@@ -76,64 +85,78 @@ typedef struct psonSequentialSet psonSeqSet;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psonSeqSetCopy( psonSeqSet        * pHashMap, 
-                      psonSeqSet        * pNewHashMap,
-                      psonHashTxItem     * pHashItem,
-                      const char         * origName,
-                      psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonSeqSetDelete( psonSeqSet        * pHashMap,
-                        const void         * key,
-                        uint32_t             keyLength, 
-                        psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonSeqSetEmpty( psonSeqSet        * pHashMap,
-                       psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonSeqSetFini( psonSeqSet        * pHashMap,
-                      psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonSeqSetGet( psonSeqSet        * pHashMap,
-                     const void         * pKey,
-                     uint32_t             keyLength, 
-                     psonHashItem      ** ppItem,
-                     uint32_t             bufferLength,
+bool psonSeqSetCopy( psonSeqSet         * pSeqSet, 
+                     psonSeqSet         * pNewSeqSet,
+                     psonHashTxItem     * pHashItem,
+                     const char         * origName,
                      psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonSeqSetGetFirst( psonSeqSet        * pHashMap,
-                          psonSeqSetItem    * pItem,
-                          uint32_t             keyLength,
-                          uint32_t             bufferLength,
-                          psonSessionContext * pContext );
+bool psonSeqSetDelete( psonSeqSet         * pSeqSet,
+                       const void         * key,
+                       uint32_t             keyLength, 
+                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonSeqSetGetNext( psonSeqSet        * pHashMap,
-                         psonSeqSetItem    * pItem,
+void psonSeqSetEmpty( psonSeqSet         * pSeqSet,
+                      psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+void psonSeqSetFini( psonSeqSet         * pSeqSet,
+                     psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSeqSetGet( psonSeqSet         * pSeqSet,
+                    const void         * pKey,
+                    uint32_t             keyLength, 
+                    psonSeqSetItem    ** ppItem,
+                    uint32_t             bufferLength,
+                    psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSeqSetGetFirst( psonSeqSet         * pSeqSet,
+                         psonSeqSetItem     * pItem,
                          uint32_t             keyLength,
                          uint32_t             bufferLength,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonSeqSetInit( psonSeqSet         * pHashMap,
-                      ptrdiff_t             parentOffset,
-                      size_t                numberOfBlocks,
-                      size_t                expectedNumOfChilds,
-                      psonTxStatus        * pTxStatus,
-                      uint32_t              origNameLength,
-                      char                * origName,
-                      ptrdiff_t             hashItemOffset,
-                      psoObjectDefinition * pDefinition,
-                      psonKeyDefinition   * pKeyDefinition,
-                      psonDataDefinition  * pDataDefinition,
-                      psonSessionContext  * pContext );
+bool psonSeqSetGetNext( psonSeqSet         * pSeqSet,
+                        psonSeqSetItem     * pItem,
+                        uint32_t             keyLength,
+                        uint32_t             bufferLength,
+                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonSeqSetInsert( psonSeqSet        * pHashMap,
+bool psonSeqSetInit( psonSeqSet          * pSeqSet,
+                     ptrdiff_t             parentOffset,
+                     size_t                numberOfBlocks,
+                     size_t                expectedNumOfChilds,
+                     psonTxStatus        * pTxStatus,
+                     uint32_t              origNameLength,
+                     char                * origName,
+                     ptrdiff_t             hashItemOffset,
+                     psoObjectDefinition * pDefinition,
+                     psonKeyDefinition   * pKeyDefinition,
+                     psonDataDefinition  * pDataDefinition,
+                     psonSessionContext  * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSeqSetInsert( psonSeqSet         * pSeqSet,
+                       const void         * pKey,
+                       uint32_t             keyLength,
+                       const void         * pItem,
+                       uint32_t             itemLength,
+                       psonDataDefinition * pDefinition,
+                       psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSeqSetRelease( psonSeqSet         * pSeqSet,
+                        psonSeqSetItem     * pSeqSetItem,
+                        psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSeqSetReplace( psonSeqSet         * pSeqSet,
                         const void         * pKey,
                         uint32_t             keyLength,
                         const void         * pItem,
@@ -142,22 +165,8 @@ bool psonSeqSetInsert( psonSeqSet        * pHashMap,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonSeqSetRelease( psonSeqSet        * pHashMap,
-                         psonHashItem       * pHashItem,
-                         psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonSeqSetReplace( psonSeqSet        * pHashMap,
-                         const void         * pKey,
-                         uint32_t             keyLength,
-                         const void         * pItem,
-                         uint32_t             itemLength,
-                         psonDataDefinition * pDefinition,
-                         psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonSeqSetStatus( psonSeqSet  * pHashMap,
-                        psoObjStatus * pStatus );
+void psonSeqSetStatus( psonSeqSet   * pSeqSet,
+                       psoObjStatus * pStatus );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

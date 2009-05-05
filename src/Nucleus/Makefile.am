@@ -68,8 +68,6 @@ libNucleus_la_SOURCES =   \
         ProcessManager.h  \
         Queue.c           \
         Queue.h           \
-        SequentialSet.c   \
-        SequentialSet.h   \
         SessionContext.h  \
         Session.c         \
         Session.h         \
@@ -81,7 +79,10 @@ libNucleus_la_SOURCES =   \
         TransactionHash.h \
         TreeNode.h        \
         TxStatus.h        
-   
+
+#        SequentialSet.c   \
+        SequentialSet.h   
+
 EXTRA_DIST =                  \
         Nucleus.vs2005.vcproj \
         Nucleus.vs2008.vcproj \
