@@ -227,6 +227,7 @@ GetString( const char * s, Py_ssize_t len)
 
 #include "Session.h"
 #include "Folder.h"
+#include "Queue.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

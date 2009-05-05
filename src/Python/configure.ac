@@ -28,15 +28,8 @@ AC_INIT([Python Photon Software],
 
 AC_PREREQ(2.57)
 #AC_CONFIG_AUX_DIR(Config)
-#AC_CONFIG_LIBOBJ_DIR(src/Common)
 
-#AM_INIT_AUTOMAKE([foreign])
-#AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER(src/config.h)
-
-#AC_AIX 
-#AC_ISC_POSIX 
-#AC_MINIX 
 
 ##################################
 #                                #
@@ -44,10 +37,14 @@ AC_CONFIG_HEADER(src/config.h)
 #                                #
 ##################################
 
+if test -z "$PYTHON"; then
+AC_SUBST([PYTHON], [python2.6])
+fi
+AC_ARG_VAR([PYTHON], [The python executable])
+
 # Not sure  which version is needed to run the tests.
 #AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
-# Any version before 2.2 won't work (how to define new types waschanged then).
-# AC_PYTHON_DEVEL(">= '2.2'")
+#AC_DEFINE( PYTHONHAVE_ASCTIME_R_OK, 1
 
 # Tell our makefiles that we can use errorParser to regenerate the error
 # handling code, as needed.
