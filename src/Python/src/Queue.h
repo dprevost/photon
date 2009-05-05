@@ -21,6 +21,16 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+int psoaQueueFirst( void           * pQueue,
+                    unsigned char ** data,
+                    uint32_t       * length );
+
+int psoaQueueNext( void           * pQueue,
+                   unsigned char ** data,
+                   uint32_t       * length );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 typedef struct {
    PyObject_HEAD
 
@@ -145,26 +155,26 @@ Queue_iter( PyObject * self )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-#if 0
+
 static PyObject *
 Queue_next( PyObject * self )
 {
    int errcode;
-   psoFolderEntry entry;
    pyQueue * queue = (pyQueue *) self;
-   pyFolderEntry * e;
-   PyObject * objType = NULL, * entryName = NULL, * status = NULL;
-   
+   PyObject * pyData = NULL;
+   unsigned char * data;
+   unsigned int dataLength;
+
    if ( queue->iteratorStarted == 1 ) {
       queue->iteratorStarted = 0;
-      errcode = psoQueueGetFirst( (PSO_HANDLE)queue->handle, &entry );
+      errcode = psoaQueueFirst( (PSO_HANDLE)queue->handle, &data, &dataLength );
       if ( errcode == PSO_IS_EMPTY ) {
          PyErr_SetString( PyExc_StopIteration, "" );
          return NULL;
       }
    }
    else {
-      errcode = psoQueueGetNext( (PSO_HANDLE)queue->handle, &entry );
+      errcode = psoaQueueNext( (PSO_HANDLE)queue->handle, &data, &dataLength );
       if ( errcode == PSO_REACHED_THE_END ) {
          PyErr_SetString( PyExc_StopIteration, "" );
          return NULL;
@@ -175,26 +185,11 @@ Queue_next( PyObject * self )
       return NULL;
    }
   
-   objType = GetObjectType( entry.type );
-   if ( objType == NULL ) return NULL;
-   status = GetObjectStatus( entry.status );
-   if ( status == NULL ) return NULL;
-   
-   entryName = PyString_FromStringAndSize( entry.name,
-                                           entry.nameLengthInBytes );
-   if ( entryName == NULL ) return NULL;
+   pyData = PyByteArray_FromStringAndSize( (char *)data, dataLength );
+   if ( pyData == NULL ) return NULL;
 
-   e = (pyFolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
-   if ( e == NULL ) return NULL;
-   
-   e->status = status;
-   e->nameLength = entry.nameLengthInBytes;
-   e->name = entryName;
-   e->objType = objType;
-
-   return (PyObject *)e;
+   return (PyObject *)pyData;
 }
-#endif
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -303,7 +298,7 @@ Queue_GetDataDefinition( PyObject * self )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Queue_GetFirst( PyObject * self, PyObject * args )
+Queue_GetFirst( PyObject * self )
 {
    int errcode;
    pyQueue * queue = (pyQueue *) self;
@@ -317,8 +312,8 @@ Queue_GetFirst( PyObject * self, PyObject * args )
       return NULL;
    }
    
-   
    pyData = PyByteArray_FromStringAndSize( (char *)data, dataLength );
+   if ( pyData == NULL ) return NULL;
 
    return (PyObject *)pyData;
 }
@@ -326,125 +321,24 @@ Queue_GetFirst( PyObject * self, PyObject * args )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 static PyObject *
-Queue_GetKeyDefinition( PyObject * self, PyObject * args )
+Queue_GetNext( PyObject * self )
 {
    int errcode;
-   const char * objectName;
    pyQueue * queue = (pyQueue *) self;
-   pyKeyDefinition * pyDef = NULL;
-   PSO_HANDLE keyDefHandle;
-   int type, length;
-   unsigned int nameLength;
-   PyObject * defType = NULL;
-   unsigned char  * keyDef;
-   char * definitionName;
-   PyObject * name = NULL, *keyDefObj = NULL, * tmp = NULL;
+   PyObject * pyData = NULL;
+   unsigned char * data;
+   unsigned int dataLength;
 
-   if ( !PyArg_ParseTuple(args, "s", &objectName) ) {
-      return NULL;
-   }
-
-   errcode = psoQueueGetKeyDefinition( (PSO_HANDLE)queue->handle,
-                                        objectName,
-                                        strlen(objectName),
-                                        &keyDefHandle );
-   if ( errcode != 0 ) {
-      SetException( errcode );
-      return NULL;
-   }
-
-   pyDef = (pyKeyDefinition *) KeyDefinition_new( &KeyDefinitionType, 
-                                                  NULL, NULL );
-   if (pyDef == NULL) return NULL;
-   
-   errcode = psoaKeyDefGetDef( keyDefHandle,
-                               &definitionName,
-                               &nameLength,
-                               (enum psoDefinitionType *)&type,
-                               &keyDef,
-                               (unsigned int *)&length );
-   if ( errcode != 0 ) {
-      Py_XDECREF(pyDef);
-      SetException( errcode );
-      return NULL;
-   }
-
-   name = PyString_FromStringAndSize(definitionName, nameLength);
-   if ( name == NULL ) {
-      Py_XDECREF(pyDef);
-      return NULL;
-   }
-
-   keyDefObj = PyBuffer_FromMemory( keyDef, length ); 
-   if ( keyDefObj == NULL ) {
-      Py_XDECREF(pyDef);
-      Py_XDECREF(name);
-      return NULL;
-   }
-
-   defType = GetDefinitionType( type ); // A new reference
-   if ( defType == NULL ) {
-      Py_XDECREF(pyDef);
-      Py_XDECREF(name);
-      Py_XDECREF(keyDefObj);
-      return NULL;
-   }
-   tmp = pyDef->defType;
-   pyDef->defType = defType;
-   Py_XDECREF(tmp);
-   pyDef->intType = type;
-   
-   tmp = pyDef->keyDef;
-   Py_INCREF(keyDefObj);
-   pyDef->keyDef = keyDefObj;
-   Py_XDECREF(tmp);
-
-   tmp = pyDef->name;
-   Py_INCREF(name);
-   pyDef->name = name;
-   Py_XDECREF(tmp);
-
-   pyDef->keyDefLength = length;
-   pyDef->definitionHandle = (size_t) keyDefHandle;
-
-   return (PyObject *)pyDef;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-static PyObject *
-Queue_GetNext( PyObject * self, PyObject * args )
-{
-   int errcode;
-   psoFolderEntry entry;
-   pyQueue * queue = (pyQueue *) self;
-   pyFolderEntry * e;
-   PyObject * objType = NULL, * entryName = NULL, * status = NULL;
-
-   errcode = psoQueueGetNext( (PSO_HANDLE)queue->handle, &entry );
+   errcode = psoaQueueNext( (PSO_HANDLE)queue->handle, &data, &dataLength );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;
    }
    
-   objType = GetObjectType( entry.type );
-   if ( objType == NULL ) return NULL;
-   status = GetObjectStatus( entry.status );
-   if ( status == NULL ) return NULL;
-   
-   entryName = PyString_FromStringAndSize( entry.name,
-                                           entry.nameLengthInBytes );
-   if ( entryName == NULL ) return NULL;
+   pyData = PyByteArray_FromStringAndSize( (char *)data, dataLength );
+   if ( pyData == NULL ) return NULL;
 
-   e = (pyFolderEntry *)FolderEntry_new( &FolderEntryType, NULL, NULL );
-   if ( e == NULL ) return NULL;
-   
-   e->status = status;
-   e->nameLength = entry.nameLengthInBytes;
-   e->name = entryName;
-   e->objType = objType;
-
-   return (PyObject *)e;
+   return (PyObject *)pyData;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -544,11 +438,11 @@ Queue_str( PyObject * self )
    
    if ( queue->name != NULL ) {
       return PyString_FromFormat( 
-         "Folder{ name: %s }",
+         "Queue{ name: %s }",
          PyString_AsString(queue->name) );
    }
    
-   return PyString_FromString("Folder is not open");
+   return PyString_FromString("Queue is not open");
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -569,13 +463,10 @@ static PyMethodDef Queue_methods[] = {
      "Get the data definition of a Photon object"
    },
 
-   { "get_first", (PyCFunction)Queue_GetFirst, METH_VARARGS,
+   { "get_first", (PyCFunction)Queue_GetFirst, METH_NOARGS,
      ""
    },
-   { "get_key_definition", (PyCFunction)Queue_GetKeyDefinition, METH_VARARGS,
-     "Get the key definition of a Photon object"
-   },
-   { "get_next", (PyCFunction)Queue_GetNext, METH_VARARGS,
+   { "get_next", (PyCFunction)Queue_GetNext, METH_NOARGS,
      ""
    },
    { "open", (PyCFunction)Queue_Open, METH_VARARGS,
