@@ -102,6 +102,47 @@ bool psonCursorGetFirst( psonCursor         * pCursor,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+bool psonCursorGetLast( psonCursor         * pCursor,
+                        psonCursorItem    ** ppIterator,
+                        uint32_t             bufferLength,
+                        psonSessionContext * pContext )
+{
+   psonCursorItem* pCursorItem = NULL;
+   psonLinkNode * pNode = NULL;
+   bool okList;
+   
+   PSO_PRE_CONDITION( pCursor    != NULL );
+   PSO_PRE_CONDITION( ppIterator != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
+   
+   /* This call can only fail if the queue is empty. */
+   okList = psonLinkedListPeakLast( &pCursor->listOfElements, &pNode );
+   
+   if ( okList ) {
+      pCursorItem = (psonCursorItem*) 
+         ((char*)pNode - offsetof( psonCursorItem, node ));
+         
+      *ppIterator = pCursorItem;
+
+      return true;
+   }
+   
+   /* 
+    * If we come here, there are no data items to retrieve. As 
+    * long as we clearly say that the internal iterator is reset (in case a 
+    * "Get Previous" is implemented later), we can just release the iterator
+    * at this point.
+    */
+   *ppIterator = NULL;
+   
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
+
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 bool psonCursorGetNext( psonCursor         * pCursor,
                         psonCursorItem    ** ppIterator,
                         uint32_t             bufferLength,
@@ -158,6 +199,62 @@ bool psonCursorGetNext( psonCursor         * pCursor,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+bool psonCursorGetPrevious( psonCursor         * pCursor,
+                            psonCursorItem    ** ppIterator,
+                            uint32_t             bufferLength,
+                            psonSessionContext * pContext )
+{
+   psonCursorItem* pCursorItem = NULL;
+   psonCursorItem* pOldItem = NULL;
+   psonLinkNode * pNode = NULL;
+   bool okList;
+   
+   PSO_PRE_CONDITION( pCursor    != NULL );
+   PSO_PRE_CONDITION( ppIterator != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
+   
+   pOldItem = (psonCursorItem*) *ppIterator;
+   okList =  psonLinkedListPeakPrevious( &pCursor->listOfElements, 
+                                         &pOldItem->node, 
+                                         &pNode );
+      
+   if ( okList ) {
+      pCursorItem = (psonCursorItem*)
+         ((char*)pNode - offsetof( psonCursorItem, node ));
+         
+      /* 
+       * If the transaction id of the item (to retrieve) is equal to the 
+       * current transaction id AND the object is marked as deleted, we 
+       * go to the next item.
+       *
+       * If the transaction id of the item (to retrieve) is NOT equal to the 
+       * current transaction id AND the object is added... next!
+       *
+       * If the item is flagged as deleted and committed, it does not exists
+       * from the API point of view.
+       */
+
+     *ppIterator = pCursorItem;
+     
+     return true;
+   }
+   
+   /* 
+    * If we come here, there are no additional data items to retrieve. As 
+    * long as we clearly say that the internal iterator is reset (in case a 
+    * "Get Previous" is implemented later), we can just release the iterator
+    * at this point.
+    */
+   *ppIterator = NULL;
+   
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
+
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 bool psonCursorInit( psonCursor          * pCursor,
                      ptrdiff_t             parentOffset,
                      size_t                numberOfBlocks,
@@ -166,10 +263,10 @@ bool psonCursorInit( psonCursor          * pCursor,
 {
    psoErrors errcode;
    
-   PSO_PRE_CONDITION( pCursor          != NULL );
-   PSO_PRE_CONDITION( pContext        != NULL );
-   PSO_PRE_CONDITION( pDefinition     != NULL );
-   PSO_PRE_CONDITION( parentOffset   != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( pCursor      != NULL );
+   PSO_PRE_CONDITION( pContext     != NULL );
+   PSO_PRE_CONDITION( pDefinition  != NULL );
+   PSO_PRE_CONDITION( parentOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    
    errcode = psonMemObjectInit( &pCursor->memObject, 
@@ -192,10 +289,10 @@ bool psonCursorInit( psonCursor          * pCursor,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonCursorInsert( psonCursor         * pCursor,
-                       void               * pItem,
-                       int                  itemType,
-                       psonSessionContext * pContext )
+bool psonCursorInsertFirst( psonCursor         * pCursor,
+                            unsigned char      * pItem,
+                            psonItemTypeEnum     itemType,
+                            psonSessionContext * pContext )
 {
    psonCursorItem * pCursorItem;
    
@@ -203,6 +300,42 @@ bool psonCursorInsert( psonCursor         * pCursor,
    PSO_PRE_CONDITION( pItem    != NULL )
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
+   PSO_PRE_CONDITION( itemType > PSON_FIRST_ITEM && itemType < PSON_LAST_ITEM );
+
+   pCursorItem = (psonCursorItem *) psonMalloc( &pCursor->memObject,
+                                                sizeof(psonCursorItem),
+                                                pContext );
+   if ( pCursorItem == NULL ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, 
+                    PSO_NOT_ENOUGH_PSO_MEMORY );
+      return false;
+   }
+   
+   psonLinkNodeInit( &pCursorItem->node );
+      
+   pCursorItem->realItemfOffset = SET_OFFSET(pItem);
+   pCursorItem->itemType = itemType;
+
+   psonLinkedListPutFirst( &pCursor->listOfElements,
+                           &pCursorItem->node );
+      
+   return true;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonCursorInsertLast( psonCursor         * pCursor,
+                           unsigned char      * pItem,
+                           psonItemTypeEnum     itemType,
+                           psonSessionContext * pContext )
+{
+   psonCursorItem * pCursorItem;
+   
+   PSO_PRE_CONDITION( pCursor  != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
+   PSO_PRE_CONDITION( itemType > PSON_FIRST_ITEM && itemType < PSON_LAST_ITEM );
 
    pCursorItem = (psonCursorItem *) psonMalloc( &pCursor->memObject,
                                                 sizeof(psonCursorItem),

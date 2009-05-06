@@ -173,6 +173,18 @@ typedef enum psonMemObjIdentifier psonMemObjIdent;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+enum psonItemTypeEnum
+{
+   PSON_FIRST_ITEM,
+   PSON_HASH_ITEM,
+   PSON_HASH_TX_ITEM,
+   PSON_LAST_ITEM
+};
+
+typedef enum psonItemTypeEnum psonItemTypeEnum;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 /**
  * This enum allows to count the number of objects and the number of 
  * extensions (additional groups of blocks added to an object). 

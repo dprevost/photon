@@ -38,17 +38,6 @@ BEGIN_C_DECLS
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-enum psonCursorEnum
-{
-   PSON_QUEUE_FIRST = 101,
-   PSON_QUEUE_LAST  = 202
-   
-};
-
-typedef enum psonCursorEnum psonCursorEnum;
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 struct psonCursorItem
 {
    psonLinkNode node;
@@ -56,7 +45,7 @@ struct psonCursorItem
    /** Offset to the specific item */
    ptrdiff_t  realItemfOffset;
 
-   int itemType;
+   enum psonItemTypeEnum itemType;
 };
 
 typedef struct psonCursorItem psonCursorItem;
@@ -98,10 +87,22 @@ bool psonCursorGetFirst( psonCursor         * pCursor,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
+bool psonCursorGetLast( psonCursor         * pCursor,
+                        psonCursorItem    ** ppIterator,
+                        uint32_t             bufferLength,
+                        psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonCursorGetNext( psonCursor         * pCursor,
                         psonCursorItem    ** ppIterator,
                         uint32_t             bufferLength,
                         psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonCursorGetPrevious( psonCursor         * pCursor,
+                            psonCursorItem    ** ppIterator,
+                            uint32_t             bufferLength,
+                            psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorInit( psonCursor          * pCursor,
@@ -111,10 +112,16 @@ bool psonCursorInit( psonCursor          * pCursor,
                      psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonCursorInsert( psonCursor         * pCursor,
-                       void               * pItem,
-                       int                  itemType,
-                       psonSessionContext * pContext );
+bool psonCursorInsertFirst( psonCursor         * pCursor,
+                            unsigned char      * pItem,
+                            psonItemTypeEnum     itemType,
+                            psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonCursorInsertLast( psonCursor         * pCursor,
+                           unsigned char      * pItem,
+                           psonItemTypeEnum     itemType,
+                           psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 void psonCursorSize( psonCursor * pCursor,

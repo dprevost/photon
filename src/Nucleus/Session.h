@@ -91,6 +91,9 @@ typedef struct psonSession
    /** Our own internal list of objects accessed by the current session */
    psonLinkedList listOfObjects;
 
+   /** Our own internal list of cursors accessed by the current session */
+   psonLinkedList listOfCursors;
+
    /** our current list of locks */
    ptrdiff_t lockOffsets[PSON_MAX_LOCK_DEPTH];
 
@@ -120,6 +123,14 @@ bool psonSessionAddObj( psonSession        * pSession,
                         void               * pCommonObject,
                         psonObjectContext ** ppObject,
                         psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSessionOpenCursor( psonSession        * pSession,
+                            ptrdiff_t            objOffset, 
+                            enum psoObjectType   objType, 
+                            void               * pCommonObject,
+                            psonObjectContext ** ppObject,
+                            psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonSessionRemoveObj( psonSession        * pSession,
