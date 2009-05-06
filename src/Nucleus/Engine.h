@@ -161,7 +161,8 @@ enum psonMemObjIdentifier
    PSON_IDENT_SESSION         = 0x3422010f,
    PSON_IDENT_TRANSACTION     = 0x34220111,
    PSON_IDENT_MAP             = 0x34220113,
-
+   PSON_IDENT_CURSOR          = 0x34220115,
+   
    PSON_IDENT_LAST            = 0x34220125
 
 };

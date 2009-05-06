@@ -51,17 +51,12 @@ typedef enum psonCursorEnum psonCursorEnum;
 
 struct psonCursorItem
 {
-   psonTxStatus  txStatus;
-
    psonLinkNode node;
 
-   /** Offset to the data definition for this specific item */
-   ptrdiff_t  dataDefOffset;
+   /** Offset to the specific item */
+   ptrdiff_t  realItemfOffset;
 
-   size_t dataLength;
-   
-   unsigned char data[1];
-
+   int itemType;
 };
 
 typedef struct psonCursorItem psonCursorItem;
@@ -73,31 +68,11 @@ struct psonCursor
    /** Always first */
    struct psonMemObject memObject;
 
-   /** Basic info for all leaves and branches of our tree. */
-   struct psonTreeNode  nodeObject;
-
-   /** The type of queue (as decided when psoCreateObject() was called). */
-   enum psoObjectType queueType;
-
    /** Our own doubly-linked list, to hold the data. */
    psonLinkedList listOfElements;
 
-   /** Offset to the data definition */
-   ptrdiff_t  dataDefOffset;
-
    /* Creation flags */
    uint32_t flags;
-   
-   /**
-    * Number of valid items. Valid items are the number of items NOT counting
-    * items that might be added (but not committed) - also, items which are
-    * removed but not committed are counted as valid).
-    */
-   size_t numValidItems;
-
-   ptrdiff_t latestVersion;
-
-   ptrdiff_t editVersion;
    
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;
@@ -109,31 +84,12 @@ typedef struct psonCursor psonCursor;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psonCursorCopy( psonCursor         * pOldCursor, 
-                     psonCursor         * pNewCursor,
-                     psonHashTxItem     * pHashItem,
-                     const char         * origName,
-                     psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
 void psonCursorEmpty( psonCursor         * pCursor,
                       psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 void psonCursorFini( psonCursor         * pCursor,
                      psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonCursorInit( psonCursor          * pCursor,
-                     ptrdiff_t             parentOffset,
-                     size_t                numberOfBlocks,
-                     psonTxStatus        * pTxStatus,
-                     uint32_t              origNameLength,
-                     char                * origName,
-                     ptrdiff_t             hashItemOffset,
-                     psoObjectDefinition * pDefinition,
-                     psonDataDefinition  * pDataDefinition,
-                     psonSessionContext  * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetFirst( psonCursor         * pCursor,
@@ -148,20 +104,21 @@ bool psonCursorGetNext( psonCursor         * pCursor,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
+bool psonCursorInit( psonCursor          * pCursor,
+                     ptrdiff_t             parentOffset,
+                     size_t                numberOfBlocks,
+                     psoObjectDefinition * pDefinition,
+                     psonSessionContext  * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonCursorInsert( psonCursor         * pCursor,
-                       const void         * pItem, 
-                       uint32_t             length,
-                       psonDataDefinition * pDefinition,
+                       void               * pItem,
+                       int                  itemType,
                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonCursorRelease( psonCursor         * pCursor,
-                        psonCursorItem     * pCursorItem,
-                        psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonCursorStatus( psonCursor   * pCursor,
-                       psoObjStatus * pStatus );
+void psonCursorSize( psonCursor * pCursor,
+                     size_t     * pNumItems );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
