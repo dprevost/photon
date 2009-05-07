@@ -63,7 +63,6 @@ void psonCursorFini( psonCursor         * pCursor,
 
 bool psonCursorGetFirst( psonCursor         * pCursor,
                          psonCursorItem    ** ppIterator,
-                         uint32_t             bufferLength,
                          psonSessionContext * pContext )
 {
    psonCursorItem* pCursorItem = NULL;
@@ -81,7 +80,6 @@ bool psonCursorGetFirst( psonCursor         * pCursor,
    if ( okList ) {
       pCursorItem = (psonCursorItem*) 
          ((char*)pNode - offsetof( psonCursorItem, node ));
-         
       *ppIterator = pCursorItem;
 
       return true;
@@ -104,7 +102,6 @@ bool psonCursorGetFirst( psonCursor         * pCursor,
 
 bool psonCursorGetLast( psonCursor         * pCursor,
                         psonCursorItem    ** ppIterator,
-                        uint32_t             bufferLength,
                         psonSessionContext * pContext )
 {
    psonCursorItem* pCursorItem = NULL;
@@ -122,7 +119,6 @@ bool psonCursorGetLast( psonCursor         * pCursor,
    if ( okList ) {
       pCursorItem = (psonCursorItem*) 
          ((char*)pNode - offsetof( psonCursorItem, node ));
-         
       *ppIterator = pCursorItem;
 
       return true;
@@ -145,7 +141,6 @@ bool psonCursorGetLast( psonCursor         * pCursor,
 
 bool psonCursorGetNext( psonCursor         * pCursor,
                         psonCursorItem    ** ppIterator,
-                        uint32_t             bufferLength,
                         psonSessionContext * pContext )
 {
    psonCursorItem* pCursorItem = NULL;
@@ -166,22 +161,9 @@ bool psonCursorGetNext( psonCursor         * pCursor,
    if ( okList ) {
       pCursorItem = (psonCursorItem*)
          ((char*)pNode - offsetof( psonCursorItem, node ));
-         
-      /* 
-       * If the transaction id of the item (to retrieve) is equal to the 
-       * current transaction id AND the object is marked as deleted, we 
-       * go to the next item.
-       *
-       * If the transaction id of the item (to retrieve) is NOT equal to the 
-       * current transaction id AND the object is added... next!
-       *
-       * If the item is flagged as deleted and committed, it does not exists
-       * from the API point of view.
-       */
-
-     *ppIterator = pCursorItem;
-     
-     return true;
+      *ppIterator = pCursorItem;
+      
+      return true;
    }
    
    /* 
@@ -201,7 +183,6 @@ bool psonCursorGetNext( psonCursor         * pCursor,
 
 bool psonCursorGetPrevious( psonCursor         * pCursor,
                             psonCursorItem    ** ppIterator,
-                            uint32_t             bufferLength,
                             psonSessionContext * pContext )
 {
    psonCursorItem* pCursorItem = NULL;
@@ -222,22 +203,9 @@ bool psonCursorGetPrevious( psonCursor         * pCursor,
    if ( okList ) {
       pCursorItem = (psonCursorItem*)
          ((char*)pNode - offsetof( psonCursorItem, node ));
-         
-      /* 
-       * If the transaction id of the item (to retrieve) is equal to the 
-       * current transaction id AND the object is marked as deleted, we 
-       * go to the next item.
-       *
-       * If the transaction id of the item (to retrieve) is NOT equal to the 
-       * current transaction id AND the object is added... next!
-       *
-       * If the item is flagged as deleted and committed, it does not exists
-       * from the API point of view.
-       */
-
-     *ppIterator = pCursorItem;
-     
-     return true;
+      *ppIterator = pCursorItem;
+      
+      return true;
    }
    
    /* 
@@ -258,14 +226,12 @@ bool psonCursorGetPrevious( psonCursor         * pCursor,
 bool psonCursorInit( psonCursor          * pCursor,
                      ptrdiff_t             parentOffset,
                      size_t                numberOfBlocks,
-                     psoObjectDefinition * pDefinition,
                      psonSessionContext  * pContext )
 {
    psoErrors errcode;
    
    PSO_PRE_CONDITION( pCursor      != NULL );
    PSO_PRE_CONDITION( pContext     != NULL );
-   PSO_PRE_CONDITION( pDefinition  != NULL );
    PSO_PRE_CONDITION( parentOffset != PSON_NULL_OFFSET );
    PSO_PRE_CONDITION( numberOfBlocks > 0 );
    
@@ -282,8 +248,6 @@ bool psonCursorInit( psonCursor          * pCursor,
 
    psonLinkedListInit( &pCursor->listOfElements );
 
-   pCursor->flags = pDefinition->flags;
-   
    return true;
 }
 

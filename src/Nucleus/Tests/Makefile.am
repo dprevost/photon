@@ -14,29 +14,26 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-# There is an order in the tests - for example the Hash tests are done
-# before the Folder tests or the HashMaps tests since the last two use
-# Hash but the Hash tests are after the memory allocation tests since 
-# Hash uses it..
 SUBDIRS =              \
+        BlockGroup     \
+        Cursor         \
+        FastMap        \
+        Folder         \
+        Hash           \
+        HashMap        \
+        HashTx         \
         List           \
         LogFile        \
         MemAlloc       \
         MemBitmap      \
-        BlockGroup     \
         MemObject      \
-        Hash           \
-        HashTx         \
-        Transaction    \
-        ProcessManager \
+        Optional       \
         Process        \
-        Session        \
-        Folder         \
-        TopFolder      \
-        HashMap        \
-        FastMap        \
+        ProcessManager \
         Queue          \
-        Optional       
+        Session        \
+        TopFolder      \
+        Transaction    
 
 check_PROGRAMS =         \
         LinkNodeNULLInit \

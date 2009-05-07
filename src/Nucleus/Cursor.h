@@ -60,9 +60,6 @@ struct psonCursor
    /** Our own doubly-linked list, to hold the data. */
    psonLinkedList listOfElements;
 
-   /* Creation flags */
-   uint32_t flags;
-   
    /** Variable size struct - always put at the end */
    struct psonBlockGroup blockGroup;
 
@@ -83,33 +80,28 @@ void psonCursorFini( psonCursor         * pCursor,
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetFirst( psonCursor         * pCursor,
                          psonCursorItem    ** ppIterator,
-                         uint32_t             bufferLength,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetLast( psonCursor         * pCursor,
                         psonCursorItem    ** ppIterator,
-                        uint32_t             bufferLength,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetNext( psonCursor         * pCursor,
                         psonCursorItem    ** ppIterator,
-                        uint32_t             bufferLength,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetPrevious( psonCursor         * pCursor,
                             psonCursorItem    ** ppIterator,
-                            uint32_t             bufferLength,
                             psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
-bool psonCursorInit( psonCursor          * pCursor,
-                     ptrdiff_t             parentOffset,
-                     size_t                numberOfBlocks,
-                     psoObjectDefinition * pDefinition,
-                     psonSessionContext  * pContext );
+bool psonCursorInit( psonCursor         * pCursor,
+                     ptrdiff_t            parentOffset,
+                     size_t               numberOfBlocks,
+                     psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorInsertFirst( psonCursor         * pCursor,

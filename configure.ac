@@ -534,6 +534,7 @@ AC_CONFIG_FILES([
    src/Nucleus/Makefile
    src/Nucleus/Tests/Makefile
    src/Nucleus/Tests/BlockGroup/Makefile
+   src/Nucleus/Tests/Cursor/Makefile
    src/Nucleus/Tests/FastMap/Makefile
    src/Nucleus/Tests/Folder/Makefile
    src/Nucleus/Tests/Hash/Makefile
