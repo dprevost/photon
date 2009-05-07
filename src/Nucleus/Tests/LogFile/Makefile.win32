@@ -13,11 +13,6 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
 CLEANFILES = $(CLEANFILES) *.tlog

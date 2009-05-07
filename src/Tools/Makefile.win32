@@ -29,7 +29,7 @@ LDD_FLAGS_DEBUG   = $(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib p
 CFLAGS_DEBUG   = /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /Gm /EHsc /RTC1 /MTd /Fp"$(DIR_DEBUG)/psoInfo.pch" /Fo"$(DIR_DEBUG)/" /Fd"$(DIR_DEBUG)/" /W3 /nologo /c /Zi /TP /errorReport:prompt
 CFLAGS_RELEASE = /O2 /Ob1 /I "..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_VC80_UPGRADE=0x0600" /D "_MBCS" /GF /FD /EHsc /MT /Gy /Fp"$(DIR_RELEASE)/psoInfo.pch" /Fo"$(DIR_RELEASE)/" /Fd"$(DIR_RELEASE)/" /W3 /nologo /c /TP /errorReport:prompt
 
-RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo".\Debug/psoInfo.res"
+RC_FLAGS_DEBUG   = /d "_DEBUG" /l 0x1009 /fo"$(DIR_DEBUG)/psoInfo.res"
 RC_FLAGS_RELEASE = /d "NDEBUG" /l 0x1009 /fo"$(DIR_RELEASE)/psoInfo.res"
 
 ###########################################################################

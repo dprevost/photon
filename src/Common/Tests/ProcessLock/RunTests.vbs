@@ -185,7 +185,10 @@ if rc <> 0 then
    failed_tests(numFailed) = "LockConcurrency"
    numFailed = numFailed + 1
 end if
+
+On Error Resume Next
 fso.DeleteFile("Memfile.mem")
+On Error GoTo 0
 
 For Each program in fail_programs
    exe_name = prog_path & "\" & program & ".exe"
