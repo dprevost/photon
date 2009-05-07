@@ -17,7 +17,6 @@ CLEANFILES = *~ core
 check_PROGRAMS =               \
         EmptyNullContext       \
         EmptyNullCursor        \
-        EmptyPass              \
         FiniNullContext        \
         FiniNullCursor         \
         GetFirstNullContext    \
@@ -29,9 +28,11 @@ check_PROGRAMS =               \
         GetNextNullContext     \
         GetNextNullCursor      \
         GetNextNullItem        \
+        GetNextNullOldItem     \
         GetPreviousNullContext \
         GetPreviousNullCursor  \
         GetPreviousNullItem    \
+        GetPreviousNullOldItem \
         InitNullCursor         \
         InitNullContext        \
         InitNullCursor         \
@@ -46,13 +47,13 @@ check_PROGRAMS =               \
         InsertLastNullItem     \
         InsertLastWrongType    \
         SizeNullCursor         \
-        SizeNullNumItems       
+        SizeNullNumItems       \
+        Tests                  
 
 COMMON_HEADER = cursorTest.h
 
 EmptyNullContext_SOURCES       = $(COMMON_HEADER) EmptyNullContext.c
 EmptyNullCursor_SOURCES        = $(COMMON_HEADER) EmptyNullCursor.c
-EmptyPass_SOURCES              = $(COMMON_HEADER) EmptyPass.c
 FiniNullContext_SOURCES        = $(COMMON_HEADER) FiniNullContext.c
 FiniNullCursor_SOURCES         = $(COMMON_HEADER) FiniNullCursor.c
 GetFirstNullContext_SOURCES    = $(COMMON_HEADER) GetFirstNullContext.c
@@ -64,9 +65,11 @@ GetLastNullItem_SOURCES        = $(COMMON_HEADER) GetLastNullItem.c
 GetNextNullContext_SOURCES     = $(COMMON_HEADER) GetNextNullContext.c
 GetNextNullCursor_SOURCES      = $(COMMON_HEADER) GetNextNullCursor.c
 GetNextNullItem_SOURCES        = $(COMMON_HEADER) GetNextNullItem.c
+GetNextNullOldItem_SOURCES     = $(COMMON_HEADER) GetNextNullOldItem.c
 GetPreviousNullContext_SOURCES = $(COMMON_HEADER) GetPreviousNullContext.c
 GetPreviousNullCursor_SOURCES  = $(COMMON_HEADER) GetPreviousNullCursor.c
 GetPreviousNullItem_SOURCES    = $(COMMON_HEADER) GetPreviousNullItem.c
+GetPreviousNullOldItem_SOURCES = $(COMMON_HEADER) GetPreviousNullOldItem.c
 InitNullContext_SOURCES        = $(COMMON_HEADER) InitNullContext.c
 InitNullCursor_SOURCES         = $(COMMON_HEADER) InitNullCursor.c
 InitNullParent_SOURCES         = $(COMMON_HEADER) InitNullParent.c
@@ -81,6 +84,7 @@ InsertLastNullItem_SOURCES     = $(COMMON_HEADER) InsertLastNullItem.c
 InsertLastWrongType_SOURCES    = $(COMMON_HEADER) InsertLastWrongType.c
 SizeNullCursor_SOURCES         = $(COMMON_HEADER) SizeNullCursor.c
 SizeNullNumItems_SOURCES       = $(COMMON_HEADER) SizeNullNumItems.c
+Tests_SOURCES                  = $(COMMON_HEADER) Tests.c
 
 EXTRA_DIST =           \
         Makefile.win32 \
@@ -95,7 +99,6 @@ TESTS_ENVIRONMENT =                  \
 TESTS =                        \
         EmptyNullContext       \
         EmptyNullCursor        \
-        EmptyPass              \
         FiniNullContext        \
         FiniNullCursor         \
         GetFirstNullContext    \
@@ -107,9 +110,11 @@ TESTS =                        \
         GetNextNullContext     \
         GetNextNullCursor      \
         GetNextNullItem        \
+        GetNextNullOldItem     \
         GetPreviousNullContext \
         GetPreviousNullCursor  \
         GetPreviousNullItem    \
+        GetPreviousNullOldItem \
         InitNullContext        \
         InitNullCursor         \
         InitNullParent         \
@@ -123,7 +128,8 @@ TESTS =                        \
         InsertLastNullItem     \
         InsertLastWrongType    \
         SizeNullCursor         \
-        SizeNullNumItems       
+        SizeNullNumItems       \
+        Tests                  
 
 XFAIL_TESTS =                  \
         EmptyNullContext       \
@@ -139,9 +145,11 @@ XFAIL_TESTS =                  \
         GetNextNullContext     \
         GetNextNullCursor      \
         GetNextNullItem        \
+        GetNextNullOldItem     \
         GetPreviousNullContext \
         GetPreviousNullCursor  \
         GetPreviousNullItem    \
+        GetPreviousNullOldItem \
         InitNullContext        \
         InitNullCursor         \
         InitNullParent         \

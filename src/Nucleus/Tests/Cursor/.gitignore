@@ -2,7 +2,6 @@
 /Makefile.in
 /EmptyNullContext
 /EmptyNullCursor
-/EmptyPass
 /FiniNullContext
 /FiniNullCursor
 /GetFirstNullContext
@@ -14,9 +13,11 @@
 /GetNextNullContext
 /GetNextNullCursor
 /GetNextNullItem
+/GetNextNullOldItem
 /GetPreviousNullContext
 /GetPreviousNullCursor
 /GetPreviousNullItem
+/GetPreviousNullOldItem
 /InitNullContext
 /InitNullCursor
 /InitNullParent
@@ -31,3 +32,4 @@
 /InsertLastWrongType
 /SizeNullCursor
 /SizeNullNumItems
+/Tests

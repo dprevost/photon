@@ -62,7 +62,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   psonCursorGetNext( pCursor, pItem, NULL, &context );
+   psonCursorGetNext( pCursor, NULL, &pItem, &context );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

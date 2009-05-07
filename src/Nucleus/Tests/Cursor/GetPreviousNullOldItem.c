@@ -20,15 +20,17 @@
 
 #include "cursorTest.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
+#if defined(USE_DBC)
    psonCursor * pCursor;
    psonSessionContext context;
    bool ok;
+   psonCursorItem * pItem;
 
    pCursor = initCursorTest( expectedToPass, &context );
 
@@ -40,34 +42,32 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-#if 0
-
    ok = psonCursorInsertLast( pCursor,
-                           (const void *) key,
-                           6,
-                           (const void *) data,
-                           7,
-                           NULL,
-                           &context );
+                              (unsigned char *)&context, // any pointer is ok
+                              PSON_HASH_ITEM,
+                              &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+   ok = psonCursorInsertLast( pCursor,
+                              (unsigned char *)&context, // any pointer is ok
+                              PSON_HASH_ITEM,
+                              &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   /* Is the item there? */
-   ok = psonFastMapGet( pHashMap,
-                        (const void *) key,
-                        6,
-                        &pItem,
-                        20,
-                        &context );
+   psonCursorGetLast( pCursor, &pItem, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
+
+   psonCursorGetPrevious( pCursor, NULL, &pItem, &context );
+
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+   return 1;
 #endif
-
-   psonCursorEmpty( pCursor, &context );
-
-   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

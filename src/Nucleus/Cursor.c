@@ -35,7 +35,7 @@ void psonCursorEmpty( psonCursor         * pCursor,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
 
-   while ( psonLinkedListPeakFirst( &pCursor->listOfElements, &pNode ) ) {
+   while ( psonLinkedListGetFirst( &pCursor->listOfElements, &pNode ) ) {
       pCursorItem = (psonCursorItem *)
          ((char*)pNode - offsetof( psonCursorItem, node ));
       psonFree( &pCursor->memObject,
@@ -62,25 +62,23 @@ void psonCursorFini( psonCursor         * pCursor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonCursorGetFirst( psonCursor         * pCursor,
-                         psonCursorItem    ** ppIterator,
+                         psonCursorItem    ** ppItem,
                          psonSessionContext * pContext )
 {
-   psonCursorItem* pCursorItem = NULL;
    psonLinkNode * pNode = NULL;
    bool okList;
    
-   PSO_PRE_CONDITION( pCursor    != NULL );
-   PSO_PRE_CONDITION( ppIterator != NULL );
-   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pCursor  != NULL );
+   PSO_PRE_CONDITION( ppItem   != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
    
    /* This call can only fail if the queue is empty. */
    okList = psonLinkedListPeakFirst( &pCursor->listOfElements, &pNode );
    
    if ( okList ) {
-      pCursorItem = (psonCursorItem*) 
+      *ppItem = (psonCursorItem*) 
          ((char*)pNode - offsetof( psonCursorItem, node ));
-      *ppIterator = pCursorItem;
 
       return true;
    }
@@ -91,7 +89,7 @@ bool psonCursorGetFirst( psonCursor         * pCursor,
     * "Get Previous" is implemented later), we can just release the iterator
     * at this point.
     */
-   *ppIterator = NULL;
+   *ppItem = NULL;
    
    psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
 
@@ -101,25 +99,23 @@ bool psonCursorGetFirst( psonCursor         * pCursor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonCursorGetLast( psonCursor         * pCursor,
-                        psonCursorItem    ** ppIterator,
+                        psonCursorItem    ** ppItem,
                         psonSessionContext * pContext )
 {
-   psonCursorItem* pCursorItem = NULL;
    psonLinkNode * pNode = NULL;
    bool okList;
    
-   PSO_PRE_CONDITION( pCursor    != NULL );
-   PSO_PRE_CONDITION( ppIterator != NULL );
-   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pCursor  != NULL );
+   PSO_PRE_CONDITION( ppItem   != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
    
    /* This call can only fail if the queue is empty. */
    okList = psonLinkedListPeakLast( &pCursor->listOfElements, &pNode );
    
    if ( okList ) {
-      pCursorItem = (psonCursorItem*) 
+      *ppItem = (psonCursorItem*) 
          ((char*)pNode - offsetof( psonCursorItem, node ));
-      *ppIterator = pCursorItem;
 
       return true;
    }
@@ -130,7 +126,7 @@ bool psonCursorGetLast( psonCursor         * pCursor,
     * "Get Previous" is implemented later), we can just release the iterator
     * at this point.
     */
-   *ppIterator = NULL;
+   *ppItem = NULL;
    
    psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
 
@@ -140,28 +136,26 @@ bool psonCursorGetLast( psonCursor         * pCursor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonCursorGetNext( psonCursor         * pCursor,
-                        psonCursorItem    ** ppIterator,
+                        psonCursorItem     * pOldItem,
+                        psonCursorItem    ** ppItem,
                         psonSessionContext * pContext )
 {
-   psonCursorItem* pCursorItem = NULL;
-   psonCursorItem* pOldItem = NULL;
    psonLinkNode * pNode = NULL;
    bool okList;
    
-   PSO_PRE_CONDITION( pCursor    != NULL );
-   PSO_PRE_CONDITION( ppIterator != NULL );
-   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pCursor  != NULL );
+   PSO_PRE_CONDITION( pOldItem != NULL );
+   PSO_PRE_CONDITION( ppItem   != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
    
-   pOldItem = (psonCursorItem*) *ppIterator;
    okList =  psonLinkedListPeakNext( &pCursor->listOfElements, 
                                      &pOldItem->node, 
                                      &pNode );
       
    if ( okList ) {
-      pCursorItem = (psonCursorItem*)
+      *ppItem = (psonCursorItem*)
          ((char*)pNode - offsetof( psonCursorItem, node ));
-      *ppIterator = pCursorItem;
       
       return true;
    }
@@ -172,7 +166,7 @@ bool psonCursorGetNext( psonCursor         * pCursor,
     * "Get Previous" is implemented later), we can just release the iterator
     * at this point.
     */
-   *ppIterator = NULL;
+   *ppItem = NULL;
    
    psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
 
@@ -182,28 +176,26 @@ bool psonCursorGetNext( psonCursor         * pCursor,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 bool psonCursorGetPrevious( psonCursor         * pCursor,
-                            psonCursorItem    ** ppIterator,
+                            psonCursorItem     * pOldItem,
+                            psonCursorItem    ** ppItem,
                             psonSessionContext * pContext )
 {
-   psonCursorItem* pCursorItem = NULL;
-   psonCursorItem* pOldItem = NULL;
    psonLinkNode * pNode = NULL;
    bool okList;
    
-   PSO_PRE_CONDITION( pCursor    != NULL );
-   PSO_PRE_CONDITION( ppIterator != NULL );
-   PSO_PRE_CONDITION( pContext   != NULL );
+   PSO_PRE_CONDITION( pCursor  != NULL );
+   PSO_PRE_CONDITION( pOldItem != NULL );
+   PSO_PRE_CONDITION( ppItem   != NULL );
+   PSO_PRE_CONDITION( pContext  != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
    
-   pOldItem = (psonCursorItem*) *ppIterator;
    okList =  psonLinkedListPeakPrevious( &pCursor->listOfElements, 
                                          &pOldItem->node, 
                                          &pNode );
       
    if ( okList ) {
-      pCursorItem = (psonCursorItem*)
+      *ppItem = (psonCursorItem*)
          ((char*)pNode - offsetof( psonCursorItem, node ));
-      *ppIterator = pCursorItem;
       
       return true;
    }
@@ -214,7 +206,7 @@ bool psonCursorGetPrevious( psonCursor         * pCursor,
     * "Get Previous" is implemented later), we can just release the iterator
     * at this point.
     */
-   *ppIterator = NULL;
+   *ppItem = NULL;
    
    psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
 

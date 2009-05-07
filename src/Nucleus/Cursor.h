@@ -79,22 +79,24 @@ void psonCursorFini( psonCursor         * pCursor,
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetFirst( psonCursor         * pCursor,
-                         psonCursorItem    ** ppIterator,
+                         psonCursorItem    ** ppItem,
                          psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetLast( psonCursor         * pCursor,
-                        psonCursorItem    ** ppIterator,
+                        psonCursorItem    ** ppItem,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetNext( psonCursor         * pCursor,
-                        psonCursorItem    ** ppIterator,
+                        psonCursorItem     * pOldItem,
+                        psonCursorItem    ** ppItem,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonCursorGetPrevious( psonCursor         * pCursor,
-                            psonCursorItem    ** ppIterator,
+                            psonCursorItem     * pOldItem,
+                            psonCursorItem    ** ppItem,
                             psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
