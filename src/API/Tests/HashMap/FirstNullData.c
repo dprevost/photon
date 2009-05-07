@@ -61,16 +61,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahfne",
-                              strlen("/ahfne") );
+                              "/api_hashmap_first_null_data",
+                              strlen("/api_hashmap_first_null_data") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_FirstNullData",
+                              strlen("API_Hashmap_FirstNullData"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -81,8 +81,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_FirstNullData",
+                               strlen("API_Hashmap_FirstNullData"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -93,8 +93,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahfne/test",
-                                   strlen("/ahfne/test"),
+                                   "/api_hashmap_first_null_data/test",
+                                   strlen("/api_hashmap_first_null_data/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -104,8 +104,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahfne/test",
-                             strlen("/ahfne/test"),
+                             "/api_hashmap_first_null_data/test",
+                             strlen("/api_hashmap_first_null_data/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

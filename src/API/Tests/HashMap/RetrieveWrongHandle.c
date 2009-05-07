@@ -61,16 +61,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahgwh",
-                              strlen("/ahgwh") );
+                              "/api_hashmap_retrieve_wrong_handle",
+                              strlen("/api_hashmap_retrieve_wrong_handle") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_RetrieveWrongHandle",
+                              strlen("API_Hashmap_RetrieveWrongHandle"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -81,8 +81,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_RetrieveWrongHandle",
+                               strlen("API_Hashmap_RetrieveWrongHandle"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -93,8 +93,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahgwh/test",
-                                   strlen("/ahgwh/test"),
+                                   "/api_hashmap_retrieve_wrong_handle/test",
+                                   strlen("/api_hashmap_retrieve_wrong_handle/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -104,8 +104,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahgwh/test",
-                             strlen("/ahgwh/test"),
+                             "/api_hashmap_retrieve_wrong_handle/test",
+                             strlen("/api_hashmap_retrieve_wrong_handle/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

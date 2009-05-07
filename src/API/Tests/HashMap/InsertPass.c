@@ -66,16 +66,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahip",
-                              strlen("/ahip") );
+                              "/api_hashmap_insert_pass",
+                              strlen("/api_hashmap_insert_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_InsertPass",
+                              strlen("API_Hashmap_InsertPass"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -86,8 +86,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_InsertPass",
+                               strlen("API_Hashmap_InsertPass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -98,8 +98,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahip/test",
-                                   strlen("/ahip/test"),
+                                   "/api_hashmap_insert_pass/test",
+                                   strlen("/api_hashmap_insert_pass/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -115,16 +115,16 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahip/test",
-                             strlen("/ahip/test"),
+                             "/api_hashmap_insert_pass/test",
+                             strlen("/api_hashmap_insert_pass/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoHashMapOpen( sessionHandle2,
-                             "/ahip/test",
-                             strlen("/ahip/test"),
+                             "/api_hashmap_insert_pass/test",
+                             strlen("/api_hashmap_insert_pass/test"),
                              &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

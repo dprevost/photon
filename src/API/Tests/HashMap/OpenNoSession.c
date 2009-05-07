@@ -56,16 +56,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahons",
-                              strlen("/ahons") );
+                              "/api_hashmap_open_nosession",
+                              strlen("/api_hashmap_open_nosession") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_OpenNoSession",
+                              strlen("API_Hashmap_OpenNoSession"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -76,8 +76,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_OpenNoSession",
+                               strlen("API_Hashmap_OpenNoSession"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahons/test",
-                                   strlen("/ahons/test"),
+                                   "/api_hashmap_open_nosession/test",
+                                   strlen("/api_hashmap_open_nosession/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -117,8 +117,8 @@ int main( int argc, char * argv[] )
     * error or we crash!
     */
    errcode = psoHashMapOpen( sessionHandle,
-                            "/ahons/test",
-                            strlen("/ahons/test"),
+                            "/api_hashmap_open_nosession/test",
+                            strlen("/api_hashmap_open_nosession/test"),
                             &objHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );

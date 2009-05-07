@@ -23,14 +23,10 @@ all:
 check_PROGRAMS =                       \
         $(DIR_RELEASE)\CloseNullObject.exe  \
         $(DIR_RELEASE)\ClosePass.exe        \
-        $(DIR_RELEASE)\LockNullObject.exe   \
-        $(DIR_RELEASE)\LockPass.exe         \
         $(DIR_RELEASE)\OpenNullName.exe     \
         $(DIR_RELEASE)\OpenNullObject.exe   \
         $(DIR_RELEASE)\OpenPass.exe         \
-        $(DIR_RELEASE)\OpenWrongType.exe    \
-        $(DIR_RELEASE)\UnlockNullObject.exe \
-        $(DIR_RELEASE)\UnlockPass.exe       
+        $(DIR_RELEASE)\OpenWrongType.exe    
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

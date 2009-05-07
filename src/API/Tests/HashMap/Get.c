@@ -60,16 +60,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahgp",
-                              strlen("/ahgp") );
+                              "/api_hashmap_get",
+                              strlen("/api_hashmap_get") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_Get",
+                              strlen("API_Hashmap_Get"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -80,8 +80,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_Get",
+                               strlen("API_Hashmap_Get"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -92,8 +92,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahgp/test",
-                                   strlen("/ahgp/test"),
+                                   "/api_hashmap_get/test",
+                                   strlen("/api_hashmap_get/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -103,8 +103,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahgp/test",
-                             strlen("/ahgp/test"),
+                             "/api_hashmap_get/test",
+                             strlen("/api_hashmap_get/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

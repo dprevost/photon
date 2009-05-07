@@ -34,13 +34,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(26)
+Dim failed_tests(32)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(13)
-Dim fail_programs(12)
+Dim fail_programs(18)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -69,21 +69,27 @@ ok_programs(11) = "Replace"
 ok_programs(12) = "RetrievePass"
 ok_programs(13) = "StatusPass"
 
-fail_programs(0)  = "FirstNullEntry"
-fail_programs(1)  = "FirstNullHandle"
-fail_programs(2)  = "FirstWrongHandle"
-fail_programs(3)  = "NextNoFirst"
-fail_programs(4)  = "NextNullEntry"
-fail_programs(5)  = "NextNullHandle"
-fail_programs(6)  = "NextWrongHandle"
-fail_programs(7)  = "OpenNoSession"
-fail_programs(8)  = "RetrieveNullEntry"
-fail_programs(9)  = "RetrieveNullHandle"
-fail_programs(10) = "RetrieveNullKey"
-fail_programs(11) = "RetrieveWrongHandle"
-fail_programs(12) = "RetrieveZeroLength"
+fail_programs(0)  = "FirstNullData"
+fail_programs(1)  = "FirstNullDataLength"
+fail_programs(2)  = "FirstNullHandle"
+fail_programs(3)  = "FirstNullKey"
+fail_programs(4)  = "FirstNullKeyLength"
+fail_programs(5)  = "FirstWrongHandle"
+fail_programs(6)  = "NextNoFirst"
+fail_programs(7)  = "NextNullData"
+fail_programs(8)  = "NextNullDataLength"
+fail_programs(9)  = "NextNullHandle"
+fail_programs(10) = "NextNullKey"
+fail_programs(11) = "NextNullKeyLength"
+fail_programs(12) = "NextWrongHandle"
+fail_programs(13) = "OpenNoSession"
+fail_programs(14) = "RetrieveNullData"
+fail_programs(15) = "RetrieveNullHandle"
+fail_programs(16) = "RetrieveNullKey"
+fail_programs(17) = "RetrieveWrongHandle"
+fail_programs(18) = "RetrieveZeroLength"
 
-numTests  = 27                 ' Sum of length of both arrays 
+numTests  = 33                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

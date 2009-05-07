@@ -60,16 +60,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahgne",
-                              strlen("/ahgne") );
+                              "/api_hashmap_retrieve_null_length",
+                              strlen("/api_hashmap_retrieve_null_length") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_RetrieveNullLength",
+                              strlen("API_Hashmap_RetrieveNullLength"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -80,8 +80,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_RetrieveNullLength",
+                               strlen("API_Hashmap_RetrieveNullLength"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -92,8 +92,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahgne/test",
-                                   strlen("/ahgne/test"),
+                                   "/api_hashmap_retrieve_null_length/test",
+                                   strlen("/api_hashmap_retrieve_null_length/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -103,8 +103,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahgne/test",
-                             strlen("/ahgne/test"),
+                             "/api_hashmap_retrieve_null_length/test",
+                             strlen("/api_hashmap_retrieve_null_length/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

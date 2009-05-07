@@ -20,15 +20,17 @@ DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
-check_PROGRAMS =                   \
-        $(DIR_RELEASE)\ClosePass.exe    \
-        $(DIR_RELEASE)\Create.exe       \
-        $(DIR_RELEASE)\Destroy.exe      \
-        $(DIR_RELEASE)\GetFirstPass.exe \
-        $(DIR_RELEASE)\GetNextPass.exe  \
-        $(DIR_RELEASE)\OpenNoSess.exe   \
-        $(DIR_RELEASE)\OpenPass.exe     \
-        $(DIR_RELEASE)\StatusPass.exe   
+check_PROGRAMS =                           \
+        $(DIR_RELEASE)\ClosePass.exe       \
+        $(DIR_RELEASE)\CreateFolder.exe    \
+        $(DIR_RELEASE)\CreateKeyObject.exe \
+        $(DIR_RELEASE)\CreateObject.exe    \
+        $(DIR_RELEASE)\Destroy.exe         \
+        $(DIR_RELEASE)\GetFirstPass.exe    \
+        $(DIR_RELEASE)\GetNextPass.exe     \
+        $(DIR_RELEASE)\OpenNoSess.exe      \
+        $(DIR_RELEASE)\OpenPass.exe        \
+        $(DIR_RELEASE)\StatusPass.exe      
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

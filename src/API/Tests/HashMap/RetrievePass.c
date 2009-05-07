@@ -60,16 +60,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahrp",
-                              strlen("/ahrp") );
+                              "/api_hashmap_retrieve_pass",
+                              strlen("/api_hashmap_retrieve_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_RetrievePass",
+                              strlen("API_Hashmap_RetrievePass"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -80,8 +80,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_RetrievePass",
+                               strlen("API_Hashmap_RetrievePass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -92,8 +92,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahrp/test",
-                                   strlen("/ahrp/test"),
+                                   "/api_hashmap_retrieve_pass/test",
+                                   strlen("/api_hashmap_retrieve_pass/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -103,8 +103,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahrp/test",
-                             strlen("/ahrp/test"),
+                             "/api_hashmap_retrieve_pass/test",
+                             strlen("/api_hashmap_retrieve_pass/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

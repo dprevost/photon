@@ -20,34 +20,40 @@ DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
-check_PROGRAMS =                           \
-        $(DIR_RELEASE)\ClosePass.exe            \
-        $(DIR_RELEASE)\Create.exe               \
-        $(DIR_RELEASE)\DeletePass.exe           \
-        $(DIR_RELEASE)\Definition.exe           \
-        $(DIR_RELEASE)\FirstNullEntry.exe       \
-        $(DIR_RELEASE)\FirstNullHandle.exe      \
-        $(DIR_RELEASE)\FirstPass.exe            \
-        $(DIR_RELEASE)\FirstWrongHandle.exe     \
-        $(DIR_RELEASE)\Get.exe                  \
-        $(DIR_RELEASE)\GetFirst.exe             \
-        $(DIR_RELEASE)\GetNext.exe              \
-        $(DIR_RELEASE)\InsertPass.exe           \
-        $(DIR_RELEASE)\NextNoFirst.exe          \
-        $(DIR_RELEASE)\NextNullEntry.exe        \
-        $(DIR_RELEASE)\NextNullHandle.exe       \
-        $(DIR_RELEASE)\NextPass.exe             \
-        $(DIR_RELEASE)\NextWrongHandle.exe      \
-        $(DIR_RELEASE)\OpenNoSession.exe        \
-        $(DIR_RELEASE)\OpenPass.exe             \
-        $(DIR_RELEASE)\Replace.exe              \
-        $(DIR_RELEASE)\RetrieveNullEntry.exe    \
-        $(DIR_RELEASE)\RetrieveNullHandle.exe   \
-        $(DIR_RELEASE)\RetrieveNullKey.exe      \
-        $(DIR_RELEASE)\RetrievePass.exe         \
-        $(DIR_RELEASE)\RetrieveWrongHandle.exe  \
-        $(DIR_RELEASE)\RetrieveZeroLength.exe   \
-        $(DIR_RELEASE)\StatusPass.exe           
+check_PROGRAMS =                               \
+        $(DIR_RELEASE)\ClosePass.exe           \
+        $(DIR_RELEASE)\Create.exe              \
+        $(DIR_RELEASE)\DeletePass.exe          \
+        $(DIR_RELEASE)\Definition.exe          \
+        $(DIR_RELEASE)\FirstNullData.exe       \
+        $(DIR_RELEASE)\FirstNullDataLength.exe \
+        $(DIR_RELEASE)\FirstNullHandle.exe     \
+        $(DIR_RELEASE)\FirstNullKey.exe        \
+        $(DIR_RELEASE)\FirstNullKeyLength.exe  \
+        $(DIR_RELEASE)\FirstPass.exe           \
+        $(DIR_RELEASE)\FirstWrongHandle.exe    \
+        $(DIR_RELEASE)\Get.exe                 \
+        $(DIR_RELEASE)\GetFirst.exe            \
+        $(DIR_RELEASE)\GetNext.exe             \
+        $(DIR_RELEASE)\InsertPass.exe          \
+        $(DIR_RELEASE)\NextNoFirst.exe         \
+        $(DIR_RELEASE)\NextNullData.exe        \
+        $(DIR_RELEASE)\NextNullDataLength.exe  \
+        $(DIR_RELEASE)\NextNullHandle.exe      \
+        $(DIR_RELEASE)\NextNullKey.exe         \
+        $(DIR_RELEASE)\NextNullkeyLength.exe   \
+        $(DIR_RELEASE)\NextPass.exe            \
+        $(DIR_RELEASE)\NextWrongHandle.exe     \
+        $(DIR_RELEASE)\OpenNoSession.exe       \
+        $(DIR_RELEASE)\OpenPass.exe            \
+        $(DIR_RELEASE)\Replace.exe             \
+        $(DIR_RELEASE)\RetrieveNullData.exe    \
+        $(DIR_RELEASE)\RetrieveNullHandle.exe  \
+        $(DIR_RELEASE)\RetrieveNullKey.exe     \
+        $(DIR_RELEASE)\RetrievePass.exe        \
+        $(DIR_RELEASE)\RetrieveWrongHandle.exe \
+        $(DIR_RELEASE)\RetrieveZeroLength.exe  \
+        $(DIR_RELEASE)\StatusPass.exe          
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

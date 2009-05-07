@@ -63,16 +63,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahnne",
-                              strlen("/ahnne") );
+                              "/api_hashmap_next_null_key",
+                              strlen("/api_hashmap_next_null_key") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_NextNullKey",
+                              strlen("API_Hashmap_NextNullKey"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -83,8 +83,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_NextNullKey",
+                               strlen("API_Hashmap_NextNullKey"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -95,8 +95,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahnne/test",
-                                   strlen("/ahnne/test"),
+                                   "/api_hashmap_next_null_key/test",
+                                   strlen("/api_hashmap_next_null_key/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -106,8 +106,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahnne/test",
-                             strlen("/ahnne/test"),
+                             "/api_hashmap_next_null_key/test",
+                             strlen("/api_hashmap_next_null_key/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

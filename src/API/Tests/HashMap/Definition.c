@@ -85,16 +85,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ahmd",
-                              strlen("/ahmd") );
+                              "/api_hashmap_definition",
+                              strlen("/api_hashmap_definition") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "API_Hashmap_Definition",
+                              strlen("API_Hashmap_Definition"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -105,8 +105,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "API_Hashmap_Definition",
+                               strlen("API_Hashmap_Definition"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                5*sizeof(psoFieldDefinition),
@@ -117,8 +117,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ahmd/test",
-                                   strlen("/ahmd/test"),
+                                   "/api_hashmap_definition/test",
+                                   strlen("/api_hashmap_definition/test"),
                                    &hashMapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -128,8 +128,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoHashMapOpen( sessionHandle,
-                             "/ahmd/test",
-                             strlen("/ahmd/test"),
+                             "/api_hashmap_definition/test",
+                             strlen("/api_hashmap_definition/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
