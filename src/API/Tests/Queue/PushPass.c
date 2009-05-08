@@ -64,16 +64,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqPushp",
-                              strlen("/aqPushp") );
+                              "/api_queue_push_pass",
+                              strlen("/api_queue_push_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_push_pass",
+                               strlen("api_queue_push_pass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -84,8 +84,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqPushp/test",
-                              strlen("/aqPushp/test"),
+                              "/api_queue_push_pass/test",
+                              strlen("/api_queue_push_pass/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -100,16 +100,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqPushp/test",
-                           strlen("/aqPushp/test"),
+                           "/api_queue_push_pass/test",
+                           strlen("/api_queue_push_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoQueueOpen( sessionHandle2,
-                           "/aqPushp/test",
-                           strlen("/aqPushp/test"),
+                           "/api_queue_push_pass/test",
+                           strlen("/api_queue_push_pass/test"),
                            &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_destroy",
+                               strlen("api_data_definition_destroy"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
    
    /* Invalid arguments to tested function. */
    errcode = psoaDataDefDestroy( NULL,
-                                 "My Def",
-                                 strlen("My Def") );
+                                 "api_data_definition_destroy",
+                                 strlen("api_data_definition_destroy") );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -87,14 +87,14 @@ int main( int argc, char * argv[] )
 
    errcode = psoaDataDefDestroy( sessionHandle,
                                  NULL,
-                                 strlen("My Def") );
+                                 strlen("api_data_definition_destroy") );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoaDataDefDestroy( sessionHandle,
-                                 "My Def",
+                                 "api_data_definition_destroy",
                                  0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -103,8 +103,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoaDataDefDestroy( sessionHandle,
-                                 "My Def",
-                                 strlen("My Def") );
+                                 "api_data_definition_destroy",
+                                 strlen("api_data_definition_destroy") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -117,8 +117,8 @@ int main( int argc, char * argv[] )
 
    /* Close the session and try to act on the object */
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_destroy",
+                               strlen("api_data_definition_destroy"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -146,8 +146,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoaDataDefDestroy( sessionHandle,
-                                 "My Def",
-                                 strlen("My Def") );
+                                 "api_data_definition_destroy",
+                                 strlen("api_data_definition_destroy") );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

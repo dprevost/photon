@@ -74,8 +74,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "api_fastmap_edit",
+                              strlen("api_fastmap_edit"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -85,8 +85,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_fastmap_edit",
+                               strlen("api_fastmap_edit"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -221,8 +221,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition2",
-                               strlen("Definition2"),
+                               "api_fastmap_edit2",
+                               strlen("api_fastmap_edit2"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),

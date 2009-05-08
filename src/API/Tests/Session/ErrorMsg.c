@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/asem",
-                              strlen("/asem") );
+                              "/api_session_error_msg",
+                              strlen("/api_session_error_msg") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
    fprintf( stderr, "Message 1 (no error): %s\n", msg );
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/asem",
-                              strlen("/asem") );
+                              "/api_session_error_msg",
+                              strlen("/api_session_error_msg") );
    if ( errcode == PSO_OK ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoKeyDefCreate( NULL,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),
@@ -66,7 +66,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoKeyDefCreate( sessionHandle,
                               NULL,
-                              strlen("My Def"),
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),
@@ -77,7 +77,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
+                              "api_key_definition_create",
                               0,
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
@@ -89,8 +89,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               0,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),
@@ -101,8 +101,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               NULL,
                               sizeof(psoKeyFieldDefinition),
@@ -113,8 +113,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               0,
@@ -125,8 +125,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),
@@ -138,8 +138,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),
@@ -158,8 +158,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_create",
+                              strlen("api_key_definition_create"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),

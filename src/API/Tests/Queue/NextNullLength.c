@@ -60,16 +60,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqnne",
-                              strlen("/aqnne") );
+                              "/api_queue_next_null_length",
+                              strlen("/api_queue_next_null_length") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_next_null_length",
+                               strlen("api_queue_next_null_length"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -80,8 +80,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqnne/test",
-                              strlen("/aqnne/test"),
+                              "/api_queue_next_null_length/test",
+                              strlen("/api_queue_next_null_length/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -90,8 +90,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqnne/test",
-                           strlen("/aqnne/test"),
+                           "/api_queue_next_null_length/test",
+                           strlen("/api_queue_next_null_length/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

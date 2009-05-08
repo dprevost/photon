@@ -54,8 +54,8 @@ int main( int argc, char * argv[] )
    errcode = psoaSessionOpenObj( (psoaSession *) sessionHandle,
                                  PSO_FOLDER,
                                  false,
-                                 "/asoonc",
-                                 strlen("/asoonc"),
+                                 "/api_session_openobj_not_created",
+                                 strlen("/api_session_openobj_not_created"),
                                  &object );
    if ( errcode != PSO_NO_SUCH_OBJECT ) {
       fprintf( stderr, "err: %d\n", errcode );

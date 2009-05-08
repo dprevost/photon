@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_destroy",
+                              strlen("api_key_definition_destroy"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *) &key,
                               sizeof(psoKeyFieldDefinition),
@@ -76,8 +76,8 @@ int main( int argc, char * argv[] )
    
    /* Invalid arguments to tested function. */
    errcode = psoaKeyDefDestroy( NULL,
-                                "My Def",
-                                strlen("My Def") );
+                                "api_key_definition_destroy",
+                                strlen("api_key_definition_destroy") );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -85,14 +85,14 @@ int main( int argc, char * argv[] )
 
    errcode = psoaKeyDefDestroy( sessionHandle,
                                 NULL,
-                                strlen("My Def") );
+                                strlen("api_key_definition_destroy") );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoaKeyDefDestroy( sessionHandle,
-                                "My Def",
+                                "api_key_definition_destroy",
                                 0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -101,8 +101,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoaKeyDefDestroy( sessionHandle,
-                                "My Def",
-                                strlen("My Def") );
+                                "api_key_definition_destroy",
+                                strlen("api_key_definition_destroy") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -115,8 +115,8 @@ int main( int argc, char * argv[] )
 
    /* Close the session and try to act on the object */
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_destroy",
+                              strlen("api_key_definition_destroy"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoFieldDefinition),
@@ -144,8 +144,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoaKeyDefDestroy( sessionHandle,
-                                "My Def",
-                                strlen("My Def") );
+                                "api_key_definition_destroy",
+                                strlen("api_key_definition_destroy") );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

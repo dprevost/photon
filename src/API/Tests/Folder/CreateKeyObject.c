@@ -54,16 +54,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_folder_create",
-                              strlen("/api_folder_create") );
+                              "/api_folder_create_key_object",
+                              strlen("/api_folder_create_key_object") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/api_folder_create",
-                            strlen("/api_folder_create"),
+                            "/api_folder_create_key_object",
+                            strlen("/api_folder_create_key_object"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -230,8 +230,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/api_folder_create",
-                            strlen("/api_folder_create"),
+                            "/api_folder_create_key_object",
+                            strlen("/api_folder_create_key_object"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

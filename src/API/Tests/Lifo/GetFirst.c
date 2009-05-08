@@ -58,16 +58,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_gf",
-                              strlen("/api_lifo_gf") );
+                              "/api_lifo_get_first",
+                              strlen("/api_lifo_get_first") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_lifo_get_first",
+                               strlen("api_lifo_get_first"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_gf/test",
-                              strlen("/api_lifo_gf/test"),
+                              "/api_lifo_get_first/test",
+                              strlen("/api_lifo_get_first/test"),
                               &defLifo,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_gf/test",
-                           strlen("/api_lifo_gf/test"),
+                           "/api_lifo_get_first/test",
+                           strlen("/api_lifo_get_first/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

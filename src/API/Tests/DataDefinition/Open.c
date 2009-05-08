@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_open",
+                               strlen("api_data_definition_open"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -70,8 +70,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoDataDefOpen( NULL,
-                             "My Def",
-                             strlen("My Def"),
+                             "api_data_definition_open",
+                             strlen("api_data_definition_open"),
                              &defHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoDataDefOpen( sessionHandle,
                              NULL,
-                             strlen("My Def"),
+                             strlen("api_data_definition_open"),
                              &defHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -88,7 +88,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefOpen( sessionHandle,
-                             "My Def",
+                             "api_data_definition_open",
                              0,
                              &defHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
@@ -97,8 +97,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefOpen( sessionHandle,
-                             "My Def",
-                             strlen("My Def"),
+                             "api_data_definition_open",
+                             strlen("api_data_definition_open"),
                              NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -107,8 +107,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoDataDefOpen( sessionHandle,
-                             "My Def",
-                             strlen("My Def"),
+                             "api_data_definition_open",
+                             strlen("api_data_definition_open"),
                              &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -124,8 +124,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefOpen( sessionHandle,
-                             "My Def",
-                             strlen("My Def"),
+                             "api_data_definition_open",
+                             strlen("api_data_definition_open"),
                              &defHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );

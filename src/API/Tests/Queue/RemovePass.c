@@ -58,16 +58,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqrp",
-                              strlen("/aqrp") );
+                              "/api_queue_remove_pass",
+                              strlen("/api_queue_remove_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_remove_pass",
+                               strlen("api_queue_remove_pass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqrp/test",
-                              strlen("/aqrp/test"),
+                              "/api_queue_remove_pass/test",
+                              strlen("/api_queue_remove_pass/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqrp/test",
-                           strlen("/aqrp/test"),
+                           "/api_queue_remove_pass/test",
+                           strlen("/api_queue_remove_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -119,8 +119,8 @@ int main( int argc, char * argv[] )
    
    /* Cleanup */
    psoQueueClose( objHandle );
-   psoDestroyObject( sessionHandle, "/aqrp/test", strlen("/aqrp/test") );
-   psoDestroyObject( sessionHandle, "/aqrp", strlen("/aqrp") );
+   psoDestroyObject( sessionHandle, "/api_queue_remove_pass/test", strlen("/api_queue_remove_pass/test") );
+   psoDestroyObject( sessionHandle, "/api_queue_remove_pass", strlen("/api_queue_remove_pass") );
    psoCommit( sessionHandle );
    psoExit();
    

@@ -54,8 +54,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_session_create_object",
+                               strlen("api_session_create_object"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -68,8 +68,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoCreateObject( NULL,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               &def,
                               NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateObject( sessionHandle,
                               NULL,
-                              strlen("/ascp"),
+                              strlen("/api_session_create_object"),
                               &def,
                               NULL );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
@@ -88,7 +88,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
+                              "/api_session_create_object",
                               0,
                               &def,
                               NULL );
@@ -98,8 +98,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               NULL,
                               dataDefHandle );
    if ( errcode != PSO_NULL_POINTER ) {
@@ -108,8 +108,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               &def,
                               NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
@@ -119,8 +119,8 @@ int main( int argc, char * argv[] )
 
    def.type = PSO_FOLDER;
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               &def,
                               dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
@@ -129,8 +129,8 @@ int main( int argc, char * argv[] )
    }
    def.type = PSO_HASH_MAP;
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               &def,
                               dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
@@ -141,8 +141,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               &def,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -155,8 +155,8 @@ int main( int argc, char * argv[] )
    psoExit();
    
    errcode = psoCreateObject( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp"),
+                              "/api_session_create_object",
+                              strlen("/api_session_create_object"),
                               &def,
                               dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {

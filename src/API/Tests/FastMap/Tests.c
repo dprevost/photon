@@ -93,8 +93,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandleEdit,
-                              "Definition",
-                              strlen("Definition"),
+                              "api_fastmap_tests",
+                              strlen("api_fastmap_tests"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -104,8 +104,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoDataDefCreate( sessionHandleEdit,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_fastmap_tests",
+                               strlen("api_fastmap_tests"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),

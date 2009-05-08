@@ -55,16 +55,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqcp",
-                              strlen("/aqcp") );
+                              "/api_queue_close_pass",
+                              strlen("/api_queue_close_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_close_pass",
+                               strlen("api_queue_close_pass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -75,8 +75,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqcp/test",
-                              strlen("/aqcp/test"),
+                              "/api_queue_close_pass/test",
+                              strlen("/api_queue_close_pass/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -85,8 +85,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqcp/test",
-                           strlen("/aqcp/test"),
+                           "/api_queue_close_pass/test",
+                           strlen("/api_queue_close_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -117,8 +117,8 @@ int main( int argc, char * argv[] )
    /* Close the session and try to act on the object */
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqcp/test",
-                           strlen("/aqcp/test"),
+                           "/api_queue_close_pass/test",
+                           strlen("/api_queue_close_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

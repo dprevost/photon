@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_session_create_folder",
+                               strlen("api_session_create_folder"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -67,8 +67,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoCreateFolder( NULL,
-                              "/ascp",
-                              strlen("/ascp") );
+                              "/api_session_create_folder",
+                              strlen("/api_session_create_folder") );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -76,14 +76,14 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateFolder( sessionHandle,
                               NULL,
-                              strlen("/ascp") );
+                              strlen("/api_session_create_folder") );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ascp",
+                              "/api_session_create_folder",
                               0 );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -92,8 +92,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoCreateFolder( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp") );
+                              "/api_session_create_folder",
+                              strlen("/api_session_create_folder") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -104,8 +104,8 @@ int main( int argc, char * argv[] )
    psoExit();
    
    errcode = psoCreateFolder( sessionHandle,
-                              "/ascp",
-                              strlen("/ascp") );
+                              "/api_session_create_folder",
+                              strlen("/api_session_create_folder") );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

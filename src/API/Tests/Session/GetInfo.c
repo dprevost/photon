@@ -81,8 +81,8 @@ int main( int argc, char * argv[] )
    allocSpace = info.allocatedSizeInBytes;
    
    errcode = psoCreateFolder( sessionHandle,
-                              "/asgi",
-                              strlen("/asgi") );
+                              "/api_session_get_info",
+                              strlen("/api_session_get_info") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -116,8 +116,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDestroyObject( sessionHandle,
-                               "/asgi",
-                               strlen("/asgi") );
+                               "/api_session_get_info",
+                               strlen("/api_session_get_info") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

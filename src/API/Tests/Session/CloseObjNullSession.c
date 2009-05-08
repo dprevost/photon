@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ASCLNS",
-                              strlen("/asclns") );
+                              "/api_session_closeobj_null_session",
+                              strlen("/api_session_closeobj_null_session") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -63,8 +63,8 @@ int main( int argc, char * argv[] )
    errcode = psoaSessionOpenObj( (psoaSession *) sessionHandle,
                                  PSO_FOLDER,
                                  false,
-                                 "/ASCLNS",
-                                 strlen("/asclns"),
+                                 "/api_session_closeobj_null_session",
+                                 strlen("/api_session_closeobj_null_session"),
                                  &object );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

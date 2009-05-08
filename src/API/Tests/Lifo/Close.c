@@ -55,16 +55,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_cp",
-                              strlen("/api_lifo_cp") );
+                              "/api_lifo_close",
+                              strlen("/api_lifo_close") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_lifo_close",
+                               strlen("api_lifo_close"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -75,8 +75,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_cp/test",
-                              strlen("/api_lifo_cp/test"),
+                              "/api_lifo_close/test",
+                              strlen("/api_lifo_close/test"),
                               &defLifo,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -85,8 +85,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle,
-                          "/api_lifo_cp/test",
-                          strlen("/api_lifo_cp/test"),
+                          "/api_lifo_close/test",
+                          strlen("/api_lifo_close/test"),
                           &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -117,8 +117,8 @@ int main( int argc, char * argv[] )
    /* Close the session and try to act on the object */
 
    errcode = psoLifoOpen( sessionHandle,
-                          "/api_lifo_cp/test",
-                          strlen("/api_lifo_cp/test"),
+                          "/api_lifo_close/test",
+                          strlen("/api_lifo_close/test"),
                           &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

@@ -54,8 +54,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_get_length",
+                               strlen("api_data_definition_get_length"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),

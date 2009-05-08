@@ -55,8 +55,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoDataDefCreate( NULL,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoDataDefCreate( sessionHandle,
                                NULL,
-                               strlen("My Def"),
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
+                               "api_data_definition_create",
                                0,
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
@@ -91,8 +91,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                0,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -103,8 +103,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                NULL,
                                sizeof(psoFieldDefinition),
@@ -115,8 +115,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                0,
@@ -127,8 +127,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -140,8 +140,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
@@ -160,8 +160,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "My Def",
-                               strlen("My Def"),
+                               "api_data_definition_create",
+                               strlen("api_data_definition_create"),
                                PSO_DEF_USER_DEFINED,
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),

@@ -58,16 +58,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqgf",
-                              strlen("/aqgf") );
+                              "/api_queue_get_first",
+                              strlen("/api_queue_get_first") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_get_first",
+                               strlen("api_queue_get_first"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqgf/test",
-                              strlen("/aqgf/test"),
+                              "/api_queue_get_first/test",
+                              strlen("/api_queue_get_first/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqgf/test",
-                           strlen("/aqgf/test"),
+                           "/api_queue_get_first/test",
+                           strlen("/api_queue_get_first/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

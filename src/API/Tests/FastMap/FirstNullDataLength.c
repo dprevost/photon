@@ -61,16 +61,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_fast_map_first_null_entry",
-                              strlen("/api_fast_map_first_null_entry") );
+                              "/api_fast_map_first_null_data_length",
+                              strlen("/api_fast_map_first_null_data_length") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "api_fastmap_first_data_length",
+                              strlen("api_fastmap_first_data_length"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -80,8 +80,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_fastmap_first_data_length",
+                               strlen("api_fastmap_first_data_length"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -92,8 +92,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_fast_map_first_null_entry/test",
-                                   strlen("/api_fast_map_first_null_entry/test"),
+                                   "/api_fast_map_first_null_data_length/test",
+                                   strlen("/api_fast_map_first_null_data_length/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -103,8 +103,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/api_fast_map_first_null_entry/test",
-                             strlen("/api_fast_map_first_null_entry/test"),
+                             "/api_fast_map_first_null_data_length/test",
+                             strlen("/api_fast_map_first_null_data_length/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

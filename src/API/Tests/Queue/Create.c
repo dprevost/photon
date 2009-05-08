@@ -52,16 +52,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqcr",
-                              strlen("/aqcr") );
+                              "/api_queue_create",
+                              strlen("/api_queue_create") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/aqcr",
-                            strlen("/aqcr"),
+                            "/api_queue_create",
+                            strlen("/api_queue_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -69,8 +69,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_create",
+                               strlen("api_queue_create"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -137,8 +137,8 @@ int main( int argc, char * argv[] )
    /* Reopen the folder, close the process and try to act on the session */
 
    errcode = psoFolderOpen( sessionHandle,
-                            "/aqcr",
-                            strlen("/aqcr"),
+                            "/api_queue_create",
+                            strlen("/api_queue_create"),
                             &folderHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

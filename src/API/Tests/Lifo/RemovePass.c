@@ -58,16 +58,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_lifo_rp",
-                              strlen("/api_lifo_rp") );
+                              "/api_lifo_remove_pass",
+                              strlen("/api_lifo_remove_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_lifo_remove_pass",
+                               strlen("api_lifo_remove_pass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_rp/test",
-                              strlen("/api_lifo_rp/test"),
+                              "/api_lifo_remove_pass/test",
+                              strlen("/api_lifo_remove_pass/test"),
                               &defLifo,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoLifoOpen( sessionHandle,
-                           "/api_lifo_rp/test",
-                           strlen("/api_lifo_rp/test"),
+                           "/api_lifo_remove_pass/test",
+                           strlen("/api_lifo_remove_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -119,8 +119,8 @@ int main( int argc, char * argv[] )
    
    /* Cleanup */
    psoLifoClose( objHandle );
-   psoDestroyObject( sessionHandle, "/api_lifo_rp/test", strlen("/api_lifo_rp/test") );
-   psoDestroyObject( sessionHandle, "/api_lifo_rp", strlen("/api_lifo_rp") );
+   psoDestroyObject( sessionHandle, "/api_lifo_remove_pass/test", strlen("/api_lifo_remove_pass/test") );
+   psoDestroyObject( sessionHandle, "/api_lifo_remove_pass", strlen("/api_lifo_remove_pass") );
    psoCommit( sessionHandle );
    psoExit();
    

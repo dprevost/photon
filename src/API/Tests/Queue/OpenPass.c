@@ -65,16 +65,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqop",
-                              strlen("/aqop") );
+                              "/api_queue_open_pass",
+                              strlen("/api_queue_open_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_open_pass",
+                               strlen("api_queue_open_pass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -85,8 +85,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqop/test",
-                              strlen("/aqop/test"),
+                              "/api_queue_open_pass/test",
+                              strlen("/api_queue_open_pass/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -97,8 +97,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoQueueOpen( NULL,
-                           "/aqop/test",
-                           strlen("/aqop/test"),
+                           "/api_queue_open_pass/test",
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -107,8 +107,8 @@ int main( int argc, char * argv[] )
 
    objHandle = (PSO_HANDLE) junk;
    errcode = psoQueueOpen( objHandle,
-                           "/aqop/test",
-                           strlen("/aqop/test"),
+                           "/api_queue_open_pass/test",
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -117,7 +117,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoQueueOpen( sessionHandle,
                            NULL,
-                           strlen("/aqop/test"),
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqop/test",
+                           "/api_queue_open_pass/test",
                            0,
                            &objHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
@@ -134,8 +134,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                             "/aqop/test",
-                             strlen("/aqop/test"),
+                             "/api_queue_open_pass/test",
+                             strlen("/api_queue_open_pass/test"),
                              NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -144,8 +144,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqop/test",
-                           strlen("/aqop/test"),
+                           "/api_queue_open_pass/test",
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -153,8 +153,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle2,
-                           "/aqop/test",
-                           strlen("/aqop/test"),
+                           "/api_queue_open_pass/test",
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle2 );
    if ( errcode != PSO_OBJECT_IS_IN_USE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -168,8 +168,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqop/test",
-                           strlen("/aqop/test"),
+                           "/api_queue_open_pass/test",
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -180,16 +180,16 @@ int main( int argc, char * argv[] )
    psoRollback( sessionHandle );
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqop",
-                              strlen("/aqop") );
+                              "/api_queue_open_pass",
+                              strlen("/api_queue_open_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_open_pass",
+                               strlen("api_queue_open_pass"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -201,8 +201,8 @@ int main( int argc, char * argv[] )
    
    defQueue.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
    errcode = psoCreateObject( sessionHandle,
-                              "/aqop/test",
-                              strlen("/aqop/test"),
+                              "/api_queue_open_pass/test",
+                              strlen("/api_queue_open_pass/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -211,8 +211,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqop/test",
-                           strlen("/aqop/test"),
+                           "/api_queue_open_pass/test",
+                           strlen("/api_queue_open_pass/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

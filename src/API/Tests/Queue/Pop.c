@@ -64,16 +64,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/aqpopp",
-                              strlen("/aqpopp") );
+                              "/api_queue_pop",
+                              strlen("/api_queue_pop") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_queue_pop",
+                               strlen("api_queue_pop"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -84,8 +84,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateObject( sessionHandle,
-                              "/aqpopp/test",
-                              strlen("/aqpopp/test"),
+                              "/api_queue_pop/test",
+                              strlen("/api_queue_pop/test"),
                               &defQueue,
                               dataDefHandle );
    if ( errcode != PSO_OK ) {
@@ -100,16 +100,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoQueueOpen( sessionHandle,
-                           "/aqpopp/test",
-                           strlen("/aqpopp/test"),
+                           "/api_queue_pop/test",
+                           strlen("/api_queue_pop/test"),
                            &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoQueueOpen( sessionHandle2,
-                           "/aqpopp/test",
-                           strlen("/aqpopp/test"),
+                           "/api_queue_pop/test",
+                           strlen("/api_queue_pop/test"),
                            &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

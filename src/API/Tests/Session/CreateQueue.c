@@ -54,8 +54,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoCreateObject( sessionHandle,
-                              "/ascq",
-                              strlen("/ascq") );
+                              "/api_session_create_queue",
+                              strlen("/api_session_create_queue") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -64,8 +64,8 @@ int main( int argc, char * argv[] )
    /* End of preparation work. */
 
    errcode = psoCreateObject( sessionHandle,
-                              "/ascq/test",
-                              strlen("/ascq/test"),
+                              "/api_session_create_queue/test",
+                              strlen("/api_session_create_queue/test"),
                               &queueDef,
                               NULL,
                               dataDefHandle );
@@ -83,8 +83,8 @@ int main( int argc, char * argv[] )
    fields[1].type = PSO_TINYINT;
    strcpy( fields[1].name, "Field_2" );
    errcode = psoCreateObject( sessionHandle,
-                              "/ascq/test",
-                              strlen("/ascq/test"),
+                              "/api_session_create_queue/test",
+                              strlen("/api_session_create_queue/test"),
                               &queueDef,
                               NULL,
                               dataDefHandle );
@@ -99,8 +99,8 @@ int main( int argc, char * argv[] )
    fields[1].type = PSO_TINYINT;
    strcpy( fields[1].name, "Field_2" );
    errcode = psoCreateObject( sessionHandle,
-                              "/ascq/test",
-                              strlen("/ascq/test"),
+                              "/api_session_create_queue/test",
+                              strlen("/api_session_create_queue/test"),
                               &queueDef,
                               NULL,
                               dataDefHandle );

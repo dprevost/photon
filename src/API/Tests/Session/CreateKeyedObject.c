@@ -55,8 +55,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "Definition",
-                               strlen("Definition"),
+                               "api_session_create_keyed_object",
+                               strlen("api_session_create_keyed_object"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -66,8 +66,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoKeyDefCreate( sessionHandle,
-                              "Definition",
-                              strlen("Definition"),
+                              "api_session_create_keyed_object",
+                              strlen("api_session_create_keyed_object"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -80,8 +80,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoCreateKeyedObject( NULL,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -92,7 +92,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoCreateKeyedObject( sessionHandle,
                                    NULL,
-                                   strlen("/ascp"),
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -102,7 +102,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
+                                   "/api_session_create_keyed_object",
                                    0,
                                    &def,
                                    dataDefHandle,
@@ -113,8 +113,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    NULL,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -125,8 +125,8 @@ int main( int argc, char * argv[] )
 
    def.type = PSO_QUEUE;
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -137,8 +137,8 @@ int main( int argc, char * argv[] )
 
    def.type = PSO_HASH_MAP;
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    NULL,
                                    keyDefHandle );
@@ -148,8 +148,8 @@ int main( int argc, char * argv[] )
    }
    
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    dataDefHandle,
                                    NULL );
@@ -159,8 +159,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    keyDefHandle,
                                    dataDefHandle );
@@ -171,8 +171,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -186,8 +186,8 @@ int main( int argc, char * argv[] )
    psoExit();
    
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/ascp",
-                                   strlen("/ascp"),
+                                   "/api_session_create_keyed_object",
+                                   strlen("/api_session_create_keyed_object"),
                                    &def,
                                    dataDefHandle,
                                    keyDefHandle );

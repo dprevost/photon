@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "My Def",
-                              strlen("My Def"),
+                              "api_key_definition_open",
+                              strlen("api_key_definition_open"),
                               PSO_DEF_USER_DEFINED,
                               (const unsigned char *)&key,
                               sizeof(psoKeyFieldDefinition),
@@ -68,8 +68,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoKeyDefOpen( NULL,
-                            "My Def",
-                            strlen("My Def"),
+                            "api_key_definition_open",
+                            strlen("api_key_definition_open"),
                             &defHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoKeyDefOpen( sessionHandle,
                             NULL,
-                            strlen("My Def"),
+                            strlen("api_key_definition_open"),
                             &defHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -86,7 +86,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefOpen( sessionHandle,
-                            "My Def",
+                            "api_key_definition_open",
                             0,
                             &defHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
@@ -95,8 +95,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefOpen( sessionHandle,
-                            "My Def",
-                            strlen("My Def"),
+                            "api_key_definition_open",
+                            strlen("api_key_definition_open"),
                             NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -105,8 +105,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoKeyDefOpen( sessionHandle,
-                            "My Def",
-                            strlen("My Def"),
+                            "api_key_definition_open",
+                            strlen("api_key_definition_open"),
                             &defHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -122,8 +122,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoKeyDefOpen( sessionHandle,
-                            "My Def",
-                            strlen("My Def"),
+                            "api_key_definition_open",
+                            strlen("api_key_definition_open"),
                             &defHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );

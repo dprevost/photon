@@ -53,8 +53,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/asoonn",
-                              strlen("/asoonn") );
+                              "/api_session_openobj_null_name",
+                              strlen("/api_session_openobj_null_name") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

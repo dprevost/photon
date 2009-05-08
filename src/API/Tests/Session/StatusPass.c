@@ -51,8 +51,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/ASSP",
-                              strlen("/assp") );
+                              "/api_session_status_pass",
+                              strlen("/api_session_status_pass") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -61,8 +61,8 @@ int main( int argc, char * argv[] )
    /* Invalid arguments to tested function. */
 
    errcode = psoGetStatus( NULL,
-                           "/ASSP",
-                           strlen("/assp"),
+                           "/api_session_status_pass",
+                           strlen("/api_session_status_pass"),
                            &status );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -71,7 +71,7 @@ int main( int argc, char * argv[] )
 
    errcode = psoGetStatus( sessionHandle,
                            NULL,
-                           strlen("/assp"),
+                           strlen("/api_session_status_pass"),
                            &status );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoGetStatus( sessionHandle,
-                           "/ASSP",
+                           "/api_session_status_pass",
                            0,
                            &status );
    if ( errcode != PSO_INVALID_LENGTH ) {
@@ -88,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoGetStatus( sessionHandle,
-                           "/ASSP",
-                           strlen("/assp"),
+                           "/api_session_status_pass",
+                           strlen("/api_session_status_pass"),
                            NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -98,8 +98,8 @@ int main( int argc, char * argv[] )
 
    /* End of invalid args. This call should succeed. */
    errcode = psoGetStatus( sessionHandle,
-                           "/ASSP",
-                           strlen("/assp"),
+                           "/api_session_status_pass",
+                           strlen("/api_session_status_pass"),
                            &status );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -111,8 +111,8 @@ int main( int argc, char * argv[] )
    psoExit();
    
    errcode = psoGetStatus( sessionHandle,
-                           "/ASSP",
-                           strlen("/assp"),
+                           "/api_session_status_pass",
+                           strlen("/api_session_status_pass"),
                            &status );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
