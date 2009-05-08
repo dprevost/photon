@@ -27,7 +27,6 @@ check_PROGRAMS =
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
 check: $(DIR_RELEASE) $(check_PROGRAMS)
-	cd Definition && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd FastMap    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -37,7 +36,6 @@ check: $(DIR_RELEASE) $(check_PROGRAMS)
 	cd Session    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
-	cd Definition && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd FastMap    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -47,7 +45,6 @@ checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG)
 	cd Session    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean:
-	cd Definition && nmake -f Makefile.win32 clean && cd ..
 	cd FastMap    && nmake -f Makefile.win32 clean && cd ..
 	cd Folder     && nmake -f Makefile.win32 clean && cd ..
 	cd HashMap    && nmake -f Makefile.win32 clean && cd ..

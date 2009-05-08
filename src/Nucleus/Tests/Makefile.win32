@@ -34,62 +34,65 @@ check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 
 check: $(DIR_RELEASE) $(check_PROGRAMS)
 	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
+	cd BlockGroup     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Cursor         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd FastMap        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Folder         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Hash           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd HashMap        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd HashTx         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd List           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd LogFile        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemAlloc       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemBitmap      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd BlockGroup     && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemObject      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Hash           && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd HashTx         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Transaction    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd ProcessManager && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Session        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Folder         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd TopFolder      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd HashMap        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd FastMap        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ProcessManager && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Session        && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd TopFolder      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Transaction    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
+	cd BlockGroup     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Cursor         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd FastMap        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Folder         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Hash           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd HashMap        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd HashTx         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd List           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd LogFile        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemAlloc       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemBitmap      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd BlockGroup     && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd MemObject      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Hash           && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd HashTx         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Transaction    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd ProcessManager && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Process        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Session        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd Folder         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd TopFolder      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd HashMap        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
-	cd FastMap        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd ProcessManager && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Queue          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Session        && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd TopFolder      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Transaction    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 
 clean: 
+	cd BlockGroup     && nmake -f Makefile.win32 clean && cd ..
+	cd Cursor         && nmake -f Makefile.win32 clean && cd ..
+	cd FastMap        && nmake -f Makefile.win32 clean && cd ..
+	cd Folder         && nmake -f Makefile.win32 clean && cd ..
+	cd Hash           && nmake -f Makefile.win32 clean && cd ..
+	cd HashMap        && nmake -f Makefile.win32 clean && cd ..
+	cd HashTx         && nmake -f Makefile.win32 clean && cd ..
 	cd List           && nmake -f Makefile.win32 clean && cd ..
 	cd LogFile        && nmake -f Makefile.win32 clean && cd ..
 	cd MemAlloc       && nmake -f Makefile.win32 clean && cd ..
 	cd MemBitmap      && nmake -f Makefile.win32 clean && cd ..
 	cd MemObject      && nmake -f Makefile.win32 clean && cd ..
-	cd BlockGroup     && nmake -f Makefile.win32 clean && cd ..
-	cd Hash           && nmake -f Makefile.win32 clean && cd ..
-	cd HashTx         && nmake -f Makefile.win32 clean && cd ..
-	cd Transaction    && nmake -f Makefile.win32 clean && cd ..
-	cd ProcessManager && nmake -f Makefile.win32 clean && cd ..
 	cd Process        && nmake -f Makefile.win32 clean && cd ..
-	cd Session        && nmake -f Makefile.win32 clean && cd ..
-	cd Folder         && nmake -f Makefile.win32 clean && cd ..
-	cd TopFolder      && nmake -f Makefile.win32 clean && cd ..
-	cd HashMap        && nmake -f Makefile.win32 clean && cd ..
-	cd FastMap        && nmake -f Makefile.win32 clean && cd ..
+	cd ProcessManager && nmake -f Makefile.win32 clean && cd ..
 	cd Queue          && nmake -f Makefile.win32 clean && cd ..
+	cd Session        && nmake -f Makefile.win32 clean && cd ..
+	cd TopFolder      && nmake -f Makefile.win32 clean && cd ..
+	cd Transaction    && nmake -f Makefile.win32 clean && cd ..
 	-@erase /Q $(DIR_DEBUG)
 	-@rmdir /Q $(DIR_DEBUG)
 	-@erase /Q $(DIR_RELEASE)
