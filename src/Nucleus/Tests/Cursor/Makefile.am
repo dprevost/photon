@@ -35,7 +35,6 @@ check_PROGRAMS =               \
         GetPreviousNullOldItem \
         InitNullCursor         \
         InitNullContext        \
-        InitNullCursor         \
         InitNullParent         \
         InitZeroBlocks         \
         InsertFirstNullContext \

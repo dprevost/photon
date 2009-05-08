@@ -20,27 +20,30 @@ DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
-check_PROGRAMS =                        \
+check_PROGRAMS =                             \
         $(DIR_RELEASE)\Close.exe             \
         $(DIR_RELEASE)\Create.exe            \
         $(DIR_RELEASE)\Definition.exe        \
-        $(DIR_RELEASE)\FirstNullEntry.exe    \
+        $(DIR_RELEASE)\FirstNullData.exe     \
         $(DIR_RELEASE)\FirstNullHandle.exe   \
+        $(DIR_RELEASE)\FirstNullLength.exe   \
         $(DIR_RELEASE)\FirstPass.exe         \
         $(DIR_RELEASE)\FirstWrongHandle.exe  \
         $(DIR_RELEASE)\GetFirst.exe          \
         $(DIR_RELEASE)\GetNext.exe           \
         $(DIR_RELEASE)\NextNoFirst.exe       \
-        $(DIR_RELEASE)\NextNullEntry.exe     \
+        $(DIR_RELEASE)\NextNullData.exe      \
         $(DIR_RELEASE)\NextNullHandle.exe    \
+        $(DIR_RELEASE)\NextNullLength.exe    \
         $(DIR_RELEASE)\NextPass.exe          \
         $(DIR_RELEASE)\NextWrongHandle.exe   \
         $(DIR_RELEASE)\OpenNoSession.exe     \
         $(DIR_RELEASE)\OpenPass.exe          \
         $(DIR_RELEASE)\Pop.exe               \
         $(DIR_RELEASE)\Push.exe              \
-        $(DIR_RELEASE)\RemoveNullEntry.exe   \
+        $(DIR_RELEASE)\RemoveNullData.exe    \
         $(DIR_RELEASE)\RemoveNullHandle.exe  \
+        $(DIR_RELEASE)\RemoveNullLength.exe  \
         $(DIR_RELEASE)\RemovePass.exe        \
         $(DIR_RELEASE)\RemoveWrongHandle.exe \
         $(DIR_RELEASE)\Status.exe            

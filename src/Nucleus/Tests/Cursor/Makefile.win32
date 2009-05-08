@@ -1,0 +1,67 @@
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+all: 
+
+check_PROGRAMS =                                  \
+        $(DIR_RELEASE)\EmptyNullContext.exe       \
+        $(DIR_RELEASE)\EmptyNullCursor.exe        \
+        $(DIR_RELEASE)\FiniNullContext.exe        \
+        $(DIR_RELEASE)\FiniNullCursor.exe         \
+        $(DIR_RELEASE)\GetFirstNullContext.exe    \
+        $(DIR_RELEASE)\GetFirstNullCursor.exe     \
+        $(DIR_RELEASE)\GetFirstNullItem.exe       \
+        $(DIR_RELEASE)\GetLastNullContext.exe     \
+        $(DIR_RELEASE)\GetLastNullCursor.exe      \
+        $(DIR_RELEASE)\GetLastNullItem.exe        \
+        $(DIR_RELEASE)\GetNextNullContext.exe     \
+        $(DIR_RELEASE)\GetNextNullCursor.exe      \
+        $(DIR_RELEASE)\GetNextNullItem.exe        \
+        $(DIR_RELEASE)\GetNextNullOldItem.exe     \
+        $(DIR_RELEASE)\GetPreviousNullContext.exe \
+        $(DIR_RELEASE)\GetPreviousNullCursor.exe  \
+        $(DIR_RELEASE)\GetPreviousNullItem.exe    \
+        $(DIR_RELEASE)\GetPreviousNullOldItem.exe \
+        $(DIR_RELEASE)\InitNullCursor.exe         \
+        $(DIR_RELEASE)\InitNullContext.exe        \
+        $(DIR_RELEASE)\InitNullParent.exe         \
+        $(DIR_RELEASE)\InitZeroBlocks.exe         \
+        $(DIR_RELEASE)\InsertFirstNullContext.exe \
+        $(DIR_RELEASE)\InsertFirstNullCursor.exe  \
+        $(DIR_RELEASE)\InsertFirstNullItem.exe    \
+        $(DIR_RELEASE)\InsertFirstWrongType.exe   \
+        $(DIR_RELEASE)\InsertLastNullContext.exe  \
+        $(DIR_RELEASE)\InsertLastNullCursor.exe   \
+        $(DIR_RELEASE)\InsertLastNullItem.exe     \
+        $(DIR_RELEASE)\InsertLastWrongType.exe    \
+        $(DIR_RELEASE)\SizeNullCursor.exe         \
+        $(DIR_RELEASE)\SizeNullNumItems.exe       \
+        $(DIR_RELEASE)\Tests.exe                  
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
+
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
+
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
+	-@erase /Q $(CLEANFILES)
+

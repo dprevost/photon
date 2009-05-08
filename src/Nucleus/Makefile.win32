@@ -35,6 +35,7 @@ CFLAGS_RELEASE = /O2 /Ob1 /I "..\Common" /I ".." /I "..\include" /D "WIN32" /D "
 
 OBJS_RELEASE=                                \
         "$(DIR_RELEASE)\BlockGroup.obj"      \
+        "$(DIR_RELEASE)\Cursor.obj"          \
         "$(DIR_RELEASE)\FastMap.obj"         \
         "$(DIR_RELEASE)\Folder.obj"          \
         "$(DIR_RELEASE)\Hash.obj"            \

@@ -86,6 +86,7 @@ extern psoaProcess * g_pProcessInstance;
  * This global mutex is needed for opening and closing sessions in 
  * a multi-threaded environment.
  */
+PHOTON_API_EXPORT
 extern psocThreadLock g_ProcessMutex;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

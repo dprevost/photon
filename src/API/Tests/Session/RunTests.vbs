@@ -34,12 +34,12 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(23)
+Dim failed_tests(24)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(14)
+Dim ok_programs(15)
 Dim fail_programs(8)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
@@ -57,18 +57,19 @@ dim strOutput
 ok_programs(0)  = "ClosePass"
 ok_programs(1)  = "CloseObjPass"
 ok_programs(2)  = "CommitPass"
-ok_programs(3)  = "CreatePass"
-ok_programs(4)  = "CreateQueue"
-ok_programs(5)  = "DestroyPass"
-ok_programs(6)  = "ErrorMsg"
-ok_programs(7)  = "ExitPass"
-ok_programs(8)  = "ExitWithOpenObjects"
-ok_programs(9)  = "GetInfo"
-ok_programs(10) = "InitPass"
-ok_programs(11) = "LastError"
-ok_programs(12) = "OpenObjPass"
-ok_programs(13) = "RollbackPass"
-ok_programs(14) = "StatusPass"
+ok_programs(3)  = "CreateFolder"
+ok_programs(4)  = "CreateKeyedObject"
+ok_programs(5)  = "CreateObject"
+ok_programs(6)  = "DestroyPass"
+ok_programs(7)  = "ErrorMsg"
+ok_programs(8)  = "ExitPass"
+ok_programs(9)  = "ExitWithOpenObjects"
+ok_programs(10) = "GetInfo"
+ok_programs(11) = "InitPass"
+ok_programs(12) = "LastError"
+ok_programs(13) = "OpenObjPass"
+ok_programs(14) = "RollbackPass"
+ok_programs(15) = "StatusPass"
 
 fail_programs(0) = "CloseNullSession"
 fail_programs(1) = "CloseObjNullObject"
@@ -80,7 +81,7 @@ fail_programs(6) = "OpenObjNullSession"
 fail_programs(7) = "OpenObjWrongType"
 fail_programs(8) = "OpenObjZeroLength"
 
-numTests  = 24                 ' Sum of length of both arrays 
+numTests  = 25                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

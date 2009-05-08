@@ -50,6 +50,7 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\RetrieveNullData.exe    \
         $(DIR_RELEASE)\RetrieveNullHandle.exe  \
         $(DIR_RELEASE)\RetrieveNullKey.exe     \
+        $(DIR_RELEASE)\RetrieveNullLength.exe  \
         $(DIR_RELEASE)\RetrievePass.exe        \
         $(DIR_RELEASE)\RetrieveWrongHandle.exe \
         $(DIR_RELEASE)\RetrieveZeroLength.exe  \

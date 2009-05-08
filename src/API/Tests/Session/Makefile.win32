@@ -20,15 +20,16 @@ DLL_DEBUG = ..\..\..\Debug2005
 
 all: 
 
-check_PROGRAMS =                          \
+check_PROGRAMS =                               \
         $(DIR_RELEASE)\CloseNullSession.exe    \
         $(DIR_RELEASE)\ClosePass.exe           \
         $(DIR_RELEASE)\CloseObjNullObject.exe  \
         $(DIR_RELEASE)\CloseObjNullSession.exe \
         $(DIR_RELEASE)\CloseObjPass.exe        \
         $(DIR_RELEASE)\CommitPass.exe          \
-        $(DIR_RELEASE)\CreatePass.exe          \
-        $(DIR_RELEASE)\CreateQueue.exe         \
+        $(DIR_RELEASE)\CreateFolder.exe        \
+        $(DIR_RELEASE)\CreateKeyedObject.exe   \
+        $(DIR_RELEASE)\CreateObject.exe        \
         $(DIR_RELEASE)\DestroyPass.exe         \
         $(DIR_RELEASE)\ErrorMsg.exe            \
         $(DIR_RELEASE)\ExitPass.exe            \

@@ -15,10 +15,15 @@ include ..\Makefile.inc.Win32.2005
 
 all: 
 
-check_PROGRAMS =                              \
+check_PROGRAMS =                                   \
         $(DIR_RELEASE)\CloseNullContext.exe        \
         $(DIR_RELEASE)\CloseNullItem.exe           \
         $(DIR_RELEASE)\ClosePass.exe               \
+        $(DIR_RELEASE)\CreateFolderInvLength.exe   \
+        $(DIR_RELEASE)\CreateFolderNullContext.exe \
+        $(DIR_RELEASE)\CreateFolderNullFolder.exe  \
+        $(DIR_RELEASE)\CreateFolderNullName.exe    \
+        $(DIR_RELEASE)\CreateFolderPass.exe        \
         $(DIR_RELEASE)\CreateInvalidNameLength.exe \
         $(DIR_RELEASE)\CreateNullContext.exe       \
         $(DIR_RELEASE)\CreateNullDefinition.exe    \

@@ -27,10 +27,9 @@ Option Explicit
 ' ***********************************************************************
 
 Dim rc, numTests, numFailed, verbose, status
-Dim objShell, objShellqsr
+Dim objShell
 Dim objWshScriptExec
 Dim fso
-Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
@@ -39,10 +38,10 @@ Dim failed_tests(33)
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(13)
-Dim fail_programs(19)
+Dim ok_programs(0)
+Dim fail_programs(31)
 
-Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
+Dim exe_name, prog_path, program, dll_path
 Dim consoleMode
 Dim objArgs, strArg, i
 dim strOutput
@@ -54,43 +53,42 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "ClosePass"
-ok_programs(1)  = "Create"
-ok_programs(2)  = "DeletePass"
-ok_programs(3)  = "Definition"
-ok_programs(4)  = "FirstPass"
-ok_programs(5)  = "Get"
-ok_programs(6)  = "GetFirst"
-ok_programs(7)  = "GetNext"
-ok_programs(8)  = "InsertPass"
-ok_programs(9)  = "NextPass"
-ok_programs(10) = "OpenPass"
-ok_programs(11) = "Replace"
-ok_programs(12) = "RetrievePass"
-ok_programs(13) = "StatusPass"
+ok_programs(0) = "Tests"
 
-fail_programs(0)  = "FirstNullData"
-fail_programs(1)  = "FirstNullDataLength"
-fail_programs(2)  = "FirstNullHandle"
-fail_programs(3)  = "FirstNullKey"
-fail_programs(4)  = "FirstNullKeyLength"
-fail_programs(5)  = "FirstWrongHandle"
-fail_programs(6)  = "NextNoFirst"
-fail_programs(7)  = "NextNullData"
-fail_programs(8)  = "NextNullDataLength"
-fail_programs(9)  = "NextNullHandle"
-fail_programs(10) = "NextNullKey"
-fail_programs(11) = "NextNullKeyLength"
-fail_programs(12) = "NextWrongHandle"
-fail_programs(13) = "OpenNoSession"
-fail_programs(14) = "RetrieveNullData"
-fail_programs(15) = "RetrieveNullHandle"
-fail_programs(16) = "RetrieveNullKey"
-fail_programs(17) = "RetrieveNullLength"
-fail_programs(18) = "RetrieveWrongHandle"
-fail_programs(19) = "RetrieveZeroLength"
+fail_programs(0)  = "EmptyNullContext"
+fail_programs(1)  = "EmptyNullCursor"
+fail_programs(2)  = "FiniNullContext"
+fail_programs(3)  = "FiniNullCursor"
+fail_programs(4)  = "GetFirstNullContext"
+fail_programs(5)  = "GetFirstNullCursor"
+fail_programs(6)  = "GetFirstNullItem"
+fail_programs(7)  = "GetLastNullContext"
+fail_programs(8)  = "GetLastNullCursor"
+fail_programs(9)  = "GetLastNullItem"
+fail_programs(10) = "GetNextNullContext"
+fail_programs(11) = "GetNextNullCursor"
+fail_programs(12) = "GetNextNullItem"
+fail_programs(13) = "GetNextNullOldItem"
+fail_programs(14) = "GetPreviousNullContext"
+fail_programs(15) = "GetPreviousNullCursor"
+fail_programs(16) = "GetPreviousNullItem"
+fail_programs(17) = "GetPreviousNullOldItem"
+fail_programs(18) = "InitNullCursor"
+fail_programs(19) = "InitNullContext"
+fail_programs(20) = "InitNullParent"
+fail_programs(21) = "InitZeroBlocks"
+fail_programs(22) = "InsertFirstNullContext"
+fail_programs(23) = "InsertFirstNullCursor"
+fail_programs(24) = "InsertFirstNullItem"
+fail_programs(25) = "InsertFirstWrongType"
+fail_programs(26) = "InsertLastNullContext"
+fail_programs(27) = "InsertLastNullCursor"
+fail_programs(28) = "InsertLastNullItem"
+fail_programs(29) = "InsertLastWrongType"
+fail_programs(30) = "SizeNullCursor"
+fail_programs(31) = "SizeNullNumItems"
 
-numTests  = 34                 ' Sum of length of both arrays 
+numTests =  33                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject
@@ -102,11 +100,9 @@ If Right(LCase(Wscript.FullName), 11) = "wscript.exe" Then
 End If
 
 Set objShell = CreateObject("WScript.Shell")
-Set objShellqsr = CreateObject("WScript.Shell")
 verbose = False
 
 prog_path = "Release"
-qsr_path = "..\..\..\Release2005"
 Set objArgs = WScript.Arguments
 
 ' ***********************************************************************
@@ -122,9 +118,6 @@ For Each strArg in objArgs
    If Left(LCase(strArg), 9) = "--dllpath" AND Len(strArg) > 9 Then
       dll_path = Right(strArg, Len(strArg)-10)
    end if
-   If Left(LCase(strArg), 6) = "--qsrpath" AND Len(strArg) > 8 Then
-      qsr_path = Right(strArg, Len(strArg)-9)
-   end if
    if LCase(strArg) = "--verbose" then 
       verbose = True
    end if
@@ -138,73 +131,6 @@ if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"
 end if
 
-' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-'
-' Start the server (reusing the same one for all the tests in this sub-dir).
-'
-' --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-tmpDir = objShell.Environment.item("TMP")
-tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\photon_hash"
-
-if (fso.FolderExists(tmpDir)) Then
-   fso.DeleteFolder(tmpDir)
-end if
-
-fso.CreateFolder(tmpDir)
-
-fso.Copyfile "..\..\..\XML\\quasar_config.xsd", tmpDir + "\quasar_config.xsd"
-
-Set cmdFile = fso.CreateTextFile(tmpDir + "\cfg.xml", True)
-cmdFile.WriteLine("<?xml version=""1.0""?>")
-cmdFile.WriteLine("<quasar_config xmlns=""http://photonsoftware.org/quasarConfig""")
-cmdFile.WriteLine("xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
-cmdFile.WriteLine("xsi:schemaLocation=""http://photonsoftware.org/quasarConfig " + tmpDir + "\quasar_config.xsd""> ")
-cmdFile.WriteLine("  <mem_location>" + tmpDir + "</mem_location>")
-cmdFile.WriteLine("  <mem_size size=""10240"" units=""kb"" />")
-cmdFile.WriteLine("  <quasar_address>10701</quasar_address>")
-cmdFile.WriteLine("  <file_access access=""group"" />")
-cmdFile.WriteLine("</quasar_config>")
-cmdFile.Close
-
-exeName = qsr_path + "\quasar.exe -c " + tmpDir + "\cfg.xml"
-
-objShellqsr.Run "%comspec% /c title quasar | " & exeName, 2, false
-
-'Turn on error handling
-On Error Resume Next
-set objSocket=CreateObject("MSWinsock.Winsock.1")
-'Catch error - likely cause: nomswinsck.ocx
-If Err.Number = 0 Then
-   On Error GoTo 0 
-   objSocket.Protocol=0 ' TCP
-   Call objSocket.Close
-   Call objSocket.Connect ("127.0.0.1",10701)
-   while ((objSocket.State=6) or (objSocket.State=3)) 'socket state <> connecting or connection pending
-      'do nothing
-      Wscript.Sleep 10
-      'WScript.Echo objSocket.State
-   wend
-   if(objSocket.State=7) then ' if socket connected
-      'WScript.Echo "Port Open"
-   elseif(objSocket.State=9)then' If Error
-      WScript.Echo "Connection error"
-      wscript.quit(1)
-   elseif(objSocket.State=0)then 'Closed
-      WScript.Echo "Connection refused"
-      wscript.quit(1)
-   end if
-   call objSocket.Close
-   set objSocket = nothing
-else
-   Err.Clear
-   On Error GoTo 0 
-   Wscript.Sleep 2000
-end if
-
-' Run all Programs
-
 For Each program in ok_programs
    exe_name = prog_path & "\" & program & ".exe"
    if consoleMode then 
@@ -215,19 +141,19 @@ For Each program in ok_programs
          WScript.Sleep 100
       Loop
       strOutput = objWshScriptExec.StdOut.ReadAll
-'      if verbose then 
+      if verbose then 
          WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
-'      end if
+      end if
       rc = objWshScriptExec.ExitCode
    else
       rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
    end if
-   if rc <> 0 then   
-   wscript.echo "rc = " & rc & " " & program
+   if rc <> 0 then
       failed_tests(numFailed) = program
       numFailed = numFailed + 1
    end if
 Next
+
 For Each program in fail_programs
    exe_name = prog_path & "\" & program & ".exe"
    if consoleMode then 
@@ -251,14 +177,6 @@ For Each program in fail_programs
    end if
 Next
 
-dim z
-z = false
-while z <> true 
-   z = objShellqsr.AppActivate( "quasar" )
-   Wscript.Sleep 100
-wend
-objShellqsr.SendKeys "^C"
-
 if consoleMode then
    WScript.StdOut.Write vbcrlf & "Total number of tests: " & numTests & vbcrlf
    WScript.StdOut.Write "Total number of failed tests: " & numFailed & vbcrlf & vbcrlf
@@ -270,16 +188,11 @@ if consoleMode then
       Dim dummy
       dummy = WScript.StdIn.Read(1)
    end if
-else                                 
+else
    wscript.echo "Total number of tests: " & numTests & vbcrlf & _
       "Total number of failed tests: " & numFailed
 end if
 
-if (fso.FolderExists(tmpDir)) Then
-   Wscript.Sleep 1000
-   On Error Resume Next
-   fso.DeleteFolder(tmpDir)
-end if
 if numFailed > 0 then wscript.quit(1)
 wscript.quit(0)
 

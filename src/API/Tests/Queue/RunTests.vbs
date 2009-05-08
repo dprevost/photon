@@ -34,13 +34,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(23)
+Dim failed_tests(26)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(12)
-Dim fail_programs(10)
+Dim fail_programs(13)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -68,19 +68,22 @@ ok_programs(10) = "PushPass"
 ok_programs(11) = "RemovePass"
 ok_programs(12) = "StatusPass"
 
-fail_programs(0)  = "FirstNullEntry"
+fail_programs(0)  = "FirstNullData"
 fail_programs(1)  = "FirstNullHandle"
-fail_programs(2)  = "FirstWrongHandle"
-fail_programs(3)  = "NextNoFirst"
-fail_programs(4)  = "NextNullEntry"
-fail_programs(5)  = "NextNullHandle"
-fail_programs(6)  = "NextWrongHandle"
-fail_programs(7)  = "OpenNoSession"
-fail_programs(8)  = "RemoveNullEntry"
-fail_programs(9)  = "RemoveNullHandle"
-fail_programs(10) = "RemoveWrongHandle"
+fail_programs(2)  = "FirstNullLength"
+fail_programs(3)  = "FirstWrongHandle"
+fail_programs(4)  = "NextNoFirst"
+fail_programs(5)  = "NextNullData"
+fail_programs(6)  = "NextNullHandle"
+fail_programs(7)  = "NextNullLength"
+fail_programs(8)  = "NextWrongHandle"
+fail_programs(9)  = "OpenNoSession"
+fail_programs(10) = "RemoveNullData"
+fail_programs(11) = "RemoveNullHandle"
+fail_programs(12) = "RemoveNullLength"
+fail_programs(13) = "RemoveWrongHandle"
 	
-numTests  = 24                 ' Sum of length of both arrays 
+numTests  = 27                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

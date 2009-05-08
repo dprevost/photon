@@ -60,8 +60,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_fast_map_retrieve_null_entry",
-                              strlen("/api_fast_map_retrieve_null_entry") );
+                              "/api_fast_map_retrieve_null_length",
+                              strlen("/api_fast_map_retrieve_null_length") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -91,8 +91,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_fast_map_retrieve_null_entry/test",
-                                   strlen("/api_fast_map_retrieve_null_entry/test"),
+                                   "/api_fast_map_retrieve_null_length/test",
+                                   strlen("/api_fast_map_retrieve_null_length/test"),
                                    &mapDef,
                                    dataDefHandle,
                                    keyDefHandle );
@@ -102,8 +102,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/api_fast_map_retrieve_null_entry/test",
-                             strlen("/api_fast_map_retrieve_null_entry/test"),
+                             "/api_fast_map_retrieve_null_length/test",
+                             strlen("/api_fast_map_retrieve_null_length/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
