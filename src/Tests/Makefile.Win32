@@ -12,7 +12,7 @@
 #
 ###########################################################################
 
-VBS_VERBOSE=
+VBS_VERBOSE=1
 
 CLEANFILES = *~
 
@@ -27,8 +27,8 @@ LDD_FLAGS_DEBUG=$(W32_SYS_LIBS) photoncpp.lib photon.lib photonNucleus.lib photo
 
 CFLAGS_DEBUG=   /nologo /MDd /W3 /Zi /I ".." /I "../include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_DEBUG)\\" 
 CFLAGS_RELEASE= /nologo /MD  /W3 /O2 /I ".." /I "../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(DIR_RELEASE)\\" 
-CPPFLAGS_DEBUG=   $(CFLAGS_DEBUG)   /GX
-CPPFLAGS_RELEASE= $(CFLAGS_RELEASE) /GX
+CPPFLAGS_DEBUG=   $(CFLAGS_DEBUG)   /EHsc
+CPPFLAGS_RELEASE= $(CFLAGS_RELEASE) /EHsc
 
 .c{$(DIR_RELEASE)}.exe:
 	$(CPP) $(CFLAGS_RELEASE) $< /link $(LDD_FLAGS) /out:"$@"

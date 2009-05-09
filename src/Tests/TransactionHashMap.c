@@ -1341,8 +1341,8 @@ int main(int argc, char *argv[])
    }
    
    errcode = psoDataDefCreate( g_session1,
-                               "Dummy Data Definition",
-                               strlen("Dummy Data Definition"),
+                               "tests_transaction_hashmap",
+                               strlen("tests_transaction_hashmap"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&dataDef,
                                sizeof(psoFieldDefinition),
@@ -1353,8 +1353,8 @@ int main(int argc, char *argv[])
    }
 
    errcode = psoKeyDefCreate( g_session1,
-                              "Dummy Key Definition",
-                              strlen("Dummy Key Definition"),
+                              "tests_transaction_hashmap",
+                              strlen("tests_transaction_hashmap"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),

@@ -13,6 +13,8 @@
 
 include ..\Makefile.inc.Win32.2005
 
+VBS_VERBOSE=1
+
 all: 
 
 check_PROGRAMS =                                    \

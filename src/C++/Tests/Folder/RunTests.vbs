@@ -77,7 +77,7 @@ Set objShell = CreateObject("WScript.Shell")
 Set objShellqsr = CreateObject("WScript.Shell")
 verbose = False
 
-prog_path = "Release"
+prog_path = "Release2005"
 qsr_path = "..\..\..\Release2005"
 Set objArgs = WScript.Arguments
 

@@ -179,7 +179,7 @@ End If
 Set objShell = CreateObject("WScript.Shell")
 verbose = False
 
-prog_path = "Release"
+prog_path = "Release2005"
 Set objArgs = WScript.Arguments
 
 ' ***********************************************************************
@@ -203,6 +203,7 @@ Next
 dim WshEnv
 Set WshEnv = objShell.Environment("Process") 
 WshEnv("Path") = WshEnv("Path") & ";" & fso.GetAbsolutePathName(dll_path)
+wscript.echo WshEnv("Path")
 
 if Not consoleMode then
    wscript.echo "Be patient - running the tests in batch mode - click ok to start"

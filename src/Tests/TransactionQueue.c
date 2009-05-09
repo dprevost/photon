@@ -1308,8 +1308,8 @@ int main(int argc, char *argv[])
    }
    
    errcode = psoDataDefCreate( g_session1,
-                               "Dummy Data Definition",
-                               strlen("Dummy Data Definition"),
+                               "tests_transaction_queue",
+                               strlen("tests_transaction_queue"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&dataDef,
                                sizeof(psoFieldDefinition),
