@@ -75,12 +75,12 @@ int main( int argc, char * argv[] )
       session.Init();
       session.CreateFolder( fname );
       DataDefinition dataDefObj( session, 
-                                 "Data Definition",
+                                 "cpp_fastmap_definition",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  5*sizeof(psoFieldDefinition) );
       KeyDefinition keyDefObj( session, 
-                               "Key Definition",
+                               "cpp_fastmap_definition",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)keys,
                                2*sizeof(psoKeyFieldDefinition) );

@@ -53,14 +53,14 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "ClosePass"
-ok_programs(1) = "Create"
-ok_programs(2) = "CreateXML"
-ok_programs(3) = "Destroy"
-ok_programs(4) = "GetFirstPass"
-ok_programs(5) = "GetNextPass"
-ok_programs(6) = "OpenPass"
-ok_programs(7) = "StatusPass"
+ok_programs(0) = "Close"
+ok_programs(1) = "Constructor"
+ok_programs(2) = "CreateFolder"
+ok_programs(3) = "CreateObject"
+ok_programs(4) = "Destroy"
+ok_programs(5) = "GetFirst"
+ok_programs(6) = "GetNext"
+ok_programs(7) = "Status"
 
 numTests  =  8                 ' Sum of length of both arrays 
 numFailed =  0

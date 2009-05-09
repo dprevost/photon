@@ -73,7 +73,7 @@ int main( int argc, char * argv[] )
 
    delete dataDef;
    dataDef = new DataDefinition( session, 
-                                 "Data Definition",
+                                 "cpp_session_create_objectmap",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );
@@ -96,7 +96,7 @@ int main( int argc, char * argv[] )
 
    delete keyDef;
    keyDef = new KeyDefinition( session, 
-                               "Key Definition",
+                               "cpp_session_create_objectmap",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
                                sizeof(psoKeyFieldDefinition) );
@@ -115,7 +115,7 @@ int main( int argc, char * argv[] )
    
    delete dataDef;
    dataDef = new DataDefinition( session, 
-                                 "Data Definition2",
+                                 "cpp_session_create_objectmap2",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );   

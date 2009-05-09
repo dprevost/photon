@@ -182,7 +182,7 @@ int main( int argc, char * argv[] )
 
    try {
       DataDefinition dataDefObj( session1, 
-                                 "Data Definition",
+                                 "cpp_session_destroy",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );

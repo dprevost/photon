@@ -13,24 +13,21 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
-check_PROGRAMS =                \
-        $(DIR_RELEASE)\Commit.exe    \
-        $(DIR_RELEASE)\Create.exe    \
-        $(DIR_RELEASE)\Destroy.exe   \
-        $(DIR_RELEASE)\ErrorMsg.exe  \
-        $(DIR_RELEASE)\Exit.exe      \
-        $(DIR_RELEASE)\GetInfo.exe   \
-        $(DIR_RELEASE)\Init.exe      \
-        $(DIR_RELEASE)\LastError.exe \
-        $(DIR_RELEASE)\Rollback.exe  \
-        $(DIR_RELEASE)\Status.exe    
+check_PROGRAMS =                           \
+        $(DIR_RELEASE)\Commit.exe          \
+        $(DIR_RELEASE)\CreateFolder.exe    \
+        $(DIR_RELEASE)\CreateObject.exe    \
+        $(DIR_RELEASE)\CreateObjectMap.exe \
+        $(DIR_RELEASE)\Destroy.exe         \
+        $(DIR_RELEASE)\ErrorMsg.exe        \
+        $(DIR_RELEASE)\Exit.exe            \
+        $(DIR_RELEASE)\GetInfo.exe         \
+        $(DIR_RELEASE)\Init.exe            \
+        $(DIR_RELEASE)\LastError.exe       \
+        $(DIR_RELEASE)\Rollback.exe        \
+        $(DIR_RELEASE)\Status.exe          
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

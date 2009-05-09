@@ -13,19 +13,13 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
-check_PROGRAMS =                 \
+check_PROGRAMS =                      \
         $(DIR_RELEASE)\Close.exe      \
         $(DIR_RELEASE)\Definition.exe \
         $(DIR_RELEASE)\GetFirst.exe   \
         $(DIR_RELEASE)\GetNext.exe    \
-        $(DIR_RELEASE)\Open.exe       \
         $(DIR_RELEASE)\Pop.exe        \
         $(DIR_RELEASE)\Push.exe       \
         $(DIR_RELEASE)\PushNow.exe    \

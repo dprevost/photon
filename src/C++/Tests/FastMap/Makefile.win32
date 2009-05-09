@@ -13,25 +13,21 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
-check_PROGRAMS =                 \
-        $(DIR_RELEASE)\Close.exe      \
-        $(DIR_RELEASE)\Definition.exe \
-        $(DIR_RELEASE)\Delete.exe     \
-        $(DIR_RELEASE)\Empty.exe      \
-        $(DIR_RELEASE)\Get.exe        \
-        $(DIR_RELEASE)\GetFirst.exe   \
-        $(DIR_RELEASE)\GetNext.exe    \
-        $(DIR_RELEASE)\Insert.exe     \
-        $(DIR_RELEASE)\Open.exe       \
-        $(DIR_RELEASE)\Replace.exe    \
-        $(DIR_RELEASE)\Status.exe     
+check_PROGRAMS =                       \
+        $(DIR_RELEASE)\Close.exe       \
+        $(DIR_RELEASE)\DataDefODBC.exe \
+        $(DIR_RELEASE)\Definition.exe  \
+        $(DIR_RELEASE)\Delete.exe      \
+        $(DIR_RELEASE)\Empty.exe       \
+        $(DIR_RELEASE)\Get.exe         \
+        $(DIR_RELEASE)\GetFirst.exe    \
+        $(DIR_RELEASE)\GetNext.exe     \
+        $(DIR_RELEASE)\Insert.exe      \
+        $(DIR_RELEASE)\Open.exe        \
+        $(DIR_RELEASE)\Replace.exe     \
+        $(DIR_RELEASE)\Status.exe      
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

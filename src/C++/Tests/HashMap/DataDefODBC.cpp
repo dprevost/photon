@@ -83,12 +83,12 @@ int main( int argc, char * argv[] )
       session.CreateFolder( fname );
 
       DataDefinition dataDefObj( session, 
-                                 "Data Definition",
+                                 "cpp_hashmap_datadef_odbc",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  fieldDef.GetDefinition(),
                                  fieldDef.GetDefLength() );
       KeyDefinition keyDefObj( session, 
-                               "Key Definition",
+                               "cpp_hashmap_datadef_odbc",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                keyDef.GetDefinition(),
                                keyDef.GetDefLength() );

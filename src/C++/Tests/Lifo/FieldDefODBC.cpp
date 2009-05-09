@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
       session.CreateFolder( fname );
 
       DataDefinition dataDefObj( session, 
-                                 "Data Definition",
+                                 "cpp_lifo_fielddef_odbc",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  fieldDef.GetDefinition(),
                                  fieldDef.GetDefLength() );

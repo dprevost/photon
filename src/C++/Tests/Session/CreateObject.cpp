@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
    
    delete( dataDef);
    dataDef = new DataDefinition( session, 
-                                 "Data Definition",
+                                 "cpp_session_create_object",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );

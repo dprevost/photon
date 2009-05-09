@@ -66,12 +66,12 @@ int main( int argc, char * argv[] )
       session2.CreateFolder( fname );
 
       DataDefinition dataDefObj( session2, 
-                                 "Data Definition",
+                                 "cpp_fastmap_get",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );
       KeyDefinition keyDefObj( session2,
-                               "Key Definition",
+                               "cpp_fastmap_get",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
                                sizeof(psoKeyFieldDefinition) );

@@ -59,7 +59,7 @@ int main( int argc, char * argv[] )
       session1.CreateFolder( fname );
 
       DataDefinition dataDefObj( session1, 
-                                 "Data Definition",
+                                 "cpp_lifo_open",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );

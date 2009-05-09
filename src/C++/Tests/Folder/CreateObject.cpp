@@ -62,12 +62,12 @@ int main( int argc, char * argv[] )
       folder = new Folder( session, name );
 
       dataDefObj.Create( session, 
-                         "Data Definition",
+                         "cpp_folder_create_object",
                          PSO_DEF_PHOTON_ODBC_SIMPLE,
                          (unsigned char *)fields,
                          sizeof(psoFieldDefinition) );
       keyDefObj.Create( session, 
-                        "Key Definition",
+                        "cpp_folder_create_object",
                         PSO_DEF_PHOTON_ODBC_SIMPLE,
                         (unsigned char *)&keyDef,
                         sizeof(psoKeyFieldDefinition) );

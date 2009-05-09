@@ -66,12 +66,12 @@ int main( int argc, char * argv[] )
       session1.CreateFolder( fname );
 
       DataDefinition dataDefObj( session1, 
-                                 "Data Definition",
+                                 "cpp_hashmap_delete",
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  5*sizeof(psoFieldDefinition) );
       KeyDefinition keyDefObj( session1, 
-                               "Key Definition",
+                               "cpp_hashmap_delete",
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
                                2*sizeof(psoKeyFieldDefinition) );
