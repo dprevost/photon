@@ -147,11 +147,11 @@ int psoFolderCreateFolder( PSO_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoFolderCreateObject( PSO_HANDLE            objectHandle,
-                           const char          * objectName,
-                           uint32_t              nameLengthInBytes,
-                           psoObjectDefinition * pDefinition,
-                           PSO_HANDLE            dataDefHandle )
+int psoFolderCreateQueue( PSO_HANDLE            objectHandle,
+                          const char          * objectName,
+                          uint32_t              nameLengthInBytes,
+                          psoObjectDefinition * pDefinition,
+                          PSO_HANDLE            dataDefHandle )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -230,12 +230,12 @@ int psoFolderCreateObject( PSO_HANDLE            objectHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoFolderCreateKeyedObject( PSO_HANDLE            objectHandle,
-                                const char          * objectName,
-                                uint32_t              nameLengthInBytes,
-                                psoObjectDefinition * pDefinition,
-                                PSO_HANDLE            dataDefHandle,
-                                PSO_HANDLE            keyDefHandle )
+int psoFolderCreateMap( PSO_HANDLE            objectHandle,
+                        const char          * objectName,
+                        uint32_t              nameLengthInBytes,
+                        psoObjectDefinition * pDefinition,
+                        PSO_HANDLE            dataDefHandle,
+                        PSO_HANDLE            keyDefHandle )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;

@@ -85,33 +85,33 @@ int main( int argc, char * argv[] )
    memset( &definition, 0, sizeof(psoObjectDefinition) );
    memset( fields, 0, 2*sizeof(psoFieldDefinition) );
    
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr",
-                                    strlen("aqcr"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateQueue( folderHandle,
+                                   "aqcr",
+                                   strlen("aqcr"),
+                                   &definition,
+                                   dataDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    definition.type = PSO_QUEUE;   
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr",
-                                    strlen("aqcr"),
-                                    &definition,
-                                    NULL );
+   errcode = psoFolderCreateQueue( folderHandle,
+                                   "aqcr",
+                                   strlen("aqcr"),
+                                   &definition,
+                                   NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
    /* End of invalid args. This call should succeed. */
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr",
-                                    strlen("aqcr"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateQueue( folderHandle,
+                                   "aqcr",
+                                   strlen("aqcr"),
+                                   &definition,
+                                   dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -124,11 +124,11 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr2",
-                                    strlen("aqcr2"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateQueue( folderHandle,
+                                   "aqcr2",
+                                   strlen("aqcr2"),
+                                   &definition,
+                                   dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -146,11 +146,11 @@ int main( int argc, char * argv[] )
    }
    psoExit();
    
-   errcode = psoFolderCreateObject( folderHandle,
-                                    "aqcr3",
-                                    strlen("aqcr3"),
-                                    &definition,
-                                    dataDefHandle );
+   errcode = psoFolderCreateQueue( folderHandle,
+                                   "aqcr3",
+                                   strlen("aqcr3"),
+                                   &definition,
+                                   dataDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

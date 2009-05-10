@@ -99,7 +99,7 @@ int initObjects()
    rc = psoCreateFolder( session, folderName, strlen(folderName) );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateFolder error: %s\n", __LINE__, msg );
       return -1;
    }
 
@@ -129,37 +129,37 @@ int initObjects()
       return -1;
    }
 
-   rc = psoCreateKeyedObject( session,
-                              controlName,
-                              strlen(controlName),
-                              &defMap,
-                              dataDefHandle,
-                              keyDefHandle );
+   rc = psoCreateMap( session,
+                      controlName,
+                      strlen(controlName),
+                      &defMap,
+                      dataDefHandle,
+                      keyDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateMap error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = psoCreateObject( session,
-                         inQueueName,
-                         strlen(inQueueName),
-                         &defQueue,
-                         dataDefHandle );
+   rc = psoCreateQueue( session,
+                        inQueueName,
+                        strlen(inQueueName),
+                        &defQueue,
+                        dataDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateQueue error: %s\n", __LINE__, msg );
       return -1;
    }
 
-   rc = psoCreateObject( session,
-                         outQueueName,
-                         strlen(outQueueName),
-                         &defQueue,
-                         dataDefHandle );
+   rc = psoCreateQueue( session,
+                        outQueueName,
+                        strlen(outQueueName),
+                        &defQueue,
+                        dataDefHandle );
    if ( rc != 0 ) {
       psoErrorMsg( session, msg, 256 );
-      fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
+      fprintf( stderr, "At line %d, psoCreateQueue error: %s\n", __LINE__, msg );
       return -1;
    }
 

@@ -343,7 +343,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing read-only hash map (see ::psoCreateObject to create a 
+ * Open an existing read-only hash map (see ::psoCreateMap to create a 
  * new object).
  *
  * \param[in]  sessionHandle The handle to the current session.

@@ -79,11 +79,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_lifo_next_no_first/test",
-                              strlen("/api_lifo_next_no_first/test"),
-                              &defLifo,
-                              dataDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_lifo_next_no_first/test",
+                             strlen("/api_lifo_next_no_first/test"),
+                             &defLifo,
+                             dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

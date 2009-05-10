@@ -92,11 +92,11 @@ void Session::CreateObject( const std::string   & objectName,
       throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
 
-   rc = psoCreateObject( m_sessionHandle,
-                         objectName.c_str(),
-                         objectName.length(),
-                         &definition,
-                         dataDefinition.m_definitionHandle );
+   rc = psoCreateQueue( m_sessionHandle,
+                        objectName.c_str(),
+                        objectName.length(),
+                        &definition,
+                        dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
@@ -123,11 +123,11 @@ void Session::CreateObject( const std::string   & objectName,
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 
-   rc = psoCreateObject( m_sessionHandle,
-                         objectName.c_str(),
-                         objectName.length(),
-                         &definition,
-                         dataDefHandle );
+   rc = psoCreateQueue( m_sessionHandle,
+                        objectName.c_str(),
+                        objectName.length(),
+                        &definition,
+                        dataDefHandle );
    
    psoDataDefClose( dataDefHandle );
    if ( rc != 0 ) {
@@ -148,12 +148,12 @@ void Session::CreateObject( const std::string   & objectName,
       throw pso::Exception( "Session::CreateObject", PSO_NULL_HANDLE );
    }
 
-   rc = psoCreateKeyedObject( m_sessionHandle,
-                              objectName.c_str(),
-                              objectName.length(),
-                              &definition,
-                              dataDefinition.m_definitionHandle,
-                              keyDefinition.m_definitionHandle );
+   rc = psoCreateMap( m_sessionHandle,
+                      objectName.c_str(),
+                      objectName.length(),
+                      &definition,
+                      dataDefinition.m_definitionHandle,
+                      keyDefinition.m_definitionHandle );
    if ( rc != 0 ) {
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
@@ -190,12 +190,12 @@ void Session::CreateObject( const std::string   & objectName,
       throw pso::Exception( m_sessionHandle, "Session::CreateObject" );
    }
 
-   rc = psoCreateKeyedObject( m_sessionHandle,
-                              objectName.c_str(),
-                              objectName.length(),
-                              &definition,
-                              dataDefHandle,
-                              keyDefHandle );
+   rc = psoCreateMap( m_sessionHandle,
+                      objectName.c_str(),
+                      objectName.length(),
+                      &definition,
+                      dataDefHandle,
+                      keyDefHandle );
 
    psoKeyDefClose(  keyDefHandle );
    psoDataDefClose( dataDefHandle );

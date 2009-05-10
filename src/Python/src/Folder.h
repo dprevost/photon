@@ -281,11 +281,11 @@ Folder_CreateObject( PyObject * self, PyObject * args )
          return NULL;
       }
 
-      errcode = psoFolderCreateObject( (PSO_HANDLE)folder->handle,
-                                       objectName,
-                                       strlen(objectName),
-                                       &definition,
-                                       dataDefHandle );
+      errcode = psoFolderCreateQueue( (PSO_HANDLE)folder->handle,
+                                      objectName,
+                                      strlen(objectName),
+                                      &definition,
+                                      dataDefHandle );
       psoDataDefClose( dataDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
@@ -294,11 +294,11 @@ Folder_CreateObject( PyObject * self, PyObject * args )
    }
    else {
       dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyObj)->definitionHandle;
-      errcode = psoFolderCreateObject( (PSO_HANDLE)folder->handle,
-                                       objectName,
-                                       strlen(objectName),
-                                       &definition,
-                                       dataDefHandle );
+      errcode = psoFolderCreateQueue( (PSO_HANDLE)folder->handle,
+                                      objectName,
+                                      strlen(objectName),
+                                      &definition,
+                                      dataDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
          return NULL;
@@ -357,12 +357,12 @@ Folder_CreateKeyObject( PyObject * self, PyObject * args )
          return NULL;
       }
 
-      errcode = psoFolderCreateKeyedObject( (PSO_HANDLE)folder->handle,
-                                            objectName,
-                                            strlen(objectName),
-                                            &definition,
-                                            dataDefHandle,
-                                            keyDefHandle );
+      errcode = psoFolderCreateMap( (PSO_HANDLE)folder->handle,
+                                    objectName,
+                                    strlen(objectName),
+                                    &definition,
+                                    dataDefHandle,
+                                    keyDefHandle );
       psoDataDefClose( dataDefHandle );
       psoKeyDefClose( keyDefHandle );
       if ( errcode != 0 ) {
@@ -377,12 +377,12 @@ Folder_CreateKeyObject( PyObject * self, PyObject * args )
       dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyDataObj)->definitionHandle;
       keyDefHandle  = (PSO_HANDLE) ((pyKeyDefinition *)pyKeyObj)->definitionHandle;
 
-      errcode = psoFolderCreateKeyedObject( (PSO_HANDLE)folder->handle,
-                                            objectName,
-                                            strlen(objectName),
-                                            &definition,
-                                            dataDefHandle,
-                                            keyDefHandle );
+      errcode = psoFolderCreateMap( (PSO_HANDLE)folder->handle,
+                                    objectName,
+                                    strlen(objectName),
+                                    &definition,
+                                    dataDefHandle,
+                                    keyDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
          return NULL;

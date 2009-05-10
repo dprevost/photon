@@ -86,10 +86,7 @@ int psoFolderCreateFolder( PSO_HANDLE   folderHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * Create a new object in shared memory as a child of the current folder.
- *
- * To create an object based on a key, use the function 
- * ::psoFolderCreateKeyedObject instead of the current function.
+ * Create a new queue in shared memory as a child of the current folder.
  *
  * The creation of the object only becomes permanent after a call to 
  * ::psoCommit.
@@ -109,11 +106,11 @@ int psoFolderCreateFolder( PSO_HANDLE   folderHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoFolderCreateObject( PSO_HANDLE            folderHandle,
-                           const char          * objectName,
-                           psoUint32             nameLengthInBytes,
-                           psoObjectDefinition * definition,
-                           PSO_HANDLE            dataDefHandle );
+int psoFolderCreateQueue( PSO_HANDLE            folderHandle,
+                          const char          * objectName,
+                          psoUint32             nameLengthInBytes,
+                          psoObjectDefinition * definition,
+                          PSO_HANDLE            dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -142,12 +139,12 @@ int psoFolderCreateObject( PSO_HANDLE            folderHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoFolderCreateKeyedObject( PSO_HANDLE            folderHandle,
-                                const char          * objectName,
-                                psoUint32             nameLengthInBytes,
-                                psoObjectDefinition * definition,
-                                PSO_HANDLE            dataDefHandle,
-                                PSO_HANDLE            keyDefHandle );
+int psoFolderCreateMap( PSO_HANDLE            folderHandle,
+                        const char          * objectName,
+                        psoUint32             nameLengthInBytes,
+                        psoObjectDefinition * definition,
+                        PSO_HANDLE            dataDefHandle,
+                        PSO_HANDLE            keyDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -285,7 +282,7 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing folder (see ::psoCreateObject to create a new folder).
+ * Open an existing folder (see ::psoCreateFolder to create a new folder).
  *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  folderName The fully qualified name of the folder. 

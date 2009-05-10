@@ -96,12 +96,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_map_edit/test",
-                                   strlen("/api_map_edit/test"),
-                                   &mapDef,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_map_edit/test",
+                           strlen("/api_map_edit/test"),
+                           &mapDef,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -233,12 +233,12 @@ int main( int argc, char * argv[] )
    }
    
    mapDef.flags = PSO_MULTIPLE_DATA_DEFINITIONS;
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_map_edit2/test",
-                                   strlen("/api_map_edit2/test"),
-                                   &mapDef,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_map_edit2/test",
+                           strlen("/api_map_edit2/test"),
+                           &mapDef,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

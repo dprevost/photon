@@ -53,9 +53,9 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_session_create_queue",
-                              strlen("/api_session_create_queue") );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_session_create_queue",
+                             strlen("/api_session_create_queue") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -63,12 +63,12 @@ int main( int argc, char * argv[] )
    
    /* End of preparation work. */
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_session_create_queue/test",
-                              strlen("/api_session_create_queue/test"),
-                              &queueDef,
-                              NULL,
-                              dataDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_session_create_queue/test",
+                             strlen("/api_session_create_queue/test"),
+                             &queueDef,
+                             NULL,
+                             dataDefHandle );
    if ( errcode != PSO_INVALID_FIELD_LENGTH_INT ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -82,12 +82,12 @@ int main( int argc, char * argv[] )
    fields[0].minLength = 200;
    fields[1].type = PSO_TINYINT;
    strcpy( fields[1].name, "Field_2" );
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_session_create_queue/test",
-                              strlen("/api_session_create_queue/test"),
-                              &queueDef,
-                              NULL,
-                              dataDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_session_create_queue/test",
+                             strlen("/api_session_create_queue/test"),
+                             &queueDef,
+                             NULL,
+                             dataDefHandle );
    if ( errcode != PSO_INVALID_FIELD_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -98,12 +98,12 @@ int main( int argc, char * argv[] )
    fields[0].length = 10;
    fields[1].type = PSO_TINYINT;
    strcpy( fields[1].name, "Field_2" );
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_session_create_queue/test",
-                              strlen("/api_session_create_queue/test"),
-                              &queueDef,
-                              NULL,
-                              dataDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_session_create_queue/test",
+                             strlen("/api_session_create_queue/test"),
+                             &queueDef,
+                             NULL,
+                             dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

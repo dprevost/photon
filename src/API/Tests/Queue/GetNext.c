@@ -78,11 +78,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_queue_get_next/test",
-                              strlen("/api_queue_get_next/test"),
-                              &defQueue,
-                              dataDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_queue_get_next/test",
+                             strlen("/api_queue_get_next/test"),
+                             &defQueue,
+                             dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

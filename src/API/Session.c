@@ -145,11 +145,11 @@ int psoCreateFolder( PSO_HANDLE   sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoCreateObject( PSO_HANDLE            sessionHandle,
-                     const char          * objectName,
-                     uint32_t              nameLengthInBytes,
-                     psoObjectDefinition * pDefinition,
-                     PSO_HANDLE            dataDefHandle )
+int psoCreateQueue( PSO_HANDLE            sessionHandle,
+                    const char          * objectName,
+                    uint32_t              nameLengthInBytes,
+                    psoObjectDefinition * pDefinition,
+                    PSO_HANDLE            dataDefHandle )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;
@@ -223,12 +223,12 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
-                          const char          * objectName,
-                          uint32_t              nameLengthInBytes,
-                          psoObjectDefinition * pDefinition,
-                          PSO_HANDLE            dataDefHandle,
-                          PSO_HANDLE            keyDefHandle )
+int psoCreateMap( PSO_HANDLE            sessionHandle,
+                  const char          * objectName,
+                  uint32_t              nameLengthInBytes,
+                  psoObjectDefinition * pDefinition,
+                  PSO_HANDLE            dataDefHandle,
+                  PSO_HANDLE            keyDefHandle )
 {
    psoaSession* pSession;
    int errcode = PSO_OK;

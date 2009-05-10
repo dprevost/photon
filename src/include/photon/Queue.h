@@ -140,7 +140,7 @@ int psoQueueGetNext( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing FIFO queue (see ::psoCreateObject to create a new queue).
+ * Open an existing FIFO queue (see ::psoCreateQueue to create a new queue).
  *
  * \param[in]  sessionHandle The handle to the current session.
  * \param[in]  queueName The fully qualified name of the queue. 
