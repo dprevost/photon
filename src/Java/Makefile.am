@@ -23,7 +23,6 @@ Java_Source =                              \
         org/photon/DataDefBuilderODBC.java \
         org/photon/DataDefBuilderUser.java \
         org/photon/DataDefinition.java     \
-        org/photon/DataRecord.java         \
         org/photon/DefinitionType.java     \
         org/photon/FieldType.java          \
         org/photon/Folder.java             \
@@ -33,12 +32,14 @@ Java_Source =                              \
         org/photon/KeyDefinition.java      \
         org/photon/KeyType.java            \
         org/photon/Info.java               \
+        org/photon/JavaSerialize.java      \
         org/photon/ObjectDefinition.java   \
         org/photon/ObjectType.java         \
         org/photon/ObjectStatus.java       \
         org/photon/Photon.java             \
         org/photon/PhotonErrors.java       \
         org/photon/PhotonException.java    \
+        org/photon/PSOSerialize.java       \
         org/photon/Queue.java              \
         org/photon/RawQueue.java           \
         org/photon/Session.java            \

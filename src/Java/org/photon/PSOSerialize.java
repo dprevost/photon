@@ -22,10 +22,10 @@ package org.photon;
  * Container class for the Photon library. This class is the base
  * class of all Photon containers.
  */
-public interface DataRecord {
+public interface PSOSerialize {
    
    byte[] packObject();
    
-   void unpackObject( byte[] buffer );
+   Object unpackObject( byte[] buffer );
 }
 

@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Queue class for the Photon library.
  */
-public class Queue<T extends DataRecord> extends RawQueue implements Iterable<DataRecord>, Iterator<DataRecord> {
+public class Queue<T extends PSOSerialize> extends RawQueue implements Iterable<PSOSerialize>, Iterator<PSOSerialize> {
 
    /* For iterations */
    T dataBuffer;
@@ -110,7 +110,7 @@ public class Queue<T extends DataRecord> extends RawQueue implements Iterable<Da
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /** This method implements the Iterable interface */
-   public Iterator<DataRecord> iterator() {
+   public Iterator<PSOSerialize> iterator() {
       return this;
    }
    

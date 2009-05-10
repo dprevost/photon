@@ -20,7 +20,7 @@ package org.photon.Tests;
 
 import org.photon.*;
 
-   class myStruct implements DataRecord {
+   class myStruct implements PSOSerialize {
       Integer i;
       String  str;
       Object[] a;
@@ -38,7 +38,7 @@ import org.photon.*;
          return x;
       }
    
-      public void unpackObject( byte[] buffer ) {}
+      public Object unpackObject( byte[] buffer ) { return buffer; }
    }
 
 public class QueueTest {
