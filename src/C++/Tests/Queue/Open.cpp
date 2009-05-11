@@ -64,7 +64,7 @@ int main( int argc, char * argv[] )
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );
-      session1.CreateObject( qname,
+      session1.CreateQueue( qname,
                             queueDef,
                             NULL,
                             0,

@@ -70,10 +70,10 @@ int main( int argc, char * argv[] )
                                (unsigned char *)&keyDef,
                                sizeof(psoKeyFieldDefinition) );
 
-      session.CreateObject( hname,
-                            mapDef,
-                            dataDefObj,
-                            keyDefObj );
+      session.CreateMap( hname,
+                         mapDef,
+                         dataDefObj,
+                         keyDefObj );
       hashmap = new FastMap( session, hname );
       editor  = new FastMapEditor( session, hname );
    }

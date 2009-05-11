@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  fieldDef.GetDefinition(),
                                  fieldDef.GetDefLength() );
-      session.CreateObject( qname, queueDef, dataDefObj );
+      session.CreateQueue( qname, queueDef, dataDefObj );
       queue.Open( session, qname );
    }
    catch( pso::Exception exc ) {

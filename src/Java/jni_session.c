@@ -131,11 +131,11 @@ Java_org_photon_Session_psoCreateObject( JNIEnv * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   errcode = psoCreateObject( (PSO_HANDLE) handle,
-                              name,
-                              strlen(name),
-                              &definition,
-                              (PSO_HANDLE)dataDefHandle );
+   errcode = psoCreateQueue( (PSO_HANDLE) handle,
+                             name,
+                             strlen(name),
+                             &definition,
+                             (PSO_HANDLE)dataDefHandle );
    
    (*env)->ReleaseStringUTFChars( env, jname, name );
 
@@ -190,11 +190,11 @@ Java_org_photon_Session_psoCreateObjectEx( JNIEnv * env,
          return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
       }
 
-      errcode = psoCreateObject( (PSO_HANDLE) handle,
-                                 name,
-                                 strlen(name),
-                                 &definition,
-                                 (PSO_HANDLE)dataDefHandle );
+      errcode = psoCreateQueue( (PSO_HANDLE) handle,
+                                name,
+                                strlen(name),
+                                &definition,
+                                (PSO_HANDLE)dataDefHandle );
    
       (*env)->ReleaseStringUTFChars( env, jname, name );
       psoDataDefClose( dataDefHandle );
@@ -240,12 +240,12 @@ Java_org_photon_Session_psoCreateKeyedObject( JNIEnv * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   errcode = psoCreateKeyedObject( (PSO_HANDLE) handle,
-                                   name,
-                                   strlen(name),
-                                   &definition,
-                                   (PSO_HANDLE)dataDefHandle,
-                                   (PSO_HANDLE)keyDefHandle );
+   errcode = psoCreateMap( (PSO_HANDLE) handle,
+                           name,
+                           strlen(name),
+                           &definition,
+                           (PSO_HANDLE)dataDefHandle,
+                           (PSO_HANDLE)keyDefHandle );
    
    (*env)->ReleaseStringUTFChars( env, jname, name );
 
@@ -319,12 +319,12 @@ Java_org_photon_Session_psoCreateKeyedObjectEx( JNIEnv * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   errcode = psoCreateKeyedObject( (PSO_HANDLE) handle,
-                                   name,
-                                   strlen(name),
-                                   &definition,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( (PSO_HANDLE) handle,
+                           name,
+                           strlen(name),
+                           &definition,
+                           dataDefHandle,
+                           keyDefHandle );
    
    (*env)->ReleaseStringUTFChars( env, jname, name );
    psoDataDefClose( dataDefHandle );

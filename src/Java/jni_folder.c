@@ -133,11 +133,11 @@ Java_org_photon_Folder_psoCreateObject( JNIEnv   * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
-                                    name,
-                                    strlen(name),
-                                    &definition,
-                                    (PSO_HANDLE) dataDefHandle );
+   errcode = psoFolderCreateQueue( (PSO_HANDLE) handle,
+                                   name,
+                                   strlen(name),
+                                   &definition,
+                                   (PSO_HANDLE) dataDefHandle );
 
    (*env)->ReleaseStringUTFChars( env, jname, name );
 
@@ -195,11 +195,11 @@ Java_org_photon_Folder_psoCreateObjectEx( JNIEnv * env,
          return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
       }
 
-      errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
-                                       name,
-                                       strlen(name),
-                                       &definition,
-                                       (PSO_HANDLE)dataDefHandle );
+      errcode = psoFolderCreateQueue( (PSO_HANDLE) handle,
+                                      name,
+                                      strlen(name),
+                                      &definition,
+                                      (PSO_HANDLE)dataDefHandle );
    
       (*env)->ReleaseStringUTFChars( env, jname, name );
       psoDataDefClose( dataDefHandle );
@@ -248,11 +248,12 @@ Java_org_photon_Folder_psoCreateKeyedObject( JNIEnv     * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   errcode = psoFolderCreateObject( (PSO_HANDLE) handle,
-                                    name,
-                                    strlen(name),
-                                    &definition,
-                                    (PSO_HANDLE) dataDefHandle );
+   errcode = psoFolderCreateMap( (PSO_HANDLE) handle,
+                                   name,
+                                   strlen(name),
+                                   &definition,
+                                   (PSO_HANDLE) dataDefHandle,
+                                   (PSO_HANDLE) keyDefHandle );
 
    (*env)->ReleaseStringUTFChars( env, jname, name );
 
@@ -328,12 +329,12 @@ Java_org_photon_Folder_psoCreateKeyedObjectEx( JNIEnv * env,
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
 
-   errcode = psoFolderCreateKeyedObject( (PSO_HANDLE)handle,
-                                         name,
-                                         strlen(name),
-                                         &definition,
-                                         dataDefHandle,
-                                         keyDefHandle );
+   errcode = psoFolderCreateMap( (PSO_HANDLE)handle,
+                                 name,
+                                 strlen(name),
+                                 &definition,
+                                 dataDefHandle,
+                                 keyDefHandle );
    
    (*env)->ReleaseStringUTFChars( env, jname, name );
    psoDataDefClose( dataDefHandle );

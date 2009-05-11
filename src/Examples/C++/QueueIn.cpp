@@ -83,9 +83,9 @@ void initObjects()
     * We use the default key and data definition to make our life simpler.
     * See HashMapLoop.cpp for a different approach.
     */
-   session.CreateObject( controlName, defMap, "Default", "Default" );
-   session.CreateObject( inQueueName,  defQueue, "Default" );
-   session.CreateObject( outQueueName, defQueue, "Default" );
+   session.CreateMap( controlName, defMap, "Default", "Default" );
+   session.CreateQueue( inQueueName,  defQueue, "Default" );
+   session.CreateQueue( outQueueName, defQueue, "Default" );
 
    control.Open( session, controlName );
    // Initialize the control object

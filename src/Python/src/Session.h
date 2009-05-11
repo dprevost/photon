@@ -159,11 +159,11 @@ Session_CreateObject( PyObject * self, PyObject * args )
          return NULL;
       }
 
-      errcode = psoCreateObject( (PSO_HANDLE)session->handle,
-                                 objectName,
-                                 strlen(objectName),
-                                 &definition,
-                                 dataDefHandle );
+      errcode = psoCreateQueue( (PSO_HANDLE)session->handle,
+                                objectName,
+                                strlen(objectName),
+                                &definition,
+                                dataDefHandle );
       psoDataDefClose( dataDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
@@ -172,11 +172,11 @@ Session_CreateObject( PyObject * self, PyObject * args )
    }
    else {
       dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyObj)->definitionHandle;
-      errcode = psoCreateObject( (PSO_HANDLE)session->handle,
-                                 objectName,
-                                 strlen(objectName),
-                                 &definition,
-                                 dataDefHandle );
+      errcode = psoCreateQueue( (PSO_HANDLE)session->handle,
+                                objectName,
+                                strlen(objectName),
+                                &definition,
+                                dataDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
          return NULL;
@@ -235,12 +235,12 @@ Session_CreateKeyObject( PyObject * self, PyObject * args )
          return NULL;
       }
 
-      errcode = psoCreateKeyedObject( (PSO_HANDLE)session->handle,
-                                      objectName,
-                                      strlen(objectName),
-                                      &definition,
-                                      dataDefHandle,
-                                      keyDefHandle );
+      errcode = psoCreateMap( (PSO_HANDLE)session->handle,
+                              objectName,
+                              strlen(objectName),
+                              &definition,
+                              dataDefHandle,
+                              keyDefHandle );
       psoDataDefClose( dataDefHandle );
       psoKeyDefClose( keyDefHandle );
       if ( errcode != 0 ) {
@@ -255,12 +255,12 @@ Session_CreateKeyObject( PyObject * self, PyObject * args )
       dataDefHandle = (PSO_HANDLE) ((pyDataDefinition *)pyDataObj)->definitionHandle;
       keyDefHandle  = (PSO_HANDLE) ((pyKeyDefinition *)pyKeyObj)->definitionHandle;
 
-      errcode = psoCreateKeyedObject( (PSO_HANDLE)session->handle,
-                                      objectName,
-                                      strlen(objectName),
-                                      &definition,
-                                      dataDefHandle,
-                                      keyDefHandle );
+      errcode = psoCreateMap( (PSO_HANDLE)session->handle,
+                              objectName,
+                              strlen(objectName),
+                              &definition,
+                              dataDefHandle,
+                              keyDefHandle );
       if ( errcode != 0 ) {
          SetException( errcode );
          return NULL;

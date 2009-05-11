@@ -74,8 +74,8 @@ int main()
       catch ( Exception exc ) {}
 
       session.CreateFolder( folderName );
-      session.CreateObject( queueName1, queueDef, "Default" );
-      session.CreateObject( queueName2, queueDef, "Default" );
+      session.CreateQueue( queueName1, queueDef, "Default" );
+      session.CreateQueue( queueName2, queueDef, "Default" );
       session.GetInfo( info1 );
    }
    catch( Exception exc ) {

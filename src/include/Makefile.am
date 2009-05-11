@@ -98,8 +98,8 @@ C_MAN_PAGES = \
         man3/psoCommit.3 \
         man3/psoCommon.h.3 \
         man3/psoCreateFolder.3 \
-        man3/psoCreateKeyedObject.3 \
-        man3/psoCreateObject.3 \
+        man3/psoCreateMap.3 \
+        man3/psoCreateQueue.3 \
         man3/psoDataDefClose.3 \
         man3/psoDataDefCreate.3 \
         man3/psoDataDefGet.3 \
@@ -133,8 +133,8 @@ C_MAN_PAGES = \
         man3/psoFolder_c.3 \
         man3/psoFolderClose.3 \
         man3/psoFolderCreateFolder.3 \
-        man3/psoFolderCreateKeyedObject.3 \
-        man3/psoFolderCreateObject.3 \
+        man3/psoFolderCreateMap.3 \
+        man3/psoFolderCreateQueue.3 \
         man3/psoFolderDestroyObject.3 \
         man3/psoFolderEntry.3 \
         man3/psoFolderGetDataDefinition.3 \

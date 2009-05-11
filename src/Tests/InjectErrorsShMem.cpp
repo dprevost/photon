@@ -758,7 +758,7 @@ void PopulateHashMaps( Session & session, vector<myMap> & h )
    psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    
    for ( i = 0; i < NUM_MAPS; ++i ) {
-      session.CreateObject( h[i].name, mapDef, "Default", "Default" );
+      session.CreateMap( h[i].name, mapDef, "Default", "Default" );
       h[i].map.Open( session, h[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -784,7 +784,7 @@ void PopulateLifos( Session & session, vector<myLifo> & l )
    psoObjectDefinition queueDef = { PSO_LIFO, 0, 0, 0 };
    
    for ( i = 0; i < NUM_LIFOS; ++i ) {
-      session.CreateObject( l[i].name, queueDef, "Default" );
+      session.CreateQueue( l[i].name, queueDef, "Default" );
       l[i].queue.Open( session, l[i].name );
 
       for ( j = 0; j < 20; ++j ) {
@@ -810,7 +810,7 @@ void PopulateQueues( Session & session, vector<myQueue> & q )
    
    for ( i = 0; i < NUM_QUEUES; ++i ) {
       cout << " i = " << i << ", " << q[i].name << ", " << &session << endl;
-      session.CreateObject( q[i].name, queueDef, "Default" );
+      session.CreateQueue( q[i].name, queueDef, "Default" );
       q[i].queue.Open( session, q[i].name );
 
       for ( j = 0; j < 20; ++j ) {

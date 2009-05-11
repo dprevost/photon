@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)&keys,
                                sizeof(psoKeyFieldDefinition) );
-      session.CreateObject( hname, mapDef, dataDefObj, keyDefObj );
+      session.CreateMap( hname, mapDef, dataDefObj, keyDefObj );
 
       editor = new FastMapEditor( session, hname );
       editor->Insert( key1, 7, data, 7 );

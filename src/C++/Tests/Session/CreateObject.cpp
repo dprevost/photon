@@ -56,7 +56,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session.CreateObject( name, queueDef, *dataDef );
+      session.CreateQueue( name, queueDef, *dataDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -76,7 +76,7 @@ int main( int argc, char * argv[] )
                                  sizeof(psoFieldDefinition) );
 
    try {
-      session.CreateObject( "", queueDef, *dataDef );
+      session.CreateQueue( "", queueDef, *dataDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -90,7 +90,7 @@ int main( int argc, char * argv[] )
 
    queueDef.type = PSO_HASH_MAP;
    try {
-      session.CreateObject( name, queueDef, *dataDef );
+      session.CreateQueue( name, queueDef, *dataDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      session.CreateObject( name, queueDef, *dataDef );
+      session.CreateQueue( name, queueDef, *dataDef );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

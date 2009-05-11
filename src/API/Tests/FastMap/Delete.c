@@ -100,12 +100,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle1,
-                                   "/api_fastmap_delete/test",
-                                   strlen("/api_fastmap_delete/test"),
-                                   &mapDef,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle1,
+                           "/api_fastmap_delete/test",
+                           strlen("/api_fastmap_delete/test"),
+                           &mapDef,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -145,6 +145,7 @@ psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
       if ( testIsExpectedToSucceed ) exit(1);
       exit(0);
    }   
+   pFolder->isSystemObject = false;
 
    return pFolder;
 }

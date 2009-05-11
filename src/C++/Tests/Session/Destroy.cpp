@@ -186,9 +186,9 @@ int main( int argc, char * argv[] )
                                  PSO_DEF_PHOTON_ODBC_SIMPLE,
                                  (unsigned char *)fields,
                                  sizeof(psoFieldDefinition) );
-      session1.CreateObject( name,
-                             queueDef,
-                             dataDefObj );
+      session1.CreateQueue( name,
+                            queueDef,
+                            dataDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

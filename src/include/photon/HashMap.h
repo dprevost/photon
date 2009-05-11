@@ -249,7 +249,7 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** 
- * Open an existing hash map (see ::psoCreateObject to create a new object).
+ * Open an existing hash map (see ::psoCreateMap to create a new object).
  *
  * Hah maps will usually contain data records with an identical layout (data 
  * definition of the items). This layout was defined when the map was 

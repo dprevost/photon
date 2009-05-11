@@ -115,9 +115,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      DataDefinition      & dataDefinition );
+   void CreateQueue( const std::string   & objectName,
+                     psoObjectDefinition & definition,
+                     DataDefinition      & dataDefinition );
 
    /**
     * Create a new object in shared memory as a child of the current folder.
@@ -138,9 +138,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      const std::string   & dataDefName );
+   void CreateQueue( const std::string   & objectName,
+                     psoObjectDefinition & definition,
+                     const std::string   & dataDefName );
 
    /**
     * Create a new object in shared memory as a child of the current folder.
@@ -158,10 +158,10 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      DataDefinition      & dataDefinition,
-                      KeyDefinition       & keyDefinition );
+   void CreateMap( const std::string   & objectName,
+                   psoObjectDefinition & definition,
+                   DataDefinition      & dataDefinition,
+                   KeyDefinition       & keyDefinition );
 
    /**
     * Create a new object in shared memory as a child of the current folder.
@@ -183,10 +183,10 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      const std::string   & datakeyDefName,
-                      const std::string   & keyDefName );
+   void CreateMap( const std::string   & objectName,
+                   psoObjectDefinition & definition,
+                   const std::string   & datakeyDefName,
+                   const std::string   & keyDefName );
 
    /**
     * Destroy an object, child of the current folder, in shared memory.

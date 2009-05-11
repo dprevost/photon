@@ -92,12 +92,12 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_hashmap_first_wrong_handle/test",
-                                   strlen("/api_hashmap_first_wrong_handle/test"),
-                                   &mapDef,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_hashmap_first_wrong_handle/test",
+                           strlen("/api_hashmap_first_wrong_handle/test"),
+                           &mapDef,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

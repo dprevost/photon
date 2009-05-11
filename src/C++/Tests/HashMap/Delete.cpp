@@ -76,10 +76,10 @@ int main( int argc, char * argv[] )
                                (unsigned char *)&keys,
                                2*sizeof(psoKeyFieldDefinition) );
 
-      session1.CreateObject( hname,
-                             mapDef,
-                             dataDefObj,
-                             keyDefObj );
+      session1.CreateMap( hname,
+                          mapDef,
+                          dataDefObj,
+                          keyDefObj );
       map1.Open( session1, hname );
       map1.Insert( key, 6, data, 7 );
       session1.Commit();

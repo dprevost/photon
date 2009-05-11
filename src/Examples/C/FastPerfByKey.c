@@ -104,15 +104,15 @@ int createMap()
          return -1;
       }
 
-      rc = psoCreateKeyedObject( session1,
-                                 mapName,
-                                 strlen(mapName),
-                                 &def,
-                                 dataDefHandle,
-                                 keyDefHandle );
+      rc = psoCreateMap( session1,
+                         mapName,
+                         strlen(mapName),
+                         &def,
+                         dataDefHandle,
+                         keyDefHandle );
       if ( rc != 0 ) {
          psoErrorMsg(session1, msg, 256 );
-         fprintf( stderr, "At line %d, psoCreateObject error: %s\n", __LINE__, msg );
+         fprintf( stderr, "At line %d, psoCreateMap error: %s\n", __LINE__, msg );
          return -1;
       }
       /* Commit the creation of the object */

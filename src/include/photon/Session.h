@@ -116,7 +116,7 @@ extern "C" {
  *
  * Insertions and deletions subjected to this call include both data items
  * inserted, replaced and deleted from data containers (maps, etc.) and 
- * the objects themselves created, for example, with ::psoCreateObject and/or 
+ * the objects themselves created, for example, with ::psoCreateQueue and/or 
  * destroyed with ::psoDestroyObject.
  *
  * Note: the internal calls executed by the engine to satisfy this request
@@ -158,10 +158,7 @@ int psoCreateFolder( PSO_HANDLE   sessionHandle,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /**
- * Create a new object in shared memory.
- *
- * To create an object based on a key, use the function ::psoCreateKeyedObject
- * instead of the current function.
+ * Create a new queue object in shared memory.
  *
  * The creation of the object only becomes permanent after a call to 
  * ::psoCommit.
@@ -181,11 +178,11 @@ int psoCreateFolder( PSO_HANDLE   sessionHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoCreateObject( PSO_HANDLE            sessionHandle,
-                     const char          * objectName,
-                     psoUint32             nameLengthInBytes,
-                     psoObjectDefinition * definition,
-                     PSO_HANDLE            dataDefHandle );
+int psoCreateQueue( PSO_HANDLE            sessionHandle,
+                    const char          * objectName,
+                    psoUint32             nameLengthInBytes,
+                    psoObjectDefinition * definition,
+                    PSO_HANDLE            dataDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -213,12 +210,12 @@ int psoCreateObject( PSO_HANDLE            sessionHandle,
  * \return 0 on success or a ::psoErrors on error.
  */
 PHOTON_EXPORT
-int psoCreateKeyedObject( PSO_HANDLE            sessionHandle,
-                          const char          * objectName,
-                          psoUint32             nameLengthInBytes,
-                          psoObjectDefinition * definition,
-                          PSO_HANDLE            dataDefHandle,
-                          PSO_HANDLE            keyDefHandle );
+int psoCreateMap( PSO_HANDLE            sessionHandle,
+                  const char          * objectName,
+                  psoUint32             nameLengthInBytes,
+                  psoObjectDefinition * definition,
+                  PSO_HANDLE            dataDefHandle,
+                  PSO_HANDLE            keyDefHandle );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

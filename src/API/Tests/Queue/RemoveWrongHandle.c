@@ -78,11 +78,11 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateObject( sessionHandle,
-                              "/api_queue_remove_wrong_handle/test",
-                              strlen("/api_queue_remove_wrong_handle/test"),
-                              &defQueue,
-                              dataDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_queue_remove_wrong_handle/test",
+                             strlen("/api_queue_remove_wrong_handle/test"),
+                             &defQueue,
+                             dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

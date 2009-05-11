@@ -89,8 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoCommit.3
 /usr/local/share/man/man3/psoCommon.h.3
 /usr/local/share/man/man3/psoCreateFolder.3
-/usr/local/share/man/man3/psoCreateKeyedObject.3
-/usr/local/share/man/man3/psoCreateObject.3
+/usr/local/share/man/man3/psoCreateMap.3
+/usr/local/share/man/man3/psoCreateQueue.3
 /usr/local/share/man/man3/psoDataDefClose.3
 /usr/local/share/man/man3/psoDataDefCreate.3
 /usr/local/share/man/man3/psoDataDefGet.3
@@ -129,8 +129,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/local/share/man/man3/psoFolder_c.3
 /usr/local/share/man/man3/psoFolderClose.3
 /usr/local/share/man/man3/psoFolderCreateFolder.3
-/usr/local/share/man/man3/psoFolderCreateKeyedObject.3
-/usr/local/share/man/man3/psoFolderCreateObject.3
+/usr/local/share/man/man3/psoFolderCreateMap.3
+/usr/local/share/man/man3/psoFolderCreateQueue.3
 /usr/local/share/man/man3/psoFolderDestroyObject.3
 /usr/local/share/man/man3/psoFolderEntry.3
 /usr/local/share/man/man3/psoFolderGetDefinition.3

@@ -79,103 +79,103 @@ int main( int argc, char * argv[] )
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoCreateKeyedObject( NULL,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( NULL,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   NULL,
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           NULL,
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   0,
-                                   &def,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           0,
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   NULL,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           NULL,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    def.type = PSO_QUEUE;
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    def.type = PSO_HASH_MAP;
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   NULL,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           NULL,
+                           keyDefHandle );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   dataDefHandle,
-                                   NULL );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           dataDefHandle,
+                           NULL );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   keyDefHandle,
-                                   dataDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           keyDefHandle,
+                           dataDefHandle );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -185,12 +185,12 @@ int main( int argc, char * argv[] )
 
    psoExit();
    
-   errcode = psoCreateKeyedObject( sessionHandle,
-                                   "/api_session_create_keyed_object",
-                                   strlen("/api_session_create_keyed_object"),
-                                   &def,
-                                   dataDefHandle,
-                                   keyDefHandle );
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_create_keyed_object",
+                           strlen("/api_session_create_keyed_object"),
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
