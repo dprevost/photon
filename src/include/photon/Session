@@ -95,7 +95,7 @@ public:
     *
     * Insertions and deletions subjected to this call include both data items
     * inserted and deleted from data containers (maps, etc.) and objects 
-    * themselves created with ::CreateObject and/or destroyed with 
+    * themselves created with ::CreateMap and/or destroyed with 
     * ::DestroyObject.
     *
     * Note: the internal calls executed by the engine to satisfy this request
@@ -134,9 +134,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      DataDefinition      & dataDef );
+   void CreateQueue( const std::string   & objectName,
+                     psoObjectDefinition & definition,
+                     DataDefinition      & dataDef );
 
    /**
     * Create a new object in shared memory.
@@ -157,9 +157,9 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      const std::string   & dataDefName );
+   void CreateQueue( const std::string   & objectName,
+                     psoObjectDefinition & definition,
+                     const std::string   & dataDefName );
 
    /**
     * Create a new object in shared memory.
@@ -178,10 +178,10 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      DataDefinition      & dataDef,
-                      KeyDefinition       & keyDef );
+   void CreateMap( const std::string   & objectName,
+                   psoObjectDefinition & definition,
+                   DataDefinition      & dataDef,
+                   KeyDefinition       & keyDef );
    
    /**
     * Create a new object in shared memory.
@@ -204,10 +204,10 @@ public:
     *
     * \exception pso::Exception An abnormal error occured.
     */
-   void CreateObject( const std::string   & objectName,
-                      psoObjectDefinition & definition,
-                      const std::string   & dataDefName,
-                      const std::string   & keyDefName );
+   void CreateMap( const std::string   & objectName,
+                   psoObjectDefinition & definition,
+                   const std::string   & dataDefName,
+                   const std::string   & keyDefName );
    
    /**
     * Destroy an existing object in shared memory.
@@ -347,7 +347,7 @@ public:
     *
     * Insertions and deletions subjected to this call include both data items
     * inserted and deleted from data containers (maps, etc.) and objects 
-    * themselves created with ::CreateObject and/or destroyed with 
+    * themselves created with ::CreateMap and/or destroyed with 
     * ::DestroyObject.
     *
     * Note: the internal calls executed by the engine to satisfy this request

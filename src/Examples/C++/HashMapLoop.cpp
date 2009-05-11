@@ -75,7 +75,7 @@ int createMap()
                                (unsigned char *)&keyDef,
                                sizeof(psoKeyFieldDefinition) );
 
-      session.CreateObject( mapName, def, dataDefObj, keyDefObj );
+      session.CreateMap( mapName, def, dataDefObj, keyDefObj );
       theMap.Open( session, mapName );
       /*
        * rc < 0 -> error

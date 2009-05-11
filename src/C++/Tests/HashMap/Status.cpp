@@ -76,10 +76,10 @@ int main( int argc, char * argv[] )
                                (unsigned char *)&keyDef,
                                sizeof(psoKeyFieldDefinition) );
 
-      session.CreateObject( hname,
-                            mapDef,
-                            dataDefObj,
-                            keyDefObj );
+      session.CreateMap( hname,
+                         mapDef,
+                         dataDefObj,
+                         keyDefObj );
       hashmap = new HashMap( session, hname );
       hashmap->Insert( key1, 7, data, 7 );
       hashmap->Insert( key2, 7, data, 7 );

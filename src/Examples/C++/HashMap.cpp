@@ -55,10 +55,10 @@ int createMap()
        * We use the default key and data definition to make our life simpler.
        * See HashMapLoop.cpp for a different approach.
        */
-      session1.CreateObject( mapName,
-                             def,
-                             "Default",
-                             "Default" );
+      session1.CreateMap( mapName,
+                          def,
+                          "Default",
+                          "Default" );
       session1.Commit();
       map1.Open( session1, mapName );
       /*

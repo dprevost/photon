@@ -74,7 +74,7 @@ int main( int argc, char * argv[] )
    try {
       session.Init();
       session.CreateFolder( fname );
-      session.CreateObject( qname, queueDef, NULL, &fieldDef );
+      session.CreateQueue( qname, queueDef, NULL, &fieldDef );
       queue->Open( qname );
    }
    catch( pso::Exception exc ) {

@@ -367,10 +367,10 @@ void psoShell::Cp()
       pKeyDef  = session.GetKeyDefinition( srcName );
       
       if ( pKeyDef == NULL ) {
-         session.CreateObject( destName, definition, *pDataDef );
+         session.CreateQueue( destName, definition, *pDataDef );
       }
       else {
-         session.CreateObject( destName, definition, *pDataDef, *pKeyDef );
+         session.CreateMap( destName, definition, *pDataDef, *pKeyDef );
       }
       // Do we have some data to copy?
       if ( status.numDataItem > 0 ) {

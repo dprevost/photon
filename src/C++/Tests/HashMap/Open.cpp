@@ -70,10 +70,10 @@ int main( int argc, char * argv[] )
                                (unsigned char *)&keyDef,
                                sizeof(psoKeyFieldDefinition) );
 
-      session1.CreateObject( hname,
-                             mapDef,
-                             dataDefObj,
-                             keyDefObj );
+      session1.CreateMap( hname,
+                          mapDef,
+                          dataDefObj,
+                          keyDefObj );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;

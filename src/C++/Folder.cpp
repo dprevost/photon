@@ -104,14 +104,14 @@ void Folder::CreateFolder( const std::string & objectName )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Folder::CreateObject( const std::string   & objectName,
-                           psoObjectDefinition & definition,
-                           DataDefinition      & dataDefinition )
+void Folder::CreateQueue( const std::string   & objectName,
+                          psoObjectDefinition & definition,
+                          DataDefinition      & dataDefinition )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateQueue", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderCreateQueue( m_objectHandle,
@@ -120,21 +120,21 @@ void Folder::CreateObject( const std::string   & objectName,
                               &definition,
                               dataDefinition.m_definitionHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateQueue" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Folder::CreateObject( const std::string   & objectName,
-                           psoObjectDefinition & definition,
-                           const std::string   & dataDefName )
+void Folder::CreateQueue( const std::string   & objectName,
+                          psoObjectDefinition & definition,
+                          const std::string   & dataDefName )
 {
    int rc;
    PSO_HANDLE dataDefHandle;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateQueue", PSO_NULL_HANDLE );
    }
 
    rc = psoDataDefOpen( m_sessionHandle,
@@ -142,7 +142,7 @@ void Folder::CreateObject( const std::string   & objectName,
                         dataDefName.length(),
                         &dataDefHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateQueue" );
    }
 
    rc = psoFolderCreateQueue( m_objectHandle,
@@ -153,21 +153,21 @@ void Folder::CreateObject( const std::string   & objectName,
 
    psoDataDefClose( dataDefHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateQueue" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Folder::CreateObject( const std::string   & objectName,
-                           psoObjectDefinition & definition,
-                           DataDefinition      & dataDefinition,
-                           KeyDefinition       & keyDefinition )
+void Folder::CreateMap( const std::string   & objectName,
+                        psoObjectDefinition & definition,
+                        DataDefinition      & dataDefinition,
+                        KeyDefinition       & keyDefinition )
 {
    int rc;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateMap", PSO_NULL_HANDLE );
    }
 
    rc = psoFolderCreateMap( m_objectHandle,
@@ -177,22 +177,22 @@ void Folder::CreateObject( const std::string   & objectName,
                             dataDefinition.m_definitionHandle,
                             keyDefinition.m_definitionHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateMap" );
    }
 }
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Folder::CreateObject( const std::string   & objectName,
-                           psoObjectDefinition & definition,
-                           const std::string   & dataDefName,
-                           const std::string   & keyDefName )
+void Folder::CreateMap( const std::string   & objectName,
+                        psoObjectDefinition & definition,
+                        const std::string   & dataDefName,
+                        const std::string   & keyDefName )
 {
    int rc;
    PSO_HANDLE keyDefHandle, dataDefHandle;
    
    if ( m_objectHandle == NULL || m_sessionHandle == NULL ) {
-      throw pso::Exception( "Folder::CreateObject", PSO_NULL_HANDLE );
+      throw pso::Exception( "Folder::CreateMap", PSO_NULL_HANDLE );
    }
 
    rc = psoKeyDefOpen( m_sessionHandle,
@@ -200,7 +200,7 @@ void Folder::CreateObject( const std::string   & objectName,
                        keyDefName.length(),
                        &keyDefHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateMap" );
    }
 
    rc = psoDataDefOpen( m_sessionHandle,
@@ -209,7 +209,7 @@ void Folder::CreateObject( const std::string   & objectName,
                         &dataDefHandle );
    if ( rc != 0 ) {
       psoKeyDefClose( keyDefHandle );
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateMap" );
    }
 
    rc = psoFolderCreateMap( m_objectHandle,
@@ -222,7 +222,7 @@ void Folder::CreateObject( const std::string   & objectName,
    psoKeyDefClose(  keyDefHandle );
    psoDataDefClose( dataDefHandle );
    if ( rc != 0 ) {
-      throw pso::Exception( m_sessionHandle, "Folder::CreateObject" );
+      throw pso::Exception( m_sessionHandle, "Folder::CreateMap" );
    }
 }
 

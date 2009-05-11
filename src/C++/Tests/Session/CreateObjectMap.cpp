@@ -59,7 +59,7 @@ int main( int argc, char * argv[] )
    // Invalid arguments to tested function.
 
    try {
-      session.CreateObject( name, mapDef, *dataDef, *keyDef );
+      session.CreateMap( name, mapDef, *dataDef, *keyDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
                                  sizeof(psoFieldDefinition) );
 
    try {
-      session.CreateObject( name, mapDef, *dataDef, *keyDef );
+      session.CreateMap( name, mapDef, *dataDef, *keyDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -101,7 +101,7 @@ int main( int argc, char * argv[] )
                                (unsigned char *)&keys,
                                sizeof(psoKeyFieldDefinition) );
    try {
-      session.CreateObject( name, mapDef, *dataDef, *keyDef );
+      session.CreateMap( name, mapDef, *dataDef, *keyDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -121,7 +121,7 @@ int main( int argc, char * argv[] )
                                  sizeof(psoFieldDefinition) );   
 
    try {
-      session.CreateObject( "", mapDef, *dataDef, *keyDef );
+      session.CreateMap( "", mapDef, *dataDef, *keyDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -135,7 +135,7 @@ int main( int argc, char * argv[] )
 
    mapDef.type = PSO_QUEUE;
    try {
-      session.CreateObject( name, mapDef, *dataDef, *keyDef );
+      session.CreateMap( name, mapDef, *dataDef, *keyDef );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -150,7 +150,7 @@ int main( int argc, char * argv[] )
 
    // End of invalid args. This call should succeed.
    try {
-      session.CreateObject( name, mapDef, *dataDef, *keyDef );
+      session.CreateMap( name, mapDef, *dataDef, *keyDef );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
