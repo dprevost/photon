@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_RawQueue.h"
+#include "org_photon_BaseQueue.h"
 #include "API/Queue.h"
 
 jfieldID g_idQueueHandle;
@@ -31,12 +31,12 @@ jfieldID g_idQueueHandle;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    initIDs
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_org_photon_RawQueue_initIDs( JNIEnv * env, jclass queueClass )
+Java_org_photon_BaseQueue_initIDs( JNIEnv * env, jclass queueClass )
 {
    g_idQueueHandle = (*env)->GetFieldID( env, queueClass, "handle", "J" );
    if ( g_idQueueHandle == NULL ) return;
@@ -45,14 +45,14 @@ Java_org_photon_RawQueue_initIDs( JNIEnv * env, jclass queueClass )
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoClose
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL 
-Java_org_photon_RawQueue_psoClose( JNIEnv  * env,
-                                   jobject   jobj,
-                                   jlong     jhandle )
+Java_org_photon_BaseQueue_psoClose( JNIEnv  * env,
+                                    jobject   jobj,
+                                    jlong     jhandle )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -64,15 +64,15 @@ Java_org_photon_RawQueue_psoClose( JNIEnv  * env,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoDataDefinition
  * Signature: (JLorg/photon/DataDefinition;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_RawQueue_psoDataDefinition( JNIEnv * env,
-                                            jobject  jobj,
-                                            jlong    jhandle,
-                                            jobject  jdefinition )
+Java_org_photon_BaseQueue_psoDataDefinition( JNIEnv * env,
+                                             jobject  jobj,
+                                             jlong    jhandle,
+                                             jobject  jdefinition )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -133,15 +133,15 @@ Java_org_photon_RawQueue_psoDataDefinition( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoGetFirst
  * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_RawQueue_psoGetFirst( JNIEnv   * env,
-                                      jobject    jobj,
-                                      jlong      jhandle,
-                                      jbyteArray jbuffer )
+Java_org_photon_BaseQueue_psoGetFirst( JNIEnv   * env,
+                                       jobject    jobj,
+                                       jlong      jhandle,
+                                       jbyteArray jbuffer )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -160,15 +160,15 @@ Java_org_photon_RawQueue_psoGetFirst( JNIEnv   * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoGetNext
  * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_RawQueue_psoGetNext( JNIEnv   * env,
-                                     jobject    jobj,
-                                     jlong      jhandle,
-                                     jbyteArray jbuffer )
+Java_org_photon_BaseQueue_psoGetNext( JNIEnv   * env,
+                                      jobject    jobj,
+                                      jlong      jhandle,
+                                      jbyteArray jbuffer )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -186,15 +186,15 @@ Java_org_photon_RawQueue_psoGetNext( JNIEnv   * env,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoGetRecordDefinition
  * Signature: (JLorg/photon/DataDefinition;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_RawQueue_psoGetRecordDefinition( JNIEnv * env,
-                                                 jobject  jobj,
-                                                 jlong    jhandle, 
-                                                 jobject  jdefinition )
+Java_org_photon_BaseQueue_psoGetRecordDefinition( JNIEnv * env,
+                                                  jobject  jobj,
+                                                  jlong    jhandle, 
+                                                  jobject  jdefinition )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -255,15 +255,15 @@ Java_org_photon_RawQueue_psoGetRecordDefinition( JNIEnv * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoGetStatus
  * Signature: (JLorg/photon/ObjectStatus;)I
  */
 JNIEXPORT jint JNICALL 
-Java_org_photon_RawQueue_psoGetStatus( JNIEnv  * env,
-                                       jobject   jobj,
-                                       jlong     jhandle,
-                                       jobject   jstatus )
+Java_org_photon_BaseQueue_psoGetStatus( JNIEnv  * env,
+                                        jobject   jobj,
+                                        jlong     jhandle,
+                                        jobject   jstatus )
 {
    int errcode;
    size_t handle = (size_t)jhandle;
@@ -288,15 +288,15 @@ Java_org_photon_RawQueue_psoGetStatus( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoOpen
  * Signature: (Lorg/photon/Session;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_RawQueue_psoOpen( JNIEnv  * env,
-                                  jobject   jobj,
-                                  jobject   jsession,
-                                  jstring   jname )
+Java_org_photon_BaseQueue_psoOpen( JNIEnv  * env,
+                                   jobject   jobj,
+                                   jobject   jsession,
+                                   jstring   jname )
 {
    int errcode;
    PSO_HANDLE handle;
@@ -323,15 +323,15 @@ Java_org_photon_RawQueue_psoOpen( JNIEnv  * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoPop
  * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_RawQueue_psoPop( JNIEnv   * env,
-                                 jobject    jobj,
-                                 jlong      jhandle,
-                                 jbyteArray jbuffer )
+Java_org_photon_BaseQueue_psoPop( JNIEnv   * env,
+                                  jobject    jobj,
+                                  jlong      jhandle,
+                                  jbyteArray jbuffer )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -350,15 +350,15 @@ Java_org_photon_RawQueue_psoPop( JNIEnv   * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoPush
  * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL
-Java_org_photon_RawQueue_psoPush( JNIEnv   * env,
-                                  jobject    jobj,
-                                  jlong      jhandle,
-                                  jbyteArray jbuffer )
+Java_org_photon_BaseQueue_psoPush( JNIEnv   * env,
+                                   jobject    jobj,
+                                   jlong      jhandle,
+                                   jbyteArray jbuffer )
 {
    int errcode;
    size_t handle = (size_t) jhandle;
@@ -383,15 +383,15 @@ Java_org_photon_RawQueue_psoPush( JNIEnv   * env,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
- * Class:     org_photon_RawQueue
+ * Class:     org_photon_BaseQueue
  * Method:    psoPushNow
  * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL
-va_org_photon_RawQueue_psoPushNow( JNIEnv * env,
-                                   jobject  jobj,
-                                   jlong    jhandle,
-                                   jbyteArray jbuffer )
+va_org_photon_BaseQueue_psoPushNow( JNIEnv * env,
+                                    jobject  jobj,
+                                    jlong    jhandle,
+                                    jbyteArray jbuffer )
 {
    int errcode;
    size_t handle = (size_t) jhandle;

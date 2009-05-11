@@ -20,6 +20,7 @@ CLEANFILES = \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
 Java_Source =                              \
+        org/photon/BaseQueue.java          \
         org/photon/DataDefBuilderODBC.java \
         org/photon/DataDefBuilderUser.java \
         org/photon/DataDefinition.java     \
@@ -41,14 +42,11 @@ Java_Source =                              \
         org/photon/PhotonException.java    \
         org/photon/PSOSerialize.java       \
         org/photon/Queue.java              \
-        org/photon/RawQueue.java           \
         org/photon/Session.java            \
         org/photon/Tests/FolderTest.java   \
         org/photon/Tests/QueueTest.java    \
         org/photon/Tests/SessionTest.java  \
         org/photon/Tests/Test.java         
-
-#        org/photon/FieldDefinition.java   
 
 Java_Classes =                              \
         org/photon/DataDefBuilderODBC.class \
@@ -69,11 +67,10 @@ Java_Classes =                              \
         org/photon/Queue.class              \
         org/photon/Session.class            
 
-#        org/photon/FieldDefinition.class   
-
 org_photondir = $(top_builddir)/src/Java
 JAVAROOT      = $(top_builddir)/src/Java
 org_photon_JAVA = $(Java_Source)
+AM_JAVACFLAGS = -Xlint:unchecked
 
 EXTRA_DIST=$(Java_Source)
 
@@ -94,6 +91,7 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 libphoton_jni_la_SOURCES =            \
         jni_photon.h                  \
+        jni_baseQueue.c               \
         jni_dataDefBuilderODBC.c      \
         jni_dataDefBuilderUser.c      \
         jni_dataDefinition.c          \
@@ -111,8 +109,8 @@ libphoton_jni_la_SOURCES =            \
         jni_objectType.c              \
         jni_objStatus.c               \
         jni_photon.c                  \
-        jni_rawQueue.c                \
         jni_session.c                 \
+        org_photon_BaseQueue.h        \
         org_photon_DataDefinition.h   \
         org_photon_DataRecord.h       \
         org_photon_FieldDefinition.h  \
@@ -125,7 +123,6 @@ libphoton_jni_la_SOURCES =            \
         org_photon_ObjectType.h       \
         org_photon_ObjectStatus.h     \
         org_photon_Photon.h           \
-        org_photon_RawQueue.h         \
         org_photon_Session.h          
 
 libphoton_jni_la_LIBADD = \

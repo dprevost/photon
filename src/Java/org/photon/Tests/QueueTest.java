@@ -20,7 +20,7 @@ package org.photon.Tests;
 
 import org.photon.*;
 
-   class myStruct implements PSOSerialize {
+   class myStruct {
       Integer i;
       String  str;
       Object[] a;
@@ -47,7 +47,7 @@ public class QueueTest {
    public static void test1( org.photon.Session session ) throws PhotonException {
       
 //      org.photon.Folder folder = new org.photon.Folder();
-      Queue<myStruct> queue = new Queue<myStruct>( session, "myQueue" );
+//      Queue<myStruct> queue = new Queue<myStruct>( session, "myQueue" );
       myStruct s = new myStruct( 123, "45678" );
       
 //      queue.push( s.i, s.str );

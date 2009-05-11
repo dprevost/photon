@@ -24,7 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
-public class JavaSerializer<T extends Serializable> implements PSOSerialize {
+public class JavaSerializer implements PSOSerialize {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
@@ -50,15 +50,15 @@ public class JavaSerializer<T extends Serializable> implements PSOSerialize {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public T unpackObject( byte[] buffer ) throws Exception {
+   public Object unpackObject( byte[] buffer ) throws Exception {
 
       ByteArrayInputStream stream;
       ObjectInputStream in;
-      T obj;
+      Object obj;
       
       stream = new ByteArrayInputStream( buffer );
       in = new ObjectInputStream( stream );
-      obj = (T)in.readObject();
+      obj = in.readObject();
       in.close();
       
       return obj;

@@ -22,7 +22,7 @@ import java.lang.*;
 import java.util.*;
 
 /**
- * Raw Queue class for the Photon library.
+ * Base (super) Queue class for the Photon library.
  *
  * This class manipulates the data as an array of bytes; it does not 
  * attempt to interpret the data as a java object or some other construct.
@@ -30,7 +30,7 @@ import java.util.*;
  * Although this class can be used directly, it is recommended to use it 
  * as a superclass. See the Photon Queue class as an example.
  */
-public class RawQueue {
+public class BaseQueue {
 
    /** To save the native pointer/handle of the C struct. */
    protected long handle = 0;
@@ -53,7 +53,7 @@ public class RawQueue {
     * A default constructor. You must use open() to access a FIFO queue in 
     * shared memory.
     */
-   public RawQueue() {}
+   public BaseQueue() {}
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -65,7 +65,7 @@ public class RawQueue {
     *
     * @exception PhotonException On an error with the Photon library.
     */
-   public RawQueue( Session session, String name ) throws PhotonException {
+   public BaseQueue( Session session, String name ) throws PhotonException {
       
       int errcode;
       
@@ -149,7 +149,7 @@ public class RawQueue {
     * @exception PhotonException On an error with the Photon library.
     */
 
-   public int getFirst( byte [] buffer ) throws PhotonException {
+   public int getFirstRaw( byte [] buffer ) throws PhotonException {
       
       int errcode;
 
@@ -184,7 +184,7 @@ public class RawQueue {
     *
     * @exception PhotonException On an error with the Photon library.
     */
-   public int getNext( byte[] buffer ) throws PhotonException {
+   public int getNextRaw( byte[] buffer ) throws PhotonException {
 
       int errcode;
 
@@ -293,7 +293,7 @@ public class RawQueue {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public byte [] pop() throws PhotonException {
+   public byte [] popRaw() throws PhotonException {
       
       int errcode;
       byte [] buffer = null;
@@ -310,7 +310,7 @@ public class RawQueue {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void push( byte[] buffer ) throws PhotonException {
+   public void pushRaw( byte[] buffer ) throws PhotonException {
 
       int errcode = 0; // remove = 0; later
       
@@ -326,7 +326,7 @@ public class RawQueue {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void pushNow( byte[] buffer ) throws PhotonException {
+   public void pushNowRaw( byte[] buffer ) throws PhotonException {
 
       int errcode;
       

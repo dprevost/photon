@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Queue class for the Photon library.
  */
-public class Queue<O, S extends PSOSerialize> extends RawQueue implements Iterable<O>, Iterator<O> {
+public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Iterable<O>, Iterator<O> {
 
    /* For iterations */
    O dataBuffer;
@@ -97,7 +97,7 @@ public class Queue<O, S extends PSOSerialize> extends RawQueue implements Iterab
          errcode = psoGetNext( handle, buffer );
       }
       if ( errcode == 0 ) {
-         dataBuffer = (O) serializer.unpackObject( buffer );
+//         dataBuffer = (O) serializer.unpackObject( buffer );
          return true;
       }
       endIteration = true;
@@ -118,17 +118,24 @@ public class Queue<O, S extends PSOSerialize> extends RawQueue implements Iterab
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public O pop() throws PhotonException {
+   @SuppressWarnings("unchecked")
+   public O pop() throws PhotonException, Exception {
       
       int errcode;
       byte [] buffer = null;
       O obj;
+      Object obj2;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       errcode = psoPop( handle, buffer );
+      
+      obj2 = serializer.unpackObject( buffer );
+      
+      // Unchecked cast. unpackObject might return an object which is not
+      // of type O... 
       obj = (O) serializer.unpackObject( buffer );
       
       if ( errcode == 0 ) return obj;
@@ -141,13 +148,13 @@ public class Queue<O, S extends PSOSerialize> extends RawQueue implements Iterab
    public void push( O obj ) throws PhotonException {
 
       int errcode;
-      byte[] data;
+      byte[] data = null;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      data = serializer.packObject( obj );
+//      data = serializer.packObject( obj );
       errcode = psoPush( handle, data );
       if ( errcode == 0 ) return;
 
@@ -159,13 +166,13 @@ public class Queue<O, S extends PSOSerialize> extends RawQueue implements Iterab
    public void pushNow( O obj ) throws PhotonException {
 
       int errcode;
-      byte[] data;
+      byte[] data = null;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      data = serializer.packObject( obj );
+//      data = serializer.packObject( obj );
       errcode = psoPushNow( handle, data );
       if ( errcode == 0 ) return;
 
