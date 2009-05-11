@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Queue class for the Photon library.
  */
-public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Iterable<O>, Iterator<O> {
+public class Queue<O, S extends PSOSerialize<O>> extends BaseQueue implements Iterable<O>, Iterator<O> {
 
    /* For iterations */
    O dataBuffer;
@@ -55,7 +55,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
       
       try {
          nextWasQueried = getNextRecord();
-      } catch (PhotonException e) {
+      } catch (Exception e) {
          return false;
       }
       
@@ -74,14 +74,14 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
          if ( getNextRecord() ) {
             return dataBuffer;
          }
-      } catch (PhotonException e) {}
+      } catch (Exception e) {}
 
       throw new NoSuchElementException();
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   boolean getNextRecord() throws PhotonException {
+   boolean getNextRecord() throws PhotonException, Exception {
       
       int errcode;
       byte[] buffer = null;
@@ -97,7 +97,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
          errcode = psoGetNext( handle, buffer );
       }
       if ( errcode == 0 ) {
-//         dataBuffer = (O) serializer.unpackObject( buffer );
+         dataBuffer = serializer.unpackObject( buffer );
          return true;
       }
       endIteration = true;
@@ -118,13 +118,11 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   @SuppressWarnings("unchecked")
    public O pop() throws PhotonException, Exception {
       
       int errcode;
       byte [] buffer = null;
       O obj;
-      Object obj2;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
@@ -132,11 +130,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
 
       errcode = psoPop( handle, buffer );
       
-      obj2 = serializer.unpackObject( buffer );
-      
-      // Unchecked cast. unpackObject might return an object which is not
-      // of type O... 
-      obj = (O) serializer.unpackObject( buffer );
+      obj = serializer.unpackObject( buffer );
       
       if ( errcode == 0 ) return obj;
 
@@ -145,7 +139,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void push( O obj ) throws PhotonException {
+   public void push( O obj ) throws PhotonException, Exception {
 
       int errcode;
       byte[] data = null;
@@ -154,7 +148,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-//      data = serializer.packObject( obj );
+      data = serializer.packObject( obj );
       errcode = psoPush( handle, data );
       if ( errcode == 0 ) return;
 
@@ -163,7 +157,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void pushNow( O obj ) throws PhotonException {
+   public void pushNow( O obj ) throws PhotonException, Exception {
 
       int errcode;
       byte[] data = null;
@@ -172,7 +166,7 @@ public class Queue<O, S extends PSOSerialize> extends BaseQueue implements Itera
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-//      data = serializer.packObject( obj );
+      data = serializer.packObject( obj );
       errcode = psoPushNow( handle, data );
       if ( errcode == 0 ) return;
 

@@ -24,7 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
-public class JavaSerializer implements PSOSerialize {
+public class JavaSerializer<T extends Serializable> implements PSOSerialize<T> {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
@@ -32,7 +32,7 @@ public class JavaSerializer implements PSOSerialize {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public byte[] packObject(Object obj) throws Exception {
+   public byte[] packObject( T obj ) throws Exception {
 
       ByteArrayOutputStream stream;
       ObjectOutputStream out;
@@ -50,15 +50,21 @@ public class JavaSerializer implements PSOSerialize {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public Object unpackObject( byte[] buffer ) throws Exception {
+   @SuppressWarnings("unchecked")
+   public T unpackObject( byte[] buffer ) throws Exception {
 
       ByteArrayInputStream stream;
       ObjectInputStream in;
-      Object obj;
+      T obj;
       
       stream = new ByteArrayInputStream( buffer );
       in = new ObjectInputStream( stream );
-      obj = in.readObject();
+      
+      // Unchecked cast. In theory, readObject might return an object 
+      // which is not of type T. We could make sure that the result is
+      // correct by using reflection (getting the class type) but this
+      // would be slow.
+      obj = (T)in.readObject();
       in.close();
       
       return obj;

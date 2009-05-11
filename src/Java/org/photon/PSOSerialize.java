@@ -22,10 +22,10 @@ package org.photon;
  * Container class for the Photon library. This class is the base
  * class of all Photon containers.
  */
-public interface PSOSerialize {
+public interface PSOSerialize<T> {
    
-   byte[] packObject( Object obj ) throws Exception;
+   byte[] packObject( T obj ) throws Exception;
    
-   Object unpackObject( byte[] buffer ) throws Exception;
+   T unpackObject( byte[] buffer ) throws Exception;
 }
 
