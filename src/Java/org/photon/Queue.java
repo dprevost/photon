@@ -24,14 +24,16 @@ import java.util.*;
 /**
  * Queue class for the Photon library.
  */
-public class Queue<T extends PSOSerialize> extends RawQueue implements Iterable<PSOSerialize>, Iterator<PSOSerialize> {
+public class Queue<O, S extends PSOSerialize> extends RawQueue implements Iterable<O>, Iterator<O> {
 
    /* For iterations */
-   T dataBuffer;
+   O dataBuffer;
 
    private boolean nextWasQueried = false;
    private boolean endIteration = true;
 
+   S serializer;
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    public Queue() { super(); }
@@ -62,7 +64,7 @@ public class Queue<T extends PSOSerialize> extends RawQueue implements Iterable<
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public T next() {
+   public O next() {
       
       nextWasQueried = false;
       
@@ -95,7 +97,7 @@ public class Queue<T extends PSOSerialize> extends RawQueue implements Iterable<
          errcode = psoGetNext( handle, buffer );
       }
       if ( errcode == 0 ) {
-         dataBuffer.unpackObject( buffer );
+         dataBuffer = (O) serializer.unpackObject( buffer );
          return true;
       }
       endIteration = true;
@@ -110,40 +112,43 @@ public class Queue<T extends PSOSerialize> extends RawQueue implements Iterable<
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    /** This method implements the Iterable interface */
-   public Iterator<PSOSerialize> iterator() {
+   public Iterator<O> iterator() {
       return this;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void pop( T record ) throws PhotonException {
+   public O pop() throws PhotonException {
       
       int errcode;
       byte [] buffer = null;
+      O obj;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
       errcode = psoPop( handle, buffer );
-      record.unpackObject( buffer );
+      obj = (O) serializer.unpackObject( buffer );
       
-      if ( errcode == 0 ) return;
+      if ( errcode == 0 ) return obj;
 
       throw new PhotonException( PhotonErrors.getEnum(errcode) );
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void push( T record ) throws PhotonException {
+   public void push( O obj ) throws PhotonException {
 
       int errcode;
+      byte[] data;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      errcode = psoPush( handle, record.packObject() );
+      data = serializer.packObject( obj );
+      errcode = psoPush( handle, data );
       if ( errcode == 0 ) return;
 
       throw new PhotonException( PhotonErrors.getEnum(errcode) );
@@ -151,15 +156,17 @@ public class Queue<T extends PSOSerialize> extends RawQueue implements Iterable<
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void pushNow( T record ) throws PhotonException {
+   public void pushNow( O obj ) throws PhotonException {
 
       int errcode;
+      byte[] data;
       
       if ( handle == 0 ) {
          throw new PhotonException( PhotonErrors.NULL_HANDLE );
       }
 
-      errcode = psoPushNow( handle, record.packObject() );
+      data = serializer.packObject( obj );
+      errcode = psoPushNow( handle, data );
       if ( errcode == 0 ) return;
 
       throw new PhotonException( PhotonErrors.getEnum(errcode) );
