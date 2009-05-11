@@ -22,24 +22,25 @@ import java.io.ObjectOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 
-public class JavaSerialize<T extends Serializable> implements PSOSerialize {
+public class JavaSerializer<T extends Serializable> implements PSOSerialize {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
-   public JavaSerialize() {}
+   public JavaSerializer() {}
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public byte[] packObject() {
+   public byte[] packObject(Object obj) throws Exception {
 
       ByteArrayOutputStream stream;
       ObjectOutputStream out;
       byte [] data;
       
-      stream = new ByteArrayOutputStream;
+      stream = new ByteArrayOutputStream();
       out = new ObjectOutputStream(stream);
-      out.writeObject(this);
+      out.writeObject(obj);
       out.close();
       
       data = stream.toByteArray();
@@ -49,17 +50,18 @@ public class JavaSerialize<T extends Serializable> implements PSOSerialize {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public T unpackObject( byte[] buffer ) {
+   public T unpackObject( byte[] buffer ) throws Exception {
 
       ByteArrayInputStream stream;
       ObjectInputStream in;
-    
+      T obj;
+      
       stream = new ByteArrayInputStream( buffer );
       in = new ObjectInputStream( stream );
-      T = (T)in.readObject();
+      obj = (T)in.readObject();
       in.close();
       
-      return T;
+      return obj;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--

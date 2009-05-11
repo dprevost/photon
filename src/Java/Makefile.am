@@ -27,12 +27,12 @@ Java_Source =                              \
         org/photon/FieldType.java          \
         org/photon/Folder.java             \
         org/photon/FolderEntry.java        \
+        org/photon/Info.java               \
+        org/photon/JavaSerializer.java     \
         org/photon/KeyDefBuilderODBC.java  \
         org/photon/KeyDefBuilderUser.java  \
         org/photon/KeyDefinition.java      \
         org/photon/KeyType.java            \
-        org/photon/Info.java               \
-        org/photon/JavaSerialize.java      \
         org/photon/ObjectDefinition.java   \
         org/photon/ObjectType.java         \
         org/photon/ObjectStatus.java       \

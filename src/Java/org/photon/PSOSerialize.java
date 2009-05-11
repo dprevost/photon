@@ -24,8 +24,8 @@ package org.photon;
  */
 public interface PSOSerialize {
    
-   byte[] packObject();
+   byte[] packObject( Object obj ) throws Exception;
    
-   Object unpackObject( byte[] buffer );
+   Object unpackObject( byte[] buffer ) throws Exception;
 }
 
