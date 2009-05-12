@@ -487,8 +487,8 @@ bool psonFastMapRelease( psonFastMap        * pHashMap,
    PSO_PRE_CONDITION( pHashMap->memObject.objType == PSON_IDENT_MAP );
 
    psonFastMapReleaseNoLock( pHashMap,
-                         pHashItem,
-                         pContext );
+                             pHashItem,
+                             pContext );
    return true;
 }
 

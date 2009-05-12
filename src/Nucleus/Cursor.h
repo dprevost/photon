@@ -43,8 +43,11 @@ struct psonCursorItem
    psonLinkNode node;
 
    /** Offset to the specific item */
-   ptrdiff_t  realItemfOffset;
+   ptrdiff_t  itemOffset;
 
+   /** Needed to decrement the reference count */
+   void * parent;
+   
    enum psonItemTypeEnum itemType;
 };
 

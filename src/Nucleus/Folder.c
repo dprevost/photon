@@ -360,11 +360,11 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
    if ( errcode != PSO_OK ) goto the_exit;
 
    found = psonHashTxGet( &pFolder->hashObj, 
-                        (unsigned char *)objectName, 
-                        partialLength * sizeof(char),
-                        &pHashItem,
-                        &bucket,
-                        pContext );
+                          (unsigned char *)objectName, 
+                          partialLength * sizeof(char),
+                          &pHashItem,
+                          &bucket,
+                          pContext );
    if ( ! found ) {
       if (lastIteration) {
          errcode = PSO_NO_SUCH_OBJECT;

@@ -22,6 +22,7 @@
 #include "Nucleus/LinkedList.h"
 #include "Nucleus/Transaction.h"
 #include "Nucleus/Folder.h"
+#include "Nucleus/HashMap.h"
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -38,6 +39,23 @@ void psonCursorEmpty( psonCursor         * pCursor,
    while ( psonLinkedListGetFirst( &pCursor->listOfElements, &pNode ) ) {
       pCursorItem = (psonCursorItem *)
          ((char*)pNode - offsetof( psonCursorItem, node ));
+      // Bug - must reduce the reference count of 
+      
+      switch( pCursorItem->itemType ) {
+         
+      case PSON_HASH_ITEM:
+         break;
+         
+      case PSON_HASH_TX_ITEM:
+         psonHashMapRelease( (psonHashMap *) pCursorItem->parent,
+                             GET_PTR_FAST(pCursorItem->itemOffset, psonHashTxItem),
+                             pContext );
+         break;
+         
+      default:
+         break;
+      }
+      
       psonFree( &pCursor->memObject,
                 (unsigned char *)pCursorItem,
                 sizeof(psonCursorItem),
@@ -55,6 +73,8 @@ void psonCursorFini( psonCursor         * pCursor,
    PSO_PRE_CONDITION( pContext != NULL );
    PSO_PRE_CONDITION( pCursor->memObject.objType == PSON_IDENT_CURSOR );
 
+   psonCursorEmpty( pCursor, pContext );
+   
    psonLinkedListFini( &pCursor->listOfElements );
    psonMemObjectFini(  &pCursor->memObject, PSON_ALLOC_API_OBJ, pContext );
 }
@@ -269,7 +289,7 @@ bool psonCursorInsertFirst( psonCursor         * pCursor,
    
    psonLinkNodeInit( &pCursorItem->node );
       
-   pCursorItem->realItemfOffset = SET_OFFSET(pItem);
+   pCursorItem->itemOffset = SET_OFFSET(pItem);
    pCursorItem->itemType = itemType;
 
    psonLinkedListPutFirst( &pCursor->listOfElements,
@@ -304,7 +324,7 @@ bool psonCursorInsertLast( psonCursor         * pCursor,
    
    psonLinkNodeInit( &pCursorItem->node );
       
-   pCursorItem->realItemfOffset = SET_OFFSET(pItem);
+   pCursorItem->itemOffset = SET_OFFSET(pItem);
    pCursorItem->itemType = itemType;
 
    psonLinkedListPutLast( &pCursor->listOfElements,
