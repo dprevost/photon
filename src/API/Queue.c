@@ -424,6 +424,7 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
    bool ok = true;
    psonDataDefinition * pMemDefinition = NULL;
    psoaDataDefinition * pDefinition = NULL;
+   psonDataDefinition * pDef;
    
    pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
@@ -454,10 +455,16 @@ int psoQueuePush( PSO_HANDLE   objectHandle,
    if ( ! pQueue->object.pSession->terminated ) {
       pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
          if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
             errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
+         else {
+            pDef = GET_PTR_FAST( pMemQueue->dataDefOffset, psonDataDefinition );
+            if ( pDefinition->pMemDefinition->type != pDef->type ) {
+               errcode = PSO_INVALID_DATA_DEFINITION_TYPE;
+            }
+         }
+         pMemDefinition = pDefinition->pMemDefinition;
       }
       if ( errcode == PSO_OK ) {
          ok = psonQueueInsert( pMemQueue,
@@ -498,7 +505,8 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
    bool ok = true;
    psoaDataDefinition * pDefinition = NULL;
    psonDataDefinition * pMemDefinition = NULL;
-   
+   psonDataDefinition * pDef;
+
    pQueue = (psoaQueue *) objectHandle;
    if ( pQueue == NULL ) return PSO_NULL_HANDLE;
    
@@ -529,10 +537,16 @@ int psoQueuePushNow( PSO_HANDLE   objectHandle,
    if ( ! pQueue->object.pSession->terminated ) {
       pMemQueue = (psonQueue *) pQueue->object.pMyMemObject;
       if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
          if ( !(pMemQueue->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
             errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
+         else {
+            pDef = GET_PTR_FAST( pMemQueue->dataDefOffset, psonDataDefinition );
+            if ( pDefinition->pMemDefinition->type != pDef->type ) {
+               errcode = PSO_INVALID_DATA_DEFINITION_TYPE;
+            }
+         }
+         pMemDefinition = pDefinition->pMemDefinition;
       }
       if ( errcode == PSO_OK ) {
          ok = psonQueueInsertNow( pMemQueue,

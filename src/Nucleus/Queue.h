@@ -75,7 +75,7 @@ struct psonQueue
    /** Basic info for all leaves and branches of our tree. */
    struct psonTreeNode  nodeObject;
 
-   /** The type of queue (as decided when psoCreateObject() was called). */
+   /** The type of queue (as decided when psoCreateQueue() was called). */
    enum psoObjectType queueType;
 
    /** Our own doubly-linked list, to hold the data. */

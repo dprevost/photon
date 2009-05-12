@@ -589,6 +589,7 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
    bool ok = true;
    psoaDataDefinition * pDefinition = NULL;
    psonDataDefinition * pMemDefinition = NULL;
+   psonDataDefinition * pDef;
 
    pHashMap = (psoaFastMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -631,12 +632,20 @@ int psoFastMapInsert( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
+
       if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
          if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
             errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
+         else {
+            pDef = GET_PTR_FAST( pMemHashMap->dataDefOffset, psonDataDefinition );
+            if ( pDefinition->pMemDefinition->type != pDef->type ) {
+               errcode = PSO_INVALID_DATA_DEFINITION_TYPE;
+            }
+         }
+         pMemDefinition = pDefinition->pMemDefinition;
       }
+
       if ( errcode == PSO_OK ) {
          ok = psonFastMapInsert( pMemHashMap,
                                  key,
@@ -805,6 +814,7 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
    bool ok = true;
    psoaDataDefinition * pDefinition = NULL;
    psonDataDefinition * pMemDefinition = NULL;
+   psonDataDefinition * pDef;
 
    pHashMap = (psoaFastMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -841,12 +851,20 @@ int psoFastMapReplace( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
+
       if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
          if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
             errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
+         else {
+            pDef = GET_PTR_FAST( pMemHashMap->dataDefOffset, psonDataDefinition );
+            if ( pDefinition->pMemDefinition->type != pDef->type ) {
+               errcode = PSO_INVALID_DATA_DEFINITION_TYPE;
+            }
+         }
+         pMemDefinition = pDefinition->pMemDefinition;
       }
+
       if ( errcode == PSO_OK ) {
          ok = psonFastMapReplace( pMemHashMap,
                                   key,
