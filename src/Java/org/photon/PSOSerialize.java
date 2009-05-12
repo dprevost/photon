@@ -24,8 +24,13 @@ package org.photon;
  */
 public interface PSOSerialize<T> {
    
+//   String[] getSupportedDefinitions();
+
    byte[] packObject( T obj ) throws Exception;
    
+   void setDefinition( byte[] dataDef );
+
    T unpackObject( byte[] buffer ) throws Exception;
+   
 }
 

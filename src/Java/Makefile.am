@@ -19,34 +19,35 @@ CLEANFILES = \
         ./org/photon/Tests/*~                             \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
-Java_Source =                              \
-        org/photon/BaseQueue.java          \
-        org/photon/DataDefBuilderODBC.java \
-        org/photon/DataDefBuilderUser.java \
-        org/photon/DataDefinition.java     \
-        org/photon/DefinitionType.java     \
-        org/photon/FieldType.java          \
-        org/photon/Folder.java             \
-        org/photon/FolderEntry.java        \
-        org/photon/Info.java               \
-        org/photon/JavaSerializer.java     \
-        org/photon/KeyDefBuilderODBC.java  \
-        org/photon/KeyDefBuilderUser.java  \
-        org/photon/KeyDefinition.java      \
-        org/photon/KeyType.java            \
-        org/photon/ObjectDefinition.java   \
-        org/photon/ObjectType.java         \
-        org/photon/ObjectStatus.java       \
-        org/photon/Photon.java             \
-        org/photon/PhotonErrors.java       \
-        org/photon/PhotonException.java    \
-        org/photon/PSOSerialize.java       \
-        org/photon/Queue.java              \
-        org/photon/Session.java            \
-        org/photon/Tests/FolderTest.java   \
-        org/photon/Tests/QueueTest.java    \
-        org/photon/Tests/SessionTest.java  \
-        org/photon/Tests/Test.java         
+Java_Source =                               \
+        org/photon/ArrayListSerializer.java \
+        org/photon/BaseQueue.java           \
+        org/photon/DataDefBuilderODBC.java  \
+        org/photon/DataDefBuilderUser.java  \
+        org/photon/DataDefinition.java      \
+        org/photon/DefinitionType.java      \
+        org/photon/FieldType.java           \
+        org/photon/Folder.java              \
+        org/photon/FolderEntry.java         \
+        org/photon/Info.java                \
+        org/photon/JavaSerializer.java      \
+        org/photon/KeyDefBuilderODBC.java   \
+        org/photon/KeyDefBuilderUser.java   \
+        org/photon/KeyDefinition.java       \
+        org/photon/KeyType.java             \
+        org/photon/ObjectDefinition.java    \
+        org/photon/ObjectType.java          \
+        org/photon/ObjectStatus.java        \
+        org/photon/Photon.java              \
+        org/photon/PhotonErrors.java        \
+        org/photon/PhotonException.java     \
+        org/photon/PSOSerialize.java        \
+        org/photon/Queue.java               \
+        org/photon/Session.java             \
+        org/photon/Tests/FolderTest.java    \
+        org/photon/Tests/QueueTest.java     \
+        org/photon/Tests/SessionTest.java   \
+        org/photon/Tests/Test.java          
 
 Java_Classes =                              \
         org/photon/DataDefBuilderODBC.class \
@@ -89,41 +90,43 @@ AM_CPPFLAGS += $(JNI_CPPFLAGS)
 
 # javah org.photon.FieldType
 
-libphoton_jni_la_SOURCES =            \
-        jni_photon.h                  \
-        jni_baseQueue.c               \
-        jni_dataDefBuilderODBC.c      \
-        jni_dataDefBuilderUser.c      \
-        jni_dataDefinition.c          \
-        jni_dataRecord.c              \
-        jni_fieldDef.c                \
-        jni_folder.c                  \
-        jni_folderEntry.c             \
-        jni_hashmap.c                 \
-        jni_info.c                    \
-        jni_keyDefBuilderODBC.c       \
-        jni_keyDefBuilderUser.c       \
-        jni_keyDefinition.c           \
-        jni_keyType.c                 \
-        jni_objDefinition.c           \
-        jni_objectType.c              \
-        jni_objStatus.c               \
-        jni_photon.c                  \
-        jni_session.c                 \
-        org_photon_BaseQueue.h        \
-        org_photon_DataDefinition.h   \
-        org_photon_DataRecord.h       \
-        org_photon_FieldDefinition.h  \
-        org_photon_Folder.h           \
-        org_photon_FolderEntry.h      \
-        org_photon_Info.h             \
-        org_photon_KeyDefinition.h    \
-        org_photon_KeyType.h          \
-        org_photon_ObjectDefinition.h \
-        org_photon_ObjectType.h       \
-        org_photon_ObjectStatus.h     \
-        org_photon_Photon.h           \
-        org_photon_Session.h          
+libphoton_jni_la_SOURCES =               \
+        jni_photon.h                     \
+        jni_arrayListSerializer.c        \
+        jni_baseQueue.c                  \
+        jni_dataDefBuilderODBC.c         \
+        jni_dataDefBuilderUser.c         \
+        jni_dataDefinition.c             \
+        jni_dataRecord.c                 \
+        jni_fieldDef.c                   \
+        jni_folder.c                     \
+        jni_folderEntry.c                \
+        jni_hashmap.c                    \
+        jni_info.c                       \
+        jni_keyDefBuilderODBC.c          \
+        jni_keyDefBuilderUser.c          \
+        jni_keyDefinition.c              \
+        jni_keyType.c                    \
+        jni_objDefinition.c              \
+        jni_objectType.c                 \
+        jni_objStatus.c                  \
+        jni_photon.c                     \
+        jni_session.c                    \
+        org_photon_ArrayListSerializer.h \
+        org_photon_BaseQueue.h           \
+        org_photon_DataDefinition.h      \
+        org_photon_DataRecord.h          \
+        org_photon_FieldDefinition.h     \
+        org_photon_Folder.h              \
+        org_photon_FolderEntry.h         \
+        org_photon_Info.h                \
+        org_photon_KeyDefinition.h       \
+        org_photon_KeyType.h             \
+        org_photon_ObjectDefinition.h    \
+        org_photon_ObjectType.h          \
+        org_photon_ObjectStatus.h        \
+        org_photon_Photon.h              \
+        org_photon_Session.h             
 
 libphoton_jni_la_LIBADD = \
    $(top_builddir)/src/API/libphoton.la 

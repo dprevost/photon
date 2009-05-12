@@ -22,6 +22,12 @@ public class Photon {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
+   static {
+      System.loadLibrary("photon_jni");
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
    /**
     * This function initializes access to the shared-memory of Photon.
     * <p>
@@ -59,10 +65,6 @@ public class Photon {
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-
-   static {
-      System.loadLibrary("photon_jni");
-   }
 
    private static native int psoInit( String psoAddress );
 

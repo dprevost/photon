@@ -74,6 +74,28 @@ public class BaseQueue {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
 
+      /*
+java.lang.reflect
+Class Constructor<T>
+public T newInstance(Object... initargs)
+              throws InstantiationException,
+                     IllegalAccessException,
+                     IllegalArgumentException,
+                     InvocationTargetException
+                     
+--------------------
+Foo.class
+---------------
+forName
+
+public static Class<?> forName(String className)
+                        throws ClassNotFoundException
+                        
+
+                     
+                     */
+      
+      
       this.session = session;
       this.name = name;
    }

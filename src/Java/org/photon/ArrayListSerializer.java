@@ -18,61 +18,59 @@
 
 package org.photon;
 
-import java.io.ObjectOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.Serializable;
+import java.util.ArrayList;
 
-public class JavaSerializer<T extends Serializable> implements PSOSerialize<T> {
-   
-   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
-   
-   public JavaSerializer() {}
+public class ArrayListSerializer implements PSOSerialize<ArrayList> {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public byte[] packObject( T obj ) throws Exception {
+   /** Pointer to the data definition. */
+   private byte[] dataDef;
 
-      ByteArrayOutputStream stream;
-      ObjectOutputStream out;
-      byte [] data;
-      
-      stream = new ByteArrayOutputStream();
-      out = new ObjectOutputStream(stream);
-      out.writeObject(obj);
-      out.close();
-      
-      data = stream.toByteArray();
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   static {
+      initIDs();
+   }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+   
+   public ArrayListSerializer( byte[] dataDef ) {
+      this.dataDef = dataDef;
+   }
+   
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   public byte[] packObject( ArrayList obj ) throws Exception {
+
+      byte [] data = psoPackObject( obj );
       
       return data;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void setDefinition( byte[] dataDef ) {}
+   public void setDefinition( byte[] dataDef ) { 
+      this.dataDef = dataDef;
+   }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   @SuppressWarnings("unchecked")
-   public T unpackObject( byte[] buffer ) throws Exception {
+   public ArrayList unpackObject( byte[] buffer ) throws Exception {
 
-      ByteArrayInputStream stream;
-      ObjectInputStream in;
-      T obj;
+      ArrayList obj = psoUnpackObject( buffer );
       
-      stream = new ByteArrayInputStream( buffer );
-      in = new ObjectInputStream( stream );
-      
-      // Unchecked cast. In theory, readObject might return an object 
-      // which is not of type T. We could make sure that the result is
-      // correct by using reflection (getting the class type) but this
-      // would be slow.
-      obj = (T)in.readObject();
-      in.close();
       
       return obj;
    }
+
+   // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+   private static native void initIDs();
+
+   private native  byte[] psoPackObject( ArrayList obj );
+   
+   private native ArrayList psoUnpackObject( byte[] buffer );
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
