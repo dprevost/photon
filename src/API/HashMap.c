@@ -460,6 +460,7 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
    bool ok = true;
    psoaDataDefinition * pDefinition = NULL;
    psonDataDefinition * pMemDefinition = NULL;
+   psonDataDefinition * pDef;
    
    pHashMap = (psoaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -496,12 +497,20 @@ int psoHashMapInsert( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
+
       if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
          if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
             errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
+         else {
+            pDef = GET_PTR_FAST( pMemHashMap->dataDefOffset, psonDataDefinition );
+            if ( pDefinition->pMemDefinition->type != pDef->type ) {
+               errcode = PSO_INVALID_DATA_DEFINITION_TYPE;
+            }
+         }
+         pMemDefinition = pDefinition->pMemDefinition;
       }
+
       if ( errcode == PSO_OK ) {
          if ( pMemHashMap->isSystemObject ) {
             errcode = PSO_SYSTEM_OBJECT;
@@ -667,6 +676,7 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
    bool ok = true;
    psoaDataDefinition * pDefinition = NULL;
    psonDataDefinition * pMemDefinition = NULL;
+   psonDataDefinition * pDef;
    
    pHashMap = (psoaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
@@ -697,12 +707,20 @@ int psoHashMapReplace( PSO_HANDLE   objectHandle,
    if ( ! pHashMap->object.pSession->terminated ) {
 
       pMemHashMap = (psonHashMap *) pHashMap->object.pMyMemObject;
+
       if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
          if ( !(pMemHashMap->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
             errcode = PSO_DATA_DEF_UNSUPPORTED;
          }
+         else {
+            pDef = GET_PTR_FAST( pMemHashMap->dataDefOffset, psonDataDefinition );
+            if ( pDefinition->pMemDefinition->type != pDef->type ) {
+               errcode = PSO_INVALID_DATA_DEFINITION_TYPE;
+            }
+         }
+         pMemDefinition = pDefinition->pMemDefinition;
       }
+
       if ( errcode == PSO_OK ) {
          if ( pMemHashMap->isSystemObject ) {
             errcode = PSO_SYSTEM_OBJECT;

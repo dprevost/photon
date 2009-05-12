@@ -1007,6 +1007,24 @@
       </message_group>
     </error>
 
+    <error>
+      <errnumber> 121 </errnumber>
+      <errname> INVALID_DATA_DEFINITION_TYPE </errname>
+      <message_group>
+        <message xml:lang="en">
+          <errormsg>
+            An invalid data-definition type was provided.
+          </errormsg>
+          <errordoc>
+            An invalid data-definition type was provided. This may occur if the
+            data-definition type used in the creation of the object is invalid.
+            It could also happen if tye type of an alternate data definition 
+            (provided when inserting an item, possibly) does not match the
+            type of the data definition of the container.
+          </errordoc>
+        </message>
+      </message_group>
+    </error>
 
     <error>
       <errnumber> 201 </errnumber>
