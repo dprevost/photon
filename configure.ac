@@ -501,6 +501,7 @@ AC_CONFIG_FILES([
    src/API/Tests/Makefile
    src/API/Tests/Api/Makefile
    src/API/Tests/CommonObject/Makefile
+   src/API/Tests/Connector/Makefile
    src/API/Tests/DataDefinition/Makefile
    src/API/Tests/FastMap/Makefile
    src/API/Tests/Folder/Makefile

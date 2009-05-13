@@ -1,4 +1,4 @@
-# Copyright (C) 2006-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -14,30 +14,29 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =              \
-        Api            \
-        CommonObject   \
-        Connector      \
-        DataDefinition \
-        FastMap        \
-        Folder         \
-        HashMap        \
-        KeyDefinition  \
-        Lifo           \
-        ListReaders    \
-        Process        \
-        Queue          \
-        Session        
+check_PROGRAMS =        \
+        ConnectNullConn 
 
-EXTRA_DIST =               \
-        Makefile.inc.win32 \
-        Makefile.win32     
+ConnectNullConn_SOURCES = ConnectNullConn.c
+
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
+        tcp_port=10701               \
+        top_srcdir=$(top_srcdir)     \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
         verbose=1                    \
-        PYTHON=$(PYTHON)             
+        PYTHON=$(PYTHON)
 
-LDADD = $(top_builddir)/src/API/libphoton.la
+TESTS = RunTests.sh
+
+XFAIL_TESTS = 
+
+LDADD = $(top_builddir)/src/API/libphoton.la      \
+        $(top_builddir)/src/Nucleus/libNucleus.la \
+        $(top_builddir)/src/Common/libCommon.la   
 

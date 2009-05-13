@@ -20,40 +20,31 @@ check_PROGRAMS =        \
         OpenNullName    \
         OpenNullObject  \
         OpenPass        \
-        OpenWrongType   
+        OpenWrongType   \
+        OpenZeroLength  
 
-CloseNullObject_SOURCES  = CloseNullObject.c
-ClosePass_SOURCES        = ClosePass.c
-OpenNullName_SOURCES     = OpenNullName.c
-OpenNullObject_SOURCES   = OpenNullObject.c
-OpenPass_SOURCES         = OpenPass.c
-OpenWrongType_SOURCES    = OpenWrongType.c
+CloseNullObject_SOURCES = CloseNullObject.c
+ClosePass_SOURCES       = ClosePass.c
+OpenNullName_SOURCES    = OpenNullName.c
+OpenNullObject_SOURCES  = OpenNullObject.c
+OpenPass_SOURCES        = OpenPass.c
+OpenWrongType_SOURCES   = OpenWrongType.c
+OpenZeroLength_SOURCES  = OpenZeroLength.c
 
-EXTRA_DIST =               \
-        CloseNullObject.sh \
-        ClosePass.sh       \
-        Makefile.win32     \
-        OpenNullName.sh    \
-        OpenNullObject.sh  \
-        OpenPass.sh        \
-        OpenWrongType.sh   \
-        RunTests.vbs       
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
         top_srcdir=$(top_srcdir)     \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
-        verbose=1                    \
+        verbose=0                    \
         PYTHON=$(PYTHON)
 
-TESTS =                    \
-        CloseNullObject.sh \
-        ClosePass.sh       \
-        OpenNullName.sh    \
-        OpenNullObject.sh  \
-        OpenPass.sh        \
-        OpenWrongType.sh   
+TESTS = RunTests.sh 
 
 XFAIL_TESTS = 
 

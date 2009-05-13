@@ -171,12 +171,17 @@ void psoaDisconnect( psoaConnector    * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Receive( psoaConnector     * pConnector,
-             void              * ptr, 
+int Receive( psoaConnector    * pConnector,
+             void             * ptr, 
              size_t             length,
              psocErrorHandler * errorHandler )
 {
    int errcode = 0;
+
+   PSO_PRE_CONDITION( pConnector   != NULL );
+   PSO_PRE_CONDITION( ptr          != NULL );
+   PSO_PRE_CONDITION( errorHandler != NULL );
+   PSO_PRE_CONDITION( length > 0 );
 
    /*
     * The do while loop is useless on Win32 but it does not hurt either...
@@ -208,13 +213,18 @@ int Receive( psoaConnector     * pConnector,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int Send( psoaConnector     * pConnector,
-          void              * ptr, 
+int Send( psoaConnector    * pConnector,
+          void             * ptr, 
           size_t             length,
           psocErrorHandler * errorHandler )
 {
    int errcode = 0;
    
+   PSO_PRE_CONDITION( pConnector   != NULL );
+   PSO_PRE_CONDITION( ptr          != NULL );
+   PSO_PRE_CONDITION( errorHandler != NULL );
+   PSO_PRE_CONDITION( length > 0 );
+
    /*
     * The do while loop is useless on Win32 but it does not hurt either...
     */

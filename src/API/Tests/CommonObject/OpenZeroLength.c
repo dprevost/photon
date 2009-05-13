@@ -23,15 +23,15 @@
 #include "Tests/PrintError.h"
 #include "API/CommonObject.h"
 
-const bool expectedToPass = true;
+const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
+#if defined(USE_DBC)
    PSO_HANDLE sessionHandle;
    int errcode;
-   bool ok;
    psoaCommonObject object;
    
    if ( argc > 1 ) {
@@ -52,8 +52,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_common_unlock_pass",
-                              strlen("/api_common_unlock_pass") );
+                              "/api_common_open_null_name",
+                              strlen("/api_common_open_null_name") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -64,23 +64,17 @@ int main( int argc, char * argv[] )
    errcode = psoaCommonObjOpen( &object,
                                 PSO_FOLDER,
                                 false,
-                                "/api_common_unlock_pass",
-                                strlen("/api_common_unlock_pass") );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+                                "/api_common_open_null_name",
+                                0 );
 
-   ok = psoaCommonLock( &object );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   psoaCommonUnlock( &object );
-   
-   psoExit();
-   
-   return 0;
+   ERROR_EXIT( expectedToPass, NULL, ; );
+#else
+#  if defined(WIN32)
+   exit(3);
+#  else
+   abort();
+#  endif
+#endif
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
