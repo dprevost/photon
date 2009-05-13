@@ -20,6 +20,7 @@ check_PROGRAMS =     \
         CreateMap    \
         CreateQueue  \
         Destroy      \
+        GetDef       \
         GetFirst     \
         GetNext      \
         OpenNoSess   \

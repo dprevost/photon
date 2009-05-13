@@ -33,9 +33,9 @@ int main( int argc, char * argv[] )
    int errcode;
    psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psoFieldDefinition dataDef = { "Field_1", PSO_VARCHAR, {120} };
-   psoKeyDefinition keyDef = { "Key1", PSO_KEY_VARCHAR, 80 };
-   
+   psoKeyFieldDefinition keyDef = { "Key1", PSO_KEY_VARCHAR, 80 };
    PSO_HANDLE dataDefHandle, keyDefHandle;
+   psoObjectDefinition returnedDef;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
                               strlen("api_folder_getdef"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
-                              sizeof(psoKeyDefinition),
+                              sizeof(psoKeyFieldDefinition),
                               &keyDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -107,36 +107,47 @@ int main( int argc, char * argv[] )
    }
    
    /* Invalid arguments to tested function. */
-
+fprintf(stderr, "ok 1\n" );
    errcode = psoFolderGetDefinition( objHandle,
-                                     "map1"
+                                     "map1",
                                      strlen("map1"),
                                      &returnedDef );
-
-   errcode = psoFolderGetFirst( NULL, &entry );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+fprintf(stderr, "ok 2\n" );
 
-   errcode = psoFolderGetFirst( sessionHandle, &entry );
+   errcode = psoFolderGetDefinition( objHandle,
+                                     "map1",
+                                     strlen("map1"),
+                                     &returnedDef );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+fprintf(stderr, "ok 3\n" );
 
-   errcode = psoFolderGetFirst( objHandle, NULL );
+   errcode = psoFolderGetDefinition( objHandle,
+                                     "map1",
+                                     strlen("map1"),
+                                     &returnedDef );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+fprintf(stderr, "ok 4\n" );
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoFolderGetFirst( objHandle, &entry );
+   errcode = psoFolderGetDefinition( objHandle,
+                                     "map1",
+                                     strlen("map1"),
+                                     &returnedDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+fprintf(stderr, "ok 5\n" );
 
    /* Close the session and try to act on the object */
 
@@ -146,11 +157,15 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFolderGetFirst( objHandle, &entry );
+   errcode = psoFolderGetDefinition( objHandle,
+                                     "map1",
+                                     strlen("map1"),
+                                     &returnedDef );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+fprintf(stderr, "ok 6\n" );
 
    psoExit();
 
