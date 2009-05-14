@@ -375,6 +375,14 @@ int psoaKeyDefGetDef( PSO_HANDLE                definitionHandle,
    
    if ( pDefinition->definitionType != PSOA_DEF_KEY ) return PSO_WRONG_TYPE_HANDLE;
 
+   if ( name == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
+   if ( nameLength == NULL ) {
+      psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
+      return PSO_NULL_POINTER;
+   }
    if ( type == NULL ) {
       psocSetError( &pDefinition->pSession->context.errorHandler, g_psoErrorHandle, PSO_NULL_POINTER );
       return PSO_NULL_POINTER;
