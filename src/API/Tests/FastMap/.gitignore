@@ -30,7 +30,11 @@
 /NextWrongHandle
 /OpenNoSession
 /OpenPass
+/RecordDef
 /Replace
+/ResetNullMap
+/ResetPass
+/ResetWrongType
 /RetrieveNullData
 /RetrieveNullHandle
 /RetrieveNullKey

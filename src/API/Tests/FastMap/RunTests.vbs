@@ -34,13 +34,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(36)
+Dim failed_tests(40)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(16)
-Dim fail_programs(19)
+Dim ok_programs(18)
+Dim fail_programs(21)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -67,10 +67,12 @@ ok_programs(9)  = "GetNext"
 ok_programs(10) = "Insert"
 ok_programs(11) = "NextPass"
 ok_programs(12) = "OpenPass"
-ok_programs(13) = "Replace"
-ok_programs(14) = "RetrievePass"
-ok_programs(15) = "Status"
-ok_programs(16) = "Tests"
+ok_programs(13) = "RecordDef"
+ok_programs(14) = "Replace"
+ok_programs(15) = "ResetPass"
+ok_programs(16) = "RetrievePass"
+ok_programs(17) = "Status"
+ok_programs(18) = "Tests"
 
 fail_programs(0)  = "FirstNullData"
 fail_programs(1)  = "FirstNullDataLength"
@@ -86,14 +88,16 @@ fail_programs(10) = "NextNullKey"
 fail_programs(11) = "NextNullKeyLength"
 fail_programs(12) = "NextWrongHandle"
 fail_programs(13) = "OpenNoSession"
-fail_programs(14) = "RetrieveNullData"
-fail_programs(15) = "RetrieveNullHandle"
-fail_programs(16) = "RetrieveNullKey"
-fail_programs(17) = "RetrieveNullLength"
-fail_programs(18) = "RetrieveWrongHandle"
-fail_programs(19) = "RetrieveZeroLength"
+fail_programs(14) = "ResetNullMap"
+fail_programs(15) = "ResetWrongType"
+fail_programs(16) = "RetrieveNullData"
+fail_programs(17) = "RetrieveNullHandle"
+fail_programs(18) = "RetrieveNullKey"
+fail_programs(19) = "RetrieveNullLength"
+fail_programs(20) = "RetrieveWrongHandle"
+fail_programs(21) = "RetrieveZeroLength"
 
-numTests  = 37                 ' Sum of length of both arrays 
+numTests  = 41                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

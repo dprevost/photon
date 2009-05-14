@@ -20,8 +20,10 @@ check_PROGRAMS =     \
         CreateMap    \
         CreateQueue  \
         Destroy      \
+        GetDataDef   \
         GetDef       \
         GetFirst     \
+        GetKeyDef    \
         GetNext      \
         OpenNoSess   \
         Open         \
@@ -32,7 +34,10 @@ CreateFolder_SOURCES = CreateFolder.c
 CreateMap_SOURCES    = CreateMap.c
 CreateQueue_SOURCES  = CreateQueue.c
 Destroy_SOURCES      = Destroy.c
+GetDataDef_SOURCES   = GetDataDef.c
+GetDef_SOURCES       = GetDef.c
 GetFirst_SOURCES     = GetFirst.c
+GetKeyDef_SOURCES    = GetKeyDef.c
 GetNext_SOURCES      = GetNext.c
 OpenNoSess_SOURCES   = OpenNoSess.c
 Open_SOURCES         = Open.c

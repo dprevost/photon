@@ -42,7 +42,11 @@ check_PROGRAMS =            \
         NextWrongHandle     \
         OpenNoSession       \
         OpenPass            \
+        RecordDef           \
         Replace             \
+        ResetNullMap        \
+        ResetPass           \
+        ResetWrongType      \
         RetrieveNullData    \
         RetrieveNullHandle  \
         RetrieveNullKey     \
@@ -80,7 +84,9 @@ NextPass_SOURCES            = NextPass.c
 NextWrongHandle_SOURCES     = NextWrongHandle.c
 OpenNoSession_SOURCES       = OpenNoSession.c
 OpenPass_SOURCES            = OpenPass.c
+RecordDef_SOURCES           = RecordDef.c
 Replace_SOURCES             = Replace.c
+ResetPass_SOURCES           = ResetPass.c
 RetrieveNullData_SOURCES    = RetrieveNullData.c
 RetrieveNullHandle_SOURCES  = RetrieveNullHandle.c
 RetrieveNullKey_SOURCES     = RetrieveNullKey.c

@@ -21,7 +21,10 @@ check_PROGRAMS =                        \
         $(DIR_RELEASE)\CreateMap.exe    \
         $(DIR_RELEASE)\CreateQueue.exe  \
         $(DIR_RELEASE)\Destroy.exe      \
+        $(DIR_RELEASE)\GetDataDef.exe   \
+        $(DIR_RELEASE)\GetDef.exe       \
         $(DIR_RELEASE)\GetFirst.exe     \
+        $(DIR_RELEASE)\GetKeyDef.exe    \
         $(DIR_RELEASE)\GetNext.exe      \
         $(DIR_RELEASE)\OpenNoSess.exe   \
         $(DIR_RELEASE)\Open.exe         \

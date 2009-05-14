@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/Folder.h"
+#include "API/FastMap.h"
 
 const bool expectedToPass = true;
 
@@ -31,11 +31,13 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
-   psoFieldDefinition dataDef = { "Field_1", PSO_VARCHAR, {120} };
-   psoKeyFieldDefinition keyDef = { "Key1", PSO_KEY_VARCHAR, 80 };
-   PSO_HANDLE dataDefHandle, keyDefHandle;
-   psoObjectDefinition returnedDef;
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
+   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
+   psoFieldDefinition fields[1] = {
+      { "Field_1", PSO_VARCHAR, {10} }
+   };
+   PSO_HANDLE keyDefHandle, dataDefHandle;
+   PSO_HANDLE returnedDef;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -55,28 +57,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_folder_getdef",
-                              strlen("/api_folder_getdef") );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoDataDefCreate( sessionHandle,
-                               "api_folder_getdef",
-                               strlen("api_folder_getdef"),
-                               PSO_DEF_PHOTON_ODBC_SIMPLE,
-                               (unsigned char *)&dataDef,
-                               sizeof(psoFieldDefinition),
-                               &dataDefHandle );
+                              "/api_fast_map_get",
+                              strlen("/api_fast_map_get") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "api_folder_getdef",
-                              strlen("api_folder_getdef"),
+                              "api_fastmap_get",
+                              strlen("api_fastmap_get"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -85,11 +75,22 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+   errcode = psoDataDefCreate( sessionHandle,
+                               "api_fastmap_get",
+                               strlen("api_fastmap_get"),
+                               PSO_DEF_PHOTON_ODBC_SIMPLE,
+                               (unsigned char *)fields,
+                               sizeof(psoFieldDefinition),
+                               &dataDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    errcode = psoCreateMap( sessionHandle,
-                           "/api_folder_getdef/map1",
-                           strlen("/api_folder_getdef/map1"),
-                           &def,
+                           "/api_fast_map_get/test",
+                           strlen("/api_fast_map_get/test"),
+                           &mapDef,
                            dataDefHandle,
                            keyDefHandle );
    if ( errcode != PSO_OK ) {
@@ -97,83 +98,77 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFolderOpen( sessionHandle,
-                            "/api_folder_getdef",
-                            strlen("/api_folder_getdef"),
-                            &objHandle );
+   errcode = psoFastMapOpen( sessionHandle,
+                             "/api_fast_map_get/test",
+                             strlen("/api_fast_map_get/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-   
+
    /* Invalid arguments to tested function. */
-   errcode = psoFolderGetDefinition( NULL,
-                                     "map1",
-                                     strlen("map1"),
-                                     &returnedDef );
+
+   errcode = psoFastMapRecordDefinition( NULL, &returnedDef );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFolderGetDefinition( sessionHandle,
-                                     "map1",
-                                     strlen("map1"),
-                                     &returnedDef );
+   errcode = psoFastMapRecordDefinition( sessionHandle, &returnedDef );
    if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFolderGetDefinition( objHandle,
-                                     NULL,
-                                     strlen("map1"),
-                                     &returnedDef );
-   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   errcode = psoFolderGetDefinition( objHandle,
-                                     "map1",
-                                     0,
-                                     &returnedDef );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoFolderGetDefinition( objHandle,
-                                     "map1",
-                                     strlen("map1"),
-                                     NULL );
+   errcode = psoFastMapRecordDefinition( objHandle, NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    /* End of invalid args. This call should succeed. */
-   errcode = psoFolderGetDefinition( objHandle,
-                                     "map1",
-                                     strlen("map1"),
-                                     &returnedDef );
+   errcode = psoFastMapRecordDefinition( objHandle, &returnedDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   /* Close the session and try to act on the object */
-
-   errcode = psoExitSession( sessionHandle );
+   errcode = psoDataDefClose( returnedDef );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = psoFastMapClose( objHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   errcode = psoFastMapEdit( sessionHandle,
+                             "/api_fast_map_get/test",
+                             strlen("/api_fast_map_get/test"),
+                             &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFolderGetDefinition( objHandle,
-                                     "map1",
-                                     strlen("map1"),
-                                     &returnedDef );
-   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
+   errcode = psoFastMapRecordDefinition( objHandle, &returnedDef );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoDataDefClose( returnedDef );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoFastMapClose( objHandle );
+   if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

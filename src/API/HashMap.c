@@ -647,7 +647,7 @@ int psoHashMapRecordDefinition( PSO_HANDLE   objectHandle,
       pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
       pHashMap->pRecordDefinition = pDefinition;
          
-      dataDefHandle = (PSO_HANDLE) pDefinition;
+      *dataDefHandle = (PSO_HANDLE) pDefinition;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
