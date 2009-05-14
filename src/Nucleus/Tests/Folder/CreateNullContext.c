@@ -33,7 +33,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   psonFolderCreateObject( pFolder,
+   psonAPIFolderCreateObject( pFolder,
                            "Test1",
                            strlen("Test1"),
                            &def,

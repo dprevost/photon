@@ -71,7 +71,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderGetFirst( pFolder,
+   ok = psonAPIFolderGetFirst( pFolder,
                             &item,
                             NULL );
 

@@ -34,7 +34,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonFolderCreateObject( pFolder,
+   ok = psonAPIFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -45,7 +45,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderCreateObject( pFolder,
+   ok = psonAPIFolderCreateObject( pFolder,
                                 "Test2",
                                 strlen("Test2"),
                                 &def,

@@ -13,24 +13,22 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
-check_PROGRAMS =                           \
-        $(DIR_RELEASE)\ClosePass.exe       \
-        $(DIR_RELEASE)\CreateFolder.exe    \
-        $(DIR_RELEASE)\CreateKeyObject.exe \
-        $(DIR_RELEASE)\CreateObject.exe    \
-        $(DIR_RELEASE)\Destroy.exe         \
-        $(DIR_RELEASE)\GetFirstPass.exe    \
-        $(DIR_RELEASE)\GetNextPass.exe     \
-        $(DIR_RELEASE)\OpenNoSess.exe      \
-        $(DIR_RELEASE)\OpenPass.exe        \
-        $(DIR_RELEASE)\StatusPass.exe      
+check_PROGRAMS =                        \
+        $(DIR_RELEASE)\Close.exe        \
+        $(DIR_RELEASE)\CreateFolder.exe \
+        $(DIR_RELEASE)\CreateMap.exe    \
+        $(DIR_RELEASE)\CreateQueue.exe  \
+        $(DIR_RELEASE)\Destroy.exe      \
+        $(DIR_RELEASE)\GetDataDef.exe   \
+        $(DIR_RELEASE)\GetDef.exe       \
+        $(DIR_RELEASE)\GetFirst.exe     \
+        $(DIR_RELEASE)\GetKeyDef.exe    \
+        $(DIR_RELEASE)\GetNext.exe      \
+        $(DIR_RELEASE)\OpenNoSess.exe   \
+        $(DIR_RELEASE)\Open.exe         \
+        $(DIR_RELEASE)\Status.exe       
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

@@ -84,7 +84,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonFolderMyStatus( pFolder, &objStatus );
+   psonAPIFolderStatus( pFolder, &objStatus );
 
    if ( objStatus.numDataItem != 3 ) {
       ERROR_EXIT( expectedToPass, NULL, ; );

@@ -19,6 +19,7 @@ check_PROGRAMS =  \
         Create    \
         Destroy   \
         Get       \
+        GetDef    \
         GetLength \
         Open      
 
@@ -26,17 +27,13 @@ Close_SOURCES     = Close.c
 Create_SOURCES    = Create.c
 Destroy_SOURCES   = Destroy.c
 Get_SOURCES       = Get.c
+GetDef_SOURCES    = GetDef.c
 GetLength_SOURCES = GetLength.c
 Open_SOURCES      = Open.c
 
 EXTRA_DIST =           \
-        Close.sh       \
-        Create.sh      \
-        Destroy.sh     \
-        Get.sh         \
-        GetLength.sh   \
         Makefile.win32 \
-        Open.sh        \
+        RunTests.sh    \
         RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
@@ -47,13 +44,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =              \
-        Close.sh     \
-        Create.sh    \
-        Destroy.sh   \
-        Get.sh       \
-        GetLength.sh \
-        Open.sh      
+TESTS = RunTests.sh  
 
 XFAIL_TESTS = 
 

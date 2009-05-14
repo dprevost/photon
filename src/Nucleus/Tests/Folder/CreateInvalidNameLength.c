@@ -38,13 +38,13 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonFolderCreateObject( pFolder,
-                                "Test1",
-                                0,
-                                &def,
-                                NULL,
-                                NULL,
-                                &context );
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   "Test1",
+                                   0,
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -53,13 +53,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psonFolderCreateObject( pFolder,
-                                "/Test2",
-                                strlen("/Test2"),
-                                &def,
-                                NULL,
-                                NULL,
-                                &context );
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   "/Test2",
+                                   strlen("/Test2"),
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
@@ -68,13 +68,13 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psonFolderCreateObject( pFolder,
-                                name,
-                                PSO_MAX_NAME_LENGTH+1,
-                                &def,
-                                NULL,
-                                NULL,
-                                &context );
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   name,
+                                   PSO_MAX_NAME_LENGTH+1,
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
    if ( ok != false ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }

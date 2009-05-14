@@ -14,17 +14,16 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =        \
-        ExitPass        \
-        InitPass        
+check_PROGRAMS = \
+        ExitPass \
+        InitPass 
 
-ExitPass_SOURCES        = ExitPass.c
-InitPass_SOURCES        = InitPass.c
+ExitPass_SOURCES = ExitPass.c
+InitPass_SOURCES = InitPass.c
 
 EXTRA_DIST =           \
-        ExitPass.sh    \
-        InitPass.sh    \
         Makefile.win32 \
+        RunTests.sh    \
         RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
@@ -35,9 +34,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                 \
-        ExitPass.sh     \
-        InitPass.sh     
+TESTS = RunTests.sh
 
 XFAIL_TESTS = 
 

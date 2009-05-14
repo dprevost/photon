@@ -48,7 +48,11 @@ check_PROGRAMS =                                \
         $(DIR_RELEASE)\NextWrongHandle.exe      \
         $(DIR_RELEASE)\OpenNoSession.exe        \
         $(DIR_RELEASE)\OpenPass.exe             \
+        $(DIR_RELEASE)\RecordDef.exe            \
         $(DIR_RELEASE)\Replace.exe              \
+        $(DIR_RELEASE)\ResetNullMap.exe         \
+        $(DIR_RELEASE)\ResetPass.exe            \
+        $(DIR_RELEASE)\ResetWrongType.exe       \
         $(DIR_RELEASE)\RetrieveNullData.exe     \
         $(DIR_RELEASE)\RetrieveNullHandle.exe   \
         $(DIR_RELEASE)\RetrieveNullKey.exe      \

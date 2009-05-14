@@ -785,7 +785,7 @@ int psoFastMapRecordDefinition( PSO_HANDLE   objectHandle,
       pDefinition->ppApiObject = &pHashMap->pRecordDefinition;
       pHashMap->pRecordDefinition = pDefinition;
          
-      dataDefHandle = (PSO_HANDLE) pDefinition;
+      *dataDefHandle = (PSO_HANDLE) pDefinition;
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
@@ -1078,6 +1078,9 @@ void psoaFastMapResetReader( void * map )
 
    psonHashTxItem * pHashItemLatest;
    psonObjectDescriptor * pDesc;
+
+   PSO_PRE_CONDITION( pHashMap != NULL );
+   PSO_PRE_CONDITION( pHashMap->object.type == PSOA_MAP );
 
    pMemHashMap = (psonFastMap *) pHashMap->object.pMyMemObject;
    pHashItemLatest = GET_PTR_FAST( pMemHashMap->latestVersion, psonHashTxItem );

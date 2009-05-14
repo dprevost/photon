@@ -34,13 +34,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(5)
+Dim failed_tests(6)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
 Dim ok_programs(1)
-Dim fail_programs(3)
+Dim fail_programs(4)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -61,8 +61,9 @@ fail_programs(0) = "CloseNullObject"
 fail_programs(1) = "OpenNullName"
 fail_programs(2) = "OpenNullObject"
 fail_programs(3) = "OpenWrongType"
+fail_programs(4) = "OpenZeroLength"
 
-numTests  =  6                 ' Sum of length of both arrays 
+numTests  =  7                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject

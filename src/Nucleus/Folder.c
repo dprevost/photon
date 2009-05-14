@@ -43,70 +43,13 @@ psoErrors psonValidateString( const char * objectName,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonFolderCommitEdit( psonFolder         * pFolder,
-                           psonHashTxItem     * pHashItem, 
-                           enum psoObjectType   objectType,
-                           psonMemObject     ** ppOldMemObj,
-                           psonSessionContext * pContext )
-{
-   psonObjectDescriptor * pDesc, * pDescLatest;
-   psonFastMap * pMapLatest, * pMapEdit;
-   psonHashTxItem * pHashItemLatest;
-   psonTreeNode * node;
-   psonTxStatus * tx;
-   bool isRemoved = false;
-
-   PSO_PRE_CONDITION( pFolder     != NULL );
-   PSO_PRE_CONDITION( pHashItem   != NULL );
-   PSO_PRE_CONDITION( ppOldMemObj != NULL );
-   PSO_PRE_CONDITION( pContext    != NULL );
-   PSO_PRE_CONDITION( objectType == PSON_IDENT_MAP );
-
-   GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
-
-   /* The edit version which is about to become the latest */
-   pMapEdit = GET_PTR_FAST( pDesc->offset, psonFastMap );
-
-   if ( pMapEdit->hashObj.enumResize != PSON_HASH_NO_RESIZE ) {
-      psonHashResize( &pMapEdit->hashObj, pContext );
-   }
-   
-   PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
-   
-   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashTxItem );
-   pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
-                               psonObjectDescriptor );
-   /* The current latest which is about to become old. */
-   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonFastMap );
-
-   pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
-   pMapLatest->editVersion = PSON_NULL_OFFSET;
-   pMapEdit->editVersion   = PSON_NULL_OFFSET;
-   pMapLatest->latestVersion = SET_OFFSET(pHashItem);
-   pMapEdit->latestVersion = SET_OFFSET(pHashItem);
-
-   node = GET_PTR_FAST( pDesc->nodeOffset, psonTreeNode );
-   tx = GET_PTR_FAST( node->txStatusOffset, psonTxStatus );
-
-   psonTxStatusCommitEdit( &pHashItemLatest->txStatus, tx );
-
-   /* Reminder: pHashItemLatest is now the old version */
-   psonFolderReleaseNoLock( pFolder,
-                            pHashItemLatest,
-                            &isRemoved,
-                            pContext );
-   if ( isRemoved ) *ppOldMemObj = &pMapLatest->memObject; /* The old copy */
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 /*
  * The new object created by this function is a child of the folder 
  */
-bool psonFolderCreateFolder( psonFolder          * pFolder,
-                             const char          * objectName,
-                             uint32_t              nameLengthInBytes,
-                             psonSessionContext  * pContext )
+bool psonAPIFolderCreateFolder( psonFolder          * pFolder,
+                                const char          * objectName,
+                                uint32_t              nameLengthInBytes,
+                                psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
    uint32_t strLength, i;
@@ -195,13 +138,13 @@ error_handler:
 /*
  * The new object created by this function is a child of the folder 
  */
-bool psonFolderCreateObject( psonFolder          * pFolder,
-                             const char          * objectName,
-                             uint32_t              nameLengthInBytes,
-                             psoObjectDefinition * pDefinition,
-                             psonDataDefinition  * pDataDefinition,
-                             psonKeyDefinition   * pKeyDefinition,
-                             psonSessionContext  * pContext )
+bool psonAPIFolderCreateObject( psonFolder          * pFolder,
+                                const char          * objectName,
+                                uint32_t              nameLengthInBytes,
+                                psoObjectDefinition * pDefinition,
+                                psonDataDefinition  * pDataDefinition,
+                                psonKeyDefinition   * pKeyDefinition,
+                                psonSessionContext  * pContext )
 {
    psoErrors errcode = PSO_OK;
    uint32_t strLength, i;
@@ -288,6 +231,395 @@ error_handler:
    }
    
    return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonAPIFolderDestroyObject( psonFolder         * pFolder,
+                                 const char         * objectName,
+                                 uint32_t             nameLengthInBytes,
+                                 psonSessionContext * pContext )
+{
+   psoErrors errcode = PSO_OK;
+   uint32_t strLength, i;
+   uint32_t first = 0;
+   const char * name = objectName;
+   char * lowerName = NULL;
+   bool ok;
+   
+   PSO_PRE_CONDITION( pFolder    != NULL );
+   PSO_PRE_CONDITION( objectName != NULL );
+   PSO_PRE_CONDITION( pContext   != NULL );
+
+   strLength = nameLengthInBytes;
+   
+   if ( strLength > PSO_MAX_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) {
+      errcode = PSO_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+   lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
+   if ( lowerName == NULL ) {
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowecase the string and check for separators */
+   for ( i = 0; i < strLength; ++i ) {
+      if ( name[i] == '/' || name[i] == '\\' ) {
+         errcode = PSO_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+      lowerName[i] = (char) tolower( name[i] );
+   }
+   
+   /*
+    * There is no psonUnlock here - the recursive nature of the 
+    * function psonFolderDeleteObject() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
+   if ( psonLock(&pFolder->memObject, pContext) ) {
+      ok = psonFolderDeleteObject( pFolder,
+                                   &(lowerName[first]), 
+                                   strLength,
+                                   pContext );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto error_handler;
+   }
+   else {
+      errcode = PSO_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+   free( lowerName );
+   
+   return true;
+
+error_handler:
+
+   if ( lowerName != NULL ) free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called psocSetError. 
+    */
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonAPIFolderGetDefinition( psonFolder          * pFolder,
+                                 const char          * objectName,
+                                 uint32_t              strLength,
+                                 psoObjectDefinition * pDefinition,
+                                 psonDataDefinition ** ppDataDefinition,
+                                 psonKeyDefinition  ** ppKeyDefinition,
+                                 psonSessionContext  * pContext )
+{
+   psoErrors errcode = PSO_OK;
+   bool ok;
+   char * lowerName = NULL;
+   int i;
+   
+   PSO_PRE_CONDITION( pFolder          != NULL );
+   PSO_PRE_CONDITION( objectName       != NULL )
+   PSO_PRE_CONDITION( pDefinition      != NULL );
+   PSO_PRE_CONDITION( ppKeyDefinition  != NULL );
+   PSO_PRE_CONDITION( ppDataDefinition != NULL );
+   PSO_PRE_CONDITION( pContext         != NULL );
+   PSO_PRE_CONDITION( strLength > 0 );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
+
+   if ( strLength > PSO_MAX_NAME_LENGTH ) {
+      errcode = PSO_OBJECT_NAME_TOO_LONG;
+      goto error_handler;
+   }
+   if ( strLength == 0 ) {
+      errcode = PSO_INVALID_OBJECT_NAME;
+      goto error_handler;
+   }
+
+   lowerName = (char*)malloc( (strLength+1)*sizeof(char) );
+   if ( lowerName == NULL ) {
+      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
+      goto error_handler;
+   }
+
+   /* lowercase the string and check for separators */
+   for ( i = 0; i < strLength; ++i ) {
+      if ( objectName[i] == '/' || objectName[i] == '\\' ) {
+         errcode = PSO_INVALID_OBJECT_NAME;
+         goto error_handler;
+      }
+      lowerName[i] = (char) tolower( objectName[i] );
+   }
+
+   /*
+    * There is no psonUnlock here - the recursive nature of the 
+    * function psonFolderGetDefinition() means that it will release 
+    * the lock as soon as it can, after locking the
+    * next folder in the chain if needed. 
+    */
+   if ( psonLock(&pFolder->memObject, pContext) ) {
+      ok = psonFolderGetDefinition( pFolder,
+                                    lowerName, 
+                                    strLength, 
+                                    pDefinition,
+                                    ppDataDefinition,
+                                    ppKeyDefinition,
+                                    pContext );
+      PSO_POST_CONDITION( ok == true || ok == false );
+      if ( ! ok ) goto error_handler;
+   }
+   else {
+      errcode = PSO_ENGINE_BUSY;
+      goto error_handler;
+   }
+   
+   free( lowerName );
+   
+   return true;
+
+error_handler:
+
+   if ( lowerName != NULL ) free( lowerName );
+
+   /*
+    * On failure, errcode would be non-zero, unless the failure occurs in
+    * some other function which already called psocSetError. 
+    */
+   if ( errcode != PSO_OK ) {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
+   }
+   
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonAPIFolderGetFirst( psonFolder         * pFolder,
+                            psonFolderItem     * pItem,
+                            psonSessionContext * pContext )
+{
+   psonHashTxItem* pHashItem = NULL;
+   psonTxStatus * txItemStatus;
+   psonTxStatus * txFolderStatus;
+   ptrdiff_t  firstItemOffset;
+   bool found;
+
+   PSO_PRE_CONDITION( pFolder  != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL )
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
+
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
+
+   if ( psonLock( &pFolder->memObject, pContext ) ) {
+      /*
+       * We loop on all data items until we find one which is visible to the
+       * current session (its transaction field equal to zero or to our 
+       * transaction) AND is not marked as destroyed.
+       */
+      found = psonHashTxGetFirst( &pFolder->hashObj, &firstItemOffset );
+      while ( found ) {
+         GET_PTR( pHashItem, firstItemOffset, psonHashTxItem );
+         txItemStatus = &pHashItem->txStatus;
+
+        if ( psonTxTestObjectStatus( txItemStatus, 
+            SET_OFFSET(pContext->pTransaction) ) == PSO_OK ) {
+
+            txItemStatus->parentCounter++;
+            txFolderStatus->usageCounter++;
+            pItem->pHashItem = pHashItem;
+            pItem->itemOffset = firstItemOffset;
+            pItem->status = txItemStatus->status;
+            
+            psonUnlock( &pFolder->memObject, pContext );
+            
+            return true;
+         }
+  
+         found = psonHashTxGetNext( &pFolder->hashObj, 
+                                  firstItemOffset,
+                                  &firstItemOffset );
+      }
+      
+      psonUnlock( &pFolder->memObject, pContext );
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
+
+      return false;
+   }
+
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
+
+   return false;
+}
+   
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonAPIFolderGetNext( psonFolder         * pFolder,
+                           psonFolderItem     * pItem,
+                           psonSessionContext * pContext )
+{
+   psonHashTxItem * pHashItem = NULL;
+   psonHashTxItem * previousHashItem = NULL;
+   psonTxStatus * txItemStatus;
+   psonTxStatus * txFolderStatus;
+   ptrdiff_t  itemOffset;
+   bool found;
+
+   PSO_PRE_CONDITION( pFolder  != NULL );
+   PSO_PRE_CONDITION( pItem    != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
+   PSO_PRE_CONDITION( pItem->pHashItem  != NULL );
+   PSO_PRE_CONDITION( pItem->itemOffset != PSON_NULL_OFFSET );
+   
+   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
+
+   itemOffset       = pItem->itemOffset;
+   previousHashItem = pItem->pHashItem;
+   
+   if ( psonLock( &pFolder->memObject, pContext ) ) {
+      /*
+       * We loop on all data items until we find one which is visible to the
+       * current session (its transaction field equal to zero or to our 
+       * transaction) AND is not marked as destroyed.
+       */
+      found = psonHashTxGetNext( &pFolder->hashObj, 
+                               itemOffset,
+                               &itemOffset );
+      while ( found ) {
+         GET_PTR( pHashItem, itemOffset, psonHashTxItem );
+         txItemStatus = &pHashItem->txStatus;
+
+         if ( psonTxTestObjectStatus( txItemStatus, 
+            SET_OFFSET(pContext->pTransaction) ) == PSO_OK ) {
+ 
+            txItemStatus->parentCounter++;
+            txFolderStatus->usageCounter++;
+            pItem->pHashItem = pHashItem;
+            pItem->itemOffset = itemOffset;
+            pItem->status = txItemStatus->status;
+
+            psonFolderReleaseNoLock( pFolder, previousHashItem, NULL, pContext );
+
+            psonUnlock( &pFolder->memObject, pContext );
+            
+            return true;
+         }
+  
+         found = psonHashTxGetNext( &pFolder->hashObj, 
+                                  itemOffset,
+                                  &itemOffset );
+      }
+   }
+   else {
+      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
+      return false;
+   }
+   
+   /* 
+    * If we come here, there are no additional data items to retrieve. As 
+    * long as we clearly say that the internal iterator is reset (in case a 
+    * "Get Previous" is implemented later), we can just release the iterator
+    * at this point.
+    */
+   pItem->pHashItem = NULL;
+   pItem->itemOffset = PSON_NULL_OFFSET;
+   psonFolderReleaseNoLock( pFolder, previousHashItem, NULL, pContext );
+    
+   psonUnlock( &pFolder->memObject, pContext );
+   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
+
+   return false;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void psonAPIFolderStatus( psonFolder   * pFolder,
+                          psoObjStatus * pStatus )
+{
+   psonTxStatus  * txStatus;
+
+   PSO_PRE_CONDITION( pFolder != NULL );
+   PSO_PRE_CONDITION( pStatus != NULL );
+   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
+
+   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
+
+   pStatus->status = txStatus->status;
+   pStatus->numDataItem = pFolder->hashObj.numberOfItems;
+   pStatus->maxDataLength = 0;
+   pStatus->maxKeyLength  = 0;
+}
+
+/* End of psonAPIFolder functions */
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void psonFolderCommitEdit( psonFolder         * pFolder,
+                           psonHashTxItem     * pHashItem, 
+                           enum psoObjectType   objectType,
+                           psonMemObject     ** ppOldMemObj,
+                           psonSessionContext * pContext )
+{
+   psonObjectDescriptor * pDesc, * pDescLatest;
+   psonFastMap * pMapLatest, * pMapEdit;
+   psonHashTxItem * pHashItemLatest;
+   psonTreeNode * node;
+   psonTxStatus * tx;
+   bool isRemoved = false;
+
+   PSO_PRE_CONDITION( pFolder     != NULL );
+   PSO_PRE_CONDITION( pHashItem   != NULL );
+   PSO_PRE_CONDITION( ppOldMemObj != NULL );
+   PSO_PRE_CONDITION( pContext    != NULL );
+   PSO_PRE_CONDITION( objectType == PSON_IDENT_MAP );
+
+   GET_PTR( pDesc, pHashItem->dataOffset, psonObjectDescriptor );
+
+   /* The edit version which is about to become the latest */
+   pMapEdit = GET_PTR_FAST( pDesc->offset, psonFastMap );
+
+   if ( pMapEdit->hashObj.enumResize != PSON_HASH_NO_RESIZE ) {
+      psonHashResize( &pMapEdit->hashObj, pContext );
+   }
+   
+   PSO_INV_CONDITION( pMapEdit->editVersion == SET_OFFSET(pHashItem) );
+   
+   pHashItemLatest = GET_PTR_FAST( pMapEdit->latestVersion, psonHashTxItem );
+   pDescLatest = GET_PTR_FAST( pHashItemLatest->dataOffset, 
+                               psonObjectDescriptor );
+   /* The current latest which is about to become old. */
+   pMapLatest = GET_PTR_FAST( pDescLatest->offset, psonFastMap );
+
+   pHashItemLatest->nextSameKey = SET_OFFSET(pHashItem);
+   pMapLatest->editVersion = PSON_NULL_OFFSET;
+   pMapEdit->editVersion   = PSON_NULL_OFFSET;
+   pMapLatest->latestVersion = SET_OFFSET(pHashItem);
+   pMapEdit->latestVersion = SET_OFFSET(pHashItem);
+
+   node = GET_PTR_FAST( pDesc->nodeOffset, psonTreeNode );
+   tx = GET_PTR_FAST( node->txStatusOffset, psonTxStatus );
+
+   psonTxStatusCommitEdit( &pHashItemLatest->txStatus, tx );
+
+   /* Reminder: pHashItemLatest is now the old version */
+   psonFolderReleaseNoLock( pFolder,
+                            pHashItemLatest,
+                            &isRemoved,
+                            pContext );
+   if ( isRemoved ) *ppOldMemObj = &pMapLatest->memObject; /* The old copy */
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -486,88 +818,6 @@ the_exit:
    }
    
    psonUnlock( &pFolder->memObject, pContext );
-   
-   return false;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-bool psonFolderDestroyObject( psonFolder         * pFolder,
-                              const char         * objectName,
-                              uint32_t             nameLengthInBytes,
-                              psonSessionContext * pContext )
-{
-   psoErrors errcode = PSO_OK;
-   uint32_t strLength, i;
-   uint32_t first = 0;
-   const char * name = objectName;
-   char * lowerName = NULL;
-   bool ok;
-   
-   PSO_PRE_CONDITION( pFolder    != NULL );
-   PSO_PRE_CONDITION( objectName != NULL );
-   PSO_PRE_CONDITION( pContext   != NULL );
-
-   strLength = nameLengthInBytes;
-   
-   if ( strLength > PSO_MAX_NAME_LENGTH ) {
-      errcode = PSO_OBJECT_NAME_TOO_LONG;
-      goto error_handler;
-   }
-   if ( strLength == 0 ) {
-      errcode = PSO_INVALID_OBJECT_NAME;
-      goto error_handler;
-   }
-
-   lowerName = (char *) malloc( (strLength+1)*sizeof(char) );
-   if ( lowerName == NULL ) {
-      errcode = PSO_NOT_ENOUGH_HEAP_MEMORY;
-      goto error_handler;
-   }
-
-   /* lowecase the string and check for separators */
-   for ( i = 0; i < strLength; ++i ) {
-      if ( name[i] == '/' || name[i] == '\\' ) {
-         errcode = PSO_INVALID_OBJECT_NAME;
-         goto error_handler;
-      }
-      lowerName[i] = (char) tolower( name[i] );
-   }
-   
-   /*
-    * There is no psonUnlock here - the recursive nature of the 
-    * function psonFolderDeleteObject() means that it will release 
-    * the lock as soon as it can, after locking the
-    * next folder in the chain if needed. 
-    */
-   if ( psonLock(&pFolder->memObject, pContext) ) {
-      ok = psonFolderDeleteObject( pFolder,
-                                   &(lowerName[first]), 
-                                   strLength,
-                                   pContext );
-      PSO_POST_CONDITION( ok == true || ok == false );
-      if ( ! ok ) goto error_handler;
-   }
-   else {
-      errcode = PSO_ENGINE_BUSY;
-      goto error_handler;
-   }
-   
-   free( lowerName );
-   
-   return true;
-
-error_handler:
-
-   if ( lowerName != NULL ) free( lowerName );
-
-   /*
-    * On failure, errcode would be non-zero, unless the failure occurs in
-    * some other function which already called psocSetError. 
-    */
-   if ( errcode != PSO_OK ) {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, errcode );
-   }
    
    return false;
 }
@@ -1297,146 +1547,6 @@ the_exit:
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-bool psonFolderGetFirst( psonFolder         * pFolder,
-                         psonFolderItem     * pItem,
-                         psonSessionContext * pContext )
-{
-   psonHashTxItem* pHashItem = NULL;
-   psonTxStatus * txItemStatus;
-   psonTxStatus * txFolderStatus;
-   ptrdiff_t  firstItemOffset;
-   bool found;
-
-   PSO_PRE_CONDITION( pFolder  != NULL );
-   PSO_PRE_CONDITION( pItem    != NULL )
-   PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
-
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
-
-   if ( psonLock( &pFolder->memObject, pContext ) ) {
-      /*
-       * We loop on all data items until we find one which is visible to the
-       * current session (its transaction field equal to zero or to our 
-       * transaction) AND is not marked as destroyed.
-       */
-      found = psonHashTxGetFirst( &pFolder->hashObj, &firstItemOffset );
-      while ( found ) {
-         GET_PTR( pHashItem, firstItemOffset, psonHashTxItem );
-         txItemStatus = &pHashItem->txStatus;
-
-        if ( psonTxTestObjectStatus( txItemStatus, 
-            SET_OFFSET(pContext->pTransaction) ) == PSO_OK ) {
-
-            txItemStatus->parentCounter++;
-            txFolderStatus->usageCounter++;
-            pItem->pHashItem = pHashItem;
-            pItem->itemOffset = firstItemOffset;
-            pItem->status = txItemStatus->status;
-            
-            psonUnlock( &pFolder->memObject, pContext );
-            
-            return true;
-         }
-  
-         found = psonHashTxGetNext( &pFolder->hashObj, 
-                                  firstItemOffset,
-                                  &firstItemOffset );
-      }
-      
-      psonUnlock( &pFolder->memObject, pContext );
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_IS_EMPTY );
-
-      return false;
-   }
-
-   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
-
-   return false;
-}
-   
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-bool psonFolderGetNext( psonFolder         * pFolder,
-                        psonFolderItem     * pItem,
-                        psonSessionContext * pContext )
-{
-   psonHashTxItem * pHashItem = NULL;
-   psonHashTxItem * previousHashItem = NULL;
-   psonTxStatus * txItemStatus;
-   psonTxStatus * txFolderStatus;
-   ptrdiff_t  itemOffset;
-   bool found;
-
-   PSO_PRE_CONDITION( pFolder  != NULL );
-   PSO_PRE_CONDITION( pItem    != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
-   PSO_PRE_CONDITION( pItem->pHashItem  != NULL );
-   PSO_PRE_CONDITION( pItem->itemOffset != PSON_NULL_OFFSET );
-   
-   GET_PTR( txFolderStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
-
-   itemOffset       = pItem->itemOffset;
-   previousHashItem = pItem->pHashItem;
-   
-   if ( psonLock( &pFolder->memObject, pContext ) ) {
-      /*
-       * We loop on all data items until we find one which is visible to the
-       * current session (its transaction field equal to zero or to our 
-       * transaction) AND is not marked as destroyed.
-       */
-      found = psonHashTxGetNext( &pFolder->hashObj, 
-                               itemOffset,
-                               &itemOffset );
-      while ( found ) {
-         GET_PTR( pHashItem, itemOffset, psonHashTxItem );
-         txItemStatus = &pHashItem->txStatus;
-
-         if ( psonTxTestObjectStatus( txItemStatus, 
-            SET_OFFSET(pContext->pTransaction) ) == PSO_OK ) {
- 
-            txItemStatus->parentCounter++;
-            txFolderStatus->usageCounter++;
-            pItem->pHashItem = pHashItem;
-            pItem->itemOffset = itemOffset;
-            pItem->status = txItemStatus->status;
-
-            psonFolderReleaseNoLock( pFolder, previousHashItem, NULL, pContext );
-
-            psonUnlock( &pFolder->memObject, pContext );
-            
-            return true;
-         }
-  
-         found = psonHashTxGetNext( &pFolder->hashObj, 
-                                  itemOffset,
-                                  &itemOffset );
-      }
-   }
-   else {
-      psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_OBJECT_CANNOT_GET_LOCK );
-      return false;
-   }
-   
-   /* 
-    * If we come here, there are no additional data items to retrieve. As 
-    * long as we clearly say that the internal iterator is reset (in case a 
-    * "Get Previous" is implemented later), we can just release the iterator
-    * at this point.
-    */
-   pItem->pHashItem = NULL;
-   pItem->itemOffset = PSON_NULL_OFFSET;
-   psonFolderReleaseNoLock( pFolder, previousHashItem, NULL, pContext );
-    
-   psonUnlock( &pFolder->memObject, pContext );
-   psocSetError( &pContext->errorHandler, g_psoErrorHandle, PSO_REACHED_THE_END );
-
-   return false;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
 bool psonFolderGetObject( psonFolder         * pFolder,
                           const char         * objectName,
                           uint32_t             strLength,
@@ -1631,8 +1741,8 @@ bool psonFolderGetStatus( psonFolder         * pFolder,
          switch( pDesc->apiType ) {
 
          case PSO_FOLDER:
-            psonFolderMyStatus( GET_PTR_FAST( pDesc->memOffset, psonFolder ),
-                                pStatus );
+            psonAPIFolderStatus( GET_PTR_FAST( pDesc->memOffset, psonFolder ),
+                                 pStatus );
             break;
          case PSO_HASH_MAP:
             psonHashMapStatus( GET_PTR_FAST( pDesc->memOffset, psonHashMap ),
@@ -2080,25 +2190,6 @@ the_exit:
    psonUnlock( &pFolder->memObject, pContext );
    
    return false;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void psonFolderMyStatus( psonFolder   * pFolder,
-                         psoObjStatus * pStatus )
-{
-   psonTxStatus  * txStatus;
-
-   PSO_PRE_CONDITION( pFolder != NULL );
-   PSO_PRE_CONDITION( pStatus != NULL );
-   PSO_PRE_CONDITION( pFolder->memObject.objType == PSON_IDENT_FOLDER );
-
-   GET_PTR( txStatus, pFolder->nodeObject.txStatusOffset, psonTxStatus );
-
-   pStatus->status = txStatus->status;
-   pStatus->numDataItem = pFolder->hashObj.numberOfItems;
-   pStatus->maxDataLength = 0;
-   pStatus->maxKeyLength  = 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

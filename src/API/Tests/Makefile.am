@@ -17,6 +17,7 @@ CLEANFILES = *~ core
 SUBDIRS =              \
         Api            \
         CommonObject   \
+        Connector      \
         DataDefinition \
         FastMap        \
         Folder         \

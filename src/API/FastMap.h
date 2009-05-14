@@ -79,6 +79,9 @@ int psoaFastMapRetrieve( psoaFastMap    * pHashMap,
                          unsigned char ** data,
                          uint32_t       * length );
 
+PHOTON_API_EXPORT
+void psoaFastMapResetReader( void * map );
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 END_C_DECLS

@@ -42,7 +42,11 @@ check_PROGRAMS =            \
         NextWrongHandle     \
         OpenNoSession       \
         OpenPass            \
+        RecordDef           \
         Replace             \
+        ResetNullMap        \
+        ResetPass           \
+        ResetWrongType      \
         RetrieveNullData    \
         RetrieveNullHandle  \
         RetrieveNullKey     \
@@ -80,7 +84,9 @@ NextPass_SOURCES            = NextPass.c
 NextWrongHandle_SOURCES     = NextWrongHandle.c
 OpenNoSession_SOURCES       = OpenNoSession.c
 OpenPass_SOURCES            = OpenPass.c
+RecordDef_SOURCES           = RecordDef.c
 Replace_SOURCES             = Replace.c
+ResetPass_SOURCES           = ResetPass.c
 RetrieveNullData_SOURCES    = RetrieveNullData.c
 RetrieveNullHandle_SOURCES  = RetrieveNullHandle.c
 RetrieveNullKey_SOURCES     = RetrieveNullKey.c
@@ -91,46 +97,10 @@ RetrieveZeroLength_SOURCES  = RetrieveZeroLength.c
 Status_SOURCES              = Status.c
 Tests_SOURCES               = Tests.c
 
-EXTRA_DIST =                   \
-        Close.sh               \
-        Create.sh              \
-        Delete.sh              \
-        Definition.sh          \
-        Edit.sh                \
-        Empty.sh               \
-        FirstNullData.sh       \
-        FirstNullDataLength.sh \
-        FirstNullHandle.sh     \
-        FirstNullKey.sh        \
-        FirstNullKeyLength.sh  \
-        FirstPass.sh           \
-        FirstWrongHandle.sh    \
-        Get.sh                 \
-        GetFirst.sh            \
-        GetNext.sh             \
-        NextNoFirst.sh         \
-        NextNullData.sh        \
-        NextNullDataLength.sh  \
-        NextNullHandle.sh      \
-        NextNullKey.sh         \
-        NextNullKeyLength.sh   \
-        NextPass.sh            \
-        NextWrongHandle.sh     \
-        Insert.sh              \
-        Makefile.win32         \
-        OpenNoSession.sh       \
-        OpenPass.sh            \
-        Replace.sh             \
-        RetrieveNullData.sh    \
-        RetrieveNullHandle.sh  \
-        RetrieveNullKey.sh     \
-        RetrieveNullLength.sh  \
-        RetrievePass.sh        \
-        RetrieveWrongHandle.sh \
-        RetrieveZeroLength.sh  \
-        RunTests.vbs           \
-        Status.sh              \
-        Tests.sh               
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -140,44 +110,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                        \
-        Close.sh               \
-        Create.sh              \
-        Definition.sh          \
-        Delete.sh              \
-        Edit.sh                \
-        Empty.sh               \
-        FirstNullData.sh       \
-        FirstNullDataLength.sh \
-        FirstNullHandle.sh     \
-        FirstNullKey.sh        \
-        FirstNullKeyLength.sh  \
-        FirstPass.sh           \
-        FirstWrongHandle.sh    \
-        Get.sh                 \
-        GetFirst.sh            \
-        GetNext.sh             \
-        Insert.sh              \
-        NextNoFirst.sh         \
-        NextNullData.sh        \
-        NextNullDataLength.sh  \
-        NextNullHandle.sh      \
-        NextNullKey.sh         \
-        NextNullKeyLength.sh   \
-        NextPass.sh            \
-        NextWrongHandle.sh     \
-        OpenNoSession.sh       \
-        OpenPass.sh            \
-        Replace.sh             \
-        RetrieveNullData.sh    \
-        RetrieveNullHandle.sh  \
-        RetrieveNullKey.sh     \
-        RetrieveNullLength.sh  \
-        RetrievePass.sh        \
-        RetrieveWrongHandle.sh \
-        RetrieveZeroLength.sh  \
-        Status.sh              \
-        Tests.sh               
+TESTS = RunTests.sh
 
 XFAIL_TESTS = 
 

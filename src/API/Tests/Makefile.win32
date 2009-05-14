@@ -32,6 +32,7 @@ check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 check: $(DIR_RELEASE) $(check_PROGRAMS)
 	cd Api          && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd CommonObject && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Connector    && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder       && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap      && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Lifo         && nmake -f Makefile.win32 check VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -44,6 +45,7 @@ check: $(DIR_RELEASE) $(check_PROGRAMS)
 checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
 	cd Api          && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd CommonObject && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
+	cd Connector    && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Folder       && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd HashMap      && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
 	cd Lifo         && nmake -f Makefile.win32 checkdebug VBS_VERBOSE=$(VBS_VERBOSE) && cd ..
@@ -56,6 +58,7 @@ checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG)
 clean: 
 	cd Api          && nmake -f Makefile.win32 clean && cd ..
 	cd CommonObject && nmake -f Makefile.win32 clean && cd ..
+	cd Connector    && nmake -f Makefile.win32 clean && cd ..
 	cd Folder       && nmake -f Makefile.win32 clean && cd ..
 	cd HashMap      && nmake -f Makefile.win32 clean && cd ..
 	cd Lifo         && nmake -f Makefile.win32 clean && cd ..
