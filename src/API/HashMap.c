@@ -618,7 +618,7 @@ int psoHashMapRecordDefinition( PSO_HANDLE   objectHandle,
    pHashMap = (psoaHashMap *) objectHandle;
    if ( pHashMap == NULL ) return PSO_NULL_HANDLE;
    
-   if ( pHashMap->object.type != PSOA_MAP ) return PSO_WRONG_TYPE_HANDLE;
+   if ( pHashMap->object.type != PSOA_HASH_MAP ) return PSO_WRONG_TYPE_HANDLE;
 
    if ( dataDefHandle == NULL ) {
       psocSetError( &pHashMap->object.pSession->context.errorHandler,

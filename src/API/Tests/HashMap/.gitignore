@@ -2,10 +2,10 @@
 /Makefile.in
 /Debug2005
 /Release2005
-/ClosePass
+/Close
 /Create
 /Definition
-/DeletePass
+/Delete
 /FirstNullData
 /FirstNullDataLength
 /FirstNullHandle
@@ -16,7 +16,7 @@
 /Get
 /GetFirst
 /GetNext
-/InsertPass
+/Insert
 /NextNoFirst
 /NextNullData
 /NextNullDataLength
@@ -27,6 +27,7 @@
 /NextWrongHandle
 /OpenNoSession
 /OpenPass
+/RecordDef
 /Replace
 /RetrieveNullData
 /RetrieveNullHandle
@@ -35,4 +36,4 @@
 /RetrievePass
 /RetrieveWrongHandle
 /RetrieveZeroLength
-/StatusPass
+/Status

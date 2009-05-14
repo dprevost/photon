@@ -15,9 +15,9 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 check_PROGRAMS =            \
-        ClosePass           \
+        Close               \
         Create              \
-        DeletePass          \
+        Delete              \
         Definition          \
         FirstNullData       \
         FirstNullDataLength \
@@ -29,7 +29,7 @@ check_PROGRAMS =            \
         Get                 \
         GetFirst            \
         GetNext             \
-        InsertPass          \
+        Insert              \
         NextNoFirst         \
         NextNullData        \
         NextNullDataLength  \
@@ -40,6 +40,7 @@ check_PROGRAMS =            \
         NextWrongHandle     \
         OpenNoSession       \
         OpenPass            \
+        RecordDef           \
         Replace             \
         RetrieveNullData    \
         RetrieveNullHandle  \
@@ -48,11 +49,11 @@ check_PROGRAMS =            \
         RetrievePass        \
         RetrieveWrongHandle \
         RetrieveZeroLength  \
-        StatusPass          
+        Status              
 
-ClosePass_SOURCES           = ClosePass.c
+Close_SOURCES               = Close.c
 Create_SOURCES              = Create.c
-DeletePass_SOURCES          = DeletePass.c
+Delete_SOURCES              = Delete.c
 Definition_SOURCES          = Definition.c
 FirstNullData_SOURCES       = FirstNullData.c
 FirstNullDataLength_SOURCES = FirstNullDataLength.c
@@ -64,7 +65,7 @@ FirstWrongHandle_SOURCES    = FirstWrongHandle.c
 Get_SOURCES                 = Get.c
 GetFirst_SOURCES            = GetFirst.c
 GetNext_SOURCES             = GetNext.c
-InsertPass_SOURCES          = InsertPass.c
+Insert_SOURCES              = Insert.c
 NextNoFirst_SOURCES         = NextNoFirst.c
 NextNullData_SOURCES        = NextNullData.c
 NextNullDataLength_SOURCES  = NextNullDataLength.c
@@ -75,6 +76,7 @@ NextPass_SOURCES            = NextPass.c
 NextWrongHandle_SOURCES     = NextWrongHandle.c
 OpenNoSession_SOURCES       = OpenNoSession.c
 OpenPass_SOURCES            = OpenPass.c
+RecordDef_SOURCES           = RecordDef.c
 Replace_SOURCES             = Replace.c
 RetrieveNullData_SOURCES    = RetrieveNullData.c
 RetrieveNullHandle_SOURCES  = RetrieveNullHandle.c
@@ -83,45 +85,12 @@ RetrieveNullLength_SOURCES  = RetrieveNullLength.c
 RetrievePass_SOURCES        = RetrievePass.c
 RetrieveWrongHandle_SOURCES = RetrieveWrongHandle.c
 RetrieveZeroLength_SOURCES  = RetrieveZeroLength.c
-StatusPass_SOURCES          = StatusPass.c
+Status_SOURCES              = Status.c
 
-EXTRA_DIST =                   \
-        ClosePass.sh           \
-        Create.sh              \
-        DeletePass.sh          \
-        Definition.sh          \
-        FirstNullData.sh       \
-        FirstNullDataLength.sh \
-        FirstNullHandle.sh     \
-        FirstNullKey.sh        \
-        FirstNullKeyLength.sh  \
-        FirstPass.sh           \
-        FirstWrongHandle.sh    \
-        Get.sh                 \
-        GetFirst.sh            \
-        GetNext.sh             \
-        NextNoFirst.sh         \
-        NextNullData.sh        \
-        NextNullDataLength.sh  \
-        NextNullHandle.sh      \
-        NextNullKey.sh         \
-        NextNullKeyLength.sh   \
-        NextPass.sh            \
-        NextWrongHandle.sh     \
-        InsertPass.sh          \
-        Makefile.win32         \
-        OpenNoSession.sh       \
-        OpenPass.sh            \
-        Replace.sh             \
-        RetrieveNullData.sh    \
-        RetrieveNullHandle.sh  \
-        RetrieveNullKey.sh     \
-        RetrieveNullLength.sh  \
-        RetrievePass.sh        \
-        RetrieveWrongHandle.sh \
-        RetrieveZeroLength.sh  \
-        RunTests.vbs           \
-        StatusPass.sh          
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -131,41 +100,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)
 
-TESTS =                        \
-        ClosePass.sh           \
-        Create.sh              \
-        DeletePass.sh          \
-        Definition.sh          \
-        FirstNullData.sh       \
-        FirstNullDataLength.sh \
-        FirstNullHandle.sh     \
-        FirstNullKey.sh        \
-        FirstNullKeyLength.sh  \
-        FirstPass.sh           \
-        FirstWrongHandle.sh    \
-        Get.sh                 \
-        GetFirst.sh            \
-        GetNext.sh             \
-        InsertPass.sh          \
-        NextNoFirst.sh         \
-        NextNullData.sh        \
-        NextNullDataLength.sh  \
-        NextNullHandle.sh      \
-        NextNullKey.sh         \
-        NextNullKeyLength.sh   \
-        NextPass.sh            \
-        NextWrongHandle.sh     \
-        OpenNoSession.sh       \
-        OpenPass.sh            \
-        Replace.sh             \
-        RetrieveNullData.sh    \
-        RetrieveNullHandle.sh  \
-        RetrieveNullKey.sh     \
-        RetrieveNullLength.sh  \
-        RetrievePass.sh        \
-        RetrieveWrongHandle.sh \
-        RetrieveZeroLength.sh  \
-        StatusPass.sh          
+TESTS = RunTests.sh
 
 XFAIL_TESTS = 
 
