@@ -26,7 +26,8 @@ check_PROGRAMS =                       \
         $(DIR_RELEASE)\OpenNullName.exe     \
         $(DIR_RELEASE)\OpenNullObject.exe   \
         $(DIR_RELEASE)\OpenPass.exe         \
-        $(DIR_RELEASE)\OpenWrongType.exe    
+        $(DIR_RELEASE)\OpenWrongType.exe    \
+        $(DIR_RELEASE)\OpenZeroLength.exe   
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

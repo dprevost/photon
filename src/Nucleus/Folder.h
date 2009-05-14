@@ -35,6 +35,14 @@
 
 BEGIN_C_DECLS
 
+/*
+ * The folder functions are divided in three groups as an attempt to 
+ * simplify the organization of the code:
+ *  - TopFolder* are functions called by the API where the root is "/"
+ *  - APIFolder* are functions called by the API using an api folder object. 
+ *  - Folder* are functions used by the other two to actually do the job...
+ */
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 struct psonFolderItem
@@ -86,6 +94,67 @@ typedef struct psonFolder psonFolder;
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
+ * The following functions are called by the api folder objects and allow
+ * this object to create/destroy other objects or to retrieve information
+ * on its children.
+ */
+/**
+ * Creates an immediate folder child of the folder.
+ */
+PHOTON_ENGINE_EXPORT
+bool psonAPIFolderCreateFolder( psonFolder         * pFolder,
+                                const char         * objectName,
+                                uint32_t             nameLengthInBytes,
+                                psonSessionContext * pContext );
+
+/**
+ * Creates an immediate child of the folder.
+ */
+PHOTON_ENGINE_EXPORT
+bool psonAPIFolderCreateObject( psonFolder          * pFolder,
+                                const char          * objectName,
+                                uint32_t              nameLengthInBytes,
+                                psoObjectDefinition * pDefinition,
+                                psonDataDefinition  * pDataDefinition,
+                                psonKeyDefinition   * pKeyDefinition,
+                                psonSessionContext  * pContext );
+
+/**
+ * Destroy an immediate child of the folder.
+ */
+PHOTON_ENGINE_EXPORT
+bool psonAPIFolderDestroyObject( psonFolder         * pFolder,
+                                 const char         * objectName,
+                                 uint32_t             nameLengthInBytes,
+                                 psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonAPIFolderGetDefinition( psonFolder          * pFolder,
+                                 const char          * objectName,
+                                 uint32_t              strLength,
+                                 psoObjectDefinition * pDefinition,
+                                 psonDataDefinition ** ppDataDefinition,
+                                 psonKeyDefinition  ** ppKeyDefinition,
+                                 psonSessionContext  * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonAPIFolderGetFirst( psonFolder         * pFolder,
+                            psonFolderItem     * pItem,
+                            psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonAPIFolderGetNext( psonFolder         * pFolder,
+                           psonFolderItem     * pItem,
+                           psonSessionContext * pContext );
+
+/* Retrieve the status of the current folder */
+PHOTON_ENGINE_EXPORT
+void psonAPIFolderStatus( psonFolder   * pFolder,
+                          psoObjStatus * pStatus );
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/*
  * if  the object is actually removed, the ptr ppOldMemObj
  * is set so that the transaction does not try to lock the object.
  */
@@ -97,27 +166,6 @@ void psonFolderCommitEdit( psonFolder         * pFolder,
                            psonSessionContext * pContext );
 
 /**
- * Creates an immediate folder child of the folder.
- */
-PHOTON_ENGINE_EXPORT
-bool psonFolderCreateFolder( psonFolder         * pFolder,
-                             const char         * objectName,
-                             uint32_t             nameLengthInBytes,
-                             psonSessionContext * pContext );
-
-/**
- * Creates an immediate child of the folder.
- */
-PHOTON_ENGINE_EXPORT
-bool psonFolderCreateObject( psonFolder          * pFolder,
-                             const char          * objectName,
-                             uint32_t              nameLengthInBytes,
-                             psoObjectDefinition * pDefinition,
-                             psonDataDefinition  * pDataDefinition,
-                             psonKeyDefinition   * pKeyDefinition,
-                             psonSessionContext  * pContext );
-
-/**
  * Delete an object, recursively.
  */ 
 PHOTON_ENGINE_EXPORT
@@ -125,15 +173,6 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
                              const char         * objectName,
                              uint32_t             strLength, 
                              psonSessionContext * pContext );
-
-/**
- * Destroy an immediate child of the folder.
- */
-PHOTON_ENGINE_EXPORT
-bool psonFolderDestroyObject( psonFolder         * pFolder,
-                              const char         * objectName,
-                              uint32_t             nameLengthInBytes,
-                              psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonFolderEditObject( psonFolder         * pFolder,
@@ -170,16 +209,6 @@ bool psonFolderGetDefLength( psonFolder          * pFolder,
                              uint32_t            * pDataDefLength,
                              uint32_t            * pKeyDefLength,
                              psonSessionContext  * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonFolderGetFirst( psonFolder         * pFolder,
-                         psonFolderItem     * pItem,
-                         psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-bool psonFolderGetNext( psonFolder         * pFolder,
-                        psonFolderItem     * pItem,
-                        psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
 bool psonFolderGetObject( psonFolder         * pFolder,
@@ -219,10 +248,6 @@ bool psonFolderInsertObject( psonFolder          * pFolder,
                              size_t                expectedNumOfChilds,
                              psonSessionContext  * pContext );
 
-/* Retrieve the status of the current folder */
-PHOTON_ENGINE_EXPORT
-void psonFolderMyStatus( psonFolder   * pFolder,
-                         psoObjStatus * pStatus );
 
 PHOTON_ENGINE_EXPORT
 bool psonFolderRelease( psonFolder         * pFolder,

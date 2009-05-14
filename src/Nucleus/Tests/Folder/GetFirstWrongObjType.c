@@ -72,7 +72,7 @@ int main()
    }
    
    pFolder->memObject.objType = PSON_IDENT_HASH_MAP;
-   ok = psonFolderGetFirst( pFolder,
+   ok = psonAPIFolderGetFirst( pFolder,
                             &item,
                             &context );
 

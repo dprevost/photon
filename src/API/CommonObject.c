@@ -26,11 +26,11 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaCommonObjOpen( psoaCommonObject  * pObject,
-                      enum psoObjectType   objectType,
-                      psoaEditMode         editMode,
-                      const char         * objectName,
-                      uint32_t             nameLengthInBytes )
+int psoaCommonObjOpen( psoaCommonObject   * pObject,
+                       enum psoObjectType   objectType,
+                       psoaEditMode         editMode,
+                       const char         * objectName,
+                       uint32_t             nameLengthInBytes )
 {
    int errcode = PSO_OBJECT_CANNOT_GET_LOCK;
    psonObjectDescriptor * pDesc;

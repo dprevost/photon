@@ -57,7 +57,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   psonFolderMyStatus( NULL, &objStatus );
+   psonAPIFolderStatus( NULL, &objStatus );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

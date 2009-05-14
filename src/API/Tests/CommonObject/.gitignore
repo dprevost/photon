@@ -1,14 +1,11 @@
+/Makefile
+/Makefile.in
 /Debug2005
 /Release2005
 /CloseNullObject
 /ClosePass
-/LockNullObject
-/LockPass
-/Makefile
-/Makefile.in
 /OpenNullName
 /OpenNullObject
 /OpenPass
 /OpenWrongType
-/UnlockNullObject
-/UnlockPass
+/OpenZeroLength

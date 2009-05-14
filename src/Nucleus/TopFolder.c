@@ -738,7 +738,7 @@ bool psonTopFolderGetStatus( psonFolder         * pFolder,
          psonMemObjectStatus( &pFolder->memObject, pStatus );
          pStatus->type = PSO_FOLDER;
          
-         psonFolderMyStatus( pFolder, pStatus );
+         psonAPIFolderStatus( pFolder, pStatus );
 
          psonUnlock( &pFolder->memObject, pContext );
       }

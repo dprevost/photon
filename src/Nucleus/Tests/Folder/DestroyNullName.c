@@ -35,7 +35,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonFolderCreateObject( pFolder,
+   ok = psonAPIFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -48,7 +48,7 @@ int main()
    
    psonTxCommit( (psonTx *)context.pTransaction, &context );
    
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  NULL,
                                  strlen("Test1"),
                                  &context );
