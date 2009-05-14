@@ -71,14 +71,14 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderGetFirst( pFolder,
+   ok = psonAPIFolderGetFirst( pFolder,
                             &item,
                             &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderGetNext( NULL,
+   ok = psonAPIFolderGetNext( NULL,
                            &item,
                            &context );
 

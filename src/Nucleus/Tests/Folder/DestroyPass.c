@@ -35,7 +35,7 @@ int main()
    
    pFolder = initTopFolderTest( expectedToPass, &context );
 
-   ok = psonFolderCreateObject( pFolder,
+   ok = psonAPIFolderCreateObject( pFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &def,
@@ -57,7 +57,7 @@ int main()
    
    psonTxCommit( (psonTx *)context.pTransaction, &context );
    
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
@@ -77,7 +77,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
    
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test2",
                                  strlen("Test2"),
                                  &context );
@@ -89,7 +89,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  PSO_MAX_NAME_LENGTH+1,
                                  &context );
@@ -101,7 +101,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  0,
                                  &context );
@@ -113,7 +113,7 @@ int main()
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
 
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
@@ -122,7 +122,7 @@ int main()
    }
    
    /* Calling destroy on the same object, twice */
-   ok = psonFolderDestroyObject( pFolder,
+   ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );

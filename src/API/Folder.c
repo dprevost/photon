@@ -93,9 +93,9 @@ int psoFolderClose( PSO_HANDLE objectHandle )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoFolderCreateFolder( PSO_HANDLE            objectHandle,
-                           const char          * objectName,
-                           uint32_t              nameLengthInBytes )
+int psoFolderCreateFolder( PSO_HANDLE   objectHandle,
+                           const char * objectName,
+                           uint32_t     nameLengthInBytes )
 {
    psoaFolder * pFolder;
    psonFolder * pMemFolder;
@@ -124,10 +124,10 @@ int psoFolderCreateFolder( PSO_HANDLE            objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderCreateFolder( pMemFolder,
-                                   objectName,
-                                   nameLengthInBytes,
-                                   &pSession->context );
+      ok = psonAPIFolderCreateFolder( pMemFolder,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
@@ -204,13 +204,13 @@ int psoFolderCreateQueue( PSO_HANDLE            objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderCreateObject( pMemFolder,
-                                   objectName,
-                                   nameLengthInBytes,
-                                   pDefinition,
-                                   pMemDataDefinition,
-                                   NULL,
-                                   &pSession->context );
+      ok = psonAPIFolderCreateObject( pMemFolder,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      pDefinition,
+                                      pMemDataDefinition,
+                                      NULL,
+                                      &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
@@ -300,13 +300,13 @@ int psoFolderCreateMap( PSO_HANDLE            objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderCreateObject( pMemFolder,
-                                   objectName,
-                                   nameLengthInBytes,
-                                   pDefinition,
-                                   pMemDataDefinition,
-                                   pMemKeyDefinition,
-                                   &pSession->context );
+      ok = psonAPIFolderCreateObject( pMemFolder,
+                                      objectName,
+                                      nameLengthInBytes,
+                                      pDefinition,
+                                      pMemDataDefinition,
+                                      pMemKeyDefinition,
+                                      &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
@@ -357,10 +357,10 @@ int psoFolderDestroyObject( PSO_HANDLE   objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderDestroyObject( pMemFolder,
-                                    objectName,
-                                    nameLengthInBytes,
-                                    &pSession->context );
+      ok = psonAPIFolderDestroyObject( pMemFolder,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
@@ -426,13 +426,13 @@ int psoFolderGetDataDefinition( PSO_HANDLE   objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderGetDefinition( pMemFolder,
-                                    objectName,
-                                    nameLengthInBytes,
-                                    &definition,
-                                    &pDataDefinition->pMemDefinition,
-                                    &pKeyMemDefinition,
-                                    &pSession->context );
+      ok = psonAPIFolderGetDefinition( pMemFolder,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       &definition,
+                                       &pDataDefinition->pMemDefinition,
+                                       &pKeyMemDefinition,
+                                       &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
          if ( pDataDefinition->pMemDefinition == NULL ) {
@@ -502,13 +502,13 @@ int psoFolderGetDefinition( PSO_HANDLE            objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderGetDefinition( pMemFolder,
-                                    objectName,
-                                    nameLengthInBytes,
-                                    pDefinition,
-                                    &pDataMemDefinition,
-                                    &pKeyMemDefinition,
-                                    &pSession->context );
+      ok = psonAPIFolderGetDefinition( pMemFolder,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       pDefinition,
+                                       &pDataMemDefinition,
+                                       &pKeyMemDefinition,
+                                       &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
    }
    else {
@@ -569,9 +569,9 @@ int psoFolderGetFirst( PSO_HANDLE       objectHandle,
       }
    }
 
-   ok = psonFolderGetFirst( pMemFolder,
-                            &pFolder->iterator,
-                            &pFolder->object.pSession->context );
+   ok = psonAPIFolderGetFirst( pMemFolder,
+                               &pFolder->iterator,
+                               &pFolder->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
 
@@ -645,13 +645,13 @@ int psoFolderGetKeyDefinition( PSO_HANDLE   objectHandle,
    if ( ! pSession->terminated ) {
       pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-      ok = psonFolderGetDefinition( pMemFolder,
-                                    objectName,
-                                    nameLengthInBytes,
-                                    &definition,
-                                    &pDataMemDefinition,
-                                    &pKeyDefinition->pMemDefinition,
-                                    &pSession->context );
+      ok = psonAPIFolderGetDefinition( pMemFolder,
+                                       objectName,
+                                       nameLengthInBytes,
+                                       &definition,
+                                       &pDataMemDefinition,
+                                       &pKeyDefinition->pMemDefinition,
+                                       &pSession->context );
       PSO_POST_CONDITION( ok == true || ok == false );
       if ( ok ) {
          if ( pKeyDefinition->pMemDefinition == NULL ) {
@@ -715,9 +715,9 @@ int psoFolderGetNext( PSO_HANDLE       objectHandle,
    
    pMemFolder = (psonFolder *) pFolder->object.pMyMemObject;
 
-   ok = psonFolderGetNext( pMemFolder,
-                           &pFolder->iterator,
-                           &pFolder->object.pSession->context );
+   ok = psonAPIFolderGetNext( pMemFolder,
+                              &pFolder->iterator,
+                              &pFolder->object.pSession->context );
    PSO_POST_CONDITION( ok == true || ok == false );
    if ( ! ok ) goto error_handler;
    
@@ -832,7 +832,7 @@ int psoFolderStatus( PSO_HANDLE     objectHandle,
 
          psonMemObjectStatus( &pMemFolder->memObject, pStatus );
 
-         psonFolderMyStatus( pMemFolder, pStatus );
+         psonAPIFolderStatus( pMemFolder, pStatus );
          pStatus->type = PSO_FOLDER;
             
          psonUnlock( &pMemFolder->memObject, pContext );
