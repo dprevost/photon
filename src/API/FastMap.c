@@ -65,6 +65,12 @@ int psoFastMapClose( PSO_HANDLE objectHandle )
       if ( errcode == PSO_OK ) {
          errcode = psoaCommonObjClose( &pHashMap->object );
       }
+      if ( errcode == PSO_OK ) {
+         if ( pHashMap->pRecordDefinition != NULL ) {
+            pHashMap->pRecordDefinition->ppApiObject = NULL;
+            pHashMap->pRecordDefinition = NULL;
+         }
+      }
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;

@@ -61,6 +61,12 @@ int psoLifoClose( PSO_HANDLE objectHandle )
       if ( errcode == PSO_OK ) {
          errcode = psoaCommonObjClose( &pLifo->object );
       }
+      if ( errcode == PSO_OK ) {
+         if ( pLifo->pRecordDefinition != NULL ) {
+            pLifo->pRecordDefinition->ppApiObject = NULL;
+            pLifo->pRecordDefinition = NULL;
+         }
+      }
    }
    else {
       errcode = PSO_SESSION_IS_TERMINATED;
