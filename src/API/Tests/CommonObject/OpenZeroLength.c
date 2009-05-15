@@ -52,8 +52,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_common_open_null_name",
-                              strlen("/api_common_open_null_name") );
+                              "/api_common_open_zero_length",
+                              strlen("/api_common_open_zero_length") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -64,7 +64,7 @@ int main( int argc, char * argv[] )
    errcode = psoaCommonObjOpen( &object,
                                 PSO_FOLDER,
                                 false,
-                                "/api_common_open_null_name",
+                                "/api_common_open_zero_length",
                                 0 );
 
    ERROR_EXIT( expectedToPass, NULL, ; );

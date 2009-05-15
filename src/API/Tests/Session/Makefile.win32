@@ -21,7 +21,7 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\CloseObjNullObject.exe  \
         $(DIR_RELEASE)\CloseObjNullSession.exe \
         $(DIR_RELEASE)\CloseObjPass.exe        \
-        $(DIR_RELEASE)\CommitPass.exe          \
+        $(DIR_RELEASE)\Commit.exe              \
         $(DIR_RELEASE)\CreateFolder.exe        \
         $(DIR_RELEASE)\CreateMap.exe           \
         $(DIR_RELEASE)\CreateQueue.exe         \

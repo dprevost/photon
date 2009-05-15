@@ -64,7 +64,7 @@ ok_programs(6)  = "NextPass"
 ok_programs(7)  = "OpenPass"
 ok_programs(8)  = "Pop"
 ok_programs(9)  = "Push"
-ok_programs(10  = "RecordDef"
+ok_programs(10) = "RecordDef"
 ok_programs(11) = "RemovePass"
 ok_programs(12) = "Status"
 

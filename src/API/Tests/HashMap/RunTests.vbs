@@ -54,21 +54,21 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "ClosePass"
+ok_programs(0)  = "Close"
 ok_programs(1)  = "Create"
-ok_programs(2)  = "DeletePass"
+ok_programs(2)  = "Delete"
 ok_programs(3)  = "Definition"
 ok_programs(4)  = "FirstPass"
 ok_programs(5)  = "Get"
 ok_programs(6)  = "GetFirst"
 ok_programs(7)  = "GetNext"
-ok_programs(8)  = "InsertPass"
+ok_programs(8)  = "Insert"
 ok_programs(9)  = "NextPass"
 ok_programs(10) = "OpenPass"
 ok_programs(11) = "RecordDef"
 ok_programs(12) = "Replace"
 ok_programs(13) = "RetrievePass"
-ok_programs(14) = "StatusPass"
+ok_programs(14) = "Status"
 
 fail_programs(0)  = "FirstNullData"
 fail_programs(1)  = "FirstNullDataLength"
