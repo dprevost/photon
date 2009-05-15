@@ -189,6 +189,11 @@ int psoLifoGetFirst( PSO_HANDLE   objectHandle,
 
    *returnedLength = pLifo->iterator->dataLength;
    memcpy( buffer, pLifo->iterator->data, *returnedLength );
+   if ( pLifo->pRecordDefinition != NULL ) {
+      GET_PTR( pLifo->pRecordDefinition->pMemDefinition, 
+               pLifo->iterator->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -250,6 +255,11 @@ int psoLifoGetNext( PSO_HANDLE   objectHandle,
    
    *returnedLength = pLifo->iterator->dataLength;
    memcpy( buffer, pLifo->iterator->data, *returnedLength );
+   if ( pLifo->pRecordDefinition != NULL ) {
+      GET_PTR( pLifo->pRecordDefinition->pMemDefinition, 
+               pLifo->iterator->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -379,6 +389,11 @@ int psoLifoPop( PSO_HANDLE   objectHandle,
 
    *returnedLength = pLifo->iterator->dataLength;
    memcpy( buffer, pLifo->iterator->data, *returnedLength );
+   if ( pLifo->pRecordDefinition != NULL ) {
+      GET_PTR( pLifo->pRecordDefinition->pMemDefinition, 
+               pLifo->iterator->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -452,12 +467,6 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
          pMemDefinition = pDefinition->pMemDefinition;
       }
 
-      if ( pDefinition != NULL ) {
-         pMemDefinition = pDefinition->pMemDefinition;
-         if ( !(pMemLifo->flags & PSO_MULTIPLE_DATA_DEFINITIONS) ) {
-            errcode = PSO_DATA_DEF_UNSUPPORTED;
-         }
-      }
       if ( errcode == PSO_OK ) {
          ok = psonQueueInsert( pMemLifo,
                                data,
@@ -634,6 +643,11 @@ int psoaLifoFirst( psoaLifo       * pLifo,
 
    *pData = pLifo->iterator->data;
    *pLength = pLifo->iterator->dataLength;
+   if ( pLifo->pRecordDefinition != NULL ) {
+      GET_PTR( pLifo->pRecordDefinition->pMemDefinition, 
+               pLifo->iterator->dataDefOffset, 
+               psonDataDefinition );
+   }
       
    return PSO_OK;
 
@@ -682,6 +696,11 @@ int psoaLifoNext( psoaLifo       * pLifo,
 
    *pData = pLifo->iterator->data;
    *pLength = pLifo->iterator->dataLength;
+   if ( pLifo->pRecordDefinition != NULL ) {
+      GET_PTR( pLifo->pRecordDefinition->pMemDefinition, 
+               pLifo->iterator->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -741,6 +760,11 @@ int psoaLifoRemove( psoaLifo       * pLifo,
 
    *pData = pLifo->iterator->data;
    *pLength = pLifo->iterator->dataLength;
+   if ( pLifo->pRecordDefinition != NULL ) {
+      GET_PTR( pLifo->pRecordDefinition->pMemDefinition, 
+               pLifo->iterator->dataDefOffset, 
+               psonDataDefinition );
+   }
       
    return PSO_OK;
 

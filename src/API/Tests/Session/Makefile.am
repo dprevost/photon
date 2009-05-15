@@ -16,20 +16,20 @@ CLEANFILES = *~ core
 
 check_PROGRAMS =            \
         CloseNullSession    \
-        ClosePass           \
+        Close               \
         CloseObjNullObject  \
         CloseObjNullSession \
         CloseObjPass        \
-        CommitPass          \
+        Commit              \
         CreateFolder        \
-        CreateKeyedObject   \
-        CreateObject        \
-        DestroyPass         \
+        CreateMap           \
+        CreateQueue         \
+        Destroy             \
         ErrorMsg            \
         ExitPass            \
         ExitWithOpenObjects \
         GetInfo             \
-        InitPass            \
+        Init                \
         LastError           \
         OpenObjNotCreated   \
         OpenObjNullName     \
@@ -38,24 +38,24 @@ check_PROGRAMS =            \
         OpenObjPass         \
         OpenObjWrongType    \
         OpenObjZeroLength   \
-        RollbackPass        \
-        StatusPass          
+        Rollback            \
+        Status              
 
 CloseNullSession_SOURCES    = CloseNullSession.c
-ClosePass_SOURCES           = ClosePass.c
+Close_SOURCES               = Close.c
 CloseObjNullObject_SOURCES  = CloseObjNullObject.c
 CloseObjNullSession_SOURCES = CloseObjNullSession.c
 CloseObjPass_SOURCES        = CloseObjPass.c
-CommitPass_SOURCES          = CommitPass.c
+Commit_SOURCES              = Commit.c
 CreateFolder_SOURCES        = CreateFolder.c
-CreateKeyedObject_SOURCES   = CreateKeyedObject.c
-CreateObject_SOURCES        = CreateObject.c
-DestroyPass_SOURCES         = DestroyPass.c
+CreateMap_SOURCES           = CreateMap.c
+CreateQueue_SOURCES         = CreateQueue.c
+DestroyPass_SOURCES         = Destroy.c
 ErrorMsg_SOURCES            = ErrorMsg.c
 ExitPass_SOURCES            = ExitPass.c
 ExitWithOpenObjects_SOURCES = ExitWithOpenObjects.c
 GetInfo_SOURCES             = GetInfo.c
-InitPass_SOURCES            = InitPass.c
+Init_SOURCES                = Init.c
 LastError_SOURCES           = LastError.c
 OpenObjNotCreated_SOURCES   = OpenObjNotCreated.c
 OpenObjNullName_SOURCES     = OpenObjNullName.c
@@ -64,36 +64,13 @@ OpenObjNullSession_SOURCES  = OpenObjNullSession.c
 OpenObjPass_SOURCES         = OpenObjPass.c
 OpenObjWrongType_SOURCES    = OpenObjWrongType.c
 OpenObjZeroLength_SOURCES   = OpenObjZeroLength.c
-RollbackPass_SOURCES        = RollbackPass.c
+Rollback_SOURCES            = Rollback.c
+Status_SOURCES              = Status.c
 
-EXTRA_DIST =                   \
-        CloseNullSession.sh    \
-        ClosePass.sh           \
-        CloseObjNullObject.sh  \
-        CloseObjNullSession.sh \
-        CloseObjPass.sh        \
-        CommitPass.sh          \
-        CreateFolder.sh        \
-        CreateKeyedObject.sh   \
-        CreateObject.sh        \
-        DestroyPass.sh         \
-        ErrorMsg.sh            \
-        ExitPass.sh            \
-        ExitWithOpenObjects.sh \
-        GetInfo.sh             \
-        InitPass.sh            \
-        LastError.sh           \
-        Makefile.win32         \
-        OpenObjNotCreated.sh   \
-        OpenObjNullName.sh     \
-        OpenObjNullObject.sh   \
-        OpenObjNullSession.sh  \
-        OpenObjPass.sh         \
-        OpenObjWrongType.sh    \
-        OpenObjZeroLength.sh   \
-        RollbackPass.sh        \
-        RunTests.vbs           \
-        StatusPass.sh          
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -103,32 +80,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                        \
-        CloseNullSession.sh    \
-        ClosePass.sh           \
-        CloseObjNullObject.sh  \
-        CloseObjNullSession.sh \
-        CloseObjPass.sh        \
-        CommitPass.sh          \
-        CreateFolder.sh        \
-        CreateKeyedObject.sh   \
-        CreateObject.sh        \
-        DestroyPass.sh         \
-        ErrorMsg.sh            \
-        ExitPass.sh            \
-        ExitWithOpenObjects.sh \
-        GetInfo.sh             \
-        InitPass.sh            \
-        LastError.sh           \
-        OpenObjNotCreated.sh   \
-        OpenObjNullName.sh     \
-        OpenObjNullObject.sh   \
-        OpenObjNullSession.sh  \
-        OpenObjPass.sh         \
-        OpenObjWrongType.sh    \
-        OpenObjZeroLength.sh   \
-        RollbackPass.sh        \
-        StatusPass.sh          
+TESTS = RunTests.sh
 
 XFAIL_TESTS =                  
 

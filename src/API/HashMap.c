@@ -284,6 +284,11 @@ int psoHashMapGet( PSO_HANDLE   objectHandle,
    *returnedLength = pHashMap->iterator.pHashItem->dataLength;
    GET_PTR( ptr, pHashMap->iterator.pHashItem->dataOffset, void );
    memcpy( buffer, ptr, *returnedLength );
+   if ( pHashMap->pRecordDefinition != NULL ) {
+      GET_PTR( pHashMap->pRecordDefinition->pMemDefinition, 
+               pHashMap->iterator.pHashItem->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -363,6 +368,11 @@ int psoHashMapGetFirst( PSO_HANDLE   objectHandle,
    memcpy( buffer, ptr, *retDataLength );
    *retKeyLength = pHashMap->iterator.pHashItem->keyLength;
    memcpy( key, pHashMap->iterator.pHashItem->key, *retKeyLength );
+   if ( pHashMap->pRecordDefinition != NULL ) {
+      GET_PTR( pHashMap->pRecordDefinition->pMemDefinition, 
+               pHashMap->iterator.pHashItem->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -436,6 +446,11 @@ int psoHashMapGetNext( PSO_HANDLE   objectHandle,
    memcpy( buffer, ptr, *retDataLength );
    *retKeyLength = pHashMap->iterator.pHashItem->keyLength;
    memcpy( key, pHashMap->iterator.pHashItem->key, *retKeyLength );
+   if ( pHashMap->pRecordDefinition != NULL ) {
+      GET_PTR( pHashMap->pRecordDefinition->pMemDefinition, 
+               pHashMap->iterator.pHashItem->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return 0;
 
@@ -861,6 +876,11 @@ int psoaHashMapFirst( psoaHashMap    * pHashMap,
    *pDataLength = pHashMap->iterator.pHashItem->dataLength;
    *pKeyLength = pHashMap->iterator.pHashItem->keyLength;
    *pKey = pHashMap->iterator.pHashItem->key;
+   if ( pHashMap->pRecordDefinition != NULL ) {
+      GET_PTR( pHashMap->pRecordDefinition->pMemDefinition, 
+               pHashMap->iterator.pHashItem->dataDefOffset, 
+               psonDataDefinition );
+   }
    
    return 0;
 
@@ -915,6 +935,11 @@ int psoaHashMapNext( psoaHashMap    * pHashMap,
    *pDataLength = pHashMap->iterator.pHashItem->dataLength;
    *pKeyLength = pHashMap->iterator.pHashItem->keyLength;
    *pKey = pHashMap->iterator.pHashItem->key;
+   if ( pHashMap->pRecordDefinition != NULL ) {
+      GET_PTR( pHashMap->pRecordDefinition->pMemDefinition, 
+               pHashMap->iterator.pHashItem->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return PSO_OK;
 
@@ -979,6 +1004,11 @@ int psoaHashMapRetrieve( psoaHashMap    * pHashMap,
 
    GET_PTR( *pData, pHashItem->dataOffset, void );
    *pLength = pHashItem->dataLength;
+   if ( pHashMap->pRecordDefinition != NULL ) {
+      GET_PTR( pHashMap->pRecordDefinition->pMemDefinition, 
+               pHashMap->iterator.pHashItem->dataDefOffset, 
+               psonDataDefinition );
+   }
 
    return 0;
 
