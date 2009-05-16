@@ -15,8 +15,12 @@ include ..\Makefile.inc.Win32.2005
 
 all: 
 
-check_PROGRAMS =                           \
-        $(DIR_RELEASE)\ConnectNullConn.exe 
+check_PROGRAMS =                              \
+        $(DIR_RELEASE)\ConnectNullAddress.exe \
+        $(DIR_RELEASE)\ConnectNullAnswer.exe  \
+        $(DIR_RELEASE)\ConnectNullConn.exe    \
+        $(DIR_RELEASE)\ConnectNullError.exe   \
+        $(DIR_RELEASE)\ConnectPass.exe        
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

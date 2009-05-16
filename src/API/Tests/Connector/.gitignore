@@ -2,4 +2,8 @@
 /Makefile.in
 /Debug2005
 /Release2005
+/ConnectNullAddress
+/ConnectNullAnswer
 /ConnectNullConn
+/ConnectNullError
+/ConnectPass

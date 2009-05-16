@@ -14,8 +14,12 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-check_PROGRAMS =        \
-        ConnectNullConn 
+check_PROGRAMS =           \
+        ConnectNullAddress \
+        ConnectNullAnswer  \
+        ConnectNullConn    \
+        ConnectNullError   \
+        ConnectPass        
 
 ConnectNullConn_SOURCES = ConnectNullConn.c
 

@@ -30,11 +30,12 @@ int main( int argc, char * argv[] )
 {
    PSO_HANDLE sessionHandle;
    int errcode;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   PSO_HANDLE dataDefHandle;
+   psoKeyFieldDefinition keyDef = { "Key1", PSO_KEY_VARCHAR, 100 };
+   PSO_HANDLE dataDefHandle, keyDefHandle, returnedDef;
    
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
@@ -54,8 +55,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoDataDefCreate( sessionHandle,
-                               "api_session_create_object",
-                               strlen("api_session_create_object"),
+                               "api_session_key_definition",
+                               strlen("api_session_key_definition"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -64,87 +65,72 @@ int main( int argc, char * argv[] )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+   errcode = psoKeyDefCreate( sessionHandle,
+                              "api_session_key_definition",
+                              strlen("api_session_key_definition"),
+                              PSO_DEF_PHOTON_ODBC_SIMPLE,
+                              (unsigned char *)&keyDef,
+                              sizeof(psoKeyFieldDefinition),
+                              &keyDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoCreateMap( sessionHandle,
+                           "/api_session_key_definition",
+                           strlen("/api_session_key_definition"),
+                           &def,
+                           dataDefHandle,
+                           keyDefHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
 
    /* Invalid arguments to tested function. */
 
-   errcode = psoCreateQueue( NULL,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             &def,
-                             NULL );
+   errcode = psoGetKeyDefinition( NULL,
+                                  "/api_session_key_definition",
+                                  strlen("/api_session_key_definition"),
+                                  &returnedDef );
    if ( errcode != PSO_NULL_HANDLE ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateQueue( sessionHandle,
-                             NULL,
-                             strlen("/api_session_create_object"),
-                             &def,
-                             NULL );
+   errcode = psoGetKeyDefinition( sessionHandle,
+                                  NULL,
+                                  strlen("/api_session_key_definition"),
+                                  &returnedDef );
    if ( errcode != PSO_INVALID_OBJECT_NAME ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             0,
-                             &def,
-                             NULL );
+   errcode = psoGetKeyDefinition( sessionHandle,
+                                  "/api_session_key_definition",
+                                  0,
+                                  &returnedDef );
    if ( errcode != PSO_INVALID_LENGTH ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             NULL,
-                             dataDefHandle );
+   errcode = psoGetKeyDefinition( sessionHandle,
+                                  "/api_session_key_definition",
+                                  strlen("/api_session_key_definition"),
+                                  NULL );
    if ( errcode != PSO_NULL_POINTER ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             &def,
-                             NULL );
-   if ( errcode != PSO_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   def.type = PSO_FOLDER;
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             &def,
-                             dataDefHandle );
-   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   def.type = PSO_HASH_MAP;
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             &def,
-                             dataDefHandle );
-   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   def.type = PSO_QUEUE;
-
    /* End of invalid args. This call should succeed. */
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             &def,
-                             dataDefHandle );
+   errcode = psoGetKeyDefinition( sessionHandle,
+                                  "/api_session_key_definition",
+                                  strlen("/api_session_key_definition"),
+                                  &returnedDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
@@ -154,11 +140,10 @@ int main( int argc, char * argv[] )
 
    psoExit();
    
-   errcode = psoCreateQueue( sessionHandle,
-                             "/api_session_create_object",
-                             strlen("/api_session_create_object"),
-                             &def,
-                             dataDefHandle );
+   errcode = psoGetKeyDefinition( sessionHandle,
+                                  "/api_session_key_definition",
+                                  strlen("/api_session_key_definition"),
+                                  &returnedDef );
    if ( errcode != PSO_SESSION_IS_TERMINATED ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );

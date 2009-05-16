@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,26 +21,22 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/FastMap.h"
+#include "API/Lifo.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-#if defined(USE_DBC)
-   PSO_HANDLE objHandle, sessionHandle, objHandle2;
+   PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   const char * key  = "My Key";
-   const char * data = "My Data";
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
-   psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
+   psoObjectDefinition lifoDef = { PSO_LIFO, 0, 0, 0 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
-   PSO_HANDLE keyDefHandle, dataDefHandle;
-
+   PSO_HANDLE dataDefHandle, returnedDef;
+   
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
    }
@@ -59,27 +55,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_fastmap_reset_null_map",
-                              strlen("/api_fastmap_reset_null_map") );
+                              "/api_lifo_record_def",
+                              strlen("/api_lifo_record_def") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoKeyDefCreate( sessionHandle,
-                              "api_fastmap_reset_null_map",
-                              strlen("api_fastmap_reset_null_map"),
-                              PSO_DEF_PHOTON_ODBC_SIMPLE,
-                              (unsigned char *)&keyDef,
-                              sizeof(psoKeyFieldDefinition),
-                              &keyDefHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
    errcode = psoDataDefCreate( sessionHandle,
-                               "api_fastmap_reset_null_map",
-                               strlen("api_fastmap_reset_null_map"),
+                               "api_lifo_record_def",
+                               strlen("api_lifo_record_def"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -89,56 +74,67 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoCreateMap( sessionHandle,
-                           "/api_fastmap_reset_null_map/test",
-                           strlen("/api_fastmap_reset_null_map/test"),
-                           &mapDef,
-                           dataDefHandle,
-                           keyDefHandle );
+   errcode = psoCreateQueue( sessionHandle,
+                             "/api_lifo_record_def/test",
+                             strlen("/api_lifo_record_def/test"),
+                             &lifoDef,
+                             dataDefHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapEdit( sessionHandle,
-                             "/api_fastmap_reset_null_map/test",
-                             strlen("/api_fastmap_reset_null_map/test"),
-                             &objHandle );
+   errcode = psoLifoOpen( sessionHandle,
+                          "/api_lifo_record_def/test",
+                          strlen("/api_lifo_record_def/test"),
+                          &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapOpen( sessionHandle,
-                             "/api_fastmap_reset_null_map/test",
-                             strlen("/api_fastmap_reset_null_map/test"),
-                             &objHandle2 );
+   /* Invalid arguments to tested function. */
+
+   errcode = psoLifoRecordDefinition( NULL, &returnedDef );
+   if ( errcode != PSO_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoLifoRecordDefinition( sessionHandle, &returnedDef );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoLifoRecordDefinition( objHandle, NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
+   errcode = psoLifoRecordDefinition( objHandle, &returnedDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               7,
-                               NULL );
+   errcode = psoLifoClose( objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   psoaFastMapResetReader( NULL );
+   errcode = psoDataDefClose( returnedDef );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
    
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-#  if defined(WIN32)
-   exit(3);
-#  else
-   abort();
-#  endif
-#endif
+   psoExit();
+
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

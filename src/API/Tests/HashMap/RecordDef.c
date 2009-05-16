@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,26 +21,24 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/FastMap.h"
+#include "API/HashMap.h"
 
-const bool expectedToPass = false;
+const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main( int argc, char * argv[] )
 {
-#if defined(USE_DBC)
-   PSO_HANDLE objHandle, sessionHandle, objHandle2;
+   PSO_HANDLE objHandle, sessionHandle;
    int errcode;
-   const char * key  = "My Key";
-   const char * data = "My Data";
-   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
+   psoObjectDefinition mapDef = { PSO_HASH_MAP, 0, 0, 0 };
    psoKeyFieldDefinition keyDef = { "MyKey", PSO_KEY_VARCHAR, 10 };
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
    PSO_HANDLE keyDefHandle, dataDefHandle;
-
+   PSO_HANDLE returnedDef;
+   
    if ( argc > 1 ) {
       errcode = psoInit( argv[1] );
    }
@@ -59,16 +57,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_fastmap_reset_null_map",
-                              strlen("/api_fastmap_reset_null_map") );
+                              "/api_hashmap_record_def",
+                              strlen("/api_hashmap_record_def") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "api_fastmap_reset_null_map",
-                              strlen("api_fastmap_reset_null_map"),
+                              "api_hashmap_record_def",
+                              strlen("api_hashmap_record_def"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -78,8 +76,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoDataDefCreate( sessionHandle,
-                               "api_fastmap_reset_null_map",
-                               strlen("api_fastmap_reset_null_map"),
+                               "api_hashmap_record_def",
+                               strlen("api_hashmap_record_def"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -90,8 +88,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateMap( sessionHandle,
-                           "/api_fastmap_reset_null_map/test",
-                           strlen("/api_fastmap_reset_null_map/test"),
+                           "/api_hashmap_record_def/test",
+                           strlen("/api_hashmap_record_def/test"),
                            &mapDef,
                            dataDefHandle,
                            keyDefHandle );
@@ -100,45 +98,57 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapEdit( sessionHandle,
-                             "/api_fastmap_reset_null_map/test",
-                             strlen("/api_fastmap_reset_null_map/test"),
+   errcode = psoHashMapOpen( sessionHandle,
+                             "/api_hashmap_record_def/test",
+                             strlen("/api_hashmap_record_def/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapOpen( sessionHandle,
-                             "/api_fastmap_reset_null_map/test",
-                             strlen("/api_fastmap_reset_null_map/test"),
-                             &objHandle2 );
+   /* Invalid arguments to tested function. */
+
+   errcode = psoHashMapRecordDefinition( NULL, &returnedDef );
+   if ( errcode != PSO_NULL_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapRecordDefinition( sessionHandle, &returnedDef );
+   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   errcode = psoHashMapRecordDefinition( objHandle, NULL );
+   if ( errcode != PSO_NULL_POINTER ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+
+   /* End of invalid args. This call should succeed. */
+   errcode = psoHashMapRecordDefinition( objHandle, &returnedDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   errcode = psoFastMapInsert( objHandle,
-                               key,
-                               6,
-                               data,
-                               7,
-                               NULL );
+   errcode = psoDataDefClose( returnedDef );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
-
-   psoaFastMapResetReader( NULL );
    
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-#  if defined(WIN32)
-   exit(3);
-#  else
-   abort();
-#  endif
-#endif
+   errcode = psoHashMapClose( objHandle );
+   if ( errcode != PSO_OK ) {
+      fprintf( stderr, "err: %d\n", errcode );
+      ERROR_EXIT( expectedToPass, NULL, ; );
+   }
+   
+   psoExit();
+
+   return 0;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

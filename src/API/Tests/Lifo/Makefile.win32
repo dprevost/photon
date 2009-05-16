@@ -41,6 +41,7 @@ check_PROGRAMS =                             \
         $(DIR_RELEASE)\OpenPass.exe          \
         $(DIR_RELEASE)\Pop.exe               \
         $(DIR_RELEASE)\Push.exe              \
+        $(DIR_RELEASE)\RecordDef.exe         \
         $(DIR_RELEASE)\RemoveNullData.exe    \
         $(DIR_RELEASE)\RemoveNullHandle.exe  \
         $(DIR_RELEASE)\RemoveNullLength.exe  \

@@ -242,11 +242,13 @@ int psoLifoPush( PSO_HANDLE   objectHandle,
  * handle will point to the data definition of the queue map upon
  * initialization.
  *
+ * You must close the handle with ::psoDataDefClose when you no longer
+ * need it.
+ *
  * \param[in]  objectHandle The handle to the queue
  * \param[out] dataDefHandle This optional handle gives you access to the
  *             data definition of the record on a record by record basis.
- *             This handle will be closed when the queue is closed. You
- *             can also close it manually with ::psoDataDefClose.
+ *             This handle must be closed with ::psoDataDefClose.
  *
  * \return 0 on success or a ::psoErrors on error.
  */
