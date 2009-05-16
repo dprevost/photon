@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,14 +31,37 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs="ConnectPass "
+ok_programs=$ok_programs"Close "
+ok_programs=$ok_programs"Create "
+ok_programs=$ok_programs"Definition "
+ok_programs=$ok_programs"FirstPass "
+ok_programs=$ok_programs"GetFirst "
+ok_programs=$ok_programs"GetNext "
+ok_programs=$ok_programs"NextPass "
+ok_programs=$ok_programs"OpenPass "
+ok_programs=$ok_programs"Pop "
+ok_programs=$ok_programs"Push "
+ok_programs=$ok_programs"PushNow "
+ok_programs=$ok_programs"RecordDef "
+ok_programs=$ok_programs"RemovePass "
+ok_programs=$ok_programs"Status "
 
-fail_programs=$fail_programs"ConnectNullAddress "
-fail_programs=$fail_programs"ConnectNullAnswer "
-fail_programs=$fail_programs"ConnectNullConn "
-fail_programs=$fail_programs"ConnectNullError "
+fail_programs=$fail_programs"FirstNullData "
+fail_programs=$fail_programs"FirstNullHandle "
+fail_programs=$fail_programs"FirstNullLength "
+fail_programs=$fail_programs"FirstWrongHandle "
+fail_programs=$fail_programs"NextNoFirst "
+fail_programs=$fail_programs"NextNullData "
+fail_programs=$fail_programs"NextNullHandle "
+fail_programs=$fail_programs"NextNullLength "
+fail_programs=$fail_programs"NextWrongHandle "
+fail_programs=$fail_programs"OpenNoSession "
+fail_programs=$fail_programs"RemoveNullData "
+fail_programs=$fail_programs"RemoveNullHandle "
+fail_programs=$fail_programs"RemoveNullLength "
+fail_programs=$fail_programs"RemoveWrongHandle "
 
-test_dir=src/API/Tests/Connector
+test_dir=src/API/Tests/Queue
 num_tests=0
 num_failed_tests=0
 failed_tests=""

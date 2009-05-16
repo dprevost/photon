@@ -31,14 +31,10 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs="ConnectPass "
+ok_programs="Close Create Destroy Get GetDef GetLength Open"
+fail_programs=""
 
-fail_programs=$fail_programs"ConnectNullAddress "
-fail_programs=$fail_programs"ConnectNullAnswer "
-fail_programs=$fail_programs"ConnectNullConn "
-fail_programs=$fail_programs"ConnectNullError "
-
-test_dir=src/API/Tests/Connector
+test_dir=src/API/Tests/KeyDefinition
 num_tests=0
 num_failed_tests=0
 failed_tests=""

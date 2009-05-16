@@ -21,7 +21,7 @@ DLL_DEBUG = ..\..\..\Debug2005
 all: 
 
 check_PROGRAMS =                             \
-        $(DIR_RELEASE)\ClosePass.exe         \
+        $(DIR_RELEASE)\Close.exe             \
         $(DIR_RELEASE)\Create.exe            \
         $(DIR_RELEASE)\Definition.exe        \
         $(DIR_RELEASE)\FirstNullData.exe     \
@@ -40,14 +40,15 @@ check_PROGRAMS =                             \
         $(DIR_RELEASE)\OpenNoSession.exe     \
         $(DIR_RELEASE)\OpenPass.exe          \
         $(DIR_RELEASE)\Pop.exe               \
+        $(DIR_RELEASE)\Push.exe              \
         $(DIR_RELEASE)\PushNow.exe           \
-        $(DIR_RELEASE)\PushPass.exe          \
+        $(DIR_RELEASE)\RecordDef.exe         \
         $(DIR_RELEASE)\RemoveNullData.exe    \
         $(DIR_RELEASE)\RemoveNullHandle.exe  \
         $(DIR_RELEASE)\RemoveNullLength.exe  \
         $(DIR_RELEASE)\RemovePass.exe        \
         $(DIR_RELEASE)\RemoveWrongHandle.exe \
-        $(DIR_RELEASE)\StatusPass.exe        
+        $(DIR_RELEASE)\Status.exe            
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

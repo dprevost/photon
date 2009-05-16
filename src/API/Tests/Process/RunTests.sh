@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,14 +31,22 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs="ConnectPass "
+ok_programs=$ok_programs"ClosePass "
+ok_programs=$ok_programs"FiniPass "
+ok_programs=$ok_programs"InitPass "
+ok_programs=$ok_programs"InitWrongAddr "
+ok_programs=$ok_programs"OpenPass "
 
-fail_programs=$fail_programs"ConnectNullAddress "
-fail_programs=$fail_programs"ConnectNullAnswer "
-fail_programs=$fail_programs"ConnectNullConn "
-fail_programs=$fail_programs"ConnectNullError "
+fail_programs=$fail_programs"CloseNullContext "
+fail_programs=$fail_programs"CloseNullProcess "
+fail_programs=$fail_programs"FiniNullProcess "
+fail_programs=$fail_programs"InitNullAddr "
+fail_programs=$fail_programs"InitNullProcess "
+fail_programs=$fail_programs"OpenNullContext "
+fail_programs=$fail_programs"OpenNullFilename "
+fail_programs=$fail_programs"OpenNullProcess "
 
-test_dir=src/API/Tests/Connector
+test_dir=src/API/Tests/Process
 num_tests=0
 num_failed_tests=0
 failed_tests=""

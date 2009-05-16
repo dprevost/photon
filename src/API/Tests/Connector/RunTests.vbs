@@ -1,6 +1,6 @@
 ' ***********************************************************************
 '
-' Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+' Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
 ' 
 ' This file is part of Photon (photonsoftware.org).
 ' 
@@ -34,12 +34,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(6)
+Dim failed_tests(4)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(6)
+Dim ok_programs(0)
+Dim fail_programs(3)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -53,16 +54,15 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "Close"
-ok_programs(1) = "Create"
-ok_programs(2) = "Destroy"
-ok_programs(3) = "Get"
-ok_programs(4) = "GetDef"
-ok_programs(5) = "GetLength"
-ok_programs(6) = "Open"
+ok_programs(0)  = "ConnectPass"
 
-numTests =  7                 ' Sum of length of both arrays 
-numFailed = 0
+fail_programs(0)  = "ConnectNullAddress"
+fail_programs(1)  = "ConnectNullAnswer"
+fail_programs(2)  = "ConnectNullConn"
+fail_programs(3)  = "ConnectNullError"
+
+numTests  =  5                 ' Sum of length of both arrays 
+numFailed =  0
 
 ' Create the FileSystemObject
 Set fso = CreateObject ("Scripting.FileSystemObject")
@@ -117,7 +117,7 @@ end if
 
 tmpDir = objShell.Environment.item("TMP")
 tmpDir = objShell.ExpandEnvironmentStrings(tmpDir)
-tmpDir = tmpDir + "\photon_api"
+tmpDir = tmpDir + "\photon_hash"
 
 if (fso.FolderExists(tmpDir)) Then
    fso.DeleteFolder(tmpDir)
@@ -199,6 +199,28 @@ For Each program in ok_programs
       numFailed = numFailed + 1
    end if
 Next
+For Each program in fail_programs
+   exe_name = prog_path & "\" & program & ".exe"
+   if consoleMode then 
+      WScript.Echo "Running " & exe_name
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+      status = objWshScriptExec.Status
+      Do While objWshScriptExec.Status = 0
+         WScript.Sleep 100
+      Loop
+      strOutput = objWshScriptExec.StdOut.ReadAll
+      if verbose then 
+         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+      end if
+      rc = objWshScriptExec.ExitCode
+   else
+      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+   end if
+   if rc = 0 then
+      failed_tests(numFailed) = program
+      numFailed = numFailed + 1
+   end if
+Next
 
 dim z
 z = false
@@ -229,6 +251,6 @@ if (fso.FolderExists(tmpDir)) Then
    On Error Resume Next
    fso.DeleteFolder(tmpDir)
 end if
-
 if numFailed > 0 then wscript.quit(1)
 wscript.quit(0)
+

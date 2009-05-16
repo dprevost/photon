@@ -6,5 +6,6 @@
 /Create
 /Destroy
 /Get
+/GetDef
 /GetLength
 /Open

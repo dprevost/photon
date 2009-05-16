@@ -34,13 +34,13 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(24)
+Dim failed_tests(27)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(15)
-Dim fail_programs(8)
+Dim ok_programs(19)
+Dim fail_programs(7)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -54,34 +54,37 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0)  = "ClosePass"
+ok_programs(0)  = "Close"
 ok_programs(1)  = "CloseObjPass"
-ok_programs(2)  = "CommitPass"
+ok_programs(2)  = "Commit"
 ok_programs(3)  = "CreateFolder"
-ok_programs(4)  = "CreateKeyedObject"
-ok_programs(5)  = "CreateObject"
-ok_programs(6)  = "DestroyPass"
-ok_programs(7)  = "ErrorMsg"
-ok_programs(8)  = "ExitPass"
-ok_programs(9)  = "ExitWithOpenObjects"
-ok_programs(10) = "GetInfo"
-ok_programs(11) = "InitPass"
-ok_programs(12) = "LastError"
-ok_programs(13) = "OpenObjPass"
-ok_programs(14) = "RollbackPass"
-ok_programs(15) = "StatusPass"
+ok_programs(4)  = "CreateMap"
+ok_programs(5)  = "CreateQueue"
+ok_programs(6)  = "DataDefinition"
+ok_programs(7)  = "Definition"
+ok_programs(8)  = "Destroy"
+ok_programs(9)  = "ErrorMsg"
+ok_programs(10) = "ExitPass"
+ok_programs(11) = "ExitWithOpenObjects"
+ok_programs(12) = "GetInfo"
+ok_programs(13) = "Init"
+ok_programs(14) = "KeyDefinition"
+ok_programs(15) = "LastError"
+ok_programs(16) = "OpenObjNotCreated"
+ok_programs(17) = "OpenObjPass"
+ok_programs(18) = "Rollback"
+ok_programs(19) = "Status"
 
 fail_programs(0) = "CloseNullSession"
 fail_programs(1) = "CloseObjNullObject"
 fail_programs(2) = "CloseObjNullSession"
-fail_programs(3) = "OpenObjNotCreated"
-fail_programs(4) = "OpenObjNullName"
-fail_programs(5) = "OpenObjNullObject"
-fail_programs(6) = "OpenObjNullSession"
-fail_programs(7) = "OpenObjWrongType"
-fail_programs(8) = "OpenObjZeroLength"
+fail_programs(3) = "OpenObjNullName"
+fail_programs(4) = "OpenObjNullObject"
+fail_programs(5) = "OpenObjNullSession"
+fail_programs(6) = "OpenObjWrongType"
+fail_programs(7) = "OpenObjZeroLength"
 
-numTests  = 25                 ' Sum of length of both arrays 
+numTests  = 28                 ' Sum of length of both arrays 
 numFailed =  0
 
 ' Create the FileSystemObject
@@ -215,6 +218,28 @@ For Each program in ok_programs
    end if
    if rc <> 0 then   
    wscript.echo "rc = " & rc & " " & program
+      failed_tests(numFailed) = program
+      numFailed = numFailed + 1
+   end if
+Next
+For Each program in fail_programs
+   exe_name = prog_path & "\" & program & ".exe"
+   if consoleMode then 
+      WScript.Echo "Running " & exe_name
+      Set objWshScriptExec = objShell.Exec("%comspec% /c " & Chr(34) & exe_name & Chr(34))
+      status = objWshScriptExec.Status
+      Do While objWshScriptExec.Status = 0
+         WScript.Sleep 100
+      Loop
+      strOutput = objWshScriptExec.StdOut.ReadAll
+      if verbose then 
+         WScript.Stdout.Write objWshScriptExec.StdErr.ReadAll
+      end if
+      rc = objWshScriptExec.ExitCode
+   else
+      rc = objShell.Run("%comspec% /c " & Chr(34) & exe_name & Chr(34), 2, true)
+   end if
+   if rc = 0 then
       failed_tests(numFailed) = program
       numFailed = numFailed + 1
    end if

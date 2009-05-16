@@ -2,7 +2,7 @@
 /Makefile.in
 /Debug2005
 /Release2005
-/ClosePass
+/Close
 /Create
 /Definition
 /FirstNullData
@@ -22,10 +22,11 @@
 /OpenPass
 /Pop
 /PushNow
-/PushPass
+/Push
+/RecordDef
 /RemoveNullData
 /RemoveNullHandle
 /RemoveNullLength
 /RemovePass
 /RemoveWrongHandle
-/StatusPass
+/Status

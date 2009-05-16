@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
+ * Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
  *
  * This file is part of Photon (photonsoftware.org).
  *
@@ -21,7 +21,7 @@
 #include "Common/Common.h"
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
-#include "API/CommonObject.h"
+#include "API/Connector.h"
 
 const bool expectedToPass = false;
 
@@ -30,44 +30,20 @@ const bool expectedToPass = false;
 int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
-   PSO_HANDLE sessionHandle;
    int errcode;
-   psoaCommonObject object;
-   
-   if ( argc > 1 ) {
-      errcode = psoInit( argv[1] );
-   }
-   else {
-      errcode = psoInit( "10701" );
-   }
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   errcode = psoInitSession( &sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   errcode = psoCreateFolder( sessionHandle,
-                              "/api_common_open_zero_length",
-                              strlen("/api_common_open_zero_length") );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
-   memset( &object, 0, sizeof(psoaCommonObject) );
-   object.pSession = (psoaSession *) sessionHandle;
-   errcode = psoaCommonObjOpen( &object,
-                                PSO_FOLDER,
-                                false,
-                                "/api_common_open_zero_length",
-                                0 );
+   psoaConnector connector;
+                 
+   const char * address = "10701";
+   struct qsrOutput answer;
+   psocErrorHandler errorHandler;
+                 
+   errcode = psoaConnect( &connector,
+                          address,
+                          NULL,
+                          &errorHandler );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
+
 #else
 #  if defined(WIN32)
    exit(3);
@@ -78,4 +54,3 @@ int main( int argc, char * argv[] )
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-

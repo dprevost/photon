@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,14 +31,37 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs="ConnectPass "
+ok_programs=$ok_programs"Close "
+ok_programs=$ok_programs"CloseObjPass "
+ok_programs=$ok_programs"Commit "
+ok_programs=$ok_programs"CreateFolder "
+ok_programs=$ok_programs"CreateMap "
+ok_programs=$ok_programs"CreateQueue "
+ok_programs=$ok_programs"DataDefinition "
+ok_programs=$ok_programs"Definition "
+ok_programs=$ok_programs"Destroy "
+ok_programs=$ok_programs"ErrorMsg "
+ok_programs=$ok_programs"ExitPass "
+ok_programs=$ok_programs"ExitWithOpenObjects "
+ok_programs=$ok_programs"GetInfo "
+ok_programs=$ok_programs"Init "
+ok_programs=$ok_programs"KeyDefinition "
+ok_programs=$ok_programs"LastError "
+ok_programs=$ok_programs"OpenObjNotCreated "
+ok_programs=$ok_programs"OpenObjPass "
+ok_programs=$ok_programs"Rollback "
+ok_programs=$ok_programs"Status "
 
-fail_programs=$fail_programs"ConnectNullAddress "
-fail_programs=$fail_programs"ConnectNullAnswer "
-fail_programs=$fail_programs"ConnectNullConn "
-fail_programs=$fail_programs"ConnectNullError "
+fail_programs=$fail_programs"CloseNullSession "
+fail_programs=$fail_programs"CloseObjNullObject "
+fail_programs=$fail_programs"CloseObjNullSession "
+fail_programs=$fail_programs"OpenObjNullName "
+fail_programs=$fail_programs"OpenObjNullObject "
+fail_programs=$fail_programs"OpenObjNullSession "
+fail_programs=$fail_programs"OpenObjWrongType "
+fail_programs=$fail_programs"OpenObjZeroLength "
 
-test_dir=src/API/Tests/Connector
+test_dir=src/API/Tests/Session
 num_tests=0
 num_failed_tests=0
 failed_tests=""

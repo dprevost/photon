@@ -28,6 +28,7 @@
 #endif
 #include "Common/Common.h"
 
+#include "API/api.h"
 #include "API/QuasarCommon.h"
 #include "Common/ErrorHandler.h"
 
@@ -89,6 +90,7 @@ typedef struct psoaConnector
  *               information needed to establish a link to the shared memory.
  * \return A Photon error code.
  */
+PHOTON_API_EXPORT
 int psoaConnect( psoaConnector    * pConnector,
                  const char       * address,
                  struct qsrOutput * pAnswer,
@@ -97,6 +99,7 @@ int psoaConnect( psoaConnector    * pConnector,
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /** Break the connection with quasar. */
+PHOTON_API_EXPORT
 void psoaDisconnect( psoaConnector    * pConnector,
                      psocErrorHandler * errorHandler );
 

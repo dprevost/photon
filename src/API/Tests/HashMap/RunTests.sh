@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2007-2009 Daniel Prevost <dprevost@photonsoftware.org>
 # 
 # This file is part of Photon (photonsoftware.org).
 #
@@ -31,14 +31,44 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs="ConnectPass "
+ok_programs=$ok_programs"Close "
+ok_programs=$ok_programs"Create "
+ok_programs=$ok_programs"Delete "
+ok_programs=$ok_programs"Definition "
+ok_programs=$ok_programs"FirstPass "
+ok_programs=$ok_programs"Get "
+ok_programs=$ok_programs"GetFirst "
+ok_programs=$ok_programs"GetNext "
+ok_programs=$ok_programs"Insert "
+ok_programs=$ok_programs"NextPass "
+ok_programs=$ok_programs"OpenPass "
+ok_programs=$ok_programs"RecordDef "
+ok_programs=$ok_programs"Replace "
+ok_programs=$ok_programs"RetrievePass "
+ok_programs=$ok_programs"Status "
 
-fail_programs=$fail_programs"ConnectNullAddress "
-fail_programs=$fail_programs"ConnectNullAnswer "
-fail_programs=$fail_programs"ConnectNullConn "
-fail_programs=$fail_programs"ConnectNullError "
+fail_programs=$fail_programs"FirstNullData "
+fail_programs=$fail_programs"FirstNullDataLength "
+fail_programs=$fail_programs"FirstNullHandle "
+fail_programs=$fail_programs"FirstNullKey "
+fail_programs=$fail_programs"FirstNullKeyLength "
+fail_programs=$fail_programs"FirstWrongHandle "
+fail_programs=$fail_programs"NextNoFirst "
+fail_programs=$fail_programs"NextNullData "
+fail_programs=$fail_programs"NextNullDataLength "
+fail_programs=$fail_programs"NextNullHandle "
+fail_programs=$fail_programs"NextNullKey "
+fail_programs=$fail_programs"NextNullKeyLength "
+fail_programs=$fail_programs"NextWrongHandle "
+fail_programs=$fail_programs"OpenNoSession "
+fail_programs=$fail_programs"RetrieveNullData "
+fail_programs=$fail_programs"RetrieveNullHandle "
+fail_programs=$fail_programs"RetrieveNullKey "
+fail_programs=$fail_programs"RetrieveNullLength "
+fail_programs=$fail_programs"RetrieveWrongHandle "
+fail_programs=$fail_programs"RetrieveZeroLength "
 
-test_dir=src/API/Tests/Connector
+test_dir=src/API/Tests/HashMap
 num_tests=0
 num_failed_tests=0
 failed_tests=""
