@@ -14,17 +14,17 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =              \
-        DataDefinition \
-        FastMap        \
-        Folder         \
-        HashMap        \
-        Lifo           \
-        Queue          \
-        Process        \
-        Session        
+AM_LDFLAGS = @LIBXML2_LIBS@
 
-EXTRA_DIST = 
+check_PROGRAMS =   \
+        Close
+
+Close_SOURCES     = Close.cpp
+
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -32,7 +32,11 @@ TESTS_ENVIRONMENT =                  \
         srcdir=$(srcdir)             \
         top_builddir=$(top_builddir) \
         verbose=1                    \
-        PYTHON=$(PYTHON)             
+        PYTHON=$(PYTHON)
 
-LDADD = $(top_builddir)/src/C++/libphotoncpp.la
+TESTS = RunTests.sh
+
+XFAIL_TESTS = 
+
+LDADD = $(top_builddir)/src/C++/libphotoncpp.la 
 
