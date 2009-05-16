@@ -25,12 +25,15 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\CreateFolder.exe        \
         $(DIR_RELEASE)\CreateMap.exe           \
         $(DIR_RELEASE)\CreateQueue.exe         \
+        $(DIR_RELEASE)\DataDefinition.exe      \
+        $(DIR_RELEASE)\Definition.exe          \
         $(DIR_RELEASE)\Destroy.exe             \
         $(DIR_RELEASE)\ErrorMsg.exe            \
         $(DIR_RELEASE)\ExitPass.exe            \
         $(DIR_RELEASE)\ExitWithOpenObjects.exe \
         $(DIR_RELEASE)\GetInfo.exe             \
         $(DIR_RELEASE)\Init.exe                \
+        $(DIR_RELEASE)\KeyDefinition.exe       \
         $(DIR_RELEASE)\LastError.exe           \
         $(DIR_RELEASE)\OpenObjNotCreated.exe   \
         $(DIR_RELEASE)\OpenObjNullName.exe     \

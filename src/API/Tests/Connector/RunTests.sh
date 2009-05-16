@@ -31,8 +31,12 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs=""
-fail_programs="ConnectNullConn"
+ok_programs="ConnectPass "
+
+fail_programs=$fail_programs"ConnectNullAddress "
+fail_programs=$fail_programs"ConnectNullAnswer "
+fail_programs=$fail_programs"ConnectNullConn "
+fail_programs=$fail_programs"ConnectNullError "
 
 test_dir=src/API/Tests/Connector
 num_tests=0

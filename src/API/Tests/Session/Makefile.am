@@ -24,12 +24,15 @@ check_PROGRAMS =            \
         CreateFolder        \
         CreateMap           \
         CreateQueue         \
+        DataDefinition      \
+        Definition          \
         Destroy             \
         ErrorMsg            \
         ExitPass            \
         ExitWithOpenObjects \
         GetInfo             \
         Init                \
+        KeyDefinition       \
         LastError           \
         OpenObjNotCreated   \
         OpenObjNullName     \
@@ -50,12 +53,15 @@ Commit_SOURCES              = Commit.c
 CreateFolder_SOURCES        = CreateFolder.c
 CreateMap_SOURCES           = CreateMap.c
 CreateQueue_SOURCES         = CreateQueue.c
-DestroyPass_SOURCES         = Destroy.c
+DataDefinition_SOURCES      = DataDefinition.c
+Definition_SOURCES          = Definition.c
+Destroy_SOURCES             = Destroy.c
 ErrorMsg_SOURCES            = ErrorMsg.c
 ExitPass_SOURCES            = ExitPass.c
 ExitWithOpenObjects_SOURCES = ExitWithOpenObjects.c
 GetInfo_SOURCES             = GetInfo.c
 Init_SOURCES                = Init.c
+KeyDefinition_SOURCES       = KeyDefinition.c
 LastError_SOURCES           = LastError.c
 OpenObjNotCreated_SOURCES   = OpenObjNotCreated.c
 OpenObjNullName_SOURCES     = OpenObjNullName.c

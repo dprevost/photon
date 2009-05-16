@@ -11,12 +11,15 @@
 /CreateFolder
 /CreateMap
 /CreateQueue
+/DataDefinition
+/Definition
 /Destroy
 /ErrorMsg
 /ExitPass
 /ExitWithOpenObjects
 /GetInfo
 /Init
+/KeyDefinition
 /LastError
 /OpenObjNotCreated
 /OpenObjNullName
