@@ -33,10 +33,14 @@ int main( int argc, char * argv[] )
    Process process;
    Session session;
    DataDefinition dataDef;
-   string name = "/cpp_datadefinition_close";
-   unsigned char byteData[50];
+   string name = "/cpp_datadefinition_get_definition";
+   unsigned char byteData[50], returnedData[50];
    unsigned int dataLength = 50;
 
+   for ( int i = 0; i < 50; ++i ) {
+      byteData[i] = i*2 + 1;
+   }
+   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -54,7 +58,7 @@ int main( int argc, char * argv[] )
    // DataDefinition is not initialized
 
    try {
-      dataDef.Close();
+      dataDef.GetDefinition( returnedData, dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -79,13 +83,51 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   // Wrong arguments to tested function
+   
    try {
-      dataDef.Close();
+      dataDef.GetDefinition( NULL, dataLength );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
    }
    catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
+   try {
+      dataDef.GetDefinition( returnedData, 0 );
+      // Should never come here
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   catch( pso::Exception exc ) {
+      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
+         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
+         return 1;
+      }
+   }
+
+   // This call should work
+   
+   try {
+      dataDef.GetDefinition( returnedData, dataLength );
+   }
+   catch( pso::Exception exc ) {
+      cerr << exc.ErrorCode() << endl;
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   if ( memcmp( byteData, returnedData, dataLength ) != 0 ) {
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   
+   dataDef.Close();
+   
    return 0;
 }

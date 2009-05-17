@@ -33,10 +33,22 @@ int main( int argc, char * argv[] )
    Process process;
    Session session;
    DataDefinition dataDef;
-   string name = "/cpp_datadefinition_close";
+   string name = "/cpp_datadefinition_get_definition";
    unsigned char byteData[50];
    unsigned int dataLength = 50;
-
+   string fieldDescription;
+   
+   memcpy( &byteData[0],  "Field 1  ", 9 );
+   memcpy( &byteData[10], "Field 2  ", 9 );
+   memcpy( &byteData[20], "Field 3  ", 9 );
+   memcpy( &byteData[30], "Field 4  ", 9 );
+   memcpy( &byteData[40], "Field 5  ", 9 );
+   byteData[9]  = 0;
+   byteData[19] = 0;
+   byteData[29] = 0;
+   byteData[39] = 0;
+   byteData[49] = 0;
+   
    try {
       if ( argc > 1 ) {
          process.Init( argv[1] );
@@ -54,7 +66,7 @@ int main( int argc, char * argv[] )
    // DataDefinition is not initialized
 
    try {
-      dataDef.Close();
+      fieldDescription = dataDef.GetNext();
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -79,13 +91,21 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   // This call should work
+   
    try {
-      dataDef.Close();
+      do {
+         fieldDescription = dataDef.GetNext();
+         cout << fieldDescription << endl;
+      } while ( fieldDescription.length() > 0 );
    }
    catch( pso::Exception exc ) {
+      cerr << exc.ErrorCode() << endl;
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   dataDef.Close();
+   
    return 0;
 }

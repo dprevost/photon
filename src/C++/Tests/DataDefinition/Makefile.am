@@ -16,8 +16,12 @@ CLEANFILES = *~ core
 
 AM_LDFLAGS = @LIBXML2_LIBS@
 
-check_PROGRAMS =   \
-        Close
+check_PROGRAMS =      \
+        Close         \
+        Create        \
+        GetDefinition \
+        GetLength     \
+        GetNext       
 
 Close_SOURCES     = Close.cpp
 

@@ -33,9 +33,9 @@ int main( int argc, char * argv[] )
    Process process;
    Session session;
    DataDefinition dataDef;
-   string name = "/cpp_datadefinition_close";
+   string name = "/cpp_datadefinition_get_definition";
    unsigned char byteData[50];
-   unsigned int dataLength = 50;
+   unsigned int dataLength = 50, returnedLength;
 
    try {
       if ( argc > 1 ) {
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] )
    // DataDefinition is not initialized
 
    try {
-      dataDef.Close();
+      returnedLength = dataDef.GetLength();
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -79,13 +79,23 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
+   // This call should work
+   
    try {
-      dataDef.Close();
+      returnedLength = dataDef.GetLength();
    }
    catch( pso::Exception exc ) {
+      cerr << exc.ErrorCode() << endl;
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   if ( dataLength != returnedLength ) {
+      cerr << "Test failed - line " << __LINE__ << endl;
+      return 1;
+   }
+   
+   dataDef.Close();
+   
    return 0;
 }

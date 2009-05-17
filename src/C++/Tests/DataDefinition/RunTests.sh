@@ -31,7 +31,11 @@
 #
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-ok_programs="Close "
+ok_programs=$ok_programs"Close "
+ok_programs=$ok_programs"Create "
+ok_programs=$ok_programs"GetDefinition "
+ok_programs=$ok_programs"GetLength "
+ok_programs=$ok_programs"GetNext "
 fail_programs=""
 
 test_dir=src/C++/Tests/DataDefinition
