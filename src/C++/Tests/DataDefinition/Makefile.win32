@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2009 Daniel Prevost <dprevost@photonsoftware.org>
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -13,19 +13,18 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
-check_PROGRAMS =                 \
-        $(DIR_RELEASE)\AddField.exe   \
-        $(DIR_RELEASE)\AddKey.exe     \
-        $(DIR_RELEASE)\Construct.exe  \
-        $(DIR_RELEASE)\ObjectType.exe \
-        $(DIR_RELEASE)\Reset.exe      
+check_PROGRAMS =                           \
+        $(DIR_RELEASE)\Close.exe           \
+        $(DIR_RELEASE)\ConstructCreate.exe \
+        $(DIR_RELEASE)\ConstructOpen.exe   \
+        $(DIR_RELEASE)\Create.exe          \
+        $(DIR_RELEASE)\GetDefinition.exe   \
+        $(DIR_RELEASE)\GetLength.exe       \
+        $(DIR_RELEASE)\GetNext.exe         \
+        $(DIR_RELEASE)\GetType.exe         \
+        $(DIR_RELEASE)\Open.exe            
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

@@ -32,10 +32,8 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   DataDefinition dataDef;
-   string name = "/cpp_datadefinition_create";
-   unsigned char byteData[50];
-   unsigned int dataLength = 50;
+   DataDefinition * pDataDef;
+   string name = "Default";
 
    try {
       if ( argc > 1 ) {
@@ -54,11 +52,7 @@ int main( int argc, char * argv[] )
    // Session is not initialized
    
    try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, name );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -81,11 +75,7 @@ int main( int argc, char * argv[] )
    // Wrong arguments to tested function
    
    try {
-      dataDef.Create( session, 
-                      "",
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, "" );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -98,87 +88,30 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      dataDef.Create( session, 
-                      "Default",
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, "blah-blah-junk" );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }
    catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_ITEM_ALREADY_PRESENT ) {
+      if ( exc.ErrorCode() != PSO_NO_SUCH_ITEM ) {
          cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
          return 1;
       }
    }
 
-   try {
-      dataDef.Create( session, 
-                      name,
-                      (psoDefinitionType)0,
-                      byteData,
-                      dataLength );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_WRONG_OBJECT_TYPE ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
-   try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      NULL,
-                      dataLength );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_NULL_POINTER ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-
-   try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      0 );
-      // Should never come here
-      cerr << "Test failed - line " << __LINE__ << endl;
-      return 1;
-   }
-   catch( pso::Exception exc ) {
-      if ( exc.ErrorCode() != PSO_INVALID_LENGTH ) {
-         cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
-         return 1;
-      }
-   }
-   
    // This call should work
    
    try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, name );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   delete pDataDef;
+   
    return 0;
 }
 

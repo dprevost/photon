@@ -3,7 +3,11 @@
 /Debug2005
 /Release2005
 /Close
+/ConstructCreate
+/ConstructOpen
 /Create
 /GetDefinition
 /GetLength
 /GetNext
+/GetType
+/Open

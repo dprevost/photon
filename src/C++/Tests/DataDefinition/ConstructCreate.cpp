@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
 {
    Process process;
    Session session;
-   DataDefinition dataDef;
+   DataDefinition * pDataDef = NULL;
    string name = "/cpp_datadefinition_create";
    unsigned char byteData[50];
    unsigned int dataLength = 50;
@@ -54,11 +54,11 @@ int main( int argc, char * argv[] )
    // Session is not initialized
    
    try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, 
+                                     name,
+                                     PSO_DEF_USER_DEFINED,
+                                     byteData,
+                                     dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -81,11 +81,11 @@ int main( int argc, char * argv[] )
    // Wrong arguments to tested function
    
    try {
-      dataDef.Create( session, 
-                      "",
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, 
+                                     "",
+                                     PSO_DEF_USER_DEFINED,
+                                     byteData,
+                                     dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -98,11 +98,11 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      dataDef.Create( session, 
-                      "Default",
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, 
+                                     "Default",
+                                     PSO_DEF_USER_DEFINED,
+                                     byteData,
+                                     dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -115,11 +115,11 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      dataDef.Create( session, 
-                      name,
-                      (psoDefinitionType)0,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, 
+                                     name,
+                                     (psoDefinitionType)0,
+                                     byteData,
+                                     dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -132,11 +132,11 @@ int main( int argc, char * argv[] )
    }
    
    try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      NULL,
-                      dataLength );
+      pDataDef = new DataDefinition( session, 
+                                     name,
+                                     PSO_DEF_USER_DEFINED,
+                                     NULL,
+                                     dataLength );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -149,11 +149,11 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      0 );
+      pDataDef = new DataDefinition( session, 
+                                     name,
+                                     PSO_DEF_USER_DEFINED,
+                                     byteData,
+                                     0 );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -168,17 +168,19 @@ int main( int argc, char * argv[] )
    // This call should work
    
    try {
-      dataDef.Create( session, 
-                      name,
-                      PSO_DEF_USER_DEFINED,
-                      byteData,
-                      dataLength );
+      pDataDef = new DataDefinition( session, 
+                                     name,
+                                     PSO_DEF_USER_DEFINED,
+                                     byteData,
+                                     dataLength );
    }
    catch( pso::Exception exc ) {
       cerr << "Test failed - line " << __LINE__ << ", error = " << exc.Message() << endl;
       return 1;
    }
 
+   delete pDataDef;
+   
    return 0;
 }
 

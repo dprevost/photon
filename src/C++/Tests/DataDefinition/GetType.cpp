@@ -35,7 +35,8 @@ int main( int argc, char * argv[] )
    DataDefinition dataDef;
    string name = "/cpp_datadefinition_get_definition";
    unsigned char byteData[50];
-   unsigned int dataLength = 50, returnedLength;
+   unsigned int dataLength = 50;
+   psoDefinitionType returnedType;
 
    try {
       if ( argc > 1 ) {
@@ -54,7 +55,7 @@ int main( int argc, char * argv[] )
    // DataDefinition is not initialized
 
    try {
-      returnedLength = dataDef.GetLength();
+      returnedType = dataDef.GetType();
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -82,7 +83,7 @@ int main( int argc, char * argv[] )
    // This call should work
    
    try {
-      returnedLength = dataDef.GetLength();
+      returnedType = dataDef.GetType();
    }
    catch( pso::Exception exc ) {
       cerr << exc.ErrorCode() << endl;
@@ -90,7 +91,7 @@ int main( int argc, char * argv[] )
       return 1;
    }
 
-   if ( dataLength != returnedLength ) {
+   if ( returnedType != PSO_DEF_USER_DEFINED ) {
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
    }

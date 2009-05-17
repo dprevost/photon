@@ -32,10 +32,14 @@
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
 ok_programs=$ok_programs"Close "
+ok_programs=$ok_programs"ConstructCreate "
+ok_programs=$ok_programs"ConstructOpen "
 ok_programs=$ok_programs"Create "
 ok_programs=$ok_programs"GetDefinition "
 ok_programs=$ok_programs"GetLength "
 ok_programs=$ok_programs"GetNext "
+ok_programs=$ok_programs"GetType "
+ok_programs=$ok_programs"Open "
 fail_programs=""
 
 test_dir=src/C++/Tests/DataDefinition

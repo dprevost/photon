@@ -34,12 +34,12 @@ Dim objSocket
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(4)
+Dim failed_tests(8)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(4)
+Dim ok_programs(8)
 
 Dim exe_name, prog_path, program, dll_path, qsr_path, tmpDir, cmdFile, exeName
 Dim consoleMode
@@ -53,13 +53,17 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "AddField"
-ok_programs(1) = "AddKey"
-ok_programs(2) = "Construct"
-ok_programs(3) = "ObjectType"
-ok_programs(4) = "Reset"
+ok_programs(0) = "Close"
+ok_programs(1) = "ConstructCreate"
+ok_programs(2) = "ConstructOpen"
+ok_programs(3) = "Create"
+ok_programs(4) = "GetDefinition"
+ok_programs(5) = "GetLength"
+ok_programs(6) = "GetNext"
+ok_programs(7) = "GetType"
+ok_programs(8) = "Open"
 
-numTests  =  5
+numTests  =  9
 numFailed =  0
 
 ' Create the FileSystemObject
