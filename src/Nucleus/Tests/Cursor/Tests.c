@@ -111,21 +111,21 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   if ( pItem->realItemfOffset != SET_OFFSET((unsigned char *)0x2) ) {
+   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x2) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    ok = psonCursorGetNext( pCursor, pItem, &pItem, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   if ( pItem->realItemfOffset != SET_OFFSET((unsigned char *)0x3) ) {
+   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x3) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    ok = psonCursorGetPrevious( pCursor, pItem, &pItem, &context );
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   if ( pItem->realItemfOffset != SET_OFFSET((unsigned char *)0x2) ) {
+   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x2) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    
@@ -142,7 +142,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   if ( pItem->realItemfOffset != SET_OFFSET((unsigned char *)0x1) ) {
+   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x1) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
@@ -150,7 +150,7 @@ int main()
    if ( ok != true ) {
       ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
    }
-   if ( pItem->realItemfOffset != SET_OFFSET((unsigned char *)0x3) ) {
+   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x3) ) {
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 

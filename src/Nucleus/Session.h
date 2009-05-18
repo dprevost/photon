@@ -30,6 +30,7 @@
 #include "Nucleus/BlockGroup.h"
 
 struct psonTx;
+struct psonCursor;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -62,6 +63,26 @@ struct psonObjectContext
 };
 
 typedef struct psonObjectContext psonObjectContext;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/**
+ * The context information for each object accessed by a session is 
+ * kept in a doubly linked list (for fast access). 
+ */
+struct psonCursorContext
+{
+   /** offset to the cursor object in memory */
+   ptrdiff_t offset;
+
+   struct psonCursor * cursor;
+   
+   /** Our node in the linked list of the psonSession object. */
+   psonLinkNode node;
+      
+};
+
+typedef struct psonCursorContext psonCursorContext;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -108,15 +129,6 @@ typedef struct psonSession
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 PHOTON_ENGINE_EXPORT
-bool psonSessionInit( psonSession        * pSession,
-                      void               * pApiSession,
-                      psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
-void psonSessionFini( psonSession        * pSession,
-                      psonSessionContext * pContext );
-
-PHOTON_ENGINE_EXPORT
 bool psonSessionAddObj( psonSession        * pSession,
                         ptrdiff_t            objOffset, 
                         enum psoObjectType   objType, 
@@ -125,11 +137,22 @@ bool psonSessionAddObj( psonSession        * pSession,
                         psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT
+bool psonSessionCloseCursor( psonSession        * pSession,
+                             psonCursorContext  * pObject,
+                             psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+void psonSessionFini( psonSession        * pSession,
+                      psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
+bool psonSessionInit( psonSession        * pSession,
+                      void               * pApiSession,
+                      psonSessionContext * pContext );
+
+PHOTON_ENGINE_EXPORT
 bool psonSessionOpenCursor( psonSession        * pSession,
-                            ptrdiff_t            objOffset, 
-                            enum psoObjectType   objType, 
-                            void               * pCommonObject,
-                            psonObjectContext ** ppObject,
+                            psonCursorContext ** ppCursor,
                             psonSessionContext * pContext );
 
 PHOTON_ENGINE_EXPORT

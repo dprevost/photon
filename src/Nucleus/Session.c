@@ -22,6 +22,150 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/SessionContext.h"
 #include "Nucleus/Transaction.h"
+#include "Nucleus/Cursor.h"
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonSessionAddObj( psonSession        * pSession,
+                        ptrdiff_t            objOffset, 
+                        enum psoObjectType   objType, 
+                        void               * pCommonObject,
+                        psonObjectContext ** ppObject,
+                        psonSessionContext * pContext )
+{
+   bool ok = false;
+   psonObjectContext * pCurrentBuffer;
+
+   PSO_PRE_CONDITION( pSession      != NULL );
+   PSO_PRE_CONDITION( pCommonObject != NULL );
+   PSO_PRE_CONDITION( ppObject      != NULL );
+   PSO_PRE_CONDITION( pContext      != NULL );
+   PSO_PRE_CONDITION( objOffset     != PSON_NULL_OFFSET );
+   PSO_PRE_CONDITION( objType > 0 && objType < PSO_LAST_OBJECT_TYPE );
+   
+   /* For recovery purposes, always lock before doing anything! */
+   if ( psonLock( &pSession->memObject, pContext ) ) {
+      pCurrentBuffer = (psonObjectContext *)
+         psonMalloc( &pSession->memObject, sizeof(psonObjectContext), pContext );
+      if ( pCurrentBuffer != NULL ) {
+         pCurrentBuffer->offset    = objOffset;
+         pCurrentBuffer->type      = objType;
+         pCurrentBuffer->pCommonObject = pCommonObject;
+
+         psonLinkNodeInit( &pCurrentBuffer->node );
+         psonLinkedListPutLast( &pSession->listOfObjects, 
+                                &pCurrentBuffer->node );
+         *ppObject = pCurrentBuffer;
+         ok = true;
+      }
+      else {
+         psocSetError( &pContext->errorHandler,
+                       g_psoErrorHandle,
+                       PSO_NOT_ENOUGH_PSO_MEMORY );
+      }
+      
+      psonUnlock( &pSession->memObject, pContext );
+   }
+   else {
+      psocSetError( &pContext->errorHandler,
+                    g_psoErrorHandle,
+                    PSO_ENGINE_BUSY );
+   }
+   
+   return ok;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+bool psonSessionCloseCursor( psonSession        * pSession,
+                             psonCursorContext  * pCursorContext,
+                             psonSessionContext * pContext )
+{
+   PSO_PRE_CONDITION( pSession       != NULL );
+   PSO_PRE_CONDITION( pCursorContext != NULL );
+   PSO_PRE_CONDITION( pContext       != NULL );
+
+   /* For recovery purposes, always lock before doing anything! */
+   if ( psonLock( &pSession->memObject, pContext ) ) {
+      
+      psonCursorEmpty( pCursorContext->cursor, pContext );
+      psonCursorFini( pCursorContext->cursor, pContext );
+
+      psonLinkedListRemoveItem( &pSession->listOfCursors, 
+                                &pCursorContext->node );
+      psonFree( &pSession->memObject, 
+                (unsigned char *)pCursorContext, 
+                sizeof(psonCursorContext),
+                pContext );
+
+      psonUnlock( &pSession->memObject, pContext );
+   }
+   else {
+      psocSetError( &pContext->errorHandler,
+                    g_psoErrorHandle,
+                    PSO_ENGINE_BUSY );
+      return false;
+   }
+
+   return true;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void psonSessionFini( psonSession        * pSession,
+                      psonSessionContext * pContext )
+{
+   psonObjectContext * pObject = NULL;
+   psonLinkNode * pNode = NULL;
+
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   PSO_PRE_CONDITION( pSession->memObject.objType == PSON_IDENT_SESSION );
+   
+   /*
+    * Eliminate all objects in the list. This is probably not needed
+    * as we will release the blocks of memory to the allocator as the
+    * last step. This might be reviewed eventually.
+    */
+
+   while ( psonLinkedListPeakFirst( &pSession->listOfObjects, &pNode ) ) {
+      pObject = (psonObjectContext*)
+         ((char*)pNode - offsetof( psonObjectContext, node ));
+      psonSessionRemoveObj( pSession, pObject, pContext );
+   }
+   
+   /* Terminates our associated transaction objects. We presume that
+    * either commit or rollback was called to clear it.
+    */
+   psonTxFini( pSession->pTransaction, pContext );
+
+   /* This will remove the blocks of allocated memory */
+   psonMemObjectFini(  &pSession->memObject, PSON_ALLOC_ANY, pContext );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/* Lock and Unlock must be used before calling this function */
+bool psonSessionGetFirst( psonSession        * pSession,
+                          psonObjectContext ** ppObject,
+                          psonSessionContext * pContext )
+{
+   psonLinkNode * pNode = NULL;
+   bool ok;
+
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( ppObject != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+   
+   ok = psonLinkedListPeakFirst( &pSession->listOfObjects, 
+                                 &pNode );
+   if ( ok ) {
+      *ppObject = (psonObjectContext*)
+         ((char*)pNode - offsetof( psonObjectContext, node ));
+   }
+   
+   return ok;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -82,76 +226,62 @@ bool psonSessionInit( psonSession        * pSession,
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void psonSessionFini( psonSession        * pSession,
-                      psonSessionContext * pContext )
-{
-   psonObjectContext * pObject = NULL;
-   psonLinkNode * pNode = NULL;
-
-   PSO_PRE_CONDITION( pSession != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
-   PSO_PRE_CONDITION( pSession->memObject.objType == PSON_IDENT_SESSION );
-   
-   /*
-    * Eliminate all objects in the list. This is probably not needed
-    * as we will release the blocks of memory to the allocator as the
-    * last step. This might be reviewed eventually.
-    */
-
-   while ( psonLinkedListPeakFirst( &pSession->listOfObjects, &pNode ) ) {
-      pObject = (psonObjectContext*)
-         ((char*)pNode - offsetof( psonObjectContext, node ));
-      psonSessionRemoveObj( pSession, pObject, pContext );
-   }
-   
-   /* Terminates our associated transaction objects. We presume that
-    * either commit or rollback was called to clear it.
-    */
-   psonTxFini( pSession->pTransaction, pContext );
-
-   /* This will remove the blocks of allocated memory */
-   psonMemObjectFini(  &pSession->memObject, PSON_ALLOC_ANY, pContext );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-bool psonSessionAddObj( psonSession        * pSession,
-                        ptrdiff_t            objOffset, 
-                        enum psoObjectType   objType, 
-                        void               * pCommonObject,
-                        psonObjectContext ** ppObject,
-                        psonSessionContext * pContext )
+bool psonSessionOpenCursor( psonSession        * pSession,
+                            psonCursorContext ** ppCursor,
+                            psonSessionContext * pContext )
 {
    bool ok = false;
-   psonObjectContext * pCurrentBuffer;
-
-   PSO_PRE_CONDITION( pSession      != NULL );
-   PSO_PRE_CONDITION( pCommonObject != NULL );
-   PSO_PRE_CONDITION( ppObject      != NULL );
-   PSO_PRE_CONDITION( pContext      != NULL );
-   PSO_PRE_CONDITION( objOffset     != PSON_NULL_OFFSET );
-   PSO_PRE_CONDITION( objType > 0 && objType < PSO_LAST_OBJECT_TYPE );
+   psonCursorContext * pCurrentBuffer;
+   psonCursor * pCursor;
+   
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( ppCursor != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
    
    /* For recovery purposes, always lock before doing anything! */
    if ( psonLock( &pSession->memObject, pContext ) ) {
-      pCurrentBuffer = (psonObjectContext *)
-         psonMalloc( &pSession->memObject, sizeof(psonObjectContext), pContext );
-      if ( pCurrentBuffer != NULL ) {
-         pCurrentBuffer->offset    = objOffset;
-         pCurrentBuffer->type      = objType;
-         pCurrentBuffer->pCommonObject = pCommonObject;
+      
+      pCursor = (psonCursor *) psonMallocBlocks( pContext->pAllocator, 
+                                                 PSON_ALLOC_API_OBJ, 1, pContext );
+      if ( pCursor != NULL ) {
+         ok = psonCursorInit( pCursor, SET_OFFSET(pSession), 1, pContext );
+         PSO_PRE_CONDITION( ok == true || ok == false );
 
-         psonLinkNodeInit( &pCurrentBuffer->node );
-         psonLinkedListPutLast( &pSession->listOfObjects, 
-                                &pCurrentBuffer->node );
-         *ppObject = pCurrentBuffer;
-         ok = true;
+         if ( ok ) {
+            pCurrentBuffer = (psonCursorContext *) 
+               psonMalloc( &pSession->memObject, sizeof(psonCursorContext), pContext );
+            if ( pCurrentBuffer != NULL ) {
+               pCurrentBuffer->offset = SET_OFFSET(pCursor);
+               pCurrentBuffer->cursor = pCursor;
+               
+               psonLinkNodeInit( &pCurrentBuffer->node );
+               psonLinkedListPutLast( &pSession->listOfCursors, 
+                                      &pCurrentBuffer->node );
+               *ppCursor = pCurrentBuffer;
+               ok = true;
+            }
+            else {
+               psocSetError( &pContext->errorHandler,
+                             g_psoErrorHandle,
+                             PSO_NOT_ENOUGH_PSO_MEMORY );
+               psonFreeBlocks( pContext->pAllocator, 
+                               PSON_ALLOC_API_OBJ,
+                               (unsigned char *)pCursor, 
+                               1, pContext );
+            }
+         }
+         else {
+            psonFreeBlocks( pContext->pAllocator, 
+                            PSON_ALLOC_API_OBJ,
+                            (unsigned char *)pCursor, 
+                            1, pContext );
+         }
       }
       else {
-         psocSetError( &pContext->errorHandler,
-                       g_psoErrorHandle,
+         psocSetError( &pContext->errorHandler, 
+                       g_psoErrorHandle, 
                        PSO_NOT_ENOUGH_PSO_MEMORY );
-      }
+      }      
       
       psonUnlock( &pSession->memObject, pContext );
    }
@@ -162,6 +292,32 @@ bool psonSessionAddObj( psonSession        * pSession,
    }
    
    return ok;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+/* Lock and Unlock must be used before calling this function */
+bool psonSessionRemoveFirst( psonSession        * pSession,
+                             psonSessionContext * pContext )
+{
+   psonLinkNode * pNode = NULL;
+   psonObjectContext * pObject;
+   
+   PSO_PRE_CONDITION( pSession != NULL );
+   PSO_PRE_CONDITION( pContext != NULL );
+
+   if ( psonLinkedListGetFirst(&pSession->listOfObjects, &pNode) ) {
+      pObject = (psonObjectContext*)
+         ((char*)pNode - offsetof( psonObjectContext, node ));
+
+      psonFree( &pSession->memObject, 
+                (unsigned char *)pObject, 
+                sizeof(psonObjectContext),
+                pContext );
+      return true;
+   }
+   
+   return false;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -193,56 +349,6 @@ bool psonSessionRemoveObj( psonSession        * pSession,
    }
 
    return true;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* Lock and Unlock must be used before calling this function */
-bool psonSessionRemoveFirst( psonSession        * pSession,
-                             psonSessionContext * pContext )
-{
-   psonLinkNode * pNode = NULL;
-   psonObjectContext * pObject;
-   
-   PSO_PRE_CONDITION( pSession != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
-
-   if ( psonLinkedListGetFirst(&pSession->listOfObjects, &pNode) ) {
-      pObject = (psonObjectContext*)
-         ((char*)pNode - offsetof( psonObjectContext, node ));
-
-      psonFree( &pSession->memObject, 
-                (unsigned char *)pObject, 
-                sizeof(psonObjectContext),
-                pContext );
-      return true;
-   }
-   
-   return false;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-/* Lock and Unlock must be used before calling this function */
-bool psonSessionGetFirst( psonSession        * pSession,
-                          psonObjectContext ** ppObject,
-                          psonSessionContext * pContext )
-{
-   psonLinkNode * pNode = NULL;
-   bool ok;
-
-   PSO_PRE_CONDITION( pSession != NULL );
-   PSO_PRE_CONDITION( ppObject != NULL );
-   PSO_PRE_CONDITION( pContext != NULL );
-   
-   ok = psonLinkedListPeakFirst( &pSession->listOfObjects, 
-                                 &pNode );
-   if ( ok ) {
-      *ppObject = (psonObjectContext*)
-         ((char*)pNode - offsetof( psonObjectContext, node ));
-   }
-   
-   return ok;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
