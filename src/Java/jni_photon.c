@@ -30,23 +30,32 @@
 /*
  * Class:     org_photon_Photon
  * Method:    psoInit
- * Signature: (Ljava/lang/String;)I
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
 JNIEXPORT int JNICALL
 Java_org_photon_Photon_psoInit( JNIEnv  * env,
                                 jobject   obj, 
-                                jstring   jaddress )
+                                jstring   jaddress,
+                                jstring   jname )
 {
    int errcode;
    const char * address;
+   const char * name;
    
    address = (*env)->GetStringUTFChars( env, jaddress, NULL );
    if ( address == NULL ) {
       return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
    }
+
+   name = (*env)->GetStringUTFChars( env, jname, NULL );
+   if ( name == NULL ) {
+      (*env)->ReleaseStringUTFChars( env, jaddress, address );
+      return PSO_NOT_ENOUGH_HEAP_MEMORY; // out-of-memory exception by the JVM
+   }
    
-   errcode = psoInit( address );
+   errcode = psoInit( address, name );
    (*env)->ReleaseStringUTFChars( env, jaddress, address );
+   (*env)->ReleaseStringUTFChars( env, jname, name );
    
    return errcode;
 }

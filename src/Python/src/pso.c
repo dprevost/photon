@@ -43,12 +43,13 @@ pso_init( PyObject * self, PyObject * args )
 {
    int errcode;
    const char * quasarAddress;
+   const char * sessionName = NULL;
    
-   if ( !PyArg_ParseTuple(args, "s", &quasarAddress) ) {
+   if ( !PyArg_ParseTuple(args, "s|s", &quasarAddress, &sessionName ) ) {
       return NULL;
    }
    
-   errcode = psoInit( quasarAddress );
+   errcode = psoInit( quasarAddress, sessionName );
    if ( errcode != 0 ) {
       SetException( errcode );
       return NULL;

@@ -49,10 +49,10 @@ int main( int argc, char * argv[] )
       
    memset( &process, 0, sizeof(psoaProcess) );
    if ( argc > 1 ) {
-      errcode = psoaProcessInit( &process, argv[1] );
+      errcode = psoaProcessInit( &process, argv[1], argv[0] );
    }
    else {
-      errcode = psoaProcessInit( &process, "10701" );
+      errcode = psoaProcessInit( &process, "10701", argv[0] );
    }
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

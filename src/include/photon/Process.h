@@ -56,19 +56,28 @@ void psoExit(void);
 /**
  * This function initializes access to the shared-memory of Photon.
  *
- * It takes a single input argument, the address of Quasar, the Photon 
- * server or the name of the shared-memory file.
+ * The process name is optional. If not used, the process id will be used
+ * to generate a name automatically. 
  *
- * \param[in] quasarAddress The address of Quasar, currently a string with 
- *            the port number ("12345"). It can also be the name of the
- *            shared-memory file - in this case add the prefix "file:" to
- *            the name.
+ * Process names are unique - if a process with the same name already exist,
+ * a number will be appended to the name.
+ *
+ * This feature creates a system folder under the "\proc" folder of Photon
+ * that will be used in future releases to put process and session specific
+ * information, for examples statistics for the current process.
+ *
+ * \param[in] address The address of Quasar, currently a string with 
+ *            the port number and the prefix "port:" - "port:12345".
+ *            It can also be the name of the shared-memory file - in this 
+ *            case add the prefix "file:" to the file name.
+ * \param[in] processName An optional name to identify the process. This 
+ *            name can be NULL (the process id of the process will be used
+ *            to generate the name).
  *
  * \return 0 on success or a ::psoErrors on error.
-
  */
 PHOTON_EXPORT
-int psoInit( const char * quasarAddress );
+int psoInit( const char * address, const char * processName );
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 

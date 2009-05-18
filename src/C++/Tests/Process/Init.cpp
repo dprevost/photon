@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
   Process process;
    
    try {
-      process.Init( NULL );
+      process.Init( NULL, argv[0] );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -45,7 +45,7 @@ int main( int argc, char * argv[] )
    }
 
    try {
-      process.Init( "12345" );
+      process.Init( "12345", argv[0] );
       // Should never come here
       cerr << "Test failed - line " << __LINE__ << endl;
       return 1;
@@ -59,10 +59,10 @@ int main( int argc, char * argv[] )
 
    try {
       if ( argc > 1 ) {
-         process.Init( argv[1] );
+         process.Init( argv[1], argv[0] );
       }
       else {
-         process.Init( "10701" );
+         process.Init( "10701", argv[0] );
       }
    }
    catch( pso::Exception exc ) {

@@ -54,7 +54,9 @@ bool AreWeTerminated()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoaProcessInit( psoaProcess * process, const char * qsrAddress )
+int psoaProcessInit( psoaProcess * process, 
+                     const char  * qsrAddress,
+                     const char  * processName )
 {
    struct qsrOutput answer;
    char path[PATH_MAX];

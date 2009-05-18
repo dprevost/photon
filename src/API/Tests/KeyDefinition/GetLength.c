@@ -35,10 +35,10 @@ int main( int argc, char * argv[] )
    uint32_t keyDefLength = 0;
   
    if ( argc > 1 ) {
-      errcode = psoInit( argv[1] );
+      errcode = psoInit( argv[1], argv[0] );
    }
    else {
-      errcode = psoInit( "10701" );
+      errcode = psoInit( "10701", argv[0] );
    }
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

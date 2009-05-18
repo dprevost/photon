@@ -38,7 +38,7 @@ int main()
    }
    
    memset( &process, 0, sizeof(psoaProcess) );
-   errcode = psoaProcessInit( &process, NULL );
+   errcode = psoaProcessInit( &process, NULL, "" );
 
    ERROR_EXIT( expectedToPass, NULL, ; );
 #else

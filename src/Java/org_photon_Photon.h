@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_photon_Photon
  * Method:    init
- * Signature: (Ljava/lang/String;)I
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL Java_org_photon_Photon_init
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jstring);
 
 /*
  * Class:     org_photon_Photon

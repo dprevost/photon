@@ -838,7 +838,7 @@ int main()
    folderDef.type = PSO_FOLDER;
    
    try {
-      process.Init( "10701" );
+      process.Init( "10701", "InjectErrors" );
       session.Init();
       session.CreateFolder( foldername );
    }

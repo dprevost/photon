@@ -22,6 +22,7 @@
 #include <photon/photon.h>
 #include "Tests/PrintError.h"
 #include "API/Connector.h"
+#include "Nucleus/InitEngine.h"
 
 const bool expectedToPass = true;
 

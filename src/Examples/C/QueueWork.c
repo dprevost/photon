@@ -132,7 +132,7 @@ int main( int argc, char *argv[] )
    }
 
    /* Initialize shared memory and create our session */
-   rc = psoInit( argv[1] );
+   rc = psoInit( argv[1], "QueueWork" );
    if ( rc != 0 ) {
       fprintf( stderr, "At line %d, psoInit error: %d\n", __LINE__, rc );
       return 1;

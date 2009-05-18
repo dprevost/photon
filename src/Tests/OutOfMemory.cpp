@@ -62,7 +62,7 @@ int main()
    psoObjectDefinition queueDef = { PSO_QUEUE, 0, 0, 0 };
 
    try {
-      process.Init( "10701" );
+      process.Init( "10701", "OutOfMemory" );
       session.Init();
 
       try {

@@ -34,9 +34,9 @@ Process::Process()
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Process::Init( std::string & address )
+void Process::Init( std::string & address, std::string & name )
 {
-   int rc = psoInit( address.c_str() );
+   int rc = psoInit( address.c_str(), name.c_str() );
    if ( rc != 0 ) {
       throw pso::Exception( "Process::Init", rc );
    }
@@ -44,9 +44,9 @@ void Process::Init( std::string & address )
 
 // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-void Process::Init( const char * address )
+void Process::Init( const char * address, const char * name )
 {
-   int rc = psoInit( address );
+   int rc = psoInit( address, name );
    if ( rc != 0 ) {
       throw pso::Exception( "Process::Init", rc );
    }

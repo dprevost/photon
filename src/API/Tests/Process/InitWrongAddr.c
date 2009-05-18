@@ -35,7 +35,7 @@ int main()
 
    memset( &process, 0, sizeof(psoaProcess) );
    /* try something junk... */   
-   errcode = psoaProcessInit( &process, "abcdef" );
+   errcode = psoaProcessInit( &process, "abcdef", NULL );
 
    if ( errcode != PSO_INVALID_QUASAR_ADDRESS ) {
       fprintf( stderr, "err: %d\n", errcode );

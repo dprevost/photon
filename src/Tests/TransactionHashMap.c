@@ -1319,10 +1319,10 @@ int main(int argc, char *argv[])
    psoFieldDefinition dataDef   = { "Field_1", PSO_VARCHAR, {200} };
 
    if ( argc > 1 ) {
-      errcode = psoInit( argv[1] );
+      errcode = psoInit( argv[1], argv[0] );
    }
    else {
-      errcode = psoInit( "10701" );
+      errcode = psoInit( "10701", argv[0] );
    }
    if ( errcode != PSO_OK ) {
       printf( " Error accessing the shared memory = %d\n", errcode );

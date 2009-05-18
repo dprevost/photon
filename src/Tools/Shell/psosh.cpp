@@ -71,7 +71,7 @@ int main( int argc, char *argv[] )
    }
 
    try {
-      process.Init( optArgument );
+      process.Init( optArgument, "psosh" );
       session.Init();
    }
    catch( Exception exc ) {

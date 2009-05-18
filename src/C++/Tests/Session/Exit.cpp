@@ -53,10 +53,10 @@ int main( int argc, char * argv[] )
 
    try {
       if ( argc > 1 ) {
-         process.Init( argv[1] );
+         process.Init( argv[1], argv[0] );
       }
       else {
-         process.Init( "10701" );
+         process.Init( "10701", argv[0] );
       }
    }
    catch( pso::Exception exc ) {

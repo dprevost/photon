@@ -105,7 +105,7 @@ int main( int argc, char *argv[] )
 
    // Initialize shared memory and create our session
    try {
-      process.Init( argv[1] );
+      process.Init( argv[1], "QueueWork" );
       session.Init();
    }
    catch( pso::Exception exc ) {

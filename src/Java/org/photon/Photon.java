@@ -40,11 +40,11 @@ public class Photon {
     *                   the directory of the shared-memory backstore.
     * @exception PhotonException On an error with the Photon library.
     */
-   public static void init( String psoAddress ) throws PhotonException {
+   public static void init( String psoAddress, String processName ) throws PhotonException {
       
       int errcode;
       
-      errcode = psoInit( psoAddress );
+      errcode = psoInit( psoAddress, processName );
       if ( errcode != 0 ) {
          throw new PhotonException( PhotonErrors.getEnum(errcode) );
       }
@@ -66,7 +66,7 @@ public class Photon {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   private static native int psoInit( String psoAddress );
+   private static native int psoInit( String psoAddress, String processName );
 
    private static native void psoFini();
 }

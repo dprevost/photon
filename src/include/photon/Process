@@ -41,32 +41,54 @@ public:
    /**
     * This function initializes access to the shared-memory of Photon.
     *
-    * It takes a single input argument, the address of Quasar, the Photon 
-    * server or the name of the shared-memory file,
+    * The process name is optional. If not used (an empty string), the 
+    * process id will be used to generate a name automatically. 
+    *
+    * Process names are unique - if a process with the same name already
+    * exist, a number will be appended to the name.
+    *
+    * This feature creates a system folder under the "\proc" folder of 
+    * Photon that will be used in future releases to put process and 
+    * session specific information, for examples statistics for the 
+    * current process.
     * 
     * \param[in] address The address of Quasar, currently a string with 
-    *            the port number ("12345"). It can also be the name of the
-    *            shared-memory file - in this case add the prefix "file:" to
-    *            the file name.
+    *            the port number and the prefix "port:" - "port:12345".
+    *            It can also be the name of the shared-memory file - in this 
+    *            case add the prefix "file:" to the file name.
+    * \param[in] processName An optional name to identify the process. This 
+    *            name can be empty (the string "") - the process id of the
+    *            process will be used to generate the name.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-    void Init( std::string & address );
+    void Init( std::string & address, std::string & processName );
 
    /**
     * This function initializes access to the shared-memory of Photon.
     *
-    * It takes a single input argument, the address of Quasar, the Photon 
-    * server or the name of the shared-memory file,
+    * The process name is optional. If not used (an empty string), the 
+    * process id will be used to generate a name automatically. 
+    *
+    * Process names are unique - if a process with the same name already
+    * exist, a number will be appended to the name.
+    *
+    * This feature creates a system folder under the "\proc" folder of 
+    * Photon that will be used in future releases to put process and 
+    * session specific information, for examples statistics for the 
+    * current process.
     * 
     * \param[in] address The address of Quasar, currently a string with 
-    *            the port number ("12345"). It can also be the name of the
-    *            shared-memory file - in this case add the prefix "file:" to
-    *            the file name.
+    *            the port number and the prefix "port:" - "port:12345".
+    *            It can also be the name of the shared-memory file - in this 
+    *            case add the prefix "file:" to the file name.
+    * \param[in] processName An optional name to identify the process. This 
+    *            name can be NULL or empty (the string "") - the process id
+    *            of the process will be used to generate the name.
     *
     * \exception pso::Exception An abnormal error occured.
     */
-    void Init( const char * address );
+    void Init( const char * address, const char * processName );
 
    /**
     * The destructor terminates all access to shared memory. This function 

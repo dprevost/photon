@@ -35,7 +35,6 @@ int main( int argc, char * argv[] )
                  
    const char * address = "10701";
    struct qsrOutput answer;
-   psocErrorHandler errorHandler;
                  
    errcode = psoaConnect( &connector,
                           address,

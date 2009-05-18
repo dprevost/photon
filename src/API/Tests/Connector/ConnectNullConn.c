@@ -31,7 +31,6 @@ int main( int argc, char * argv[] )
 {
 #if defined(USE_DBC)
    int errcode;
-   psoaConnector connector;
                  
    const char * address = "10701";
    struct qsrOutput answer;

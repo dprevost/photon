@@ -34,7 +34,7 @@ extern "C" {
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int psoInit( const char * qsrAddress )                  
+int psoInit( const char * qsrAddress, const char * processName )                  
 {
    int errcode = PSO_OK;
    psoaProcess * process;
@@ -50,7 +50,7 @@ int psoInit( const char * qsrAddress )
    if ( process == NULL ) return PSO_NOT_ENOUGH_HEAP_MEMORY;
   
    memset( process, 0, sizeof(psoaProcess) );
-   errcode = psoaProcessInit( process, qsrAddress );
+   errcode = psoaProcessInit( process, qsrAddress, processName );
 
    if ( errcode != PSO_OK ) free( process );
 

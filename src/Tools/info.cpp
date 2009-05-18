@@ -34,7 +34,7 @@ int main()
    string msg;
    
    try {
-      process.Init( "10701" );
+      process.Init( "10701", "psoinfo" );
       session.Init();
    }
    catch( Exception exc ) {

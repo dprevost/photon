@@ -33,7 +33,7 @@ public class Test {
       System.out.println("Free Memory "+Runtime.getRuntime().freeMemory());
       
       try {
-         Photon.init( "10701" );
+         Photon.init( "10701", "Test-Java" );
 
          SessionTest.tests();
          
