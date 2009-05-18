@@ -301,11 +301,13 @@ int psoHashMapOpen( PSO_HANDLE   sessionHandle,
  * handle will point to the data definition of the hash map upon
  * initialization.
  *
+ * You must close the handle with ::psoDataDefClose when you no longer
+ * need it.
+ *
  * \param[in]  objectHandle The handle to the hash map
  * \param[out] dataDefHandle This optional handle gives you access to the
  *             data definition of the record on a record by record basis.
- *             This handle will be closed when the hash map is closed. You
- *             can also close it manually with ::psoDataDefClose.
+ *             This handle must be closed with ::psoDataDefClose.
  *
  * \return 0 on success or a ::psoErrors on error.
  */

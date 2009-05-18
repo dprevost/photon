@@ -13,29 +13,27 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
 check_PROGRAMS =                               \
         $(DIR_RELEASE)\CloseNullSession.exe    \
-        $(DIR_RELEASE)\ClosePass.exe           \
+        $(DIR_RELEASE)\Close.exe               \
         $(DIR_RELEASE)\CloseObjNullObject.exe  \
         $(DIR_RELEASE)\CloseObjNullSession.exe \
         $(DIR_RELEASE)\CloseObjPass.exe        \
-        $(DIR_RELEASE)\CommitPass.exe          \
+        $(DIR_RELEASE)\Commit.exe              \
         $(DIR_RELEASE)\CreateFolder.exe        \
-        $(DIR_RELEASE)\CreateKeyedObject.exe   \
-        $(DIR_RELEASE)\CreateObject.exe        \
-        $(DIR_RELEASE)\DestroyPass.exe         \
+        $(DIR_RELEASE)\CreateMap.exe           \
+        $(DIR_RELEASE)\CreateQueue.exe         \
+        $(DIR_RELEASE)\DataDefinition.exe      \
+        $(DIR_RELEASE)\Definition.exe          \
+        $(DIR_RELEASE)\Destroy.exe             \
         $(DIR_RELEASE)\ErrorMsg.exe            \
         $(DIR_RELEASE)\ExitPass.exe            \
         $(DIR_RELEASE)\ExitWithOpenObjects.exe \
         $(DIR_RELEASE)\GetInfo.exe             \
-        $(DIR_RELEASE)\InitPass.exe            \
+        $(DIR_RELEASE)\Init.exe                \
+        $(DIR_RELEASE)\KeyDefinition.exe       \
         $(DIR_RELEASE)\LastError.exe           \
         $(DIR_RELEASE)\OpenObjNotCreated.exe   \
         $(DIR_RELEASE)\OpenObjNullName.exe     \
@@ -44,8 +42,8 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\OpenObjPass.exe         \
         $(DIR_RELEASE)\OpenObjWrongType.exe    \
         $(DIR_RELEASE)\OpenObjZeroLength.exe   \
-        $(DIR_RELEASE)\RollbackPass.exe        \
-        $(DIR_RELEASE)\StatusPass.exe          
+        $(DIR_RELEASE)\Rollback.exe            \
+        $(DIR_RELEASE)\Status.exe              
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

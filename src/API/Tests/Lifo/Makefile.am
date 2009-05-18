@@ -35,6 +35,7 @@ check_PROGRAMS =          \
         OpenPass          \
         Pop               \
         Push              \
+        RecordDef         \
         RemoveNullData    \
         RemoveNullHandle  \
         RemoveNullLength  \
@@ -62,6 +63,7 @@ OpenNoSession_SOURCES     = OpenNoSession.c
 OpenPass_SOURCES          = OpenPass.c
 Pop_SOURCES               = Pop.c
 Push_SOURCES              = Push.c
+RecordDef_SOURCES         = RecordDef.c
 RemoveNullData_SOURCES    = RemoveNullData.c
 RemoveNullHandle_SOURCES  = RemoveNullHandle.c
 RemoveNullLength_SOURCES  = RemoveNullLength.c
@@ -69,35 +71,10 @@ RemovePass_SOURCES        = RemovePass.c
 RemoveWrongHandle_SOURCES = RemoveWrongHandle.c
 Status_SOURCES            = Status.c
 
-EXTRA_DIST =                 \
-        Close.sh             \
-        Create.sh            \
-        Definition.sh        \
-        FirstNullData.sh     \
-        FirstNullHandle.sh   \
-        FirstNullLength.sh   \
-        FirstPass.sh         \
-        FirstWrongHandle.sh  \
-        GetFirst.sh          \
-        GetNext.sh           \
-        Makefile.win32       \
-        NextNoFirst.sh       \
-        NextNullData.sh      \
-        NextNullHandle.sh    \
-        NextNullLength.sh    \
-        NextPass.sh          \
-        NextWrongHandle.sh   \
-        OpenNoSession.sh     \
-        OpenPass.sh          \
-        Pop.sh               \
-        Push.sh              \
-        RemoveNullData.sh    \
-        RemoveNullHandle.sh  \
-        RemoveNullLength.sh  \
-        RemovePass.sh        \
-        RemoveWrongHandle.sh \
-        RunTests.vbs         \
-        Status.sh            
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -107,33 +84,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                      \
-        Close.sh             \
-        Create.sh            \
-        Definition.sh        \
-        FirstNullData.sh     \
-        FirstNullHandle.sh   \
-        FirstNullLength.sh   \
-        FirstPass.sh         \
-        FirstWrongHandle.sh  \
-        GetFirst.sh          \
-        GetNext.sh           \
-        NextNoFirst.sh       \
-        NextNullData.sh      \
-        NextNullHandle.sh    \
-        NextNullLength.sh    \
-        NextPass.sh          \
-        NextWrongHandle.sh   \
-        OpenNoSession.sh     \
-        OpenPass.sh          \
-        Pop.sh               \
-        Push.sh              \
-        RemoveNullData.sh    \
-        RemoveNullHandle.sh  \
-        RemoveNullLength.sh  \
-        RemovePass.sh        \
-        RemoveWrongHandle.sh \
-        Status.sh            
+TESTS = RunTests.sh
 
 XFAIL_TESTS = 
 

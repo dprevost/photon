@@ -13,17 +13,12 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
 check_PROGRAMS =                               \
-        $(DIR_RELEASE)\ClosePass.exe           \
+        $(DIR_RELEASE)\Close.exe               \
         $(DIR_RELEASE)\Create.exe              \
-        $(DIR_RELEASE)\DeletePass.exe          \
+        $(DIR_RELEASE)\Delete.exe              \
         $(DIR_RELEASE)\Definition.exe          \
         $(DIR_RELEASE)\FirstNullData.exe       \
         $(DIR_RELEASE)\FirstNullDataLength.exe \
@@ -35,7 +30,7 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\Get.exe                 \
         $(DIR_RELEASE)\GetFirst.exe            \
         $(DIR_RELEASE)\GetNext.exe             \
-        $(DIR_RELEASE)\InsertPass.exe          \
+        $(DIR_RELEASE)\Insert.exe              \
         $(DIR_RELEASE)\NextNoFirst.exe         \
         $(DIR_RELEASE)\NextNullData.exe        \
         $(DIR_RELEASE)\NextNullDataLength.exe  \
@@ -46,6 +41,7 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\NextWrongHandle.exe     \
         $(DIR_RELEASE)\OpenNoSession.exe       \
         $(DIR_RELEASE)\OpenPass.exe            \
+        $(DIR_RELEASE)\RecordDef.exe           \
         $(DIR_RELEASE)\Replace.exe             \
         $(DIR_RELEASE)\RetrieveNullData.exe    \
         $(DIR_RELEASE)\RetrieveNullHandle.exe  \
@@ -54,7 +50,7 @@ check_PROGRAMS =                               \
         $(DIR_RELEASE)\RetrievePass.exe        \
         $(DIR_RELEASE)\RetrieveWrongHandle.exe \
         $(DIR_RELEASE)\RetrieveZeroLength.exe  \
-        $(DIR_RELEASE)\StatusPass.exe          
+        $(DIR_RELEASE)\Status.exe              
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
 

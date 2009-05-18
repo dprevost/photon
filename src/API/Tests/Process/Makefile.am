@@ -43,19 +43,10 @@ OpenNullFilename_SOURCES = OpenNullFilename.c
 OpenNullProcess_SOURCES  = OpenNullProcess.c
 OpenPass_SOURCES         = OpenPass.c
 
-EXTRA_DIST =                \
-        CloseNullContext.sh \
-        CloseNullProcess.sh \
-        ClosePass.sh        \
-        FiniNullProcess.sh  \
-        FiniPass.sh         \
-        InitPass.sh         \
-        Makefile.win32      \
-        OpenNullContext.sh  \
-        OpenNullFilename.sh \
-        OpenNullProcess.sh  \
-        OpenPass.sh         \
-        RunTests.vbs        
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -65,20 +56,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                     \
-        CloseNullContext.sh \
-        CloseNullProcess.sh \
-        ClosePass.sh        \
-        FiniNullProcess.sh  \
-        FiniPass.sh         \
-        InitNullAddr        \
-        InitNullProcess     \
-        InitPass.sh         \
-        InitWrongAddr       \
-        OpenNullContext.sh  \
-        OpenNullFilename.sh \
-        OpenNullProcess.sh  \
-        OpenPass.sh         
+TESTS = RunTests.sh
 
 XFAIL_TESTS =            \
         InitNullAddr     \

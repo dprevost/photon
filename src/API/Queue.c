@@ -61,10 +61,10 @@ int psoQueueClose( PSO_HANDLE objectHandle )
       if ( errcode == PSO_OK ) {
          errcode = psoaCommonObjClose( &pQueue->object );
       }
+
       if ( errcode == PSO_OK ) {
          if ( pQueue->pRecordDefinition != NULL ) {
-            pQueue->pRecordDefinition->definitionType = 0; 
-            free(pQueue->pRecordDefinition);
+            pQueue->pRecordDefinition->ppApiObject = NULL;
             pQueue->pRecordDefinition = NULL;
          }
       }

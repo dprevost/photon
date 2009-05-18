@@ -59,16 +59,16 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_fast_map_get",
-                              strlen("/api_fast_map_get") );
+                              "/api_fastmap_reset_wrong_type",
+                              strlen("/api_fastmap_reset_wrong_type") );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
    errcode = psoKeyDefCreate( sessionHandle,
-                              "api_fastmap_get",
-                              strlen("api_fastmap_get"),
+                              "api_fastmap_reset_wrong_type",
+                              strlen("api_fastmap_reset_wrong_type"),
                               PSO_DEF_PHOTON_ODBC_SIMPLE,
                               (unsigned char *)&keyDef,
                               sizeof(psoKeyFieldDefinition),
@@ -78,8 +78,8 @@ int main( int argc, char * argv[] )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
    errcode = psoDataDefCreate( sessionHandle,
-                               "api_fastmap_get",
-                               strlen("api_fastmap_get"),
+                               "api_fastmap_reset_wrong_type",
+                               strlen("api_fastmap_reset_wrong_type"),
                                PSO_DEF_PHOTON_ODBC_SIMPLE,
                                (unsigned char *)fields,
                                sizeof(psoFieldDefinition),
@@ -90,8 +90,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoCreateMap( sessionHandle,
-                           "/api_fast_map_get/test",
-                           strlen("/api_fast_map_get/test"),
+                           "/api_fastmap_reset_wrong_type/test",
+                           strlen("/api_fastmap_reset_wrong_type/test"),
                            &mapDef,
                            dataDefHandle,
                            keyDefHandle );
@@ -101,8 +101,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapEdit( sessionHandle,
-                             "/api_fast_map_get/test",
-                             strlen("/api_fast_map_get/test"),
+                             "/api_fastmap_reset_wrong_type/test",
+                             strlen("/api_fastmap_reset_wrong_type/test"),
                              &objHandle );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );
@@ -110,8 +110,8 @@ int main( int argc, char * argv[] )
    }
 
    errcode = psoFastMapOpen( sessionHandle,
-                             "/api_fast_map_get/test",
-                             strlen("/api_fast_map_get/test"),
+                             "/api_fastmap_reset_wrong_type/test",
+                             strlen("/api_fastmap_reset_wrong_type/test"),
                              &objHandle2 );
    if ( errcode != PSO_OK ) {
       fprintf( stderr, "err: %d\n", errcode );

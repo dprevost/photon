@@ -13,18 +13,14 @@
 
 include ..\Makefile.inc.Win32.2005
 
-RELEASE = Release2005
-DEBUG = Debug2005
-DLL_RELEASE = ..\..\..\Release2005
-DLL_DEBUG = ..\..\..\Debug2005
-
 all: 
 
-check_PROGRAMS =                \
+check_PROGRAMS =                     \
         $(DIR_RELEASE)\Close.exe     \
         $(DIR_RELEASE)\Create.exe    \
         $(DIR_RELEASE)\Destroy.exe   \
         $(DIR_RELEASE)\Get.exe       \
+        $(DIR_RELEASE)\GetDef.exe    \
         $(DIR_RELEASE)\GetLength.exe \
         $(DIR_RELEASE)\Open.exe      
  

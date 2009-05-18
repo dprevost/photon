@@ -204,6 +204,10 @@ void DataDefinition::GetDefinition( unsigned char * buffer,
       throw pso::Exception( "DataDefinition::GetDefinition", PSO_NULL_HANDLE );
    }
 
+   if ( buffer == NULL ) {
+      throw pso::Exception( "DataDefinition::GetDefinition", PSO_NULL_POINTER );
+   }
+   
    if ( bufferLength < m_dataDefLength ) {
       throw pso::Exception( "DataDefinition::GetDefinition", PSO_INVALID_LENGTH );
    }

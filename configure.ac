@@ -523,6 +523,7 @@ AC_CONFIG_FILES([
    src/Common/Tests/ThreadLock/Makefile
    src/C++/Makefile
    src/C++/Tests/Makefile
+   src/C++/Tests/DataDefinition/Makefile
    src/C++/Tests/FastMap/Makefile
    src/C++/Tests/Folder/Makefile
    src/C++/Tests/HashMap/Makefile

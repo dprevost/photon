@@ -15,7 +15,7 @@ include $(top_srcdir)/src/Makefile.Common.am
 CLEANFILES = *~ core
 
 check_PROGRAMS =          \
-        ClosePass         \
+        Close             \
         Create            \
         Definition        \
         FirstNullData     \
@@ -34,16 +34,17 @@ check_PROGRAMS =          \
         OpenNoSession     \
         OpenPass          \
         Pop               \
+        Push              \
         PushNow           \
-        PushPass          \
+        RecordDef         \
         RemoveNullData    \
         RemoveNullHandle  \
         RemoveNullLength  \
         RemovePass        \
         RemoveWrongHandle \
-        StatusPass        
+        Status            
 
-ClosePass_SOURCES         = ClosePass.c
+Close_SOURCES             = Close.c
 Create_SOURCES            = Create.c
 Definition_SOURCES        = Definition.c
 FirstNullData_SOURCES     = FirstNullData.c
@@ -62,45 +63,20 @@ NextWrongHandle_SOURCES   = NextWrongHandle.c
 OpenNoSession_SOURCES     = OpenNoSession.c
 OpenPass_SOURCES          = OpenPass.c
 Pop_SOURCES               = Pop.c
+Push_SOURCES              = Push.c
 PushNow_SOURCES           = PushNow.c
-PushPass_SOURCES          = PushPass.c
+RecordDef_SOURCES         = RecordDef.c
 RemoveNullData_SOURCES    = RemoveNullData.c
 RemoveNullHandle_SOURCES  = RemoveNullHandle.c
 RemoveNullLength_SOURCES  = RemoveNullLength.c
 RemovePass_SOURCES        = RemovePass.c
 RemoveWrongHandle_SOURCES = RemoveWrongHandle.c
-StatusPass_SOURCES        = StatusPass.c
+Status_SOURCES            = Status.c
 
-EXTRA_DIST =                 \
-        ClosePass.sh         \
-        Create.sh            \
-        Definition.sh        \
-        FirstNullData.sh     \
-        FirstNullHandle.sh   \
-        FirstNullLength.sh   \
-        FirstPass.sh         \
-        FirstWrongHandle.sh  \
-        GetFirst.sh          \
-        GetNext.sh           \
-        Makefile.win32       \
-        NextNoFirst.sh       \
-        NextNullData.sh      \
-        NextNullHandle.sh    \
-        NextNullLength.sh    \
-        NextPass.sh          \
-        NextWrongHandle.sh   \
-        OpenNoSession.sh     \
-        OpenPass.sh          \
-        Pop.sh               \
-        PushNow.sh           \
-        PushPass.sh          \
-        RemoveNullData.sh    \
-        RemoveNullHandle.sh  \
-        RemoveNullLength.sh  \
-        RemovePass.sh        \
-        RemoveWrongHandle.sh \
-        RunTests.vbs         \
-        StatusPass.sh        
+EXTRA_DIST =           \
+        Makefile.win32 \
+        RunTests.sh    \
+        RunTests.vbs   
 
 TESTS_ENVIRONMENT =                  \
         tcp_port=10701               \
@@ -110,34 +86,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =                      \
-        ClosePass.sh         \
-        Create.sh            \
-        Definition.sh        \
-        FirstNullData.sh     \
-        FirstNullHandle.sh   \
-        FirstNullLength.sh   \
-        FirstPass.sh         \
-        FirstWrongHandle.sh  \
-        GetFirst.sh          \
-        GetNext.sh           \
-        NextNoFirst.sh       \
-        NextNullData.sh      \
-        NextNullHandle.sh    \
-        NextNullLength.sh    \
-        NextPass.sh          \
-        NextWrongHandle.sh   \
-        OpenNoSession.sh     \
-        OpenPass.sh          \
-        Pop.sh               \
-        PushNow.sh           \
-        PushPass.sh          \
-        RemoveNullData.sh    \
-        RemoveNullHandle.sh  \
-        RemoveNullLength.sh  \
-        RemovePass.sh        \
-        RemoveWrongHandle.sh \
-        StatusPass.sh        
+TESTS = RunTests.sh
 
 XFAIL_TESTS = 
 

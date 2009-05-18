@@ -14,14 +14,15 @@ include $(top_srcdir)/src/Makefile.Common.am
 
 CLEANFILES = *~ core
 
-SUBDIRS =            \
-        FastMap      \
-        Folder       \
-        HashMap      \
-        Lifo         \
-        Queue        \
-        Process      \
-        Session      
+SUBDIRS =              \
+        DataDefinition \
+        FastMap        \
+        Folder         \
+        HashMap        \
+        Lifo           \
+        Queue          \
+        Process        \
+        Session        
 
 EXTRA_DIST = 
 
