@@ -1,0 +1,43 @@
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# To use this makefile with VS 2008, you must change the macros defined here
+# AND the macro check_PROGRAMS_DEBUG near the end of this file
+
+include ..\Makefile.inc.Win32.2005
+
+all: 
+
+check_PROGRAMS =                           \
+        $(DIR_RELEASE)\Close.exe           \
+        $(DIR_RELEASE)\ConstructCreate.exe \
+        $(DIR_RELEASE)\ConstructOpen.exe   \
+        $(DIR_RELEASE)\Create.exe          \
+        $(DIR_RELEASE)\GetDefinition.exe   \
+        $(DIR_RELEASE)\GetLength.exe       \
+        $(DIR_RELEASE)\GetNext.exe         \
+        $(DIR_RELEASE)\GetType.exe         \
+        $(DIR_RELEASE)\Open.exe            
+
+check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)
+
+check: $(DIR_RELEASE) $(check_PROGRAMS)
+	cscript RunTests.vbs --path=$(DIR_RELEASE) --dllpath=$(DLL_RELEASE) $(VBS_VERBOSE)
+
+checkdebug: $(DIR_DEBUG) $(check_PROGRAMS_DEBUG) 
+	cscript RunTests.vbs --path=$(DIR_DEBUG) --dllpath=$(DLL_DEBUG) $(VBS_VERBOSE)
+
+clean: 
+	-@erase /Q $(DIR_DEBUG)
+	-@rmdir /Q $(DIR_DEBUG)
+	-@erase /Q $(DIR_RELEASE)
+	-@rmdir /Q $(DIR_RELEASE)
+	-@erase /Q $(CLEANFILES)
+

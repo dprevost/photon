@@ -295,6 +295,7 @@ int psoDataDefOpen( PSO_HANDLE   sessionHandle,
    pDefinition->definitionType = PSOA_DEF_DATA;
    GET_PTR( pMemDefinition, pHashItem->dataOffset, psonDataDefinition );
    pDefinition->pMemDefinition = pMemDefinition;
+   pDefinition->ppApiObject = NULL;
    pDefinition->name = (char *)pHashItem->key;
    pDefinition->nameLength = pHashItem->keyLength;
 
