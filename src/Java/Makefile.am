@@ -19,35 +19,38 @@ CLEANFILES = \
         ./org/photon/Tests/*~                             \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
-Java_Source =                               \
-        org/photon/ArrayListSerializer.java \
-        org/photon/BaseQueue.java           \
-        org/photon/DataDefBuilderODBC.java  \
-        org/photon/DataDefBuilderUser.java  \
-        org/photon/DataDefinition.java      \
-        org/photon/DefinitionType.java      \
-        org/photon/FieldType.java           \
-        org/photon/Folder.java              \
-        org/photon/FolderEntry.java         \
-        org/photon/Info.java                \
-        org/photon/JavaSerializer.java      \
-        org/photon/KeyDefBuilderODBC.java   \
-        org/photon/KeyDefBuilderUser.java   \
-        org/photon/KeyDefinition.java       \
-        org/photon/KeyType.java             \
-        org/photon/ObjectDefinition.java    \
-        org/photon/ObjectType.java          \
-        org/photon/ObjectStatus.java        \
-        org/photon/Photon.java              \
-        org/photon/PhotonErrors.java        \
-        org/photon/PhotonException.java     \
-        org/photon/PSOSerialize.java        \
-        org/photon/Queue.java               \
-        org/photon/Session.java             \
-        org/photon/Tests/FolderTest.java    \
-        org/photon/Tests/QueueTest.java     \
-        org/photon/Tests/SessionTest.java   \
-        org/photon/Tests/Test.java          
+MAIN_JAVA_DIR = org/photon
+SERIAL_DIR= $(MAIN_JAVA_DIR)/serializer
+
+Java_Source =                                    \
+        $(SERIAL_DIR)/ArrayListSerializer.java   \
+        $(MAIN_JAVA_DIR)/BaseQueue.java          \
+        $(MAIN_JAVA_DIR)/DataDefBuilderODBC.java \
+        $(MAIN_JAVA_DIR)/DataDefBuilderUser.java \
+        $(MAIN_JAVA_DIR)/DataDefinition.java     \
+        $(MAIN_JAVA_DIR)/DefinitionType.java     \
+        $(MAIN_JAVA_DIR)/FieldType.java          \
+        $(MAIN_JAVA_DIR)/Folder.java             \
+        $(MAIN_JAVA_DIR)/FolderEntry.java        \
+        $(MAIN_JAVA_DIR)/Info.java               \
+        $(SERIAL_DIR)/JavaSerializer.java        \
+        $(MAIN_JAVA_DIR)/KeyDefBuilderODBC.java  \
+        $(MAIN_JAVA_DIR)/KeyDefBuilderUser.java  \
+        $(MAIN_JAVA_DIR)/KeyDefinition.java      \
+        $(MAIN_JAVA_DIR)/KeyType.java            \
+        $(MAIN_JAVA_DIR)/ObjectDefinition.java   \
+        $(MAIN_JAVA_DIR)/ObjectType.java         \
+        $(MAIN_JAVA_DIR)/ObjectStatus.java       \
+        $(MAIN_JAVA_DIR)/Photon.java             \
+        $(MAIN_JAVA_DIR)/PhotonErrors.java       \
+        $(MAIN_JAVA_DIR)/PhotonException.java    \
+        $(SERIAL_DIR)/PSOSerialize.java          \
+        $(MAIN_JAVA_DIR)/Queue.java              \
+        $(MAIN_JAVA_DIR)/Session.java            \
+        $(MAIN_JAVA_DIR)/Tests/FolderTest.java   \
+        $(MAIN_JAVA_DIR)/Tests/QueueTest.java    \
+        $(MAIN_JAVA_DIR)/Tests/SessionTest.java  \
+        $(MAIN_JAVA_DIR)/Tests/Test.java         
 
 Java_Classes =                              \
         org/photon/DataDefBuilderODBC.class \

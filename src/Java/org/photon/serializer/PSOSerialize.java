@@ -16,7 +16,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-package org.photon;
+package org.photon.serializer;
 
 /**
  * Container class for the Photon library. This class is the base

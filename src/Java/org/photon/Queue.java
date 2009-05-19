@@ -20,6 +20,7 @@ package org.photon;
 
 import java.lang.*;
 import java.util.*;
+import org.photon.serializer.*;
 
 /**
  * Queue class for the Photon library.
