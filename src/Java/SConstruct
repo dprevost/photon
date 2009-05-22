@@ -10,7 +10,9 @@
 
 
 classes = Java(target = 'classes', source = 'java_src/photon' )
+Java(target = 'classes', source = 'java_src/serializer' )
+Java(target = 'classes', source = 'java_src/Tests' )
 
 JavaH(target = 'include', source = classes )
 
-http://www.scons.org/wiki/JavaNativeInterface
+# http://www.scons.org/wiki/JavaNativeInterface
