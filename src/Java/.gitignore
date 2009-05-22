@@ -1,3 +1,5 @@
 /Makefile
 /Makefile.in
 /classorg_photon.stamp
+.sconsign.dblite
+/classes

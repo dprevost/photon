@@ -1,0 +1,5 @@
+
+classes = Java(target = 'classes', source = 'org/photon' )
+
+JavaH(target = 'include', source = classes )
+

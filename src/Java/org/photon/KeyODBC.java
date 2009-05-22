@@ -18,7 +18,7 @@
 
 package org.photon;
 
-public class KeyDefinition {
+public class KeyODBC {
 
    /** The data type of the key. */
    private KeyType type;
@@ -48,9 +48,9 @@ public class KeyDefinition {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   KeyDefinition() {}
+   KeyODBC() {}
 
-   public KeyDefinition( KeyType type, int length, int minLength, int maxLength ) {
+   public KeyODBC( KeyType type, int length, int minLength, int maxLength ) {
       this.type = type;
       this.length = length;
       this.minLength = minLength;

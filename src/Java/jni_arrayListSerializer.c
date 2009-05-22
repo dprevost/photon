@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "jni_photon.h"
-#include "org_photon_ArrayListSerializer.h"
+#include "include/serializer/ArrayListSerializer.h"
 //#include "API/Queue.h"
 
 jfieldID g_idQueueHandle;

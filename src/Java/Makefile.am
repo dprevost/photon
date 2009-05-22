@@ -12,6 +12,9 @@
 # overwrite any macros set in the common file
 include $(top_srcdir)/src/Makefile.Common.am
 
+MAIN_JAVA_DIR = org/photon
+JAVA_SERIAL= $(MAIN_JAVA_DIR)/serializer
+
 CLEANFILES = \
         *~                                                \
         ./org/photon/*~                                   \
@@ -19,11 +22,8 @@ CLEANFILES = \
         ./org/photon/Tests/*~                             \
         $(top_builddir)/src/Java/org/photon/Tests/*.class 
 
-MAIN_JAVA_DIR = org/photon
-SERIAL_DIR= $(MAIN_JAVA_DIR)/serializer
-
 Java_Source =                                    \
-        $(SERIAL_DIR)/ArrayListSerializer.java   \
+        $(JAVA_SERIAL)/ArrayListSerializer.java  \
         $(MAIN_JAVA_DIR)/BaseQueue.java          \
         $(MAIN_JAVA_DIR)/DataDefBuilderODBC.java \
         $(MAIN_JAVA_DIR)/DataDefBuilderUser.java \
@@ -33,7 +33,7 @@ Java_Source =                                    \
         $(MAIN_JAVA_DIR)/Folder.java             \
         $(MAIN_JAVA_DIR)/FolderEntry.java        \
         $(MAIN_JAVA_DIR)/Info.java               \
-        $(SERIAL_DIR)/JavaSerializer.java        \
+        $(JAVA_SERIAL)/JavaSerializer.java       \
         $(MAIN_JAVA_DIR)/KeyDefBuilderODBC.java  \
         $(MAIN_JAVA_DIR)/KeyDefBuilderUser.java  \
         $(MAIN_JAVA_DIR)/KeyDefinition.java      \
@@ -44,7 +44,7 @@ Java_Source =                                    \
         $(MAIN_JAVA_DIR)/Photon.java             \
         $(MAIN_JAVA_DIR)/PhotonErrors.java       \
         $(MAIN_JAVA_DIR)/PhotonException.java    \
-        $(SERIAL_DIR)/PSOSerialize.java          \
+        $(JAVA_SERIAL)/PSOSerialize.java         \
         $(MAIN_JAVA_DIR)/Queue.java              \
         $(MAIN_JAVA_DIR)/Session.java            \
         $(MAIN_JAVA_DIR)/Tests/FolderTest.java   \

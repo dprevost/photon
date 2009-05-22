@@ -18,7 +18,7 @@
 
 package org.photon;
 
-public class FieldDefinition {
+public class FieldDefODBC {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -45,7 +45,7 @@ public class FieldDefinition {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   FieldDefinition( String name, FieldType type, int length, 
+   FieldDefODBC( String name, FieldType type, int length, 
       int minLength, int maxLength, int precision, int scale ) {
       this.name      = name;
       this.type      = type;
