@@ -8,11 +8,42 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+import os
+from ConfigureJNI import ConfigureJNI
 
-classes = Java(target = 'classes', source = 'java_src/photon' )
-Java(target = 'classes', source = 'java_src/serializer' )
-Java(target = 'classes', source = 'java_src/Tests' )
+env = Environment(JAVAVERSION = "1.6")
 
-JavaH(target = 'include', source = classes )
+# Setting up the proper environment for the jni build is done in
+# ConfigureJNI (http://www.scons.org/wiki/JavaNativeInterface).
 
-# http://www.scons.org/wiki/JavaNativeInterface
+if not ConfigureJNI(env):
+   print "Java Native Interface is required... Exiting"
+   Exit(1)
+
+# Our Java targets
+
+env.Append(JAVACLASSPATH = 'classes')
+
+serial_classes = env.Java(target = 'classes', source = 'java_src/serializer' )
+photon_classes = env.Java(target = 'classes', source = 'java_src/photon' )
+test_classes   = env.Java(target = 'classes', source = 'java_src/Tests' )
+
+# Must build the serializer before the core of the package and photon before tests
+Depends(photon_classes, serial_classes)
+Depends(test_classes, photon_classes)
+
+Jar(target = 'photon.jar', source = [serial_classes, photon_classes] )
+
+JavaH(target = 'include', source = [serial_classes, photon_classes] )
+
+env.Append(CPPPATH = 'include')
+env.Append(CPPPATH = '../include')
+env.Append(CPPPATH = '..')
+env.Append(CPPFLAGS = '-DHAVE_CONFIG_H')
+
+#env.SharedObject(target = 'ddd', source =  )
+import glob
+files = glob.glob('jni_src/*.c')
+
+env.SharedLibrary( 'photon_jni', files )
+

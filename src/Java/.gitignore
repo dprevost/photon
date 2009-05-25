@@ -1,5 +1,7 @@
 /Makefile
 /Makefile.in
-/classorg_photon.stamp
+/ConfigureJNI.pyc
 .sconsign.dblite
 /classes
+/libphoton_jni.so
+/photon.jar
