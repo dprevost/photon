@@ -41,7 +41,6 @@ env.Append(CPPPATH = '../include')
 env.Append(CPPPATH = '..')
 env.Append(CPPFLAGS = '-DHAVE_CONFIG_H')
 
-#env.SharedObject(target = 'ddd', source =  )
 import glob
 files = glob.glob('jni_src/*.c')
 

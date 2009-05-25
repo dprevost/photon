@@ -26,7 +26,7 @@
 #include "org_photon_serializer_ArrayListSerializer.h"
 //#include "API/Queue.h"
 
-jfieldID g_idQueueHandle;
+//jfieldID g_idQueueHandle;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -35,12 +35,12 @@ jfieldID g_idQueueHandle;
  * Method:    initIDs
  * Signature: ()V
  */
-JNIEXPORT void JNICALL
-Java_org_photon_ArrayListSerializer_initIDs( JNIEnv * env, jclass queueClass )
-{
-   g_idQueueHandle = (*env)->GetFieldID( env, queueClass, "handle", "J" );
-   if ( g_idQueueHandle == NULL ) return;
-}
+//JNIEXPORT void JNICALL
+//Java_org_photon_ArrayListSerializer_initIDs( JNIEnv * env, jclass queueClass )
+//{
+//   g_idQueueHandle = (*env)->GetFieldID( env, queueClass, "handle", "J" );
+//   if ( g_idQueueHandle == NULL ) return;
+//}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -49,9 +49,12 @@ Java_org_photon_ArrayListSerializer_initIDs( JNIEnv * env, jclass queueClass )
  * Method:    psoPackObject
  * Signature: (Ljava/util/ArrayList;)[B
  */
-JNIEXPORT jbyteArray
-JNICALL Java_org_photon_ArrayListSerializer_psoPackObject
-  (JNIEnv *, jobject, jobject);
+JNIEXPORT jbyteArray JNICALL
+Java_org_photon_ArrayListSerializer_psoPackObject( JNIEnv * env,
+                                                   jobject  jobj,
+                                                   jobject  jlist )
+{
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -61,8 +64,8 @@ JNICALL Java_org_photon_ArrayListSerializer_psoPackObject
  * Signature: ([B)Ljava/util/ArrayList;
  */
 JNIEXPORT jobject JNICALL
-Java_org_photon_ArrayListSerializer_psoUnpackObject( JNIEnv * env,
-                                                     jobject  jobj,
+Java_org_photon_ArrayListSerializer_psoUnpackObject( JNIEnv   * env,
+                                                     jobject    jobj,
                                                      jbyteArray jdata )
 {
 }
