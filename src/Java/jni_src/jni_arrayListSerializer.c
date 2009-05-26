@@ -82,11 +82,11 @@ Java_org_photon_serializer_ArrayListSerializer_psoPackObject( JNIEnv * env,
 
       itemClass = (*env)->GetObjectClass( env, jitem );
       
-      (*env)->isinstanceof( env, );
-      switch ( dataDef[i].type ) {
+//      (*env)->isinstanceof( env, );
+//      switch ( dataDef[i].type ) {
 
-      case PSO_INTEGER:
-      }
+//      case PSO_INTEGER:
+//      }
       
    }
 }
