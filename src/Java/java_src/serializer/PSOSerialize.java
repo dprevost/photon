@@ -26,11 +26,11 @@ public interface PSOSerialize<T> {
    
 //   String[] getSupportedDefinitions();
 
-   byte[] packObject( T obj ) throws Exception;
+   byte[] packObject( T obj ) throws SerializerException;
    
-   void setDefinition( byte[] dataDef );
+   void setDefinition( byte[] dataDef ) throws SerializerException;
 
-   T unpackObject( byte[] buffer ) throws Exception;
+   T unpackObject( byte[] buffer ) throws SerializerException;
    
 }
 

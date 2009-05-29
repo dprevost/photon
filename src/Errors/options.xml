@@ -91,7 +91,7 @@
        requires Java 5.0. -->
   <java>
     <java_filename>
-      ../Java/org/photon/PhotonErrors.java
+      ../Java/org/java_src/photon/PhotonErrors.java
     </java_filename>
     <java_enum_name> PhotonErrors </java_enum_name>
     <java_package> org.photon </java_package>
