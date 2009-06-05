@@ -16,8 +16,6 @@ CLEANFILES = *~
 # List your m4 macros here
 m4macros =                  \
    ac_c_asm.m4              \
-   ac_c_printf_ptrdiff_t.m4 \
-   ac_c_printf_size_t.m4    \
    ac_cxx_bool.m4           \
    ac_func_mkdir.m4         \
    ac_func_sem_init.m4      \

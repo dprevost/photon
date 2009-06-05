@@ -1,0 +1,100 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# :mode=python:  - For jedit
+
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+srcdir = '..'
+blddir = '../build'
+
+features_str = '''
+#include <stdio.h>
+int is_big_endian()
+{
+	long one = 1;
+	return !(*((char *)(&one)));
+}
+int main()
+{
+	if (is_big_endian()) printf("bigendian=1\\n");
+	else printf("bigendian=0\\n");
+	printf("int_size=%d\\n", sizeof(int));
+	printf("long_int_size=%d\\n", sizeof(long int));
+	printf("long_long_int_size=%d\\n", sizeof(long long int));
+	printf("double_size=%d\\n", sizeof(double));
+	return 0;
+}
+'''
+
+from Configure import conf
+
+@conf
+def check_features(self):
+
+	mp = self.check(fragment=features_str, execute=1)
+	t = Utils.to_hashtable(mp)
+
+	try:
+		is_big = int(t['bigendian'])
+	except KeyError:
+		raise Configure.ConfigurationError('endian test failed '+code)
+
+	if is_big: strbig = 'big endian'
+	else: strbig = 'little endian'
+	self.check_message_custom('endianness', '', strbig)
+
+	self.check_message_custom('int size', '', t['int_size'])
+	self.check_message_custom('long int size', '', t['long_int_size'])
+	self.check_message_custom('long long int size', '', t['long_long_int_size'])
+	self.check_message_custom('double size', '', t['double_size'])
+
+	self.define_cond('IS_BIGENDIAN', is_big)
+	self.define_cond('INT_SIZE', int(t['int_size']))
+	self.define_cond('LONG_INT_SIZE', int(t['long_int_size']))
+	self.define_cond('LONG_LONG_INT_SIZE', int(t['long_long_int_size']))
+	self.define_cond('DOUBLE_SIZE', int(t['double_size']))
+
+	return is_big
+
+
+def configure(conf):
+   print '  executing the configuration in m4'
+
+   conf.check_tool('gcc')
+   conf.check_tool('g++')
+
+	# Testing for %zd in printf format
+   conf.check(
+      fragment='''#include <stdio.h>           
+         int main() { 
+         size_t num = 12345;
+         if ( printf("%zd", num) == 5 )
+            return 0; 
+         return -1; }''',
+      define_name='HAVE_PRINTF_SIZE_T',
+      execute=1,
+      define_ret=0,
+      msg='Checking for printf format for size_t')
+
+	# Testing for %zd in printf format
+   conf.check(
+      fragment='''#include <stdio.h>
+         #include <stddef.h>
+         int main() { 
+         ptrdiff_t num = 12345;
+         if ( printf("%td", num) == 5 )
+            return 0; 
+         return -1; }''',
+      define_name='HAVE_PRINTF_PTRDIFF_T',
+      execute=1,
+      define_ret=0,
+      msg='Checking for printf format for ptrdiff_t')
+
