@@ -41,8 +41,6 @@ def configure(conf):
    conf.check_tool('gcc')
    conf.check_tool('g++')
 
-   conf.check(header_name='time.h')
-
    conf.sub_config('m4')
 
 

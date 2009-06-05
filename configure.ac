@@ -110,54 +110,6 @@ PKG_CHECK_MODULES(LIBXML2, [libxml-2.0],,
 AC_SUBST(LIBXML2_CFLAGS)
 AC_SUBST(LIBXML2_LIBS)
 
-#####################################
-#                                   #
-# SECTION - checks for header files #
-#                                   #
-#####################################
-
-AC_HEADER_STDC 
-AC_HEADER_TIME 
-
-AC_LANG_PUSH([C++])
-AC_CHECK_HEADERS(new.h)
-AC_CHECK_HEADERS(new)
-AC_LANG_POP([C++])
-
-AC_CHECK_HEADERS(assert.h ctype.h limits.h sys/param.h errno.h fcntl.h)
-AC_CHECK_HEADERS(sys/time.h sys/mman.h signal.h sys/wait.h)
-AC_CHECK_HEADERS(semaphore.h sys/semaphore.h sys/ipc.h sys/sem.h)
-AC_CHECK_HEADERS(timers.h) # for Tru64
-AC_HEADER_DIRENT 
-AC_HEADER_STDBOOL
-
-##############################
-#                            #
-# Section - checks for types #
-#                            #
-##############################
-
-AC_TYPE_SIZE_T
-AC_TYPE_OFF_T 
-AC_TYPE_PID_T 
-AC_CHECK_TYPES(ptrdiff_t)
-AC_CXX_BOOL
-AC_TYPE_SIGNAL 
-
-ETR_STRUCT_SEMUN
-
-AC_CHECK_SIZEOF(float)
-AC_CHECK_SIZEOF(double)
-AC_CHECK_SIZEOF(long double)
-AC_CHECK_SIZEOF(void *)
-
-###################################
-#                                 #
-# Section - checks for structures #
-# (do they miss data members?)    #
-#                                 #
-###################################
-
 #################################################
 #                                               #
 # Section - checks for compiler characteristics #
@@ -166,8 +118,6 @@ AC_CHECK_SIZEOF(void *)
 
 AC_C_VOLATILE 
 AC_C_INLINE 
-AC_C_PRINTF_SIZE_T
-AC_C_PRINTF_PTRDIFF_T
 
 AC_C_ASM
 
@@ -318,52 +268,6 @@ sparc)       locking_dir=asm-sparc
 *) locking_dir=empty ;;
 esac
 AC_SUBST(architecture)
-
-####################################################
-#                                                  #
-# Section - override Photon build/compile defaults #
-#                                                  #
-####################################################
-
-AC_ARG_ENABLE([set-block-size],
-              AC_HELP_STRING([--enable-set-block-size=some_value],
-                             [set the size of Photon blocks (values must be either 1k, 2k, 4k, 8k or 16k) @<:@default=8k@:>@]),
-	      [block_size=$enableval],
-	      [block_size=8k])
-if test "$block_size" = "1k"; then
-   AC_DEFINE(PSON_BLOCK_SIZE,  1024)
-   AC_DEFINE(PSON_BLOCK_SHIFT,   10)
-elif test "$block_size" = "2k"; then
-   AC_DEFINE(PSON_BLOCK_SIZE,  2048)
-   AC_DEFINE(PSON_BLOCK_SHIFT,   11)
-elif test "$block_size" = "4k"; then
-   AC_DEFINE(PSON_BLOCK_SIZE,  4096)
-   AC_DEFINE(PSON_BLOCK_SHIFT,   12)
-elif test "$block_size" = "8k"; then
-   AC_DEFINE(PSON_BLOCK_SIZE,  8192)
-   AC_DEFINE(PSON_BLOCK_SHIFT,   13)
-elif test "$block_size" = "16k"; then
-   AC_DEFINE(PSON_BLOCK_SIZE,  16384, This define can be set by using configure with the option --enable-set-block-size=value)
-   AC_DEFINE(PSON_BLOCK_SHIFT,    14, This define can be set indirectly by using configure with the option --enable-set-block-size=value)
-else
-  AC_MSG_ERROR([Invalid value! Values allowed: 1k, 2k, 4k, 8k or 16k])
-fi
-
-###################################
-#                                 #
-# Section - automake conditionals #
-#                                 #
-###################################
-
-AC_ARG_ENABLE([dbc],
-              AC_HELP_STRING([--enable-dbc],
-                             [add contract-validation checks to the code. You might want to disable this on production systems for performance reasons @<:@default=yes@:>@]),
-	           [use_dbc=$enableval],
-	           [use_dbc=yes])
-
-AM_CONDITIONAL([COND_USE_DBC], [test "$use_dbc" = yes])
-
-AM_CONDITIONAL([COND_INCLUDE_DEMO], [test "$want_demo" = yes])
 
 ############################################################
 #                                                          #

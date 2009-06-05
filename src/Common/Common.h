@@ -75,20 +75,17 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
 #if HAVE_SYS_TYPES_H
 #  include <sys/types.h>
 #endif
 #if HAVE_SYS_STAT_H
 #  include <sys/stat.h>
 #endif
-#if STDC_HEADERS
-#  include <stdlib.h>
-#  include <stddef.h>
+#if HAVE_STDARG_H
 #  include <stdarg.h>
-#else
-#  if HAVE_STDLIB_H
-#    include <stdlib.h>
-#  endif
 #endif
 #if HAVE_STRING_H
 #  if !STDC_HEADERS && HAVE_MEMORY_H
@@ -137,15 +134,12 @@
 #  endif
 #endif
 
-#if TIME_WITH_SYS_TIME
-# include <sys/time.h>
-# include <time.h>
-#else
 # if HAVE_SYS_TIME_H
 #  include <sys/time.h>
-# else
+#endif
+
+#if HAVE_TIME_H
 #  include <time.h>
-# endif
 #endif
 
 #if HAVE_ASSERT_H
@@ -154,13 +148,6 @@
 
 #if HAVE_SYS_MMAN_H
 #  include <sys/mman.h>
-#endif
-
-#if !STDC_HEADERS
-#  if !HAVE_MEMCPY
-#    define memcpy(d, s, n)   bcopy ((s), (d), (n))
-#    define memmove(d, s, n)  bcopy ((s), (d), (n))
-#  endif
 #endif
 
 #if HAVE_CTYPE_H

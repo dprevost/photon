@@ -12,9 +12,12 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+import Utils, platform
+
 srcdir = '..'
 blddir = '../build'
 
+#from the adv demo of waf
 features_str = '''
 #include <stdio.h>
 int is_big_endian()
@@ -26,10 +29,10 @@ int main()
 {
 	if (is_big_endian()) printf("bigendian=1\\n");
 	else printf("bigendian=0\\n");
-	printf("int_size=%d\\n", sizeof(int));
-	printf("long_int_size=%d\\n", sizeof(long int));
-	printf("long_long_int_size=%d\\n", sizeof(long long int));
+	printf("float_size=%d\\n", sizeof(float));
 	printf("double_size=%d\\n", sizeof(double));
+	printf("long_double_size=%d\\n", sizeof(long double));
+	printf("void_ptr_size=%d\\n", sizeof(void *));
 	return 0;
 }
 '''
@@ -71,8 +74,54 @@ def configure(conf):
    conf.check_tool('gcc')
    conf.check_tool('g++')
 
-	# Testing for %zd in printf format
-   conf.check(
+   conf.check_cc(header_name='assert.h')
+   conf.check_cc(header_name='ctype.h')
+   conf.check_cc(header_name='dirent.h')
+   conf.check_cc(header_name='errno.h')
+   conf.check_cc(header_name='fcntl.h')
+   conf.check_cc(header_name='limits.h')
+   conf.check_cc(header_name='semaphore.h')
+   conf.check_cc(header_name='signal.h')
+   conf.check_cc(header_name='stdarg.h')
+   conf.check_cc(header_name='stdbool.h')
+   conf.check_cc(header_name='stddef.h')
+   conf.check_cc(header_name='stdlib.h')
+   conf.check_cc(header_name='string.h')
+   conf.check_cc(header_name='sys/ipc.h')
+   conf.check_cc(header_name='sys/mman.h')
+   conf.check_cc(header_name='sys/param.h')
+   conf.check_cc(header_name='sys/sem.h')
+   conf.check_cc(header_name='sys/semaphore.h')
+   conf.check_cc(header_name='sys/time.h')
+   conf.check_cc(header_name='sys/wait.h')
+   conf.check_cc(header_name='time.h')
+   conf.check_cc(header_name='timers.h')  # for Tru64
+
+	# Testing for ptrdiff_t
+   conf.check_cc(
+      fragment='''#include <stdio.h>
+         #include <stddef.h>
+         int main() { 
+         ptrdiff_t num = 12345;
+         return 0; }''',
+      define_name='HAVE_PTRDIFF_T',
+      execute=1,
+      define_ret=0,
+      msg='Checking for type ptrdiff_t')
+   
+	# Testing for pid_t
+   conf.check_cc(
+      fragment='''#include <sys/types.h>
+         int main() { 
+         pid_t num = 12345;
+         return 0; }''',
+      define_name='HAVE_PID_T',
+      execute=1,
+      define_ret=0,
+      msg='Checking for type pid_t')
+
+   # Testing for %zd in printf format
+   conf.check_cc(
       fragment='''#include <stdio.h>           
          int main() { 
          size_t num = 12345;
@@ -84,8 +133,8 @@ def configure(conf):
       define_ret=0,
       msg='Checking for printf format for size_t')
 
-	# Testing for %zd in printf format
-   conf.check(
+	# Testing for %td in printf format
+   conf.check_cc(
       fragment='''#include <stdio.h>
          #include <stddef.h>
          int main() { 
@@ -98,3 +147,52 @@ def configure(conf):
       define_ret=0,
       msg='Checking for printf format for ptrdiff_t')
 
+	# Testing for %td in printf format
+   conf.check_cc(
+      fragment='''
+         #include <sys/types.h>
+         #include <sys/ipc.h>
+         #include <sys/sem.h>
+         int main() {
+            struct semun s;
+            return 0;
+            } ''',
+      define_name='HAVE_STRUCT_SEMUN',
+      execute=1,
+      define_ret=0,
+      msg='Checking for struct semun')
+
+   # Test multiple things (mainly sizes of types) with some C code
+   mp = conf.check(fragment=features_str, execute=1)
+#   print mp
+   t = Utils.to_hashtable(mp)
+
+   try:
+      is_big = int(t['bigendian'])
+   except KeyError:
+      raise Configure.ConfigurationError('endian test failed '+code)
+
+   if is_big: strbig = 'big endian'
+   else: strbig = 'little endian'
+   conf.check_message_custom('endianness', '', strbig)
+
+   conf.check_message_custom('float size',       '', t['float_size'])
+   conf.check_message_custom('double size',      '', t['double_size'])
+   conf.check_message_custom('long double size', '', t['long_double_size'])
+   conf.check_message_custom('void * size',      '', t['void_ptr_size'])
+
+   conf.define_cond('IS_BIGENDIAN', is_big)
+   conf.define_cond('SIZEOF_FLOAT',       int(t['float_size']))
+   conf.define_cond('SIZEOF_DOUBLE',      int(t['double_size']))
+   conf.define_cond('SIZEOF_LONG_DOUBLE', int(t['long_double_size']))
+   conf.define_cond('SIZEOF_VOID_PTR',    int(t['void_ptr_size']))
+
+   '''
+      All the stuff needed to implement concurrency
+      (locks, memory barriers, etc)'''
+
+   print platform.machine()
+   print conf.env["CC"]
+   
+   
+   

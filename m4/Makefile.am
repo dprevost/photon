@@ -19,8 +19,7 @@ m4macros =                  \
    ac_cxx_bool.m4           \
    ac_func_mkdir.m4         \
    ac_func_sem_init.m4      \
-   acx_pthread.m4           \
-   etr_struct_semun.m4      
+   acx_pthread.m4           
 
 # The following is boilerplate
 #m4data_DATA = $(m4macros) 
