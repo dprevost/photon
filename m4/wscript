@@ -71,8 +71,9 @@ def check_features(self):
 def configure(conf):
    print '  executing the configuration in m4'
 
-   conf.check_tool('gcc')
-   conf.check_tool('g++')
+   #conf.check_tool('gcc')
+   #conf.check_tool('g++')
+
 
    conf.check_cc(header_name='assert.h')
    conf.check_cc(header_name='ctype.h')

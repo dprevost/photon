@@ -38,13 +38,14 @@ def set_options(opt):
 def configure(conf):
    print '  executing the configuration'
 
-   conf.check_tool('gcc')
-   conf.check_tool('g++')
+   if sys.platform == 'win32':
+      conf.check_tool('msvc')
+   else:
+      conf.check_tool('gcc')
+      conf.check_tool('g++')
 
    conf.sub_config('m4')
 
-
-#   conf.write_config_header('config.h')
    conf.find_program('doxygen', var='DOXYGEN')
    conf.find_program('latex', var='LATEX')
    conf.find_program('docbook2x-man', var='DOCBOOK2X_MAN')
@@ -52,10 +53,7 @@ def configure(conf):
    conf.find_program('db2pdf', var='DB2PDF')
    conf.find_program('errorParser', var='ERROR_PARSER')
 
-#	conf.env["ES"] = not (not Options.options.es)
-
    block_size = Options.options.block_size
-#   block_size = opt.get_option('block_size')
    if (block_size == '2k'):
       conf.define('PSON_BLOCK_SIZE',  2048)
       conf.define('PSON_BLOCK_SHIFT',   11)
@@ -69,8 +67,6 @@ def configure(conf):
       conf.fatal('Invalid value! Values allowed: 2k, 4k or 8k')
 
    conf.write_config_header('config.h')
-
-#   print dir(conf)
    
 def build(bld):
    bld.add_subdirs(['src', 'doc'])
