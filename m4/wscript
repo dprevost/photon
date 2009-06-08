@@ -108,7 +108,10 @@ def configure(conf):
    conf.check_cc(header_name='time.h')
    conf.check_cc(header_name='timers.h')  # for Tru64
 
-	# Testing for ptrdiff_t
+   conf.check_cc(function_name='access', header_name="unistd.h")
+#stdio.h", mandatory=1)
+
+# Testing for ptrdiff_t
    conf.check_cc(
       fragment='''#include <stdio.h>
          #include <stddef.h>

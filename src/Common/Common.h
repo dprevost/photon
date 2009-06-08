@@ -27,11 +27,8 @@
 #ifndef PSOC_COMMON_H
 #define PSOC_COMMON_H
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
+#include "config.h"
 #if defined WIN32
-#  include "config-win32.h"
 #  ifndef FD_SETSIZE
 #    define FD_SETSIZE 100
 #  endif
@@ -126,12 +123,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if USE_PTHREAD
-# include <pthread.h>
-#else
-#  if ! defined(WIN32)
-#    error Need to include Posix Thread somehow!!!
-#  endif
+#if ! defined(WIN32)
+#  include <pthread.h>
 #endif
 
 # if HAVE_SYS_TIME_H

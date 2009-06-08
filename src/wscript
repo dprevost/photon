@@ -1,0 +1,8 @@
+
+def build(bld):
+   bld.add_subdirs(['Common'])
+   print ' building in src'
+
+def check(ctx):
+   ctx.recurse('Common')
+

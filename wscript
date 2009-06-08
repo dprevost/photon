@@ -76,3 +76,6 @@ def build(bld):
    print bld.env['DOXYGEN']
    print sys.platform, ' ', os.name
 
+def check(ctx):
+        """help string for the command foo"""
+        ctx.recurse('src')

@@ -52,33 +52,6 @@ AC_DEFINE_UNQUOTED(MYCC, "$CC", The C Compiler)
 AC_PROG_CXX
 AC_DEFINE_UNQUOTED(MYCXX, "$CXX", The C++ Compiler)
 
-AC_PROG_LIBTOOL
-AC_PROG_AWK
-
-# Not sure  which version is needed to run the tests.
-AM_PATH_PYTHON(,, AC_MSG_ERROR([python is required for the test suite]))
-# Any version before 2.2 won't work (how to define new types waschanged then).
-# AC_PYTHON_DEVEL(">= '2.2'")
-
-AC_ARG_WITH([java],
-             AC_HELP_STRING([--with-java],
-                            [will build the java API, if included @<:@default=yes@:>@]),
-                            [with_java=$withval],
-                            [with_java=yes])
-if test "$with_java" = "yes"; then
-  if test ! -d "$JAVA_HOME" ; then
-    AC_MSG_ERROR([JAVA_HOME env. variable must be set to build the Java API])
-  fi
-  JAVAC=javac
-  AC_JNI_INCLUDE_DIR
-  for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS
-    do
-      JNI_CPPFLAGS="$JNI_CPPFLAGS -I$JNI_INCLUDE_DIR"
-    done
-  AC_SUBST(JNI_CPPFLAGS)
-fi
-AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
-
 ##################################
 #                                #
 # SECTION - checks for libraries #
@@ -116,7 +89,6 @@ AC_SUBST(LIBXML2_LIBS)
 #                                               #
 #################################################
 
-AC_C_VOLATILE 
 AC_C_INLINE 
 
 AC_C_ASM
