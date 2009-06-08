@@ -13,12 +13,13 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 import Utils, platform
+import sys
 
 srcdir = '..'
 blddir = '../build'
 
 #from the adv demo of waf
-features_str = '''
+type_size_str = '''
 #include <stdio.h>
 int is_big_endian()
 {
@@ -37,12 +38,21 @@ int main()
 }
 '''
 
+compiler_test_str = '''
+#ifndef {0}
+#  error
+#endif
+int main() {{
+return 0; 
+}}
+'''
+
 from Configure import conf
 
 @conf
 def check_features(self):
 
-	mp = self.check(fragment=features_str, execute=1)
+	mp = self.check(fragment=type_size_str, execute=1)
 	t = Utils.to_hashtable(mp)
 
 	try:
@@ -106,7 +116,7 @@ def configure(conf):
          ptrdiff_t num = 12345;
          return 0; }''',
       define_name='HAVE_PTRDIFF_T',
-      execute=1,
+      execute=0,
       define_ret=0,
       msg='Checking for type ptrdiff_t')
    
@@ -117,7 +127,7 @@ def configure(conf):
          pid_t num = 12345;
          return 0; }''',
       define_name='HAVE_PID_T',
-      execute=1,
+      execute=0,
       define_ret=0,
       msg='Checking for type pid_t')
 
@@ -130,7 +140,7 @@ def configure(conf):
             return 0; 
          return -1; }''',
       define_name='HAVE_PRINTF_SIZE_T',
-      execute=1,
+      execute=0,
       define_ret=0,
       msg='Checking for printf format for size_t')
 
@@ -144,7 +154,7 @@ def configure(conf):
             return 0; 
          return -1; }''',
       define_name='HAVE_PRINTF_PTRDIFF_T',
-      execute=1,
+      execute=0,
       define_ret=0,
       msg='Checking for printf format for ptrdiff_t')
 
@@ -159,13 +169,13 @@ def configure(conf):
             return 0;
             } ''',
       define_name='HAVE_STRUCT_SEMUN',
-      execute=1,
+      execute=0,
       define_ret=0,
       msg='Checking for struct semun')
 
    # Test multiple things (mainly sizes of types) with some C code
-   mp = conf.check(fragment=features_str, execute=1)
-#   print mp
+   mp = conf.check(fragment=type_size_str, execute=1)
+   print mp
    t = Utils.to_hashtable(mp)
 
    try:
@@ -183,15 +193,112 @@ def configure(conf):
    conf.check_message_custom('void * size',      '', t['void_ptr_size'])
 
    conf.define_cond('IS_BIGENDIAN', is_big)
-   conf.define_cond('SIZEOF_FLOAT',       int(t['float_size']))
-   conf.define_cond('SIZEOF_DOUBLE',      int(t['double_size']))
-   conf.define_cond('SIZEOF_LONG_DOUBLE', int(t['long_double_size']))
-   conf.define_cond('SIZEOF_VOID_PTR',    int(t['void_ptr_size']))
+   conf.define('SIZEOF_FLOAT',       int(t['float_size']))
+   conf.define('SIZEOF_DOUBLE',      int(t['double_size']))
+   conf.define('SIZEOF_LONG_DOUBLE', int(t['long_double_size']))
+   conf.define('SIZEOF_VOID_PTR',    int(t['void_ptr_size']))
 
    '''
       All the stuff needed to implement concurrency
       (locks, memory barriers, etc)'''
 
+   # http://predef.sourceforge.net/precomp.html
+   if sys.platform == 'win32':
+
+      out = conf.check_cc(fragment='''
+#define _QUOTEME(x) #x
+#define QUOTEME(x) _QUOTEME(x)
+#include <stdio.h>
+int main() { 
+printf("%s\\n",QUOTEME( _MSC_FULL_VER ) );
+return 0; }
+            ''', execute=1,msg='Checking for the compiler version')
+      conf.define('COMPILER_NAME', 'msvc')
+      conf.define('COMPILER_VERSION', out)
+
+   elif conf.check_cc(
+      fragment=compiler_test_str.format('__xlc__'),
+      execute=0,
+      define_ret=0,
+      msg='Checking for the xlc compiler'):
+
+      out = conf.check_cc(fragment='''
+#define _QUOTEME(x) #x
+#define QUOTEME(x) _QUOTEME(x)
+#include <stdio.h>
+int main() { 
+printf("%s\\n",QUOTEME( __xlc__ ) );
+return 0; }
+            ''', execute=1,msg='Checking for the compiler version')
+      conf.define('COMPILER_NAME', 'xlc')
+      conf.define('COMPILER_VERSION', out)
+
+   elif conf.check_cc(
+      fragment=compiler_test_str.format('__INTEL_COMPILER'),
+      execute=0,
+      define_ret=0,
+      msg='Checking for the Intel compiler'):
+
+      out = conf.check_cc(fragment='''
+#define _QUOTEME(x) #x
+#define QUOTEME(x) _QUOTEME(x)
+#include <stdio.h>
+int main() { 
+#if defined(__INTEL_COMPILER_BUILD_DATE)
+printf("%s_%s\\n", QUOTEME(__INTEL_COMPILER), QUOTEME(__INTEL_COMPILER_BUILD_DATE) );
+#else
+printf("%s\\n", QUOTEME(__INTEL_COMPILER) );
+#endif
+return 0; }
+            ''', execute=1,msg='Checking for the compiler version')
+      conf.define('COMPILER_NAME', 'icc')
+      conf.define('COMPILER_VERSION', out)
+
+   elif conf.check_cc(
+      fragment=compiler_test_str.format('__PATHCC__'),
+      execute=0,
+      define_ret=0,
+      msg='Checking for the PathScale compiler'):
+
+      out = conf.check_cc(fragment='''
+#define _QUOTEME(x) #x
+#define QUOTEME(x) _QUOTEME(x)
+#include <stdio.h>
+int main() { 
+printf( "%s.%s.%s\\n", QUOTEME(__PATHCC__), QUOTEME(__PATHCC_MINOR__), QUOTEME(__PATHCC_PATCHLEVEL__) );
+return 0; }
+            ''', execute=1,msg='Checking for the compiler version')
+      conf.define('COMPILER_NAME', 'PathScale')
+      conf.define('COMPILER_VERSION', out)
+
+   # The test for gcc must come after the tests for some other
+   # compilers since some defined __GNUC__ (Intel for example). 
+
+   elif conf.check_cc(
+      fragment=compiler_test_str.format('__GNUC__'),
+      execute=0,
+      define_ret=0,
+      msg='Checking for the gcc compiler'):
+
+      out = conf.check_cc(fragment='''
+#define _QUOTEME(x) #x
+#define QUOTEME(x) _QUOTEME(x)
+#include <stdio.h>
+int main() { 
+#if defined(__GNUC_PATCHLEVEL__)
+printf( "%s.%s.%s\\n", QUOTEME(__GNUC__), QUOTEME(__GNUC_MINOR__), QUOTEME(__GNUC_PATCHLEVEL__) );
+#else
+printf( "%s.%s\\n", QUOTEME(__GNUC__), QUOTEME(__GNUC_MINOR__) );
+#endif
+return 0; }
+            ''', execute=1,msg='Checking for the compiler version')
+      conf.define('COMPILER_NAME', 'gcc')
+      conf.define('COMPILER_VERSION', out)
+
+   else:
+      conf.define('COMPILER_NAME', 'unknown')
+      conf.define('COMPILER_VERSION', 'unknown')
+   
    print platform.machine()
    print conf.env["CC"]
    

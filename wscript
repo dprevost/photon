@@ -44,6 +44,9 @@ def configure(conf):
       conf.check_tool('gcc')
       conf.check_tool('g++')
 
+   conf.check_tool('python')
+   conf.check_python_version((2,6,0))
+
    conf.sub_config('m4')
 
    conf.find_program('doxygen', var='DOXYGEN')
