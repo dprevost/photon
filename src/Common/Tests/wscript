@@ -13,26 +13,33 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list = ['DirAccess.c',
-               'ErrorHandler.c',
-               'MemoryFile.c',
-               'Options.c',
-               'ProcessLock.c',
-               'ThreadLock.c',
-               'Timer.c']
+             'ErrorHandler.c',
+             'MemoryFile.c',
+             'Options.c',
+             'ProcessLock.c',
+             'ThreadLock.c',
+             'Timer.c']
 
+def build(bld):
+   print ' building in Tests'
+   bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'nanosleepTest.c',
+      target       = 'nanosleepTest',
+      includes     = '../..',
+      install_path = None,
+      uselib = 'BASIC',
+      uselib_local = 'Common') 
 
+#      lib  = 'pthread',
+#      libpath      = ['/usr/lib'],
 #   bld.add_subdirs(['Common'])
+
 def check(ctx):
 #   ctx.recurse('Tests')
    print 'ok check'
    print dir(ctx)
-'''
-bld.new_task_gen(
-      features       = 'cc cprogram',
-      source         = 'nanosleepTest.c',
-      target         = 'nanosleepTest',
-      includes       = '../..',
-      uselib_local   = 'Common') 
-'''
+
+
 #nanosleepTest.c
 #TimerTest_SOURCES     = TimerTest.c

@@ -81,9 +81,13 @@ def check_features(self):
 def configure(conf):
    print '  executing the configuration in m4'
 
-   #conf.check_tool('gcc')
-   #conf.check_tool('g++')
-
+   if conf.check_cc(lib='pthread'):
+      conf.env.append_value('LIB', 'pthread')
+   
+#   if conf.check_cc(ccflags='-Wall'):
+#      conf.env.append_value('CCFLAGS', '-Wall')
+#   conf.check_cc(lib='pthread', ccflags='-Wall', defines=['var=foo', 'x=y'], uselib_store='M')
+#	conf.env.append_value('CCFLAGS', '-DHAVE_CONFIG_H')
 
    conf.check_cc(header_name='assert.h')
    conf.check_cc(header_name='ctype.h')
@@ -109,9 +113,8 @@ def configure(conf):
    conf.check_cc(header_name='timers.h')  # for Tru64
 
    conf.check_cc(function_name='access', header_name="unistd.h")
-#stdio.h", mandatory=1)
 
-# Testing for ptrdiff_t
+   # Testing for ptrdiff_t
    conf.check_cc(
       fragment='''#include <stdio.h>
          #include <stddef.h>

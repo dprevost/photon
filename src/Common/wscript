@@ -28,7 +28,8 @@ def build(bld):
       includes='. ..',
       target='Common')
 
-#   bld.add_subdirs(['Common'])
+   bld.add_subdirs(['Tests'])
+
 def check(ctx):
    ctx.recurse('Tests')
    print 'ok check'
