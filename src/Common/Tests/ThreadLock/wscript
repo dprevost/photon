@@ -1,0 +1,88 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# :mode=python:  - For jedit
+
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+test_list_ok = [
+   'BackStatusPass',
+   'ClosePass',
+   'CopyPass',
+   'CreateBackPass',
+   'FiniPass',
+   'InitPass',
+   'OpenPass',
+   'ReadOnlyPass',
+   'ReadOnlyTryWrite',
+   'ReadWritePass',
+   'SynchPass',
+   'Tests']
+
+test_list_fail = [
+   'BackStatusInvalidSig',
+   'BackStatusMemNull',
+   'BackStatusNameEmpty',
+   'BackStatusStatusNull',
+   'CloseNullError',
+   'CloseInvalidSig',
+   'CloseMemNull',
+   'CreateBackNullError',
+   'CreateBackInvalidSig',
+   'CreateBackInvLength',
+   'CreateBackMemNull',
+   'CreateBackNameEmpty',
+   'CreateBackPerm0000',
+   'CreateBackPerm0200',
+   'CreateBackPerm0400',
+   'CreateBackPerm0500',
+   'FiniInvalidSig',
+   'FiniNullMem',
+   'InitLengthPositive',
+   'InitMemNull',
+   'InitNameEmpty',
+   'InitNameNull',
+   'OpenAddrNull',
+   'OpenNullError',
+   'OpenInvalidLength',
+   'OpenInvalidSig',
+   'OpenMemNull',
+   'OpenNameEmpty',
+   'ReadOnlyNullError',
+   'ReadOnlyInvalidBaseAddr',
+   'ReadOnlyInvalidSig',
+   'ReadOnlyMemNull',
+   'ReadWriteNullError',
+   'ReadWriteInvalidSig',
+   'ReadWriteInvBaseAddr',
+   'ReadWriteMemNull',
+   'SynchNullError',
+   'SynchInvalidBaseAddr',
+   'SynchInvalidSig',
+   'SynchMemNull']
+
+test_list = test_list_ok + test_list_fail
+
+def build(bld):
+   for prog in test_list:
+      prog_c = prog + '.c'
+      bld.new_task_gen(
+         features     = 'cc cprogram',
+         source       = prog_c,
+         target       = prog,
+         includes     = '../../..',
+         install_path = None,
+         uselib_local = 'Common') 
+
+def check(ctx):
+#   ctx.recurse('Tests')
+   print 'ok check'
+   print dir(ctx)
+

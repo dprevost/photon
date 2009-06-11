@@ -12,6 +12,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+import UnitTest
+
 common_list = ['DirAccess.c',
                'ErrorHandler.c',
                'MemoryFile.c',
@@ -30,7 +32,15 @@ def build(bld):
 
    bld.add_subdirs(['Tests'])
 
+#def check(ctx):
+#   ctx.recurse('Tests')
+#
 def check(ctx):
-   ctx.recurse('Tests')
    print 'ok check'
+   # Unit tests are run when "check" target is used
+   ut = UnitTest.unit_test()
+   #ut.change_to_testfile_dir = True
+   ut.self.want_to_see_test_output = True
+   ut.run()
+   ut.print_results()
 

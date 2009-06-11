@@ -17,7 +17,7 @@ APPNAME='Photon'
 srcdir = '.'
 blddir = 'build'
 
-import Options
+import Options, UnitTest
 #import Utils #,
 #import Build
 from Configure import conf
@@ -46,6 +46,8 @@ def configure(conf):
 
    conf.check_tool('python')
    conf.check_python_version((2,6,0))
+
+#   conf.check_tool('unit_test')
 
    conf.sub_config('m4')
 
@@ -76,6 +78,17 @@ def build(bld):
    print bld.env['DOXYGEN']
    print sys.platform, ' ', os.name
 
-def check(ctx):
-        """help string for the command foo"""
-        ctx.recurse('src')
+#def check(ctx):
+#        """help string for the command foo"""
+#        ctx.recurse('src')
+        
+def check(context):
+   print 'ok check'
+   # Unit tests are run when "check" target is used
+   ut = UnitTest.unit_test()
+   #ut.change_to_testfile_dir = True
+#   ut.self.want_to_see_test_output = True
+   ut.run()
+   ut.print_results()
+
+        

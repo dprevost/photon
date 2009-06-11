@@ -31,12 +31,32 @@ def build(bld):
       uselib = 'BASIC',
       uselib_local = 'Common') 
 
+   bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'TimerTest.c',
+      target       = 'TimerTest',
+      includes     = '../..',
+      install_path = None,
+      uselib_local = 'Common') 
 #      lib  = 'pthread',
+#      uselib = 'BASIC',
 #      libpath      = ['/usr/lib'],
-#   bld.add_subdirs(['Common'])
+
+   bld.add_subdirs([
+        'DirAccess',
+        'Error',
+        'MemFile',
+        'Options',
+        'ProcessLock'])
+#        'ThreadLock'])
 
 def check(ctx):
-#   ctx.recurse('Tests')
+   ctx.recurse([
+        'DirAccess',
+        'Error',
+        'MemFile',
+        'Options',
+        'ProcessLock'])
    print 'ok check'
    print dir(ctx)
 
