@@ -70,7 +70,7 @@ psocAcquireProcessLock( psocProcessLock * pLock,
          pLock->pid = pid_locker;
          return;
       }
-      nanosleep( &g_timeOut, NULL );
+      psocLockSleep( &g_timeOut );
    }
 }
 
@@ -96,7 +96,7 @@ psocTryAcquireProcessLock( psocProcessLock * pLock,
       int i;
       
       for ( i = 0; i < iterations; ++i ) {
-         nanosleep( &g_timeOut, NULL );
+         psocLockSleep( &g_timeOut );
          POWER_PC_LOCK
          if ( oldLockValue == 0 ) break;
       }

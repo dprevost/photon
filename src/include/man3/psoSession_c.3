@@ -1,4 +1,4 @@
-.TH "API functions for Photon sessions." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon sessions." 3 "25 Jun 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -36,11 +36,11 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .br
 .RI "\fICreate a new folder in shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle)"
+.RI "PHOTON_EXPORT int \fBpsoCreateQueue\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
-.RI "\fICreate a new object in shared memory. \fP"
+.RI "\fICreate a new queue object in shared memory. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoCreateKeyedObject\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.RI "PHOTON_EXPORT int \fBpsoCreateMap\fP (\fBPSO_HANDLE\fP sessionHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle, \fBPSO_HANDLE\fP keyDefHandle)"
 .br
 .RI "\fICreate a new key-based object in shared memory. \fP"
 .ti -1c
@@ -94,7 +94,7 @@ Additional note: API objects (or C handles) are just proxies for the real object
 .PP
 Commit all insertions and deletions (of the current session) executed since the previous call to psoCommit or psoRollback. 
 .PP
-Insertions and deletions subjected to this call include both data items inserted, replaced and deleted from data containers (maps, etc.) and the objects themselves created, for example, with \fBpsoCreateObject\fP and/or destroyed with \fBpsoDestroyObject\fP.
+Insertions and deletions subjected to this call include both data items inserted, replaced and deleted from data containers (maps, etc.) and the objects themselves created, for example, with \fBpsoCreateQueue\fP and/or destroyed with \fBpsoDestroyObject\fP.
 .PP
 Note: the internal calls executed by the engine to satisfy this request cannot fail. As such, you cannot find yourself with an ugly situation where some operations were committed and others not. If an error is returned by this function, nothing was committed.
 .PP
@@ -132,7 +132,7 @@ This function does not provide a handle to the newly created folder. Use \fBpsoF
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoCreateKeyedObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.SS "PHOTON_EXPORT int psoCreateMap (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle, \fBPSO_HANDLE\fP keyDefHandle)"
 .PP
 Create a new key-based object in shared memory. 
 .PP
@@ -152,9 +152,9 @@ This function does not provide a handle to the newly created object. Use \fBpsoH
 .br
 \fIdefinition\fP The basic information needed to create the object: the type of object to create, etc. 
 .br
-\fIkeyDefHandle\fP Handle to the definition of the key. 
+\fIdataDefHandle\fP Handle to the definition of the data fields. 
 .br
-\fIdataDefHandle\fP Handle to the definition of the data fields.
+\fIkeyDefHandle\fP Handle to the definition of the key.
 .RE
 .PP
 \fBReturns:\fP
@@ -163,11 +163,9 @@ This function does not provide a handle to the newly created object. Use \fBpsoH
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoCreateObject (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle)"
+.SS "PHOTON_EXPORT int psoCreateQueue (\fBPSO_HANDLE\fP sessionHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
-Create a new object in shared memory. 
-.PP
-To create an object based on a key, use the function \fBpsoCreateKeyedObject\fP instead of the current function.
+Create a new queue object in shared memory. 
 .PP
 The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
 .PP

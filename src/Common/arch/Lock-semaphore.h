@@ -79,7 +79,7 @@ psocTryAcquireProcessLock( psocProcessLock * pLock,
       int i;
       
       for ( i = 0; i < iterations; ++i ) {
-         nanosleep( &g_timeOut, NULL );
+         psocLockSleep( &g_timeOut );
          do {
             /* We restart on interrupts. */
             isItLocked = sem_trywait( &pLock->semaphore.sem );

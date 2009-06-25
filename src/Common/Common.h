@@ -278,17 +278,20 @@ extern void *memset( void* dest, int val, size_t len);
 extern size_t strnlen(const char *s, size_t maxlen);
 #endif
 
-#ifndef HAVE_NANOSLEEP
-struct timespec 
+/**
+ * A wrapper for our sleep function. This way, we can modify it if needed
+ * on some platforms.
+ */
+static inline
+void psocLockSleep(const struct timeval * timeOut)
 {
-  time_t tv_sec;
-  long tv_nsec;
-};
+   struct timeval req;
+   
+   req.tv_sec  = timeOut->tv_sec;
+   req.tv_usec = timeOut->tv_usec;
+   select( 1, 0, 0, 0, &req );
+}
 
-PHOTON_COMMON_EXPORT
-extern int nanosleep(const struct timespec * pRequest, 
-                     struct timespec       * pRemain );
-#endif
 
 #ifndef HAVE_LOCALTIME_R
 PHOTON_COMMON_EXPORT

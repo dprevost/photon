@@ -95,7 +95,7 @@ psocTryAcquireThreadLock( psocThreadLock * pLock,
       int i;
       
       for ( i = 0; i < iterations; ++i ) {
-         nanosleep( &g_timeOut, NULL );
+         psocLockSleep( &g_timeOut );
 
          status = pthread_mutex_trylock( &pLock->mutex );
 

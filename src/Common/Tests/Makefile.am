@@ -22,12 +22,9 @@ SUBDIRS =           \
         ProcessLock \
         ThreadLock  
 
-check_PROGRAMS =      \
-        nanosleepTest \
-        TimerTest     
+check_PROGRAMS = TimerTest     
 
-nanosleepTest_SOURCES = nanosleepTest.c
-TimerTest_SOURCES     = TimerTest.c
+TimerTest_SOURCES = TimerTest.c
 
 EXTRA_DIST =                              \
         Makefile.inc.win32                \
@@ -48,9 +45,7 @@ TESTS_ENVIRONMENT =                  \
         verbose=1                    \
         PYTHON=$(PYTHON)             
 
-TESTS =               \
-        nanosleepTest \
-        TimerTest     
+TESTS = TimerTest
 
 XFAIL_TESTS = 
 
