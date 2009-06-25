@@ -1,4 +1,4 @@
-.TH "API functions for Photon LIFO queues." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon LIFO queues." 3 "25 Jun 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -31,7 +31,7 @@ Data items are placed at the end of the queue and retrieved from the end of the 
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoLifoOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *queueName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
-.RI "\fIOpen an existing LIFO queue (see \fBpsoCreateObject\fP to create a new queue). \fP"
+.RI "\fIOpen an existing LIFO queue (see \fBpsoCreateQueue\fP to create a new queue). \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoLifoPop\fP (\fBPSO_HANDLE\fP objectHandle, void *buffer, \fBpsoUint32\fP bufferLength, \fBpsoUint32\fP *returnedLength)"
 .br
@@ -142,7 +142,7 @@ Evidently, you must call \fBpsoLifoGetFirst\fP to initialize the iterator. Not s
 
 .SS "PHOTON_EXPORT int psoLifoOpen (\fBPSO_HANDLE\fP sessionHandle, const char * queueName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
-Open an existing LIFO queue (see \fBpsoCreateObject\fP to create a new queue). 
+Open an existing LIFO queue (see \fBpsoCreateQueue\fP to create a new queue). 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -227,11 +227,13 @@ To access the layout on a record-by-record base, use the argument \fIdataDefHand
 .PP
 Note: you only need to get the handle once. The hidden fields associated with this handle will be updated after each record is retrieved. The handle will point to the data definition of the queue map upon initialization.
 .PP
+You must close the handle with \fBpsoDataDefClose\fP when you no longer need it.
+.PP
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the queue 
 .br
-\fIdataDefHandle\fP This optional handle gives you access to the data definition of the record on a record by record basis. This handle will be closed when the queue is closed. You can also close it manually with \fBpsoDataDefClose\fP.
+\fIdataDefHandle\fP This optional handle gives you access to the data definition of the record on a record by record basis. This handle must be closed with \fBpsoDataDefClose\fP.
 .RE
 .PP
 \fBReturns:\fP

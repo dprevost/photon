@@ -33,12 +33,12 @@ Dim fso, stdin, stdout, stderr
 
 ' List of failed tests. We append to this list when an error is encountered
 ' while running the tests
-Dim failed_tests(1)
+Dim failed_tests(0)
 
 ' Lists containing the names of the tests
 ' The "ok" lists are for programs which are expected to return zero (succeed)
 ' and the "fail" lists are for the other ones.
-Dim ok_programs(1)
+Dim ok_programs(0)
 Dim fail_programs
 
 Dim exe_name, prog_path, program, dll_path
@@ -53,9 +53,9 @@ dim strOutput
 ' ***********************************************************************
 
 ' Populate the program lists...
-ok_programs(0) = "nanosleepTest"
-ok_programs(1) = "TimerTest"
-numTests = 2                 ' Sum of length of both arrays 
+ok_programs(0) = "TimerTest"
+
+numTests =  1
 numFailed = 0
 
 ' Create the FileSystemObject

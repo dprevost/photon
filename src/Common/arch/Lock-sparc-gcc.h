@@ -49,7 +49,7 @@ psocAcquireProcessLock( psocProcessLock * pLock,
             return;
          }
       }
-      nanosleep( &g_timeOut, NULL );
+      psocLockSleep( &g_timeOut );
    }
 }
 
@@ -79,7 +79,7 @@ psocTryAcquireProcessLock( psocProcessLock * pLock,
       int i;
       
       for ( i = 0; i < iterations; ++i ) {
-         nanosleep( &g_timeOut, NULL );
+         psocLockSleep( &g_timeOut );
          if ( pLock->lock == 0 ) {
             __asm__ __volatile__(
                "ldstub [%1], %0"
