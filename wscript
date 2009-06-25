@@ -47,7 +47,16 @@ def configure(conf):
    conf.check_tool('python')
    conf.check_python_version((2,6,0))
 
-#   conf.check_tool('unit_test')
+   conf.check_tool('UnitTest')
+
+	# this one requires cppunit
+#	conf.check_cfg(package='cppunit', args='--cflags --libs')
+#	if 'LIB_CPPUNIT' in conf.env:
+#		if 'dl' not in conf.env['LIB_CPPUNIT']:
+#			l = conf.check(lib='dl', uselib_store='CPPUNIT')
+#		Utils.pprint('CYAN', "To run unit tests use 'waf check'")
+#	else:
+#		conf.fatal('Install cppunit')
 
    conf.sub_config('m4')
 
@@ -71,7 +80,7 @@ def configure(conf):
    else:
       conf.fatal('Invalid value! Values allowed: 2k, 4k or 8k')
 
-   conf.write_config_header('config.h')
+   conf.write_config_header('src/config.h')
    
 def build(bld):
    bld.add_subdirs(['src', 'doc'])
@@ -87,7 +96,7 @@ def check(context):
    # Unit tests are run when "check" target is used
    ut = UnitTest.unit_test()
    #ut.change_to_testfile_dir = True
-#   ut.self.want_to_see_test_output = True
+   #ut.want_to_see_test_output = True
    ut.run()
    ut.print_results()
 

@@ -18,46 +18,122 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+//#include <google/cmockery.h>
+
 #include "Common/Common.h"
 #include "Common/DirAccess.h"
 #include "Tests/PrintError.h"
 
 const bool expectedToPass = true;
 
+psocDirIterator  iterator;
+psocErrorHandler errorHandler;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   bool ok;
-   psocDirIterator iterator;
-   psocErrorHandler errorHandler;
-   
-   psocInitErrorDefs();
    psocInitDir( &iterator );
    psocInitErrorHandler( &errorHandler );
-   
-   ok = psocOpenDir( &iterator, "..", &errorHandler );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
-   
-   psocCloseDir( &iterator );
+}
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
 #if defined (WIN32)
    if ( iterator.handle != PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
+      psocCloseDir( &iterator );
    }
 #else
    if ( iterator.pDir != NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
+      psocCloseDir( &iterator );
    }
 #endif
 
    psocFiniDir( &iterator );
    psocFiniErrorHandler( &errorHandler );
-   psocFiniErrorDefs();
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(USE_DBC)
+   bool ok;
+   int value;
+   
+   ok = psocOpenDir( &iterator, "..", &errorHandler );
+   assert_true( ok );
+   
+   value = iterator.initialized;
+   iterator.initialized = 0;
+   expect_assert_failure( psocCloseDir(&iterator) );
+   iterator.initialized = value;
+
+   return;
+#else
+   return;
+#endif
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_dir( void ** state )
+{
+#if defined(USE_DBC)
+   bool ok;
+
+   ok = psocOpenDir( &iterator, "..", &errorHandler );
+   assert_true( ok );
+   
+   expect_assert_failure( psocCloseDir(NULL) );
+
+   return;
+#else
+   return;
+#endif
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+   bool ok;
+   
+   ok = psocOpenDir( &iterator, "..", &errorHandler );
+   assert_true( ok );
+   
+   psocCloseDir( &iterator );
+
+#if defined (WIN32)
+   assert_true( iterator.handle == PSO_INVALID_HANDLE );
+#else
+   assert_true( iterator.pDir == NULL );
+#endif
+
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main(int argc, char *argv[])
+{
+   int rc;
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_dir,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   psocInitErrorDefs();
+   rc = run_tests(tests);
+   psocFiniErrorDefs();
+   
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

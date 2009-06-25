@@ -43,16 +43,17 @@ def build(bld):
    print ' building in Tests/DirAccess'
    for prog in test_list:
       prog_c = prog + '.c'
-      bld.new_task_gen(
+      obj = bld.new_task_gen(
          features     = 'cc cprogram',
          source       = prog_c,
          target       = prog,
          includes     = '../../..',
          install_path = None,
          uselib_local = 'Common') 
+      obj.unit_test = 1
 
 def check(ctx):
 #   ctx.recurse('Tests')
-   print 'ok check'
+   print 'ok check DirAccess'
    print dir(ctx)
 

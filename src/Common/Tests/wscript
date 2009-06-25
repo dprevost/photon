@@ -22,16 +22,16 @@ test_list = ['DirAccess.c',
 
 def build(bld):
    print ' building in Tests'
-   bld.new_task_gen(
+   obj = bld.new_task_gen(
       features     = 'cc cprogram',
       source       = 'nanosleepTest.c',
       target       = 'nanosleepTest',
       includes     = '../..',
       install_path = None,
-      uselib = 'BASIC',
       uselib_local = 'Common') 
-
-   bld.new_task_gen(
+   obj.unit_test = 1
+   
+   obj = bld.new_task_gen(
       features     = 'cc cprogram',
       source       = 'TimerTest.c',
       target       = 'TimerTest',
@@ -41,6 +41,7 @@ def build(bld):
 #      lib  = 'pthread',
 #      uselib = 'BASIC',
 #      libpath      = ['/usr/lib'],
+   obj.unit_test = 1
 
    bld.add_subdirs([
         'DirAccess',
@@ -57,8 +58,7 @@ def check(ctx):
         'MemFile',
         'Options',
         'ProcessLock'])
-   print 'ok check'
-   print dir(ctx)
+   print 'ok check Common/Tests'
 
 
 #nanosleepTest.c

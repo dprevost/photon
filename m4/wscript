@@ -111,6 +111,17 @@ def configure(conf):
    conf.check_cc(header_name='sys/wait.h')
    conf.check_cc(header_name='time.h')
    conf.check_cc(header_name='timers.h')  # for Tru64
+   conf.check_cc(
+      fragment='''#include <stdarg.h>
+         #include <stddef.h>
+         #include <setjmp.h>
+         #include <google/cmockery.h>
+         int main() { 
+         return 0; }''',
+      define_name='HAVE_GOOGLE_CMOCKERY_H',
+      execute=0,
+      define_ret=0,
+      msg='Checking for header google/cmockery.h')
 
    conf.check_cc(function_name='access', header_name="unistd.h")
 

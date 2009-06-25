@@ -153,6 +153,11 @@
 #  include <sys/param.h>
 #endif
 
+#if HAVE_GOOGLE_CMOCKERY_H
+#  include <setjmp.h>
+#  include <google/cmockery.h>
+#endif
+
 #ifndef PATH_MAX
 #  if defined MAXPATHLEN 
 #    define PATH_MAX MAXPATHLEN 
@@ -179,9 +184,9 @@
 #  include <fcntl.h>
 #endif
 
-#if HAVE__STAT   /* Win32 */
-#  define stat(a, b) _stat(a, b)
-#endif
+//#if HAVE__STAT   /* Win32 */
+//#  define stat(a, b) _stat(a, b)
+//#endif
 
 #ifdef HAVE_ACCESS
 #  ifdef HAVE__ACCESS
@@ -196,20 +201,10 @@
 #  error Need to write a wrapper for access()!!!
 #endif
 
-/* From Alexandre Duret-Lutz <adl@gnu.org> */
-
-#if HAVE_MKDIR
-#  if MKDIR_TAKES_ONE_ARG   /* MinGW32 */
-#    define mkdir(a, b) mkdir(a)
-#  endif
-#else
-#  if HAVE__MKDIR   /* plain Windows 32 */
-#    include <direct.h>
-#    define mkdir(a, b) _mkdir(a)
-#  else
-#    error "Don't know how to create a directory on this system."
-#  endif
-#endif
+//#if HAVE__MKDIR   /* plain Windows 32 */
+//#  include <direct.h>
+//#  define mkdir(a, b) _mkdir(a)
+//#endif
 
 #if HAVE_GETPID
 #elif HAVE__GETPID  /* Windows 32 */
@@ -319,34 +314,45 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
 #  if !HAVE_ASSERT_H
 #    error "assert.h is needed to implement Design By Contract"
 #  endif
-/*
- * Some issue on Win32. The tests always generate a popup because 
- * of abort(). So, I'll replace abort() with _exit(). 
- * We use the exit code of abort.
- */
-#  if defined(WIN32)
-#    define ABORT() exit(3)
+
+#  if HAVE_GOOGLE_CMOCKERY_H
+#    define PSO_PRE_CONDITION(x) \
+       mock_assert((int)(x), #x, __FILE__, __LINE__); 
+#    define PSO_POST_CONDITION(x) \
+       mock_assert((int)(x), #x, __FILE__, __LINE__); 
+#    define PSO_INV_CONDITION(x) \
+       mock_assert((int)(x), #x, __FILE__, __LINE__); 
+
 #  else
-#    define ABORT() abort()
-#  endif
-#  define PSO_PRE_CONDITION(x) \
-   if ( ! (x) ) { \
+   /*
+    * Some issue on Win32. The tests always generate a popup because 
+    * of abort(). So, I'll replace abort() with _exit(). 
+    * We use the exit code of abort.
+    */
+#    if defined(WIN32)
+#      define ABORT() exit(3)
+#    else
+#      define ABORT() abort()
+#    endif
+#    define PSO_PRE_CONDITION(x) \
+     if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: precondition", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
-#  define PSO_POST_CONDITION(x) \
+#    define PSO_POST_CONDITION(x) \
    if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: postcondition", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
-#  define PSO_INV_CONDITION(x) \
+#    define PSO_INV_CONDITION(x) \
    if ( ! (x) ) { \
       fprintf( stderr, "%s (\"%s\") failed in file %s at line %d\n", \
          "DBC: invariant", #x, __FILE__, __LINE__ ); \
       ABORT(); \
    }
+#  endif
 #else
 #  define PSO_PRE_CONDITION(x) 
 #  define PSO_POST_CONDITION(x)
