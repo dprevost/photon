@@ -206,41 +206,33 @@
 //#  define mkdir(a, b) _mkdir(a)
 //#endif
 
-#if HAVE_GETPID
-#elif HAVE__GETPID  /* Windows 32 */
-#  define getpid() _getpid()
-#else
-#error "Don't know how to get the pid on this system."
-#endif
+//#if HAVE_GETPID
+//#elif HAVE__GETPID  /* Windows 32 */
+//#  define getpid() _getpid()
+//#else
+//#error "Don't know how to get the pid on this system."
+//#endif
 
 /* fdatasync is part of th posix1b standard... but... might not
  * be implemented everywhere. On WIN32, _commit will do...
  */
-#if !HAVE_FDATASYNC
-#  if HAVE_FSYNC
+//#if !HAVE_FDATASYNC
+//#  if HAVE_FSYNC
 /* Not sure if there are platforms with fsync and without fdatasync */
-#    define  fdatasync(fd) fsync(fd)
-#  elif defined (WIN32)
+//#    define  fdatasync(fd) fsync(fd)
+//#  elif defined (WIN32)
 /* should we use FlushFileBuffers() instead? */
-#    define fdatasync(fd) _commit(fd)
-#  else
-#    error "Don't know how to synch file(s) to disk."
-#  endif
-#endif
+//#    define fdatasync(fd) _commit(fd)
+//#  else
+//#    error "Don't know how to synch file(s) to disk."
+//#  endif
+//#endif
 
-#if !HAVE_STRCPY
-#  if HAVE_BCOPY
-#    define strcpy(d, s)  bcopy (s, d, 1+strlen (s))
-#  else
-#    error no strcpy or bcopy
-#  endif
-#endif
-
-#if !HAVE_MMAP
-#  if !defined (WIN32)
-#    error "Don't know how to mmap files to memory."
-#  endif
-#endif
+//#if !HAVE_MMAP
+//#  if !defined (WIN32)
+//#    error "Don't know how to mmap files to memory."
+//#  endif
+//#endif
 
 #if !HAVE_PTRDIFF_T
 typedef size_t ptrdiff_t;
