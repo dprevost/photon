@@ -50,7 +50,7 @@ psocAcquireProcessLock( psocProcessLock * pLock,
          pLock->pid = pid_locker;
          return;
       }
-      nanosleep( &g_timeOut, NULL );
+      psocLockSleep( &g_timeOut );
    }
 }
 
@@ -80,7 +80,7 @@ psocTryAcquireProcessLock( psocProcessLock * pLock,
       int i;
       
       for ( i = 0; i < iterations; ++i ) {
-         nanosleep( &g_timeOut, NULL );
+         psocLockSleep( &g_timeOut );
          if ( pLock->lock == 0 ) {
             __asm__ __volatile__ (
                "xchgl %0, (%1)"

@@ -137,7 +137,7 @@ PHOTON_COMMON_EXPORT
 extern int g_timeOutinMilliSecs;
 
 PHOTON_COMMON_EXPORT
-extern struct timespec g_timeOut;
+extern struct timeval g_timeOut;
 
 typedef struct psocProcessLock
 {

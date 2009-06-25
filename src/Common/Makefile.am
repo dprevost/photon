@@ -68,7 +68,6 @@ EXTRA_DIST =                  \
         Makefile.win32        \
         memcmp.c              \
         memset.c              \
-        nanosleep.c           \
         private.h             \
         strnlen.c             \
         tzfile.h              \

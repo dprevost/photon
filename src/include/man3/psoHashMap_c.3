@@ -1,4 +1,4 @@
-.TH "API functions for Photon hash maps." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon hash maps." 3 "25 Jun 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -41,7 +41,7 @@ Hash maps use unique keys - the data items are not sorted.
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
-.RI "\fIOpen an existing hash map (see \fBpsoCreateObject\fP to create a new object). \fP"
+.RI "\fIOpen an existing hash map (see \fBpsoCreateMap\fP to create a new object). \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoHashMapRecordDefinition\fP (\fBPSO_HANDLE\fP objectHandle, \fBPSO_HANDLE\fP *dataDefHandle)"
 .br
@@ -247,7 +247,7 @@ This could be used to implement inheritance of the data records or to build a mi
 
 .SS "PHOTON_EXPORT int psoHashMapOpen (\fBPSO_HANDLE\fP sessionHandle, const char * hashMapName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
-Open an existing hash map (see \fBpsoCreateObject\fP to create a new object). 
+Open an existing hash map (see \fBpsoCreateMap\fP to create a new object). 
 .PP
 Hah maps will usually contain data records with an identical layout (data definition of the items). This layout was defined when the map was created.
 .PP
@@ -284,11 +284,13 @@ To access the layout on a record-by-record base, use the argument \fIdataDefHand
 .PP
 Note: you only need to get the handle once. The hidden fields associated with this handle will be updated after each record is retrieved. The handle will point to the data definition of the hash map upon initialization.
 .PP
+You must close the handle with \fBpsoDataDefClose\fP when you no longer need it.
+.PP
 \fBParameters:\fP
 .RS 4
 \fIobjectHandle\fP The handle to the hash map 
 .br
-\fIdataDefHandle\fP This optional handle gives you access to the data definition of the record on a record by record basis. This handle will be closed when the hash map is closed. You can also close it manually with \fBpsoDataDefClose\fP.
+\fIdataDefHandle\fP This optional handle gives you access to the data definition of the record on a record by record basis. This handle must be closed with \fBpsoDataDefClose\fP.
 .RE
 .PP
 \fBReturns:\fP
