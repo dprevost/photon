@@ -1,4 +1,4 @@
-.TH "API functions for Photon folders." 3 "23 Apr 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
+.TH "API functions for Photon folders." 3 "25 Jun 2009" "Version 0.5.0" "Photon Software" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -29,11 +29,11 @@ If a flat structure is preferred, simply make all your data containers children 
 .br
 .RI "\fICreate a new folder in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateQueue\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .br
-.RI "\fICreate a new object in shared memory as a child of the current folder. \fP"
+.RI "\fICreate a new queue in shared memory as a child of the current folder. \fP"
 .ti -1c
-.RI "PHOTON_EXPORT int \fBpsoFolderCreateKeyedObject\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.RI "PHOTON_EXPORT int \fBpsoFolderCreateMap\fP (\fBPSO_HANDLE\fP folderHandle, const char *objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP *definition, \fBPSO_HANDLE\fP dataDefHandle, \fBPSO_HANDLE\fP keyDefHandle)"
 .br
 .RI "\fICreate a new key-based object in shared memory as a child of the current folder. \fP"
 .ti -1c
@@ -63,7 +63,7 @@ If a flat structure is preferred, simply make all your data containers children 
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoFolderOpen\fP (\fBPSO_HANDLE\fP sessionHandle, const char *folderName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP *objectHandle)"
 .br
-.RI "\fIOpen an existing folder (see \fBpsoCreateObject\fP to create a new folder). \fP"
+.RI "\fIOpen an existing folder (see \fBpsoCreateFolder\fP to create a new folder). \fP"
 .ti -1c
 .RI "PHOTON_EXPORT int \fBpsoFolderStatus\fP (\fBPSO_HANDLE\fP objectHandle, \fBpsoObjStatus\fP *pStatus)"
 .br
@@ -111,7 +111,7 @@ This function does not provide a handle to the newly created folder. Use psoFold
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateKeyedObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP keyDefHandle, \fBPSO_HANDLE\fP dataDefHandle)"
+.SS "PHOTON_EXPORT int psoFolderCreateMap (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle, \fBPSO_HANDLE\fP keyDefHandle)"
 .PP
 Create a new key-based object in shared memory as a child of the current folder. 
 .PP
@@ -131,9 +131,9 @@ This function does not provide a handle to the newly created object. Use \fBpsoH
 .br
 \fIdefinition\fP The basic information needed to create the object: the type of object to create, etc. 
 .br
-\fIkeyDefHandle\fP Handle to the definition of the key. 
+\fIdataDefHandle\fP Handle to the definition of the data fields. 
 .br
-\fIdataDefHandle\fP Handle to the definition of the data fields.
+\fIkeyDefHandle\fP Handle to the definition of the key.
 .RE
 .PP
 \fBReturns:\fP
@@ -142,11 +142,9 @@ This function does not provide a handle to the newly created object. Use \fBpsoH
 .RE
 .PP
 
-.SS "PHOTON_EXPORT int psoFolderCreateObject (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle)"
+.SS "PHOTON_EXPORT int psoFolderCreateQueue (\fBPSO_HANDLE\fP folderHandle, const char * objectName, \fBpsoUint32\fP nameLengthInBytes, \fBpsoObjectDefinition\fP * definition, \fBPSO_HANDLE\fP dataDefHandle)"
 .PP
-Create a new object in shared memory as a child of the current folder. 
-.PP
-To create an object based on a key, use the function \fBpsoFolderCreateKeyedObject\fP instead of the current function.
+Create a new queue in shared memory as a child of the current folder. 
 .PP
 The creation of the object only becomes permanent after a call to \fBpsoCommit\fP.
 .PP
@@ -305,7 +303,7 @@ Evidently, you must call \fBpsoFolderGetFirst\fP to initialize the iterator.
 
 .SS "PHOTON_EXPORT int psoFolderOpen (\fBPSO_HANDLE\fP sessionHandle, const char * folderName, \fBpsoUint32\fP nameLengthInBytes, \fBPSO_HANDLE\fP * objectHandle)"
 .PP
-Open an existing folder (see \fBpsoCreateObject\fP to create a new folder). 
+Open an existing folder (see \fBpsoCreateFolder\fP to create a new folder). 
 .PP
 \fBParameters:\fP
 .RS 4

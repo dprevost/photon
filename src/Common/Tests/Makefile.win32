@@ -25,7 +25,6 @@ all:
 CLEANFILES = *~ TestsCommon.ncb
 
 check_PROGRAMS =                         \
-        $(DIR_RELEASE)\nanosleepTest.exe \
         $(DIR_RELEASE)\TimerTest.exe     
 
 check_PROGRAMS_DEBUG = $(check_PROGRAMS:.\Release2005\=.\Debug2005\)

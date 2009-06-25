@@ -116,7 +116,6 @@ AM_CONDITIONAL([COND_USE_JAVA], [test "$with_java" = yes])
 ##################################
 
 AC_SEARCH_LIBS(sem_init, pthread rt posix4)
-AC_SEARCH_LIBS(nanosleep, rt posix4)
 
 ACX_PTHREAD(
    [
@@ -260,7 +259,6 @@ AC_ARG_ENABLE([replace-function-checks],
 if test "$replace_functions" = "yes"; then
   AC_LIBOBJ(memcmp)
   AC_LIBOBJ(memset)
-  AC_LIBOBJ(nanosleep)
   AC_LIBOBJ(localtime_r)
   AC_LIBOBJ(asctime_r)
   AC_LIBOBJ(ctime_r)
@@ -277,7 +275,6 @@ else
   ####  AC_FUNC_STRNLEN
   AC_REPLACE_FUNCS(strnlen)
   AC_REPLACE_FUNCS(memset)
-  AC_REPLACE_FUNCS(nanosleep)
   AC_REPLACE_FUNCS(localtime_r)
   # There are 2 versions of asctime_r, with 2 or 3 arguments.
   AC_MSG_CHECKING(for asctime_r with 3 args)

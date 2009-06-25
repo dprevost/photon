@@ -27,7 +27,7 @@ BEGIN_C_DECLS
 PHOTON_COMMON_EXPORT
 int g_timeOutinMilliSecs = 5;
 
-struct timespec g_timeOut = { 0, 5000000 };
+struct timeval g_timeOut = { 0, 5000 };
 
 END_C_DECLS
 
