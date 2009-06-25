@@ -106,10 +106,10 @@ fi
 ##################################
 
 AC_FUNC_FORK 
-AC_CHECK_FUNCS(memcpy access vsnprintf)
+AC_CHECK_FUNCS(access vsnprintf)
 
 AC_FUNC_MKDIR
-AC_CHECK_FUNCS(getpid _getpid fdatasync fsync msync mprotect)
+AC_CHECK_FUNCS(fdatasync fsync msync mprotect)
 AC_CHECK_FUNCS(strcpy bcopy stat mmap)
 #AC_FUNC_MMAP 
 AC_FUNC_SEM_INIT
