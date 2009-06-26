@@ -14,6 +14,7 @@
 
 import Utils, platform
 import sys
+import Options
 
 srcdir = '..'
 blddir = '../build'
@@ -80,6 +81,7 @@ def check_features(self):
 
 def configure(conf):
    print '  executing the configuration in m4'
+   print '#define HAVE__BOOL 1 - fix me'
 
    if conf.check_cc(lib='pthread'):
       conf.env.append_value('LIB', 'pthread')
@@ -94,12 +96,14 @@ def configure(conf):
    conf.check_cc(header_name='dirent.h')
    conf.check_cc(header_name='errno.h')
    conf.check_cc(header_name='fcntl.h')
+   conf.check_cc(header_name='inttypes..h')
    conf.check_cc(header_name='limits.h')
    conf.check_cc(header_name='semaphore.h')
    conf.check_cc(header_name='signal.h')
    conf.check_cc(header_name='stdarg.h')
    conf.check_cc(header_name='stdbool.h')
    conf.check_cc(header_name='stddef.h')
+   conf.check_cc(header_name='stdint.h')
    conf.check_cc(header_name='stdlib.h')
    conf.check_cc(header_name='string.h')
    conf.check_cc(header_name='sys/ipc.h')
@@ -111,17 +115,24 @@ def configure(conf):
    conf.check_cc(header_name='sys/wait.h')
    conf.check_cc(header_name='time.h')
    conf.check_cc(header_name='timers.h')  # for Tru64
-   conf.check_cc(
-      fragment='''#include <stdarg.h>
-         #include <stddef.h>
-         #include <setjmp.h>
-         #include <google/cmockery.h>
-         int main() { 
-         return 0; }''',
-      define_name='HAVE_GOOGLE_CMOCKERY_H',
-      execute=0,
-      define_ret=0,
-      msg='Checking for header google/cmockery.h')
+
+   use_dbc = Options.options.use_dbc
+   if use_dbc:
+      conf.define('USE_DBC', 1)
+      if conf.check_cc(
+         fragment='''#include <stdarg.h>
+            #include <stddef.h>
+            #include <setjmp.h>
+            #include <google/cmockery.h>
+            int main() { 
+            return 0; }''',
+         define_name='HAVE_GOOGLE_CMOCKERY_H',
+         execute=0,
+         define_ret=0,
+         msg='Checking for header google/cmockery.h'):
+         print 'zsdfgt'
+         conf.env.append_value('CMOCKERY', 'cmockery')
+         conf.define('PSO_UNIT_TESTS', 1)
 
    conf.check_cc(function_name='access', header_name="unistd.h")
 
@@ -192,13 +203,12 @@ def configure(conf):
 
    # Test multiple things (mainly sizes of types) with some C code
    mp = conf.check(fragment=type_size_str, execute=1)
-   print mp
    t = Utils.to_hashtable(mp)
 
    try:
       is_big = int(t['bigendian'])
    except KeyError:
-      raise Configure.ConfigurationError('endian test failed '+code)
+      raise conf.fatal('endian test failed '+code)
 
    if is_big: strbig = 'big endian'
    else: strbig = 'little endian'
@@ -249,6 +259,11 @@ return 0; }
             ''', execute=1,msg='Checking for the compiler version')
       conf.define('COMPILER_NAME', 'xlc')
       conf.define('COMPILER_VERSION', out)
+      conf.define('PSO_USE_XLC', 1)
+      if platform.machine() == 'ppc':
+         conf.define('PSO_USE_PPC_XLC', 1)
+      else:
+         raise conf.fatal('Supported compiler but on unsupported hardware')
 
    elif conf.check_cc(
       fragment=compiler_test_str.format('__INTEL_COMPILER'),
@@ -270,6 +285,19 @@ return 0; }
             ''', execute=1,msg='Checking for the compiler version')
       conf.define('COMPILER_NAME', 'icc')
       conf.define('COMPILER_VERSION', out)
+      conf.define('PSO_USE_ICC', 1)
+      if platform.machine() == 'i386':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i486':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i586':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i686':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'x86_64':
+         conf.define('PSO_USE_X86_64_GCC', 1)
+      else:
+         raise conf.fatal('Supported compiler but on unsupported hardware')
 
    elif conf.check_cc(
       fragment=compiler_test_str.format('__PATHCC__'),
@@ -287,6 +315,19 @@ return 0; }
             ''', execute=1,msg='Checking for the compiler version')
       conf.define('COMPILER_NAME', 'PathScale')
       conf.define('COMPILER_VERSION', out)
+      conf.define('PSO_USE_PATHSCALE', 1)
+      if platform.machine() == 'i386':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i486':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i586':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i686':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'x86_64':
+         conf.define('PSO_USE_X86_64_GCC', 1)
+      else:
+         raise conf.fatal('Supported compiler but on unsupported hardware')
 
    # The test for gcc must come after the tests for some other
    # compilers since some defined __GNUC__ (Intel for example). 
@@ -311,13 +352,29 @@ return 0; }
             ''', execute=1,msg='Checking for the compiler version')
       conf.define('COMPILER_NAME', 'gcc')
       conf.define('COMPILER_VERSION', out)
+      conf.define('PSO_USE_GCC', 1)
+      if platform.machine() == 'i386':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i486':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i586':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'i686':
+         conf.define('PSO_USE_I386_GCC', 1)
+      elif platform.machine() == 'x86_64':
+         conf.define('PSO_USE_X86_64_GCC', 1)
+      elif platform.machine() == 'sparc':
+         conf.define('PSO_USE_SPARC_GCC', 1)
+      elif platform.machine() == 'powerpc':
+         conf.define('PSO_USE_PPC_GCC', 1)
+      else:
+         raise conf.fatal('Supported compiler but on unsupported hardware')
 
    else:
-      conf.define('COMPILER_NAME', 'unknown')
-      conf.define('COMPILER_VERSION', 'unknown')
+      raise conf.fatal('Unsupported compiler')
    
    print platform.machine()
    print conf.env["CC"]
    
-   
-   
+   print 'zz' + conf.env["COMPILER_NAME"]
+

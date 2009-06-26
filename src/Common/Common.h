@@ -363,6 +363,7 @@ extern char *new_ctime_r( const time_t *timep, char *buf, int buflen );
  */
 
 #ifndef __cplusplus
+#define HAVE__BOOL 1
 #  if !defined (HAVE__BOOL)
 #    define false 0
 #    define true  1

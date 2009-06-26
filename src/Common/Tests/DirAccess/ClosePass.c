@@ -62,7 +62,7 @@ void teardown_test()
 
 void test_invalid_sig( void ** state )
 {
-#if defined(USE_DBC)
+#if defined(PSO_UNIT_TESTS)
    bool ok;
    int value;
    
@@ -73,35 +73,30 @@ void test_invalid_sig( void ** state )
    iterator.initialized = 0;
    expect_assert_failure( psocCloseDir(&iterator) );
    iterator.initialized = value;
-
-   return;
-#else
-   return;
 #endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void test_null_dir( void ** state )
 {
-#if defined(USE_DBC)
+#if defined(PSO_UNIT_TESTS)
    bool ok;
 
    ok = psocOpenDir( &iterator, "..", &errorHandler );
    assert_true( ok );
    
    expect_assert_failure( psocCloseDir(NULL) );
-
-   return;
-#else
-   return;
 #endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    bool ok;
    
    ok = psocOpenDir( &iterator, "..", &errorHandler );
@@ -109,12 +104,13 @@ void test_pass( void ** state )
    
    psocCloseDir( &iterator );
 
-#if defined (WIN32)
+#  if defined (WIN32)
    assert_true( iterator.handle == PSO_INVALID_HANDLE );
-#else
+#  else
    assert_true( iterator.pDir == NULL );
-#endif
+#  endif
 
+#endif
    return;
 }
 
@@ -122,7 +118,8 @@ void test_pass( void ** state )
 
 int main(int argc, char *argv[])
 {
-   int rc;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
       unit_test_setup_teardown( test_null_dir,    setup_test, teardown_test ),
@@ -133,6 +130,7 @@ int main(int argc, char *argv[])
    rc = run_tests(tests);
    psocFiniErrorDefs();
    
+#endif
    return rc;
 }
 

@@ -22,14 +22,6 @@ test_list = ['DirAccess.c',
 
 def build(bld):
    print ' building in Tests'
-   obj = bld.new_task_gen(
-      features     = 'cc cprogram',
-      source       = 'nanosleepTest.c',
-      target       = 'nanosleepTest',
-      includes     = '../..',
-      install_path = None,
-      uselib_local = 'Common') 
-   obj.unit_test = 1
    
    obj = bld.new_task_gen(
       features     = 'cc cprogram',
@@ -37,11 +29,13 @@ def build(bld):
       target       = 'TimerTest',
       includes     = '../..',
       install_path = None,
+      lib          = bld.env['CMOCKERY'],
       uselib_local = 'Common') 
+   if bld.env['CMOCKERY']:
+      obj.unit_test = 1
 #      lib  = 'pthread',
 #      uselib = 'BASIC',
 #      libpath      = ['/usr/lib'],
-   obj.unit_test = 1
 
    bld.add_subdirs([
         'DirAccess',

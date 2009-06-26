@@ -47,13 +47,16 @@ test_list = test_list_ok + test_list_fail
 def build(bld):
    for prog in test_list:
       prog_c = prog + '.c'
-      bld.new_task_gen(
+      obj = bld.new_task_gen(
          features     = 'cc cprogram',
          source       = prog_c,
          target       = prog,
          includes     = '../../..',
          install_path = None,
+         lib          = bld.env['CMOCKERY'],
          uselib_local = 'Common') 
+      if bld.env['CMOCKERY']:
+         obj.unit_test = 1
 
 def check(ctx):
 #   ctx.recurse('Tests')

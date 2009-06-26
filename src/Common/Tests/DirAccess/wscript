@@ -49,9 +49,14 @@ def build(bld):
          target       = prog,
          includes     = '../../..',
          install_path = None,
+         lib          = bld.env['CMOCKERY'],
          uselib_local = 'Common') 
-      obj.unit_test = 1
+      if bld.env['CMOCKERY']:
+         obj.unit_test = 1
 
+#      lib  = 'pthread',
+#      uselib = 'BASIC',
+#      libpath      = ['/usr/lib'],
 def check(ctx):
 #   ctx.recurse('Tests')
    print 'ok check DirAccess'
