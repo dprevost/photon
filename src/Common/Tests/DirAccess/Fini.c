@@ -18,16 +18,8 @@
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-//#include <google/cmockery.h>
-
 #include "Common/Common.h"
 #include "Common/DirAccess.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 psocDirIterator  iterator;
 psocErrorHandler errorHandler;
@@ -44,16 +36,7 @@ void setup_test()
 
 void teardown_test()
 {
-#if defined (WIN32)
-   if ( iterator.handle != PSO_INVALID_HANDLE ) {
-      psocCloseDir( &iterator );
-   }
-#else
-   if ( iterator.pDir != NULL ) {
-      psocCloseDir( &iterator );
-   }
-#endif
-
+   iterator.initialized = PSOC_DIR_ACCESS_SIGNATURE;
    psocFiniDir( &iterator );
    psocFiniErrorHandler( &errorHandler );
 }
@@ -63,16 +46,9 @@ void teardown_test()
 void test_invalid_sig( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   bool ok;
-   int value;
    
-   ok = psocOpenDir( &iterator, "..", &errorHandler );
-   assert_true( ok );
-   
-   value = iterator.initialized;
    iterator.initialized = 0;
-   expect_assert_failure( psocCloseDir(&iterator) );
-   iterator.initialized = value;
+   expect_assert_failure( psocFiniDir(&iterator) );
 #endif
    return;
 }
@@ -82,12 +58,7 @@ void test_invalid_sig( void ** state )
 void test_null_dir( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   bool ok;
-
-   ok = psocOpenDir( &iterator, "..", &errorHandler );
-   assert_true( ok );
-   
-   expect_assert_failure( psocCloseDir(NULL) );
+   expect_assert_failure( psocFiniDir(NULL) );
 #endif
    return;
 }
@@ -97,15 +68,14 @@ void test_null_dir( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   bool ok;
    
-   ok = psocOpenDir( &iterator, "..", &errorHandler );
-   assert_true( ok );
-   
-   psocCloseDir( &iterator );
+   psocFiniDir( &iterator );
 
-#  if defined (WIN32)
+   assert_true( iterator.initialized == 0 );
+   
+#  if defined(WIN32)
    assert_true( iterator.handle == PSO_INVALID_HANDLE );
+   assert_true( iterator.dirName[0] == '\0' );
 #  else
    assert_true( iterator.pDir == NULL );
 #  endif
@@ -116,7 +86,7 @@ void test_pass( void ** state )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main(int argc, char *argv[])
+int main()
 {
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)

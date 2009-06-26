@@ -13,12 +13,8 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list = [
-   'CloseInvalidSig',
-   'CloseNullDir',
-   'ClosePass',
-   'FiniInvalidSig',
-   'FiniNullDir',
-   'FiniPass',
+   'Close',
+   'Fini',
    'GetNextInvalidSig',
    'GetNextNoOpen',
    'GetNextNoSuchDir',
