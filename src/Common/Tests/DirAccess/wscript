@@ -15,15 +15,8 @@
 test_list = [
    'Close',
    'Fini',
-   'GetNextInvalidSig',
-   'GetNextNoOpen',
-   'GetNextNoSuchDir',
-   'GetNextNullDir',
-   'GetNextNullError',
-   'GetNextNullpDir',
-   'GetNextPass',
-   'InitNullDir',
-   'InitPass',
+   'GetNext',
+   'Init',
    'OpenCallTwice',
    'OpenInvalidSig',
    'OpenNoInit',
@@ -31,7 +24,7 @@ test_list = [
    'OpenNullDir',
    'OpenNullDirname',
    'OpenNullError',
-   'OpenPass',
+   'Open',
    'Tests']
 
 

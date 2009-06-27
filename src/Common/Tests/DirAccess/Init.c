@@ -20,36 +20,55 @@
 
 #include "Common/Common.h"
 #include "Common/DirAccess.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = false;
+psocDirIterator  iterator;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_dir( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitDir(NULL) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+
+   psocInitDir( &iterator );
+
+   assert_true( iterator.initialized == PSOC_DIR_ACCESS_SIGNATURE );
+   
+#  if defined(WIN32)
+   assert_true( iterator.handle == PSO_INVALID_HANDLE );
+   assert_true( iterator.dirName[0] == '\0' );
+#  else
+   assert_true( iterator.pDir == NULL );
+#  endif
+
+   psocFiniDir( &iterator );
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-#if defined(USE_DBC)
-   bool ok;
-   psocDirIterator iterator;
-   psocErrorHandler errorHandler;
-   const char* str;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_null_dir ),
+      unit_test( test_pass ),
+   };
 
-   psocInitErrorDefs();
-   psocInitDir( &iterator );
-   psocInitErrorHandler( &errorHandler );
-   
-   ok = psocOpenDir( &iterator, "..", &errorHandler );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
-   
-   iterator.initialized = 0;
-   str = psocDirGetNextFileName( &iterator, &errorHandler );
-
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-   return 1;
+   rc = run_tests(tests);
 #endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
