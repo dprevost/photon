@@ -17,13 +17,6 @@ test_list = [
    'Fini',
    'GetNext',
    'Init',
-   'OpenCallTwice',
-   'OpenInvalidSig',
-   'OpenNoInit',
-   'OpenNoSuchDir',
-   'OpenNullDir',
-   'OpenNullDirname',
-   'OpenNullError',
    'Open',
    'Tests']
 

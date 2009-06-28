@@ -20,14 +20,12 @@
 
 #include "Common/Common.h"
 #include "Common/DirAccess.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    bool ok = 0;
    psocDirIterator iterator;
    const char* str;
@@ -38,41 +36,29 @@ int main()
    psocInitErrorHandler( &errorHandler );
    
    ok = psocOpenDir( &iterator, ".", &errorHandler );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_true( ok );
    
    str = psocDirGetNextFileName( &iterator, &errorHandler );
-   if ( str == NULL ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_false( str == NULL );
    
    /* Close and reopen */
    psocCloseDir( &iterator );
 
    ok = psocOpenDir( &iterator, ".", &errorHandler );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
-   
+   assert_true( ok );
+
    str = psocDirGetNextFileName( &iterator, &errorHandler );
-   if ( str == NULL ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_false( str == NULL );
    
    /* Close twice and reopen - should work */
    psocCloseDir( &iterator );
    psocCloseDir( &iterator );
 
    ok = psocOpenDir( &iterator, ".", &errorHandler );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_true( ok );
    
    str = psocDirGetNextFileName( &iterator, &errorHandler );
-   if ( str == NULL ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_false( str == NULL );
    
    psocCloseDir( &iterator );
 
@@ -80,7 +66,24 @@ int main()
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

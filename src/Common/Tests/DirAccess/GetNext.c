@@ -42,7 +42,7 @@ void teardown_test()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_invalid_sig()
+void test_invalid_sig( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    bool ok;
@@ -63,7 +63,7 @@ void test_invalid_sig()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_no_open()
+void test_no_open( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    expect_assert_failure( psocDirGetNextFileName(&iterator, &errorHandler) );
@@ -73,7 +73,7 @@ void test_no_open()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_no_such_dir()
+void test_no_such_dir( void ** state )
 {
    /* For non-win32 platforms (linux, Unix), the test for a missing
     * directory is done when the directory is open. On Windows, the
@@ -102,7 +102,7 @@ void test_no_such_dir()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_null_dir()
+void test_null_dir( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    bool ok;
@@ -119,7 +119,7 @@ void test_null_dir()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_null_error()
+void test_null_error( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    bool ok;
@@ -136,7 +136,7 @@ void test_null_error()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_null_pdir()
+void test_null_pdir( void ** state )
 {
    /* pDir () is used in Unix/linux, not on Windows. */
 #if defined(PSO_UNIT_TESTS) && ! defined(WIN32)
@@ -158,7 +158,7 @@ void test_null_pdir()
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_pass()
+void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    bool ok;
