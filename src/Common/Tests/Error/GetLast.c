@@ -21,49 +21,62 @@
 #include "Common/Common.h"
 #include "Common/ErrorHandler.h"
 
+psocErrorHandler errorHandler;
+   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int msgErrorHandler( int errorCode, char* msg, unsigned int msgLength )
+void setup_test()
 {
-   errorCode = errorCode;
-   msgLength = msgLength;
-
-   strncpy( msg, "Dummy Handler", strlen("Dummy Handler") );
-
-   return 0;
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test1( void ** state )
+void teardown_test()
 {
-#if defined(PSO_UNIT_TESTS)
-   psocErrorHandler errorHandler;
-   char msg[100];
-   psocErrMsgHandle handle1, handle2;
-   
-   psocInitErrorDefs();
-   psocInitErrorHandler( &errorHandler );
-  
-   handle1 = psocAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
-   assert_false( handle1 == PSOC_NO_ERRHANDLER );
-   handle2 = psocAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
-   assert_false( handle2 == PSOC_NO_ERRHANDLER );
-   
-   psocSetError( &errorHandler, handle2, 7 );
-
-   psocChainError( &errorHandler, handle1, 17 );
-
-   /* This should work, although that would leave a single byte
-    * to use for the error message...
-    */
-   psocGetErrorMsg( &errorHandler, msg, 81 );
-
-   psocSetError( &errorHandler, PSOC_ERRNO_HANDLE, ENOENT );
-
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+
+   value = errorHandler.initialized;
+   errorHandler.initialized = 0;
+   expect_assert_failure( psocGetLastError( &errorHandler ) );
+   errorHandler.initialized = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocGetLastError( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int error;
    
+   error = psocGetLastError( &errorHandler );
+   assert_true( error == 0 );
+   
+   psocSetError( &errorHandler, PSOC_ERRNO_HANDLE, ENOENT );
+   error = psocGetLastError( &errorHandler );
+   assert_true( error == ENOENT );
 #endif
    return;
 }
@@ -75,10 +88,13 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test( test1 ),
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_error,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
    };
 
    rc = run_tests(tests);
+   
 #endif
    return rc;
 }

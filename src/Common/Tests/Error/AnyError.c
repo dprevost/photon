@@ -20,37 +20,66 @@
 
 #include "Common/Common.h"
 #include "Common/ErrorHandler.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int errorHandler( int errorCode, char* msg, unsigned int msgLength )
+void setup_test()
 {
-   errorCode = errorCode;
-   msgLength = msgLength;
+   psocInitErrorDefs();
+}
 
-   strncpy( msg, "Dummy Handler", strlen("Dummy Handler") );
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-   return 0;
+void teardown_test()
+{
+   psocFiniErrorDefs();
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocAnyErrors( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psocErrorHandler errorHandler;
+   
+   psocInitErrorHandler( &errorHandler );
+   
+   assert_false( psocAnyErrors( &errorHandler ) );
+
+   psocSetError( &errorHandler, PSOC_ERRNO_HANDLE, ENOENT );
+   assert_true( psocAnyErrors( &errorHandler ) );
+
+   psocFiniErrorHandler( &errorHandler );
+   
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-#if defined(USE_DBC)
-   psocErrMsgHandle handle;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_error, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,       setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
    
-   psocInitErrorDefs();
-
-   handle = psocAddErrorMsgHandler( NULL, &errorHandler );
-
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-   return 1;
 #endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

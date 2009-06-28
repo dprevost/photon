@@ -17,11 +17,12 @@ test_list_ok = [
    'FiniPass',
    'InitPass',
    'IsItLockedPass',
-   'LockConcurrency',
    'LockTests',
    'ReleasePass',
    'TestPidPass',
    'TryAcqPass']
+
+#   'LockConcurrency',
 
 test_list_fail = [
    'AcquireInvalidSig',

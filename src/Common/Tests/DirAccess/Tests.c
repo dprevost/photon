@@ -78,7 +78,6 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test( test1 ),
-      unit_test( test1 ),
    };
 
    rc = run_tests(tests);

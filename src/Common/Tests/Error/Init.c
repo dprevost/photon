@@ -20,14 +20,38 @@
 
 #include "Common/Common.h"
 #include "Common/ErrorHandler.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_no_initdef( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
+   psocErrorHandler errorHandler;
+   
+   expect_assert_failure( psocInitErrorHandler( &errorHandler ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psocInitErrorDefs();
+   
+   expect_assert_failure( psocInitErrorHandler( NULL ) );
+
+   psocFiniErrorDefs();
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
    psocErrorHandler errorHandler;
    int i;
    
@@ -35,21 +59,34 @@ int main()
    psocInitErrorHandler( &errorHandler );   
    
    for ( i = 0; i < PSOC_ERROR_CHAIN_LENGTH; ++i ) {
-      if ( errorHandler.errorCode[0]   != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-      if ( errorHandler.errorHandle[0] != PSOC_NO_ERRHANDLER ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( errorHandler.errorCode[i] == 0 );
+      assert_true( errorHandler.errorHandle[i] == PSOC_NO_ERRHANDLER );
    }
-   if ( errorHandler.initialized != PSOC_ERROR_HANDLER_SIGNATURE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errorHandler.initialized == PSOC_ERROR_HANDLER_SIGNATURE );
    
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_no_initdef ),
+      unit_test( test_null_error ),
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

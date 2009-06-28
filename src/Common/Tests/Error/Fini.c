@@ -21,48 +21,66 @@
 #include "Common/Common.h"
 #include "Common/ErrorHandler.h"
 
+psocErrorHandler errorHandler;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int msgErrorHandler( int errorCode, char* msg, unsigned int msgLength )
+void setup_test()
 {
-   errorCode = errorCode;
-   msgLength = msgLength;
-
-   strncpy( msg, "Dummy Handler", strlen("Dummy Handler") );
-
-   return 0;
+   psocInitErrorDefs();
+   psocInitErrorHandler( &errorHandler );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test1( void ** state )
+void teardown_test()
+{
+   psocFiniErrorDefs();
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psocErrorHandler errorHandler;
-   char msg[100];
-   psocErrMsgHandle handle1, handle2;
+   int value;
    
-   psocInitErrorDefs();
-   psocInitErrorHandler( &errorHandler );
-  
-   handle1 = psocAddErrorMsgHandler( "Dummy1", &msgErrorHandler );
-   assert_false( handle1 == PSOC_NO_ERRHANDLER );
-   handle2 = psocAddErrorMsgHandler( "Dummy2", &msgErrorHandler );
-   assert_false( handle2 == PSOC_NO_ERRHANDLER );
-   
-   psocSetError( &errorHandler, handle2, 7 );
+   value = errorHandler.initialized;
+   errorHandler.initialized = 0;
+   expect_assert_failure( psocFiniErrorHandler( &errorHandler ) );
 
-   psocChainError( &errorHandler, handle1, 17 );
+   errorHandler.initialized = value;
+   psocFiniErrorHandler( &errorHandler );
+#endif
+   return;
+}
 
-   /* This should work, although that would leave a single byte
-    * to use for the error message...
-    */
-   psocGetErrorMsg( &errorHandler, msg, 81 );
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-   psocSetError( &errorHandler, PSOC_ERRNO_HANDLE, ENOENT );
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocFiniErrorHandler( NULL ) );
 
    psocFiniErrorHandler( &errorHandler );
-   psocFiniErrorDefs();
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int i;
+   
+   psocFiniErrorHandler( &errorHandler );
+   
+   for ( i = 0; i < PSOC_ERROR_CHAIN_LENGTH; ++i ) {
+      assert_true( errorHandler.errorCode[i] == 0 );
+      assert_true( errorHandler.errorHandle[i] == PSOC_NO_ERRHANDLER );
+   }
+   assert_true( errorHandler.initialized == 0 );
    
 #endif
    return;
@@ -75,10 +93,13 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test( test1 ),
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_error,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
    };
 
    rc = run_tests(tests);
+   
 #endif
    return rc;
 }

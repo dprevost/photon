@@ -32,7 +32,7 @@ def build(bld):
       lib          = bld.env['CMOCKERY'],
       uselib_local = 'Common') 
    if bld.env['CMOCKERY']:
-      obj.unit_test = 1
+      obj.unit_test = 0
 #      lib  = 'pthread',
 #      uselib = 'BASIC',
 #      libpath      = ['/usr/lib'],

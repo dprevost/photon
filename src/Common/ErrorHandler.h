@@ -186,6 +186,8 @@ static inline
 int psocGetLastError( psocErrorHandler * pErrorHandler )
 {
    PSO_PRE_CONDITION( pErrorHandler != NULL );
+   PSO_INV_CONDITION(
+      pErrorHandler->initialized == PSOC_ERROR_HANDLER_SIGNATURE );
 
    if ( pErrorHandler->chainLength > 0 )
       return pErrorHandler->errorCode[pErrorHandler->chainLength-1];

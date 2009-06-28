@@ -13,35 +13,15 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list = [
-   'AddHandlerNullDef',
-   'AddHandlerNullHandler',
-   'AddHandlerNullName',
-   'AddHandlerPass',
-   'AnyErrorNullError',
-   'AnyErrorPass',
-   'ChainErrorNullDef',
-   'ChainErrorNullHandler',
-   'ChainErrorInvalidSig',
-   'ChainErrorNoSetError',
-   'ChainErrorTooMany',
-   'ChainErrorPass',
-   'FiniInvalidSig',
-   'FiniNullError',
-   'FiniPass',
-   'GetErrorInvalidSig',
-   'GetErrorNullError',
-   'GetErrorNullMsg',
-   'GetErrorZeroLength',
-   'GetLastNullError',
-   'GetLastPass',
-   'GetLengthNullError',
-   'GetLengthPass',
-   'InitNoInitDefs',
-   'InitNullError',
-   'InitPass',
-   'SetErrorInvalidSig',
-   'SetErrorInvalidValue',
-   'SetErrorNullError',
+   'AddHandler',
+   'AnyError',
+   'ChainError',
+   'Fini',
+   'GetError',
+   'GetLast',
+   'GetLength',
+   'Init',
+   'SetError',
    'Tests']
 
 def build(bld):
@@ -58,9 +38,4 @@ def build(bld):
          uselib_local = 'Common') 
       if bld.env['CMOCKERY']:
          obj.unit_test = 1
-
-def check(ctx):
-#   ctx.recurse('Tests')
-   print 'ok check'
-   print dir(ctx)
 
