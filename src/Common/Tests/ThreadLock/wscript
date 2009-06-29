@@ -13,17 +13,17 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list_ok = [
-   'BackStatusPass',
-   'ClosePass',
-   'CopyPass',
-   'CreateBackPass',
-   'FiniPass',
-   'InitPass',
-   'OpenPass',
-   'ReadOnlyPass',
+   'BackStatus',
+   'Close',
+   'Copy',
+   'CreateBack',
+   'Fini',
+   'Init',
+   'Open',
+   'ReadOnly',
    'ReadOnlyTryWrite',
-   'ReadWritePass',
-   'SynchPass',
+   'ReadWrite',
+   'Synch',
    'Tests']
 
 test_list_fail = [

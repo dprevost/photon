@@ -13,14 +13,14 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list_ok = [
-   'GetLongOptPass',
-   'GetShortOptPass',
-   'IsLongPresentPass',
-   'IsShortPresentPass',
-   'SetOptionsPass',
-   'ShowUsagePass',
+   'GetLongOpt',
+   'GetShortOpt',
+   'IsLongPresent',
+   'IsShortPresent',
+   'SetOptions',
+   'ShowUsage',
    'Tests',
-   'ValidatePass']               
+   'Validate']               
 
 test_list_fail = [
    'GetLongOptNullHandle',

@@ -13,14 +13,14 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list_ok = [
-   'AcquirePass',
-   'FiniPass',
-   'InitPass',
-   'IsItLockedPass',
+   'Acquire',
+   'Fini',
+   'Init',
+   'IsItLocked',
    'LockTests',
-   'ReleasePass',
-   'TestPidPass',
-   'TryAcqPass']
+   'Release',
+   'TestPid',
+   'TryAcq']
 
 #   'LockConcurrency',
 
@@ -33,7 +33,7 @@ test_list_fail = [
    'InitNullLock',
    'IsItLockedInvalidSig',
    'IsItLockedNullLock',
-   'IsItLockedPass',
+   'IsItLocked',
    'ReleaseInvalidSig',
    'ReleaseNullLock',
    'TestPidInvalidSig',
