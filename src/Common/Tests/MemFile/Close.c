@@ -19,65 +19,149 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/MemoryFile.h"
-#include "Tests/PrintError.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
 #  define unlink(a) _unlink(a)
 #endif
 
-const bool expectedToPass = true;
+psocMemoryFile  mem;
+psocErrorHandler errorHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psocMemoryFile  mem;
-   psocErrorHandler errorHandler;
-   void*           pAddr = NULL;
-   bool ok;
-   
-   /* The rename is a work around for a bug on Windows. It seems that the delete
+   /*
+    * The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
+    *
+    * Note: revisit this - it was done some time ago (non-ntfs win32?) on
+    * a pc which is now dead.
     */
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
-   
+
    psocInitErrorDefs();
    psocInitErrorHandler( &errorHandler );
    psocInitMemoryFile( &mem, 10, "MemFile.mem" );
+}
 
-   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
-   
-   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
-   
-   psocCloseMemFile( &mem, &errorHandler );
-   
-   if ( mem.fileHandle != PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( mem.baseAddr   != PSO_MAP_FAILED ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-#if defined (WIN32)
-   if ( mem.mapHandle != PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-#endif
-
+void teardown_test()
+{
    unlink( "MemFile.mem" );
    
    psocFiniMemoryFile( &mem );
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   bool ok;
+   void * pAddr = NULL;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+
+   value = mem.initialized;
+   mem.initialized = 0;
+   expect_assert_failure( psocCloseMemFile( &mem, &errorHandler ) );
+   mem.initialized = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   void * pAddr = NULL;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+   
+   expect_assert_failure( psocCloseMemFile( &mem, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_mem( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   void * pAddr = NULL;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+   
+   expect_assert_failure( psocCloseMemFile( NULL, &errorHandler ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   void * pAddr = NULL;
+   bool ok;
+   
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
+   assert_true( ok );
+   
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+   
+   psocCloseMemFile( &mem, &errorHandler );
+   
+   assert_true( mem.fileHandle == PSO_INVALID_HANDLE );
+   assert_true( mem.baseAddr   == PSO_MAP_FAILED );
+
+#if defined (WIN32)
+   assert_true( mem.mapHandle == PSO_INVALID_HANDLE ) {
+#endif
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_error,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_mem,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

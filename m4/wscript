@@ -201,6 +201,24 @@ def configure(conf):
       define_ret=0,
       msg='Checking for struct semun')
 
+	# Testing for mprotect
+   conf.check_cc(
+      fragment='''
+         #include <stdio.h>
+         #include <stdlib.h>
+         #include <sys/types.h>
+         #include <sys/mman.h>
+         int main() {
+            char *p;
+            char c;
+            p = malloc(1024);
+            mprotect(p, 1024, PROT_READ);
+         }''',
+      define_name='HAVE_MPROTECT',
+      execute=0,
+      define_ret=0,
+      msg='Checking for mprotect')
+
    # Test multiple things (mainly sizes of types) with some C code
    mp = conf.check(fragment=type_size_str, execute=1)
    t = Utils.to_hashtable(mp)

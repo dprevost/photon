@@ -19,51 +19,94 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/MemoryFile.h"
-#include "Tests/PrintError.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
 #  define unlink(a) _unlink(a)
 #endif
 
-const bool expectedToPass = true;
+psocMemoryFile mem;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_empty_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitMemoryFile( &mem, 10, "" ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_length_zero( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitMemoryFile( &mem, 0, "MemFile.mem" ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_mem( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitMemoryFile( NULL, 10, "MemFile.mem" ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitMemoryFile( &mem, 10, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
+
+   assert_true( mem.initialized == PSOC_MEMFILE_SIGNATURE );
+   assert_true( strcmp( mem.name, "MemFile.mem" ) == 0 );
+   assert_true( mem.length == 1024*10 );
+   assert_true( mem.baseAddr == PSO_MAP_FAILED );
+   assert_true( mem.fileHandle == PSO_INVALID_HANDLE );
+   
+#if defined (WIN32)
+   assert_true( mem.mapHandle == PSO_INVALID_HANDLE );
+#endif
+
+   psocFiniMemoryFile( &mem );
+
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psocMemoryFile mem;
-   
-   psocInitMemoryFile( &mem, 10, "MemFile.mem" );
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_empty_name ),
+      unit_test( test_length_zero ),
+      unit_test( test_null_mem ),
+      unit_test( test_null_name ),
+      unit_test( test_pass )
+   };
 
-   if ( mem.initialized != PSOC_MEMFILE_SIGNATURE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
+   rc = run_tests(tests);
    
-   if ( strcmp( mem.name, "MemFile.mem" ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
-   if ( mem.length != 1024*10 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
-   if ( mem.baseAddr != PSO_MAP_FAILED ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
-   if ( mem.fileHandle != PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
-#if defined (WIN32)
-   if ( mem.mapHandle != PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
 #endif
-
-   psocFiniMemoryFile( &mem );
-
-   return 0;
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

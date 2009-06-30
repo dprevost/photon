@@ -21,54 +21,11 @@ test_list_ok = [
    'Init',
    'Open',
    'ReadOnly',
-   'ReadOnlyTryWrite',
    'ReadWrite',
    'Synch',
    'Tests']
 
-test_list_fail = [
-   'BackStatusInvalidSig',
-   'BackStatusMemNull',
-   'BackStatusNameEmpty',
-   'BackStatusStatusNull',
-   'CloseNullError',
-   'CloseInvalidSig',
-   'CloseMemNull',
-   'CreateBackNullError',
-   'CreateBackInvalidSig',
-   'CreateBackInvLength',
-   'CreateBackMemNull',
-   'CreateBackNameEmpty',
-   'CreateBackPerm0000',
-   'CreateBackPerm0200',
-   'CreateBackPerm0400',
-   'CreateBackPerm0500',
-   'FiniInvalidSig',
-   'FiniNullMem',
-   'InitLengthPositive',
-   'InitMemNull',
-   'InitNameEmpty',
-   'InitNameNull',
-   'OpenAddrNull',
-   'OpenNullError',
-   'OpenInvalidLength',
-   'OpenInvalidSig',
-   'OpenMemNull',
-   'OpenNameEmpty',
-   'ReadOnlyNullError',
-   'ReadOnlyInvalidBaseAddr',
-   'ReadOnlyInvalidSig',
-   'ReadOnlyMemNull',
-   'ReadWriteNullError',
-   'ReadWriteInvalidSig',
-   'ReadWriteInvBaseAddr',
-   'ReadWriteMemNull',
-   'SynchNullError',
-   'SynchInvalidBaseAddr',
-   'SynchInvalidSig',
-   'SynchMemNull']
-
-test_list = test_list_ok + test_list_fail
+test_list = test_list_ok
 
 def build(bld):
    for prog in test_list:

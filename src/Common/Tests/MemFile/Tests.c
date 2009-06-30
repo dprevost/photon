@@ -36,8 +36,10 @@ const bool expectedToPass = true;
  * write home about...
  */
 
-int main()
+
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psocMemoryFile  mem1, mem2;
    psocErrorHandler errorHandler;
    void*           pAddr = NULL;
@@ -57,26 +59,16 @@ int main()
    psocInitMemoryFile( &mem2, 10, "MemFile.mem" );
    
    ok = psocCreateBackstore( &mem1, 0600, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
+   assert_true( ok );
    
    ok = psocOpenMemFile( &mem1, &pAddr, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
+   assert_true( ok );
    
-   if ( mem1.fileHandle == PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( mem1.baseAddr == PSO_MAP_FAILED ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
+   assert_false( mem1.fileHandle == PSO_INVALID_HANDLE );
+   assert_false( mem1.baseAddr == PSO_MAP_FAILED );
    
 #if defined (WIN32)
-   if ( mem1.mapHandle == PSO_INVALID_HANDLE ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
+   assert_false( mem1.mapHandle == PSO_INVALID_HANDLE );
 #endif
 
    str = (unsigned char*) pAddr;
@@ -89,15 +81,11 @@ int main()
    psocCloseMemFile( &mem1, &errorHandler );
 
    ok = psocOpenMemFile( &mem2, &pAddr, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
+   assert_true( ok );
    
    str = (unsigned char*) pAddr;
    for ( i = 0; i < 10*1024; ++i ) {
-      if ( str[i] != (unsigned char)(i % 256) ) {
-         ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-      }
+      assert_true( str[i] == (unsigned char)(i % 256) );
    }
    
    psocCloseMemFile( &mem2, &errorHandler );
@@ -109,7 +97,23 @@ int main()
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

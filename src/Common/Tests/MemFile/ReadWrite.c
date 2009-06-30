@@ -19,60 +19,181 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/MemoryFile.h"
-#include "Tests/PrintError.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
 #  define unlink(a) _unlink(a)
 #endif
 
-const bool expectedToPass = true;
+psocMemoryFile  mem;
+psocErrorHandler errorHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psocMemoryFile  mem;
-   psocErrorHandler errorHandler;
-   void * pAddr = NULL;
-   bool ok;
-   
-   /* The rename is a work around for a bug on Windows. It seems that the delete
+   /*
+    * The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
+    *
+    * Note: revisit this - it was done some time ago (non-ntfs win32?) on
+    * a pc which is now dead.
     */
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
-   
+
    psocInitErrorDefs();
    psocInitErrorHandler( &errorHandler );
    psocInitMemoryFile( &mem, 10, "MemFile.mem" );
+}
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   unlink( "MemFile.mem" );
+   
+   psocFiniMemoryFile( &mem );
+   psocFiniErrorHandler( &errorHandler );
+   psocFiniErrorDefs();
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_addr( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   void * pAddr = NULL;
+   bool ok;
+   
    ok = psocCreateBackstore( &mem, 0755, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
+   assert_true( ok );
    
    ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
+   assert_true( ok );
+
+   mem.baseAddr = PSO_MAP_FAILED;
+   expect_assert_failure( psocSetReadWrite( &mem, &errorHandler ) );
+   
+   psocCloseMemFile( &mem, &errorHandler );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   void * pAddr = NULL;
+   bool ok;
+   int value;
+   
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
+   assert_true( ok );
+   
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+
+   value = mem.initialized;
+   mem.initialized = 0;
+   expect_assert_failure( psocSetReadWrite( &mem, &errorHandler ) );
+   mem.initialized = value;
+   
+   psocCloseMemFile( &mem, &errorHandler );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   void * pAddr = NULL;
+   bool ok;
+   
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
+   assert_true( ok );
+   
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+
+   expect_assert_failure( psocSetReadWrite( &mem, NULL ) );
+   
+   psocCloseMemFile( &mem, &errorHandler );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_mem( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   void * pAddr = NULL;
+   bool ok;
+   
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
+   assert_true( ok );
+   
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
+
+   expect_assert_failure( psocSetReadWrite( NULL, &errorHandler ) );
+   
+   psocCloseMemFile( &mem, &errorHandler );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   void * pAddr = NULL;
+   bool ok;
+   
+   ok = psocCreateBackstore( &mem, 0755, &errorHandler );
+   assert_true( ok );
+   
+   ok = psocOpenMemFile( &mem, &pAddr, &errorHandler );
+   assert_true( ok );
    
    ok = psocSetReadWrite( &mem, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
+   assert_true( ok );
    
    ((char*)pAddr)[0] = 'x';
    ((char*)pAddr)[1] = 'y';
    
    psocCloseMemFile( &mem, &errorHandler );
 
-   unlink( "MemFile.mem" );
-   
-   psocFiniMemoryFile( &mem );
-   psocFiniErrorHandler( &errorHandler );
-   psocFiniErrorDefs();
+#endif
+   return;
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_addr, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_invalid_sig,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_error,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_mem,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

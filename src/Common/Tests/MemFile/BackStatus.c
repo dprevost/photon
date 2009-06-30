@@ -19,26 +19,24 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/MemoryFile.h"
-#include "Tests/PrintError.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
 #  define unlink(a) _unlink(a)
 #endif
 
-const bool expectedToPass = true;
+psocMemoryFile  mem;
+psocErrorHandler errorHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psocMemoryFile  mem;
-   psocErrorHandler errorHandler;
-   bool ok;
-   psocMemoryFileStatus status;
-   int errcode;
-   
-   /* The rename is a work around for a bug on Windows. It seems that the delete
+   /*
+    * The rename is a work around for a bug on Windows. It seems that the delete
     * call is not as synchroneous as it should be...
+    *
+    * Note: revisit this - it was done some time ago (non-ntfs win32?) on
+    * a pc which is now dead.
     */
    rename( "MemFile.mem", "MemFile.old" );
    unlink( "MemFile.old" );
@@ -46,79 +44,150 @@ int main()
    psocInitErrorDefs();
    psocInitErrorHandler( &errorHandler );
    psocInitMemoryFile( &mem, 10, "MemFile.mem" );
+}
 
-   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
-   
-   psocBackStoreStatus( &mem, &status );
-   if ( status.fileExist != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.fileReadable != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.fileWritable != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.lenghtOK != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.actualLLength != 10*1024 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
-   errcode = unlink( "MemFile.mem" );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   ok = psocCreateBackstore( &mem, 0600, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
-   
-   psocBackStoreStatus( &mem, &status );
-   if ( status.fileExist != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.fileReadable != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.fileWritable != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
-   errcode = unlink( "MemFile.mem" );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   ok = psocCreateBackstore( &mem, 0660, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, unlink( "MemFile.mem" ) );
-   }
-   
-   psocBackStoreStatus( &mem, &status );
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-   if ( status.fileExist != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.fileReadable != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   if ( status.fileWritable != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, unlink( "MemFile.mem" ) );
-   }
-   
+void teardown_test()
+{
    unlink( "MemFile.mem" );
    
    psocFiniMemoryFile( &mem );
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_empty_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   psocMemoryFileStatus status;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+
+   mem.name[0] = '\0';
+   expect_assert_failure( psocBackStoreStatus( &mem, &status ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   bool ok;
+   psocMemoryFileStatus status;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+
+   value = mem.initialized;
+   mem.initialized = 0;
+   expect_assert_failure( psocBackStoreStatus( &mem, &status ) );
+   mem.initialized = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_mem( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   psocMemoryFileStatus status;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+   
+   expect_assert_failure( psocBackStoreStatus( NULL, &status ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_status( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+   
+   expect_assert_failure( psocBackStoreStatus( &mem, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   psocMemoryFileStatus status;
+   int errcode;
+   
+   ok = psocCreateBackstore( &mem, 0644, &errorHandler );
+   assert_true( ok );
+   
+   psocBackStoreStatus( &mem, &status );
+   assert_true( status.fileExist );
+   assert_true( status.fileReadable );
+   assert_true( status.fileWritable );
+   assert_true( status.lenghtOK );
+   assert_true( status.actualLLength == 10*1024 );
+   
+   errcode = unlink( "MemFile.mem" );
+   assert_true( errcode == 0 );
+   
+   ok = psocCreateBackstore( &mem, 0600, &errorHandler );
+   assert_true( ok );
+   
+   psocBackStoreStatus( &mem, &status );
+   assert_true( status.fileExist );
+   assert_true( status.fileReadable );
+   assert_true( status.fileWritable );
+
+   errcode = unlink( "MemFile.mem" );
+   assert_true( errcode == 0 );
+
+   ok = psocCreateBackstore( &mem, 0660, &errorHandler );
+   assert_true( ok );
+   
+   psocBackStoreStatus( &mem, &status );
+   assert_true( status.fileExist );
+   assert_true( status.fileReadable );
+   assert_true( status.fileWritable );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_empty_name,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_mem,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_status, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
