@@ -25,8 +25,9 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    int errcode = 0;
    psocOptionHandle handle;
    char dummyArgs[100];
@@ -44,18 +45,14 @@ int main()
    dummyPtrs[0] = dummyArgs;
    
    ok = psocSetSupportedOptions( 5, opts, &handle );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    strcpy( dummyArgs, "OptionTest2 -?" );
    dummyPtrs[1] = &dummyArgs[12];
    dummyArgs[11] = 0;
    
    errcode = psocValidateUserOptions( handle, 2, dummyPtrs, 1 );
-   if ( errcode != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 1 );
    
    strcpy( dummyArgs, "OptionTest2 -a 12345" );
    dummyPtrs[1] = &dummyArgs[12];
@@ -64,11 +61,25 @@ int main()
    dummyArgs[14] = 0;   
 
    errcode = psocValidateUserOptions( handle, 3, dummyPtrs, 1 );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

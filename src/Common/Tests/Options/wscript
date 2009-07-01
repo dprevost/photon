@@ -12,7 +12,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-test_list_ok = [
+test_list = [
    'GetLongOpt',
    'GetShortOpt',
    'IsLongPresent',
@@ -20,16 +20,8 @@ test_list_ok = [
    'SetOptions',
    'ShowUsage',
    'Tests',
+   'UnsetOpt',
    'Validate']               
-
-test_list_fail = [
-   'UnsetOptNullHandle',
-   'ValidateArgcZero',
-   'ValidateNullArgv',
-   'ValidateNULLArgvi',
-   'ValidateNullHandle']
-
-test_list = test_list_ok + test_list_fail
 
 def build(bld):
    for prog in test_list:

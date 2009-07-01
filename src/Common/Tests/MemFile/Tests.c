@@ -19,7 +19,6 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/MemoryFile.h"
-#include "Tests/PrintError.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
 #  define unlink(a) _unlink(a)
@@ -35,7 +34,6 @@ const bool expectedToPass = true;
  * matches what we wrote previously. Like I said, very simple, nothing to
  * write home about...
  */
-
 
 void test1( void ** state )
 {

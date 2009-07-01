@@ -19,33 +19,28 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Options.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocOptionHandle handle;
+char dummyArgs[100];
+char *dummyPtrs[10];
+   
+struct psocOptStruct opts[5] = { 
+   { '3', "three",   1, "", "repeat the loop three times" },
+   { 'a', "address", 0, "QUASAR_ADDRESS", "tcp/ip port number of the server" },
+   { 'x', "",        1, "DISPLAY", "X display to use" },
+   { 'v', "verbose", 1, "", "try to explain what is going on" },
+   { 'z', "zzz",     1, "", "go to sleep..." }
+};
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   int errcode = 0;
-   char dummyArgs[100];
-   char *dummyPtrs[10];
-   psocOptionHandle handle;
    bool ok;
    
-   struct psocOptStruct opts[5] = { 
-      { '3', "three",   1, "", "repeat the loop three times" },
-      { 'a', "address", 0, "QUASAR_ADDRESS", "tcp/ip port number of the server" },
-      { 'x', "",        1, "DISPLAY", "X display to use" },
-      {  'v', "verbose", 1, "", "try to explain what is going on" },
-      {  'z', "zzz",     1, "", "go to sleep..." }
-   };
-   
    ok = psocSetSupportedOptions( 5, opts, &handle );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
+   assert( ok );
+
    strcpy( dummyArgs, "OptionTest2 --address 12345 -v --zzz" );
    /*                  012345678901234567890123456789012345 */
    dummyPtrs[0] = dummyArgs;
@@ -58,14 +53,89 @@ int main()
    dummyArgs[21] = 0;
    dummyArgs[27] = 0;
    dummyArgs[30] = 0;
+}
 
-   errcode = psocValidateUserOptions( handle, 5, dummyPtrs, 1 );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
    psocUnsetSupportedOptions( handle );
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_argc_zero( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocValidateUserOptions( handle, 0, dummyPtrs, 1 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_argv( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocValidateUserOptions( handle, 5, NULL, 1 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_argvi( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   dummyPtrs[3] = NULL; /* &dummyArgs[28]; */
+
+   expect_assert_failure( psocValidateUserOptions( handle, 5, dummyPtrs, 1 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_handle( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocValidateUserOptions( NULL, 5, dummyPtrs, 1 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode = 0;
+   
+   errcode = psocValidateUserOptions( handle, 5, dummyPtrs, 1 );
+   assert_true( errcode == 0 );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_argc_zero,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_argv,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_argvi,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_handle, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
