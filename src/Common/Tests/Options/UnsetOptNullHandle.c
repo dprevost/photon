@@ -19,15 +19,12 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Common/Options.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_null_handle( void ** state )
 {
-#if defined(USE_DBC)
+#if defined(PSO_UNIT_TESTS)
    bool ok;
    psocOptionHandle handle;
    
@@ -40,16 +37,28 @@ int main()
    };
    
    ok = psocSetSupportedOptions( 5, opts, &handle );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
-   psocUnsetSupportedOptions( NULL );
+   expect_assert_failure( psocUnsetSupportedOptions( NULL ) );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
-#else
-   return 1;
 #endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_null_handle ),
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
