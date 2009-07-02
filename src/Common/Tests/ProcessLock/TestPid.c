@@ -20,41 +20,111 @@
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocProcessLock lock;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+
+   ok = psocInitProcessLock( &lock );
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psocFiniProcessLock( &lock );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   psocAcquireProcessLock( &lock, 0xff );
+
+   value = lock.initialized;
+   lock.initialized = 0;
+   expect_assert_failure( psocTestLockPidValue( &lock, 0xff ) );
+   lock.initialized = value;
+
+   psocReleaseProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psocAcquireProcessLock( &lock, 0xff );
+
+   expect_assert_failure( psocTestLockPidValue( NULL, 0xff ) );
+
+   psocReleaseProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_value( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psocAcquireProcessLock( &lock, 0xff );
+
+   expect_assert_failure( psocTestLockPidValue( &lock, 0 ) );
+
+   psocReleaseProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   assert_false( psocTestLockPidValue( &lock, 0xff ) );
+   
+   psocAcquireProcessLock( &lock, 0xff );
+
+   assert_false( psocTestLockPidValue( &lock, 1234 ) );
+
+   assert_true( psocTestLockPidValue( &lock, 0xff ) );
+   
+   psocReleaseProcessLock( &lock );
+
+   assert_false( psocTestLockPidValue( &lock, 0xff ) );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   bool ok;
-   psocProcessLock lock;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_lock,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_value,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
 
-   ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   rc = run_tests(tests);
    
-   if ( psocTestLockPidValue( &lock, 0xff ) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psocAcquireProcessLock( &lock, 0xff );
-
-   if ( !psocTestLockPidValue( &lock, 0xff ) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psocReleaseProcessLock( &lock );
-
-   if ( psocTestLockPidValue( &lock, 0xff ) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psocFiniProcessLock( &lock );
-
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

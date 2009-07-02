@@ -16,36 +16,60 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
  */
 
-
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocProcessLock lock;
 
-// --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_null_lock( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitProcessLock( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
    bool ok;
    psocProcessLock lock;
 
    ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
-   if ( lock.initialized != PSOC_LOCK_SIGNATURE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( lock.initialized == PSOC_LOCK_SIGNATURE );
 
    /* A second init call is allowed */
    ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
 
    psocFiniProcessLock( &lock );
 
-   return 0;
+#endif
+   return;
 }
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_null_lock ),
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -20,33 +20,95 @@
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Tests/PrintError.h"
+   
+psocProcessLock lock;
 
-const bool expectedToPass = true;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+
+   ok = psocInitProcessLock( &lock );
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psocFiniProcessLock( &lock );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   value = lock.initialized;
+   lock.initialized = 0;
+   expect_assert_failure( psocAcquireProcessLock( &lock, 0xff ) );
+   lock.initialized = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocAcquireProcessLock( NULL, 0xff ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_value( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocAcquireProcessLock( &lock, 0 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+
+   psocAcquireProcessLock( &lock, 0xff );
+
+   assert_true( psocIsItLocked( &lock ) );
+   
+   psocReleaseProcessLock( &lock );
+
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   bool ok;
-   psocProcessLock lock;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_lock,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_value,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
 
-   ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   rc = run_tests(tests);
    
-   psocAcquireProcessLock( &lock, 0xff );
-
-   if ( ! psocIsItLocked( &lock ) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psocReleaseProcessLock( &lock );
-
-   psocFiniProcessLock( &lock );
-
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

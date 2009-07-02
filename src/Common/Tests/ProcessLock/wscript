@@ -25,23 +25,9 @@ test_list_ok = [
 #   'LockConcurrency',
 
 test_list_fail = [
-   'AcquireInvalidSig',
-   'AcquireNullLock',
-   'AcquireZeroValue',
-   'FiniInvalidSig',
-   'FiniNullLock',
-   'InitNullLock',
-   'IsItLockedInvalidSig',
-   'IsItLockedNullLock',
-   'IsItLocked',
    'ReleaseInvalidSig',
    'ReleaseNullLock',
-   'TestPidInvalidSig',
-   'TestPidNullLock',
-   'TestPidZeroPid',
-   'TryAcqInvalidSig',
-   'TryAcqNullLock',
-   'TryAcqZeroValue']
+   ]
 
 test_list = test_list_ok + test_list_fail
 

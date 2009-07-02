@@ -20,29 +20,81 @@
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocProcessLock lock;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   int value;
+
+   ok = psocInitProcessLock( &lock );
+   assert_true( ok );
+   
+   value = lock.initialized;
+   lock.initialized = 0;
+   expect_assert_failure( psocFiniProcessLock( &lock ) );
+   lock.initialized = value;
+
+   psocFiniProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+
+   ok = psocInitProcessLock( &lock );
+   assert_true( ok );
+
+   expect_assert_failure( psocFiniProcessLock( NULL ) );
+
+   psocFiniProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+
+   ok = psocInitProcessLock( &lock );
+   assert_true( ok );
+   
+   psocFiniProcessLock( &lock );
+
+   assert_true( lock.initialized == 0 );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   bool ok;
-   psocProcessLock lock;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_invalid_sig ),
+      unit_test( test_null_lock ),
+      unit_test( test_pass )
+   };
 
-   ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   rc = run_tests(tests);
    
-   psocFiniProcessLock( &lock );
-
-   if ( lock.initialized != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
