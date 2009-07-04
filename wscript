@@ -32,11 +32,14 @@ def set_options(opt):
       help='disable contract-validation checks to the code.')
    opt.add_option('--block-size', type='string', dest='block_size',default='4k',
       help='set the size of Photon blocks (values must be either 2k, 4k or 8k)')
+   opt.add_option('--more-tests', action='store_true', default=False,dest='more_tests',
+      help='Set this flag to including all the tests. Must be added when running configure')
+   opt.add_option('--less-tests', action='store_false', dest='more_tests',
+      help='Set this flag to exclude some long-running tests. Must be removed when running configure')
    opt.tool_options('gcc')
    opt.tool_options('g++')
 
 def configure(conf):
-   print '  executing the configuration'
 
    if sys.platform == 'win32':
       conf.check_tool('msvc')
@@ -80,17 +83,15 @@ def configure(conf):
    else:
       conf.fatal('Invalid value! Values allowed: 2k, 4k or 8k')
 
+   #conf.env.append_value('MORE_TESTS', Options.options.more_tests)
+
    conf.write_config_header('src/config.h')
    
 def build(bld):
    bld.add_subdirs(['src', 'doc'])
-   print bld.env['DOXYGEN']
+   print bld.env['MORE_TESTS']
    print sys.platform, ' ', os.name
 
-#def check(ctx):
-#        """help string for the command foo"""
-#        ctx.recurse('src')
-        
 def check(context):
    print 'ok check'
    # Unit tests are run when "check" target is used

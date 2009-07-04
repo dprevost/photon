@@ -12,65 +12,19 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-test_list_ok = [
-   'BackStatus',
-   'Close',
-   'Copy',
-   'CreateBack',
+test_list = [
+   'Acquire',
    'Fini',
    'Init',
-   'Open',
-   'ReadOnly',
-   'ReadOnlyTryWrite',
-   'ReadWrite',
-   'Synch',
-   'Tests']
+   'LockTests',
+   'Release',
+   'TryAcq']
 
-test_list_fail = [
-   'BackStatusInvalidSig',
-   'BackStatusMemNull',
-   'BackStatusNameEmpty',
-   'BackStatusStatusNull',
-   'CloseNullError',
-   'CloseInvalidSig',
-   'CloseMemNull',
-   'CreateBackNullError',
-   'CreateBackInvalidSig',
-   'CreateBackInvLength',
-   'CreateBackMemNull',
-   'CreateBackNameEmpty',
-   'CreateBackPerm0000',
-   'CreateBackPerm0200',
-   'CreateBackPerm0400',
-   'CreateBackPerm0500',
-   'FiniInvalidSig',
-   'FiniNullMem',
-   'InitLengthPositive',
-   'InitMemNull',
-   'InitNameEmpty',
-   'InitNameNull',
-   'OpenAddrNull',
-   'OpenNullError',
-   'OpenInvalidLength',
-   'OpenInvalidSig',
-   'OpenMemNull',
-   'OpenNameEmpty',
-   'ReadOnlyNullError',
-   'ReadOnlyInvalidBaseAddr',
-   'ReadOnlyInvalidSig',
-   'ReadOnlyMemNull',
-   'ReadWriteNullError',
-   'ReadWriteInvalidSig',
-   'ReadWriteInvBaseAddr',
-   'ReadWriteMemNull',
-   'SynchNullError',
-   'SynchInvalidBaseAddr',
-   'SynchInvalidSig',
-   'SynchMemNull']
-
-test_list = test_list_ok + test_list_fail
+thread_test_code     = ['LockConcurrency.c',    'Barrier.c', 'ThreadWrap.c']
+thread_test_code_try = ['LockConcurrencyTry.c', 'Barrier.c', 'ThreadWrap.c']
 
 def build(bld):
+
    for prog in test_list:
       prog_c = prog + '.c'
       obj = bld.new_task_gen(
@@ -83,6 +37,28 @@ def build(bld):
          uselib_local = 'Common') 
       if bld.env['CMOCKERY']:
          obj.unit_test = 1
+
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = thread_test_code,
+      target       = 'LockConcurrency',
+      includes     = '../../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
+
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = thread_test_code_try,
+      target       = 'LockConcurrencyTry',
+      includes     = '../../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
 
 def check(ctx):
 #   ctx.recurse('Tests')

@@ -25,10 +25,6 @@
 #include "Common/ErrorHandler.h"
 #include "Common/Tests/ThreadLock/ThreadWrap.h"
 #include "Common/Tests/ThreadLock/Barrier.h"
-#include "Tests/PrintError.h"
-#include "Common/Options.h"
-
-const bool expectedToPass = true;
 
 #define DEFAULT_NUM_THREADS    4
 #define DEFAULT_TIME          30
@@ -45,7 +41,6 @@ struct localData
    char dum2[250];
 };
 
-bool              g_tryMode = false;
 psocMemoryFile    g_memFile;
 struct localData *g_data = NULL;
 unsigned long     g_maxTime = 0;
@@ -71,13 +66,7 @@ int worker( void* arg )
    psocBeginTimer( &timer );
    
    while ( 1 ) {      
-      if ( g_tryMode ) {
-         ok = psocTryAcquireThreadLock( &g_data->lock, 10000 );
-         if ( ok != true ) continue;
-      }
-      else {
-         psocAcquireThreadLock( &g_data->lock );
-      }
+      psocAcquireThreadLock( &g_data->lock );
       
       sprintf( g_data->dum2, "dumStr2 %d  ", identifier );
       memcpy( g_data->dum1, g_data->dum2, 100 );
@@ -112,8 +101,9 @@ int worker( void* arg )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    void* ptr = NULL;   
    char filename[PATH_MAX];
    int errcode;
@@ -123,106 +113,40 @@ int main( int argc, char* argv[] )
    psotThreadWrap *threadWrap;
    int numThreads = 0;
    
-   psocOptionHandle handle;
    char *argument;
-   struct psocOptStruct opts[4] = { 
-      { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
-      { 'm', "mode",       1, "lockMode",   "Set this to 'try' for testing TryAcquire" },
-      { 'n', "numThreads", 1, "numThreads", "Number of threads" },
-      { 't', "time",       1, "timeInSecs", "Time to run the tests" }
-   };
 
    psocInitErrorDefs();
    psocInitErrorHandler( &errorHandler );
 
-   ok = psocSetSupportedOptions( 4, opts, &handle );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   errcode = psocValidateUserOptions( handle, argc, argv, 1 );
-   if ( errcode < 0 ) {
-      psocShowUsage( handle, "LockConcurrency", "" );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( errcode > 0 ) {
-      psocShowUsage( handle, "LockConcurrency", "" );
-      return 0;
-   }
-
-   if ( psocGetShortOptArgument( handle, 'n', &argument ) ) {
-      numThreads = atoi( argument );
-      if ( numThreads < 2 ) {
-         fprintf( stderr, "Number of childs must be >= to two\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }      
-   }
-   else {
-      numThreads = DEFAULT_NUM_THREADS;
-   }
-   
-   if ( psocGetShortOptArgument( handle, 't', &argument ) ) {
-      g_maxTime = strtol( argument, NULL, 0 );
-      if ( g_maxTime < 1 ) {
-         fprintf( stderr, "Time of test must be positive\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }      
-   }
-   else {
-      g_maxTime = DEFAULT_TIME; /* in seconds */
-   }
-   
-   if ( psocGetShortOptArgument( handle, 'm', &argument ) ) {
-      if ( strcmp( argument, "try" ) == 0 ) g_tryMode = true;
-   }
-   
-   if ( psocGetShortOptArgument( handle, 'f', &argument ) ) {
-      strncpy( filename, argument, PATH_MAX );
-      if ( filename[0] == '\0' ) {
-         fprintf( stderr, "Empty memfile name\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-   }
-   else {
-      strcpy( filename, "Memfile.mem" );
-   }
+   numThreads = DEFAULT_NUM_THREADS;
+   g_maxTime = DEFAULT_TIME; /* in seconds */
+   strcpy( filename, "Memfile.mem" );
    
    g_maxTime *= US_PER_SEC;
    identifier = (int*) malloc( numThreads*sizeof(int));
-   if ( identifier == NULL ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_false( identifier == NULL );
    memset( identifier, 0, numThreads*sizeof(int) );
+   
    threadWrap = (psotThreadWrap*) malloc(numThreads*sizeof(psotThreadWrap));
-   if ( threadWrap == NULL ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_false( threadWrap == NULL );
    memset( threadWrap, 0, numThreads*sizeof(psotThreadWrap) );
       
    errcode = psotInitBarrier( &g_barrier, numThreads, &errorHandler );
-   if ( errcode < 0 ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_true( errcode == 0 );
    
    psocInitMemoryFile( &g_memFile, 10, filename );
 
    ok = psocCreateBackstore( &g_memFile, 0644, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psocOpenMemFile( &g_memFile, &ptr, &errorHandler );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &errorHandler, ; );
-   }
+   assert_true( ok );
    
    memset( ptr, 0, 10000 );
    g_data = (struct localData*) ptr;
    
    ok = psocInitThreadLock( &g_data->lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    for ( i = 0; i < numThreads; ++i ) {
       identifier[i] = i+1;
@@ -230,19 +154,13 @@ int main( int argc, char* argv[] )
                                   &worker,
                                   (void*)&identifier[i],
                                   &errorHandler );
-      if ( errcode < 0 ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
+      assert_true( errcode == 0 );
    }
 
    for ( i = 0; i < numThreads; ++i ) {
       errcode = psotJoinThread( &threadWrap[i], &errorHandler );
-      if ( errcode < 0 ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
-      if ( threadWrap[i].returnCode != 0 ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
+      assert_true( errcode == 0 );
+      assert_true( threadWrap[i].returnCode == 0 );
    }
    
    psocFiniMemoryFile( &g_memFile );
@@ -250,7 +168,23 @@ int main( int argc, char* argv[] )
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

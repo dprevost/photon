@@ -20,29 +20,52 @@
 
 #include "Common/Common.h"
 #include "Common/ThreadLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocThreadLock lock;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocInitThreadLock( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   
+   ok = psocInitThreadLock( &lock );
+   assert_true( ok );
+   
+   assert_true( lock.initialized == PSOC_THREADLOCK_SIGNATURE );
+   
+   psocFiniThreadLock( &lock );
+
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   bool ok;
-   psocThreadLock lock;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_null_lock ),
+      unit_test( test_pass )
+   };
 
-   ok = psocInitThreadLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   rc = run_tests(tests);
    
-   if ( lock.initialized != PSOC_THREADLOCK_SIGNATURE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psocFiniThreadLock( &lock );
-
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

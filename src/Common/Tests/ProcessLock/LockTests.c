@@ -20,42 +20,30 @@
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psocProcessLock lock;
    pid_t pid = getpid();
    bool ok;
    
    ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    ok = psocTryAcquireProcessLock( &lock, pid, 0 );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    ok = psocTryAcquireProcessLock( &lock, pid, 1000 );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    
    ok = psocIsItLocked( &lock );   
-   if ( ok == false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    ok = psocTestLockPidValue( &lock, pid );
-   if ( ok == false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    psocReleaseProcessLock( &lock );
 
@@ -63,15 +51,29 @@ int main()
    psocReleaseProcessLock( &lock );
 
    ok = psocTryAcquireProcessLock( &lock, pid, 1000 );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
 
    psocReleaseProcessLock( &lock );
 
    psocFiniProcessLock( &lock );
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

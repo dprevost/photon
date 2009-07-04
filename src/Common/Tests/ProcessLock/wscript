@@ -12,7 +12,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-test_list_ok = [
+test_list = [
    'Acquire',
    'Fini',
    'Init',
@@ -22,16 +22,10 @@ test_list_ok = [
    'TestPid',
    'TryAcq']
 
-#   'LockConcurrency',
-
-test_list_fail = [
-   'ReleaseInvalidSig',
-   'ReleaseNullLock',
-   ]
-
-test_list = test_list_ok + test_list_fail
+test_list_more = [ 'LockConcurrency', 'LockConcurrencyTry']
 
 def build(bld):
+   
    for prog in test_list:
       prog_c = prog + '.c'
       obj = bld.new_task_gen(
@@ -43,6 +37,19 @@ def build(bld):
          lib          = bld.env['CMOCKERY'],
          uselib_local = 'Common') 
       if bld.env['CMOCKERY']:
+         obj.unit_test = 1
+
+   for prog in test_list_more:
+      prog_c = prog + '.c'
+      obj = bld.new_task_gen(
+         features     = 'cc cprogram',
+         source       = prog_c,
+         target       = prog,
+         includes     = '../../..',
+         install_path = None,
+         lib          = bld.env['CMOCKERY'],
+         uselib_local = 'Common') 
+      if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
          obj.unit_test = 1
 
 def check(ctx):

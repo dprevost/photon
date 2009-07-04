@@ -32,9 +32,6 @@ def build(bld):
 
    bld.add_subdirs(['Tests'])
 
-#def check(ctx):
-#   ctx.recurse('Tests')
-#
 def check(ctx):
    print 'ok check'
    # Unit tests are run when "check" target is used

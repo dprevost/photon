@@ -20,33 +20,85 @@
 
 #include "Common/Common.h"
 #include "Common/ThreadLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocThreadLock lock;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+
+   ok = psocInitThreadLock( &lock );
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psocFiniThreadLock( &lock );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   value = lock.initialized;
+   lock.initialized = 0;
+   expect_assert_failure( psocTryAcquireThreadLock( &lock, 100 ) );
+   lock.initialized = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocTryAcquireThreadLock( NULL, 100 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   
+   ok = psocTryAcquireThreadLock( &lock, 100 );
+   assert_true( ok );
+   
+   psocReleaseThreadLock( &lock );
+
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psocThreadLock lock;
-   bool ok;
-   
-   ok = psocInitThreadLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   ok = psocTryAcquireThreadLock( &lock, 100 );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psocReleaseThreadLock( &lock );
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_lock,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
 
-   psocFiniThreadLock( &lock );
-
-   return 0;
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 

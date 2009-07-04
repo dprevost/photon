@@ -24,8 +24,6 @@
 #  define unlink(a) _unlink(a)
 #endif
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /* 

@@ -134,6 +134,8 @@ def configure(conf):
          conf.env.append_value('CMOCKERY', 'cmockery')
          conf.define('PSO_UNIT_TESTS', 1)
 
+   conf.env['MORE_TESTS'] = Options.options.more_tests
+   
    conf.check_cc(function_name='access', header_name="unistd.h")
 
    # Testing for ptrdiff_t

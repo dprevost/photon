@@ -12,14 +12,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-test_list = ['DirAccess.c',
-             'ErrorHandler.c',
-             'MemoryFile.c',
-             'Options.c',
-             'ProcessLock.c',
-             'ThreadLock.c',
-             'Timer.c']
-
 def build(bld):
    print ' building in Tests'
    
@@ -31,19 +23,16 @@ def build(bld):
       install_path = None,
       lib          = bld.env['CMOCKERY'],
       uselib_local = 'Common') 
-   if bld.env['CMOCKERY']:
-      obj.unit_test = 0
-#      lib  = 'pthread',
-#      uselib = 'BASIC',
-#      libpath      = ['/usr/lib'],
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
 
    bld.add_subdirs([
         'DirAccess',
         'Error',
         'MemFile',
         'Options',
-        'ProcessLock'])
-#        'ThreadLock'])
+        'ProcessLock',
+        'ThreadLock'])
 
 def check(ctx):
    ctx.recurse([
@@ -54,6 +43,3 @@ def check(ctx):
         'ProcessLock'])
    print 'ok check Common/Tests'
 
-
-#nanosleepTest.c
-#TimerTest_SOURCES     = TimerTest.c

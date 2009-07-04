@@ -20,26 +20,20 @@
 
 #include "Common/Common.h"
 #include "Common/ThreadLock.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psocThreadLock lock;
    bool ok;
    
    ok = psocInitThreadLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    ok = psocTryAcquireThreadLock( &lock, 0 );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    /* 
     * On Windows, Critical Sections are recursives (for the calling thread,
@@ -50,28 +44,38 @@ int main()
     */
    ok = psocTryAcquireThreadLock( &lock, 1000 );
 #if defined (WIN32)
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    psocReleaseThreadLock( &lock );
 #else
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
 #endif
 
    psocReleaseThreadLock( &lock );
 
    ok = psocTryAcquireThreadLock( &lock, 1000 );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    psocReleaseThreadLock( &lock );
 
    psocFiniThreadLock( &lock );
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -20,36 +20,95 @@
 
 #include "Common/Common.h"
 #include "Common/ProcessLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocProcessLock lock;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psocProcessLock lock;
    bool ok;
-   
+
    ok = psocInitProcessLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psocFiniProcessLock( &lock );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   psocAcquireProcessLock( &lock, 0xff );
+
+   value = lock.initialized;
+   lock.initialized = 0;
+   expect_assert_failure( psocReleaseProcessLock( &lock ) );
+   
+   lock.initialized = value;
+   psocReleaseProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psocAcquireProcessLock( &lock, 0xff );
+
+   expect_assert_failure( psocReleaseProcessLock( NULL ) );
+
+   psocReleaseProcessLock( &lock );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
    
    psocAcquireProcessLock( &lock, 0xff );
 
    psocReleaseProcessLock( &lock );
 
    ok = psocTryAcquireProcessLock( &lock, 0xff, 100 );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
    psocReleaseProcessLock( &lock );
 
-   psocFiniProcessLock( &lock );
+#endif
+   return;
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_lock,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

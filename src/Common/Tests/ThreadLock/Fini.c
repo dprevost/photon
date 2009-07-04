@@ -20,29 +20,80 @@
 
 #include "Common/Common.h"
 #include "Common/ThreadLock.h"
-#include "Tests/PrintError.h"
 
-const bool expectedToPass = true;
+psocThreadLock lock;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+
+   ok = psocInitThreadLock( &lock );
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   value = lock.initialized;
+   lock.initialized = 0;
+   expect_assert_failure( psocFiniThreadLock( &lock ) );
+   lock.initialized = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_lock( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psocFiniThreadLock( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   
+   psocFiniThreadLock( &lock );
+
+   assert_true( lock.initialized == 0 );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   bool ok;
-   psocThreadLock lock;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_lock,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
 
-   ok = psocInitThreadLock( &lock );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   rc = run_tests(tests);
    
-   psocFiniThreadLock( &lock );
-
-   if ( lock.initialized != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
