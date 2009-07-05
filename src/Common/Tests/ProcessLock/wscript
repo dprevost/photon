@@ -39,18 +39,34 @@ def build(bld):
       if bld.env['CMOCKERY']:
          obj.unit_test = 1
 
-   for prog in test_list_more:
-      prog_c = prog + '.c'
-      obj = bld.new_task_gen(
-         features     = 'cc cprogram',
-         source       = prog_c,
-         target       = prog,
-         includes     = '../../..',
-         install_path = None,
-         lib          = bld.env['CMOCKERY'],
-         uselib_local = 'Common') 
-      if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
-         obj.unit_test = 1
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'LockConcurrency.c',
+      target       = 'LockConcurrency',
+      includes     = '../../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
+
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'LockConcurrencyStd.c',
+      target       = 'LockConcurrencyStd',
+      includes     = '../../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Common') 
+
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'LockConcurrencyTry.c',
+      target       = 'LockConcurrencyTry',
+      includes     = '../../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Common') 
 
 def check(ctx):
 #   ctx.recurse('Tests')

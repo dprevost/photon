@@ -20,9 +20,6 @@
 
 #include "Common/Common.h"
 #include "Common/Timer.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 #define NS_PER_SEC     1000000000
 #define NS_PER_US            1000
@@ -32,8 +29,9 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test1( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    unsigned long sec, nanoSec, sum;
    psocTimer timer;
    
@@ -77,14 +75,12 @@ int main()
 
    /*
     * Newer version of gcc seem to strip the loop away since dum is not
-    * used anywhere. This seems to fix the problem.
+    * used anywhere. This seems to fix the problem (declaring dum
+    * as volatile is likely a better solution).
     */
    if (dum == 0 ) fprintf(stderr, "%d\n", dum );
    
-   if ( sec == 0 && nanoSec == 0 ) {
-      fprintf( stderr, "Timer returns invalid time!\n" );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( sec == 0 && nanoSec == 0 );
    sum = NS_PER_SEC*sec + nanoSec;
    sum = sum / NS_PER_US;    /* in micro-seconds */
    if ( sum == 0 ) sum = 1;
@@ -122,15 +118,29 @@ int main()
        */
       if (dum == 0 ) fprintf(stderr, "%d\n", dum );
 
-      if ( sec == 0 && nanoSec == 0 ) {
-         fprintf( stderr, "Timer returns invalid time!\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_false( sec == 0 && nanoSec == 0 );
       
       fprintf( stderr, "Sec = %lu, nanoSec = %09lu\n", sec, nanoSec );
    }
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test1 ),
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

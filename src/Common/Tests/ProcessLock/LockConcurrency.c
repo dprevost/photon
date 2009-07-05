@@ -23,7 +23,6 @@
 #include "Common/Timer.h"
 #include "Common/ProcessLock.h"
 #include "Common/ErrorHandler.h"
-#include "Tests/PrintError.h"
 #include "Common/Options.h"
 #if defined(WIN32)
 #  include <Process.h>
@@ -34,9 +33,6 @@
 #if defined(_MSC_VER) && (_MSC_VER >= 1400)
 #  define unlink(a) _unlink(a)
 #endif
-
-const bool expectedToPass = true;
-const bool childExpectedToPass = true;
 
 #define DEFAULT_NUM_CHILDREN   4
 #define DEFAULT_TIME          30
@@ -55,243 +51,195 @@ struct localData
    char dum2[250];
 };
 
+char * argv_0;
+psocErrorHandler errorHandler;
+psocMemoryFile memFile;
+char filename[PATH_MAX];
+
+void * ptr = NULL;   
+struct localData *data = NULL;
+   
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char* argv[] )
+void setup_test()
 {
-   pid_t pid, *childPid = NULL;
-   unsigned long sec, nanoSec;
-   psocTimer timer;
-   
-   unsigned long elapsedTime = 0, maxTime = 0;
-   unsigned long loop = 0;
-   void* ptr = NULL;   
-   char filename[PATH_MAX];
-   struct localData *data = NULL;
-   int errcode;
    bool ok;
-   psocMemoryFile memFile;
-   psocErrorHandler errorHandler;
-   int identifier, numChilds, i, childStatus;
-   char dum3[100];
-   int dumId;
-   bool foundError = false;
-   psocOptionHandle handle;
-   char *argument;
-   char strId[10], strNumChilds[10], strTime[10], strMode[5];
-   struct psocOptStruct opts[5] = {
-      { 'c', "child",      1, "numChilds",  "Number of child processes" },
-      { 'f', "filename",   1, "memoryFile", "Filename for shared memory" },
-      { 'i', "identifier", 1, "identifier", "Identifier for the process" },
-      { 't', "time",       1, "timeInSecs", "Time to run the tests" }
-   };
 
    psocInitErrorDefs();
    psocInitErrorHandler( &errorHandler );
-   psocInitTimer( &timer );
-
-   ok = psocSetSupportedOptions( 4, opts, &handle );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
    
-   errcode = psocValidateUserOptions( handle, argc, argv, 1 );
-   if ( errcode < 0 ) {
-      psocShowUsage( handle, "LockConcurrency", "" );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( errcode > 0 ) {
-      psocShowUsage( handle, "LockConcurrency", "" );
-      return 0;
-   }
-   
-   if ( psocGetShortOptArgument( handle, 'c', &argument ) ) {
-      numChilds = atoi( argument );
-      if ( numChilds < 2 ) {
-         fprintf( stderr, "Number of childs must be >= to two\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }      
-   }
-   else {
-      numChilds = DEFAULT_NUM_CHILDREN;
-   }
-   
-   if ( psocGetShortOptArgument( handle, 'i', &argument ) ) {
-      identifier = atoi( argument );
-      if ( identifier > numChilds ) {
-         fprintf( stderr, "Identifier must be between 0 and number of childs\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }      
-   }
-   else {
-      identifier = 0;
-   }
-   
-   if ( psocGetShortOptArgument( handle, 't', &argument ) ) {
-      maxTime = strtol( argument, NULL, 0 );
-      if ( maxTime < 1 ) {
-         fprintf( stderr, "Time of test must be positive\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }      
-   }
-   else {
-      maxTime = DEFAULT_TIME; /* in seconds */
-   }
-   
-   if ( psocGetShortOptArgument( handle, 'f', &argument ) ) {
-      strncpy( filename, argument, PATH_MAX );
-      if ( filename[0] == '\0' ) {
-         fprintf( stderr, "Empty memfile name\n" );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-   }
-   else {
-      strcpy( filename, "Memfile.mem" );
-   }
+   strcpy( filename, "Memfile.mem" );
    
    psocInitMemoryFile( &memFile, 10, filename );
    
-   if ( identifier == 0 ) {
-      /* The master process */
+   ok = psocCreateBackstore( &memFile, 0644, &errorHandler );
+   assert( ok );
       
-      childPid = malloc( numChilds*sizeof(pid_t) );
-      if ( childPid == NULL ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
+   ok = psocOpenMemFile( &memFile, &ptr, &errorHandler );
+   assert( ok );
       
-      ok = psocCreateBackstore( &memFile, 0644, &errorHandler );
-      if ( ok != true ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
-      
-      ok = psocOpenMemFile( &memFile, &ptr, &errorHandler );
-      if ( ok != true ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
-      
-      memset( ptr, 0, 10000 );
-      data = (struct localData*) ptr;
+   memset( ptr, 0, 10000 );
+   data = (struct localData*) ptr;
    
-      ok = psocInitProcessLock( &data->lock );
-      if ( ok != true ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-      
-      sprintf( strNumChilds, "%d", numChilds );
-      sprintf( strTime, "%u", (unsigned int)maxTime );
-      
-      /* Launch the childs */
-      for ( i = 0; i < numChilds; ++i ) {
-         sprintf( strId, "%d", i+1 );
-#if defined (WIN32)
-         pid = _spawnl( _P_NOWAIT, argv[0], argv[0], 
-                        "-c", strNumChilds,
-                        "-f", filename,
-                        "-i", strId,
-                        "-t", strTime,
-                        NULL );
-         if ( pid <= 0 ) {
-            fprintf( stderr, "_spawnl failure, errno = %d\n", errno );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
-         childPid[i] = pid;
-#else
-         pid = fork();
-         if ( pid == 0 ) {
-            execl( argv[0], argv[0],
-                   "-c", strNumChilds,
-                   "-f", filename,
-                   "-i", strId,
-                   "-t", strTime,                   
-                    NULL );
-            /* If we come here, something is wrong ! */
-            ERROR_EXIT( childExpectedToPass, NULL, ; );
-         }
-         else if ( pid > 0 ) {
-            childPid[i] = pid;
-            fprintf( stderr, "Launched child, pid = %d\n", pid );
-         }
-         else {
-            fprintf( stderr, "Fork failure, errno = %d\n", errno );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
-#endif
-      } /* for loop launching child processes */
-      
-      /* Now wait for the child processes to end */
-      for ( i = 0; i < numChilds; ++i ) {
-#if defined(WIN32)
-         _cwait( &childStatus, childPid[i], _WAIT_CHILD );
-         if ( childStatus != 0 ) foundError = true;
-#else
-         waitpid( childPid[i], &childStatus, 0 );
-         if ( WEXITSTATUS(childStatus) != 0 ) foundError = true;
-#endif
-      }
-      if ( foundError ) {
-         psocFiniErrorHandler( &errorHandler );
-         psocFiniErrorDefs();
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }      
-   }
+   ok = psocInitProcessLock( &data->lock );
+   assert( ok );
+}
 
-   /*
-    * Code for the child process(es) starts here
-    */
-   else {
-      maxTime *= US_PER_SEC;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-      ok = psocOpenMemFile( &memFile, &ptr, &errorHandler );
-      if ( ok != true ) {
-         ERROR_EXIT( expectedToPass, &errorHandler, ; );
-      }
-      
-      data = (struct localData*) ptr;
+void teardown_test()
+{
+   psocFiniProcessLock( &data->lock );
    
-      psocBeginTimer( &timer );
-
-      pid = getpid();
-   
-      for (;;) {      
-         psocAcquireProcessLock( &data->lock, pid );
-         
-         sprintf( data->dum2, "dumStr2 %d  ", identifier+1 );
-         memcpy( data->dum1, data->dum2, 100 );
-
-         sscanf( data->dum1, "%s %d", dum3, &dumId );
-         if ( dumId != identifier+1 ) {
-            fprintf( stderr, "Wrong... %d %d %s-%s\n", identifier+1, 
-                     dumId, data->dum1, data->dum2 );
-            data->exitFlag = 1;
-            psocReleaseProcessLock( &data->lock );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
-      
-         psocReleaseProcessLock( &data->lock );
-      
-         if ( data->exitFlag == 1 ) break;
-
-         loop++;
-
-         if ( (loop % CHECK_TIMER ) == 0 ) {
-            psocEndTimer( &timer );
-            psocCalculateTimer( &timer, &sec, &nanoSec );
-
-            elapsedTime = sec*US_PER_SEC + nanoSec/1000;
-            if ( elapsedTime > maxTime ) break;
-         }
-      }
-   }
-   
-   if ( identifier != 0 ) {
-      printf( "Program #%d Number of loops = %lu\n", identifier, loop );
-   }
+   psocCloseMemFile( &memFile, &errorHandler );
+   psocFiniMemoryFile( &memFile );
    
    unlink( filename );
+
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_std( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   pid_t pid, *childPid = NULL;
+   int  numChilds, i, childStatus;
+   bool foundError = false;
+   char * processName;
+
+   processName = malloc( strlen(argv_0) + 5 );
+   assert_false( processName == NULL );
+   strcpy( processName, argv_0 );
+   strcat( processName, "Std" );
+   
+   numChilds = DEFAULT_NUM_CHILDREN;
+   childPid = malloc( numChilds*sizeof(pid_t) );
+   assert_false( childPid == NULL );
+      
+   /* Launch the childs */
+   for ( i = 0; i < numChilds; ++i ) {
+#if defined (WIN32)
+      pid = _spawnl( _P_NOWAIT, processName, processName, NULL ); 
+      assert_true( pid > 0 );
+      childPid[i] = pid;
+#else
+      pid = fork();
+      if ( pid == 0 ) {
+         execl( processName, processName, NULL );
+         /* If we come here, something is wrong ! */
+         fail();
+      }
+      else if ( pid > 0 ) {
+         childPid[i] = pid;
+         fprintf( stderr, "Launched child, pid = %d\n", pid );
+      }
+      else {
+         fprintf( stderr, "Fork failure, errno = %d\n", errno );
+         fail();
+      }
+#endif
+   } /* for loop launching child processes */
+      
+   /* Now wait for the child processes to end */
+   for ( i = 0; i < numChilds; ++i ) {
+#if defined(WIN32)
+      _cwait( &childStatus, childPid[i], _WAIT_CHILD );
+      if ( childStatus != 0 ) foundError = true;
+#else
+      waitpid( childPid[i], &childStatus, 0 );
+      if ( WEXITSTATUS(childStatus) != 0 ) foundError = true;
+#endif
+   }
+   assert_false( foundError );
+
+   free( processName );
+   free( childPid );
+   
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_try( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   pid_t pid, *childPid = NULL;
+   int  numChilds, i, childStatus;
+   bool foundError = false;
+   char * processName;
+
+   processName = malloc( strlen(argv_0) + 5 );
+   assert_false( processName == NULL );
+   strcpy( processName, argv_0 );
+   strcat( processName, "Try" );
+   
+   numChilds = DEFAULT_NUM_CHILDREN;
+   childPid = malloc( numChilds*sizeof(pid_t) );
+   assert_false( childPid == NULL );
+      
+   /* Launch the childs */
+   for ( i = 0; i < numChilds; ++i ) {
+#if defined (WIN32)
+      pid = _spawnl( _P_NOWAIT, processName, processName, NULL ); 
+      assert_true( pid > 0 );
+      childPid[i] = pid;
+#else
+      pid = fork();
+      if ( pid == 0 ) {
+         execl( processName, processName, NULL );
+         /* If we come here, something is wrong ! */
+         fail();
+      }
+      else if ( pid > 0 ) {
+         childPid[i] = pid;
+         fprintf( stderr, "Launched child, pid = %d\n", pid );
+      }
+      else {
+         fprintf( stderr, "Fork failure, errno = %d\n", errno );
+         fail();
+      }
+#endif
+   } /* for loop launching child processes */
+      
+   /* Now wait for the child processes to end */
+   for ( i = 0; i < numChilds; ++i ) {
+#if defined(WIN32)
+      _cwait( &childStatus, childPid[i], _WAIT_CHILD );
+      if ( childStatus != 0 ) foundError = true;
+#else
+      waitpid( childPid[i], &childStatus, 0 );
+      if ( WEXITSTATUS(childStatus) != 0 ) foundError = true;
+#endif
+   }
+   assert_false( foundError );
+
+   free( processName );
+   free( childPid );
+   
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main( int argc, char * argv[] )
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_std, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_try, setup_test, teardown_test )
+   };
+
+   argv_0 = argv[0];
+   
+   rc = run_tests(tests);
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

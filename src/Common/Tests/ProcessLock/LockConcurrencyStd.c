@@ -100,9 +100,8 @@ int main( int argc, char* argv[] )
    pid = getpid();
    
    for (;;) {      
-      ok = psocTryAcquireProcessLock( &data->lock, pid, 1000 );
-      if ( ! ok ) continue;
-      
+      psocAcquireProcessLock( &data->lock, pid );
+         
       sprintf( data->dum2, "dumStr2 %d  ", pid );
       memcpy( data->dum1, data->dum2, 100 );
 
