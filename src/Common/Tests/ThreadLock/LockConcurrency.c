@@ -164,6 +164,7 @@ void test1( void ** state )
    }
    
    psocFiniMemoryFile( &g_memFile );
+   unlink( filename );
    psotFiniBarrier( &g_barrier );
    psocFiniErrorHandler( &errorHandler );
    psocFiniErrorDefs();
