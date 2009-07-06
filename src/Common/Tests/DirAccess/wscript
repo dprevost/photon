@@ -39,8 +39,4 @@ def build(bld):
 #      lib  = 'pthread',
 #      uselib = 'BASIC',
 #      libpath      = ['/usr/lib'],
-def check(ctx):
-#   ctx.recurse('Tests')
-   print 'ok check DirAccess'
-   print dir(ctx)
 

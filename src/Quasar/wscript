@@ -1,0 +1,46 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# :mode=python:  - For jedit
+
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+quasar_list = [
+        'quasarErrorHandler.c',
+        'Acceptor.c',
+        'Config.c',
+        'LogMsg.c',
+        'MemoryManager.c',
+        'qsrMain.c',
+        'Quasar.c',
+        'ShMemHandler.c',
+        'VerifyFastMap.c',
+        'VerifyFolder.c',
+        'VerifyHash.c',
+        'VerifyHashMap.c',
+        'VerifyHashTx.c',
+        'VerifyList.c',
+        'VerifyMemObj.c',
+        'VerifyQueue.c',
+        'VerifyShMem.c']
+
+def build(bld):
+   print ' building in Quasar'
+   nucleus_lib = bld.new_task_gen(
+      features = 'cc cprogram',
+      source = quasar_list,
+      includes='.. ../include',
+      uselib_local   = 'Common Nucleus',
+      lib          = bld.env['CMOCKERY'],
+      uselib = 'LIBXML-2.0',
+      target='Quasar')
+
+   #bld.add_subdirs(['Tests'])
+

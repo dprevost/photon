@@ -52,6 +52,8 @@ def configure(conf):
 
    conf.check_tool('UnitTest')
 
+   conf.define('PACKAGE_VERSION', "0.5.0")
+
 	# this one requires cppunit
 #	conf.check_cfg(package='cppunit', args='--cflags --libs')
 #	if 'LIB_CPPUNIT' in conf.env:
@@ -69,6 +71,7 @@ def configure(conf):
    conf.find_program('db2x_docbook2man', var='DOCBOOK2X_MAN')
    conf.find_program('db2pdf', var='DB2PDF')
    conf.find_program('errorParser', var='ERROR_PARSER')
+   conf.check_cfg(package='libxml-2.0', args='--cflags --libs', mandatory=True)
 
    block_size = Options.options.block_size
    if (block_size == '2k'):
@@ -82,8 +85,6 @@ def configure(conf):
       conf.define('PSON_BLOCK_SHIFT',   13)
    else:
       conf.fatal('Invalid value! Values allowed: 2k, 4k or 8k')
-
-   #conf.env.append_value('MORE_TESTS', Options.options.more_tests)
 
    conf.write_config_header('src/config.h')
    

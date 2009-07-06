@@ -37,7 +37,7 @@ bool qsrSetSigHandler();
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-RETSIGTYPE sigterm_handler( int s )
+void sigterm_handler( int s )
 {
    /*
     * We need to turn a flag on, to indicate it is time to shutdown
@@ -47,7 +47,7 @@ RETSIGTYPE sigterm_handler( int s )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-RETSIGTYPE sighup_handler( int s )
+void sighup_handler( int s )
 {
    /*
     * Nothing yet for SIGHUP
@@ -56,7 +56,7 @@ RETSIGTYPE sighup_handler( int s )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-RETSIGTYPE sigpipe_handler( int s )
+void sigpipe_handler( int s )
 {
    /*
     * SIGPIPE might occur when a socket connection is terminated (or is

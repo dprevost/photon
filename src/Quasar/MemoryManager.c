@@ -220,9 +220,9 @@ bool qsrCreateMem( qsrMemoryManager   * pManager,
    (*ppHeader)->alignmentInt64  = PSOC_ALIGNMENT_INT64;
 
    (*ppHeader)->allocationUnit = PSON_ALLOCATION_UNIT;
-   strncpy( (*ppHeader)->cpu_type, MYCPU, 19 );
-   strncpy( (*ppHeader)->compiler, MYCC, 19);
-   strncpy( (*ppHeader)->cxxcompiler, MYCXX, 19);
+   strncpy( (*ppHeader)->cpu_type, BUILD_CPU, 19 );
+   strncpy( (*ppHeader)->compiler, COMPILER_NAME, 19);
+   strncpy( (*ppHeader)->cxxcompiler, COMPILER_NAME, 19);
    strncpy( (*ppHeader)->quasarVersion, PACKAGE_VERSION, 10 );
 
    t = time(NULL);

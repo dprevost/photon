@@ -68,8 +68,3 @@ def build(bld):
       lib          = bld.env['CMOCKERY'],
       uselib_local = 'Common') 
 
-def check(ctx):
-#   ctx.recurse('Tests')
-   print 'ok check'
-   print dir(ctx)
-

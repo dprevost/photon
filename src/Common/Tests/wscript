@@ -34,12 +34,3 @@ def build(bld):
         'ProcessLock',
         'ThreadLock'])
 
-def check(ctx):
-   ctx.recurse([
-        'DirAccess',
-        'Error',
-        'MemFile',
-        'Options',
-        'ProcessLock'])
-   print 'ok check Common/Tests'
-

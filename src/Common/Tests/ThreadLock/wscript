@@ -60,8 +60,3 @@ def build(bld):
    if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
       obj.unit_test = 1
 
-def check(ctx):
-#   ctx.recurse('Tests')
-   print 'ok check'
-   print dir(ctx)
-

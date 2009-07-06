@@ -244,7 +244,7 @@ def configure(conf):
    conf.define('SIZEOF_FLOAT',       int(t['float_size']))
    conf.define('SIZEOF_DOUBLE',      int(t['double_size']))
    conf.define('SIZEOF_LONG_DOUBLE', int(t['long_double_size']))
-   conf.define('SIZEOF_VOID_PTR',    int(t['void_ptr_size']))
+   conf.define('SIZEOF_VOID_P',    int(t['void_ptr_size']))
 
    '''
       All the stuff needed to implement concurrency
@@ -394,7 +394,8 @@ return 0; }
    else:
       raise conf.fatal('Unsupported compiler')
    
-   print platform.machine()
+   conf.define('BUILD_CPU', platform.machine() )
+   
    print conf.env["CC"]
    
    print 'zz' + conf.env["COMPILER_NAME"]

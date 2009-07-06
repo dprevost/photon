@@ -12,23 +12,38 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-import UnitTest
-
-common_list = ['DirAccess.c',
-               'ErrorHandler.c',
-               'MemoryFile.c',
-               'Options.c',
-               'ProcessLock.c',
-               'ThreadLock.c',
-               'Timer.c']
+nucleus_list = [
+        'psoErrorHandler.c',
+        'BlockGroup.c',
+        'Cursor.c',
+        'FastMap.c',
+        'Folder.c',
+        'Hash.c',
+        'HashTx.c',
+        'hash_fnv.c',
+        'HashMap.c',
+        'InitEngine.c',
+        'LinkedList.c',
+        'LogFile.c',
+        'MemBitmap.c',
+        'MemoryAllocator.c',
+        'MemoryObject.c',
+        'Process.c',
+        'ProcessManager.c',
+        'Queue.c',
+        'Session.c',
+        'Set.c',
+        'TopFolder.c',
+        'Transaction.c']
 
 def build(bld):
    print ' building in Common'
-   common_lib = bld.new_task_gen(
+   nucleus_lib = bld.new_task_gen(
       features = 'cc cstaticlib',
-      source = common_list,
-      includes='. ..',
-      target='Common')
+      source = nucleus_list,
+      includes='.. ../include',
+      uselib_local   = 'Common',
+      target='Nucleus')
 
    bld.add_subdirs(['Tests'])
 

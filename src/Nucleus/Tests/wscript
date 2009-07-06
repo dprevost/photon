@@ -12,24 +12,19 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-import UnitTest
-
-common_list = ['DirAccess.c',
-               'ErrorHandler.c',
-               'MemoryFile.c',
-               'Options.c',
-               'ProcessLock.c',
-               'ThreadLock.c',
-               'Timer.c']
+subdirs_list = []
 
 def build(bld):
-   print ' building in Common'
-   common_lib = bld.new_task_gen(
-      features = 'cc cstaticlib',
-      source = common_list,
-      includes='. ..',
-      target='Common')
+   
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'LinkNode.c',
+      target       = 'LinkNode',
+      includes     = '../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Nucleus Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
 
-   bld.add_subdirs(['Tests'])
-
-
+   bld.add_subdirs( subdirs_list )
