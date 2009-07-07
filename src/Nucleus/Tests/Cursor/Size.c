@@ -22,6 +22,7 @@
 
 psonCursor * pCursor;
 psonSessionContext context;
+size_t size;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -37,28 +38,16 @@ void setup_test()
                         &context );
    assert( ok );
 
-#if 0
-
    ok = psonCursorInsertLast( pCursor,
-                           (const void *) key,
-                           6,
-                           (const void *) data,
-                           7,
-                           NULL,
-                           &context );
+                              (unsigned char *)&context, // any pointer is ok
+                              PSON_HASH_ITEM,
+                              &context );
    assert( ok );
-   
-   /* Is the item there? */
-   ok = psonFastMapGet( pHashMap,
-                        (const void *) key,
-                        6,
-                        &pItem,
-                        20,
-                        &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-#endif
+   ok = psonCursorInsertLast( pCursor,
+                              (unsigned char *)&context, // any pointer is ok
+                              PSON_HASH_ITEM,
+                              &context );
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -73,7 +62,17 @@ void teardown_test()
 void test_null_cursor( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonCursorEmpty( NULL, &context ) );
+   expect_assert_failure( psonCursorSize( NULL, &size ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_size( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonCursorSize( pCursor, NULL ) );
 #endif
    return;
 }
@@ -83,38 +82,20 @@ void test_null_cursor( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonCursor * pCursor;
-   psonSessionContext context;
    bool ok;
-
-   pCursor = initCursorTest( &context );
-
-   ok = psonCursorInit( pCursor,
-                        12345,
-                        1,
-                        &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-
-   ok = psonCursorInsertLast( pCursor,
-                              (unsigned char *)&context, // any pointer is ok
-                              PSON_HASH_ITEM,
-                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   ok = psonCursorInsertLast( pCursor,
-                              (unsigned char *)&context, // any pointer is ok
-                              PSON_HASH_ITEM,
-                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    
-   psonCursorSize( pCursor, NULL );
+   psonCursorSize( pCursor, &size );
+   assert_true( size == 2 );
+   
+   ok = psonCursorInsertLast( pCursor,
+                              (unsigned char *)&context, // any pointer is ok
+                              PSON_HASH_ITEM,
+                              &context );
+   assert_true( ok );
 
-   ERROR_EXIT( expectedToPass, NULL, ; );
+   psonCursorSize( pCursor, &size );
+   assert_true( size == 3 );
+
 #endif
    return;
 }
@@ -126,9 +107,9 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_cursor,  setup_test, teardown_test ),
-      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+      unit_test_setup_teardown( test_null_cursor, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_size,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
    };
 
    rc = run_tests(tests);

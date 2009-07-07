@@ -42,7 +42,9 @@ void setup_test()
 
 void teardown_test()
 {
+   if ( pCursor != NULL ) {
    psonCursorFini( pCursor, &context );
+   }
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -71,6 +73,7 @@ void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    psonCursorFini( pCursor, &context );
+   pCursor = NULL;
 #endif
    return;
 }

@@ -22,70 +22,15 @@
 
 psonCursor * pCursor;
 psonSessionContext context;
+psonCursorItem * pItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void setup_test()
-{
-   bool ok;
-   
-   pCursor = initCursorTest( &context );
-
-   ok = psonCursorInit( pCursor,
-                        12345,
-                        1,
-                        &context );
-   assert( ok );
-
-#if 0
-
-   ok = psonCursorInsertLast( pCursor,
-                           (const void *) key,
-                           6,
-                           (const void *) data,
-                           7,
-                           NULL,
-                           &context );
-   assert( ok );
-   
-   /* Is the item there? */
-   ok = psonFastMapGet( pHashMap,
-                        (const void *) key,
-                        6,
-                        &pItem,
-                        20,
-                        &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-#endif
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void teardown_test()
-{
-   psonCursorFini( pCursor, &context );
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_null_cursor( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonCursorEmpty( NULL, &context ) );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_pass( void ** state )
+void test1( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    bool ok;
    size_t numItems;
-   psonCursorItem * pItem;
    
    pCursor = initCursorTest( &context );
 
@@ -93,134 +38,86 @@ void test_pass( void ** state )
                         12345,
                         1,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
 
    /* Number of items at start */
    psonCursorSize( pCursor, &numItems );
-   if ( numItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( numItems == 0 );
 
    /* Emptying an empty cursor */
    psonCursorEmpty( pCursor, &context );
    
    ok = psonCursorGetFirst( pCursor, &pItem, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_IS_EMPTY ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_IS_EMPTY );
+   
    ok = psonCursorGetLast( pCursor, &pItem, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_IS_EMPTY ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_IS_EMPTY );
    
    /* Add one element */
    ok = psonCursorInsertFirst( pCursor,
                                (unsigned char *)0x2, // any pointer is ok
                                PSON_HASH_ITEM,
                                &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
+
    ok = psonCursorGetFirst( pCursor, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
+
    ok = psonCursorGetNext( pCursor, pItem, &pItem, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_REACHED_THE_END ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_REACHED_THE_END );
 
    ok = psonCursorGetLast( pCursor, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
+
    ok = psonCursorGetPrevious( pCursor, pItem, &pItem, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_REACHED_THE_END ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_REACHED_THE_END );
 
    /* Add a second element  */
    ok = psonCursorInsertLast( pCursor,
                               (unsigned char *)0x3, // any pointer is ok
                               PSON_HASH_ITEM,
                               &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
 
    ok = psonCursorGetFirst( pCursor, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x2) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pItem->itemOffset == SET_OFFSET((unsigned char *)0x2) );
+
    ok = psonCursorGetNext( pCursor, pItem, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x3) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pItem->itemOffset == SET_OFFSET((unsigned char *)0x3) );
+
    ok = psonCursorGetPrevious( pCursor, pItem, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x2) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pItem->itemOffset == SET_OFFSET((unsigned char *)0x2) );
    
    /* Add a third element  */
    ok = psonCursorInsertFirst( pCursor,
                                (unsigned char *)0x1, // any pointer is ok
                                PSON_HASH_ITEM,
                                &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
 
    ok = psonCursorGetPrevious( pCursor, pItem, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x1) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pItem->itemOffset == SET_OFFSET((unsigned char *)0x1) );
 
    ok = psonCursorGetLast( pCursor, &pItem, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->itemOffset != SET_OFFSET((unsigned char *)0x3) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pItem->itemOffset == SET_OFFSET((unsigned char *)0x3) );
 
    /* Number of items */
    psonCursorSize( pCursor, &numItems );
-   if ( numItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( numItems == 3 );
 
    /* Emptying the cursor */
    psonCursorEmpty( pCursor, &context );
    psonCursorSize( pCursor, &numItems );
-   if ( numItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( numItems == 0 );
 
 #endif
    return;
@@ -233,9 +130,7 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_cursor,  setup_test, teardown_test ),
-      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+      unit_test( test1 ),
    };
 
    rc = run_tests(tests);
