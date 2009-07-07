@@ -21,22 +21,19 @@
 #include "Nucleus/BlockGroup.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonBlockGroup * pGroup;
+unsigned char* ptr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonBlockGroup *pGroup;
-   unsigned char* ptr;
    psonSessionContext context;
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
 
    ptr = malloc( PSON_BLOCK_SIZE*10 );
-   if (ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    
    /* This "100" (non-zero) offset should mark this block group 
@@ -47,29 +44,61 @@ int main()
    psonBlockGroupInit( pGroup, 
                       SET_OFFSET(ptr),
                       10,
-                      PSON_IDENT_QUEUE );
-   psonBlockGroupFini( pGroup );
-   
-   if ( pGroup->node.nextOffset != PSON_NULL_OFFSET ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pGroup->node.previousOffset != PSON_NULL_OFFSET ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pGroup->numBlocks != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pGroup->maxFreeBytes != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if (pGroup->freeList.initialized != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pGroup->bitmap.baseAddressOffset != PSON_NULL_OFFSET ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   return 0;
+                      PSON_IDENT_QUEUE );   
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( ptr) free(ptr);
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_group( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonBlockGroupFini( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+
+   psonBlockGroupFini( pGroup );
+   
+   assert_true( pGroup->node.nextOffset == PSON_NULL_OFFSET );
+   assert_true( pGroup->node.previousOffset == PSON_NULL_OFFSET );
+   assert_true( pGroup->numBlocks == 0 );
+   assert_true( pGroup->maxFreeBytes == 0 );
+   assert_true( pGroup->freeList.initialized == 0 );
+   assert_true( pGroup->bitmap.baseAddressOffset == PSON_NULL_OFFSET );
+   
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_group, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,       setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

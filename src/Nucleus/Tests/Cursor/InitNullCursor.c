@@ -31,7 +31,7 @@ int main()
    psonSessionContext context;
    bool ok;
 
-   pCursor = initCursorTest( expectedToPass, &context );
+   pCursor = initCursorTest( &context );
 
    ok = psonCursorInit( NULL,
                         12345,

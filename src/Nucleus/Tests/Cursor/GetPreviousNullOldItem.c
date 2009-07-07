@@ -32,7 +32,7 @@ int main()
    bool ok;
    psonCursorItem * pItem;
 
-   pCursor = initCursorTest( expectedToPass, &context );
+   pCursor = initCursorTest( &context );
 
    ok = psonCursorInit( pCursor,
                         12345,

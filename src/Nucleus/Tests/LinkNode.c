@@ -19,45 +19,74 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "Nucleus/LinkNode.h"
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = false;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_null_init( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkNodeInit( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_test( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkNodeTest( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_test( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
    bool ok;
    psonLinkNode node;
 
    psonLinkNodeInit( &node );
 
    ok = psonLinkNodeTest( &node );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    
    node.nextOffset = 0x1234;
    ok = psonLinkNodeTest( &node );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    
    psonLinkNodeInit( &node );
 
    node.previousOffset = 0x1234;
    ok = psonLinkNodeTest( &node );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    
    node.nextOffset = 0x1234;
    ok = psonLinkNodeTest( &node );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_null_init ),
+      unit_test( test_null_test ),
+      unit_test( test_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

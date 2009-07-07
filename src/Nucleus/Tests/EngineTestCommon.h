@@ -36,7 +36,7 @@ psocErrMsgHandle g_psoErrorHandle;
  * errorhandle for the Photon errors to be initialized. 
  */
  
-void initTest( bool testIsExpectedToSucceed, psonSessionContext* pContext )
+void initTest( psonSessionContext* pContext )
 {
    bool ok;
    
@@ -44,10 +44,7 @@ void initTest( bool testIsExpectedToSucceed, psonSessionContext* pContext )
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ok != true ) {
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    
    psocInitErrorHandler( &pContext->errorHandler );
 }

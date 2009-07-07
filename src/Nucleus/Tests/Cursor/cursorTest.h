@@ -48,8 +48,7 @@ psocErrMsgHandle g_psoErrorHandle;
  */
  
 psonCursor * 
-initCursorTest( bool                 testIsExpectedToSucceed,
-                psonSessionContext * pContext )
+initCursorTest( psonSessionContext * pContext )
 {
    bool ok;
    unsigned char * ptr;
@@ -64,8 +63,7 @@ initCursorTest( bool                 testIsExpectedToSucceed,
    ok = psonInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in cursorTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    psocInitErrorHandler( &pContext->errorHandler );
 
@@ -73,8 +71,7 @@ initCursorTest( bool                 testIsExpectedToSucceed,
    ptr = malloc( allocatedLength );
    if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in cursorTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
@@ -84,14 +81,12 @@ initCursorTest( bool                 testIsExpectedToSucceed,
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    ok = psonTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    pContext->pTransaction = pTx;
    
@@ -99,8 +94,7 @@ initCursorTest( bool                 testIsExpectedToSucceed,
    pCursor = (psonCursor *)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
    if ( pCursor == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in cursorTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    
    return pCursor;

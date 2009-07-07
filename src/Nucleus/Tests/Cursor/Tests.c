@@ -20,19 +20,74 @@
 
 #include "cursorTest.h"
 
-const bool expectedToPass = true;
+psonCursor * pCursor;
+psonSessionContext context;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonCursor * pCursor;
-   psonSessionContext context;
+   bool ok;
+   
+   pCursor = initCursorTest( &context );
+
+   ok = psonCursorInit( pCursor,
+                        12345,
+                        1,
+                        &context );
+   assert( ok );
+
+#if 0
+
+   ok = psonCursorInsertLast( pCursor,
+                           (const void *) key,
+                           6,
+                           (const void *) data,
+                           7,
+                           NULL,
+                           &context );
+   assert( ok );
+   
+   /* Is the item there? */
+   ok = psonFastMapGet( pHashMap,
+                        (const void *) key,
+                        6,
+                        &pItem,
+                        20,
+                        &context );
+   if ( ok != true ) {
+      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
+   }
+#endif
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psonCursorFini( pCursor, &context );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_cursor( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonCursorEmpty( NULL, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
    bool ok;
    size_t numItems;
    psonCursorItem * pItem;
    
-   pCursor = initCursorTest( expectedToPass, &context );
+   pCursor = initCursorTest( &context );
 
    ok = psonCursorInit( pCursor,
                         12345,
@@ -167,7 +222,27 @@ int main()
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_cursor,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
