@@ -22,6 +22,7 @@
 
 psonCursor * pCursor;
 psonSessionContext context;
+psonCursorItem * pItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
