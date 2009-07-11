@@ -20,34 +20,86 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = true;
-
+psonFastMap * pHashMap;
+psonSessionContext context;
+ 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFastMap * pHashMap;
-   psonSessionContext context;
    bool ok;
    psonTxStatus status;
    psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fields;
    
-   pHashMap = initHashMapTest( expectedToPass, &context );
+   pHashMap = initHashMapTest( &context );
+   assert( pHashMap != NULL );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
                          SET_OFFSET(pHashMap), &def, &keyDef, 
                          &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   psonFastMapFini( pHashMap, &context );
-   
-   return 0;
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pHashMap = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapFini( pHashMap, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_map( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapFini( NULL, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonFastMapFini( pHashMap, &context );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_map,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -29,7 +29,6 @@
 #include "Nucleus/InitEngine.h"
 #include "Nucleus/Folder.h"
 #include "Nucleus/FastMap.h"
-#include "Tests/PrintError.h"
 #include <photon/psoPhotonODBC.h>
 
 PHOTON_ENGINE_EXPORT
@@ -50,8 +49,7 @@ psocErrMsgHandle g_psoErrorHandle;
  */
  
 psonFastMap * 
-initHashMapTest( bool                testIsExpectedToSucceed,
-                 psonSessionContext* pContext )
+initHashMapTest( psonSessionContext * pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -66,8 +64,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    ok = psonInitEngine();
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    psocInitErrorHandler( &pContext->errorHandler );
 
@@ -75,8 +72,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    ptr = malloc( allocatedLength );
    if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
@@ -86,14 +82,12 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    ok = psonTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    pContext->pTransaction = pTx;
    
@@ -101,8 +95,7 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    pHashMap = (psonFastMap*)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
    if ( pHashMap == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    
    return pHashMap;
@@ -123,9 +116,8 @@ initHashMapTest( bool                testIsExpectedToSucceed,
  */
  
 void
-initHashMapCopyTest( bool                 testIsExpectedToSucceed,
-                     psonFastMap           ** ppOldMap,
-                     psonFastMap           ** ppNewMap,
+initHashMapCopyTest( psonFastMap       ** ppOldMap,
+                     psonFastMap       ** ppNewMap,
                      psonSessionContext * pContext )
 {
    bool ok;
@@ -141,8 +133,7 @@ initHashMapCopyTest( bool                 testIsExpectedToSucceed,
    ok = psonInitEngine();
    if ( ok != true ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    psocInitErrorHandler( &pContext->errorHandler );
 
@@ -150,8 +141,7 @@ initHashMapCopyTest( bool                 testIsExpectedToSucceed,
    ptr = malloc( allocatedLength );
    if (ptr == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
@@ -161,14 +151,12 @@ initHashMapCopyTest( bool                 testIsExpectedToSucceed,
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
    if ( pTx == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    ok = psonTxInit( pTx, 1, pContext );
    if ( ! ok ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    pContext->pTransaction = pTx;
    
@@ -176,8 +164,7 @@ initHashMapCopyTest( bool                 testIsExpectedToSucceed,
    pHashMap = (psonFastMap*)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
    if ( pHashMap == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    *ppOldMap = pHashMap;
    
@@ -185,8 +172,7 @@ initHashMapCopyTest( bool                 testIsExpectedToSucceed,
    pHashMap = (psonFastMap*)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
    if ( pHashMap == NULL ) {
       fprintf( stderr, "Abnormal error at line %d in hashMapTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
+      exit(1);
    }
    *ppNewMap = pHashMap;
 }

@@ -19,37 +19,31 @@
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 #include "hashMapTest.h"
-
-const bool expectedToPass = true;
+psonFastMap * pOldMap, * pNewMap;
+psonSessionContext context;
+psonHashTxItem   hashItem;
+char * key1  = "my key1";
+char * key2  = "my key2";
+char * data1 = "my data1";
+char * data2 = "my data2";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFastMap * pOldMap, * pNewMap;
-   psonSessionContext context;
    bool ok;
-   char * key1  = "my key1";
-   char * key2  = "my key2";
-   char * data1 = "my data1";
-   char * data2 = "my data2";
-   char * ptr;
    psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fields;
-   psonHashTxItem   hashItem;
-   psonHashItem * pItem;
    
-   initHashMapCopyTest( expectedToPass, &pOldMap, &pNewMap, &context );
+   initHashMapCopyTest( &pOldMap, &pNewMap, &context );
 
    psonTxStatusInit( &hashItem.txStatus, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pOldMap, 0, 1, 0, &hashItem.txStatus, 4, "Map1", 
                          SET_OFFSET(pOldMap), &def, &keyDef, 
                          &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonFastMapInsert( pOldMap,
                            (const void *) key1,
@@ -58,9 +52,7 @@ int main()
                            8,
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    ok = psonFastMapInsert( pOldMap,
                            (const void *) key2,
                            7,
@@ -68,10 +60,97 @@ int main()
                            8,
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pOldMap = pNewMap = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapCopy( pOldMap, 
+                                           pNewMap,
+                                           &hashItem,
+                                           "Map1",
+                                           NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapCopy( pOldMap, 
+                                           pNewMap,
+                                           NULL,
+                                           "Map1",
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapCopy( pOldMap, 
+                                           pNewMap,
+                                           &hashItem,
+                                           NULL,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_new_map( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapCopy( pOldMap, 
+                                           NULL,
+                                           &hashItem,
+                                           "Map1",
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_old_map( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapCopy( NULL, 
+                                           pNewMap,
+                                           &hashItem,
+                                           "Map1",
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   char * ptr;
+   psonHashItem * pItem;
+   
    ok = psonFastMapCopy( pOldMap, 
                          pNewMap,
                          &hashItem,
@@ -84,13 +163,9 @@ int main()
                         &pItem,
                         20,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( ptr, pItem->dataOffset, char );
-   if (memcmp( data1, ptr, 8 ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_memory_equal( data1, ptr, 8 );
 
    ok = psonFastMapGet( pNewMap,
                         (const void *) key2,
@@ -98,15 +173,34 @@ int main()
                         &pItem,
                         20,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( ptr, pItem->dataOffset, char );
-   if (memcmp( data2, ptr, 8 ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_memory_equal( data2, ptr, 8 );
 
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hash_item, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,       setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_new_map,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_old_map,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,            setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
