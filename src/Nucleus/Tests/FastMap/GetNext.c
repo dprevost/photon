@@ -20,16 +20,59 @@
 
 #include "hashMapTest.h"
 
+psonFastMap * pHashMap;
+psonSessionContext context;
+psonFastMapItem item;
+char * data1 = "my data1";
+char * data2 = "my data2";
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   bool ok;
+   psonTxStatus status;
+   char * key1  = "my key1";
+   char * key2  = "my key2";
+   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
+   psonKeyDefinition keyDef;
+   psonDataDefinition fields;
+   
+   pHashMap = initHashMapTest( &context );
+   assert( pHashMap );
+   
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   
+   ok = psonFastMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
+                         SET_OFFSET(pHashMap), &def, &keyDef, 
+                         &fields, &context );
+   assert( ok );
+   
+   ok = psonFastMapInsert( pHashMap,
+                           (const void *) key1,
+                           7,
+                           (const void *) data1,
+                           8,
+                           NULL,
+                           &context );
+   assert( ok );
+   ok = psonFastMapInsert( pHashMap,
+                           (const void *) key2,
+                           7,
+                           (const void *) data2,
+                           8,
+                           NULL,
+                           &context );
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void teardown_test()
 {
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pHashMap = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -37,7 +80,122 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   bool ok;
+
+   ok = psonFastMapGetFirst( pHashMap,
+                             &item,
+                             7,
+                             20,
+                             &context );
+   assert_true( ok );
+
+   expect_assert_failure( psonFastMapGetNext( pHashMap,
+                                              &item,
+                                              6,
+                                              20,
+                                              NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+
+   ok = psonFastMapGetFirst( pHashMap,
+                             &item,
+                             7,
+                             20,
+                             &context );
+   assert_true( ok );
+
+   expect_assert_failure( psonFastMapGetNext( pHashMap,
+                                              NULL,
+                                              6,
+                                              20,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_map( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+
+   ok = psonFastMapGetFirst( pHashMap,
+                             &item,
+                             7,
+                             20,
+                             &context );
+   assert_true( ok );
+
+   expect_assert_failure( psonFastMapGetNext( NULL,
+                                              &item,
+                                              6,
+                                              20,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_key_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   int errcode;
+
+   ok = psonFastMapGetFirst( pHashMap,
+                             &item,
+                             7,
+                             20,
+                             &context );
+   assert_true( ok );
+
+   ok = psonFastMapGetNext( pHashMap,
+                            &item,
+                            5,
+                            7,
+                            &context );
+   assert_false( ok );
+
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_LENGTH );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_data_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   int errcode;
+
+   ok = psonFastMapGetFirst( pHashMap,
+                             &item,
+                             7,
+                             20,
+                             &context );
+   assert_true( ok );
+
+   ok = psonFastMapGetNext( pHashMap,
+                            &item,
+                            6,
+                            6,
+                            &context );
+   assert_false( ok );
+
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_LENGTH );
 #endif
    return;
 }
@@ -47,59 +205,15 @@ void test_null_context( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonFastMap * pHashMap;
-   psonSessionContext context;
-   bool ok;
-   psonTxStatus status;
-   char * key1  = "my key1";
-   char * key2  = "my key2";
-   char * data1 = "my data1";
-   char * data2 = "my data2";
-   psonFastMapItem item;
    char * ptr1, * ptr2;
-   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
-   psonKeyDefinition keyDef;
-   psonDataDefinition fields;
+   bool ok;
    
-   pHashMap = initHashMapTest( expectedToPass, &context );
-
-   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   ok = psonFastMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                         SET_OFFSET(pHashMap), &def, &keyDef, 
-                         &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonFastMapInsert( pHashMap,
-                           (const void *) key1,
-                           7,
-                           (const void *) data1,
-                           8,
-                           NULL,
-                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   ok = psonFastMapInsert( pHashMap,
-                           (const void *) key2,
-                           7,
-                           (const void *) data2,
-                           8,
-                           NULL,
-                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    ok = psonFastMapGetFirst( pHashMap,
                              &item,
                              7,
                              20,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( ptr1, item.pHashItem->dataOffset, char );
 
    ok = psonFastMapGetNext( pHashMap,
@@ -107,26 +221,16 @@ void test_pass( void ** state )
                             7,
                             20,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( ptr2, item.pHashItem->dataOffset, char );
-   if ( ptr1 == ptr2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ptr1 == ptr2 );
    
    if (memcmp( data1, ptr1, 8 ) == 0 ) {
-      if (memcmp( data2, ptr2, 8 ) != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( memcmp( data2, ptr2, 8 ) == 0 );
    }
    else {
-      if (memcmp( data1, ptr2, 8 ) != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
-      if (memcmp( data2, ptr1, 8 ) != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( memcmp( data1, ptr2, 8 ) == 0 );
+      assert_true( memcmp( data2, ptr1, 8 ) == 0 );
    }
    
 #endif
@@ -141,8 +245,10 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_cursor,  setup_test, teardown_test ),
       unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_map,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_key_length,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_data_length,  setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 
