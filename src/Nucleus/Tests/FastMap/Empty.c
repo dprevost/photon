@@ -80,7 +80,7 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonFastMapEmpty( pHashMap, &context ) );
+   expect_assert_failure( psonFastMapEmpty( pHashMap, NULL ) );
 #endif
    return;
 }
@@ -90,7 +90,7 @@ void test_null_context( void ** state )
 void test_null_map( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonFastMapEmpty( pHashMap, &context ) );
+   expect_assert_failure( psonFastMapEmpty( NULL, &context ) );
 #endif
    return;
 }

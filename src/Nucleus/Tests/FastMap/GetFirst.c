@@ -24,13 +24,13 @@ psonFastMap * pHashMap;
 psonSessionContext context;
 psonFastMapItem item;
 char * data = "my data";
+psonTxStatus status;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
    bool ok;
-   psonTxStatus status;
    char * key  = "my key";
    char * ptr;
    psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
@@ -119,7 +119,7 @@ void test_key_length( void ** state )
    ok = psonFastMapGetFirst( pHashMap,
                              &item,
                              5,
-                             7,
+                             20,
                              &context );
    assert_false( ok );
 

@@ -20,24 +20,66 @@
 
 #include "hashMapTest.h"
 
+psonFastMap * pHashMap;
+psoObjStatus status;
+char * key1  = "my key1";
+char * data  = "my data";
+psonSessionContext context;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   bool ok;
+   psonTxStatus txStatus;
+   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
+   psonKeyDefinition keyDef;
+   psonDataDefinition fields;
+   
+   pHashMap = initHashMapTest( &context );
+
+   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
+   
+   ok = psonFastMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
+                         SET_OFFSET(pHashMap), &def, &keyDef, 
+                         &fields, &context );
+   assert( ok );
+   
+   ok = psonFastMapInsert( pHashMap,
+                           (const void *) key1,
+                           7,
+                           (const void *) data,
+                           7,
+                           NULL,
+                           &context );
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void teardown_test()
 {
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pHashMap = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_null_context( void ** state )
+void test_null_map( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonFastMapStatus( NULL, &status ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_status( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapStatus( pHashMap, NULL ) );
 #endif
    return;
 }
@@ -47,40 +89,9 @@ void test_null_context( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonFastMap * pHashMap;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus txStatus;
-   char * key1  = "my key1";
    char * key2  = "my key2";
    char * key3  = "my key3";
-   char * data  = "my data";
-   psoObjStatus status;
-   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
-   psonKeyDefinition keyDef;
-   psonDataDefinition fields;
-   
-   pHashMap = initHashMapTest( expectedToPass, &context );
-
-   psonTxStatusInit( &txStatus, SET_OFFSET( context.pTransaction ) );
-   
-   ok = psonFastMapInit( pHashMap, 0, 1, 0, &txStatus, 4, "Map1", 
-                         SET_OFFSET(pHashMap), &def, &keyDef,
-                         &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonFastMapInsert( pHashMap,
-                           (const void *) key1,
-                           7,
-                           (const void *) data,
-                           7,
-                           NULL,
-                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    
    ok = psonFastMapInsert( pHashMap,
                            (const void *) key2,
@@ -89,9 +100,7 @@ void test_pass( void ** state )
                            7,
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFastMapInsert( pHashMap,
                            (const void *) key3,
@@ -100,15 +109,11 @@ void test_pass( void ** state )
                            7,
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonFastMapStatus( pHashMap, &status );
 
-   if ( status.numDataItem != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( status.numDataItem == 3 );
    
 #endif
    return;
@@ -121,10 +126,9 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_cursor,  setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
-      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+      unit_test_setup_teardown( test_null_map,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_status, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
    };
 
    rc = run_tests(tests);

@@ -93,7 +93,7 @@ void test_null_context( void ** state )
 void test_null_hash( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonFastMapDelete( pHashMap,
+   expect_assert_failure( psonFastMapDelete( NULL,
                                              (const void *) key,
                                              6,
                                              &context ) );

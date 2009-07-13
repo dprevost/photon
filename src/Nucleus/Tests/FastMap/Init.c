@@ -20,16 +20,30 @@
 
 #include "hashMapTest.h"
 
+psonFastMap * pHashMap;
+psonSessionContext context;
+psonTxStatus status;
+psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
+psonKeyDefinition keyDef;
+psonDataDefinition fields;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   pHashMap = initHashMapTest( &context );
+   assert( pHashMap );
+
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void teardown_test()
 {
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pHashMap = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -37,7 +51,228 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_datadef( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           NULL,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_definition( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           NULL,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hashitem( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           PSON_NULL_OFFSET,
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_keydef( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           NULL,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_map( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( NULL, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           NULL,
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_parent( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           PSON_NULL_OFFSET, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_status( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           NULL, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_blocks( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           0, 
+                                           0, 
+                                           &status, 
+                                           4, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFastMapInit( pHashMap, 
+                                           0, 
+                                           1, 
+                                           0, 
+                                           &status, 
+                                           0, 
+                                           "Map1",
+                                           SET_OFFSET(pHashMap),
+                                           &def,
+                                           &keyDef,
+                                           &fields,
+                                           &context ) );
 #endif
    return;
 }
@@ -47,17 +282,7 @@ void test_null_context( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonFastMap * pHashMap;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
-   psonKeyDefinition keyDef;
-   psonDataDefinition fields;
-   
-   pHashMap = initHashMapTest( expectedToPass, &context );
-
-   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFastMapInit( pHashMap, 
                          0, 
@@ -71,9 +296,7 @@ void test_pass( void ** state )
                          &keyDef,
                          &fields,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
 #endif
    return;
@@ -87,8 +310,16 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_cursor,  setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_datadef, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_definition, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hashitem,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_keydef,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_map,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_parent,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_status,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_blocks,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,    setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 

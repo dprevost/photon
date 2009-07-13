@@ -25,13 +25,13 @@ psonSessionContext context;
 psonFastMapItem item;
 char * data1 = "my data1";
 char * data2 = "my data2";
+psonTxStatus status;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
    bool ok;
-   psonTxStatus status;
    char * key1  = "my key1";
    char * key2  = "my key2";
    psoObjectDefinition def = { PSO_FAST_MAP, 0, 0, 0 };
