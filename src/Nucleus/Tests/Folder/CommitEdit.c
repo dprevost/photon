@@ -20,31 +20,28 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder* pFolder;
+psonSessionContext context;
+psonMemObject * pOldMemObj = NULL;
+psonFolderItem folderItem;
+psonTxStatus status;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFolder* pFolder;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   psonMemObject * pOldMemObj = NULL;
-   psonFolderItem folderItem;
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition key;
 
    psonDataDefinition fields;
 
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -56,9 +53,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonFolderEditObject( pFolder,
                               "test2",
@@ -66,9 +61,93 @@ int main()
                               PSO_FAST_MAP,
                               &folderItem,
                               &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pFolder = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderCommitEdit( pFolder,
+                                                folderItem.pHashItem, 
+                                                PSON_IDENT_MAP,
+                                                &pOldMemObj,
+                                                NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderCommitEdit( NULL,
+                                                folderItem.pHashItem, 
+                                                PSON_IDENT_MAP,
+                                                &pOldMemObj,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderCommitEdit( pFolder,
+                                                NULL, 
+                                                PSON_IDENT_MAP,
+                                                &pOldMemObj,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_mem_obj( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderCommitEdit( pFolder,
+                                                folderItem.pHashItem, 
+                                                PSON_IDENT_MAP,
+                                                NULL,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderCommitEdit( pFolder,
+                                                folderItem.pHashItem, 
+                                                PSON_IDENT_QUEUE,
+                                                &pOldMemObj,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
 
    psonFolderCommitEdit( pFolder,
                          folderItem.pHashItem, 
@@ -76,9 +155,29 @@ int main()
                          &pOldMemObj,
                          &context );
 
-   psonFolderFini( pFolder, &context );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_mem_obj, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
    
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

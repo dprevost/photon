@@ -27,12 +27,11 @@
 #  pragma warning(default:4273)
 #endif
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    int errcode, i;
    char name [PSO_MAX_NAME_LENGTH+10];
    uint32_t partial;
@@ -42,29 +41,17 @@ int main()
                                  5,
                                  &partial,
                                  &last );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( partial != 5 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if (! last) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
+   assert_true( partial == 5 );
+   assert_true( last );
    
    errcode = psonValidateString( "Test2/Test555",
                                  13,
                                  &partial,
                                  &last );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( partial != 5 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if (last) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
+   assert_true( partial == 5 );
+   assert_false( last );
    
    for ( i = 0; i < PSO_MAX_NAME_LENGTH+9; ++i ) {
       name[i] = 't';
@@ -75,23 +62,15 @@ int main()
                                  PSO_MAX_NAME_LENGTH+9, /* not 10 ! */
                                  &partial,
                                  &last );
-   if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OBJECT_NAME_TOO_LONG );
    
    errcode = psonValidateString( "Test2/",
                                  6,
                                  &partial,
                                  &last );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( partial != 5 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if (! last) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
+   assert_true( partial == 5 );
+   assert_true( last );
    
    name[10] = 0;
    name[4] = '\t';
@@ -99,18 +78,14 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
    
    name[4] = '=';
    errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
 
    name[0] = '3';
    name[4] = 't';
@@ -118,18 +93,14 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
 
    name[0] = '_';
    errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
    
    name[0] = 't';
    name[4] = '_';
@@ -137,20 +108,34 @@ int main()
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
 
    name[4] = '3';
    errcode = psonValidateString( name,
                                  10,
                                  &partial,
                                  &last );
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

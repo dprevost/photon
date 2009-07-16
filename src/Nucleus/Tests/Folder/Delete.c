@@ -20,34 +20,23 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder * pFolder;
+psonSessionContext context;
+psonTxStatus status;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFolder* pFolder;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
    psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
-   ok = psonFolderInit( pFolder,
-                        0,
-                        1,
-                        0,
-                        &status,
-                        5,
-                        "Test1",
-                        1234,
-                        &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   assert( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -59,20 +48,107 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pFolder = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
+
+   expect_assert_failure( psonFolderDeleteObject( pFolder,
+                                                  "test2",
+                                                  5,
+                                                  NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
+
+   expect_assert_failure( psonFolderDeleteObject( NULL,
+                                                  "test2",
+                                                  5,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
+
+   expect_assert_failure( psonFolderDeleteObject( pFolder,
+                                                  NULL,
+                                                  5,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
+
+   pFolder->memObject.objType = PSON_IDENT_HASH_MAP;
+   expect_assert_failure( psonFolderDeleteObject( pFolder,
+                                                  "test2",
+                                                  5,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
+
+   expect_assert_failure( psonFolderDeleteObject( pFolder,
+                                                  "test2",
+                                                  0,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_OBJECT_IS_IN_USE ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_OBJECT_IS_IN_USE );
    
    psonTxCommit( (psonTx *)context.pTransaction, &context );
    
@@ -80,27 +156,39 @@ int main()
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 1 );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_NO_SUCH_OBJECT );
    
-   psonFolderFini( pFolder, &context );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
    
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

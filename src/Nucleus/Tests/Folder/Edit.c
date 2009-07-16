@@ -20,33 +20,27 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder * pFolder;
+psonSessionContext context;
+psonTxStatus status;
+psonFolderItem folderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFolder* pFolder;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   psonFolderItem folderItem;
-   psonObjectDescriptor * pDescriptor;
-   psonTxStatus * txItemStatus;
-   psonTreeNode * pNode;
+   
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition key;
-
    psonDataDefinition fields;
 
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -58,32 +52,137 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pFolder = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderEditObject( pFolder,
+                                                "test2",
+                                                5,
+                                                PSO_FAST_MAP,
+                                                &folderItem,
+                                                NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderEditObject( NULL,
+                                                "test2",
+                                                5,
+                                                PSO_FAST_MAP,
+                                                &folderItem,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderEditObject( pFolder,
+                                                "test2",
+                                                5,
+                                                PSO_FAST_MAP,
+                                                NULL,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderEditObject( pFolder,
+                                                NULL,
+                                                5,
+                                                PSO_FAST_MAP,
+                                                &folderItem,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   pFolder->memObject.objType = PSON_IDENT_HASH_MAP;
+   expect_assert_failure( psonFolderEditObject( pFolder,
+                                                "test2",
+                                                5,
+                                                PSO_FAST_MAP,
+                                                &folderItem,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderEditObject( pFolder,
+                                                "test2",
+                                                0,
+                                                PSO_FAST_MAP,
+                                                &folderItem,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   psonObjectDescriptor * pDescriptor;
+   psonTxStatus * txItemStatus;
+   psonTreeNode * pNode;
+   psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
+   psonKeyDefinition key;
+
+   psonDataDefinition fields;
+
    ok = psonFolderEditObject( pFolder,
                               "test2",
                               5,
                               PSO_FAST_MAP,
                               &folderItem,
                               &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
-   if ( memcmp( pDescriptor->originalName, 
-                "Test2", 5*sizeof(char) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( memcmp( pDescriptor->originalName, 
+                        "Test2", 5*sizeof(char) ) == 0 );
    GET_PTR( pNode, pDescriptor->nodeOffset, psonTreeNode);
    GET_PTR( txItemStatus, pNode->txStatusOffset, psonTxStatus );
-   if ( txItemStatus->parentCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( txItemStatus->parentCounter == 1 );
+   assert_true( status.usageCounter == 1 );
    
    ok = psonFolderEditObject( pFolder,
                               "test3",
@@ -91,12 +190,8 @@ int main()
                               PSO_FAST_MAP,
                               &folderItem,
                               &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_NO_SUCH_OBJECT );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test4",
@@ -108,9 +203,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderEditObject( pFolder,
                               "test4",
@@ -118,30 +211,42 @@ int main()
                               PSO_FAST_MAP,
                               &folderItem,
                               &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
-   if ( memcmp( pDescriptor->originalName, 
-                "Test4", 5*sizeof(char) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( memcmp( pDescriptor->originalName, 
+                        "Test4", 5*sizeof(char) ) == 0 );
    GET_PTR( pNode, pDescriptor->nodeOffset, psonTreeNode);
    GET_PTR( txItemStatus, pNode->txStatusOffset, psonTxStatus );
-   if ( txItemStatus->parentCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.usageCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 4 ) {
-      fprintf( stderr, "txCounter = "PSO_SIZE_T_FORMAT"\n", pFolder->nodeObject.txCounter );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( txItemStatus->parentCounter == 1 );
+   assert_true( status.usageCounter == 2 );
+   assert_true( pFolder->nodeObject.txCounter == 4 );
    
    psonFolderFini( pFolder, &context );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

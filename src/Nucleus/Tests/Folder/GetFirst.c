@@ -20,27 +20,40 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder * pFolder;
+psonSessionContext context;
+psonFolderItem item;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_empty()
 {
-   psonFolder * pFolder;
-   psonSessionContext context;
    bool ok;
-   psonFolderItem item;
    psonTxStatus status;
    psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+   psonTxStatus status;
+   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
+   
+   pFolder = initFolderTest( &context );
+
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   
+   ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
+   assert( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -52,9 +65,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test3",
@@ -66,18 +77,119 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonAPIFolderGetFirst( pFolder,
-                            &item,
-                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   return 0;
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pFolder = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_empty( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   
+   ok = psonAPIFolderGetFirst( pFolder,
+                               &item,
+                               &context );
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_IS_EMPTY );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderGetFirst( pFolder,
+                                                 &item,
+                                                 NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderGetFirst( NULL,
+                                                 &item,
+                                                 &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderGetFirst( pFolder,
+                                                 NULL,
+                                                 &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   pFolder->memObject.objType = PSON_IDENT_HASH_MAP;
+   expect_assert_failure( psonAPIFolderGetFirst( pFolder,
+                               &item,
+                               &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   
+   ok = psonAPIFolderGetFirst( pFolder,
+                               &item,
+                               &context );
+   assert_true( ok );
+   
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_empty,        setup_empty, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test,  teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test,  teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test,  teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,   setup_test,  teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test,  teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

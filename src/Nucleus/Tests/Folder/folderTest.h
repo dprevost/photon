@@ -48,7 +48,7 @@ psocErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
+psonFolder* initFolderTest2( bool                testIsExpectedToSucceed,
                             psonSessionContext* pContext )
 {
    bool ok;
@@ -106,6 +106,12 @@ psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
    return pFolder;
 }
 
+static inline 
+psonFolder* initFolderTest( psonSessionContext* pContext )
+{
+   return initFolderTest2( true, pContext );
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 psonTxStatus objTxStatus;
@@ -115,7 +121,7 @@ psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
 {
    psoErrors errcode;
    psonFolder* pFolder;
-   pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
+   pFolder = initFolderTest2( testIsExpectedToSucceed, pContext );
    
    errcode = psonMemObjectInit( &pFolder->memObject, 
                                 PSON_IDENT_FOLDER,

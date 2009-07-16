@@ -20,31 +20,28 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder * pFolder;
+psonSessionContext context;
+psonTxStatus status;
+psonKeyDefinition * retKeyDef = NULL;
+psonDataDefinition * retDataDef = NULL;
+psoObjectDefinition retDef;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFolder* pFolder;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
    psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fieldDef;
-   psonKeyDefinition * retKeyDef = NULL;
-   psonDataDefinition * retDataDef = NULL;
-   psoObjectDefinition retDef;
    
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -56,9 +53,136 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pFolder = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( pFolder,
+                                                   "test2",
+                                                   5,
+                                                   &retDef,
+                                                   &retDataDef,
+                                                   &retKeyDef,
+                                                   NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_datadef( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( pFolder,
+                                                   "test2",
+                                                   5,
+                                                   &retDef,
+                                                   NULL,
+                                                   &retKeyDef,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_def( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( pFolder,
+                                                   "test2",
+                                                   5,
+                                                   NULL,
+                                                   &retDataDef,
+                                                   &retKeyDef,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( NULL,
+                                                   "test2",
+                                                   5,
+                                                   &retDef,
+                                                   &retDataDef,
+                                                   &retKeyDef,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_key( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( pFolder,
+                                                   "test2",
+                                                   5,
+                                                   &retDef,
+                                                   &retDataDef,
+                                                   NULL,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( pFolder,
+                                                   NULL,
+                                                   5,
+                                                   &retDef,
+                                                   &retDataDef,
+                                                   &retKeyDef,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFolderGetDefinition( pFolder,
+                                                   "test2",
+                                                   0,
+                                                   &retDef,
+                                                   &retDataDef,
+                                                   &retKeyDef,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
    
    ok = psonFolderGetDefinition( pFolder,
                                  "test2",
@@ -67,11 +191,33 @@ int main()
                                  &retDataDef,
                                  &retKeyDef,
                                  &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_datadef, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_def,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_key,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

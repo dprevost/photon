@@ -20,121 +20,170 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder * pFolder;
+psonSessionContext context;
+psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFolder * pFolder;
-   psonSessionContext context;
-   int errcode;
    bool ok;
    
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
-   
-   pFolder = initTopFolderTest( expectedToPass, &context );
+   pFolder = initTopFolderTest( true, &context );
 
    ok = psonAPIFolderCreateObject( pFolder,
-                                "Test1",
-                                strlen("Test1"),
-                                &def,
-                                NULL,
-                                NULL,
-                                &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
+   assert( ok );
+   
+   psonTxCommit( (psonTx *)context.pTransaction, &context );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   pFolder = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderDestroyObject( pFolder,
+                                                      "Test1",
+                                                      strlen("Test1"),
+                                                      NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderDestroyObject( NULL,
+                                                      "Test1",
+                                                      strlen("Test1"),
+                                                      &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderDestroyObject( pFolder,
+                                                      NULL,
+                                                      strlen("Test1"),
+                                                      &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
    
    /* Using the topfolder to create a grandchild! */
    ok = psonTopFolderCreateFolder( pFolder,
                                    "Test1/Test2",
                                    strlen("Test1/Test2"),
                                    &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( (psonTx *)context.pTransaction, &context );
    
    ok = psonAPIFolderDestroyObject( pFolder,
-                                 "Test1",
-                                 strlen("Test1"),
-                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+                                    "Test1",
+                                    strlen("Test1"),
+                                    &context );
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_FOLDER_IS_NOT_EMPTY ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_FOLDER_IS_NOT_EMPTY );
                                          
    ok = psonTopFolderDestroyObject( pFolder,
                                     "Test1/Test2",
                                     strlen("Test1/Test2"),
                                     &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test2",
                                  strlen("Test2"),
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_NO_SUCH_OBJECT );
 
    ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  PSO_MAX_NAME_LENGTH+1,
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_OBJECT_NAME_TOO_LONG ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_OBJECT_NAME_TOO_LONG );
 
    ok = psonAPIFolderDestroyObject( pFolder,
-                                 "Test1",
-                                 0,
-                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+                                    "Test1",
+                                    0,
+                                    &context );
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_INVALID_OBJECT_NAME ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
 
    ok = psonAPIFolderDestroyObject( pFolder,
-                                 "Test1",
-                                 strlen("Test1"),
-                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+                                    "Test1",
+                                    strlen("Test1"),
+                                    &context );
+   assert_true( ok );
    
    /* Calling destroy on the same object, twice */
    ok = psonAPIFolderDestroyObject( pFolder,
                                  "Test1",
                                  strlen("Test1"),
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_OBJECT_IS_IN_USE ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_OBJECT_IS_IN_USE );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

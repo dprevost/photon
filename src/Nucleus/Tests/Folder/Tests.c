@@ -20,12 +20,11 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psonFolder* pFolder1, *pFolder2;
 
    psonSessionContext context;
@@ -36,14 +35,12 @@ int main()
    psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
    
    /* Create "/" */
-   pFolder1 = initFolderTest( expectedToPass, &context );
+   pFolder1 = initFolderTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
    ok = psonFolderInit( pFolder1, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    /* Create "/Test2" */   
    ok = psonFolderInsertObject( pFolder1,
@@ -56,9 +53,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
 
    /* Try to create "/Test2" again - must fail */   
    ok = psonFolderInsertObject( pFolder1,
@@ -71,12 +66,8 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_OBJECT_ALREADY_PRESENT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_OBJECT_ALREADY_PRESENT );
    
    /* Create "/Test3" */   
    ok = psonFolderInsertObject( pFolder1,
@@ -89,9 +80,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
 
    /* Get "/Test2" */   
    ok = psonFolderGetObject( pFolder1,
@@ -100,9 +89,7 @@ int main()
                              PSO_FOLDER,
                              &folderItem,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
-   }
+   assert_true( ok );
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
    GET_PTR( pFolder2, pDescriptor->offset, psonFolder );
 
@@ -117,9 +104,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
 
    /* Create "/Test2/Test2" */   
    ok = psonFolderInsertObject( pFolder2,
@@ -132,9 +117,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( (psonTx *)context.pTransaction, &context );
    
@@ -143,24 +126,16 @@ int main()
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_FOLDER_IS_NOT_EMPTY ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_FOLDER_IS_NOT_EMPTY );
    
    /* Try to delete "/Test55" - should fail (no such object) */
    ok = psonFolderDeleteObject( pFolder1,
                                 "test55",
                                 6,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_NO_SUCH_OBJECT );
    
    /* Get "/Test2/Test4" from "/" */   
    ok = psonFolderGetObject( pFolder1,
@@ -169,16 +144,12 @@ int main()
                              PSO_FOLDER,
                              &folderItem,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );   
-   }
+   assert_true( ok );
    
    GET_PTR( pDescriptor, folderItem.pHashItem->dataOffset, psonObjectDescriptor );
-   if ( memcmp( pDescriptor->originalName, 
+   assert_true( memcmp( pDescriptor->originalName, 
                 "Test4", 
-                5*sizeof(char) ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+                5*sizeof(char) ) == 0 );
    
    /* Create "/Test2/Test4/Test5 from "/" */
    
@@ -192,9 +163,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( (psonTx *)context.pTransaction, &context );
    
@@ -203,37 +172,45 @@ int main()
                                 "test2/test4/test6",
                                 17,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_NO_SUCH_OBJECT );
    
    /* Delete "/Test2/Test5/Test5" - must fail (no such folder) */
    ok = psonFolderDeleteObject( pFolder1,
                                 "test2/test5/test5",
                                 17,
                                 &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( psocGetLastError( &context.errorHandler ) != PSO_NO_SUCH_FOLDER ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
+   assert_true( psocGetLastError( &context.errorHandler ) == PSO_NO_SUCH_FOLDER );
    
    /* Delete "/Test2/Test4/Test5" */
    ok = psonFolderDeleteObject( pFolder1,
                                 "test2/test4/test5",
                                 17,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( context.pTransaction, &context );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

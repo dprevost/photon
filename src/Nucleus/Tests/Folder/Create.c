@@ -20,43 +20,207 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
+psonFolder * pFolder;
+psonSessionContext context;
+psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   pFolder = initTopFolderTest( true, &context );
+   assert( pFolder );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_name_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   char name[PSO_MAX_NAME_LENGTH+100];
+   bool ok;
+   int errcode;
+   
+   memset( name, 't', PSO_MAX_NAME_LENGTH+99 );
+   name[PSO_MAX_NAME_LENGTH+99] = 0;
+   
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   "Test1",
+                                   0,
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
+
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   "/Test2",
+                                   strlen("/Test2"),
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
+
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   name,
+                                   PSO_MAX_NAME_LENGTH+1,
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_OBJECT_NAME_TOO_LONG );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderCreateObject( pFolder,
+                                                     "Test1",
+                                                     strlen("Test1"),
+                                                     &def,
+                                                     NULL,
+                                                     NULL,
+                                                     NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_definition( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderCreateObject( pFolder,
+                                                     "Test1",
+                                                     strlen("Test1"),
+                                                     NULL,
+                                                     NULL,
+                                                     NULL,
+                                                     &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderCreateObject( NULL,
+                                                     "Test1",
+                                                     strlen("Test1"),
+                                                     &def,
+                                                     NULL,
+                                                     NULL,
+                                                     &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonAPIFolderCreateObject( pFolder,
+                                                     NULL,
+                                                     strlen("Test1"),
+                                                     &def,
+                                                     NULL,
+                                                     NULL,
+                                                     &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psoObjectDefinition local_def = { 0, 0, 0, 0 };
+
+   expect_assert_failure( psonAPIFolderCreateObject( pFolder,
+                                                     "Test1",
+                                                     strlen("Test1"),
+                                                     &local_def,
+                                                     NULL,
+                                                     NULL,
+                                                     &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
+   assert_true( ok );
+   
+   ok = psonAPIFolderCreateObject( pFolder,
+                                   "Test2",
+                                   strlen("Test2"),
+                                   &def,
+                                   NULL,
+                                   NULL,
+                                   &context );
+   assert_true( ok );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psonFolder * pFolder;
-   psonSessionContext context;
-   bool ok;
-   
-   psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
-   
-   pFolder = initTopFolderTest( expectedToPass, &context );
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_name_length,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_definition, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,       setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,      setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,            setup_test, teardown_test )
+   };
 
-   ok = psonAPIFolderCreateObject( pFolder,
-                                "Test1",
-                                strlen("Test1"),
-                                &def,
-                                NULL,
-                                NULL,
-                                &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   rc = run_tests(tests);
    
-   ok = psonAPIFolderCreateObject( pFolder,
-                                "Test2",
-                                strlen("Test2"),
-                                &def,
-                                NULL,
-                                NULL,
-                                &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
