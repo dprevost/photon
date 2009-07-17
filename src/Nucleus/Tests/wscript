@@ -16,7 +16,8 @@ subdirs_list = [
         'BlockGroup',
         'Cursor',
         'FastMap',
-        'Folder']
+        'Folder',
+        'Hash']
 
 def build(bld):
    
