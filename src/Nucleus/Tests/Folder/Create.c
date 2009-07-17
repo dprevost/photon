@@ -28,7 +28,7 @@ psoObjectDefinition def = { PSO_FOLDER, 0, 0, 0 };
 
 void setup_test()
 {
-   pFolder = initTopFolderTest( true, &context );
+   pFolder = initTopFolderTest( &context );
    assert( pFolder );
 }
 

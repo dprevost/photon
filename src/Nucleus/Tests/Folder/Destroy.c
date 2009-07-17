@@ -30,7 +30,7 @@ void setup_test()
 {
    bool ok;
    
-   pFolder = initTopFolderTest( true, &context );
+   pFolder = initTopFolderTest( &context );
 
    ok = psonAPIFolderCreateObject( pFolder,
                                    "Test1",
