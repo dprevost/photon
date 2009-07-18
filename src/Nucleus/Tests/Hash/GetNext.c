@@ -21,29 +21,26 @@
 #include "Nucleus/Hash.h"
 #include "Nucleus/Tests/Hash/HashTest.h"
 
-const bool expectedToPass = true;
+psonHash * pHash;
+psonHashItem * firstItem, * nextItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
    psonSessionContext context;
-   psonHash* pHash;
    enum psoErrors errcode;
    char* key1 = "My Key 1";
    char* key2 = "My Key 2";
    char* data1 = "My Data 1";
    char* data2 = "My Data 2";
-   psonHashItem * firstItem = NULL, * nextItem = NULL;
    bool found;
    psonHashItem * pHashItem;
    
-   pHash = initHashTest( expectedToPass, &context );
+   pHash = initHashTest( &context );
    
    errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( errcode == PSO_OK );
    
    errcode = psonHashInsert( pHash,
                              (unsigned char*)key1,
@@ -52,9 +49,7 @@ int main()
                              strlen(data1),
                              &pHashItem,
                              &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( errcode == PSO_OK );
    
    errcode = psonHashInsert( pHash,
                              (unsigned char*)key2,
@@ -63,34 +58,98 @@ int main()
                              strlen(data2),
                              &pHashItem,
                              &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( errcode == PSO_OK );
    
    found = psonHashGetFirst( pHash, &firstItem );
-   if ( ! found ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( found );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+   firstItem = nextItem = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashGetNext( NULL,
+                                           firstItem,
+                                           &nextItem ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_next_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashGetNext( pHash,
+                                           firstItem,
+                                           NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_prev_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashGetNext( pHash,
+                                           NULL,
+                                           &nextItem ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool found;
    
    found = psonHashGetNext( pHash,
                             firstItem,
                             &nextItem );
-   if ( ! found ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( nextItem == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( found );
+   assert_false( nextItem == NULL );
    
    /* Only 2 items - should fail gracefully ! */
    found = psonHashGetNext( pHash,
                             nextItem,
                             &nextItem );
-   if ( found ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( found );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_hash,      setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_next_item, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_prev_item, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,           setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

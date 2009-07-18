@@ -21,24 +21,86 @@
 #include "Nucleus/Hash.h"
 #include "Nucleus/Tests/Hash/HashTest.h"
 
-const bool expectedToPass = true;
+psonHash * pHash;
+psonSessionContext context;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   pHash = initHashTest( &context );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashInit( pHash, g_memObjOffset, 100, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashInit( NULL, g_memObjOffset, 100, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_offset( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashInit( pHash, PSON_NULL_OFFSET, 100, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   enum psoErrors errcode;
+   
+   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
+   assert_true( errcode == PSO_OK );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psonSessionContext context;
-   psonHash* pHash;
-   enum psoErrors errcode;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hash,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_offset,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
    
-   pHash = initHashTest( expectedToPass, &context );
-   
-   errcode = psonHashInit( pHash, g_memObjOffset, 100, &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
