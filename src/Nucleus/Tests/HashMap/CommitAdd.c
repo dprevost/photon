@@ -20,24 +20,23 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = true;
+psonHashMap * pHashMap;
+psonSessionContext context;
+psonTxStatus status;
+psonHashTxItem * pItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonHashMap * pHashMap;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psonHashTxItem * pItem;
    psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fields;
 
-   pHashMap = initHashMapTest( expectedToPass, &context );
+   pHashMap = initHashMapTest( true, &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
@@ -46,9 +45,7 @@ int main()
                          "Map1", SET_OFFSET(pHashMap), 
                          &def, &keyDef,
                          &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonHashMapInsert( pHashMap,
                            (const void *) key,
@@ -57,9 +54,7 @@ int main()
                            7,
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonHashMapGet( pHashMap,
                         (const void *) key,
@@ -67,20 +62,86 @@ int main()
                         &pItem,
                         20,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonHashMapRelease( pHashMap,
                             pItem,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   psonHashMapCommitAdd( pHashMap, SET_OFFSET(  pItem ), &context );
-
-   return 0;
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapCommitAdd( pHashMap, 
+                                                SET_OFFSET(pItem),
+                                                NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapCommitAdd( NULL, 
+                                                SET_OFFSET(pItem),
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapCommitAdd( pHashMap, 
+                                                PSON_NULL_OFFSET,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonHashMapCommitAdd( pHashMap, SET_OFFSET( pItem ), &context );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hash,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

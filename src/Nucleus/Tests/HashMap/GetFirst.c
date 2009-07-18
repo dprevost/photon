@@ -20,25 +20,24 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = true;
+psonHashMap * pHashMap;
+psonSessionContext context;
+psonTxStatus status;
+psonHashMapItem item;
+char * key  = "my key";
+char * data = "my data";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonHashMap * pHashMap;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   char * key  = "my key";
-   char * data = "my data";
-   psonHashMapItem item;
    char * ptr;
    psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
    psonKeyDefinition keyDef;
    psonDataDefinition fields;
 
-   pHashMap = initHashMapTest( expectedToPass, &context );
+   pHashMap = initHashMapTest( true, &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    
@@ -46,9 +45,7 @@ int main()
                          SET_OFFSET(pHashMap), 
                          &def, &keyDef,
                          &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonHashMapInsert( pHashMap,
                            (const void *) key,
@@ -57,24 +54,140 @@ int main()
                            7,
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapGetFirst( pHashMap,
+                                               &item,
+                                               6,
+                                               20,
+                                               NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapGetFirst( NULL,
+                                               &item,
+                                               6,
+                                               20,
+                                               &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapGetFirst( pHashMap,
+                                               NULL,
+                                               6,
+                                               20,
+                                               &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_key_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+
+   ok = psonHashMapGetFirst( pHashMap,
+                             &item,
+                             5,
+                             20,
+                             &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_LENGTH );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+
+   ok = psonHashMapGetFirst( pHashMap,
+                             &item,
+                             6,
+                             6,
+                             &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_LENGTH );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   char * ptr;
+
    ok = psonHashMapGetFirst( pHashMap,
                              &item,
                              6,
                              20,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( ptr, item.pHashItem->dataOffset, char );
-   if (memcmp( data, ptr, 7 ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( memcmp( data, ptr, 7 ) == 0 );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hash,        setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,        setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_key_length, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_length,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,             setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
