@@ -20,12 +20,48 @@
 
 #include "hashMapTest.h"
 
-const bool expectedToPass = true;
+psonHashMap * pHashMap;
+psonSessionContext context;
+psonTxStatus status;
+psonHashTxItem * pItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   bool ok;
+   char * key  = "my key";
+   char * data = "my data";
+   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
+   psonKeyDefinition keyDef;
+   psonDataDefinition fields;
+
+   pHashMap = initHashMapTest( true, &context );
+
+   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
+   
+   ok = psonHashMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
+                         SET_OFFSET(pHashMap), 
+                         &def, &keyDef,
+                         &fields, &context );
+   assert( ok );
+   
+   ok = psonHashMapInsert( pHashMap,
+                           (const void *) key,
+                           6,
+                           (const void *) data,
+                           7,
+                           NULL,
+                           &context );
+   assert( ok );
+   
+   ok = psonHashMapGet( pHashMap,
+                        (const void *) key,
+                        6,
+                        &pItem,
+                        20,
+                        &context );
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -41,7 +77,33 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonHashMapRelease( pHashMap,
+                                              pItem,
+                                              NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapRelease( NULL,
+                                              pItem,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashMapRelease( pHashMap,
+                                              NULL,
+                                              &context ) );
 #endif
    return;
 }
@@ -51,73 +113,22 @@ void test_null_context( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonHashMap * pHashMap;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
    char * key  = "my key";
    char * data = "my data";
-   psonHashTxItem * pItem;
    psonTxStatus * txItemStatus;
-   psoObjectDefinition def = { PSO_HASH_MAP, 0, 0, 0 };
-   psonKeyDefinition keyDef;
-   psonDataDefinition fields;
 
-   pHashMap = initHashMapTest( expectedToPass, &context );
-
-   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   ok = psonHashMapInit( pHashMap, 0, 1, 0, &status, 4, "Map1", 
-                         SET_OFFSET(pHashMap), 
-                         &def, &keyDef,
-                         &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonHashMapInsert( pHashMap,
-                           (const void *) key,
-                           6,
-                           (const void *) data,
-                           7,
-                           NULL,
-                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonHashMapGet( pHashMap,
-                        (const void *) key,
-                        6,
-                        &pItem,
-                        20,
-                        &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    txItemStatus = &pItem->txStatus;
-   if ( txItemStatus->usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( txItemStatus->usageCounter == 1 );
+   assert_true( status.usageCounter == 1 );
    
    ok = psonHashMapRelease( pHashMap,
                             pItem,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( txItemStatus->usageCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.usageCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( txItemStatus->usageCounter == 0 );
+   assert_true( status.usageCounter == 0 );
+   assert_true( pHashMap->nodeObject.txCounter == 1 );
    
 #endif
    return;
@@ -131,6 +142,8 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hash,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 
