@@ -21,19 +21,27 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
 psonLinkedList list;
+psonLinkNode* pNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   psonSessionContext context;
+  
+   initTest( &context );
+   InitMem();
+   
+   psonLinkedListInit( &list );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void teardown_test()
 {
+   psonLinkedListFini( &list );
+   pNode = NULL;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -44,8 +52,9 @@ void test_invalid_sig( void ** state )
    int save = list.initialized;
 
    list.initialized = 0;
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListReset( &list ) );
    list.initialized = save;
+   psonLinkedListReset( &list );
 #endif
    return;
 }
@@ -55,7 +64,7 @@ void test_invalid_sig( void ** state )
 void test_null_list( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListReset( NULL ) );
 #endif
    return;
 }
@@ -65,30 +74,15 @@ void test_null_list( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonLinkNode* pNode = NULL;
    bool ok;
-   psonSessionContext context;
-  
-   initTest( &context );
-   InitMem();
-   
-   psonLinkedListInit( &list );
    
    psonLinkedListReset( &list );
 
-   if ( list.initialized != PSON_LIST_SIGNATURE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( list.currentSize != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( list.initialized == PSON_LIST_SIGNATURE );
+   assert_true( list.currentSize == 0 );
    
    ok = psonLinkedListGetFirst( &list, &pNode );
-   if ( ok ) { /* The list is not empty after a reset... problem! */
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psonLinkedListFini( &list );
+   assert_false( ok ); /* The list is not empty after a reset... problem! */
 
 #endif
    return;

@@ -21,89 +21,14 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonLinkedList list;
+psonLinkNode node1, node2, *pNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void teardown_test()
-{
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_invalid_sig( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_null_current( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_null_list( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_null_previous( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_null_next_offset( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_null_prev_offset( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
-#endif
-   return;
-}
-
-/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
-
-void test_pass( void ** state )
-{
-#if defined(PSO_UNIT_TESTS)
-   psonLinkedList list;
-   psonLinkNode node1, node2, *pNode;
    psonSessionContext context;
-   bool ok;
    
    initTest( &context );
    InitMem();
@@ -114,20 +39,93 @@ void test_pass( void ** state )
    
    psonLinkedListPutLast( &list, &node1 );
    psonLinkedListPutLast( &list, &node2 );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psonLinkedListFini( &list );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int save = list.initialized;
+
+   list.initialized = 0;
+   expect_assert_failure( psonLinkedListPeakPrevious( &list, &node2, &pNode ) );
+   list.initialized = save;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_current( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkedListPeakPrevious( &list, NULL, &pNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_list( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkedListPeakPrevious( NULL, &node2, &pNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_previous( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkedListPeakPrevious( &list, &node2, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_next_offset( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   node2.nextOffset = PSON_NULL_OFFSET;
+   expect_assert_failure( psonLinkedListPeakPrevious( &list, &node2, &pNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_prev_offset( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   node2.previousOffset = PSON_NULL_OFFSET;
+   expect_assert_failure( psonLinkedListPeakPrevious( &list, &node2, &pNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
    
    ok = psonLinkedListPeakPrevious( &list, &node2, &pNode );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pNode != &node1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( list.currentSize != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pNode == &node1 );
+   assert_true( list.currentSize == 2 );
    
-   psonLinkedListFini( &list );
-
 #endif
    return;
 }

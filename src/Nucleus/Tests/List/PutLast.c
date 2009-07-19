@@ -21,18 +21,27 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonLinkedList list;
+psonLinkNode node;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   psonSessionContext context;
+   
+   initTest( &context );
+   InitMem();
+   
+   psonLinkNodeInit( &node );
+   psonLinkedListInit( &list );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void teardown_test()
 {
+   psonLinkedListFini( &list );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -40,7 +49,11 @@ void teardown_test()
 void test_invalid_sig( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   int save = list.initialized;
+
+   list.initialized = 0;
+   expect_assert_failure( psonLinkedListPutLast( &list, &node ) );
+   list.initialized = save;
 #endif
    return;
 }
@@ -50,7 +63,7 @@ void test_invalid_sig( void ** state )
 void test_null_item( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListPutLast( &list, NULL ) );
 #endif
    return;
 }
@@ -60,7 +73,7 @@ void test_null_item( void ** state )
 void test_null_list( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListPutLast( NULL, &node ) );
 #endif
    return;
 }
@@ -70,7 +83,8 @@ void test_null_list( void ** state )
 void test_null_next( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   node.nextOffset = 0x12345;
+   expect_assert_failure( psonLinkedListPutLast( &list, &node ) );
 #endif
    return;
 }
@@ -80,7 +94,8 @@ void test_null_next( void ** state )
 void test_null_previous( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   node.previousOffset = 0x12345;
+   expect_assert_failure( psonLinkedListPutLast( &list, &node ) );
 #endif
    return;
 }
@@ -90,23 +105,10 @@ void test_null_previous( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonLinkedList list;
-   psonLinkNode node;
-   psonSessionContext context;
-   
-   initTest( &context );
-   InitMem();
-   
-   psonLinkNodeInit( &node );
-   psonLinkedListInit( &list );
 
    psonLinkedListPutLast( &list, &node );
-   if ( list.currentSize != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( list.currentSize == 1 );
    
-   psonLinkedListFini( &list );
-
 #endif
    return;
 }

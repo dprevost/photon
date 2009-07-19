@@ -21,8 +21,6 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 /*
@@ -106,9 +104,7 @@ void test_pass( void ** state )
    }
    numInList = INITIAL_LIST_SIZE;
 
-   if ( TestList( &list ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( TestList( &list ) == 0 );
    
    /* Initialize the random generator */
    mysrand( 0x130bc9 );
@@ -139,10 +135,7 @@ void test_pass( void ** state )
                }
             }
          }
-         if ( k == randElement ) {
-            fprintf( stderr, "Case 0, did not found a free element\n" );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         assert_false( k == randElement );
          
          psonLinkNodeInit( &dummy[k].node );
          psonLinkedListPutFirst( &list, &dummy[k].node );
@@ -169,10 +162,7 @@ void test_pass( void ** state )
                }
             }
          }
-         if ( k == randElement ) {
-            fprintf( stderr, "Case 1 or 5, did not found a free element\n" );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         assert_false( k == randElement );
 
          psonLinkNodeInit( &dummy[k].node );
          psonLinkedListPutLast( &list, &dummy[k].node );
@@ -183,9 +173,7 @@ void test_pass( void ** state )
          
       case 2:
          ok = psonLinkedListGetFirst( &list, &pNode );
-         if ( !ok ) {
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         assert_true( ok );
          
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
@@ -196,9 +184,7 @@ void test_pass( void ** state )
          
       case 3:
          ok = psonLinkedListGetLast( &list, &pNode );
-         if ( ! ok ) {
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         assert_true( ok );
          
          pDummy = (dummyStruct* )
             ((char*)pNode - offsetof(dummyStruct, node ));
@@ -223,10 +209,7 @@ void test_pass( void ** state )
                }
             }
          }
-         if ( k == randElement ) {
-            fprintf( stderr, "Case 4, did not found a used element\n" );
-            ERROR_EXIT( expectedToPass, NULL, ; );
-         }
+         assert_false( k == randElement );
 
          psonLinkedListRemoveItem( &list, &dummy[k].node );
 
@@ -236,12 +219,7 @@ void test_pass( void ** state )
          
       } /* End switch statement */
 
-      if ( (size_t)numInList != list.currentSize ) {
-         fprintf( stderr, "Discrepency in list size (%d "PSO_SIZE_T_FORMAT
-                  "), action = %d\n", 
-                  numInList, list.currentSize, randAction%6 );
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( (size_t)numInList == list.currentSize );
 
       /* Test the iterators */
       if ( ((i+1)%GET_NEXT_LOOP ) == 0 ) {
@@ -263,10 +241,7 @@ void test_pass( void ** state )
    } /* End of for loop */
 
    errcode = TestList( &list );
-   if ( errcode != 0 ) {
-      fprintf( stderr, "TestList failed, error = %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
 
    psonLinkedListFini( &list );
 

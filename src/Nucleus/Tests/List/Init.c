@@ -21,12 +21,16 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonLinkedList list;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   psonSessionContext context;
+   
+   initTest( &context );
+   InitMem();
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -40,7 +44,7 @@ void teardown_test()
 void test_null_list( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListInit( NULL ) );
 #endif
    return;
 }
@@ -50,11 +54,6 @@ void test_null_list( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonLinkedList list;
-   psonSessionContext context;
-   
-   initTest( &context );
-   InitMem();
    
    psonLinkedListInit( &list );
    

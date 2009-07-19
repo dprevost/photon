@@ -21,18 +21,29 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonLinkedList list;
+psonLinkNode node, node2;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   psonSessionContext context;
+   
+   initTest( &context );
+   InitMem();
+
+   psonLinkNodeInit( &node );
+   psonLinkedListInit( &list );
+   
+   psonLinkedListPutLast( &list, &node );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void teardown_test()
 {
+   psonLinkedListFini( &list );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -40,7 +51,11 @@ void teardown_test()
 void test_invalid_sig( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   int save = list.initialized;
+
+   list.initialized = 0;
+   expect_assert_failure( psonLinkedListIsValid( &list, &node ) );
+   list.initialized = save;
 #endif
    return;
 }
@@ -50,7 +65,7 @@ void test_invalid_sig( void ** state )
 void test_null_list( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListIsValid( NULL, &node ) );
 #endif
    return;
 }
@@ -60,7 +75,7 @@ void test_null_list( void ** state )
 void test_null_unknown( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonLinkedListIsValid( &list, NULL ) );
 #endif
    return;
 }
@@ -70,32 +85,16 @@ void test_null_unknown( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonLinkedList list;
-   psonLinkNode node, node2;
-   psonSessionContext context;
    int valid;
    
-   initTest( &context );
-   InitMem();
-
-   psonLinkNodeInit( &node );
    psonLinkNodeInit( &node2 );
-   psonLinkedListInit( &list );
-   
-   psonLinkedListPutLast( &list, &node );
    
    valid = psonLinkedListIsValid( &list, &node );
-   if ( ! valid ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( valid );
    
    valid = psonLinkedListIsValid( &list, &node2 );
-   if ( valid ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( valid );
    
-   psonLinkedListFini( &list );
-
 #endif
    return;
 }
