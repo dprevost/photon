@@ -50,8 +50,7 @@ psocErrMsgHandle g_psoErrorHandle;
  */
  
 psonHashMap * 
-initHashMapTest( bool                testIsExpectedToSucceed,
-                 psonSessionContext* pContext )
+initHashMapTest( psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -64,46 +63,26 @@ initHashMapTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ok != true ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pTx != NULL );
    ok = psonTxInit( pTx, 1, pContext );
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the hash map object */
    pHashMap = (psonHashMap*)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
-   if ( pHashMap == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pHashMap != NULL );
    
    return pHashMap;
 }

@@ -31,7 +31,7 @@ psonDataDefinition fields;
 
 void setup_test()
 {
-   pHashMap = initHashMapTest( true, &context );
+   pHashMap = initHashMapTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
 }
