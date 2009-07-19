@@ -21,18 +21,109 @@
 #include "ListTestCommon.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonLinkedList list;
+psonLinkNode oldNode, newNode;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
+   psonSessionContext context;
+   
+   initTest( &context );
+   InitMem();
+   
+   psonLinkNodeInit( &oldNode );
+   psonLinkNodeInit( &newNode );
+
+   psonLinkedListInit( &list );
+   psonLinkedListPutFirst( &list, &oldNode );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   psonLinkedListFini( &list );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int save = list.initialized;
+
+   list.initialized = 0;
+   expect_assert_failure( psonLinkedListReplaceItem( &list, &oldNode, &newNode ) );
+   list.initialized = save;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_list( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkedListReplaceItem( NULL, &oldNode, &newNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_new( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkedListReplaceItem( &list, &oldNode, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_next( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   newNode.nextOffset = 0x12345;
+   expect_assert_failure( psonLinkedListReplaceItem( &list, &oldNode, &newNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_old( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonLinkedListReplaceItem( &list, NULL, &newNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_previous( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   newNode.nextOffset = 0x12345;
+   expect_assert_failure( psonLinkedListReplaceItem( &list, &oldNode, &newNode ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
    psonLinkedList list;
    psonLinkNode oldNode, newNode, * pDummy = NULL;
    psonLinkNode node1, node2;
    psonSessionContext context;
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
    InitMem();
    
    psonLinkNodeInit( &oldNode );
@@ -47,72 +138,71 @@ int main()
 
    psonLinkedListReplaceItem( &list, &oldNode, &newNode );
 
-   if ( list.currentSize != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( list.currentSize == 1 );
    
    psonLinkedListPeakFirst( &list, &pDummy );
-   if ( pDummy != &newNode ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pDummy == &newNode );
    
-   if ( TestList( &list ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( TestList( &list ) == 0 );
    
    /* Test 2 - replace at tail */
    psonLinkedListPutFirst( &list, &node1 );
    psonLinkNodeInit( &oldNode );
    psonLinkedListReplaceItem( &list, &newNode, &oldNode );
 
-   if ( list.currentSize != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( list.currentSize == 2 );
    
    psonLinkedListPeakLast( &list, &pDummy );
-   if ( pDummy != &oldNode ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( TestList( &list ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pDummy == &oldNode );
+   assert_true( TestList( &list ) == 0 );
    
    /* Test 3 - replace in the middle */
    psonLinkedListPutLast( &list, &node2 );
    psonLinkNodeInit( &newNode );
    psonLinkedListReplaceItem( &list, &oldNode, &newNode );
 
-   if ( list.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( list.currentSize == 3 );
    
    psonLinkedListPeakNext( &list, &node1, &pDummy );
-   if ( pDummy != &newNode ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( TestList( &list ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pDummy == &newNode );
+   assert_true( TestList( &list ) == 0 );
    
    /* Test 4 - replace at head */
    psonLinkNodeInit( &oldNode );
    psonLinkedListReplaceItem( &list, &node1, &oldNode );
 
-   if ( list.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( list.currentSize == 3 );
    
    psonLinkedListPeakFirst( &list, &pDummy );
-   if ( pDummy != &oldNode ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( TestList( &list ) != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pDummy == &oldNode );
+   assert_true( TestList( &list ) == 0 );
    
    psonLinkedListFini( &list );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_list,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_new,      setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_next,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_old,      setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_previous, setup_test, teardown_test ),
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

@@ -19,7 +19,8 @@ subdirs_list = [
         'Folder',
         'Hash',
         'HashMap',
-        'HashTx']
+        'HashTx',
+        'List']
 
 def build(bld):
    
