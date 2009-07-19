@@ -21,44 +21,92 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonSessionContext context;
+psonMemAlloc *     pAlloc;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonSessionContext context;
-   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = PSON_BLOCK_SIZE*10;
-   unsigned char* newBuff[8];
-   int i;
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
    
    ptr = malloc( allocatedLength );
-   if ( ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ptr != NULL );
    
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( g_pBaseAddr ) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+   pAlloc = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_alloc( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMallocBlocks( NULL,
+                                            PSON_ALLOC_ANY,
+                                            2,
+                                            &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMallocBlocks( pAlloc,
+                                            PSON_ALLOC_ANY,
+                                            2,
+                                            NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMallocBlocks( pAlloc,
+                                            PSON_ALLOC_ANY,
+                                            0,
+                                            &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int i;
+   unsigned char *    newBuff[8];
    
    newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[0] == NULL );
+   
    /* 6 blocks remaining */
    newBuff[1] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
-   if ( newBuff[1] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[1] == NULL );
+   
    /* No blocks remaining */
    newBuff[2] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
-   if ( newBuff[2] != NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( newBuff[2] == NULL );
    
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[0], 2, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[1], 6, &context );
@@ -66,9 +114,7 @@ int main()
    
    for ( i = 0; i < 8; ++i ) {
       newBuff[i] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, &context );
-      if ( newBuff[i] == NULL ) {
-         ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-      }
+      assert_false( newBuff[i] == NULL );
    }
    for ( i = 0; i < 8; i += 2 ) {
       psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[i], 1, &context );
@@ -76,11 +122,29 @@ int main()
    
    /* 4 blocks remaining - fragmented. This new alloc should fail! */
    newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[0] != NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( newBuff[0] == NULL );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_alloc,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

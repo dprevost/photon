@@ -21,29 +21,115 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonSessionContext context;
+psonMemAlloc *     pAlloc;
+unsigned char *    ptr;
+size_t             allocatedLength = PSON_BLOCK_SIZE*10;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   initTest( &context );
+   
+   ptr = malloc( allocatedLength );
+   assert( ptr != NULL );
+   
+   g_pBaseAddr = ptr;
+   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( g_pBaseAddr ) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+   pAlloc = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_address( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemAllocInit( pAlloc,
+                                            NULL,
+                                            allocatedLength,
+                                            &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_alloc( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemAllocInit( NULL,
+                                            ptr,
+                                            allocatedLength,
+                                            &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemAllocInit( pAlloc,
+                                            ptr,
+                                            allocatedLength,
+                                            NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_small_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemAllocInit( pAlloc,
+                                            ptr,
+                                            PSON_BLOCK_SIZE*2,
+                                            &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psonSessionContext context;
-   psonMemAlloc*     pAlloc;
-   unsigned char* ptr;
-   size_t allocatedLength = PSON_BLOCK_SIZE*10;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_address, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_alloc,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_small_length, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
    
-   initTest( expectedToPass, &context );
-   
-   ptr = malloc( allocatedLength );
-   if ( ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   g_pBaseAddr = ptr;
-   pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
-   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

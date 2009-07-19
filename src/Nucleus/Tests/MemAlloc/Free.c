@@ -21,37 +21,122 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonMemAlloc* pAlloc;
+psonSessionContext context;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonSessionContext context;
-   psonMemAlloc*     pAlloc;
    unsigned char* ptr;
    size_t allocatedLength = PSON_BLOCK_SIZE*10;
-   unsigned char* newBuff[5];
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
    
    ptr = malloc( allocatedLength );
-   if ( ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ptr != NULL );
    
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
-   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );
+   psonMemAllocInit( pAlloc, ptr, allocatedLength, &context );   
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( g_pBaseAddr ) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+   pAlloc = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_alloc( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   unsigned char* newBuff;
+
+   newBuff = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
+   assert_false( newBuff == NULL );
+
+   expect_assert_failure( psonFreeBlocks( NULL, 
+                                          PSON_ALLOC_ANY,
+                                          newBuff,
+                                          2,
+                                          &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_buffer( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+
+   expect_assert_failure( psonFreeBlocks( pAlloc, 
+                                          PSON_ALLOC_ANY,
+                                          NULL,
+                                          2,
+                                          &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   unsigned char* newBuff;
+   
+   newBuff = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
+   assert_false( newBuff == NULL );
+
+   expect_assert_failure( psonFreeBlocks( pAlloc, 
+                                          PSON_ALLOC_ANY,
+                                          newBuff,
+                                          2,
+                                          NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   unsigned char* newBuff;
+   
+   newBuff = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
+   assert_false( newBuff == NULL );
+
+   expect_assert_failure( psonFreeBlocks( pAlloc, 
+                                          PSON_ALLOC_ANY,
+                                          newBuff,
+                                          0,
+                                          &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+//   unsigned char* ptr;
+//   size_t allocatedLength = PSON_BLOCK_SIZE*10;
+   unsigned char* newBuff[5];
    
    newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[0] == NULL );
    
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[0], 2, &context );
-   if (pAlloc->totalAllocBlocks != 2 ) ERROR_EXIT( expectedToPass, NULL, ; );
-   if (pAlloc->numFreeCalls != 1 ) ERROR_EXIT( expectedToPass, NULL, ; );
+   assert_true( pAlloc->totalAllocBlocks == 2 );
+   assert_true( pAlloc->numFreeCalls == 1 );
    
    /*
     * Test that the code will reunite free buffers (if they are
@@ -59,90 +144,83 @@ int main()
     */
    /* unite with following buffer */
    newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 3, &context );
-   if ( newBuff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[0] == NULL );
    newBuff[1] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 3, &context );
-   if ( newBuff[1] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[1] == NULL );
    newBuff[2] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[2] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[2] == NULL );
    
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[1], 3, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[0], 3, &context );
    /* if the "unite" failed, no 6 blocks free buffer should exist */
    newBuff[3] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
-   if ( newBuff[3] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[3] == NULL );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[3], 6, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[2], 2, &context );
 
    /* unite with preceding buffer */
    newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[0] == NULL );
    newBuff[1] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 3, &context );
-   if ( newBuff[1] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[1] == NULL );
    newBuff[2] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 3, &context );
-   if ( newBuff[2] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[2] == NULL );
    
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[1], 3, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[2], 3, &context );
    /* if the "unite" failed, no 6 blocks free buffer should exist */
    newBuff[3] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
-   if ( newBuff[3] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[3] == NULL );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[0], 2, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[3], 6, &context );
 
    /* unite with both */
    newBuff[0] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, &context );
-   if ( newBuff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[0] == NULL );
    newBuff[1] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[1] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[1] == NULL );
    newBuff[2] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[2] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[2] == NULL );
    newBuff[3] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, &context );
-   if ( newBuff[3] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[3] == NULL );
    newBuff[4] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, &context );
-   if ( newBuff[4] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[4] == NULL );
    
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[1], 2, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[3], 2, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[2], 2, &context );
    /* if the "unite" failed, no 6 blocks free buffer should exist */
    newBuff[1] = psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 6, &context );
-   if ( newBuff[1] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( newBuff[1] == NULL );
    
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[0], 1, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[1], 6, &context );
    psonFreeBlocks( pAlloc, PSON_ALLOC_ANY, newBuff[4], 1, &context );
 
-   if (pAlloc->totalAllocBlocks != 2 ) ERROR_EXIT( expectedToPass, NULL, ; );
+   assert_true( pAlloc->totalAllocBlocks == 2 );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_alloc,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_buffer,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

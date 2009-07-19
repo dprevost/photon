@@ -21,24 +21,21 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psonSessionContext context;
    psonMemAlloc*     pAlloc;
    unsigned char* ptr;
    bool isFree;
    psonMemBitmap* pBitmap;
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
 
    ptr = malloc( 51*PSON_BLOCK_SIZE );
-   if ( ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ptr == NULL );
    
    g_pBaseAddr = (unsigned char *)((((size_t)ptr - 1)/PSON_BLOCK_SIZE + 1)*PSON_BLOCK_SIZE);
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
@@ -49,35 +46,44 @@ int main()
       fprintf( stderr, "Wrong bitmapLength, got "PSO_SIZE_T_FORMAT
                ", expected %d\n",
                pBitmap->lengthInBits/8, 7 );
-      ERROR_EXIT( expectedToPass, NULL, ; );
+      assert_true( (pBitmap->lengthInBits-1)/8+1 == 7 );
    }
    if ( pBitmap->bitmap[0] != 0xc0 ) {
       fprintf( stderr, "Wrong bitmap[0], got 0x%x, expected 0x%x\n", 
                pBitmap->bitmap[0], 0xc0 );
-      ERROR_EXIT( expectedToPass, NULL, ; );
+      assert_true( pBitmap->bitmap[0] == 0xc0 );
    }
    
    isFree = psonIsBufferFree( pBitmap, 0 );
-   if ( isFree ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( isFree );
    
    isFree = psonIsBufferFree( pBitmap, 2*PSON_BLOCK_SIZE );
-   if ( ! isFree ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( isFree );
    
    isFree = psonIsBufferFree( pBitmap, -PSON_BLOCK_SIZE );
-   if ( isFree ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( isFree );
    
    isFree = psonIsBufferFree( pBitmap, 50*PSON_BLOCK_SIZE );
-   if ( isFree ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( isFree );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

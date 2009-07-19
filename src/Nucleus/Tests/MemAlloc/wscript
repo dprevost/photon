@@ -12,28 +12,23 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-subdirs_list = [
-        'BlockGroup',
-        'Cursor',
-        'FastMap',
-        'Folder',
-        'Hash',
-        'HashMap',
-        'HashTx',
-        'List',
-        'MemAlloc']
+test_list = [
+        'Close',
+        'Free',
+        'Init',
+        'IsPageFree',
+        'Malloc']
 
 def build(bld):
-   
-   obj = bld.new_task_gen(
-      features     = 'cc cprogram',
-      source       = 'LinkNode.c',
-      target       = 'LinkNode',
-      includes     = '../.. ../../include',
-      install_path = None,
-      lib          = bld.env['CMOCKERY'],
-      uselib_local = 'Nucleus Common') 
-   if bld.env['CMOCKERY']:
-      obj.unit_test = 1
-
-   bld.add_subdirs( subdirs_list )
+   for prog in test_list:
+      prog_c = prog + '.c'
+      obj = bld.new_task_gen(
+         features     = 'cc cprogram',
+         source       = prog_c,
+         target       = prog,
+         includes     = '../../.. ../../../include',
+         install_path = None,
+         lib          = bld.env['CMOCKERY'],
+         uselib_local = 'Nucleus Common') 
+      if bld.env['CMOCKERY']:
+         obj.unit_test = 1
