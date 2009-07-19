@@ -21,31 +21,29 @@
 #include "Nucleus/Hash.h"
 #include "Nucleus/Tests/HashTx/HashTest.h"
 
-const bool expectedToPass = true;
+psonSessionContext context;
+psonHashTx * pHash;
+psonHashTxItem * pNewItem;
+size_t bucket = (size_t) -1;
+psonHashTxItem * pItem;
+char* key1 = "My Key 1";
+char* key2 = "My Key 2";
+char* data1 = "My Data 1";
+char* data2 = "My Data 2";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonSessionContext context;
-   psonHashTx * pHash;
+ //  assert( ok );
    enum psoErrors errcode;
-   char* key1 = "My Key 1";
-   char* key2 = "My Key 2";
-   char* data1 = "My Data 1";
-   char* data2 = "My Data 2";
-   psonHashTxItem * pNewItem;
    unsigned char* pData = NULL;
-   size_t bucket = (size_t) -1;
-   psonHashTxItem * pItem;
    bool found;
    
-   pHash = initHashTest( expectedToPass, &context );
+   pHash = initHashTest( &context );
    
    errcode = psonHashTxInit( pHash, g_memObjOffset, 100, &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( errcode == PSO_OK );
    
    found = psonHashTxGet( pHash,
                           (unsigned char*)key1,
@@ -53,9 +51,8 @@ int main()
                           &pNewItem,
                           &bucket,
                           &context );
-   if ( found ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( !found );
+   
    errcode = psonHashTxInsert( pHash,
                                bucket,
                                (unsigned char*)key1,
@@ -64,9 +61,115 @@ int main()
                                strlen(data1),
                                &pNewItem,
                                &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( errcode == PSO_OK );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   free( g_pBaseAddr );
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_bucket( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashTxGet( pHash,
+                                         (unsigned char*)key1,
+                                         strlen(key1),
+                                         &pItem,
+                                         NULL,
+                                         &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashTxGet( pHash,
+                                         (unsigned char*)key1,
+                                         strlen(key1),
+                                         &pItem,
+                                         &bucket,
+                                         NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_hash( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashTxGet( NULL,
+                                         (unsigned char*)key1,
+                                         strlen(key1),
+                                         &pItem,
+                                         &bucket,
+                                         &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashTxGet( pHash,
+                                         (unsigned char*)key1,
+                                         strlen(key1),
+                                         NULL,
+                                         &bucket,
+                                         &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_key( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashTxGet( pHash,
+                                         NULL,
+                                         strlen(key1),
+                                         &pItem,
+                                         &bucket,
+                                         &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_key_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonHashTxGet( pHash,
+                                         (unsigned char*)key1,
+                                         0,
+                                         &pItem,
+                                         &bucket,
+                                         &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   enum psoErrors errcode;
+   unsigned char* pData = NULL;
+   bool found;
 
    found = psonHashTxGet( pHash,
                           (unsigned char*)key2,
@@ -74,9 +177,8 @@ int main()
                           &pNewItem,
                           &bucket,
                           &context );
-   if ( found ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( found );
+   
    errcode = psonHashTxInsert( pHash,
                                bucket,
                                (unsigned char*)key2,
@@ -85,9 +187,7 @@ int main()
                                strlen(data2),
                                &pNewItem,
                                &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_OK );
    
    found = psonHashTxGet( pHash,
                           (unsigned char*)key2,
@@ -95,19 +195,11 @@ int main()
                           &pItem,
                           &bucket,
                           &context );
-   if ( ! found ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( found );
    GET_PTR( pData, pItem->dataOffset, unsigned char );
-   if ( pData == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pItem->dataLength == 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( bucket == (size_t) -1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pData );
+   assert_false( pItem->dataLength == 0 );
+   assert_false( bucket == (size_t) -1 );
    
    found = psonHashTxGet( pHash,
                           (unsigned char*)"My Key 3",
@@ -115,11 +207,33 @@ int main()
                           &pItem,
                           &bucket,
                           &context );
-   if ( found ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( found );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_bucket,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_hash,       setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,       setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_key,        setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_key_length, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,            setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

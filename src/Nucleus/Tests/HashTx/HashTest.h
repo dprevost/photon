@@ -56,53 +56,37 @@ typedef struct psotObjDummy psotObjDummy;
  * of the hash function calls.
  */
  
-psonHashTx* initHashTest( bool testIsExpectedToSucceed,
-                        psonSessionContext* pContext )
+psonHashTx* initHashTest( psonSessionContext * pContext )
 {
    int errcode;
    bool ok;
    unsigned char* ptr;
    psonMemAlloc*  pAlloc;
    psotObjDummy* pDummy;
-   size_t allocatedLength = PSON_BLOCK_SIZE * 12;
+   size_t allocatedLength = PSON_BLOCK_SIZE * 15;
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
+
    memset(pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
    pDummy = (psotObjDummy*) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, pContext );
-   if ( pDummy == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pDummy != NULL );
    errcode = psonMemObjectInit( &pDummy->memObject, 
                                 PSON_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 2 );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( errcode == PSO_OK );
    g_memObjOffset = SET_OFFSET(&pDummy->memObject);
    
    /*
@@ -123,8 +107,7 @@ psonHashTx* initHashTest( bool testIsExpectedToSucceed,
  * of the hash function calls.
  */
  
-void initHashCopyTest( bool                 testIsExpectedToSucceed,
-                       psonHashTx          ** ppOldHash,
+void initHashCopyTest( psonHashTx          ** ppOldHash,
                        psonHashTx          ** ppNewHash,
                        bool                 sameLength, /* array length of hash */
                        psonSessionContext * pContext )
@@ -137,69 +120,41 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
    size_t allocatedLength = PSON_BLOCK_SIZE * 30;
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    memset(pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy objects + initialize + blockGroup */
    pDummy1 = (psotObjDummy*) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, pContext );
-   if ( pDummy1 == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pDummy1 != NULL );
    errcode = psonMemObjectInit( &pDummy1->memObject, 
                                 PSON_IDENT_ALLOCATOR,
                                 &pDummy1->blockGroup,
                                 2 );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( errcode == PSO_OK );
    
    errcode = psonHashTxInit( &pDummy1->hashObj, 
                            SET_OFFSET(&pDummy1->memObject), 
                            10,
                            pContext );
-   if ( errcode != 0 ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( errcode == 0 );
    *ppOldHash = &pDummy1->hashObj;
 
    pDummy2 = (psotObjDummy*) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 2, pContext );
-   if ( pDummy2 == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pDummy2 != NULL );
    errcode = psonMemObjectInit( &pDummy2->memObject, 
                                 PSON_IDENT_ALLOCATOR,
                                 &pDummy2->blockGroup,
                                 2 );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( errcode == PSO_OK );
 
    if ( sameLength ) {
       errcode = psonHashTxInit( &pDummy2->hashObj, 
@@ -213,11 +168,7 @@ void initHashCopyTest( bool                 testIsExpectedToSucceed,
                               100,
                               pContext );
    }
-   if ( errcode != 0 ) {
-      fprintf( stderr, "Abnormal error at line %d in HashTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( errcode == 0 );
    *ppNewHash = &pDummy2->hashObj;
    
 }
