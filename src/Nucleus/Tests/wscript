@@ -21,7 +21,8 @@ subdirs_list = [
         'HashMap',
         'HashTx',
         'List',
-        'MemAlloc']
+        'MemAlloc',
+        'MemBitmap']
 
 def build(bld):
    

@@ -21,49 +21,158 @@
 #include "Nucleus/MemBitmap.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonMemBitmap * pBitmap;
+unsigned char * ptr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonMemBitmap *pBitmap;
-   unsigned char* ptr;
    size_t i;
    psonSessionContext context;
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
 
    ptr = malloc( PSON_BLOCK_SIZE*10 );
-   if (ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    
    pBitmap = (psonMemBitmap*) ptr;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (ptr) free(ptr);
+   ptr = NULL;
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_bitmap( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemBitmapInit( NULL, 
+                                             SET_OFFSET(ptr),
+                                             10*PSON_BLOCK_SIZE,
+                                             8 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_offset( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemBitmapInit( pBitmap, 
+                                             PSON_NULL_OFFSET,
+                                             10*PSON_BLOCK_SIZE,
+                                             8 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_poweroftwo7( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemBitmapInit( pBitmap, 
+                                             SET_OFFSET(ptr),
+                                             10*PSON_BLOCK_SIZE,
+                                             7 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_poweroftwo9( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemBitmapInit( pBitmap, 
+                                             SET_OFFSET(ptr),
+                                             10*PSON_BLOCK_SIZE,
+                                             9 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_granu( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemBitmapInit( pBitmap, 
+                                             SET_OFFSET(ptr),
+                                             10*PSON_BLOCK_SIZE,
+                                             0 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemBitmapInit( pBitmap, 
+                                             SET_OFFSET(ptr),
+                                             0,
+                                             8 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   size_t i;
+   psonSessionContext context;
    
    psonMemBitmapInit( pBitmap, 
                       SET_OFFSET(ptr),
                       10*PSON_BLOCK_SIZE,
                       8 );
-   if ( pBitmap->lengthInBits != 10*PSON_BLOCK_SIZE/8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pBitmap->allocGranularity != 8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pBitmap->baseAddressOffset != SET_OFFSET(ptr) ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   
+   assert_true( pBitmap->lengthInBits == 10*PSON_BLOCK_SIZE/8 );
+   assert_true( pBitmap->allocGranularity == 8 );
+   assert_true( pBitmap->baseAddressOffset == SET_OFFSET(ptr) );
    for ( i = 0; i < pBitmap->lengthInBits / 8; ++i ) {
-      if ( pBitmap->bitmap[i] != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( pBitmap->bitmap[i] == 0 );
    }
    
    psonMemBitmapFini( pBitmap );
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_bitmap, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_offset, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_poweroftwo7, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_poweroftwo9, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_granu,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

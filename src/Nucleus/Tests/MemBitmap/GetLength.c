@@ -21,50 +21,97 @@
 #include "Nucleus/MemBitmap.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_poweroftwo7( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonGetBitmapLengthBytes( 1024, 7 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_poweroftwo9( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonGetBitmapLengthBytes( 1024, 9 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_granu( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonGetBitmapLengthBytes( 1024, 0 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonGetBitmapLengthBytes( 0, 8 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   size_t calculatedSize;
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1024, 8 );
+   assert_true( calculatedSize == 1024/8/8 );
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1023, 8 );
+   assert_true( calculatedSize == 1024/8/8 );
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1025, 8 );
+   assert_true( calculatedSize == 1024/8/8 + 1 );
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1016, 8 );
+   assert_true( calculatedSize == 1024/8/8 );
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1024+63, 8 );
+   assert_true( calculatedSize == 1024/8/8 + 1 );
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1024+64, 8 );
+   assert_true( calculatedSize == 1024/8/8 + 1 );
+   
+   calculatedSize = psonGetBitmapLengthBytes( 1024+65, 8 );
+   assert_true( calculatedSize == 1024/8/8 + 2 );
+   
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   size_t calculatedSize;
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_poweroftwo7 ),
+      unit_test( test_poweroftwo9 ),
+      unit_test( test_zero_granu ),
+      unit_test( test_zero_length ),
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
    
-   calculatedSize = psonGetBitmapLengthBytes( 1024, 8 );
-   if ( calculatedSize != 1024/8/8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   calculatedSize = psonGetBitmapLengthBytes( 1023, 8 );
-   if ( calculatedSize != 1024/8/8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   calculatedSize = psonGetBitmapLengthBytes( 1025, 8 );
-   if ( calculatedSize != 1024/8/8 + 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   calculatedSize = psonGetBitmapLengthBytes( 1016, 8 );
-   if ( calculatedSize != 1024/8/8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   calculatedSize = psonGetBitmapLengthBytes( 1024+63, 8 );
-   if ( calculatedSize != 1024/8/8 + 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   calculatedSize = psonGetBitmapLengthBytes( 1024+64, 8 );
-   if ( calculatedSize != 1024/8/8 + 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   calculatedSize = psonGetBitmapLengthBytes( 1024+65, 8 );
-   if ( calculatedSize != 1024/8/8 + 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

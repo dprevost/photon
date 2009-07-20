@@ -21,23 +21,19 @@
 #include "Nucleus/MemBitmap.h"
 #include "Nucleus/Tests/EngineTestCommon.h"
 
-const bool expectedToPass = true;
+psonMemBitmap * pBitmap;
+unsigned char * ptr;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonMemBitmap *pBitmap;
-   unsigned char* ptr;
-   size_t i;
    psonSessionContext context;
    
-   initTest( expectedToPass, &context );
+   initTest( &context );
 
    ptr = malloc( PSON_BLOCK_SIZE*10 );
-   if (ptr == NULL ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    
    pBitmap = (psonMemBitmap*) ptr;
@@ -46,7 +42,48 @@ int main()
                       SET_OFFSET(ptr),
                       10*PSON_BLOCK_SIZE,
                       8 );
+}
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (ptr) free(ptr);
+   ptr = NULL;
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_bitmap( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSetBufferFree( NULL,
+                                             PSON_BLOCK_SIZE/2,
+                                             PSON_BLOCK_SIZE/4 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_offset( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSetBufferFree( pBitmap,
+                                             PSON_NULL_OFFSET,
+                                             PSON_BLOCK_SIZE/4 ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   size_t i;
+   
    psonSetBufferAllocated( pBitmap,
                            PSON_BLOCK_SIZE/4, /* offset */
                            PSON_BLOCK_SIZE*2 ); /* length */
@@ -59,38 +96,45 @@ int main()
                       PSON_BLOCK_SIZE*3/4 );
    
    for ( i = PSON_BLOCK_SIZE/4/8/8; i < PSON_BLOCK_SIZE/2/8/8 ; ++i ) {
-      if ( pBitmap->bitmap[i] != 0xff ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( pBitmap->bitmap[i] == 0xff );
    }
    for ( i = PSON_BLOCK_SIZE/2/8/8; i < PSON_BLOCK_SIZE*3/4/8/8 ; ++i ) {
-      if ( pBitmap->bitmap[i] != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( pBitmap->bitmap[i] == 0 );
    }
    for ( i = PSON_BLOCK_SIZE*3/4/8/8; i < PSON_BLOCK_SIZE/8/8 ; ++i ) {
-      if ( pBitmap->bitmap[i] != 0xff ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( pBitmap->bitmap[i] == 0xff );
    }
    for ( i = PSON_BLOCK_SIZE/8/8; i < PSON_BLOCK_SIZE*7/4/8/8 ; ++i ) {
-      if ( pBitmap->bitmap[i] != 0 ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( pBitmap->bitmap[i] == 0 );
    }
    for ( i = PSON_BLOCK_SIZE*7/4/8/8; i < PSON_BLOCK_SIZE*9/4/8/8 ; ++i ) {
-      if ( pBitmap->bitmap[i] != 0xff ) {
-         ERROR_EXIT( expectedToPass, NULL, ; );
-      }
+      assert_true( pBitmap->bitmap[i] == 0xff );
    }
 
-   if ( pBitmap->bitmap[PSON_BLOCK_SIZE*9/4/8/8] != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pBitmap->bitmap[PSON_BLOCK_SIZE*9/4/8/8] == 0 );
    
    psonMemBitmapFini( pBitmap );
 
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_bitmap, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_offset, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
