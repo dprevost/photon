@@ -22,40 +22,85 @@
 #include "MemObjTest.h"
 #include <photon/psoCommon.h>
 
-const bool expectedToPass = true;
+psotObjDummy *pDummy;
+psonSessionContext context;
+psoObjStatus status;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
    psoErrors errcode;
-   psotObjDummy *pDummy;
-   psonSessionContext context;
-   psoObjStatus status;
    
-   pDummy = initMemObjTest( expectedToPass, &context );
+   pDummy = initMemObjTest( &context );
    
    errcode = psonMemObjectInit( &pDummy->memObject, 
                                 PSON_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( errcode == PSO_OK );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( g_pBaseAddr ) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_memobj( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemObjectStatus( NULL, &status ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_status( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemObjectStatus( &pDummy->memObject, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
    
    psonMemObjectStatus( &pDummy->memObject, &status );
 
-   if ( status.numBlocks != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.numBlockGroup != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( status.numBlocks == 1 );
+   assert_true( status.numBlockGroup == 1 );
+   assert_false( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_memobj, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_status, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

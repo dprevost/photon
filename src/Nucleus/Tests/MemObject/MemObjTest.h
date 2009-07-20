@@ -47,8 +47,7 @@ typedef struct psotObjDummy psotObjDummy;
  * for testing this object interface.
  */
  
-psotObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
-                              psonSessionContext* pContext )
+psotObjDummy * initMemObjTest( psonSessionContext * pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -59,31 +58,19 @@ psotObjDummy* initMemObjTest( bool testIsExpectedToSucceed,
    memset( pContext, 0, sizeof(psonSessionContext) );
    pContext->pidLocker = getpid();
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for our dummy object + initialize it + blockGroup */
    pDummy = (psotObjDummy*) psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 4, pContext );
-   if ( pDummy == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in MemObjTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pDummy != NULL );
 
    return pDummy;
 }

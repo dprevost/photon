@@ -22,31 +22,86 @@
 #include "MemObjTest.h"
 
 const bool expectedToPass = true;
+psotObjDummy * pDummy;
+psonSessionContext context;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
    psoErrors errcode;
-   psotObjDummy *pDummy;
-   psonSessionContext context;
    
-   pDummy = initMemObjTest( expectedToPass, &context );
+   pDummy = initMemObjTest( &context );
    
    errcode = psonMemObjectInit( &pDummy->memObject, 
                                 PSON_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( errcode == PSO_OK );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( g_pBaseAddr ) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemObjectFini( &pDummy->memObject, 
+                                             PSON_ALLOC_ANY,
+                                             NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_obj( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonMemObjectFini( NULL,
+                                             PSON_ALLOC_ANY,
+                                             &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psoErrors errcode;
    
    errcode = psonMemObjectFini( &pDummy->memObject, PSON_ALLOC_ANY, &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OK );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_obj,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

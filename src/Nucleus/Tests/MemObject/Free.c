@@ -21,89 +21,148 @@
 #include "Nucleus/MemoryObject.h"
 #include "MemObjTest.h"
 
-const bool expectedToPass = true;
+psonMemObject* pObj;
+psonSessionContext context;
+unsigned char *buff[9];
+psotObjDummy  *pDummy;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonMemObject* pObj;
    psoErrors errcode;
-   psonSessionContext context;
-   unsigned char *buff[9];
-   psotObjDummy  *pDummy;
    
-   pDummy = initMemObjTest( expectedToPass, &context );
+   pDummy = initMemObjTest( &context );
    pObj = &pDummy->memObject;
    
    errcode = psonMemObjectInit( pObj, 
                                 PSON_IDENT_ALLOCATOR,
                                 &pDummy->blockGroup,
                                 4 );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( errcode == PSO_OK );
    
    buff[0] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
-   if ( buff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( buff[0] != NULL );
    
    buff[1] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
-   if ( buff[1] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( buff[1] != NULL );
    
    buff[2] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
-   if ( buff[2] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( buff[2] != NULL );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if ( g_pBaseAddr ) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFree( pObj, 
+                                    buff[0],
+                                    PSON_BLOCK_SIZE,
+                                    NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_obj( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFree( NULL, 
+                                    buff[0],
+                                    PSON_BLOCK_SIZE,
+                                    &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_ptr( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFree( pObj, 
+                                    NULL,
+                                    PSON_BLOCK_SIZE,
+                                    &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_bytes( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonFree( pObj, 
+                                    buff[0],
+                                    0,
+                                    &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psoErrors errcode;
    
    psonFree( pObj, buff[1], PSON_BLOCK_SIZE, &context );
-   if ( pDummy->blockGroup.maxFreeBytes != 
-        pDummy->blockGroup.freeBytes+2*PSON_BLOCK_SIZE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pDummy->blockGroup.maxFreeBytes == pDummy->blockGroup.freeBytes+2*PSON_BLOCK_SIZE );
    psonFree( pObj, buff[2], PSON_BLOCK_SIZE, &context );
    psonFree( pObj, buff[0], PSON_BLOCK_SIZE, &context );
-   if ( pObj->totalBlocks != 4 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pDummy->blockGroup.maxFreeBytes != pDummy->blockGroup.freeBytes ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pObj->totalBlocks == 4 );
+   assert_true( pDummy->blockGroup.maxFreeBytes == pDummy->blockGroup.freeBytes );
    
    buff[0] = psonMalloc( pObj, 3*PSON_BLOCK_SIZE, &context );
-   if ( buff[0] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pObj->totalBlocks != 4 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( buff[0] == NULL );
+   assert_true( pObj->totalBlocks == 4 );
    
    /* Needs two new blocks at this point */
-   if ( pDummy->blockGroup.freeBytes >= PSON_BLOCK_SIZE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pDummy->blockGroup.freeBytes < PSON_BLOCK_SIZE );
    buff[3] = psonMalloc( pObj, PSON_BLOCK_SIZE, &context );
-   if ( buff[3] == NULL ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pObj->totalBlocks != 6 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( buff[3] == NULL );
+   assert_true( pObj->totalBlocks == 6 );
    
    psonFree( pObj, buff[3], PSON_BLOCK_SIZE, &context );
-   if ( pObj->totalBlocks != 4 ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( pObj->totalBlocks == 4 );
    
    errcode = psonMemObjectFini( pObj, PSON_ALLOC_ANY, &context );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OK );
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_obj,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_ptr,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_bytes,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

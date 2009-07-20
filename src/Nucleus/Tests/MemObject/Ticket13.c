@@ -22,12 +22,11 @@
 #include "MemObjTest.h"
 #include <photon/psoCommon.h>
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psoErrors errcode;
    psotObjDummy *pDummy;
    psonSessionContext context;
@@ -37,7 +36,7 @@ int main()
    /** number of locks we are holding */
    int numLocks = 0;
    
-   pDummy = initMemObjTest( expectedToPass, &context );
+   pDummy = initMemObjTest( &context );
    context.lockOffsets = lockOffsets;
    context.numLocks = &numLocks;
    
@@ -45,9 +44,7 @@ int main()
                                 PSON_IDENT_FOLDER,
                                 &pDummy->blockGroup,
                                 1 );
-   if ( errcode != PSO_OK ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OK );
    
    /*
     * We acquire the lock without going through the sessioncontext
@@ -56,32 +53,37 @@ int main()
    ok = psocTryAcquireProcessLock ( &pDummy->memObject.lock,
                                     context.pidLocker,
                                     PSON_LOCK_TIMEOUT );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
 
    pDummy->memObject.totalBlocks = 3;
    context.pidLocker++;
    ok = psonLock( &pDummy->memObject, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    ok = psonLock( &pDummy->memObject, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    ok = psonLock( &pDummy->memObject, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    ok = psonLock( &pDummy->memObject, &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    
-fprintf( stderr, "%d %d\n", PSON_MAX_LOCK_DEPTH, numLocks );
+#endif
+   return;
+}
 
-   return 0;
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
