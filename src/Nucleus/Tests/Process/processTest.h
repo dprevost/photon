@@ -28,7 +28,6 @@
 #include "Nucleus/Transaction.h"
 #include "Nucleus/InitEngine.h"
 #include "Nucleus/Process.h"
-#include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
 psocErrMsgHandle g_psoErrorHandle;
@@ -47,8 +46,7 @@ psocErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psonProcess * initProcessTest( bool                testIsExpectedToSucceed,
-                               psonSessionContext* pContext )
+psonProcess * initProcessTest( psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -61,46 +59,26 @@ psonProcess * initProcessTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pTx != NULL );
    ok = psonTxInit( pTx, 1, pContext );
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
    process = (psonProcess *) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( process == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in processTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( process != NULL );
    
    return process;
 }

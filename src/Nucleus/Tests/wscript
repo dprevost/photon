@@ -23,7 +23,8 @@ subdirs_list = [
         'List',
         'MemAlloc',
         'MemBitmap',
-        'MemObject']
+        'MemObject',
+        'Process']
 
 def build(bld):
    

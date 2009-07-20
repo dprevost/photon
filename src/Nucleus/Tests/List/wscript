@@ -26,9 +26,7 @@ test_list = [
         'PutLast',
         'Remove',
         'Replace',
-        'Reset',
-        'TestSmall',
-        'TestBig']
+        'Reset']
 
 def build(bld):
    for prog in test_list:
@@ -43,3 +41,26 @@ def build(bld):
          uselib_local = 'Nucleus Common') 
       if bld.env['CMOCKERY']:
          obj.unit_test = 1
+      
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'TestBig.c',
+      target       = 'TestBig',
+         includes     = '../../.. ../../../include',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Nucleus Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
+
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'TestSmall.c',
+      target       = 'TestSmall',
+         includes     = '../../.. ../../../include',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Nucleus Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
+

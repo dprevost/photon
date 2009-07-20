@@ -20,52 +20,115 @@
 
 #include "processTest.h"
 
-const bool expectedToPass = true;
+psonProcess * process;
+psonSessionContext context;
+psonSession * pSession;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonProcess * process;
-   psonSessionContext context;
    int errcode;
    bool ok;
-   psonSession * pSession;
-   void * pApiSession = (void *) &errcode; /* A dummy pointer */
    
-   process = initProcessTest( expectedToPass, &context );
+   process = initProcessTest( &context );
 
    ok = psonProcessInit( process, 12345, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
 
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonProcessGetFirstSession( process,
+                                                      &pSession,
+                                                      NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_process( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonProcessGetFirstSession( NULL,
+                                                      &pSession,
+                                                      &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_session( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonProcessGetFirstSession( process,
+                                                      NULL,
+                                                      &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+   void * pApiSession = (void *) &errcode; /* A dummy pointer */
+   
    ok = psonProcessGetFirstSession( process,
                                     &pSession,
                                     &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_false( ok );
    
    ok = psonProcessAddSession( process,
                                pApiSession,
                                &pSession,
                                &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonProcessGetFirstSession( process,
                                     &pSession,
                                     &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   psonProcessFini( process, &context );
+   assert_true( ok );
                                  
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_process, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_session, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 

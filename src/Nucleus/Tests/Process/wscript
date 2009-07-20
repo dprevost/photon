@@ -13,11 +13,12 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 test_list = [
+        'Add',
         'Fini',
-        'Free',
+        'GetFirst',
+        'GetNext',
         'Init',
-        'Malloc',
-        'Status']
+        'Remove']
 
 def build(bld):
    for prog in test_list:
@@ -32,15 +33,4 @@ def build(bld):
          uselib_local = 'Nucleus Common') 
       if bld.env['CMOCKERY']:
          obj.unit_test = 1
-   
-   obj = bld.new_task_gen(
-      features     = 'cc cprogram',
-      source       = 'Ticket13.c',
-      target       = 'Ticket13',
-         includes     = '../../.. ../../../include',
-      install_path = None,
-      lib          = bld.env['CMOCKERY'],
-      uselib_local = 'Nucleus Common') 
-   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
-      obj.unit_test = 1
 
