@@ -20,41 +20,107 @@
 
 #include "procMgrTest.h"
 
-const bool expectedToPass = true;
+psonProcMgr* pManager;
+psonSessionContext context;
+psonProcess * process;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonProcMgr* pManager;
-   psonSessionContext context;
-   psonProcess * process;
    bool ok;
    
-   pManager = initProcMgrTest( expectedToPass, &context );
+   pManager = initProcMgrTest( &context );
 
    ok = psonProcMgrInit( pManager, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+   assert( ok );
+
    ok = psonProcMgrAddProcess( pManager, 
                                12345, 
                                &process,
                                &context );
 
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonProcMgrRemoveProcess( pManager, 
-                                       process,
-                                       &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   return 0;
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonProcMgrRemoveProcess( pManager, 
+                                                    process,
+                                                    NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_manager( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonProcMgrRemoveProcess( NULL, 
+                                                    process,
+                                                    &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_process( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonProcMgrRemoveProcess( pManager, 
+                                                    NULL,
+                                                    &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   
+   ok = psonProcMgrRemoveProcess( pManager, 
+                                  process,
+                                  &context );
+   assert_true( ok );
+   
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_manager, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_process, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

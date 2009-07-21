@@ -16,7 +16,6 @@ test_list = [
    'Acquire',
    'Fini',
    'Init',
-   'LockTests',
    'Release',
    'TryAcq']
 
@@ -37,6 +36,17 @@ def build(bld):
          uselib_local = 'Common') 
       if bld.env['CMOCKERY']:
          obj.unit_test = 1
+
+   obj = bld.new_task_gen(
+      features     = 'cc cprogram',
+      source       = 'LockTests.c',
+      target       = 'LockTests',
+      includes     = '../../..',
+      install_path = None,
+      lib          = bld.env['CMOCKERY'],
+      uselib_local = 'Common') 
+   if bld.env['CMOCKERY'] and bld.env['MORE_TESTS']:
+      obj.unit_test = 1
 
    obj = bld.new_task_gen(
       features     = 'cc cprogram',

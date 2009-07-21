@@ -24,7 +24,8 @@ subdirs_list = [
         'MemAlloc',
         'MemBitmap',
         'MemObject',
-        'Process']
+        'Process',
+        'ProcessManager']
 
 def build(bld):
    
