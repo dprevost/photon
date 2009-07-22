@@ -47,8 +47,7 @@ psocErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psonSession * initSessionTest( bool                testIsExpectedToSucceed,
-                               psonSessionContext* pContext )
+psonSession * initSessionTest( psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -61,46 +60,26 @@ psonSession * initSessionTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pTx != NULL );
    ok = psonTxInit( pTx, 1, pContext );
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
    pSession = (psonSession *) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pSession == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in sessionTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pSession != NULL );
    
    return pSession;
 }

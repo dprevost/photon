@@ -22,24 +22,24 @@
 
 const bool expectedToPass = true;
 
+psonSession * pSession;
+psonSessionContext context;
+psonObjectContext * pObject;
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonSession * pSession;
-   psonSessionContext context;
    bool ok;
-   void * pApiObject = (void *) &ok; /* dummy pointer */
+   void * pApiSession = (void *) &context; /* A dummy pointer */
+   void * pApiObject  = (void *) &context;
    ptrdiff_t objOffset;
-   psonObjectContext * pObject;
    
-   pSession = initSessionTest( expectedToPass, &context );
+   pSession = initSessionTest( &context );
 
-   ok = psonSessionInit( pSession, pApiObject, &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+   ok = psonSessionInit( pSession, pApiSession, &context );
+   assert( ok );
+
    objOffset = SET_OFFSET( pSession ); /* Dummy offset */
    
    ok = psonSessionAddObj( pSession,
@@ -48,18 +48,87 @@ int main()
                            pApiObject,
                            &pObject,
                            &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSessionRemoveObj( pSession,
+                                                pObject,
+                                                NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_object( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSessionRemoveObj( pSession,
+                                                NULL,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_session( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSessionRemoveObj( NULL,
+                                                pObject,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
    
    ok = psonSessionRemoveObj( pSession,
                               pObject,
                               &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_object,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_session, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

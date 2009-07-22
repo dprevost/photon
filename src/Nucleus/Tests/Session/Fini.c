@@ -22,26 +22,77 @@
 
 const bool expectedToPass = true;
 
+psonSession * pSession;
+psonSessionContext context;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+   void * pApiSession = (void *) &context; /* A dummy pointer */
+   
+   pSession = initSessionTest( &context );
+
+   ok = psonSessionInit( pSession, pApiSession, &context );
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSessionFini( pSession, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_session( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonSessionFini( NULL, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonSessionFini( pSession, &context );
+#endif
+   return;
+}
+
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psonSession * pSession;
-   psonSessionContext context;
-   int errcode;
-   void * pApiSession = (void *) &errcode; /* dummy pointer */
-   bool ok;
-   
-   pSession = initSessionTest( expectedToPass, &context );
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_session, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
 
-   ok = psonSessionInit( pSession, pApiSession, &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   rc = run_tests(tests);
    
-   psonSessionFini( pSession, &context );
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -26,7 +26,8 @@ subdirs_list = [
         'MemObject',
         'Process',
         'ProcessManager',
-        'Queue']
+        'Queue',
+        'Session']
 
 def build(bld):
    
