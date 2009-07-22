@@ -21,30 +21,27 @@
 #include "folderTest.h"
 
 const bool expectedToPass = true;
+psonFolder * pTopFolder;
+psonSessionContext context;
+psonFolderItem folderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonFolder * pTopFolder;
-   psonSessionContext context;
-   int errcode;
    bool ok;
-   psonFolderItem folderItem;
+   
+   pTopFolder = initTopFolderTest( &context );
+
    psoObjectDefinition mapDef = { PSO_FAST_MAP, 0, 0, 0 };
    psonKeyDefinition key;
-   
    psonDataDefinition fields;
-
-   pTopFolder = initTopFolderTest( expectedToPass, &context );
 
    ok = psonTopFolderCreateFolder( pTopFolder,
                                    "Test1",
                                    strlen("Test1"),
                                    &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonTopFolderCreateObject( pTopFolder,
                                    "Test1/Test2",
@@ -53,19 +50,170 @@ int main()
                                    &fields,
                                    &key,
                                    &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderEditObject( pTopFolder,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_FAST_MAP+12345,
+                                                   &folderItem,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderEditObject( pTopFolder,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_FAST_MAP,
+                                                   &folderItem,
+                                                   NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderEditObject( NULL,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_FAST_MAP,
+                                                   &folderItem,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderEditObject( pTopFolder,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_FAST_MAP,
+                                                   NULL,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderEditObject( pTopFolder,
+                                                   NULL,
+                                                   strlen("Test1/Test2"),
+                                                   PSO_FAST_MAP,
+                                                   &folderItem,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+
+   ok = psonTopFolderEditObject( pTopFolder,
+                                 "Test1/Test2",
+                                 PSO_MAX_FULL_NAME_LENGTH+1,
+                                 PSO_FAST_MAP,
+                                 &folderItem,
+                                 &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_OBJECT_NAME_TOO_LONG );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+
+   ok = psonTopFolderEditObject( pTopFolder,
+                                 "Test1/Test2",
+                                 strlen("Test1/Test2"),
+                                 PSO_FOLDER,
+                                 &folderItem,
+                                 &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_WRONG_OBJECT_TYPE );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+
+   ok = psonTopFolderEditObject( pTopFolder,
+                                 "Test1/Test2",
+                                 0,
+                                 PSO_FAST_MAP,
+                                 &folderItem,
+                                 &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
+   bool ok;
+
    ok = psonTopFolderEditObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
                                  PSO_FAST_MAP,
                                  &folderItem,
                                  &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonTopFolderEditObject( pTopFolder,
                                  "Test3/Test2",
@@ -73,13 +221,9 @@ int main()
                                  PSO_FAST_MAP,
                                  &folderItem,
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_NO_SUCH_FOLDER ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_NO_SUCH_FOLDER );
    
    ok = psonTopFolderEditObject( pTopFolder,
                                  "Test1/Test5",
@@ -87,15 +231,37 @@ int main()
                                  PSO_FAST_MAP,
                                  &folderItem,
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_NO_SUCH_OBJECT );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_type, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_length, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -48,8 +48,7 @@ psocErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
-                            psonSessionContext* pContext )
+psonFolder* initFolderTest( psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -62,46 +61,26 @@ psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pTx != NULL );
    ok = psonTxInit( pTx, 1, pContext );
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
    pFolder = (psonFolder*)psonMallocBlocks( pAlloc, PSON_ALLOC_API_OBJ, 1, pContext );
-   if ( pFolder == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pFolder != NULL );
    
    return pFolder;
 }
@@ -110,22 +89,17 @@ psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
 
 psonTxStatus objTxStatus;
 
-psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
-                               psonSessionContext* pContext )
+psonFolder* initTopFolderTest( psonSessionContext* pContext )
 {
    psoErrors errcode;
    psonFolder* pFolder;
-   pFolder = initFolderTest( testIsExpectedToSucceed, pContext );
+   pFolder = initFolderTest( pContext );
    
    errcode = psonMemObjectInit( &pFolder->memObject, 
                                 PSON_IDENT_FOLDER,
                                 &pFolder->blockGroup,
                                 1 );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( errcode == PSO_OK );
 
    psonTxStatusInit( &objTxStatus, SET_OFFSET(pContext->pTransaction) );
    objTxStatus.status = PSON_TXS_ADDED;
@@ -140,11 +114,7 @@ psonFolder* initTopFolderTest( bool                testIsExpectedToSucceed,
                              SET_OFFSET(&pFolder->memObject),
                              25, 
                              pContext );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }   
+   assert( errcode == PSO_OK );
 
    return pFolder;
 }
