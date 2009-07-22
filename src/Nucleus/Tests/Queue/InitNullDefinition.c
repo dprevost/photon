@@ -32,7 +32,7 @@ int main()
    psonTxStatus status;
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    

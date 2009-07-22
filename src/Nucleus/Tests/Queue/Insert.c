@@ -33,7 +33,7 @@ void setup_test()
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
 
@@ -75,7 +75,7 @@ void test_pass( void ** state )
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    

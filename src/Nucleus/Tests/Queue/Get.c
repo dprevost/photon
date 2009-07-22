@@ -33,7 +33,7 @@ void setup_test()
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
 
@@ -64,6 +64,36 @@ void test_null_context( void ** state )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void test_null_iterator( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure(  );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_queue( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure(  );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure(  );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
@@ -77,7 +107,7 @@ void test_pass( void ** state )
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    

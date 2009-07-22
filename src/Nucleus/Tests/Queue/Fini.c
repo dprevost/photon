@@ -20,7 +20,6 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = true;
 psonQueue * pQueue;
 psonSessionContext context;
 psonTxStatus status;
@@ -33,7 +32,7 @@ void setup_test()
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
 
@@ -57,7 +56,17 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonQueueFini( pQueue, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_queue( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueFini( NULL, &context ) );
 #endif
    return;
 }
@@ -67,27 +76,7 @@ void test_null_context( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonQueue * pQueue;
-   psonSessionContext context;
-   bool ok;
-   psonTxStatus status;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
-   psonDataDefinition fields;
-   
-   pQueue = initQueueTest( expectedToPass, &context );
-
-   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   ok = psonQueueInit( pQueue, 
-                       0, 1, &status, 6, 
-                       "Queue1", SET_OFFSET(pQueue), 
-                       &def, &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
    psonQueueFini( pQueue, &context );
- 
 #endif
    return;
 }
@@ -100,6 +89,7 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_queue,   setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 

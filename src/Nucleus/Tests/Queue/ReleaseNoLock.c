@@ -45,7 +45,7 @@ int main()
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
    

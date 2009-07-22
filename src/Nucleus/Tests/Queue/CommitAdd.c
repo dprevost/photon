@@ -20,7 +20,6 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = true;
 psonQueue * pQueue;
 psonSessionContext context;
 psonTxStatus status;
@@ -35,7 +34,7 @@ void setup_test()
    psonDataDefinition fields;
    char * data = "My Data";
    
-   pQueue = initQueueTest( expectedToPass, &context );
+   pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
 
