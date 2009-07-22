@@ -30,32 +30,29 @@
 #endif
 #include "Nucleus/Queue.c"
 
-const bool expectedToPass = true;
+psonQueue * pQueue;
+psonSessionContext context;
+psonTxStatus status;
+psonQueueItem * pItem = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonQueue * pQueue;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   char * data = "My Data";
-   psonQueueItem * pItem = NULL;
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
+   char * data = "My Data";
    
    pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
+
    ok = psonQueueInit( pQueue, 
                        0, 1, &status, 6, 
                        "Queue1", SET_OFFSET(pQueue), 
                        &def, &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonQueueInsert( pQueue,
                          data,
@@ -63,9 +60,7 @@ int main()
                          NULL,
                          PSON_QUEUE_FIRST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonQueueInsert( pQueue,
                          data,
@@ -73,37 +68,107 @@ int main()
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
    
    ok = psonQueueGetFirst( pQueue,
                            &pItem,
                            20,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->dataLength != 8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( ok );
    
    ok = psonQueueGetNext( pQueue,
                           &pItem,
                           20,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->dataLength != 6 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   psonQueueReleaseNoLock( pQueue,
-                      pItem,
-                      &context );
-
-   return 0;
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueReleaseNoLock( pQueue,
+                                                  pItem,
+                                                  NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueReleaseNoLock( pQueue,
+                                                  NULL,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_queue( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueReleaseNoLock( NULL,
+                                                  pItem,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   psonTxStatus * txItemStatus;
+   
+   assert_true( pItem->dataLength == 6 );
+   assert_true( status.usageCounter == 1 );
+   txItemStatus = &pItem->txStatus;
+   assert_true( txItemStatus->usageCounter == 1 );
+   
+   psonQueueReleaseNoLock( pQueue,
+                           pItem,
+                           &context );
+   assert_true( txItemStatus->usageCounter == 0 );
+   assert_true( status.usageCounter == 0 );
+   assert_true( pQueue->nodeObject.txCounter == 2 );
+   
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_queue,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

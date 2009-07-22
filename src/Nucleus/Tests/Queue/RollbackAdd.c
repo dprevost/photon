@@ -20,10 +20,10 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = true;
 psonQueue * pQueue;
 psonSessionContext context;
 psonTxStatus status;
+psonQueueItem * pItem = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,6 +32,7 @@ void setup_test()
    bool ok;
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
+   char * data = "My Data";
    
    pQueue = initQueueTest( &context );
 
@@ -41,6 +42,25 @@ void setup_test()
                        0, 1, &status, 6, 
                        "Queue1", SET_OFFSET(pQueue), 
                        &def, &fields, &context );
+   assert( ok );
+
+   ok = psonQueueInsert( pQueue,
+                         data,
+                         8,
+                         NULL,
+                         PSON_QUEUE_FIRST,
+                         &context );
+   assert( ok );
+   
+   ok = psonQueueGetFirst( pQueue,
+                           &pItem,
+                           20,
+                           &context );
+   assert( ok );
+   
+   ok = psonQueueRelease( pQueue,
+                          pItem,
+                          &context );
    assert( ok );
 }
 
@@ -57,7 +77,33 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonQueueRollbackAdd( pQueue, 
+                                                SET_OFFSET( pItem ),
+                                                NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_offset( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueRollbackAdd( pQueue, 
+                                                PSON_NULL_OFFSET,
+                                                &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_queue( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueRollbackAdd( NULL,
+                                                SET_OFFSET( pItem ),
+                                                &context ) );
 #endif
    return;
 }
@@ -67,59 +113,9 @@ void test_null_context( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonQueue * pQueue;
-   psonSessionContext context;
-   bool ok;
-   psonTxStatus status;
-   char * data = "My Data";
-   psonQueueItem * pItem = NULL;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
-   psonDataDefinition fields;
-   
-   pQueue = initQueueTest( &context );
-
-   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   ok = psonQueueInit( pQueue, 
-                       0, 1, &status, 6, 
-                       "Queue1", SET_OFFSET(pQueue), 
-                       &def, &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonQueueInsert( pQueue,
-                         data,
-                         8,
-                         NULL,
-                         PSON_QUEUE_FIRST,
-                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonQueueGetFirst( pQueue,
-                           &pItem,
-                           20,
-                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->dataLength != 8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   ok = psonQueueRelease( pQueue,
-                          pItem,
-                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
    psonQueueRollbackAdd( pQueue, 
-                    SET_OFFSET( pItem ),
-                    &context );
-
+                         SET_OFFSET( pItem ),
+                         &context );
 #endif
    return;
 }
@@ -132,6 +128,8 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_offset,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_queue,   setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 

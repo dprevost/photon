@@ -20,31 +20,119 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = true;
+psonQueue * pQueue;
+psonSessionContext context;
+psonTxStatus status;
+char * data = "My Data";
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonQueue * pQueue;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   char * data = "My Data";
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
    
    pQueue = initQueueTest( &context );
 
    psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
+
    ok = psonQueueInit( pQueue, 
                        0, 1, &status, 6, 
                        "Queue1", SET_OFFSET(pQueue), 
                        &def, &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueInsertNow( pQueue,
+                                              data,
+                                              8,
+                                              NULL,
+                                              PSON_QUEUE_FIRST,
+                                              NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueInsertNow( pQueue,
+                                              NULL,
+                                              8,
+                                              NULL,
+                                              PSON_QUEUE_FIRST,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_queue( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueInsertNow( NULL,
+                                              data,
+                                              8,
+                                              NULL,
+                                              PSON_QUEUE_FIRST,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_flag( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueInsertNow( pQueue,
+                                              data,
+                                              8,
+                                              NULL,
+                                              PSON_QUEUE_FIRST+23390,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonQueueInsertNow( pQueue,
+                                              data,
+                                              0,
+                                              NULL,
+                                              PSON_QUEUE_FIRST,
+                                              &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
    
    ok = psonQueueInsertNow( pQueue,
                             data,
@@ -52,12 +140,8 @@ int main()
                             NULL,
                             PSON_QUEUE_FIRST,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
    
    ok = psonQueueInsertNow( pQueue,
                             data,
@@ -65,17 +149,34 @@ int main()
                             NULL,
                             PSON_QUEUE_LAST,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 2 );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_queue,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_flag,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

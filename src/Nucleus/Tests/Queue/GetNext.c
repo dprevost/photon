@@ -43,7 +43,7 @@ void setup_test()
                        "Queue1", SET_OFFSET(pQueue), 
                        &def, &fields, &context );
    assert( ok );
-   
+
    ok = psonQueueInsert( pQueue,
                          data,
                          8,
@@ -62,14 +62,8 @@ void setup_test()
    
    ok = psonQueueGetFirst( pQueue,
                            &pItem,
-                           20,
+                           8,
                            &context );
-   assert( ok );
-   
-   ok = psonQueueGetNext( pQueue,
-                          &pItem,
-                          20,
-                          &context );
    assert( ok );
 }
 
@@ -86,8 +80,9 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonQueueRelease( pQueue,
-                                            pItem,
+   expect_assert_failure( psonQueueGetNext( pQueue,
+                                            &pItem,
+                                            8,
                                             NULL ) );
 #endif
    return;
@@ -95,11 +90,12 @@ void test_null_context( void ** state )
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-void test_null_item( void ** state )
+void test_null_iterator( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonQueueRelease( pQueue,
+   expect_assert_failure( psonQueueGetNext( pQueue,
                                             NULL,
+                                            8,
                                             &context ) );
 #endif
    return;
@@ -110,9 +106,29 @@ void test_null_item( void ** state )
 void test_null_queue( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure( psonQueueRelease( NULL,
-                                            pItem,
+   expect_assert_failure( psonQueueGetNext( NULL,
+                                            &pItem,
+                                            8,
                                             &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   int errcode;
+   
+   ok = psonQueueGetNext( pQueue,
+                          &pItem,
+                          5,
+                          &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_LENGTH );
 #endif
    return;
 }
@@ -125,18 +141,15 @@ void test_pass( void ** state )
    bool ok;
    psonTxStatus * txItemStatus;
    
-   assert_true( pItem->dataLength == 6 );
-   assert_true( status.usageCounter == 1 );
-   txItemStatus = &pItem->txStatus;
-   assert_true( txItemStatus->usageCounter == 1 );
-   
-   ok = psonQueueRelease( pQueue,
-                          pItem,
+   ok = psonQueueGetNext( pQueue,
+                          &pItem,
+                          6,
                           &context );
    assert_true( ok );
-   assert_true( txItemStatus->usageCounter == 0 );
-   assert_true( status.usageCounter == 0 );
-   assert_true( pQueue->nodeObject.txCounter == 2 );
+   assert_true( pItem->dataLength == 6 );
+   txItemStatus = &pItem->txStatus;
+   assert_true( txItemStatus->usageCounter == 1 );
+   assert_true( status.usageCounter == 1 );
    
 #endif
    return;
@@ -149,10 +162,11 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
-      unit_test_setup_teardown( test_null_queue,   setup_test, teardown_test ),
-      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+      unit_test_setup_teardown( test_null_context,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_iterator, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_queue,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,          setup_test, teardown_test )
    };
 
    rc = run_tests(tests);

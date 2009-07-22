@@ -20,10 +20,10 @@
 
 #include "queueTest.h"
 
-const bool expectedToPass = true;
 psonQueue * pQueue;
 psonSessionContext context;
 psonTxStatus status;
+psonQueueItem * pItem = NULL;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
@@ -32,6 +32,7 @@ void setup_test()
    bool ok;
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
+   char * data = "My Data";
    
    pQueue = initQueueTest( &context );
 
@@ -41,6 +42,14 @@ void setup_test()
                        0, 1, &status, 6, 
                        "Queue1", SET_OFFSET(pQueue), 
                        &def, &fields, &context );
+   assert( ok );
+
+   ok = psonQueueInsert( pQueue,
+                         data,
+                         8,
+                         NULL,
+                         PSON_QUEUE_FIRST,
+                         &context );
    assert( ok );
 }
 
@@ -57,7 +66,10 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonQueueGetFirst( pQueue,
+                                             &pItem,
+                                             8,
+                                             NULL ) );
 #endif
    return;
 }
@@ -67,7 +79,10 @@ void test_null_context( void ** state )
 void test_null_iterator( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonQueueGetFirst( pQueue,
+                                             NULL,
+                                             8,
+                                             &context ) );
 #endif
    return;
 }
@@ -77,7 +92,10 @@ void test_null_iterator( void ** state )
 void test_null_queue( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonQueueGetFirst( NULL,
+                                             &pItem,
+                                             8,
+                                             &context ) );
 #endif
    return;
 }
@@ -87,7 +105,16 @@ void test_null_queue( void ** state )
 void test_wrong_length( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   bool ok;
+   int errcode;
+   
+   ok = psonQueueGetFirst( pQueue,
+                           &pItem,
+                           7,
+                           &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_LENGTH );
 #endif
    return;
 }
@@ -97,88 +124,18 @@ void test_wrong_length( void ** state )
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   psonQueue * pQueue;
-   psonSessionContext context;
    bool ok;
-   psonTxStatus status;
-   char * data = "My Data";
-   psonQueueItem * pItem = NULL;
    psonTxStatus * txItemStatus;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
-   psonDataDefinition fields;
-   
-   pQueue = initQueueTest( &context );
-
-   psonTxStatusInit( &status, SET_OFFSET( context.pTransaction ) );
-   
-   ok = psonQueueInit( pQueue, 
-                       0, 1, &status, 6, 
-                       "Queue1", SET_OFFSET(pQueue), 
-                       &def, &fields, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonQueueInsert( pQueue,
-                         data,
-                         8,
-                         NULL,
-                         PSON_QUEUE_FIRST,
-                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonQueueInsert( pQueue,
-                         data,
-                         6,
-                         NULL,
-                         PSON_QUEUE_LAST,
-                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    
    ok = psonQueueGetFirst( pQueue,
                            &pItem,
                            8,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->dataLength != 8 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pItem->dataLength == 8 );
    txItemStatus = &pItem->txStatus;
-   if ( txItemStatus->usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   
-   ok = psonQueueGetNext( pQueue,
-                          &pItem,
-                          6,
-                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pItem->dataLength != 6 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   /* Testing the old record */
-   if ( txItemStatus->usageCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   /* Testing the new record */
-   txItemStatus = &pItem->txStatus;
-   if ( txItemStatus->usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.usageCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( txItemStatus->usageCounter == 1 );
+   assert_true( status.usageCounter == 1 );
    
 #endif
    return;
@@ -191,8 +148,11 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
-      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+      unit_test_setup_teardown( test_null_context,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_iterator, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_queue,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_length,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,          setup_test, teardown_test )
    };
 
    rc = run_tests(tests);
