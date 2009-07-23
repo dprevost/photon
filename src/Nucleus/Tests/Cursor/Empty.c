@@ -55,9 +55,7 @@ void setup_test()
                         &pItem,
                         20,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert( ok );
 #endif
 }
 

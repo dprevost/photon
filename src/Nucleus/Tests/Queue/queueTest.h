@@ -30,7 +30,6 @@
 #include "Nucleus/Folder.h"
 #include "Nucleus/Queue.h"
 #include <photon/psoPhotonODBC.h>
-#include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
 psocErrMsgHandle g_psoErrorHandle;

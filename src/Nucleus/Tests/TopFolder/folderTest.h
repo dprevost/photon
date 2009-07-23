@@ -28,7 +28,6 @@
 #include "Nucleus/Transaction.h"
 #include "Nucleus/InitEngine.h"
 #include "Nucleus/Folder.h"
-#include "Tests/PrintError.h"
 #include <photon/psoPhotonODBC.h>
 
 PHOTON_ENGINE_EXPORT

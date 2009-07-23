@@ -27,7 +27,6 @@
 #include "Nucleus/MemoryAllocator.h"
 #include "Nucleus/HashTx.h"
 #include "Nucleus/InitEngine.h"
-#include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
 psocErrMsgHandle g_psoErrorHandle;

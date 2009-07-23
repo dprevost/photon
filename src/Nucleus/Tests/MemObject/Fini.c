@@ -21,7 +21,6 @@
 #include "Nucleus/MemoryObject.h"
 #include "MemObjTest.h"
 
-const bool expectedToPass = true;
 psotObjDummy * pDummy;
 psonSessionContext context;
 

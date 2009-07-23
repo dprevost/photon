@@ -23,7 +23,6 @@
 
 #include "Nucleus/Engine.h"
 #include "Nucleus/InitEngine.h"
-#include "Tests/PrintError.h"
 #include "Nucleus/SessionContext.h"
 
 PHOTON_ENGINE_EXPORT

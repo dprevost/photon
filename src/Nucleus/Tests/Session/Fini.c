@@ -20,8 +20,6 @@
 
 #include "sessionTest.h"
 
-const bool expectedToPass = true;
-
 psonSession * pSession;
 psonSessionContext context;
 

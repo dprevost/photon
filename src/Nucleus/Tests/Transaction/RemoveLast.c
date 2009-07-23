@@ -20,7 +20,6 @@
 
 #include "txTest.h"
 
-const bool expectedToPass = true;
 psonTx * pTx;
 psonSessionContext context;
 

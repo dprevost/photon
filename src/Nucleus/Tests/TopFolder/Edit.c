@@ -20,7 +20,6 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
 psonFolder * pTopFolder;
 psonSessionContext context;
 psonFolderItem folderItem;

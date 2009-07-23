@@ -28,7 +28,6 @@
 #include "Nucleus/Transaction.h"
 #include "Nucleus/InitEngine.h"
 #include "Nucleus/Session.h"
-#include "Tests/PrintError.h"
 
 PHOTON_ENGINE_EXPORT
 psocErrMsgHandle g_psoErrorHandle;
