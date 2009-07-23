@@ -48,8 +48,7 @@ psocErrMsgHandle g_psoErrorHandle;
  * the Init() call.
  */
  
-psonTx* initTxTest( bool                testIsExpectedToSucceed,
-                    psonSessionContext* pContext )
+psonTx* initTxTest( psonSessionContext* pContext )
 {
    bool ok;
    unsigned char* ptr;
@@ -61,31 +60,19 @@ psonTx* initTxTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object */
    pDummy = (psonTx*) psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pDummy == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in txTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pDummy != NULL );
    
    return pDummy;
 }
@@ -103,8 +90,7 @@ psonTx* initTxTest( bool                testIsExpectedToSucceed,
  * the Init() call.
  */
  
-psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
-                            psonSessionContext* pContext )
+psonFolder* initFolderTest( psonSessionContext* pContext )
 {
    unsigned char* ptr;
    psonMemAlloc*  pAlloc;
@@ -117,46 +103,26 @@ psonFolder* initFolderTest( bool                testIsExpectedToSucceed,
    pContext->pidLocker = getpid();
    
    ok = psonInitEngine();
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    psocInitErrorHandler( &pContext->errorHandler );
 
    /* Initialize the global allocator */
    ptr = malloc( allocatedLength );
-   if (ptr == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ptr != NULL );
    g_pBaseAddr = ptr;
    pAlloc = (psonMemAlloc*)(g_pBaseAddr + PSON_BLOCK_SIZE);
    psonMemAllocInit( pAlloc, ptr, allocatedLength, pContext );
    
    /* Allocate memory for the tx object and initialize it */
    pTx = (psonTx*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pTx == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pTx != NULL );
    ok = psonTxInit( pTx, 1, pContext );
-   if ( ! ok ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( ok );
    pContext->pTransaction = pTx;
    
    /* Allocate memory for the folder object */
    pFolder = (psonFolder*)psonMallocBlocks( pAlloc, PSON_ALLOC_ANY, 1, pContext );
-   if ( pFolder == NULL ) {
-      fprintf( stderr, "Abnormal error at line %d in folderTest.h\n", __LINE__ );
-      if ( testIsExpectedToSucceed ) exit(1);
-      exit(0);
-   }
+   assert( pFolder != NULL );
    
    return pFolder;
 }

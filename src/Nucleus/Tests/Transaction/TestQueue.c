@@ -21,12 +21,11 @@
 #include "txTest.h"
 #include "Nucleus/Queue.h"
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psonTx* pTx;
    psonFolder * pFolder;
    psonSessionContext context;
@@ -42,16 +41,14 @@ int main()
    psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
    psonDataDefinition fields;
 
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
    pTx = context.pTransaction;
    
    psonTxStatusInit( &status, SET_OFFSET( pTx ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
                              1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -63,23 +60,17 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonTxCommit( pTx, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonFolderGetObject( pFolder,
                              "test2",
                              5,
                              PSO_QUEUE,
                              &item,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, psonObjectDescriptor );
    GET_PTR( pQueue, pDescriptor->offset, psonQueue );
 
@@ -90,42 +81,28 @@ int main()
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pQueue->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 3 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    psonTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 0 );
    
    /* Test 2 */
    ok = psonQueueInsert( pQueue,
@@ -134,162 +111,105 @@ int main()
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pQueue->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 3 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    ok = psonTxCommit( pTx, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-fprintf(stderr, "commit 2\n" );   
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pQueue->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 3 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    psonTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pQueue->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 3 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    psonTxCommit( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 0 );
    
    /* Test 3 */
    ok = psonQueueInsert( pQueue,
@@ -298,63 +218,41 @@ fprintf(stderr, "commit 2\n" );
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonQueueGetFirst( pQueue,
                            &pQueueItem,
                            (uint32_t) -1,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pQueue->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 3 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    psonTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 1 );
+   assert_true( pQueue->listOfElements.currentSize == 1 );
    
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 0 );
    
    /* Test 4 */
    ok = psonQueueInsert( pQueue,
@@ -363,175 +261,135 @@ fprintf(stderr, "commit 2\n" );
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data2,
                          strlen(data2),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueInsert( pQueue,
                          data3,
                          strlen(data3),
                          NULL,
                          PSON_QUEUE_LAST,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonQueueGetFirst( pQueue,
                            &pQueueItem,
                            (uint32_t) -1,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
 
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
 
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxRollback( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 3 );
    
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonQueueRemove( pQueue,
                          &pQueueItem,
                          PSON_QUEUE_FIRST,
                          (uint32_t) -1,
                          &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( pTx, &context );
-   if ( pQueue->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pQueue->nodeObject.txCounter == 1 );
+   assert_true( pQueue->listOfElements.currentSize == 1 );
    
    ok = psonQueueRelease( pQueue,
                           pQueueItem,
                           &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pQueue->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pQueue->listOfElements.currentSize != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pQueue->nodeObject.txCounter == 0 );
+   assert_true( pQueue->listOfElements.currentSize == 0 );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 

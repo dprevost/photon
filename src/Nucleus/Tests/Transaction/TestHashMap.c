@@ -21,12 +21,11 @@
 #include "txTest.h"
 #include "Nucleus/HashMap.h"
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psonTx* pTx;
    psonFolder * pFolder;
    psonSessionContext context;
@@ -46,16 +45,14 @@ int main()
    psonKeyDefinition key;
    psonDataDefinition fields;
 
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
    pTx = context.pTransaction;
    
    psonTxStatusInit( &status, SET_OFFSET( pTx ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 
                              1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test2",
@@ -67,9 +64,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    psonTxCommit( pTx, &context );
 
    ok = psonFolderGetObject( pFolder,
@@ -78,9 +73,7 @@ int main()
                              PSO_HASH_MAP,
                              &item,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    GET_PTR( pDescriptor, item.pHashItem->dataOffset, psonObjectDescriptor );
    GET_PTR( pHashMap, pDescriptor->offset, psonHashMap );
 
@@ -92,9 +85,7 @@ int main()
                            strlen(data1),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
@@ -102,9 +93,7 @@ int main()
                            strlen(data2),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
@@ -112,24 +101,14 @@ int main()
                            strlen(data3),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pHashMap->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 3 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    psonTxRollback( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 0 );
    
    /* Test 2 */
    ok = psonHashMapInsert( pHashMap,
@@ -139,9 +118,7 @@ int main()
                            strlen(data1),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
@@ -149,9 +126,7 @@ int main()
                            strlen(data2),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
@@ -159,98 +134,60 @@ int main()
                            strlen(data3),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pHashMap->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 3 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    psonTxCommit( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pHashMap->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 3 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    psonTxRollback( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pHashMap->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 3 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    psonTxCommit( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 0 );
    
    /* Test 3 */
    ok = psonHashMapInsert( pHashMap,
@@ -260,9 +197,7 @@ int main()
                            strlen(data1),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
@@ -270,9 +205,7 @@ int main()
                            strlen(data2),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
@@ -280,9 +213,7 @@ int main()
                            strlen(data3),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonHashMapGet( pHashMap,
                         key2,
@@ -290,37 +221,21 @@ int main()
                         &pHashItem,
                         (uint32_t) -1,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( pHashMap->nodeObject.txCounter != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 3 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    psonTxRollback( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 1 );
+   assert_true( pHashMap->hashObj.numberOfItems == 1 );
    
    ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 0 );
    
    /* Test 4 */
    ok = psonHashMapInsert( pHashMap,
@@ -330,9 +245,7 @@ int main()
                            strlen(data1),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key2,
                            strlen(key2),
@@ -340,9 +253,7 @@ int main()
                            strlen(data2),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapInsert( pHashMap,
                            key3,
                            strlen(key3),
@@ -350,9 +261,7 @@ int main()
                            strlen(data3),
                            NULL,
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonHashMapGet( pHashMap,
                         key2,
@@ -360,30 +269,18 @@ int main()
                         &pHashItem,
                         (uint32_t) -1,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    ok = psonHashMapGet( pHashMap,
                         key2,
@@ -391,51 +288,33 @@ int main()
                         &pHashItem,
                         (uint32_t) -1,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxRollback( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 3 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 3 );
    
    ok = psonHashMapGet( pHashMap,
                         key2,
@@ -443,55 +322,55 @@ int main()
                         &pHashItem,
                         (uint32_t) -1,
                         &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonHashMapDelete( pHashMap,
                            key1,
                            strlen(key1),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key2,
                            strlen(key2),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    ok = psonHashMapDelete( pHashMap,
                            key3,
                            strlen(key3),
                            &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( pTx, &context );
-   if ( pHashMap->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pHashMap->nodeObject.txCounter == 1 );
+   assert_true( pHashMap->hashObj.numberOfItems == 1 );
    
    ok = psonHashMapRelease( pHashMap,
                             pHashItem,
                             &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pHashMap->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pHashMap->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pHashMap->nodeObject.txCounter == 0 );
+   assert_true( pHashMap->hashObj.numberOfItems == 0 );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 

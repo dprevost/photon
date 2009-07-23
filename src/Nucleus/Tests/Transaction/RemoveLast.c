@@ -21,23 +21,21 @@
 #include "txTest.h"
 
 const bool expectedToPass = true;
+psonTx * pTx;
+psonSessionContext context;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void setup_test()
 {
-   psonTx* pTx;
-   psonSessionContext context;
    bool ok;
    ptrdiff_t parentOffset = 0x1010, childOffset = 0x0101;
-   
-   pTx = initTxTest( expectedToPass, &context );
+
+   pTx = initTxTest( &context );
 
    ok = psonTxInit( pTx, 1, &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
+   assert( ok );
+
    ok = psonTxAddOps( pTx,
                       PSON_TX_ADD_DATA,
                       parentOffset, 
@@ -45,13 +43,80 @@ int main()
                       childOffset,
                       PSO_FOLDER,
                       &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   psonTxRemoveLastOps( pTx, &context );
-   
-   return 0;
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   value = pTx->signature;
+   pTx->signature = 0;
+   expect_assert_failure( psonTxRemoveLastOps( pTx, &context ) );
+   pTx->signature = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTxRemoveLastOps( pTx, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_tx( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTxRemoveLastOps( NULL, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxRemoveLastOps( pTx, &context );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_tx,      setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -20,12 +20,11 @@
 
 #include "txTest.h"
 
-const bool expectedToPass = true;
-
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main()
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    psonTx* pTx;
    psonFolder * pFolder;
    psonSessionContext context;
@@ -37,15 +36,13 @@ int main()
    psoObjectDefinition folderDef = { PSO_FOLDER, 0, 0, 0 };
    psonDataDefinition fields;
 
-   pFolder = initFolderTest( expectedToPass, &context );
+   pFolder = initFolderTest( &context );
    pTx = context.pTransaction;
    
    psonTxStatusInit( &status, SET_OFFSET( pTx ) );
    
    ok = psonFolderInit( pFolder, 0, 1, 0, &status, 5, "Test1", 1234, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    /* Test 1 */
    ok = psonFolderInsertObject( pFolder,
@@ -58,9 +55,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test3",
@@ -72,31 +67,17 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 2 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    psonTxRollback( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 0 );
    
    psonTxCommit( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 0 );
    
    /* Test 2 */
    ok = psonFolderInsertObject( pFolder,
@@ -109,9 +90,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test3",
@@ -123,83 +102,49 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 2 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    psonTxCommit( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 2 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    psonTxRollback( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 2 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    psonTxCommit( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 0 );
    
    /* Test 3 */
    ok = psonFolderInsertObject( pFolder,
@@ -212,9 +157,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test3",
@@ -226,9 +169,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderGetObject( pFolder,
                              "test3",
@@ -236,28 +177,16 @@ int main()
                              PSO_HASH_MAP,
                              &item,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxRollback( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 1 );
+   assert_true( pFolder->hashObj.numberOfItems == 1 );
    
    ok = psonFolderRelease( pFolder, &item, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 0 );
    
    /* Test 4 */
    ok = psonFolderInsertObject( pFolder,
@@ -270,9 +199,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderInsertObject( pFolder,
                                 "test3",
@@ -284,9 +211,7 @@ int main()
                                 1,
                                 0,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderGetObject( pFolder,
                              "test3",
@@ -294,28 +219,16 @@ int main()
                              PSO_HASH_MAP,
                              &item,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    psonTxCommit( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    ok = psonFolderRelease( pFolder, &item, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    ok = psonFolderGetObject( pFolder,
                              "test3",
@@ -323,82 +236,68 @@ int main()
                              PSO_HASH_MAP,
                              &item,
                              &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 2 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    psonTxRollback( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test2",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonFolderDeleteObject( pFolder,
                                 "test3",
                                 5,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 2 );
+   assert_true( pFolder->hashObj.numberOfItems == 2 );
    
    psonTxCommit( pTx, &context );
-   if ( pFolder->nodeObject.txCounter != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( pFolder->nodeObject.txCounter == 1 );
+   assert_true( pFolder->hashObj.numberOfItems == 1 );
    
    ok = psonFolderRelease( pFolder, &item, &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   if ( pFolder->nodeObject.txCounter != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( pFolder->hashObj.numberOfItems != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( ok );
+   assert_true( pFolder->nodeObject.txCounter == 0 );
+   assert_true( pFolder->hashObj.numberOfItems == 0 );
    
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

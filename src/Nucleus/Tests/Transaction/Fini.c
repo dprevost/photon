@@ -20,26 +20,92 @@
 
 #include "txTest.h"
 
-const bool expectedToPass = true;
+psonTx * pTx;
+psonSessionContext context;
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void setup_test()
+{
+   bool ok;
+
+   pTx = initTxTest( &context );
+
+   ok = psonTxInit( pTx, 1, &context );
+   assert( ok );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   if (g_pBaseAddr) free(g_pBaseAddr);
+   g_pBaseAddr = NULL;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_invalid_sig( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int value;
+   
+   value = pTx->signature;
+   pTx->signature = 0;
+   expect_assert_failure( psonTxFini( pTx, &context ) );
+   pTx->signature = value;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_context( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTxFini( pTx, NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_tx( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTxFini( NULL, &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   psonTxFini( pTx, &context );
+#endif
+   return;
+}
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 int main()
 {
-   psonTx* pTx;
-   psonSessionContext context;
-   bool ok;
-   
-   pTx = initTxTest( expectedToPass, &context );
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_invalid_sig,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_tx,      setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
+   };
 
-   ok = psonTxInit( pTx, 1, &context );
-   if ( ! ok ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   rc = run_tests(tests);
    
-   psonTxFini( pTx, &context );
-   
-   return 0;
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -28,7 +28,8 @@ subdirs_list = [
         'ProcessManager',
         'Queue',
         'Session',
-        'TopFolder']
+        'TopFolder',
+        'Transaction']
 
 def build(bld):
    
