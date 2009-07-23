@@ -21,15 +21,35 @@
 #include "folderTest.h"
 #include <photon/psoCommon.h>
 
-const bool expectedToPass = true;
 psonFolder * pTopFolder;
 psonSessionContext context;
+psoObjStatus status;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   bool ok;
+   
    pTopFolder = initTopFolderTest( &context );
+
+   ok = psonTopFolderCreateFolder( pTopFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &context );
+   assert( ok );
+   
+   ok = psonTopFolderCreateFolder( pTopFolder,
+                                   "Test1/Test2",
+                                   strlen("Test1/Test2"),
+                                   &context );
+   assert( ok );
+   
+   ok = psonTopFolderCreateFolder( pTopFolder,
+                                   "Test1/Test3",
+                                   strlen("Test1/Test3"),
+                                   &context );
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -45,7 +65,53 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonTopFolderGetStatus( pTopFolder,
+                                                  "Test1",
+                                                  strlen("Test1"),
+                                                  &status,
+                                                  NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderGetStatus( NULL,
+                                                  "Test1",
+                                                  strlen("Test1"),
+                                                  &status,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderGetStatus( pTopFolder,
+                                                  NULL,
+                                                  strlen("Test1"),
+                                                  &status,
+                                                  &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_status( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderGetStatus( pTopFolder,
+                                                  "Test1",
+                                                  strlen("Test1"),
+                                                  NULL,
+                                                  &context ) );
 #endif
    return;
 }
@@ -56,55 +122,18 @@ void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
    bool ok;
-   psoObjStatus status;
-   
-   pTopFolder = initTopFolderTest( &context );
-
-   ok = psonTopFolderCreateFolder( pTopFolder,
-                                   "Test1",
-                                   strlen("Test1"),
-                                   &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonTopFolderCreateFolder( pTopFolder,
-                                   "Test1/Test2",
-                                   strlen("Test1/Test2"),
-                                   &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonTopFolderCreateFolder( pTopFolder,
-                                   "Test1/Test3",
-                                   strlen("Test1/Test3"),
-                                   &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
    
    ok = psonTopFolderGetStatus( pTopFolder,
                                 "Test1",
                                 strlen("Test1"),
                                 &status,
                                 &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
-   if ( status.numBlocks != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.numBlockGroup != 1 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-   if ( status.numDataItem != 2 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( status.numBlocks == 1 );
+   assert_true( status.numBlockGroup == 1 );
+   assert_false( status.freeBytes == 0 || status.freeBytes >=PSON_BLOCK_SIZE );
+   assert_true( status.numDataItem == 2 );
    
 #endif
    return;
@@ -118,6 +147,9 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_status,  setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 

@@ -20,15 +20,34 @@
 
 #include "folderTest.h"
 
-const bool expectedToPass = true;
 psonFolder * pTopFolder;
 psonSessionContext context;
+psonFolderItem folderItem;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
 void setup_test()
 {
+   bool ok;
+   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
+   psonDataDefinition dataDef;
+   
    pTopFolder = initTopFolderTest( &context );
+   
+   ok = psonTopFolderCreateFolder( pTopFolder,
+                                   "Test1",
+                                   strlen("Test1"),
+                                   &context );
+   assert( ok );
+   
+   ok = psonTopFolderCreateObject( pTopFolder,
+                                   "Test1/Test2",
+                                   strlen("Test1/Test2"),
+                                   &def,
+                                   &dataDef,
+                                   NULL,
+                                   &context );
+   assert( ok );
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
@@ -44,7 +63,114 @@ void teardown_test()
 void test_null_context( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
-   expect_assert_failure(  );
+   expect_assert_failure( psonTopFolderOpenObject( pTopFolder,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_QUEUE,
+                                                   &folderItem,
+                                                   NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_folder( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderOpenObject( NULL,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_QUEUE,
+                                                   &folderItem,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_item( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderOpenObject( pTopFolder,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   PSO_QUEUE,
+                                                   NULL,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_name( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderOpenObject( pTopFolder,
+                                                   NULL,
+                                                   strlen("Test1/Test2"),
+                                                   PSO_QUEUE,
+                                                   &folderItem,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   int errcode;
+   
+   ok = psonTopFolderOpenObject( pTopFolder,
+                                 "Test1/Test2",
+                                 PSO_MAX_FULL_NAME_LENGTH+1,
+                                 PSO_QUEUE,
+                                 &folderItem,
+                                 &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_OBJECT_NAME_TOO_LONG );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_wrong_type( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psonTopFolderOpenObject( pTopFolder,
+                                                   "Test1/Test2",
+                                                   strlen("Test1/Test2"),
+                                                   0,
+                                                   &folderItem,
+                                                   &context ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_zero_length( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   bool ok;
+   int errcode;
+   
+   ok = psonTopFolderOpenObject( pTopFolder,
+                                 "Test1/Test2",
+                                 0,
+                                 PSO_QUEUE,
+                                 &folderItem,
+                                 &context );
+   assert_false( ok );
+   errcode = psocGetLastError( &context.errorHandler );
+   assert_true( errcode == PSO_INVALID_OBJECT_NAME );
 #endif
    return;
 }
@@ -56,40 +182,14 @@ void test_pass( void ** state )
 #if defined(PSO_UNIT_TESTS)
    int errcode;
    bool ok;
-   psonFolderItem folderItem;
-   psoObjectDefinition def = { PSO_QUEUE, 0, 0, 0 };
-   psonDataDefinition dataDef;
-   
-   pTopFolder = initTopFolderTest( &context );
 
-   ok = psonTopFolderCreateFolder( pTopFolder,
-                                   "Test1",
-                                   strlen("Test1"),
-                                   &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
-   ok = psonTopFolderCreateObject( pTopFolder,
-                                   "Test1/Test2",
-                                   strlen("Test1/Test2"),
-                                   &def,
-                                   &dataDef,
-                                   NULL,
-                                   &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
-   
    ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test1/Test2",
                                  strlen("Test1/Test2"),
                                  PSO_QUEUE,
                                  &folderItem,
                                  &context );
-   if ( ok != true ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( ok );
    
    ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test3/Test2",
@@ -97,13 +197,9 @@ void test_pass( void ** state )
                                  PSO_QUEUE,
                                  &folderItem,
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_NO_SUCH_FOLDER ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_NO_SUCH_FOLDER );
    
    ok = psonTopFolderOpenObject( pTopFolder,
                                  "Test1/Test5",
@@ -111,13 +207,9 @@ void test_pass( void ** state )
                                  PSO_QUEUE,
                                  &folderItem,
                                  &context );
-   if ( ok != false ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_false( ok );
    errcode = psocGetLastError( &context.errorHandler );
-   if ( errcode != PSO_NO_SUCH_OBJECT ) {
-      ERROR_EXIT( expectedToPass, &context.errorHandler, ; );
-   }
+   assert_true( errcode == PSO_NO_SUCH_OBJECT );
    
 #endif
    return;
@@ -131,6 +223,12 @@ int main()
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
       unit_test_setup_teardown( test_null_context, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_folder,  setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_item,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_name,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_length, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_wrong_type,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_zero_length,  setup_test, teardown_test ),
       unit_test_setup_teardown( test_pass,         setup_test, teardown_test )
    };
 
