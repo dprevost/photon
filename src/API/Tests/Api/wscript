@@ -12,28 +12,22 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-api_list = [
-        'api.c',
-        'CommonObject.c',
-        'Connector.c',
-        'DataDefinition.c',
-        'FastMap.c',
-        'Folder.c',
-        'HashMap.c',
-        'KeyDefinition.c',
-        'Lifo.c',
-        'Process.c',
-        'Queue.c',
-        'Session.c',
-        'Standalone.c']
+test_list = [
+   'Exit',
+   'Init']
+
 
 def build(bld):
-   api_lib = bld.new_task_gen(
-      features = 'cc cshlib',
-      source = api_list,
-      includes='.. ../include',
-      uselib_local   = 'Common Nucleus',
-      target='photon')
-
-   bld.add_subdirs(['Tests'])
+   for prog in test_list:
+      prog_c = prog + '.c'
+      obj = bld.new_task_gen(
+         features     = 'cc cprogram',
+         source       = prog_c,
+         target       = prog,
+         includes     = '../../.. ../../../include',
+         install_path = None,
+         lib          = bld.env['CMOCKERY'],
+         uselib_local = 'photon Nucleus Common') 
+      if bld.env['CMOCKERY']:
+         obj.unit_test = 1
 
