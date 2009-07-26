@@ -40,7 +40,7 @@ def build(bld):
       uselib_local   = 'Common Nucleus',
       lib          = bld.env['CMOCKERY'],
       uselib = 'LIBXML-2.0',
-      target='Quasar')
+      target='quasar')
 
    #bld.add_subdirs(['Tests'])
 

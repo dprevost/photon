@@ -20,65 +20,85 @@
 
 #include "Common/Common.h"
 #include <photon/photon.h>
-#include "Tests/PrintError.h"
 #include "API/CommonObject.h"
 
-const bool expectedToPass = true;
+PSO_HANDLE sessionHandle;
+psoaCommonObject object;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char * argv[] )
+void setup_test()
 {
-   PSO_HANDLE sessionHandle;
    int errcode;
-   psoaCommonObject object;
    
-   if ( argc > 1 ) {
-      errcode = psoInit( argv[1], argv[0] );
-   }
-   else {
-      errcode = psoInit( "10701", argv[0] );
-   }
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   errcode = psoInit( "10701", "Close" );
+   assert( errcode == PSO_OK );
    
    errcode = psoInitSession( &sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert( errcode == PSO_OK );
 
    errcode = psoCreateFolder( sessionHandle,
-                              "/api_common_close_pass",
-                              strlen("/api_common_close_pass") );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+                              "/api_common_close",
+                              strlen("/api_common_close") );
+   assert( errcode == PSO_OK );
    
    memset( &object, 0, sizeof(psoaCommonObject) );
    object.pSession = (psoaSession *) sessionHandle;
    errcode = psoaCommonObjOpen( &object,
                                 PSO_FOLDER,
                                 false,
-                                "/api_common_close_pass",
-                                strlen("/api_common_close_pass") );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+                                "/api_common_close",
+                                strlen("/api_common_close") );
+   assert( errcode == PSO_OK );
+}
 
-   errcode = psoaCommonObjClose( &object );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void teardown_test()
+{
+   psoRollback( sessionHandle );
    psoExit();
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_object( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psoaCommonObjClose( NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
    
-   return 0;
+   errcode = psoaCommonObjClose( &object );
+   assert_true( errcode == PSO_OK );
+
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_object, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,        setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */

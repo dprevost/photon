@@ -80,7 +80,7 @@ fi
 echo " "
 echo "Launching quasar..."
 
-$QUASAR_DIR/quasar  --config $BASE_DIR/cfg.xml
+$QUASAR_DIR/../../build/default/src/Quasar/quasar  --config $BASE_DIR/cfg.xml
 
 # --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 

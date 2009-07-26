@@ -20,42 +20,43 @@
 
 #include "Common/Common.h"
 #include <photon/photon.h>
-#include "Tests/PrintError.h"
-
-const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char * argv[] )
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    int errcode;
    
-   errcode = psoInit( NULL, argv[0] );
-   if ( errcode != PSO_INVALID_QUASAR_ADDRESS ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   errcode = psoInit( NULL, "Init" );
+   assert_true( errcode == PSO_INVALID_QUASAR_ADDRESS );
 
    errcode = psoInit( "12345", "" );
-   if ( errcode != PSO_CONNECT_ERROR ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_CONNECT_ERROR );
 
-   if ( argc > 1 ) {
-      errcode = psoInit( argv[1], NULL );
-   }
-   else {
-      errcode = psoInit( "10701", NULL );
-   }
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   errcode = psoInit( "10701", NULL );
+   assert_true( errcode == PSO_OK );
    
    psoExit();
    
-   return 0;
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
