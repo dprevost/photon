@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.io.IOException;
 
 public class JavaSerializer<T extends Serializable> implements PSOSerialize<T> {
    
@@ -32,16 +33,23 @@ public class JavaSerializer<T extends Serializable> implements PSOSerialize<T> {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public byte[] packObject( T obj ) throws Exception {
+   public byte[] packObject( T obj ) throws SerializerException {
 
       ByteArrayOutputStream stream;
       ObjectOutputStream out;
       byte [] data;
       
       stream = new ByteArrayOutputStream();
-      out = new ObjectOutputStream(stream);
-      out.writeObject(obj);
-      out.close();
+      try {
+         out = new ObjectOutputStream(stream);
+         out.writeObject(obj);
+         out.close();
+      }
+      catch( IOException e ) {
+         throw new SerializerException( 
+            e.getCause(), 
+            SerializerErrors.IO_EXCEPTION );
+      }
       
       data = stream.toByteArray();
       
@@ -55,22 +63,35 @@ public class JavaSerializer<T extends Serializable> implements PSOSerialize<T> {
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
    @SuppressWarnings("unchecked")
-   public T unpackObject( byte[] buffer ) throws Exception {
+   public T unpackObject( byte[] buffer ) throws SerializerException {
 
       ByteArrayInputStream stream;
       ObjectInputStream in;
       T obj;
       
       stream = new ByteArrayInputStream( buffer );
-      in = new ObjectInputStream( stream );
       
-      // Unchecked cast. In theory, readObject might return an object 
-      // which is not of type T. We could make sure that the result is
-      // correct by using reflection (getting the class type) but this
-      // would be slow.
-      obj = (T)in.readObject();
-      in.close();
+      try {
+         in = new ObjectInputStream( stream );
       
+         // Unchecked cast. In theory, readObject might return an object 
+         // which is not of type T. We could make sure that the result is
+         // correct by using reflection (getting the class type) but this
+         // would be slow.
+         obj = (T)in.readObject();
+         in.close();
+      }
+      catch( IOException e ) {
+         throw new SerializerException( 
+            e.getCause(), 
+            SerializerErrors.IO_EXCEPTION );
+      }
+      catch( ClassNotFoundException e ) {
+         throw new SerializerException( 
+            e.getCause(), 
+            SerializerErrors.CLASS_NOT_FOUND_EXCEPTION );
+      }
+
       return obj;
    }
 

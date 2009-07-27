@@ -18,9 +18,9 @@
 
 package org.photon.serializer;
 
-import java.util.ArrayList;
+import org.photon.*;
 
-public class ArrayListSerializer implements PSOSerialize<ArrayList> {
+public class StringSerializer implements PSOSerialize<String> {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
@@ -35,13 +35,19 @@ public class ArrayListSerializer implements PSOSerialize<ArrayList> {
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
    
-   public ArrayListSerializer( byte[] dataDef ) {
+   public StringSerializer( byte[] dataDef ) throws SerializerException {
+      
+      int errcode = psoValidate( dataDef );
+      if ( errcode != 0 ) {
+         throw new SerializerException( SerializerErrors.getEnum(errcode) );
+      }
+      
       this.dataDef = dataDef;
    }
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public byte[] packObject( ArrayList obj ) throws SerializerException {
+   public byte[] packObject( String obj ) throws SerializerException {
 
       byte [] data = psoPackObject( obj );
       
@@ -50,15 +56,21 @@ public class ArrayListSerializer implements PSOSerialize<ArrayList> {
    
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public void setDefinition( byte[] dataDef ) { 
+   public void setDefinition( byte[] dataDef ) throws SerializerException { 
+      
+      int errcode = psoValidate( dataDef );
+      if ( errcode != 0 ) {
+         throw new SerializerException( SerializerErrors.getEnum(errcode) );
+      }
+      
       this.dataDef = dataDef;
    }
 
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 
-   public ArrayList unpackObject( byte[] buffer ) throws SerializerException {
+   public String unpackObject( byte[] buffer ) throws SerializerException {
 
-      ArrayList obj = psoUnpackObject( buffer );
+      String obj = psoUnpackObject( buffer );
       
       
       return obj;
@@ -68,9 +80,11 @@ public class ArrayListSerializer implements PSOSerialize<ArrayList> {
 
    private static native void initIDs();
 
-   private native  byte[] psoPackObject( ArrayList obj );
+   private native  byte[] psoPackObject( String obj ) throws SerializerException;
    
-   private native ArrayList psoUnpackObject( byte[] buffer );
+   private native String psoUnpackObject( byte[] buffer ) throws SerializerException;
 
+   private native int psoValidate( byte[] dataDef );
+   
    // --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
 }
