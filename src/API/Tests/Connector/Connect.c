@@ -20,41 +20,123 @@
 
 #include "Common/Common.h"
 #include <photon/photon.h>
-#include "Tests/PrintError.h"
 #include "API/Connector.h"
 #include "Nucleus/InitEngine.h"
 
-const bool expectedToPass = true;
+psoaConnector connector;
+const char * address = "10701";
+struct qsrOutput answer;
+psocErrorHandler errorHandler;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char * argv[] )
+void setup_test()
 {
-   int errcode;
-   psoaConnector connector;
-                 
-   const char * address = "10701";
-   struct qsrOutput answer;
-   psocErrorHandler errorHandler;
-                 
-   if ( ! psonInitEngine() ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
-
+   bool ok;
+   
+   ok = psonInitEngine();
+   assert( ok );
+   
    psocInitErrorHandler( &errorHandler );
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_address( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psoaConnect( &connector,
+                                       NULL,
+                                       &answer,
+                                       &errorHandler ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_answer( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psoaConnect( &connector,
+                                       address,
+                                       NULL,
+                                       &errorHandler ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_connector( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psoaConnect( NULL,
+                                       address,
+                                       &answer,
+                                       &errorHandler ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_null_error( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   expect_assert_failure( psoaConnect( &connector,
+                                       address,
+                                       &answer,
+                                       NULL ) );
+#endif
+   return;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void test_pass( void ** state )
+{
+#if defined(PSO_UNIT_TESTS)
+   int errcode;
 
    errcode = psoaConnect( &connector,
                           address,
                           &answer,
                           &errorHandler );
 
-   if ( errcode != 0 ) {
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == 0 );
    
    psoaDisconnect( &connector, &errorHandler );
 
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test_setup_teardown( test_null_address,   setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_answer,    setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_connector, setup_test, teardown_test ),
+      unit_test_setup_teardown( test_null_error,     setup_test, teardown_test ),
+      unit_test_setup_teardown( test_pass,           setup_test, teardown_test )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

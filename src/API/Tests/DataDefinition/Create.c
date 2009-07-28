@@ -20,37 +20,24 @@
 
 #include "Common/Common.h"
 #include <photon/photon.h>
-#include "Tests/PrintError.h"
 #include "API/DataDefinition.h"
-
-const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
-int main( int argc, char * argv[] )
+void test_pass( void ** state )
 {
+#if defined(PSO_UNIT_TESTS)
    PSO_HANDLE defHandle, sessionHandle;
    int errcode;
    psoFieldDefinition fields[1] = {
       { "Field_1", PSO_VARCHAR, {10} }
    };
   
-   if ( argc > 1 ) {
-      errcode = psoInit( argv[1], argv[0] );
-   }
-   else {
-      errcode = psoInit( "10701", argv[0] );
-   }
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   errcode = psoInit( "10701", "Create" );
+   assert_true( errcode == PSO_OK );
    
    errcode = psoInitSession( &sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OK );
 
    /* Invalid arguments to tested function. */
 
@@ -61,10 +48,7 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_NULL_HANDLE );
 
    errcode = psoDataDefCreate( sessionHandle,
                                NULL,
@@ -73,10 +57,7 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_NULL_POINTER );
 
    errcode = psoDataDefCreate( sessionHandle,
                                "api_data_definition_create",
@@ -85,10 +66,7 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_INVALID_LENGTH );
 
    errcode = psoDataDefCreate( sessionHandle,
                                "api_data_definition_create",
@@ -97,10 +75,7 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_WRONG_OBJECT_TYPE );
 
    errcode = psoDataDefCreate( sessionHandle,
                                "api_data_definition_create",
@@ -109,10 +84,7 @@ int main( int argc, char * argv[] )
                                NULL,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_NULL_POINTER );
 
    errcode = psoDataDefCreate( sessionHandle,
                                "api_data_definition_create",
@@ -121,10 +93,7 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                0,
                                &defHandle );
-   if ( errcode != PSO_INVALID_LENGTH ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_INVALID_LENGTH );
 
    errcode = psoDataDefCreate( sessionHandle,
                                "api_data_definition_create",
@@ -133,10 +102,7 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                NULL );
-   if ( errcode != PSO_NULL_POINTER ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_NULL_POINTER );
 
    /* End of invalid args. This call should succeed. */
    errcode = psoDataDefCreate( sessionHandle,
@@ -146,18 +112,12 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OK );
 
    /* Close the session and try to act on the object */
 
    errcode = psoExitSession( sessionHandle );
-   if ( errcode != PSO_OK ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_OK );
 
    errcode = psoDataDefCreate( sessionHandle,
                                "api_data_definition_create",
@@ -166,14 +126,29 @@ int main( int argc, char * argv[] )
                                (const unsigned char *) fields,
                                sizeof(psoFieldDefinition),
                                &defHandle );
-   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_WRONG_TYPE_HANDLE );
 
    psoExit();
 
-   return 0;
+#endif
+   return;
 }
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+int main()
+{
+   int rc = 0;
+#if defined(PSO_UNIT_TESTS)
+   const UnitTest tests[] = {
+      unit_test( test_pass )
+   };
+
+   rc = run_tests(tests);
+   
+#endif
+   return rc;
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+

@@ -1,0 +1,49 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# :mode=python:  - For jedit
+
+# Copyright (C) 2009 Daniel Prevost <dprevost@photonsoftware.org>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+test_list = [
+   'Close',
+   'Create',
+   'Delete',
+   'Definition',
+   'Edit',
+   'Empty',
+   'First',
+   'Get',
+   'GetFirst',
+   'GetNext',
+   'Insert',
+   'Next',
+   'Open',
+   'RecordDef',
+   'Replace',
+   'Reset',
+   'Retrieve',
+   'Status',
+   'Tests']
+
+def build(bld):
+   for prog in test_list:
+      prog_c = prog + '.c'
+      obj = bld.new_task_gen(
+         features     = 'cc cprogram',
+         source       = prog_c,
+         target       = prog,
+         includes     = '../../.. ../../../include',
+         install_path = None,
+         lib          = bld.env['CMOCKERY'],
+         uselib_local = 'photon Nucleus Common') 
+      if bld.env['CMOCKERY']:
+         obj.unit_test = 1
+
