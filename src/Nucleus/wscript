@@ -43,6 +43,7 @@ def build(bld):
       source = nucleus_list,
       includes='.. ../include',
       uselib_local   = 'Common',
+      ccflags      = ['-O2', '-Wall', '-g'],
       target='Nucleus')
 
    bld.add_subdirs(['Tests'])

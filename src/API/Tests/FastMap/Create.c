@@ -87,10 +87,7 @@ void test_pass( void ** state )
                                  &definition,
                                  dataDefHandle,
                                  keyDefHandle );
-   if ( errcode != PSO_WRONG_OBJECT_TYPE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_WRONG_OBJECT_TYPE );
 
    definition.type = PSO_FAST_MAP;
 
@@ -100,10 +97,7 @@ void test_pass( void ** state )
                                  &definition,
                                  NULL,
                                  keyDefHandle );
-   if ( errcode != PSO_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_NULL_HANDLE );
 
    errcode = psoFolderCreateMap( folderHandle,
                                  "ahmcr",
@@ -111,10 +105,7 @@ void test_pass( void ** state )
                                  &definition,
                                  dataDefHandle,
                                  NULL );
-   if ( errcode != PSO_NULL_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_NULL_HANDLE );
 
    errcode = psoFolderCreateMap( folderHandle,
                                  "ahmcr",
@@ -122,10 +113,7 @@ void test_pass( void ** state )
                                  &definition,
                                  keyDefHandle,
                                  keyDefHandle );
-   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_WRONG_TYPE_HANDLE );
 
    /* End of invalid args. This call should succeed. */
    errcode = psoFolderCreateMap( folderHandle,
@@ -146,10 +134,7 @@ void test_pass( void ** state )
                                  &definition,
                                  dataDefHandle,
                                  keyDefHandle );
-   if ( errcode != PSO_WRONG_TYPE_HANDLE ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_WRONG_TYPE_HANDLE );
 
    /* Reopen the folder, close the process and try to act on the session */
 
@@ -166,10 +151,7 @@ void test_pass( void ** state )
                                  &definition,
                                  dataDefHandle,
                                  keyDefHandle );
-   if ( errcode != PSO_SESSION_IS_TERMINATED ) {
-      fprintf( stderr, "err: %d\n", errcode );
-      ERROR_EXIT( expectedToPass, NULL, ; );
-   }
+   assert_true( errcode == PSO_SESSION_IS_TERMINATED );
 
 #endif
    return;

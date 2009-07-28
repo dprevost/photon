@@ -27,6 +27,38 @@ const bool expectedToPass = true;
 
 /* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
 
+void setup_test()
+{
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
+void teardown_test()
+{
+   int errcode;
+   PSO_HANDLE sessionHandle;
+   
+   errcode = psoInitSession( &sessionHandle );
+   assert( errcode == PSO_OK );
+
+   errcode = psoDestroyObject( sessionHandle,
+                               "/api_fastmap_delete/test",
+                               strlen("/api_fastmap_delete/test") );
+   assert( errcode == PSO_OK );
+   psoCommit( sessionHandle );
+
+   errcode = psoDestroyObject( sessionHandle,
+                               "/api_fastmap_delete",
+                               strlen("/api_fastmap_delete") );
+   fprintf( stderr, "%d\n", errcode );
+   assert( errcode == PSO_OK );
+   
+   psoCommit( sessionHandle );
+   psoExit();
+}
+
+/* --+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+-- */
+
 void test_pass( void ** state )
 {
 #if defined(PSO_UNIT_TESTS)
@@ -320,7 +352,8 @@ void test_pass( void ** state )
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
 
-   psoExit();
+   errcode = psoExitSession( sessionHandle1 );
+   assert_true( errcode == PSO_OK );
 
 #endif
    return;
@@ -333,7 +366,7 @@ int main()
    int rc = 0;
 #if defined(PSO_UNIT_TESTS)
    const UnitTest tests[] = {
-      unit_test( test_pass )
+      unit_test_setup_teardown( test_pass, setup_test, teardown_test )
    };
 
    rc = run_tests(tests);

@@ -33,6 +33,7 @@ def build(bld):
       source = api_list,
       includes='.. ../include',
       uselib_local   = 'Common Nucleus',
+      ccflags      = ['-O2', '-Wall', '-g'],
       target='photon')
 
    bld.add_subdirs(['Tests'])
