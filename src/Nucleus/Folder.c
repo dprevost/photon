@@ -749,6 +749,7 @@ bool psonFolderDeleteObject( psonFolder         * pFolder,
             goto the_exit;
          }
       }
+
       GET_PTR( pMemObj, pDesc->memOffset, psonMemObject );
       
       ok = psonTxAddOps( (psonTx*)pContext->pTransaction,
@@ -1006,14 +1007,15 @@ bool psonFolderEditObject( psonFolder         * pFolder,
       txStatus->txOffset = SET_OFFSET(pContext->pTransaction);
       txStatus->status |= PSON_TXS_EDIT;
       newTxStatus->status = txStatus->status;
+      newTxStatus->txOffset = SET_OFFSET(pContext->pTransaction);
       
       switch ( memObjType ) {
       case PSON_IDENT_MAP:
          ok = psonFastMapCopy( pMap, /* old, */
-                           (psonFastMap *)ptr,
-                           pHashItemNew,
-                           pDescNew->originalName,
-                           pContext );
+                               (psonFastMap *)ptr,
+                               pHashItemNew,
+                               pDescNew->originalName,
+                               pContext );
          PSO_POST_CONDITION( ok == true || ok == false );
          pDescNew->nodeOffset = SET_OFFSET(ptr) + offsetof(psonFastMap,nodeObject);
          pDescNew->memOffset  = SET_OFFSET(ptr) + offsetof(psonFastMap,memObject);

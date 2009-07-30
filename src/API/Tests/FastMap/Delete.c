@@ -41,11 +41,19 @@ void teardown_test()
    errcode = psoInitSession( &sessionHandle );
    assert( errcode == PSO_OK );
 
+   errcode = psoaDataDefDestroy( sessionHandle,
+                                 "api_fastmap_delete",
+                                 strlen("api_fastmap_delete") );
+   assert( errcode == PSO_OK );
+   errcode = psoaKeyDefDestroy( sessionHandle,
+                                "api_fastmap_delete",
+                                strlen("api_fastmap_delete") );
+   
+   assert( errcode == PSO_OK );
    errcode = psoDestroyObject( sessionHandle,
                                "/api_fastmap_delete/test",
                                strlen("/api_fastmap_delete/test") );
    assert( errcode == PSO_OK );
-   psoCommit( sessionHandle );
 
    errcode = psoDestroyObject( sessionHandle,
                                "/api_fastmap_delete",
@@ -237,10 +245,13 @@ void test_pass( void ** state )
     *   - the old reader (   "     ) - nothing has changed. 
     * Furthermore, a new reader on session 1 should also not see it.
     */
+   errcode = psoFastMapClose( objHandle1 );
+   assert_true( errcode == PSO_OK );
    errcode = psoFastMapClose( objHandle2 );
    assert_true( errcode == PSO_OK );
    errcode = psoCommit( sessionHandle2 );
    assert_true( errcode == PSO_OK );
+#if 0
    errcode = psoFastMapOpen( sessionHandle2,
                              "/api_fastmap_delete/test",
                              strlen("/api_fastmap_delete/test"),
@@ -340,10 +351,12 @@ void test_pass( void ** state )
                              strlen("/api_fastmap_delete/test"),
                              &objHandle2 );
    assert_true( errcode == PSO_OK );
+#endif
 
    errcode = psoExitSession( sessionHandle2 );
    assert_true( errcode == PSO_OK );
 
+#if 0
    errcode = psoFastMapDelete( objHandle2,
                                key1,
                                strlen(key1) );
@@ -351,6 +364,7 @@ void test_pass( void ** state )
       fprintf( stderr, "err: %d\n", errcode );
       ERROR_EXIT( expectedToPass, NULL, ; );
    }
+#endif
 
    errcode = psoExitSession( sessionHandle1 );
    assert_true( errcode == PSO_OK );
