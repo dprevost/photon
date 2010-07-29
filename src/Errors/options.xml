@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE options PUBLIC
-    "-//Error Parser project//DTD Error Parser Options XML V2.1//EN"
-    "http://photonsoftware.org/xml/ep/errorParserOptions21.dtd">
+<!DOCTYPE options SYSTEM 
+             "/usr/local/share/xml/errorParser/errorParserOptions22.dtd">
 
 <!-- 
    This xml file provides the options to the errorParser program.
@@ -18,7 +17,7 @@
    
 -->
 
-<options version="2.1">
+<options version="2.2">
 
   <general_options>
     <!-- Prefix to be used for the error codes (enum or #define). -->
